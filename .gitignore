@@ -209,6 +209,14 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# Project data
+samples/
+outputs/
+models/
+backups/
+logs/
+*.pdf
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
