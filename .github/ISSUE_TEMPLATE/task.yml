@@ -1,0 +1,93 @@
+name: Development task
+description: A scoped, verifiable unit of project work
+title: "[AREA-ID] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: Keep the task small enough to complete in two focused development days or less.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - builder
+        - schema
+        - indexing
+        - retrieval
+        - reasoning
+        - docs
+        - tests
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - blocks the current milestone
+        - P1 - important within the current milestone
+        - P2 - useful but deferrable
+    validations:
+      required: true
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size
+      options:
+        - S - up to half a day
+        - M - up to two focused days
+        - L - must be split before Ready
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: Describe the problem and the user- or system-visible outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: Input
+      description: List the files, artifacts, schemas, or parameters consumed by this work.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: List the files, artifacts, schemas, or behaviors produced by this work.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Use observable checklist items.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ] Tests and lint pass
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Provide exact commands and expected signals.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link blocking issues or write "None".
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: State what this issue deliberately does not change.
+    validations:
+      required: true
