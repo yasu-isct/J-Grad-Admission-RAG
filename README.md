@@ -65,7 +65,9 @@ tests/          Focused unit tests
 
 ## Roadmap
 
-- Build a persistent vector index from `retrieval_units`.
-- Add scoped retrieval for ambiguous queries such as "情報系" or "環境系".
-- Add reasoning chains for references like "下記(1)" and conditional applicability.
-- Add applicant-aware answer/report generation on top of retrieved facts.
+Development is organized as small, verifiable GitHub issues grouped by milestones. The current
+priority is to make `document_kb.json` traceable and diagnostically reliable before adding vector
+indexing.
+
+See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
+workflow.
