@@ -1,0 +1,27 @@
+{
+  "fixture_id": "isct_2027_4_2026_9_master",
+  "institution": "Institute of Science Tokyo",
+  "document_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+  "source_page_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+  "downloaded_on": "2026-07-05",
+  "redistribution": "The source PDF is public but is not redistributed by this repository.",
+  "filename": "isct_2027_4_2026_9_master.pdf",
+  "sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "expected": {
+    "page_count": 85,
+    "table_count": 285,
+    "scanned_page_count": 0,
+    "chunk_count": 382,
+    "entity_count": 25,
+    "fact_count": 382,
+    "retrieval_unit_count": 382,
+    "reference_link_count": 13
+  },
+  "text_markers": [
+    "東京科学大学",
+    "３．出願資格",
+    "情報理工学院",
+    "TOEFL iBT",
+    "検定料"
+  ]
+}
