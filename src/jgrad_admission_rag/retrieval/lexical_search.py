@@ -5,7 +5,7 @@ import math
 import re
 import unicodedata
 from collections import Counter
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any
@@ -13,6 +13,7 @@ from typing import Any
 from ..schemas.document_kb import ScopeType
 from ..schemas.index import IndexPayload
 from .local_index import LocalVectorIndex
+from .eligible_rows import validate_eligible_rows
 
 LEXICAL_TOKENIZER_VERSION = "nfkc-casefold-ja23-v1"
 LEXICAL_SCORING_VERSION = "bm25-v1"
@@ -100,8 +101,14 @@ class LexicalSearcher:
     def corpus_size(self) -> int:
         return len(self.payloads)
 
-    def search(self, query: str, *, top_k: int = 5) -> LexicalSearchResult:
-        return search_lexical(self, query, top_k=top_k)
+    def search(
+        self,
+        query: str,
+        *,
+        top_k: int = 5,
+        eligible_rows: Collection[int] | None = None,
+    ) -> LexicalSearchResult:
+        return search_lexical(self, query, top_k=top_k, eligible_rows=eligible_rows)
 
 
 def tokenize_lexical(value: str) -> tuple[str, ...]:
@@ -193,6 +200,7 @@ def search_lexical(
     query: str,
     *,
     top_k: int = 5,
+    eligible_rows: Collection[int] | None = None,
 ) -> LexicalSearchResult:
     """Run exhaustive deterministic BM25 scoring over a prepared lexical corpus."""
 
@@ -203,6 +211,8 @@ def search_lexical(
     if not query_tokens:
         raise LexicalInputError("query does not contain any lexical tokens")
     _validate_statistics(searcher)
+    validated_rows = validate_eligible_rows(searcher.corpus_size, eligible_rows)
+    eligible = None if validated_rows is None else frozenset(validated_rows)
 
     if searcher.corpus_size == 0:
         return LexicalSearchResult(
@@ -215,6 +225,8 @@ def search_lexical(
     query_frequencies = Counter(query_tokens)
     scored_rows: list[tuple[float, int, tuple[str, ...]]] = []
     for position, frequencies in enumerate(searcher.term_frequencies):
+        if eligible is not None and position not in eligible:
+            continue
         contributions: list[float] = []
         for term, query_frequency in query_frequencies.items():
             term_frequency = frequencies.get(term, 0)

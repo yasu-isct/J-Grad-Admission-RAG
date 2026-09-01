@@ -21,6 +21,14 @@ from ..retrieval.hybrid_search import (
     search_hybrid_index,
 )
 from ..retrieval.local_index import IndexLoadError, load_local_index
+from ..retrieval.metadata_search import (
+    MetadataFilter,
+    MetadataInputError,
+    MetadataSearchError,
+    MetadataSearchResult,
+    ScopePreference,
+    search_metadata_index,
+)
 from ..retrieval.vector_search import (
     VectorSearchError,
     VectorSearchResult,
@@ -47,6 +55,12 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--top-k", type=positive_int, default=5)
     parser.add_argument("--retrieval-mode", choices=("vector", "hybrid"), default="vector")
     parser.add_argument("--candidate-k", type=positive_int)
+    parser.add_argument("--filter-fact-type", action="append")
+    parser.add_argument("--filter-scope-type", action="append")
+    parser.add_argument("--filter-scope-target", action="append")
+    parser.add_argument("--filter-parent-college", action="append")
+    parser.add_argument("--prefer-scope-target", action="append")
+    parser.add_argument("--prefer-parent-college", action="append")
     add_provider_arguments(parser)
     return parser
 
@@ -117,6 +131,39 @@ def _hybrid_success_summary(
     }
 
 
+def _metadata_success_summary(
+    result: MetadataSearchResult,
+    index: Path,
+    freshness: IndexFreshnessReport,
+) -> dict[str, object]:
+    manifest = result.manifest
+    diagnostics = result.to_dict()
+    diagnostics.pop("manifest")
+    hits = diagnostics.pop("hits")
+    return {
+        "index": str(index),
+        "retrieval_mode": "hybrid",
+        "metadata_aware": True,
+        "document_id": manifest.document_id,
+        "source_kb_sha256": manifest.source_kb_sha256,
+        "source_pdf_sha256": manifest.source_pdf_sha256,
+        "index_schema_version": manifest.index_schema_version,
+        "embedding_provider": manifest.embedding_provider,
+        "embedding_model": manifest.embedding_model,
+        "embedding_revision": manifest.embedding_revision,
+        "embedding_dimension": manifest.embedding_dimension,
+        "distance_metric": manifest.distance_metric,
+        "semantic": manifest.embedding_provider != FAKE_PROVIDER_NAME,
+        **diagnostics,
+        "results": hits,
+        "freshness": {
+            "fresh": freshness.fresh,
+            "current_kb_sha256": freshness.current_kb_sha256,
+            "checked_fields": list(freshness.checked_fields),
+        },
+    }
+
+
 def _write_json(value: dict[str, object], *, stream) -> None:
     print(json.dumps(value, ensure_ascii=True, separators=(",", ":")), file=stream)
 
@@ -126,23 +173,59 @@ def main(argv: Sequence[str] | None = None) -> None:
     try:
         configuration = resolve_provider_configuration(args)
         validate_search_inputs(args.query, args.top_k)
+        metadata_requested = any(
+            getattr(args, name) is not None
+            for name in (
+                "filter_fact_type",
+                "filter_scope_type",
+                "filter_scope_target",
+                "filter_parent_college",
+                "prefer_scope_target",
+                "prefer_parent_college",
+            )
+        )
         if args.retrieval_mode == "vector" and args.candidate_k is not None:
             raise CliConfigurationError("--candidate-k requires --retrieval-mode hybrid")
+        if args.retrieval_mode == "vector" and metadata_requested:
+            raise CliConfigurationError("metadata options require --retrieval-mode hybrid")
+        metadata_filter = None
+        scope_preference = None
         if args.retrieval_mode == "hybrid":
             try:
                 resolve_candidate_depth(args.top_k, args.candidate_k)
-            except HybridInputError as error:
+                if metadata_requested:
+                    metadata_filter = MetadataFilter(
+                        fact_types=tuple(args.filter_fact_type or ()),
+                        scope_types=tuple(args.filter_scope_type or ()),
+                        scope_targets=tuple(args.filter_scope_target or ()),
+                        parent_colleges=tuple(args.filter_parent_college or ()),
+                    )
+                    scope_preference = ScopePreference(
+                        preferred_scope_targets=tuple(args.prefer_scope_target or ()),
+                        preferred_parent_colleges=tuple(args.prefer_parent_college or ()),
+                    )
+            except (HybridInputError, MetadataInputError) as error:
                 raise CliConfigurationError(str(error)) from error
         index = load_local_index(args.index, mmap=True)
         freshness = check_index_freshness(index, args.current_kb, configuration.identity)
         provider = create_provider(configuration)
         if args.retrieval_mode == "vector":
             result = search_loaded_index(index, args.query, provider, top_k=args.top_k)
-        else:
+        elif not metadata_requested:
             result = search_hybrid_index(
                 index,
                 args.query,
                 provider,
+                top_k=args.top_k,
+                candidate_k=args.candidate_k,
+            )
+        else:
+            result = search_metadata_index(
+                index,
+                args.query,
+                provider,
+                metadata_filter=metadata_filter,
+                scope_preference=scope_preference,
                 top_k=args.top_k,
                 candidate_k=args.candidate_k,
             )
@@ -187,6 +270,12 @@ def main(argv: Sequence[str] | None = None) -> None:
             stream=sys.stderr,
         )
         raise SystemExit(2) from None
+    except MetadataSearchError as error:
+        _write_json(
+            {"error": str(error), "kind": "metadata_search_error", "provider": args.provider},
+            stream=sys.stderr,
+        )
+        raise SystemExit(2) from None
     except EmbeddingError as error:
         _write_json(
             {"error": str(error), "kind": "embedding_error", "provider": args.provider},
@@ -196,8 +285,10 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     if args.retrieval_mode == "vector":
         summary = _success_summary(result, Path(args.index), args.top_k, freshness)
-    else:
+    elif not metadata_requested:
         summary = _hybrid_success_summary(result, Path(args.index), freshness)
+    else:
+        summary = _metadata_success_summary(result, Path(args.index), freshness)
     _write_json(summary, stream=sys.stdout)
 
 

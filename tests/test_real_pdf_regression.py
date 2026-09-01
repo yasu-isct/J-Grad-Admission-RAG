@@ -23,9 +23,18 @@ from jgrad_admission_rag.retrieval.embedding import (
     embed_query_checked,
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
-from jgrad_admission_rag.retrieval.hybrid_search import fuse_ranked_hits
+from jgrad_admission_rag.retrieval.hybrid_search import (
+    fuse_ranked_hits,
+    search_hybrid_index,
+)
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
 from jgrad_admission_rag.retrieval.lexical_search import build_lexical_searcher
+from jgrad_admission_rag.retrieval.metadata_search import (
+    MetadataFilter,
+    ScopePreference,
+    derive_eligible_rows,
+    search_metadata_index,
+)
 from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, search_local_index
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
@@ -893,3 +902,268 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
     assert kb_path.read_bytes() == kb_bytes
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_bytes
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_bytes
+
+
+def test_real_pdf_metadata_inventory_and_hard_filter_examples(
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    payloads = derive_index_payloads(real_document_kb)
+    fact_type_counts: dict[str, int] = {}
+    scope_type_counts: dict[str, int] = {}
+    target_counts: dict[str, int] = {}
+    college_counts: dict[str, int] = {}
+    for payload in payloads:
+        fact_type_counts[payload.fact_type] = fact_type_counts.get(payload.fact_type, 0) + 1
+        scope_type_counts[payload.scope_type] = scope_type_counts.get(payload.scope_type, 0) + 1
+        for target in payload.scope_targets:
+            target_counts[target] = target_counts.get(target, 0) + 1
+        college = payload.parent_college or "<none>"
+        college_counts[college] = college_counts.get(college, 0) + 1
+
+    assert len(payloads) == 298
+    assert fact_type_counts == {
+        "documents": 17,
+        "english": 27,
+        "exams": 73,
+        "fees": 13,
+        "general": 150,
+        "methods": 8,
+        "periods": 10,
+    }
+    assert scope_type_counts == {"department": 126, "global": 2, "unknown": 170}
+    assert target_counts == {
+        "システム制御系": 18,
+        "化学系": 22,
+        "土木・環境工学系": 12,
+        "地球惑星科学系": 9,
+        "建築学系": 14,
+        "応用化学系": 17,
+        "情報工学系": 14,
+        "情報通信系": 10,
+        "技術経営専門職学位課程": 15,
+        "数学系": 19,
+        "数理・計算科学系": 13,
+        "材料系": 26,
+        "機械系": 18,
+        "物理学系": 11,
+        "生命理工学系": 24,
+        "社会・人間科学系": 13,
+        "経営工学系": 13,
+        "融合理工学系": 25,
+        "電気電子系": 21,
+    }
+    assert college_counts == {
+        "<none>": 172,
+        "工学院": 33,
+        "情報理工学院": 6,
+        "物質理工学院": 13,
+        "理学院": 41,
+        "環境・社会理工学院": 23,
+        "生命理工学院": 10,
+    }
+
+    examples = (
+        (MetadataFilter(fact_types=("english",)), 27),
+        (MetadataFilter(scope_types=("department",)), 126),
+        (MetadataFilter(scope_targets=("情報工学系",)), 14),
+        (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
+        (
+            MetadataFilter(
+                fact_types=("english",),
+                scope_types=("department",),
+                scope_targets=("情報工学系",),
+                parent_colleges=("情報理工学院",),
+            ),
+            1,
+        ),
+        (MetadataFilter(fact_types=("not-present",)), 0),
+    )
+    for metadata_filter, expected_count in examples:
+        rows = derive_eligible_rows(payloads, metadata_filter)
+        assert len(rows) == expected_count
+        for row in rows:
+            payload = payloads[row]
+            assert not metadata_filter.fact_types or payload.fact_type in metadata_filter.fact_types
+            assert (
+                not metadata_filter.scope_types or payload.scope_type in metadata_filter.scope_types
+            )
+            assert not metadata_filter.scope_targets or set(payload.scope_targets).intersection(
+                metadata_filter.scope_targets
+            )
+            assert not metadata_filter.parent_colleges or (
+                payload.parent_college in metadata_filter.parent_colleges
+            )
+
+
+def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index = load_local_index(index_dir, mmap=True)
+    lexical = build_lexical_searcher(index)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    all_rows = tuple(range(len(index.payloads)))
+    scope_outcomes: list[dict[str, object]] = []
+
+    hard_filter_examples = (
+        (MetadataFilter(fact_types=("english",)), 27),
+        (MetadataFilter(scope_types=("department",)), 126),
+        (MetadataFilter(scope_targets=("情報工学系",)), 14),
+        (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
+        (
+            MetadataFilter(
+                fact_types=("english",),
+                scope_types=("department",),
+                scope_targets=("情報工学系",),
+                parent_colleges=("情報理工学院",),
+            ),
+            1,
+        ),
+        (MetadataFilter(fact_types=("not-present",)), 0),
+    )
+    for metadata_filter, expected_eligible in hard_filter_examples:
+        filtered = search_metadata_index(
+            index,
+            "出願資格",
+            provider,
+            metadata_filter=metadata_filter,
+            top_k=10,
+            candidate_k=50,
+        )
+        assert filtered.eligible_row_count == expected_eligible
+        for hit in filtered.hits:
+            assert not metadata_filter.fact_types or hit.fact_type in metadata_filter.fact_types
+            assert not metadata_filter.scope_types or hit.scope_type in metadata_filter.scope_types
+            assert not metadata_filter.scope_targets or set(hit.scope_targets).intersection(
+                metadata_filter.scope_targets
+            )
+            assert not metadata_filter.parent_colleges or (
+                hit.parent_college in metadata_filter.parent_colleges
+            )
+
+    full_preference = search_metadata_index(
+        index,
+        "出願資格",
+        provider,
+        scope_preference=ScopePreference(
+            preferred_scope_targets=("情報工学系",),
+            preferred_parent_colleges=("情報理工学院",),
+        ),
+        top_k=298,
+        candidate_k=298,
+    )
+    assert len(full_preference.hits) == 298
+    assert full_preference.eligible_row_count == 298
+    both = next(
+        hit
+        for hit in full_preference.hits
+        if hit.matched_preferences == ("scope_target", "parent_college")
+    )
+    college_only = next(
+        hit for hit in full_preference.hits if hit.matched_preferences == ("parent_college",)
+    )
+    global_hit = next(hit for hit in full_preference.hits if hit.scope_type == "global")
+    unknown_hit = next(hit for hit in full_preference.hits if hit.scope_type == "unknown")
+    assert both.scope_boost_total == pytest.approx(1.5 / 61)
+    assert college_only.scope_boost_total == pytest.approx(0.5 / 61)
+    assert global_hit.scope_boost_total == unknown_hit.scope_boost_total == 0.0
+    assert global_hit.ranking_score == global_hit.fused_score
+    assert unknown_hit.ranking_score == unknown_hit.fused_score
+
+    for query in benchmark.queries:
+        vector_base = search_loaded_index(index, query.query, provider, top_k=50)
+        vector_all = search_loaded_index(
+            index, query.query, provider, top_k=50, eligible_rows=all_rows
+        )
+        lexical_base = lexical.search(query.query, top_k=50)
+        lexical_all = lexical.search(query.query, top_k=50, eligible_rows=all_rows)
+        hybrid_base = search_hybrid_index(index, query.query, provider, top_k=10, candidate_k=50)
+        metadata_base = search_metadata_index(
+            index, query.query, provider, top_k=10, candidate_k=50
+        )
+
+        assert [hit.to_dict() for hit in vector_all.hits] == [
+            hit.to_dict() for hit in vector_base.hits
+        ]
+        assert [hit.to_dict() for hit in lexical_all.hits] == [
+            hit.to_dict() for hit in lexical_base.hits
+        ]
+        assert [hit.row_index for hit in metadata_base.hits] == [
+            hit.row_index for hit in hybrid_base.hits
+        ]
+        assert [hit.fused_score for hit in metadata_base.hits] == [
+            hit.fused_score for hit in hybrid_base.hits
+        ]
+        assert [hit.vector_score for hit in metadata_base.hits] == [
+            hit.vector_score for hit in hybrid_base.hits
+        ]
+        assert [hit.lexical_score for hit in metadata_base.hits] == [
+            hit.lexical_score for hit in hybrid_base.hits
+        ]
+
+        if not query.scope_sensitive:
+            continue
+        preferred_targets = tuple(
+            sorted(
+                {target for evidence in query.gold_evidence for target in evidence.scope_targets}
+            )
+        )
+        assert preferred_targets
+        preferred = search_metadata_index(
+            index,
+            query.query,
+            provider,
+            scope_preference=ScopePreference(preferred_scope_targets=preferred_targets),
+            top_k=10,
+            candidate_k=50,
+        )
+        gold = set(query.relevant_fact_ids)
+        scope_outcomes.append(
+            {
+                "query_id": query.query_id,
+                "preferred_scope_targets": preferred_targets,
+                "base_top5": [hit.fact_id for hit in hybrid_base.hits[:5] if hit.fact_id in gold],
+                "base_top10": [hit.fact_id for hit in hybrid_base.hits if hit.fact_id in gold],
+                "preferred_top5": [
+                    hit.fact_id for hit in preferred.hits[:5] if hit.fact_id in gold
+                ],
+                "preferred_top10": [hit.fact_id for hit in preferred.hits if hit.fact_id in gold],
+                "boosted": [
+                    {
+                        "fact_id": hit.fact_id,
+                        "before_rank": next(
+                            (
+                                base_hit.rank
+                                for base_hit in hybrid_base.hits
+                                if base_hit.fact_id == hit.fact_id
+                            ),
+                            None,
+                        ),
+                        "after_rank": hit.rank,
+                        "scope_boost_total": hit.scope_boost_total,
+                    }
+                    for hit in preferred.hits
+                    if hit.scope_boost_total > 0
+                ],
+            }
+        )
+
+    assert len(scope_outcomes) == 9
+    outcome_sha256 = hashlib.sha256(
+        json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert outcome_sha256 == ("63435b491631a3af506e8b17e70ef6248e4302e75a02b2e4a26cfb1c505aeee4")
