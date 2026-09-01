@@ -14,6 +14,14 @@ from .embedding import (
     validate_query_embedding,
 )
 from .embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
+from .index_freshness import (
+    FRESHNESS_CHECKED_FIELDS,
+    CurrentKbInputError,
+    IndexFreshnessError,
+    IndexFreshnessReport,
+    StaleIndexError,
+    check_index_freshness,
+)
 from .sentence_transformer import (
     SentenceTransformerConfig,
     SentenceTransformerEmbeddingProvider,
@@ -35,6 +43,8 @@ from .vector_search import (
     VectorSearchHit,
     VectorSearchResult,
     search_local_index,
+    search_loaded_index,
+    validate_search_inputs,
 )
 
 __all__ = [
@@ -46,25 +56,33 @@ __all__ = [
     "EmbeddingProvider",
     "EmbeddingProviderError",
     "EMBEDDING_TEXT_VERSION",
+    "FRESHNESS_CHECKED_FIELDS",
     "INDEX_BUILDER_VERSION",
     "IndexArtifactError",
     "IndexBuildError",
     "IndexLoadError",
+    "IndexFreshnessError",
+    "IndexFreshnessReport",
+    "CurrentKbInputError",
     "LocalVectorIndex",
     "ProviderIdentityMismatchError",
     "QueryVectorError",
     "SearchInputError",
     "SentenceTransformerConfig",
     "SentenceTransformerEmbeddingProvider",
+    "StaleIndexError",
     "VectorSearchError",
     "VectorSearchHit",
     "VectorSearchResult",
     "build_embedding_text",
     "build_local_index",
+    "check_index_freshness",
     "embed_documents_checked",
     "embed_query_checked",
     "load_local_index",
     "search_local_index",
+    "search_loaded_index",
+    "validate_search_inputs",
     "validate_document_embeddings",
     "validate_query_embedding",
 ]

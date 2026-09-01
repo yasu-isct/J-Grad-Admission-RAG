@@ -24,6 +24,7 @@ from ..schemas.index import (
     validate_source_kb_compatibility,
 )
 from .embedding import EmbeddingProvider, embed_documents_checked
+from .source_kb import SourceKbReadError, read_source_kb_exact
 
 INDEX_BUILDER_VERSION = "0.1.0"
 MANIFEST_FILENAME = "manifest.json"
@@ -183,15 +184,11 @@ def load_local_index(index_dir: str | Path, *, mmap: bool = True) -> LocalVector
 
 
 def _read_source_kb(kb_path: str | Path) -> tuple[DocumentKnowledgeBase, str]:
-    path = Path(kb_path)
-    if not _is_regular_file(path):
-        raise IndexBuildError("source KB is missing or is not a regular file")
     try:
-        raw_bytes = path.read_bytes()
-        kb = DocumentKnowledgeBase.model_validate_json(raw_bytes)
-    except (OSError, ValueError, ValidationError) as error:
-        raise IndexBuildError("source KB is not valid UTF-8 DocumentKnowledgeBase JSON") from error
-    return kb, hashlib.sha256(raw_bytes).hexdigest()
+        source = read_source_kb_exact(kb_path)
+    except SourceKbReadError as error:
+        raise IndexBuildError(str(error)) from error
+    return source.knowledge_base, source.sha256
 
 
 def _normalize_vectors(

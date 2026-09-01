@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 from typing import Sequence
 
-from ..retrieval.embedding import DeterministicFakeEmbeddingProvider, EmbeddingProvider
+from ..retrieval.embedding import (
+    DeterministicFakeEmbeddingProvider,
+    EmbeddingIdentity,
+    EmbeddingProvider,
+)
 from ..retrieval.sentence_transformer import (
     SentenceTransformerConfig,
     SentenceTransformerEmbeddingProvider,
@@ -16,6 +21,12 @@ PROVIDER_NAMES = (FAKE_PROVIDER_NAME, SENTENCE_TRANSFORMERS_PROVIDER_NAME)
 
 class CliConfigurationError(ValueError):
     """Raised when provider-specific CLI arguments are incomplete or incompatible."""
+
+
+@dataclass(frozen=True, slots=True)
+class DeclaredProviderConfiguration:
+    identity: EmbeddingIdentity
+    sentence_transformer_config: SentenceTransformerConfig | None = None
 
 
 def positive_int(value: str) -> int:
@@ -38,7 +49,7 @@ def add_provider_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--allow-model-download", action="store_true")
 
 
-def build_provider(args: argparse.Namespace) -> EmbeddingProvider:
+def resolve_provider_configuration(args: argparse.Namespace) -> DeclaredProviderConfiguration:
     try:
         if args.provider == FAKE_PROVIDER_NAME:
             _require(args, ("dimension",))
@@ -46,7 +57,14 @@ def build_provider(args: argparse.Namespace) -> EmbeddingProvider:
                 args,
                 ("model", "revision", "batch_size", "cache_folder", "allow_model_download"),
             )
-            return DeterministicFakeEmbeddingProvider(dimension=args.dimension)
+            return DeclaredProviderConfiguration(
+                identity=EmbeddingIdentity(
+                    provider=FAKE_PROVIDER_NAME,
+                    model="sha256-counter-v1",
+                    revision=None,
+                    dimension=args.dimension,
+                )
+            )
 
         _require(args, ("model", "revision", "dimension"))
         config = SentenceTransformerConfig(
@@ -57,11 +75,32 @@ def build_provider(args: argparse.Namespace) -> EmbeddingProvider:
             cache_folder=args.cache_folder,
             allow_download=args.allow_model_download,
         )
-        return SentenceTransformerEmbeddingProvider(config)
+        return DeclaredProviderConfiguration(
+            identity=EmbeddingIdentity(
+                provider=SENTENCE_TRANSFORMERS_PROVIDER_NAME,
+                model=config.model_name,
+                revision=config.revision,
+                dimension=config.expected_dimension,
+            ),
+            sentence_transformer_config=config,
+        )
     except CliConfigurationError:
         raise
     except ValueError as error:
         raise CliConfigurationError(str(error)) from error
+
+
+def create_provider(configuration: DeclaredProviderConfiguration) -> EmbeddingProvider:
+    if configuration.identity.provider == FAKE_PROVIDER_NAME:
+        return DeterministicFakeEmbeddingProvider(dimension=configuration.identity.dimension)
+    assert configuration.sentence_transformer_config is not None
+    return SentenceTransformerEmbeddingProvider(configuration.sentence_transformer_config)
+
+
+def build_provider(args: argparse.Namespace) -> EmbeddingProvider:
+    """Preserve the IDX-06 convenience API for immediate provider construction."""
+
+    return create_provider(resolve_provider_configuration(args))
 
 
 def _require(args: argparse.Namespace, names: Sequence[str]) -> None:

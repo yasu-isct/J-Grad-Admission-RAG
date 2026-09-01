@@ -9,12 +9,11 @@ from pathlib import Path
 import pytest
 
 from jgrad_admission_rag.cli import search as search_cli
-from jgrad_admission_rag.retrieval.embedding import DeterministicFakeEmbeddingProvider
-from jgrad_admission_rag.retrieval.local_index import build_local_index
-from jgrad_admission_rag.retrieval.sentence_transformer import (
-    SentenceTransformerEmbeddingProvider,
+from jgrad_admission_rag.retrieval.embedding import (
+    DeterministicFakeEmbeddingProvider,
+    EmbeddingIdentity,
 )
-from jgrad_admission_rag.retrieval.vector_search import VectorSearchResult
+from jgrad_admission_rag.retrieval.local_index import build_local_index
 from jgrad_admission_rag.schemas.document_kb import (
     BuildDiagnostics,
     DocumentKnowledgeBase,
@@ -23,7 +22,6 @@ from jgrad_admission_rag.schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
-from jgrad_admission_rag.schemas.index import IndexManifest
 
 REVISION = "a" * 40
 PDF_HASH = "b" * 64
@@ -98,6 +96,8 @@ def _build_fake_index(tmp_path: Path, *, dimension: int = 8) -> Path:
 def _fake_args(index_dir: Path, *, top_k: int = 5, query: str = "出願資格") -> list[str]:
     return [
         str(index_dir),
+        "--current-kb",
+        str(index_dir.parent / "document_kb.json"),
         "--query",
         query,
         "--top-k",
@@ -109,24 +109,23 @@ def _fake_args(index_dir: Path, *, top_k: int = 5, query: str = "出願資格") 
     ]
 
 
-def _manifest(**changes) -> IndexManifest:
-    values = {
-        "source_kb_schema_version": "0.5",
-        "document_id": "sample-document",
-        "source_kb_sha256": "1" * 64,
-        "source_pdf_sha256": PDF_HASH,
-        "payload_count": 0,
-        "vector_count": 0,
-        "embedding_dimension": 1024,
-        "vectors_normalized": True,
-        "embedding_provider": "sentence-transformers",
-        "embedding_model": "BAAI/bge-m3",
-        "embedding_revision": REVISION,
-        "payloads_sha256": "2" * 64,
-        "vectors_sha256": "3" * 64,
-    }
-    values.update(changes)
-    return IndexManifest(**values)
+def _set_index_identity(
+    index_dir: Path,
+    *,
+    provider: str,
+    model: str,
+    revision: str | None,
+) -> None:
+    manifest_path = index_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["embedding_provider"] = provider
+    manifest["embedding_model"] = model
+    manifest["embedding_revision"] = revision
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+        newline="",
+    )
 
 
 def test_fake_search_cli_returns_one_complete_read_only_json_summary(
@@ -153,6 +152,19 @@ def test_fake_search_cli_returns_one_complete_read_only_json_summary(
     assert summary["semantic"] is False
     assert summary["top_k_requested"] == 1
     assert summary["result_count"] == 1
+    assert summary["freshness"] == {
+        "fresh": True,
+        "current_kb_sha256": summary["source_kb_sha256"],
+        "checked_fields": [
+            "source_kb_sha256",
+            "document_id",
+            "source_pdf_sha256",
+            "embedding_provider",
+            "embedding_model",
+            "embedding_revision",
+            "embedding_dimension",
+        ],
+    }
     hit = summary["results"][0]
     assert set(hit) == {
         "rank",
@@ -218,15 +230,34 @@ def test_sentence_transformers_configuration_reuses_build_cli_contract(
     capsys,
     allow_download: bool,
 ) -> None:
+    index_dir = _build_fake_index(tmp_path, dimension=1024)
+    _set_index_identity(
+        index_dir,
+        provider="sentence-transformers",
+        model="BAAI/bge-m3",
+        revision=REVISION,
+    )
     captured = {}
 
-    def fake_search(index, query, provider, *, top_k):
-        captured.update(index=index, query=query, provider=provider, top_k=top_k)
-        return VectorSearchResult(manifest=_manifest(), hits=())
+    class RuntimeProvider:
+        identity = EmbeddingIdentity("sentence-transformers", "BAAI/bge-m3", REVISION, 1024)
 
-    monkeypatch.setattr(search_cli, "search_local_index", fake_search)
+        def embed_documents(self, texts):
+            raise AssertionError
+
+        def embed_query(self, text):
+            captured["query"] = text
+            return [1.0] * 1024
+
+    def fake_create(configuration):
+        captured["configuration"] = configuration
+        return RuntimeProvider()
+
+    monkeypatch.setattr(search_cli, "create_provider", fake_create)
     args = [
-        "index",
+        str(index_dir),
+        "--current-kb",
+        str(tmp_path / "document_kb.json"),
         "--query",
         "query",
         "--top-k",
@@ -249,16 +280,14 @@ def test_sentence_transformers_configuration_reuses_build_cli_contract(
 
     search_cli.main(args)
 
-    provider = captured["provider"]
-    assert isinstance(provider, SentenceTransformerEmbeddingProvider)
-    assert provider.config.model_name == "BAAI/bge-m3"
-    assert provider.config.revision == REVISION
-    assert provider.config.expected_dimension == 1024
-    assert provider.config.batch_size == 4
-    assert provider.config.cache_folder == "private-cache"
-    assert provider.config.allow_download is allow_download
+    config = captured["configuration"].sentence_transformer_config
+    assert config.model_name == "BAAI/bge-m3"
+    assert config.revision == REVISION
+    assert config.expected_dimension == 1024
+    assert config.batch_size == 4
+    assert config.cache_folder == "private-cache"
+    assert config.allow_download is allow_download
     assert captured["query"] == "query"
-    assert captured["top_k"] == 3
     assert json.loads(capsys.readouterr().out)["semantic"] is True
 
 
@@ -275,7 +304,7 @@ def test_blank_query_is_safe_json_without_echo(tmp_path: Path, capsys) -> None:
     assert "SENTINEL" not in captured.err
 
 
-def test_identity_mismatch_is_safe_json_without_query_echo(tmp_path: Path, capsys) -> None:
+def test_declared_identity_mismatch_is_stale_without_query_echo(tmp_path: Path, capsys) -> None:
     index_dir = _build_fake_index(tmp_path)
     sentinel = "SENTINEL-RAW-QUERY"
 
@@ -283,6 +312,8 @@ def test_identity_mismatch_is_safe_json_without_query_echo(tmp_path: Path, capsy
         search_cli.main(
             [
                 str(index_dir),
+                "--current-kb",
+                str(tmp_path / "document_kb.json"),
                 "--query",
                 sentinel,
                 "--provider",
@@ -295,8 +326,101 @@ def test_identity_mismatch_is_safe_json_without_query_echo(tmp_path: Path, capsy
     captured = capsys.readouterr()
     assert captured_exit.value.code == 2
     assert captured.out == ""
-    assert json.loads(captured.err)["kind"] == "search_error"
+    error = json.loads(captured.err)
+    assert error["kind"] == "stale_index"
+    assert error["mismatches"] == ["embedding_dimension"]
     assert sentinel not in captured.err
+
+
+def test_stale_kb_fails_before_runtime_provider_creation_without_mutation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_bytes(kb_path.read_bytes() + b" \n")
+    before_kb = kb_path.read_bytes()
+    before_index = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("runtime provider must not be constructed for stale input")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(_fake_args(index_dir, query="SENTINEL-RAW-QUERY"))
+
+    captured = capsys.readouterr()
+    error = json.loads(captured.err)
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert error == {
+        "error": "index is stale",
+        "kind": "stale_index",
+        "provider": "deterministic-fake",
+        "mismatches": ["source_kb_sha256"],
+    }
+    assert "SENTINEL" not in captured.err
+    assert kb_path.read_bytes() == before_kb
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before_index
+
+
+def test_invalid_current_kb_fails_before_runtime_provider_creation(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text("SENTINEL-ADMISSION-TEXT", encoding="utf-8")
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("runtime provider must not be constructed for invalid KB")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(_fake_args(index_dir))
+
+    captured = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert json.loads(captured.err)["kind"] == "current_kb_error"
+    assert "SENTINEL" not in captured.err
+
+
+def test_fresh_declared_identity_still_checks_runtime_identity_before_embedding(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    query_calls = []
+
+    class MismatchedRuntimeProvider:
+        identity = EmbeddingIdentity("deterministic-fake", "other-runtime", None, 8)
+
+        def embed_documents(self, texts):
+            raise AssertionError
+
+        def embed_query(self, text):
+            query_calls.append(text)
+            return [1.0] * 8
+
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: MismatchedRuntimeProvider(),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(_fake_args(index_dir, query="SENTINEL-RAW-QUERY"))
+
+    captured = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert json.loads(captured.err)["kind"] == "search_error"
+    assert query_calls == []
+    assert "SENTINEL" not in captured.err
 
 
 def test_corrupt_index_fails_before_sentence_transformers_load(
@@ -311,6 +435,8 @@ def test_corrupt_index_fails_before_sentence_transformers_load(
         search_cli.main(
             [
                 str(index_dir),
+                "--current-kb",
+                str(tmp_path / "document_kb.json"),
                 "--query",
                 "query",
                 "--provider",
@@ -333,12 +459,20 @@ def test_missing_optional_dependency_is_safe_embedding_error(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys
 ) -> None:
     index_dir = _build_fake_index(tmp_path)
+    _set_index_identity(
+        index_dir,
+        provider="sentence-transformers",
+        model="BAAI/bge-m3",
+        revision=REVISION,
+    )
     monkeypatch.setitem(sys.modules, "sentence_transformers", None)
 
     with pytest.raises(SystemExit) as captured_exit:
         search_cli.main(
             [
                 str(index_dir),
+                "--current-kb",
+                str(tmp_path / "document_kb.json"),
                 "--query",
                 "query",
                 "--provider",
@@ -348,7 +482,7 @@ def test_missing_optional_dependency_is_safe_embedding_error(
                 "--revision",
                 REVISION,
                 "--dimension",
-                "1024",
+                "8",
             ]
         )
 
@@ -362,7 +496,7 @@ def test_missing_optional_dependency_is_safe_embedding_error(
 def test_invalid_top_k_uses_argparse_exit_two(tmp_path: Path, capsys, bad_top_k: str) -> None:
     index_dir = _build_fake_index(tmp_path)
     args = _fake_args(index_dir, top_k=1)
-    args[4] = bad_top_k
+    args[6] = bad_top_k
 
     with pytest.raises(SystemExit) as captured_exit:
         search_cli.main(args)
@@ -371,19 +505,42 @@ def test_invalid_top_k_uses_argparse_exit_two(tmp_path: Path, capsys, bad_top_k:
     assert capsys.readouterr().out == ""
 
 
+def test_current_kb_is_required_by_argparse(tmp_path: Path, capsys) -> None:
+    index_dir = _build_fake_index(tmp_path)
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(
+            [
+                str(index_dir),
+                "--query",
+                "query",
+                "--provider",
+                "deterministic-fake",
+                "--dimension",
+                "8",
+            ]
+        )
+
+    assert captured_exit.value.code == 2
+    assert capsys.readouterr().out == ""
+
+
 def test_unexpected_programming_error_is_not_disguised(
-    monkeypatch: pytest.MonkeyPatch,
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    index_dir = _build_fake_index(tmp_path)
     monkeypatch.setattr(
         search_cli,
-        "search_local_index",
+        "search_loaded_index",
         lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("bug")),
     )
 
     with pytest.raises(RuntimeError, match="bug"):
         search_cli.main(
             [
-                "index",
+                str(index_dir),
+                "--current-kb",
+                str(tmp_path / "document_kb.json"),
                 "--query",
                 "query",
                 "--provider",
