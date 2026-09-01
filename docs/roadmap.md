@@ -87,7 +87,10 @@ size or measured latency requires it.
 | RET-04 | Add metadata filters and scope boosts | Degree, college, department, year, and fact-type controls |
 | RET-05 | Expand references from candidates | Related clauses included with link status |
 | RET-06 | Define `EvidencePack` | Stable retrieval-to-reasoning contract |
-| RET-07 | Add evaluation CLI and CI thresholds | Recall@K, MRR, and readable failure cases |
+| RET-07 | Add deterministic retrieval evaluation | Recall@K, MRR, breakdowns, and readable diagnostics |
+
+RET-07 establishes a reproducible evaluator and report contract without inventing semantic quality
+thresholds. A later accepted semantic baseline can define regression tolerances and CI policy.
 
 ### M4 Applicant-Aware Reasoning
 
