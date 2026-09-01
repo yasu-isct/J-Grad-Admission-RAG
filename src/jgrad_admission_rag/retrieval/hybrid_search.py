@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import math
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Literal
@@ -145,11 +145,38 @@ def fuse_ranked_hits(
     if not isinstance(index, LocalVectorIndex):
         raise HybridFusionError("index must be a validated LocalVectorIndex")
     resolved_candidate_k = resolve_candidate_depth(top_k, candidate_k)
-    vectors = _validate_channel_hits(
-        index, vector_hits, channel="vector", candidate_k=resolved_candidate_k
+    all_hits, vector_count, lexical_count = _rank_fused_union(
+        index,
+        vector_hits,
+        lexical_hits,
+        candidate_k=resolved_candidate_k,
     )
+    hits = all_hits[: min(top_k, len(all_hits))]
+    return HybridSearchResult(
+        manifest=index.manifest.model_copy(deep=True),
+        fusion_version=HYBRID_FUSION_VERSION,
+        rrf_k=RRF_K,
+        top_k_requested=top_k,
+        candidate_k_requested=candidate_k,
+        candidate_k_resolved=resolved_candidate_k,
+        vector_candidate_count=vector_count,
+        lexical_candidate_count=lexical_count,
+        hits=hits,
+    )
+
+
+def _rank_fused_union(
+    index: LocalVectorIndex,
+    vector_hits: Sequence[VectorSearchHit],
+    lexical_hits: Sequence[LexicalSearchHit],
+    *,
+    candidate_k: int,
+) -> tuple[tuple[HybridSearchHit, ...], int, int]:
+    """Validate both channels and return the complete RRF-ranked candidate union."""
+
+    vectors = _validate_channel_hits(index, vector_hits, channel="vector", candidate_k=candidate_k)
     lexicals = _validate_channel_hits(
-        index, lexical_hits, channel="lexical", candidate_k=resolved_candidate_k
+        index, lexical_hits, channel="lexical", candidate_k=candidate_k
     )
 
     rows = set(vectors).union(lexicals)
@@ -166,7 +193,6 @@ def fuse_ranked_hits(
         scored_rows.append((fused_score, row_index))
 
     scored_rows.sort(key=lambda item: (-item[0], item[1]))
-    selected = scored_rows[: min(top_k, len(scored_rows))]
     hits = tuple(
         _hybrid_hit(
             rank,
@@ -175,19 +201,9 @@ def fuse_ranked_hits(
             vectors.get(row_index),
             lexicals.get(row_index),
         )
-        for rank, (fused_score, row_index) in enumerate(selected, start=1)
+        for rank, (fused_score, row_index) in enumerate(scored_rows, start=1)
     )
-    return HybridSearchResult(
-        manifest=index.manifest.model_copy(deep=True),
-        fusion_version=HYBRID_FUSION_VERSION,
-        rrf_k=RRF_K,
-        top_k_requested=top_k,
-        candidate_k_requested=candidate_k,
-        candidate_k_resolved=resolved_candidate_k,
-        vector_candidate_count=len(vectors),
-        lexical_candidate_count=len(lexicals),
-        hits=hits,
-    )
+    return hits, len(vectors), len(lexicals)
 
 
 def search_hybrid_index(
@@ -197,6 +213,7 @@ def search_hybrid_index(
     *,
     top_k: int = 5,
     candidate_k: int | None = None,
+    eligible_rows: Collection[int] | None = None,
 ) -> HybridSearchResult:
     """Run vector and lexical retrieval once each over one validated index, then fuse ranks."""
 
@@ -207,9 +224,19 @@ def search_hybrid_index(
     resolved_candidate_k = resolve_candidate_depth(top_k, candidate_k)
     if not tokenize_lexical(query):
         raise HybridInputError("query does not contain any lexical tokens")
-    vector_result = search_loaded_index(index, query, provider, top_k=resolved_candidate_k)
+    vector_result = search_loaded_index(
+        index,
+        query,
+        provider,
+        top_k=resolved_candidate_k,
+        eligible_rows=eligible_rows,
+    )
     try:
-        lexical_result = build_lexical_searcher(index).search(query, top_k=resolved_candidate_k)
+        lexical_result = build_lexical_searcher(index).search(
+            query,
+            top_k=resolved_candidate_k,
+            eligible_rows=eligible_rows,
+        )
     except LexicalSearchError as error:
         raise HybridInputError(str(error)) from error
     return fuse_ranked_hits(

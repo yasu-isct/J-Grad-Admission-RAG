@@ -149,6 +149,27 @@ jgrad-search outputs\index\sample-bge-m3 `
 Hybrid output reports `rrf-v1`, `RRF_K=60`, candidate depths, channel counts, and each hit's vector
 and lexical provenance. See [the hybrid retrieval contract](docs/evaluation/hybrid-retrieval.md).
 
+Explicit metadata constraints and scope preferences are available only in hybrid mode. For example,
+this request keeps exact `english` Facts and then prefers exact Information Engineering scope:
+
+```powershell
+jgrad-search outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
+  --query "英語スコアの提出条件" `
+  --retrieval-mode hybrid `
+  --filter-fact-type english `
+  --prefer-scope-target 情報工学系 `
+  --prefer-parent-college 情報理工学院 `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+Matching is exact and caller-supplied; the command does not infer department, college, degree, year,
+or intake from the question. See [the metadata retrieval contract](docs/evaluation/metadata-retrieval.md).
+
 ## Sentence Transformers Adapter
 
 Install the optional model runtime separately with `python -m pip install -e .[embedding]`. The

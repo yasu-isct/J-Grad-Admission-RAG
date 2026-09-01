@@ -127,6 +127,10 @@ def _hybrid_args(
     return args
 
 
+def _metadata_args(index_dir: Path, *options: str, top_k: int = 2) -> list[str]:
+    return [*_hybrid_args(index_dir, top_k=top_k, candidate_k=2), *options]
+
+
 def _set_index_identity(
     index_dir: Path,
     *,
@@ -358,6 +362,136 @@ def test_hybrid_cli_loads_constructs_and_embeds_once(
     assert load_calls == [(str(index_dir), True)]
     assert len(provider_calls) == 1
     assert query_calls == ["出願資格"]
+
+
+def test_metadata_cli_filters_and_reports_exact_scope_boosts(tmp_path: Path, capsys) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+
+    search_cli.main(
+        _metadata_args(
+            index_dir,
+            "--filter-fact-type",
+            "eligibility",
+            "--filter-scope-type",
+            "department",
+            "--filter-scope-target",
+            "情報工学系",
+            "--filter-parent-college",
+            "情報理工学院",
+            "--prefer-scope-target",
+            "情報工学系",
+            "--prefer-parent-college",
+            "情報理工学院",
+            top_k=1,
+        )
+    )
+
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    assert captured.err == ""
+    assert summary["retrieval_mode"] == "hybrid"
+    assert summary["metadata_aware"] is True
+    assert summary["metadata_filter_version"] == "exact-metadata-v1"
+    assert summary["scope_rerank_version"] == "scope-match-v1"
+    assert summary["fusion_version"] == "rrf-v1"
+    assert summary["rrf_k"] == 60
+    assert summary["corpus_row_count"] == 2
+    assert summary["eligible_row_count"] == 1
+    assert summary["vector_candidate_count"] == 1
+    assert summary["lexical_candidate_count"] == 1
+    assert summary["result_count"] == 1
+    assert summary["requested_filter"] == {
+        "fact_types": ["eligibility"],
+        "scope_types": ["department"],
+        "scope_targets": ["情報工学系"],
+        "parent_colleges": ["情報理工学院"],
+    }
+    hit = summary["results"][0]
+    assert hit["fact_type"] == "eligibility"
+    assert hit["scope_type"] == "department"
+    assert hit["scope_targets"] == ["情報工学系"]
+    assert hit["parent_college"] == "情報理工学院"
+    assert hit["matched_preferences"] == ["scope_target", "parent_college"]
+    assert hit["matched_scope_targets"] == ["情報工学系"]
+    assert hit["matched_parent_college"] == "情報理工学院"
+    assert hit["scope_boost_total"] == pytest.approx(1.5 / 61)
+    assert hit["ranking_score"] == pytest.approx(hit["fused_score"] + 1.5 / 61)
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before
+
+
+def test_metadata_cli_valid_zero_match_is_successful_empty_json(tmp_path: Path, capsys) -> None:
+    index_dir = _build_fake_index(tmp_path)
+
+    search_cli.main(_metadata_args(index_dir, "--filter-fact-type", "not-present", top_k=1))
+
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    assert captured.err == ""
+    assert summary["eligible_row_count"] == 0
+    assert summary["vector_candidate_count"] == 0
+    assert summary["lexical_candidate_count"] == 0
+    assert summary["result_count"] == 0
+    assert summary["results"] == []
+
+
+@pytest.mark.parametrize(
+    "option",
+    (
+        "--filter-fact-type",
+        "--filter-scope-type",
+        "--filter-scope-target",
+        "--filter-parent-college",
+        "--prefer-scope-target",
+        "--prefer-parent-college",
+    ),
+)
+def test_vector_cli_rejects_every_metadata_option_before_provider(
+    option: str,
+    tmp_path: Path,
+    capsys,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("metadata mode error must precede provider construction")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main([*_fake_args(index_dir), option, "exact-value"])
+
+    captured = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert json.loads(captured.err)["kind"] == "configuration_error"
+
+
+def test_metadata_cli_invalid_scope_and_duplicates_are_configuration_errors(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+
+    for args in (
+        _metadata_args(index_dir, "--filter-scope-type", "course"),
+        _metadata_args(
+            index_dir,
+            "--prefer-scope-target",
+            "情報工学系",
+            "--prefer-scope-target",
+            "情報工学系",
+        ),
+    ):
+        with pytest.raises(SystemExit) as captured_exit:
+            search_cli.main(args)
+        captured = capsys.readouterr()
+        assert captured_exit.value.code == 2
+        assert captured.out == ""
+        assert json.loads(captured.err)["kind"] == "configuration_error"
 
 
 def test_top_k_overflow_reports_all_rows(tmp_path: Path, capsys) -> None:

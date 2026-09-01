@@ -57,6 +57,12 @@ while final evidence is rebuilt from the aligned payload row. Vector mode remain
 default until semantic evaluation establishes a quality gate. See
 [Hybrid Retrieval](evaluation/hybrid-retrieval.md).
 
+Metadata-aware retrieval is an explicit opt-in layer around hybrid retrieval. Exact hard filters
+derive eligible payload rows before either channel truncates candidates; exact target/college
+preferences then add fixed, named bonuses to the complete fused candidate union. It never parses
+scope from the query or infers fields absent from the durable payload. See
+[Metadata Retrieval](evaluation/metadata-retrieval.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may

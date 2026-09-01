@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import math
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -13,6 +13,7 @@ import numpy as np
 from ..schemas.document_kb import ScopeType
 from ..schemas.index import IndexManifest, IndexPayload
 from .embedding import EmbeddingIdentity, EmbeddingProvider, embed_query_checked
+from .eligible_rows import validate_eligible_rows
 from .local_index import LocalVectorIndex, NORM_ABSOLUTE_TOLERANCE, load_local_index
 
 
@@ -80,12 +81,13 @@ def search_local_index(
     provider: EmbeddingProvider,
     *,
     top_k: int = 5,
+    eligible_rows: Collection[int] | None = None,
 ) -> VectorSearchResult:
     """Search one validated local index with deterministic exhaustive cosine ranking."""
 
     validate_search_inputs(query, top_k)
     index = load_local_index(index_dir, mmap=True)
-    return search_loaded_index(index, query, provider, top_k=top_k)
+    return search_loaded_index(index, query, provider, top_k=top_k, eligible_rows=eligible_rows)
 
 
 def search_loaded_index(
@@ -94,6 +96,7 @@ def search_loaded_index(
     provider: EmbeddingProvider,
     *,
     top_k: int = 5,
+    eligible_rows: Collection[int] | None = None,
 ) -> VectorSearchResult:
     """Search a previously validated local index without reading its files again."""
 
@@ -108,9 +111,15 @@ def search_loaded_index(
     scores = np.asarray(index.vectors @ query_vector, dtype=np.dtype("<f4"))
     if scores.shape != (index.manifest.vector_count,) or not np.isfinite(scores).all():
         raise QueryVectorError("cosine similarity scores are invalid")
-    row_indices = np.arange(index.manifest.vector_count, dtype=np.int64)
-    ordered_rows = np.lexsort((row_indices, -scores.astype(np.float64)))
-    selected_rows = ordered_rows[: min(top_k, len(ordered_rows))]
+    validated_rows = validate_eligible_rows(index.manifest.vector_count, eligible_rows)
+    row_indices = (
+        np.arange(index.manifest.vector_count, dtype=np.int64)
+        if validated_rows is None
+        else np.asarray(validated_rows, dtype=np.int64)
+    )
+    eligible_scores = scores[row_indices]
+    ordered_positions = np.lexsort((row_indices, -eligible_scores.astype(np.float64)))
+    selected_rows = row_indices[ordered_positions[: min(top_k, len(ordered_positions))]]
     hits = tuple(
         _hit_from_payload(rank, index.payloads[int(row)], float(scores[int(row)]))
         for rank, row in enumerate(selected_rows, start=1)
