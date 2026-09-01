@@ -137,6 +137,8 @@
     "diagnostics_sha256": "3e5136bfb2cb0cd867e5b4acca77ce930d3e47cd34cdf4eeab98f6236ea54519",
     "embedding_text_v1_sha256": "460566d8c68cbd2eb7a4413f584d4634b4520e50e1170d9dd2f08e68c3c940b9",
     "embedding_text_v1_fake_vector_sha256": "0a12e00acea485da42b97d2e25548afe41e1513736d1894dfc6181a4e2b953ed",
+    "index_payloads_sha256": "f1530da8b93f7ae0e816e43bbde0464c453b4d308743f28a2b03029ca0e4beb3",
+    "index_fake_vectors_npy_sha256": "0b77bb53b6dcca385ce432febbcab74f07cef49963262b5d5026e86751117129",
     "resolved_reference_claims": [
       ["fact:00014", "上記1", "fact:00008"],
       ["fact:00057", "下記（２）", "fact:00058"],

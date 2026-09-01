@@ -24,6 +24,12 @@ marker. New Facts and RetrievalUnits record `embedding_text_version` in metadata
 projection; the projection adds retrieval context but is never evidence or a replacement for Fact
 text and source pages.
 
+The local vector index is a derived three-file directory: `manifest.json`, deterministic ordered
+`payloads.jsonl`, and normalized little-endian float32 `embeddings.npy`. A build writes and validates
+a temporary sibling directory before one atomic rename to a new target. Loading checks the current
+files' schemas, hashes, payload alignment, NumPy safety, shape, finiteness, and row norms; comparison
+against a separately supplied current KB or provider remains a later stale-index concern.
+
 ## Current MVP
 
 The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,

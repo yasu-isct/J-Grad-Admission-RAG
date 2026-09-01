@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pytest
 
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
@@ -18,6 +19,7 @@ from jgrad_admission_rag.retrieval.embedding import (
     embed_documents_checked,
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
+from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -389,3 +391,62 @@ def test_real_pdf_fake_embeddings_are_deterministic_without_mutating_kb(
         )
         for unit in real_document_kb.retrieval_units
     ] == unit_projection_before
+
+
+def test_real_pdf_local_index_is_aligned_normalized_and_byte_deterministic(
+    tmp_path: Path,
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_bytes = (
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n"
+    ).encode("utf-8")
+    kb_path.write_bytes(kb_bytes)
+    first_dir = tmp_path / "first-index"
+    second_dir = tmp_path / "second-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+
+    first_manifest = build_local_index(kb_path, first_dir, provider)
+    second_manifest = build_local_index(
+        kb_path,
+        second_dir,
+        DeterministicFakeEmbeddingProvider(dimension=8),
+    )
+    mapped = load_local_index(first_dir, mmap=True)
+    memory = load_local_index(first_dir, mmap=False)
+    expected = real_pdf_manifest["expected"]
+    derived_payloads = derive_index_payloads(real_document_kb)
+
+    assert first_manifest == second_manifest
+    assert first_manifest.source_kb_sha256 == hashlib.sha256(kb_bytes).hexdigest()
+    assert first_manifest.source_pdf_sha256 == real_pdf_manifest["sha256"]
+    assert first_manifest.payload_count == first_manifest.vector_count == 298
+    assert first_manifest.embedding_dimension == 8
+    assert first_manifest.payloads_sha256 == expected["index_payloads_sha256"]
+    assert first_manifest.vectors_sha256 == expected["index_fake_vectors_npy_sha256"]
+    assert mapped.vectors.shape == (298, 8)
+    assert mapped.vectors.dtype == np.dtype("<f4")
+    assert isinstance(mapped.vectors, np.memmap)
+    assert not mapped.vectors.flags.writeable
+    assert np.isfinite(mapped.vectors).all()
+    assert np.all(np.linalg.norm(mapped.vectors.astype(np.float64), axis=1) > 0)
+    np.testing.assert_allclose(
+        np.linalg.norm(mapped.vectors.astype(np.float64), axis=1),
+        1.0,
+        rtol=0.0,
+        atol=1e-5,
+    )
+    np.testing.assert_array_equal(mapped.vectors, memory.vectors)
+    assert [payload.model_dump(mode="json") for payload in mapped.payloads] == [
+        payload.model_dump(mode="json") for payload in derived_payloads
+    ]
+    assert [payload.row_index for payload in mapped.payloads] == list(range(298))
+
+    for filename in ("manifest.json", "payloads.jsonl", "embeddings.npy"):
+        assert (first_dir / filename).read_bytes() == (second_dir / filename).read_bytes()
