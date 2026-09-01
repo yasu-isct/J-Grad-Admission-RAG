@@ -13,7 +13,7 @@ queried many times by different applicants:
 
 ```text
 Offline build:
-PDF -> chunks -> document index -> scoped facts -> retrieval units -> document_kb.json
+PDF -> chunks -> document index -> scoped facts -> diagnostics/gates -> document_kb.json
 
 Online query:
 student query/profile -> vector/hybrid retrieval -> reasoning chains -> answer/report
@@ -29,6 +29,7 @@ The current implementation focuses on the offline builder:
 - Document index with anchors and references.
 - Reference link resolution.
 - RAG-facing `document_kb.json` schema with scoped facts and retrieval units.
+- Claim-level reference diagnostics and optional structural quality gates.
 
 ## Quickstart
 
@@ -42,7 +43,9 @@ python -m jgrad_admission_rag.cli.build_kb samples\admission.pdf `
 ```
 
 The generated `document_kb.json` is the handoff artifact for vector indexing and query-time
-retrieval.
+retrieval. It also contains a `diagnostics` section with traceable Fact IDs, reference claims,
+the active quality thresholds, and their gate result. A failed enabled gate still writes the
+artifact and makes the CLI exit with code `2` so the evidence can be inspected.
 
 ## Repository Layout
 

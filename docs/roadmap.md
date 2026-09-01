@@ -36,9 +36,10 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 
 ## Current Sprint: M1 Trusted Knowledge Base
 
-The first real-PDF review produced 382 facts and 382 retrieval units from an 85-page guideline. It
-also found missing page metadata on 216 facts, chunks ranging from nearly empty to 8,754 characters,
-and reference links that can confuse repeated numbering across sections.
+The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
+RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
+unresolved. These known scope/reference debts are reported by default and can be promoted to
+enforced thresholds when the project is ready to require them.
 
 | ID | Task | Acceptance signal | Size | Dependency |
 | --- | --- | --- | --- | --- |

@@ -4,7 +4,7 @@ J-Grad Admission RAG separates admission guideline ingestion from applicant-spec
 
 ```text
 Offline build
-PDF -> extracted pages -> chunks -> document index -> scoped facts -> retrieval units -> document_kb.json
+PDF -> extracted pages -> chunks -> document index -> scoped facts -> diagnostics/gates -> document_kb.json
 
 Online query
 query/profile -> vector/hybrid retrieval -> reasoning chains -> applicant-aware answer/report
@@ -23,6 +23,17 @@ chunking, lightweight document index, reference resolver, and recursive retrieva
 - `retrieval`: future vector and hybrid retrieval services.
 - `reasoning`: future applicant-aware reasoning chains and report generation.
 - `cli`: command-line entry points.
+
+## Knowledge And Diagnostics
+
+`ScopedFact` is the authoritative extracted knowledge. `BuildDiagnostics` is a deterministic
+observation of the completed build: it lists structural problems by Fact ID, classifies each unique
+reference claim, records the active thresholds, and stores the resulting quality gate. Diagnostics
+never rewrite Fact text, source pages, section paths, or scope.
+
+Reference links are emitted only for `resolved` claims. `ambiguous` and `unresolved` claims remain
+in diagnostics with their candidate Fact IDs and scores, so uncertainty is visible rather than
+hidden behind a sorting tie-break.
 
 ## Why This Split
 

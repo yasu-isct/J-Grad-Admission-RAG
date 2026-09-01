@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 from typing import Any
@@ -82,7 +83,7 @@ def test_real_pdf_knowledge_base_matches_baseline(
 ) -> None:
     expected = real_pdf_manifest["expected"]
     manifest = real_document_kb.manifest
-    assert manifest.schema_version == "0.4"
+    assert manifest.schema_version == "0.5"
     assert manifest.input_chunk_count == expected["input_chunk_count"]
     assert manifest.pdf_sha256 == real_pdf_manifest["sha256"]
     assert manifest.chunk_count == expected["chunk_count"]
@@ -101,6 +102,45 @@ def test_real_pdf_knowledge_base_matches_baseline(
     assert len(real_document_kb.entities) == expected["entity_count"]
     assert len(real_document_kb.facts) == expected["fact_count"]
     assert len(real_document_kb.retrieval_units) == expected["retrieval_unit_count"]
+    diagnostics = real_document_kb.diagnostics
+    assert diagnostics.input_chunk_count == manifest.input_chunk_count
+    assert diagnostics.emitted_chunk_count == manifest.chunk_count
+    assert diagnostics.dropped_chunk_count == manifest.dropped_chunk_count
+    assert diagnostics.dropped_chunk_reasons == manifest.dropped_chunk_reasons
+    assert diagnostics.merged_heading_count == manifest.merged_heading_count
+    assert diagnostics.missing_source_page_fact_ids == []
+    assert diagnostics.missing_section_path_fact_ids == []
+    assert diagnostics.empty_or_noninformative_fact_ids == []
+    assert diagnostics.short_fact_threshold == expected["short_fact_threshold"]
+    assert len(diagnostics.short_fact_ids) == expected["short_fact_count"]
+    assert len(diagnostics.unknown_scope_fact_ids) == expected["unknown_scope_fact_count"]
+    assert diagnostics.max_chunk_chars == manifest.max_chunk_chars
+    assert diagnostics.oversized_fact_ids == []
+    assert diagnostics.oversized_reasons == manifest.oversized_chunk_reasons
+    assert diagnostics.raw_reference_occurrence_count == expected["raw_reference_occurrence_count"]
+    assert diagnostics.reference_claim_count == expected["reference_claim_count"]
+    assert diagnostics.reference_status_counts == expected["reference_status_counts"]
+    assert diagnostics.reference_claim_count == len(diagnostics.reference_claims)
+    assert diagnostics.reference_claim_count == sum(diagnostics.reference_status_counts.values())
+    assert diagnostics.reference_status_counts["resolved"] == manifest.reference_link_count
+    assert diagnostics.quality_gate.passed
+    assert diagnostics.quality_gate.violations == []
+    assert diagnostics.quality_thresholds.max_missing_source_pages == 0
+    assert diagnostics.quality_thresholds.max_unknown_scope_facts is None
+    fact_projection = [
+        {
+            "fact_id": fact.fact_id,
+            "title": fact.title,
+            "text": fact.text,
+            "source_pages": fact.source_pages,
+            "section_path": fact.section_path,
+        }
+        for fact in real_document_kb.facts
+    ]
+    fact_content_sha256 = hashlib.sha256(
+        json.dumps(fact_projection, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert fact_content_sha256 == expected["fact_content_sha256"]
 
     assert all(fact.source_pages for fact in real_document_kb.facts)
     assert all(unit.source_pages for unit in real_document_kb.retrieval_units)
@@ -167,3 +207,45 @@ def test_real_pdf_kb05_split_mapping_is_content_balanced(
         assert actual_lengths == child_lengths
         assert old_length == sum(child_lengths) + 2 * (len(child_lengths) - 1)
         assert len({tuple(fact.section_path) for fact in page_facts}) == 1
+
+
+def test_real_pdf_reference_diagnostics_are_traceable(
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    claims = real_document_kb.diagnostics.reference_claims
+    resolved = next(claim for claim in claims if claim.status == "resolved")
+    ambiguous = next(claim for claim in claims if claim.status == "ambiguous")
+    unresolved = next(claim for claim in claims if claim.status == "unresolved")
+
+    assert resolved.selected_target_fact_id in resolved.candidate_target_fact_ids
+    assert resolved.top_score is not None
+    assert ambiguous.selected_target_fact_id is None
+    assert ambiguous.score_margin is not None and ambiguous.score_margin <= 0.1
+    assert len(ambiguous.candidate_target_fact_ids) >= 2
+    assert unresolved.selected_target_fact_id is None
+    assert unresolved.candidate_target_fact_ids == []
+    assert unresolved.reason == "no_positive_candidate"
+
+    expected = real_pdf_manifest["expected"]
+    assert [
+        [claim.source_fact_id, claim.label, claim.selected_target_fact_id]
+        for claim in claims
+        if claim.status == "resolved"
+    ] == expected["resolved_reference_claims"]
+    assert [
+        [claim.source_fact_id, claim.label, claim.candidate_target_fact_ids[0]]
+        for claim in claims
+        if claim.status == "ambiguous"
+    ] == expected["removed_ambiguous_links"]
+
+
+def test_real_pdf_diagnostics_are_deterministic(
+    real_pdf_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    rebuilt = build_document_kb(real_pdf_path)
+
+    assert rebuilt.diagnostics.model_dump(mode="json") == real_document_kb.diagnostics.model_dump(
+        mode="json"
+    )
