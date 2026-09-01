@@ -14,6 +14,10 @@ from .embedding import (
     validate_query_embedding,
 )
 from .embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
+from .sentence_transformer import (
+    SentenceTransformerConfig,
+    SentenceTransformerEmbeddingProvider,
+)
 
 __all__ = [
     "DeterministicFakeEmbeddingProvider",
@@ -24,6 +28,8 @@ __all__ = [
     "EmbeddingProvider",
     "EmbeddingProviderError",
     "EMBEDDING_TEXT_VERSION",
+    "SentenceTransformerConfig",
+    "SentenceTransformerEmbeddingProvider",
     "build_embedding_text",
     "embed_documents_checked",
     "embed_query_checked",
