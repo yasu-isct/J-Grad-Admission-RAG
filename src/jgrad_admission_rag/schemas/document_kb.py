@@ -13,13 +13,17 @@ class KnowledgeManifest(BaseModel):
     source_pdf: str
     pdf_sha256: str
     builder_version: str = "0.1.0"
-    schema_version: str = "0.3"
+    schema_version: str = "0.4"
     input_chunk_count: int = 0
     chunk_count: int
     dropped_chunk_count: int = 0
     dropped_chunk_reasons: dict[str, int] = Field(default_factory=dict)
     merged_heading_count: int = 0
     reference_link_count: int = 0
+    chunk_size_limit: int = 6000
+    max_chunk_chars: int = 0
+    oversized_chunk_count: int = 0
+    oversized_chunk_reasons: dict[str, int] = Field(default_factory=dict)
 
 
 class KnowledgeEntity(BaseModel):

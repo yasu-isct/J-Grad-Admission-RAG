@@ -1,10 +1,15 @@
+import json
+import re
 from pathlib import Path
+
+import pytest
 
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk, filter_chunks
 from jgrad_admission_rag.builder.chunker import SourcePage, TextChunk, chunk_pages
 from jgrad_admission_rag.builder.document_index import (
     IndexedChunk,
     build_document_index,
+    load_chunks,
     load_document_index,
     write_document_index,
 )
@@ -12,6 +17,7 @@ from jgrad_admission_rag.builder.kb_builder import (
     fact_to_retrieval_unit,
     infer_scope,
     indexed_chunk_to_fact,
+    summarize_chunk_sizes,
 )
 
 
@@ -145,8 +151,9 @@ def test_chunk_pages_tracks_cross_page_character_splits() -> None:
     )
 
     assert cross_page_chunk.page_numbers == [11, 12]
-    assert chunks[0].page_numbers == [11]
-    assert chunks[1].page_numbers == [12]
+    assert all(len(chunk.text) <= 18 for chunk in chunks)
+    assert all(chunk.page_numbers == [11] for chunk in chunks[:3])
+    assert all(chunk.page_numbers == [12] for chunk in chunks[3:])
 
 
 def test_chunk_pages_builds_deterministic_heading_stack() -> None:
@@ -187,11 +194,81 @@ def test_section_path_survives_marker_free_pages_and_character_splits() -> None:
         max_chars=18,
     )
 
-    assert [chunk.page_numbers for chunk in chunks] == [[1], [2]]
-    assert [chunk.section_path for chunk in chunks] == [
-        ["3. Eligibility"],
-        ["3. Eligibility"],
-    ]
+    assert all(len(chunk.text) <= 18 for chunk in chunks)
+    assert [chunk.page_numbers for chunk in chunks] == [[1], [1], [1], [2], [2]]
+    assert all(chunk.section_path == ["3. Eligibility"] for chunk in chunks)
+
+
+def test_chunk_pages_rejects_non_positive_size_limit() -> None:
+    pages = [SourcePage(page_number=1, text="content")]
+
+    for max_chars in (0, -1):
+        with pytest.raises(ValueError, match="positive integer"):
+            chunk_pages(pages, "sample.pdf", max_chars=max_chars)
+
+
+def test_chunk_pages_uses_deterministic_safe_boundary_priority() -> None:
+    paragraphs = chunk_pages(
+        [SourcePage(page_number=1, text="alpha\n\nbeta")],
+        "sample.pdf",
+        max_chars=6,
+    )
+    lines = chunk_pages(
+        [SourcePage(page_number=1, text="1) item one\n2) item two")],
+        "sample.pdf",
+        max_chars=12,
+    )
+    words = chunk_pages(
+        [SourcePage(page_number=1, text="alpha beta gamma")],
+        "sample.pdf",
+        max_chars=10,
+    )
+    japanese = chunk_pages(
+        [SourcePage(page_number=1, text="出願資格審査結果通知")],
+        "sample.pdf",
+        max_chars=5,
+    )
+
+    assert [chunk.text for chunk in paragraphs] == ["alpha", "beta"]
+    assert [chunk.text for chunk in lines] == ["1) item one", "2) item two"]
+    assert [chunk.text for chunk in words] == ["alpha", "beta gamma"]
+    assert [chunk.text for chunk in japanese] == ["出願資格審", "査結果通知"]
+
+
+def test_chunk_pages_isolates_table_and_marks_only_indivisible_exception() -> None:
+    normal_table = "### Table 1\n| h |\n| --- |\n| v |"
+    chunks = chunk_pages(
+        [SourcePage(page_number=3, text=f"preceding text\n\n{normal_table}")],
+        "sample.pdf",
+        max_chars=len(normal_table),
+    )
+    oversized_table = "### Table 2\n| heading |\n| --- |\n| " + ("value" * 10) + " |"
+    exception = chunk_pages(
+        [SourcePage(page_number=4, text=oversized_table)],
+        "sample.pdf",
+        max_chars=30,
+    )
+
+    assert [chunk.text for chunk in chunks] == ["preceding text", normal_table]
+    assert all(chunk.oversize_reason is None for chunk in chunks)
+    assert len(exception) == 1
+    assert exception[0].text == oversized_table
+    assert exception[0].oversize_reason == "indivisible_table"
+    assert exception[0].page_numbers == [4]
+
+
+def test_chunk_splitting_conserves_canonical_content() -> None:
+    source = "first paragraph\n\n- first item\n- second item\n\n日本語連続文字列"
+    chunks = chunk_pages(
+        [SourcePage(page_number=5, text=source)],
+        "sample.pdf",
+        max_chars=14,
+    )
+
+    canonical_source = re.sub(r"\s+", "", source)
+    canonical_chunks = "".join(re.sub(r"\s+", "", chunk.text) for chunk in chunks)
+    assert canonical_chunks == canonical_source
+    assert all(0 < len(chunk.text) <= 14 for chunk in chunks)
 
 
 def test_section_path_propagates_through_index_fact_and_retrieval_unit() -> None:
@@ -221,6 +298,65 @@ def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None
     restored = load_document_index(output)
 
     assert restored[0].section_path == ["3. Eligibility"]
+
+
+def test_oversize_reason_propagates_through_index_and_fact(tmp_path: Path) -> None:
+    table = "### Table 1\n| heading |\n| --- |\n| " + ("value" * 10) + " |"
+    chunk = chunk_pages(
+        [SourcePage(page_number=7, text=table)],
+        "sample.pdf",
+        max_chars=30,
+    )[0]
+    indexed = build_document_index([chunk])[0]
+    fact = indexed_chunk_to_fact(indexed)
+    output = tmp_path / "document_index.json"
+
+    write_document_index([indexed], output)
+    restored = load_document_index(output)
+
+    assert indexed.oversize_reason == "indivisible_table"
+    assert restored[0].oversize_reason == "indivisible_table"
+    assert fact.metadata["oversize_reason"] == "indivisible_table"
+    assert "oversize_reason" not in fact_to_retrieval_unit(fact).metadata
+
+    legacy_payload = json.loads(output.read_text(encoding="utf-8"))
+    legacy_payload[0].pop("oversize_reason")
+    output.write_text(json.dumps(legacy_payload), encoding="utf-8")
+    assert load_document_index(output)[0].oversize_reason is None
+
+    legacy_chunk_output = tmp_path / "chunks.json"
+    legacy_chunk_output.write_text(
+        json.dumps(
+            [
+                {
+                    "pdf_name": "sample.pdf",
+                    "page_numbers": [1],
+                    "title": "",
+                    "text": "legacy",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert load_chunks(legacy_chunk_output)[0].oversize_reason is None
+
+
+def test_chunk_size_summary_enforces_exception_invariants() -> None:
+    ordinary = _text_chunk("bounded")
+    table_exception = _text_chunk("x" * 20)
+    table_exception.oversize_reason = "indivisible_table"
+
+    assert summarize_chunk_sizes([ordinary, table_exception], 10) == (
+        20,
+        1,
+        {"indivisible_table": 1},
+    )
+
+    with pytest.raises(ValueError, match="must be marked"):
+        summarize_chunk_sizes([_text_chunk("x" * 20)], 10)
+    ordinary.oversize_reason = "indivisible_table"
+    with pytest.raises(ValueError, match="cannot carry"):
+        summarize_chunk_sizes([ordinary], 10)
 
 
 def test_infer_scope_detects_environment_college() -> None:

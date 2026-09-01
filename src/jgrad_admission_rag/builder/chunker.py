@@ -17,6 +17,7 @@ PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
 MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
 BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\])$")
 PARENTHESIZED_TITLE_RE = re.compile(r"^[（(][0-9０-９一二三四五六七八九十]+[）)]")
+TABLE_DELIMITER_RE = re.compile(r"(?m)^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$")
 
 
 @dataclass
@@ -26,6 +27,7 @@ class TextChunk:
     title: str
     text: str
     section_path: list[str] = field(default_factory=list)
+    oversize_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,12 @@ class _TextSlice:
     text: str
     start: int
     end: int
+
+
+@dataclass(frozen=True)
+class _ChunkSlice:
+    text_slice: _TextSlice
+    oversize_reason: str | None = None
 
 
 @dataclass
@@ -102,50 +110,113 @@ def _source_pages_for_slice(
     )
 
 
-def _split_without_cutting_tables(text_slice: _TextSlice, max_chars: int) -> list[_TextSlice]:
+def _append_slice(
+    chunks: list[_ChunkSlice],
+    text: str,
+    start: int,
+    end: int,
+    source_offset: int,
+    oversize_reason: str | None = None,
+) -> None:
+    chunk = _strip_slice(text, start, end)
+    if chunk:
+        chunks.append(
+            _ChunkSlice(
+                text_slice=_TextSlice(
+                    chunk.text,
+                    source_offset + chunk.start,
+                    source_offset + chunk.end,
+                ),
+                oversize_reason=oversize_reason,
+            )
+        )
+
+
+def _safe_split_position(text: str, start: int, limit: int) -> int:
+    end = min(start + limit, len(text))
+    if end == len(text):
+        return end
+
+    newline = text.rfind("\n", start + 1, end)
+    if newline >= start:
+        return newline + 1
+
+    for position in range(end, start, -1):
+        if text[position - 1].isspace():
+            return position
+    return end
+
+
+def _split_ordinary_slice(text_slice: _TextSlice, max_chars: int) -> list[_ChunkSlice]:
+    chunks: list[_ChunkSlice] = []
+    start = 0
+    while start < len(text_slice.text):
+        while start < len(text_slice.text) and text_slice.text[start].isspace():
+            start += 1
+        if start == len(text_slice.text):
+            break
+        end = _safe_split_position(text_slice.text, start, max_chars)
+        _append_slice(chunks, text_slice.text, start, end, text_slice.start)
+        start = end
+    return chunks
+
+
+def _paragraph_slices(text_slice: _TextSlice) -> list[tuple[_TextSlice, bool]]:
     text = text_slice.text
-    paragraphs = text.split("\n\n")
-    chunks: list[_TextSlice] = []
+    boundaries = list(re.finditer(r"\n\s*\n", text))
+    paragraphs: list[tuple[_TextSlice, bool]] = []
+    start = 0
+    for boundary in [*boundaries, None]:
+        end = boundary.start() if boundary else len(text)
+        paragraph = _strip_slice(text, start, end)
+        if paragraph:
+            absolute = _TextSlice(
+                paragraph.text,
+                text_slice.start + paragraph.start,
+                text_slice.start + paragraph.end,
+            )
+            is_table = paragraph.text.lstrip().startswith("|") or bool(
+                TABLE_DELIMITER_RE.search(paragraph.text)
+            )
+            paragraphs.append((absolute, is_table))
+        if boundary:
+            start = boundary.end()
+    return paragraphs
+
+
+def _split_without_cutting_tables(text_slice: _TextSlice, max_chars: int) -> list[_ChunkSlice]:
+    text = text_slice.text
+    paragraphs = _paragraph_slices(text_slice)
+    chunks: list[_ChunkSlice] = []
     current_start: int | None = None
     current_end = 0
-    size = 0
-    offset = 0
-    for paragraph in paragraphs:
-        paragraph_start = offset
-        paragraph_end = paragraph_start + len(paragraph)
-        paragraph_size = len(paragraph) + 2
-        is_table = paragraph.lstrip().startswith("|") or "\n| ---" in paragraph
-        if current_start is not None and size + paragraph_size > max_chars and not is_table:
-            chunk = _strip_slice(
-                text,
-                current_start,
-                current_end,
-            )
-            if chunk:
-                chunks.append(
-                    _TextSlice(
-                        chunk.text,
-                        text_slice.start + chunk.start,
-                        text_slice.start + chunk.end,
-                    )
-                )
+    for paragraph, is_table in paragraphs:
+        paragraph_start = paragraph.start - text_slice.start
+        paragraph_end = paragraph.end - text_slice.start
+        combined_size = (
+            paragraph_end - current_start if current_start is not None else len(paragraph.text)
+        )
+        if current_start is not None and combined_size > max_chars:
+            _append_slice(chunks, text, current_start, current_end, text_slice.start)
             current_start = None
-            size = 0
+        if is_table and len(paragraph.text) > max_chars:
+            _append_slice(
+                chunks,
+                text,
+                paragraph_start,
+                paragraph_end,
+                text_slice.start,
+                oversize_reason="indivisible_table",
+            )
+            continue
+        if not is_table and len(paragraph.text) > max_chars:
+            chunks.extend(_split_ordinary_slice(paragraph, max_chars))
+            continue
         if current_start is None:
             current_start = paragraph_start
         current_end = paragraph_end
-        size += paragraph_size
-        offset = paragraph_end + 2
     if current_start is not None:
-        chunk = _strip_slice(text, current_start, current_end)
-        if chunk:
-            chunks.append(
-                _TextSlice(
-                    chunk.text,
-                    text_slice.start + chunk.start,
-                    text_slice.start + chunk.end,
-                )
-            )
+        _append_slice(chunks, text, current_start, current_end, text_slice.start)
     return chunks
 
 
@@ -196,6 +267,8 @@ def _chunk_markdown(
     max_chars: int,
     page_spans: Sequence[tuple[int, int, int]] | None,
 ) -> list[TextChunk]:
+    if max_chars <= 0:
+        raise ValueError("max_chars must be a positive integer")
     matches = list(TITLE_RE.finditer(markdown))
     sections: list[tuple[str, list[str], _TextSlice]] = []
     if matches:
@@ -220,10 +293,11 @@ def _chunk_markdown(
                 chunks.append(
                     TextChunk(
                         pdf_name=pdf_name,
-                        page_numbers=_source_pages_for_slice(part, page_spans),
+                        page_numbers=_source_pages_for_slice(part.text_slice, page_spans),
                         title=title,
-                        text=part.text,
+                        text=part.text_slice.text,
                         section_path=list(section_path),
+                        oversize_reason=part.oversize_reason,
                     )
                 )
     return chunks
