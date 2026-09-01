@@ -27,6 +27,15 @@ from .local_index import (
     build_local_index,
     load_local_index,
 )
+from .vector_search import (
+    ProviderIdentityMismatchError,
+    QueryVectorError,
+    SearchInputError,
+    VectorSearchError,
+    VectorSearchHit,
+    VectorSearchResult,
+    search_local_index,
+)
 
 __all__ = [
     "DeterministicFakeEmbeddingProvider",
@@ -42,13 +51,20 @@ __all__ = [
     "IndexBuildError",
     "IndexLoadError",
     "LocalVectorIndex",
+    "ProviderIdentityMismatchError",
+    "QueryVectorError",
+    "SearchInputError",
     "SentenceTransformerConfig",
     "SentenceTransformerEmbeddingProvider",
+    "VectorSearchError",
+    "VectorSearchHit",
+    "VectorSearchResult",
     "build_embedding_text",
     "build_local_index",
     "embed_documents_checked",
     "embed_query_checked",
     "load_local_index",
+    "search_local_index",
     "validate_document_embeddings",
     "validate_query_embedding",
 ]

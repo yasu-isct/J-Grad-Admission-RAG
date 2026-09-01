@@ -36,6 +36,13 @@ validated manifest as one JSON object. It has no independent embedding, serializ
 search, or stale-index logic. The deterministic fake option is pipeline-only and non-semantic;
 Sentence Transformers remains pinned, CPU-only, and offline unless download is explicitly enabled.
 
+Vector search loads that validated index read-only, checks the complete provider identity, obtains a
+checked query embedding, and performs exhaustive NumPy cosine ranking. Scores descend and exact ties
+use ascending payload row index, so repeated runs are deterministic. Returned hits are immutable,
+detached views of the aligned payload row, including scope and official page provenance. This layer
+retrieves evidence candidates only; IDX-08 owns stale-input checks, while applicant applicability and
+answer composition remain later reasoning layers.
+
 ## Current MVP
 
 The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,

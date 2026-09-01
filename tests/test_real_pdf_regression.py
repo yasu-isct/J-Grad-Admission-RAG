@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 
 from jgrad_admission_rag.cli import build_index as build_index_cli
+from jgrad_admission_rag.cli import search as search_cli
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -18,9 +19,11 @@ from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_s
 from jgrad_admission_rag.retrieval.embedding import (
     DeterministicFakeEmbeddingProvider,
     embed_documents_checked,
+    embed_query_checked,
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
+from jgrad_admission_rag.retrieval.vector_search import search_local_index
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -501,3 +504,115 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     assert loaded.manifest.vectors_sha256 == (
         "0b77bb53b6dcca385ce432febbcab74f07cef49963262b5d5026e86751117129"
     )
+
+
+def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
+    tmp_path: Path,
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+    capsys,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "index"
+    build_local_index(kb_path, index_dir, DeterministicFakeEmbeddingProvider(dimension=8))
+    before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+    query = "出願資格"
+
+    result = search_local_index(
+        index_dir,
+        query,
+        DeterministicFakeEmbeddingProvider(dimension=8),
+        top_k=5,
+    )
+    loaded = load_local_index(index_dir, mmap=True)
+    query_values = np.asarray(
+        embed_query_checked(DeterministicFakeEmbeddingProvider(dimension=8), query),
+        dtype="<f4",
+    )
+    query_values = np.asarray(
+        query_values.astype(np.float64) / np.linalg.norm(query_values.astype(np.float64)),
+        dtype="<f4",
+    )
+    independent_scores = np.asarray(loaded.vectors @ query_values, dtype="<f4")
+    rows = np.arange(len(loaded.payloads), dtype=np.int64)
+    expected_rows = np.lexsort((rows, -independent_scores.astype(np.float64)))[:5]
+    expected = [loaded.payloads[int(row)] for row in expected_rows]
+
+    assert result.manifest.payload_count == result.manifest.vector_count == 298
+    assert (
+        result.manifest.payloads_sha256 == (real_pdf_manifest["expected"]["index_payloads_sha256"])
+    )
+    assert (
+        result.manifest.vectors_sha256
+        == (real_pdf_manifest["expected"]["index_fake_vectors_npy_sha256"])
+    )
+    assert [hit.row_index for hit in result.hits] == [int(row) for row in expected_rows]
+    assert [hit.score for hit in result.hits] == pytest.approx(
+        [float(independent_scores[int(row)]) for row in expected_rows],
+        rel=0.0,
+        abs=1e-7,
+    )
+    assert [hit.row_index for hit in result.hits] == [209, 297, 53, 59, 66]
+    assert [hit.score for hit in result.hits] == pytest.approx(
+        [
+            0.9264391660690308,
+            0.8517074584960938,
+            0.8401667475700378,
+            0.7775591015815735,
+            0.7775591015815735,
+        ],
+        rel=0.0,
+        abs=1e-7,
+    )
+    assert [hit.scope_type for hit in result.hits] == [
+        "department",
+        "unknown",
+        "department",
+        "unknown",
+        "unknown",
+    ]
+    assert [hit.source_pages for hit in result.hits] == [(44,), (85,), (6,), (7,), (7,)]
+    assert all(
+        hit.unit_id == payload.unit_id
+        and hit.fact_id == payload.fact_id
+        and hit.text == payload.text
+        and list(hit.source_pages) == payload.source_pages
+        and list(hit.section_path) == payload.section_path
+        and hit.scope_type == payload.scope_type
+        and list(hit.scope_targets) == payload.scope_targets
+        for hit, payload in zip(result.hits, expected, strict=True)
+    )
+    assert all(hit.source_pages and hit.section_path for hit in result.hits)
+
+    search_cli.main(
+        [
+            str(index_dir),
+            "--query",
+            query,
+            "--top-k",
+            "5",
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    assert captured.err == ""
+    assert summary["semantic"] is False
+    assert summary["result_count"] == 5
+    assert [hit["row_index"] for hit in summary["results"]] == [
+        hit.row_index for hit in result.hits
+    ]
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before

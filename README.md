@@ -78,8 +78,42 @@ jgrad-build-index outputs\kb\sample\document_kb.json `
 
 The output directory must not already exist; the command never overwrites or deletes an index. A
 successful build contains `manifest.json`, `payloads.jsonl`, and `embeddings.npy`, then prints one
-JSON summary with counts, provider identity, and artifact hashes. IDX-07 adds search; IDX-08 adds
-stale-index comparison and safe replacement policy.
+JSON summary with counts, provider identity, and artifact hashes. The `jgrad-search` command below
+queries the index; IDX-08 adds stale-index comparison and safe replacement policy.
+
+## Search A Local Index
+
+Search uses exhaustive NumPy cosine similarity over the validated, normalized index. Higher scores
+rank first; exact ties use the lower payload `row_index`. `--top-k` defaults to `5`, and requesting
+more rows than exist simply returns every row. The command is read-only and emits one JSON object
+whose results retain the payload text, Fact/Unit IDs, scope, section path, and official PDF pages.
+
+Use the exact provider identity that built the index. This fake example is deterministic and useful
+only for checking ranking and provenance plumbing, not semantic relevance:
+
+```powershell
+jgrad-search outputs\index\sample-fake `
+  --query "出願資格" `
+  --top-k 5 `
+  --provider deterministic-fake `
+  --dimension 8
+```
+
+A real index built with Sentence Transformers must be searched with the same model, pinned revision,
+and dimension. Loading is cache-only unless download is explicitly authorized:
+
+```powershell
+jgrad-search outputs\index\sample-bge-m3 `
+  --query "情報工学系の出願資格" `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+These rows are retrieval candidates, not applicant-specific decisions or final answers. IDX-08 adds
+current-KB/provider stale checks; later milestones add profile-aware reasoning and reporting.
 
 ## Sentence Transformers Adapter
 
