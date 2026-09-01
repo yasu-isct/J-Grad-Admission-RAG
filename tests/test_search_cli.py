@@ -14,6 +14,11 @@ from jgrad_admission_rag.retrieval.embedding import (
     EmbeddingIdentity,
 )
 from jgrad_admission_rag.retrieval.local_index import build_local_index
+from jgrad_admission_rag.retrieval.hybrid_search import (
+    HybridFusionError,
+    search_hybrid_index,
+)
+from jgrad_admission_rag.retrieval.local_index import load_local_index
 from jgrad_admission_rag.schemas.document_kb import (
     BuildDiagnostics,
     DocumentKnowledgeBase,
@@ -109,6 +114,19 @@ def _fake_args(index_dir: Path, *, top_k: int = 5, query: str = "出願資格") 
     ]
 
 
+def _hybrid_args(
+    index_dir: Path,
+    *,
+    top_k: int = 5,
+    candidate_k: int | None = None,
+    query: str = "出願資格",
+) -> list[str]:
+    args = [*_fake_args(index_dir, top_k=top_k, query=query), "--retrieval-mode", "hybrid"]
+    if candidate_k is not None:
+        args.extend(("--candidate-k", str(candidate_k)))
+    return args
+
+
 def _set_index_identity(
     index_dir: Path,
     *,
@@ -186,6 +204,160 @@ def test_fake_search_cli_returns_one_complete_read_only_json_summary(
     assert hit["source_pages"]
     assert hit["section_path"]
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before
+
+
+def test_hybrid_cli_matches_library_and_reports_reproducible_depths(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+
+    search_cli.main(_hybrid_args(index_dir, top_k=2, candidate_k=2))
+
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    expected = search_hybrid_index(
+        load_local_index(index_dir, mmap=True),
+        "出願資格",
+        DeterministicFakeEmbeddingProvider(dimension=8),
+        top_k=2,
+        candidate_k=2,
+    )
+    assert captured.err == ""
+    assert len(captured.out.splitlines()) == 1
+    assert summary["retrieval_mode"] == "hybrid"
+    assert summary["semantic"] is False
+    assert summary["fusion_version"] == "rrf-v1"
+    assert summary["rrf_k"] == 60
+    assert summary["top_k_requested"] == 2
+    assert summary["candidate_k_requested"] == 2
+    assert summary["candidate_k_resolved"] == 2
+    assert summary["vector_candidate_count"] == 2
+    assert 0 < summary["lexical_candidate_count"] <= 2
+    assert summary["results"] == [hit.to_dict() for hit in expected.hits]
+    assert all(hit["source_pages"] and hit["section_path"] for hit in summary["results"])
+    assert all(hit["matched_channels"] for hit in summary["results"])
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before
+
+
+def test_vector_mode_rejects_candidate_k_without_constructing_provider(
+    tmp_path: Path,
+    capsys,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("invalid mode options must fail before provider construction")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main([*_fake_args(index_dir), "--candidate-k", "10"])
+
+    captured = capsys.readouterr()
+    error = json.loads(captured.err)
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert error["kind"] == "configuration_error"
+    assert "requires --retrieval-mode hybrid" in error["error"]
+
+
+def test_hybrid_candidate_depth_error_is_structured_and_pre_provider(
+    tmp_path: Path,
+    capsys,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("invalid depth must fail before provider construction")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(_hybrid_args(index_dir, top_k=5, candidate_k=4))
+
+    captured = capsys.readouterr()
+    error = json.loads(captured.err)
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert error["kind"] == "configuration_error"
+    assert "greater than or equal" in error["error"]
+
+
+def test_hybrid_fusion_failure_is_structured_json(
+    tmp_path: Path,
+    capsys,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "search_hybrid_index",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(HybridFusionError("bad channel rows")),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(_hybrid_args(index_dir))
+
+    captured = capsys.readouterr()
+    error = json.loads(captured.err)
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert error == {
+        "error": "bad channel rows",
+        "kind": "fusion_error",
+        "provider": "deterministic-fake",
+    }
+
+
+def test_hybrid_cli_loads_constructs_and_embeds_once(
+    tmp_path: Path,
+    capsys,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    original_load = search_cli.load_local_index
+    inner_provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    load_calls: list[tuple[object, bool]] = []
+    provider_calls: list[object] = []
+    query_calls: list[str] = []
+
+    class RecordingProvider:
+        identity = inner_provider.identity
+
+        def embed_documents(self, texts):
+            raise AssertionError("search must not embed documents")
+
+        def embed_query(self, text):
+            query_calls.append(text)
+            return inner_provider.embed_query(text)
+
+    def recording_load(path, *, mmap):
+        load_calls.append((path, mmap))
+        return original_load(path, mmap=mmap)
+
+    def recording_create(configuration):
+        provider_calls.append(configuration)
+        return RecordingProvider()
+
+    monkeypatch.setattr(search_cli, "load_local_index", recording_load)
+    monkeypatch.setattr(search_cli, "create_provider", recording_create)
+
+    search_cli.main(_hybrid_args(index_dir, top_k=1, candidate_k=2))
+
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert json.loads(captured.out)["retrieval_mode"] == "hybrid"
+    assert load_calls == [(str(index_dir), True)]
+    assert len(provider_calls) == 1
+    assert query_calls == ["出願資格"]
 
 
 def test_top_k_overflow_reports_all_rows(tmp_path: Path, capsys) -> None:
