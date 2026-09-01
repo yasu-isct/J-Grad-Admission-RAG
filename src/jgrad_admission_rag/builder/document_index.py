@@ -68,6 +68,7 @@ class IndexedChunk:
     anchors: list[Anchor]
     references: list[Reference]
     section_path: list[str] = field(default_factory=list)
+    oversize_reason: str | None = None
 
 
 def normalize_number(value: str | None) -> str:
@@ -180,6 +181,7 @@ def build_document_index(chunks: list[TextChunk]) -> list[IndexedChunk]:
                 anchors=extract_anchors(chunk.text, chunk.title),
                 references=extract_references(chunk.text, chunk.title),
                 section_path=list(chunk.section_path),
+                oversize_reason=chunk.oversize_reason,
             )
         )
     return indexed
@@ -208,6 +210,7 @@ def load_document_index(path: str | Path) -> list[IndexedChunk]:
             anchors=[Anchor(**anchor) for anchor in item.get("anchors", [])],
             references=[Reference(**reference) for reference in item.get("references", [])],
             section_path=item.get("section_path", []),
+            oversize_reason=item.get("oversize_reason"),
         )
         for item in payload
     ]

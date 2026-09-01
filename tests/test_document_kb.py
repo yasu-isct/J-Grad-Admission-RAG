@@ -39,7 +39,7 @@ def test_document_kb_schema_roundtrip() -> None:
     payload = kb.model_dump(mode="json")
     restored = DocumentKnowledgeBase.model_validate(payload)
     assert restored.facts[0].title == "検定料"
-    assert restored.manifest.schema_version == "0.3"
+    assert restored.manifest.schema_version == "0.4"
     assert restored.facts[0].section_path == ["３．出願手続", "（１）検定料"]
     assert restored.retrieval_units[0].section_path == restored.facts[0].section_path
     assert restored.retrieval_units[0].fact_id == "fact:00001"
@@ -71,7 +71,7 @@ def test_document_kb_schema_reads_older_versions_without_filter_summary() -> Non
         ],
     }
 
-    for version in ("0.1", "0.2"):
+    for version in ("0.1", "0.2", "0.3"):
         payload["manifest"]["schema_version"] = version
         restored = DocumentKnowledgeBase.model_validate(payload)
         assert restored.manifest.schema_version == version
@@ -79,5 +79,9 @@ def test_document_kb_schema_reads_older_versions_without_filter_summary() -> Non
         assert restored.manifest.dropped_chunk_count == 0
         assert restored.manifest.dropped_chunk_reasons == {}
         assert restored.manifest.merged_heading_count == 0
+        assert restored.manifest.chunk_size_limit == 6000
+        assert restored.manifest.max_chunk_chars == 0
+        assert restored.manifest.oversized_chunk_count == 0
+        assert restored.manifest.oversized_chunk_reasons == {}
         assert restored.facts[0].section_path == []
         assert restored.retrieval_units[0].section_path == []

@@ -142,6 +142,11 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
             "pdf_name": item.pdf_name,
             "anchors": [asdict(anchor) for anchor in item.anchors],
             "references": [asdict(reference) for reference in item.references],
+            **(
+                {"oversize_reason": item.oversize_reason}
+                if item.oversize_reason is not None
+                else {}
+            ),
         },
     )
 
@@ -159,6 +164,21 @@ def fact_to_retrieval_unit(fact: ScopedFact) -> RetrievalUnit:
     )
 
 
+def summarize_chunk_sizes(
+    chunks: list[TextChunk], max_chars: int
+) -> tuple[int, int, dict[str, int]]:
+    reasons: dict[str, int] = {}
+    for chunk in chunks:
+        is_oversized = len(chunk.text) > max_chars
+        if is_oversized and chunk.oversize_reason != "indivisible_table":
+            raise ValueError("oversized chunks must be marked as indivisible_table")
+        if not is_oversized and chunk.oversize_reason is not None:
+            raise ValueError("ordinary chunks cannot carry an oversize reason")
+        if chunk.oversize_reason:
+            reasons[chunk.oversize_reason] = reasons.get(chunk.oversize_reason, 0) + 1
+    return max((len(chunk.text) for chunk in chunks), default=0), sum(reasons.values()), reasons
+
+
 def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKnowledgeBase:
     pdf_path = Path(pdf_path)
     pages = extract_pdf(pdf_path)
@@ -171,6 +191,9 @@ def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKn
     index = build_document_index(chunks)
     links = resolve_references(index)
     facts = [indexed_chunk_to_fact(item) for item in index]
+    max_chunk_chars, oversized_chunk_count, oversized_reasons = summarize_chunk_sizes(
+        chunks, max_chars
+    )
 
     manifest = KnowledgeManifest(
         document_id=pdf_path.stem,
@@ -182,6 +205,10 @@ def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKn
         dropped_chunk_reasons=filter_summary.dropped_chunk_reasons,
         merged_heading_count=filter_summary.merged_heading_count,
         reference_link_count=len(links),
+        chunk_size_limit=max_chars,
+        max_chunk_chars=max_chunk_chars,
+        oversized_chunk_count=oversized_chunk_count,
+        oversized_chunk_reasons=oversized_reasons,
     )
     return DocumentKnowledgeBase(
         manifest=manifest,
