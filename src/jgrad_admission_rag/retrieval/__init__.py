@@ -18,6 +18,15 @@ from .sentence_transformer import (
     SentenceTransformerConfig,
     SentenceTransformerEmbeddingProvider,
 )
+from .local_index import (
+    INDEX_BUILDER_VERSION,
+    IndexArtifactError,
+    IndexBuildError,
+    IndexLoadError,
+    LocalVectorIndex,
+    build_local_index,
+    load_local_index,
+)
 
 __all__ = [
     "DeterministicFakeEmbeddingProvider",
@@ -28,11 +37,18 @@ __all__ = [
     "EmbeddingProvider",
     "EmbeddingProviderError",
     "EMBEDDING_TEXT_VERSION",
+    "INDEX_BUILDER_VERSION",
+    "IndexArtifactError",
+    "IndexBuildError",
+    "IndexLoadError",
+    "LocalVectorIndex",
     "SentenceTransformerConfig",
     "SentenceTransformerEmbeddingProvider",
     "build_embedding_text",
+    "build_local_index",
     "embed_documents_checked",
     "embed_query_checked",
+    "load_local_index",
     "validate_document_embeddings",
     "validate_query_embedding",
 ]
