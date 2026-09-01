@@ -30,6 +30,12 @@ a temporary sibling directory before one atomic rename to a new target. Loading 
 files' schemas, hashes, payload alignment, NumPy safety, shape, finiteness, and row norms; comparison
 against a separately supplied current KB or provider remains a later stale-index concern.
 
+`jgrad-build-index` is a thin operator boundary over that library contract. It validates one explicit
+provider configuration, constructs the existing adapter, invokes the atomic builder, and reports the
+validated manifest as one JSON object. It has no independent embedding, serialization, overwrite,
+search, or stale-index logic. The deterministic fake option is pipeline-only and non-semantic;
+Sentence Transformers remains pinned, CPU-only, and offline unless download is explicitly enabled.
+
 ## Current MVP
 
 The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,

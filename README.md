@@ -47,6 +47,40 @@ retrieval. It also contains a `diagnostics` section with traceable Fact IDs, ref
 the active quality thresholds, and their gate result. A failed enabled gate still writes the
 artifact and makes the CLI exit with code `2` so the evidence can be inspected.
 
+## Build A Local Index
+
+The deterministic fake provider verifies the indexing pipeline without downloading a model. Its
+vectors are reproducible but non-semantic and must not be used to judge retrieval quality:
+
+```powershell
+python -m pip install -e .
+jgrad-build-index outputs\kb\sample\document_kb.json `
+  --output outputs\index\sample-fake `
+  --provider deterministic-fake `
+  --dimension 8
+```
+
+For real multilingual embeddings, install the optional runtime and name an exact model revision.
+The default is offline/cache-only; `--allow-model-download` is an explicit network and disk-use
+permission and should be used only after reviewing the model and revision:
+
+```powershell
+python -m pip install -e .[embedding]
+jgrad-build-index outputs\kb\sample\document_kb.json `
+  --output outputs\index\sample-bge-m3 `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <40-character-commit-sha> `
+  --dimension 1024 `
+  --batch-size 8 `
+  --cache-folder .cache\models
+```
+
+The output directory must not already exist; the command never overwrites or deletes an index. A
+successful build contains `manifest.json`, `payloads.jsonl`, and `embeddings.npy`, then prints one
+JSON summary with counts, provider identity, and artifact hashes. IDX-07 adds search; IDX-08 adds
+stale-index comparison and safe replacement policy.
+
 ## Sentence Transformers Adapter
 
 Install the optional model runtime separately with `python -m pip install -e .[embedding]`. The
@@ -73,7 +107,7 @@ Constructor and encode options are documented in the
 src/jgrad_admission_rag/
   builder/      PDF extraction, chunking, document index, reference links, KB builder
   schemas/      Durable JSON contracts such as DocumentKnowledgeBase
-  retrieval/    Future vector and hybrid retrieval services
+  retrieval/    Embedding providers, local vector indexes, and future retrieval services
   reasoning/    Future applicant-aware reasoning chains and report generation
   cli/          Command-line entry points
 docs/           Architecture and migration notes

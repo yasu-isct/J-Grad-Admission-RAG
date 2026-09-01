@@ -26,6 +26,7 @@ embedding = [
 
 [project.scripts]
 jgrad-build-kb = "jgrad_admission_rag.cli.build_kb:main"
+jgrad-build-index = "jgrad_admission_rag.cli.build_index:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
