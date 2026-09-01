@@ -79,7 +79,7 @@ jgrad-build-index outputs\kb\sample\document_kb.json `
 The output directory must not already exist; the command never overwrites or deletes an index. A
 successful build contains `manifest.json`, `payloads.jsonl`, and `embeddings.npy`, then prints one
 JSON summary with counts, provider identity, and artifact hashes. The `jgrad-search` command below
-queries the index; IDX-08 adds stale-index comparison and safe replacement policy.
+queries the index after the IDX-08 freshness checks and safe replacement policy described below.
 
 ## Search A Local Index
 
@@ -93,6 +93,7 @@ only for checking ranking and provenance plumbing, not semantic relevance:
 
 ```powershell
 jgrad-search outputs\index\sample-fake `
+  --current-kb outputs\kb\sample\document_kb.json `
   --query "出願資格" `
   --top-k 5 `
   --provider deterministic-fake `
@@ -104,6 +105,7 @@ and dimension. Loading is cache-only unless download is explicitly authorized:
 
 ```powershell
 jgrad-search outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
   --query "情報工学系の出願資格" `
   --provider sentence-transformers `
   --model BAAI/bge-m3 `
@@ -112,8 +114,20 @@ jgrad-search outputs\index\sample-bge-m3 `
   --cache-folder .cache\models
 ```
 
-These rows are retrieval candidates, not applicant-specific decisions or final answers. IDX-08 adds
-current-KB/provider stale checks; later milestones add profile-aware reasoning and reporting.
+`--current-kb` is required. Search first validates index integrity, then compares the exact current KB
+bytes, document/PDF provenance, and declared provider/model/revision/dimension with the manifest. A
+fresh result includes the current KB SHA-256 and checked fields. `stale_index` means the index is
+internally valid but no longer matches one or more current inputs; `current_kb_error` means the
+current KB itself is missing, symlinked, malformed, unsupported, or failed its quality gate.
+
+Stale indexes are never replaced automatically. Build a replacement into a new absent directory,
+validate it, switch the caller/configuration to that path, and retire the old directory separately.
+Automatic overwrite, delete, or directory swapping is deliberately absent because portable atomic
+replacement and crash recovery require a separate design. See
+[ADR 0002](docs/decisions/0002-index-freshness-and-replacement.md).
+
+Returned rows are retrieval candidates, not applicant-specific decisions or final answers. Later
+milestones add profile-aware reasoning and reporting.
 
 ## Sentence Transformers Adapter
 

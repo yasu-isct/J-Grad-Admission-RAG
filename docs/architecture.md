@@ -28,7 +28,7 @@ The local vector index is a derived three-file directory: `manifest.json`, deter
 `payloads.jsonl`, and normalized little-endian float32 `embeddings.npy`. A build writes and validates
 a temporary sibling directory before one atomic rename to a new target. Loading checks the current
 files' schemas, hashes, payload alignment, NumPy safety, shape, finiteness, and row norms; comparison
-against a separately supplied current KB or provider remains a later stale-index concern.
+against a separately supplied current KB or provider belongs to the subsequent freshness gate.
 
 `jgrad-build-index` is a thin operator boundary over that library contract. It validates one explicit
 provider configuration, constructs the existing adapter, invokes the atomic builder, and reports the
@@ -40,8 +40,16 @@ Vector search loads that validated index read-only, checks the complete provider
 checked query embedding, and performs exhaustive NumPy cosine ranking. Scores descend and exact ties
 use ascending payload row index, so repeated runs are deterministic. Returned hits are immutable,
 detached views of the aligned payload row, including scope and official page provenance. This layer
-retrieves evidence candidates only; IDX-08 owns stale-input checks, while applicant applicability and
-answer composition remain later reasoning layers.
+retrieves evidence candidates only; the freshness gate owns stale-input checks, while applicant
+applicability and answer composition remain later reasoning layers.
+
+Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
+exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
+and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may
+construct the runtime provider; vector search still rechecks the actual runtime identity. See
+[ADR 0002: Index Freshness And Replacement Policy](decisions/0002-index-freshness-and-replacement.md).
+Stale indexes are rebuilt to a new absent directory and activated by switching the caller path;
+automatic overwrite, deletion, and directory swapping are outside the supported safety contract.
 
 ## Current MVP
 

@@ -511,6 +511,7 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
     real_pdf_manifest: dict[str, Any],
     real_document_kb: DocumentKnowledgeBase,
     capsys,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     kb_path = tmp_path / "document_kb.json"
     kb_path.write_text(
@@ -597,6 +598,8 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
     search_cli.main(
         [
             str(index_dir),
+            "--current-kb",
+            str(kb_path),
             "--query",
             query,
             "--top-k",
@@ -612,7 +615,40 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
     assert captured.err == ""
     assert summary["semantic"] is False
     assert summary["result_count"] == 5
+    assert summary["freshness"]["fresh"] is True
+    assert summary["freshness"]["current_kb_sha256"] == summary["source_kb_sha256"]
     assert [hit["row_index"] for hit in summary["results"]] == [
         hit.row_index for hit in result.hits
     ]
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before
+
+    stale_kb_path = tmp_path / "one-byte-stale.json"
+    stale_kb_path.write_bytes(kb_path.read_bytes() + b" ")
+    stale_before = stale_kb_path.read_bytes()
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("one-byte stale KB must fail before provider construction")
+        ),
+    )
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(
+            [
+                str(index_dir),
+                "--current-kb",
+                str(stale_kb_path),
+                "--query",
+                "出願資格",
+                "--provider",
+                "deterministic-fake",
+                "--dimension",
+                "8",
+            ]
+        )
+    stale_output = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert stale_output.out == ""
+    assert json.loads(stale_output.err)["mismatches"] == ["source_kb_sha256"]
+    assert stale_kb_path.read_bytes() == stale_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before

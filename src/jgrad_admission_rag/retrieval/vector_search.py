@@ -13,7 +13,7 @@ import numpy as np
 from ..schemas.document_kb import ScopeType
 from ..schemas.index import IndexManifest, IndexPayload
 from .embedding import EmbeddingIdentity, EmbeddingProvider, embed_query_checked
-from .local_index import NORM_ABSOLUTE_TOLERANCE, load_local_index
+from .local_index import LocalVectorIndex, NORM_ABSOLUTE_TOLERANCE, load_local_index
 
 
 class VectorSearchError(Exception):
@@ -83,8 +83,21 @@ def search_local_index(
 ) -> VectorSearchResult:
     """Search one validated local index with deterministic exhaustive cosine ranking."""
 
-    _validate_inputs(query, top_k)
+    validate_search_inputs(query, top_k)
     index = load_local_index(index_dir, mmap=True)
+    return search_loaded_index(index, query, provider, top_k=top_k)
+
+
+def search_loaded_index(
+    index: LocalVectorIndex,
+    query: str,
+    provider: EmbeddingProvider,
+    *,
+    top_k: int = 5,
+) -> VectorSearchResult:
+    """Search a previously validated local index without reading its files again."""
+
+    validate_search_inputs(query, top_k)
     identity = provider.identity
     _validate_provider_identity(index.manifest, identity)
     query_vector = _normalize_query_vector(
@@ -105,7 +118,7 @@ def search_local_index(
     return VectorSearchResult(manifest=index.manifest.model_copy(deep=True), hits=hits)
 
 
-def _validate_inputs(query: object, top_k: object) -> None:
+def validate_search_inputs(query: object, top_k: object) -> None:
     if not isinstance(query, str) or not query.strip():
         raise SearchInputError("query must be a non-blank Python string")
     if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
