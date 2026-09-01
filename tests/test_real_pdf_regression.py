@@ -87,10 +87,23 @@ def test_real_pdf_knowledge_base_matches_baseline(
     assert len(real_document_kb.facts) == expected["fact_count"]
     assert len(real_document_kb.retrieval_units) == expected["retrieval_unit_count"]
 
+    assert all(fact.source_pages for fact in real_document_kb.facts)
+    assert all(unit.source_pages for unit in real_document_kb.retrieval_units)
+    assert all(
+        1 <= page <= expected["page_count"]
+        for fact in real_document_kb.facts
+        for page in fact.source_pages
+    )
+
     fact_ids = [fact.fact_id for fact in real_document_kb.facts]
     assert fact_ids == [f"fact:{index:05d}" for index in range(expected["fact_count"])]
     assert len(fact_ids) == len(set(fact_ids))
     assert {unit.fact_id for unit in real_document_kb.retrieval_units} == set(fact_ids)
+    pages_by_fact = {fact.fact_id: fact.source_pages for fact in real_document_kb.facts}
+    assert all(
+        unit.source_pages == pages_by_fact[unit.fact_id]
+        for unit in real_document_kb.retrieval_units
+    )
 
     assert any(fact.scope_type == "department" for fact in real_document_kb.facts)
     assert any("情報工学系" in fact.scope_targets for fact in real_document_kb.facts)

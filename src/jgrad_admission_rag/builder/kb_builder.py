@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 
-from .chunker import TextChunk, chunk_markdown
+from .chunker import SourcePage, TextChunk, chunk_pages
 from .document_index import IndexedChunk, build_document_index
 from .extractor import extract_pdf
 from .reference_resolver import resolve_references
@@ -33,7 +33,17 @@ COLLEGE_DEPARTMENTS = {
 
 
 def pages_to_markdown(pages: list) -> str:
-    return "\n\n".join(f"## Page {page.page}\n\n{page.markdown}" for page in pages)
+    return "\n\n".join(page.text for page in pages_to_source_pages(pages))
+
+
+def pages_to_source_pages(pages: list) -> list[SourcePage]:
+    return [
+        SourcePage(
+            page_number=page.page,
+            text=f"## Page {page.page}\n\n{page.markdown}",
+        )
+        for page in pages
+    ]
 
 
 def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
@@ -148,8 +158,11 @@ def fact_to_retrieval_unit(fact: ScopedFact) -> RetrievalUnit:
 def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKnowledgeBase:
     pdf_path = Path(pdf_path)
     pages = extract_pdf(pdf_path)
-    markdown = pages_to_markdown(pages)
-    chunks: list[TextChunk] = chunk_markdown(markdown, pdf_path.name, max_chars=max_chars)
+    chunks: list[TextChunk] = chunk_pages(
+        pages_to_source_pages(pages),
+        pdf_path.name,
+        max_chars=max_chars,
+    )
     index = build_document_index(chunks)
     links = resolve_references(index)
     facts = [indexed_chunk_to_fact(item) for item in index]
