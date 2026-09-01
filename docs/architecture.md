@@ -43,6 +43,13 @@ detached views of the aligned payload row, including scope and official page pro
 retrieves evidence candidates only; the freshness gate owns stale-input checks, while applicant
 applicability and answer composition remain later reasoning layers.
 
+Lexical retrieval is a parallel candidate generator over the same ordered payload rows. A versioned,
+dependency-free tokenizer applies Unicode normalization, preserves numeric and Latin identifiers,
+and emits overlapping Japanese 2/3-grams. Fixed-constant BM25 scoring sorts by descending score and
+ascending row index, excludes zero-score rows, and returns detached evidence with Fact identity and
+page provenance. It does not fuse vector results or decide applicant applicability. See
+[Lexical Retrieval](evaluation/lexical-retrieval.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may
