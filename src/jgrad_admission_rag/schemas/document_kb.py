@@ -13,7 +13,7 @@ class KnowledgeManifest(BaseModel):
     source_pdf: str
     pdf_sha256: str
     builder_version: str = "0.1.0"
-    schema_version: str = "0.1"
+    schema_version: str = "0.2"
     chunk_count: int
     reference_link_count: int = 0
 
@@ -36,6 +36,7 @@ class ScopedFact(BaseModel):
     title: str = ""
     text: str
     source_pages: list[int] = Field(default_factory=list)
+    section_path: list[str] = Field(default_factory=list)
     evidence: list[str] = Field(default_factory=list)
     confidence: float = 0.5
     embedding_text: str
@@ -47,6 +48,7 @@ class RetrievalUnit(BaseModel):
     fact_id: str
     text: str
     source_pages: list[int] = Field(default_factory=list)
+    section_path: list[str] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 

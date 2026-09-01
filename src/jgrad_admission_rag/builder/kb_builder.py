@@ -117,6 +117,7 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
         for part in [
             f"category: {item.category}",
             f"scope: {scope_type} {' '.join(scope_targets)}",
+            f"section_path: {' > '.join(item.section_path)}" if item.section_path else "",
             f"title: {title}",
             item.text_preview or item.text[:500],
         ]
@@ -131,6 +132,7 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
         title=title,
         text=item.text,
         source_pages=item.pages,
+        section_path=item.section_path,
         evidence=evidence,
         confidence=confidence,
         embedding_text=embedding_text,
@@ -151,6 +153,7 @@ def fact_to_retrieval_unit(fact: ScopedFact) -> RetrievalUnit:
         fact_id=fact.fact_id,
         text=text,
         source_pages=fact.source_pages,
+        section_path=fact.section_path,
         metadata={"scope_type": fact.scope_type, "scope_targets": fact.scope_targets},
     )
 
