@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import os
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,7 @@ from jgrad_admission_rag.retrieval.hybrid_search import (
     search_hybrid_index,
 )
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
+from jgrad_admission_rag.retrieval.index_freshness import load_fresh_index_context
 from jgrad_admission_rag.retrieval.lexical_search import build_lexical_searcher
 from jgrad_admission_rag.retrieval.metadata_search import (
     MetadataFilter,
@@ -36,6 +38,7 @@ from jgrad_admission_rag.retrieval.metadata_search import (
     search_metadata_index,
 )
 from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, search_local_index
+from jgrad_admission_rag.retrieval.reference_expansion import expand_references
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -1167,3 +1170,82 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert outcome_sha256 == ("63435b491631a3af506e8b17e70ef6248e4302e75a02b2e4a26cfb1c505aeee4")
+
+
+def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index = load_local_index(index_dir, mmap=True)
+    context = load_fresh_index_context(index, kb_path, provider.identity)
+
+    all_hits = search_metadata_index(
+        index,
+        "出願資格",
+        provider,
+        top_k=298,
+        candidate_k=298,
+    ).hits
+    all_expansion = expand_references(index, context, all_hits)
+
+    assert all_expansion.authoritative_claim_count == 141
+    assert all_expansion.authoritative_status_counts == {
+        "resolved": 7,
+        "ambiguous": 6,
+        "unresolved": 128,
+    }
+    assert all_expansion.expanded_claim_count == 141
+    assert all_expansion.expanded_status_counts == all_expansion.authoritative_status_counts
+    assert all_expansion.disposition_counts == {
+        "attached_target": 0,
+        "already_primary": 7,
+        "ambiguous": 6,
+        "unresolved": 128,
+    }
+    assert all_expansion.resolved_relation_count == 7
+    assert all_expansion.unique_expanded_target_count == 0
+    assert all_expansion.expanded_targets == ()
+    visible_claims = [
+        claim for candidate in all_expansion.candidate_expansions for claim in candidate.claims
+    ]
+    assert len(visible_claims) == 141
+    assert all(
+        claim.target_row_index is None and claim.already_primary_rank is None
+        for claim in visible_claims
+        if claim.status != "resolved"
+    )
+
+    source_fact_ids = ("fact:00057", "fact:00064")
+    source_hits = tuple(
+        replace(next(hit for hit in all_hits if hit.fact_id == fact_id), rank=rank)
+        for rank, fact_id in enumerate(source_fact_ids, start=1)
+    )
+    query_expansion = expand_references(index, context, source_hits)
+    assert [target.fact_id for target in query_expansion.expanded_targets] == [
+        "fact:00058",
+        "fact:00059",
+        "fact:00065",
+        "fact:00066",
+    ]
+    resolved_pairs = {
+        (claim.source_fact_id, claim.selected_target_fact_id)
+        for candidate in query_expansion.candidate_expansions
+        for claim in candidate.claims
+        if claim.status == "resolved"
+    }
+    assert ("fact:00057", "fact:00059") in resolved_pairs
+    assert ("fact:00064", "fact:00066") in resolved_pairs

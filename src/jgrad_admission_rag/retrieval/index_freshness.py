@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+from ..schemas.document_kb import DocumentKnowledgeBase
 from ..schemas.index import IndexManifest, validate_source_kb_compatibility
 from .embedding import EmbeddingIdentity
 from .local_index import LocalVectorIndex
@@ -43,12 +44,28 @@ class IndexFreshnessReport:
     checked_fields: tuple[str, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class FreshIndexContext:
+    freshness: IndexFreshnessReport
+    knowledge_base: DocumentKnowledgeBase
+
+
 def check_index_freshness(
     index: IndexManifest | LocalVectorIndex,
     current_kb_path: str | Path,
     declared_identity: EmbeddingIdentity,
 ) -> IndexFreshnessReport:
     """Compare a validated index with exact current KB bytes and declared provider identity."""
+
+    return load_fresh_index_context(index, current_kb_path, declared_identity).freshness
+
+
+def load_fresh_index_context(
+    index: IndexManifest | LocalVectorIndex,
+    current_kb_path: str | Path,
+    declared_identity: EmbeddingIdentity,
+) -> FreshIndexContext:
+    """Read the current KB once and retain the exact validated object used for freshness."""
 
     manifest = index.manifest if isinstance(index, LocalVectorIndex) else index
     if not isinstance(manifest, IndexManifest):
@@ -89,8 +106,12 @@ def check_index_freshness(
     )
     if mismatches:
         raise StaleIndexError(mismatches)
-    return IndexFreshnessReport(
+    report = IndexFreshnessReport(
         fresh=True,
         current_kb_sha256=source.sha256,
         checked_fields=FRESHNESS_CHECKED_FIELDS,
+    )
+    return FreshIndexContext(
+        freshness=report,
+        knowledge_base=source.knowledge_base.model_copy(deep=True),
     )
