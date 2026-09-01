@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from jgrad_admission_rag.builder.chunker import SourcePage, chunk_pages
+from jgrad_admission_rag.builder.chunk_filter import classify_chunk, filter_chunks
+from jgrad_admission_rag.builder.chunker import SourcePage, TextChunk, chunk_pages
 from jgrad_admission_rag.builder.document_index import (
     IndexedChunk,
     build_document_index,
@@ -12,6 +13,103 @@ from jgrad_admission_rag.builder.kb_builder import (
     infer_scope,
     indexed_chunk_to_fact,
 )
+
+
+def _text_chunk(
+    text: str,
+    *,
+    title: str = "",
+    page: int = 1,
+    section_path: list[str] | None = None,
+) -> TextChunk:
+    return TextChunk(
+        pdf_name="sample.pdf",
+        page_numbers=[page],
+        title=title,
+        text=text,
+        section_path=section_path or ([title] if title else []),
+    )
+
+
+def test_classify_chunk_uses_only_exact_non_informative_rules() -> None:
+    assert classify_chunk(_text_chunk(" \n\t")) == "whitespace_only"
+    assert classify_chunk(_text_chunk("## Page 7\n\n  ")) == "page_only"
+    assert classify_chunk(_text_chunk("## Page 7\n\n[Documents]", title="[Documents]")) == (
+        "heading_only"
+    )
+    for short_fact in ["目 次", "2027-04-01", "30,000円", "情報工学系"]:
+        assert classify_chunk(_text_chunk(short_fact)) == "informative"
+
+
+def test_filter_chunks_drops_noise_and_preserves_informative_order() -> None:
+    chunks = [
+        _text_chunk("first"),
+        _text_chunk("## Page 2", page=2),
+        _text_chunk(" \n", page=3),
+        _text_chunk("30,000円", page=4),
+    ]
+
+    filtered, summary = filter_chunks(chunks)
+
+    assert [chunk.text for chunk in filtered] == ["first", "30,000円"]
+    assert summary.input_chunk_count == 4
+    assert summary.dropped_chunk_count == 2
+    assert summary.dropped_chunk_reasons == {
+        "whitespace_only": 1,
+        "page_only": 1,
+        "heading_only_unmerged": 0,
+    }
+    assert summary.merged_heading_count == 0
+
+
+def test_filter_chunks_merges_heading_with_following_exact_metadata() -> None:
+    heading = _text_chunk("## Page 7\n\n[Documents]", title="[Documents]", page=7)
+    body = _text_chunk("required forms", title="[Documents]", page=8)
+
+    filtered, summary = filter_chunks([heading, body])
+
+    assert len(filtered) == 1
+    assert filtered[0].text == "[Documents]\n\nrequired forms"
+    assert filtered[0].page_numbers == [7, 8]
+    assert filtered[0].section_path == ["[Documents]"]
+    assert summary.merged_heading_count == 1
+
+
+def test_filter_chunks_merges_heading_backward_without_duplication() -> None:
+    body = _text_chunk("[Documents]\nrequired forms", title="[Documents]", page=7)
+    heading = _text_chunk("[Documents]", title="[Documents]", page=8)
+
+    filtered, summary = filter_chunks([body, heading])
+
+    assert filtered[0].text == "[Documents]\nrequired forms"
+    assert filtered[0].page_numbers == [7, 8]
+    assert summary.merged_heading_count == 1
+
+
+def test_filter_chunks_prefers_following_exact_merge_target() -> None:
+    preceding = _text_chunk("earlier body", title="[Documents]", page=6)
+    heading = _text_chunk("[Documents]", title="[Documents]", page=7)
+    following = _text_chunk("later body", title="[Documents]", page=8)
+
+    filtered, summary = filter_chunks([preceding, heading, following])
+
+    assert [chunk.text for chunk in filtered] == [
+        "earlier body",
+        "[Documents]\n\nlater body",
+    ]
+    assert filtered[0].page_numbers == [6]
+    assert filtered[1].page_numbers == [7, 8]
+    assert summary.merged_heading_count == 1
+
+
+def test_filter_chunks_drops_heading_without_exact_adjacent_metadata() -> None:
+    heading = _text_chunk("[Documents]", title="[Documents]", page=7)
+    body = _text_chunk("required forms", title="[Other]", page=8)
+
+    filtered, summary = filter_chunks([heading, body])
+
+    assert [chunk.text for chunk in filtered] == ["required forms"]
+    assert summary.dropped_chunk_reasons["heading_only_unmerged"] == 1
 
 
 def test_chunk_pages_preserves_page_without_visible_marker() -> None:
