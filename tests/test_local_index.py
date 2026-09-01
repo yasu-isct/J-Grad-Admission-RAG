@@ -290,6 +290,57 @@ def test_existing_target_is_rejected_without_mutation(tmp_path: Path, target_kin
     assert after == before
 
 
+def test_dangling_output_symlink_is_rejected_without_target_or_staging(tmp_path: Path) -> None:
+    kb_path = tmp_path / "kb.json"
+    _write_kb(kb_path)
+    destination = tmp_path / "missing-destination"
+    output_link = tmp_path / "index"
+    try:
+        output_link.symlink_to(destination, target_is_directory=True)
+    except OSError as error:
+        pytest.skip(f"platform does not permit test symlink creation: {error}")
+
+    assert output_link.is_symlink()
+    assert not output_link.exists()
+    original_link_target = output_link.readlink()
+
+    with pytest.raises(IndexBuildError, match="symbolic link"):
+        build_local_index(kb_path, output_link, StaticProvider([[1, 0, 0], [0, 1, 0]]))
+
+    assert output_link.is_symlink()
+    assert output_link.readlink() == original_link_target
+    assert not destination.exists()
+    assert list(tmp_path.glob(".index.tmp-*")) == []
+
+
+def test_raw_output_symlink_check_precedes_absolute_path_and_parent_work(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    kb_path = tmp_path / "kb.json"
+    _write_kb(kb_path)
+    requested = tmp_path / "index"
+    original_is_symlink = Path.is_symlink
+    absolute_calls = []
+
+    def report_requested_symlink(path: Path) -> bool:
+        return path == requested or original_is_symlink(path)
+
+    def forbidden_abspath(path) -> str:
+        absolute_calls.append(path)
+        raise AssertionError("absolute path conversion must not run for an output symlink")
+
+    monkeypatch.setattr(Path, "is_symlink", report_requested_symlink)
+    monkeypatch.setattr(local_index_module.os.path, "abspath", forbidden_abspath)
+
+    with pytest.raises(IndexBuildError, match="symbolic link"):
+        build_local_index(kb_path, requested, StaticProvider([[1, 0, 0], [0, 1, 0]]))
+
+    assert absolute_calls == []
+    assert not requested.exists()
+    assert list(tmp_path.glob(".index.tmp-*")) == []
+
+
 @pytest.mark.parametrize(
     "failure_phase",
     [

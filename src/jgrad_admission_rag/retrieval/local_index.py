@@ -61,7 +61,10 @@ def build_local_index(
 ) -> IndexManifest:
     """Build, validate, and atomically publish a new local index directory."""
 
-    target = Path(output_dir).resolve(strict=False)
+    requested_target = Path(output_dir)
+    if requested_target.is_symlink():
+        raise IndexBuildError("output target must not be a symbolic link")
+    target = Path(os.path.abspath(requested_target))
     if target.exists() or target.is_symlink():
         raise IndexBuildError("output target already exists")
     parent = target.parent
