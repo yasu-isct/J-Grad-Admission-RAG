@@ -20,6 +20,7 @@ from ..schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from ..retrieval.embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
 from ..utils import ensure_dir, sha256_file, write_json
 
 COLLEGE_DEPARTMENTS = {
@@ -118,18 +119,7 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
     scope_type, scope_targets, parent_college, confidence = infer_scope(item)
     evidence = [item.text_preview] if item.text_preview else []
     title = item.title.strip() or f"Chunk {item.chunk_id}"
-    embedding_text = "\n".join(
-        part
-        for part in [
-            f"category: {item.category}",
-            f"scope: {scope_type} {' '.join(scope_targets)}",
-            f"section_path: {' > '.join(item.section_path)}" if item.section_path else "",
-            f"title: {title}",
-            item.text_preview or item.text[:500],
-        ]
-        if part
-    )
-    return ScopedFact(
+    fact = ScopedFact(
         fact_id=f"fact:{item.chunk_id:05d}",
         fact_type=item.category,
         scope_type=scope_type,
@@ -141,7 +131,7 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
         section_path=item.section_path,
         evidence=evidence,
         confidence=confidence,
-        embedding_text=embedding_text,
+        embedding_text="",
         metadata={
             "chunk_id": item.chunk_id,
             "pdf_name": item.pdf_name,
@@ -152,20 +142,24 @@ def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
                 if item.oversize_reason is not None
                 else {}
             ),
+            "embedding_text_version": EMBEDDING_TEXT_VERSION,
         },
     )
+    return fact.model_copy(update={"embedding_text": build_embedding_text(fact)})
 
 
 def fact_to_retrieval_unit(fact: ScopedFact) -> RetrievalUnit:
-    scope = " / ".join(fact.scope_targets) if fact.scope_targets else fact.scope_type
-    text = f"[{fact.fact_type}] [{scope}] {fact.title}\n{fact.embedding_text}"
     return RetrievalUnit(
         unit_id=f"unit:{fact.fact_id.removeprefix('fact:')}",
         fact_id=fact.fact_id,
-        text=text,
-        source_pages=fact.source_pages,
-        section_path=fact.section_path,
-        metadata={"scope_type": fact.scope_type, "scope_targets": fact.scope_targets},
+        text=build_embedding_text(fact),
+        source_pages=list(fact.source_pages),
+        section_path=list(fact.section_path),
+        metadata={
+            "scope_type": fact.scope_type,
+            "scope_targets": list(fact.scope_targets),
+            "embedding_text_version": EMBEDDING_TEXT_VERSION,
+        },
     )
 
 

@@ -75,7 +75,7 @@ def test_document_kb_schema_reads_older_versions_without_filter_summary() -> Non
         ],
     }
 
-    for version in ("0.1", "0.2", "0.3", "0.4"):
+    for version in ("0.1", "0.2", "0.3", "0.4", "0.5"):
         payload["manifest"]["schema_version"] = version
         restored = DocumentKnowledgeBase.model_validate(payload)
         assert restored.manifest.schema_version == version

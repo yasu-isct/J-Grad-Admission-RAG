@@ -18,6 +18,12 @@ The synchronous `EmbeddingProvider` boundary validates text and fixed-width vect
 dependency. Its immutable `EmbeddingIdentity` maps provider, model, revision, and dimension directly
 to the corresponding IDX-01 manifest fields.
 
+Canonical embedding text is a pure, versioned projection of each authoritative `ScopedFact`.
+Version `1` emits fact type, scope, section path, title, then the complete Fact text after a `text:`
+marker. New Facts and RetrievalUnits record `embedding_text_version` in metadata and share the same
+projection; the projection adds retrieval context but is never evidence or a replacement for Fact
+text and source pages.
+
 ## Current MVP
 
 The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,
