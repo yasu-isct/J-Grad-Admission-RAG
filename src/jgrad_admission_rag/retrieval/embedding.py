@@ -79,7 +79,7 @@ def embed_documents_checked(
     provider_input = tuple(texts)
     try:
         vectors = provider.embed_documents(provider_input)
-    except EmbeddingProviderError:
+    except EmbeddingError:
         raise
     except Exception as error:
         raise EmbeddingProviderError("embed_documents provider call failed") from error
@@ -92,7 +92,7 @@ def embed_query_checked(provider: EmbeddingProvider, text: str) -> list[float]:
     _validate_text(text, operation="embed_query")
     try:
         vector = provider.embed_query(text)
-    except EmbeddingProviderError:
+    except EmbeddingError:
         raise
     except Exception as error:
         raise EmbeddingProviderError("embed_query provider call failed") from error

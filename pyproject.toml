@@ -34,6 +34,7 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 markers = [
     "real_pdf: offline regression tests that require the private real admission PDF fixture",
+    "model_integration: opt-in tests requiring an explicitly configured local model/cache",
 ]
 
 [tool.ruff]

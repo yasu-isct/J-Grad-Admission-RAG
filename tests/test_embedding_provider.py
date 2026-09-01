@@ -176,6 +176,18 @@ def test_existing_provider_error_is_not_double_wrapped() -> None:
 
 
 @pytest.mark.parametrize(
+    "boundary_error", [EmbeddingInputError("input"), EmbeddingOutputError("output")]
+)
+def test_checked_calls_preserve_public_boundary_errors(boundary_error: Exception) -> None:
+    provider = SyntheticProvider(error=boundary_error)
+
+    with pytest.raises(type(boundary_error)) as captured:
+        embed_query_checked(provider, "出願資格")
+
+    assert captured.value is boundary_error
+
+
+@pytest.mark.parametrize(
     ("output", "message"),
     [
         ([], "row count mismatch"),
