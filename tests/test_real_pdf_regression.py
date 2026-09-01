@@ -80,6 +80,7 @@ def test_real_pdf_knowledge_base_matches_baseline(
 ) -> None:
     expected = real_pdf_manifest["expected"]
     manifest = real_document_kb.manifest
+    assert manifest.schema_version == "0.2"
     assert manifest.pdf_sha256 == real_pdf_manifest["sha256"]
     assert manifest.chunk_count == expected["chunk_count"]
     assert manifest.reference_link_count == expected["reference_link_count"]
@@ -89,6 +90,8 @@ def test_real_pdf_knowledge_base_matches_baseline(
 
     assert all(fact.source_pages for fact in real_document_kb.facts)
     assert all(unit.source_pages for unit in real_document_kb.retrieval_units)
+    assert all(fact.section_path for fact in real_document_kb.facts)
+    assert all(unit.section_path for unit in real_document_kb.retrieval_units)
     assert all(
         1 <= page <= expected["page_count"]
         for fact in real_document_kb.facts
@@ -100,8 +103,13 @@ def test_real_pdf_knowledge_base_matches_baseline(
     assert len(fact_ids) == len(set(fact_ids))
     assert {unit.fact_id for unit in real_document_kb.retrieval_units} == set(fact_ids)
     pages_by_fact = {fact.fact_id: fact.source_pages for fact in real_document_kb.facts}
+    paths_by_fact = {fact.fact_id: fact.section_path for fact in real_document_kb.facts}
     assert all(
         unit.source_pages == pages_by_fact[unit.fact_id]
+        for unit in real_document_kb.retrieval_units
+    )
+    assert all(
+        unit.section_path == paths_by_fact[unit.fact_id]
         for unit in real_document_kb.retrieval_units
     )
 

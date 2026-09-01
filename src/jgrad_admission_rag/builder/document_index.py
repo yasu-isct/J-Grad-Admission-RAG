@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -26,10 +26,10 @@ KANJI_NUMBERS = {
 
 FULLWIDTH_DIGITS = str.maketrans("０１２３４５６７８９", "0123456789")
 
-ITEM_ANCHOR_RE = re.compile(r"(?m)^\s*[\(\uFF08]([0-9\uFF10-\uFF19一二三四五六七八九十]+)[\)\uFF09]")
-SECTION_ANCHOR_RE = re.compile(
-    r"(?m)^\s*([0-9\uFF10-\uFF19]+)[\.\uFF0E\u3001]\s*([^\n]{1,80})"
+ITEM_ANCHOR_RE = re.compile(
+    r"(?m)^\s*[\(\uFF08]([0-9\uFF10-\uFF19一二三四五六七八九十]+)[\)\uFF09]"
 )
+SECTION_ANCHOR_RE = re.compile(r"(?m)^\s*([0-9\uFF10-\uFF19]+)[\.\uFF0E\u3001]\s*([^\n]{1,80})")
 REFERENCE_RE = re.compile(
     r"(?P<context>下記|上記|前記|次の各号|各号|別紙|附録|付録|表|第)"
     r"\s*(?:[\(\uFF08]?(?P<number>[0-9\uFF10-\uFF19一二三四五六七八九十]+)[\)\uFF09]?)?"
@@ -67,6 +67,7 @@ class IndexedChunk:
     text_preview: str
     anchors: list[Anchor]
     references: list[Reference]
+    section_path: list[str] = field(default_factory=list)
 
 
 def normalize_number(value: str | None) -> str:
@@ -178,6 +179,7 @@ def build_document_index(chunks: list[TextChunk]) -> list[IndexedChunk]:
                 text_preview=compact[:300],
                 anchors=extract_anchors(chunk.text, chunk.title),
                 references=extract_references(chunk.text, chunk.title),
+                section_path=list(chunk.section_path),
             )
         )
     return indexed
@@ -205,6 +207,7 @@ def load_document_index(path: str | Path) -> list[IndexedChunk]:
             text_preview=item.get("text_preview", ""),
             anchors=[Anchor(**anchor) for anchor in item.get("anchors", [])],
             references=[Reference(**reference) for reference in item.get("references", [])],
+            section_path=item.get("section_path", []),
         )
         for item in payload
     ]
@@ -213,11 +216,15 @@ def load_document_index(path: str | Path) -> list[IndexedChunk]:
 def write_document_index(index: list[IndexedChunk], output: str | Path) -> None:
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(index_to_dict(index), ensure_ascii=False, indent=2), encoding="utf-8")
+    output.write_text(
+        json.dumps(index_to_dict(index), ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build a lightweight full-text document index for chunks.")
+    parser = argparse.ArgumentParser(
+        description="Build a lightweight full-text document index for chunks."
+    )
     parser.add_argument("chunks_json")
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
@@ -225,7 +232,9 @@ def main() -> None:
     chunks = load_chunks(args.chunks_json)
     index = build_document_index(chunks)
     chunks_path = Path(args.chunks_json)
-    output = Path(args.output) if args.output else ensure_dir(chunks_path.parent) / "document_index.json"
+    output = (
+        Path(args.output) if args.output else ensure_dir(chunks_path.parent) / "document_index.json"
+    )
     write_document_index(index, output)
     print(
         json.dumps(

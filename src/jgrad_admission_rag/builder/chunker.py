@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Sequence
 
@@ -14,6 +14,9 @@ TITLE_RE = re.compile(
     re.MULTILINE,
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
+MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
+BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\])$")
+PARENTHESIZED_TITLE_RE = re.compile(r"^[（(][0-9０-９一二三四五六七八九十]+[）)]")
 
 
 @dataclass
@@ -22,6 +25,7 @@ class TextChunk:
     page_numbers: list[int]
     title: str
     text: str
+    section_path: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -39,6 +43,34 @@ class _TextSlice:
     text: str
     start: int
     end: int
+
+
+@dataclass
+class _HeadingStack:
+    major: str | None = None
+    bracketed: str | None = None
+    parenthesized: str | None = None
+
+    def update(self, title: str) -> list[str]:
+        title = title.strip()
+        if MAJOR_TITLE_RE.match(title):
+            self.major = title
+            self.bracketed = None
+            self.parenthesized = None
+        elif BRACKETED_TITLE_RE.match(title):
+            self.bracketed = title
+            self.parenthesized = None
+        elif PARENTHESIZED_TITLE_RE.match(title):
+            self.parenthesized = title
+        else:
+            return [title] if title else []
+
+        path = [heading for heading in (self.major, self.bracketed, self.parenthesized) if heading]
+        return [
+            heading
+            for index, heading in enumerate(path)
+            if index == 0 or heading != path[index - 1]
+        ]
 
 
 def _page_numbers(text: str) -> list[int]:
@@ -165,20 +197,22 @@ def _chunk_markdown(
     page_spans: Sequence[tuple[int, int, int]] | None,
 ) -> list[TextChunk]:
     matches = list(TITLE_RE.finditer(markdown))
-    sections: list[tuple[str, _TextSlice]] = []
+    sections: list[tuple[str, list[str], _TextSlice]] = []
     if matches:
+        heading_stack = _HeadingStack()
         for i, match in enumerate(matches):
             start = match.start()
             end = matches[i + 1].start() if i + 1 < len(matches) else len(markdown)
             section = _strip_slice(markdown, start, end)
             if section:
-                sections.append((match.group(0).strip(), section))
+                title = match.group(0).strip()
+                sections.append((title, heading_stack.update(title), section))
     else:
         section = _strip_slice(markdown, 0, len(markdown))
-        sections = [("", section)] if section else []
+        sections = [("", [], section)] if section else []
 
     chunks: list[TextChunk] = []
-    for title, section in sections:
+    for title, section_path, section in sections:
         for page_part in _split_on_page_boundaries(section):
             if page_part.text == title:
                 continue
@@ -189,6 +223,7 @@ def _chunk_markdown(
                         page_numbers=_source_pages_for_slice(part, page_spans),
                         title=title,
                         text=part.text,
+                        section_path=list(section_path),
                     )
                 )
     return chunks
