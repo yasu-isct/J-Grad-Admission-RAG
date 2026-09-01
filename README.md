@@ -170,6 +170,27 @@ jgrad-search outputs\index\sample-bge-m3 `
 Matching is exact and caller-supplied; the command does not infer department, college, degree, year,
 or intake from the question. See [the metadata retrieval contract](docs/evaluation/metadata-retrieval.md).
 
+Authoritative one-hop references can also be expanded in hybrid mode. This preserves the ranked
+`results` array and adds a separate `reference_expansion` object containing resolved target evidence
+plus visible ambiguous and unresolved diagnostics:
+
+```powershell
+jgrad-search outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
+  --query "主な出願資格の下記（3）の条件" `
+  --retrieval-mode hybrid `
+  --expand-references `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+Only builder-resolved targets become evidence. Ambiguous and unresolved claims are reported without
+guessing, and expansion never changes primary ranks or recursively follows the attached target. See
+[the reference expansion contract](docs/evaluation/reference-expansion.md).
+
 ## Sentence Transformers Adapter
 
 Install the optional model runtime separately with `python -m pip install -e .[embedding]`. The

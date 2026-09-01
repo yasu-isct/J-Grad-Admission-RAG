@@ -16,6 +16,7 @@ from jgrad_admission_rag.retrieval.index_freshness import (
     CurrentKbInputError,
     StaleIndexError,
     check_index_freshness,
+    load_fresh_index_context,
 )
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
 from jgrad_admission_rag.schemas.document_kb import (
@@ -106,6 +107,23 @@ def test_exact_unchanged_bytes_and_identity_report_fresh_deterministically(
     assert first.checked_fields == FRESHNESS_CHECKED_FIELDS
     with pytest.raises(FrozenInstanceError):
         first.fresh = False
+
+
+def test_fresh_context_reuses_report_and_returns_detached_validated_kb(tmp_path: Path) -> None:
+    kb_path, _index_dir, index = _build(tmp_path)
+
+    context = load_fresh_index_context(index, kb_path, FAKE_IDENTITY)
+    second = load_fresh_index_context(index, kb_path, FAKE_IDENTITY)
+
+    assert context.freshness == check_index_freshness(index, kb_path, FAKE_IDENTITY)
+    assert context.knowledge_base == _knowledge_base()
+    detached = context.knowledge_base
+    detached.facts[0].text = "changed"
+    assert context.knowledge_base.facts[0].text == "出願資格の本文"
+    assert second.knowledge_base.facts[0].text == "出願資格の本文"
+    assert b"changed" not in kb_path.read_bytes()
+    with pytest.raises(FrozenInstanceError):
+        context.freshness = second.freshness
 
 
 def test_whitespace_only_byte_change_is_stale_without_mutation(tmp_path: Path) -> None:

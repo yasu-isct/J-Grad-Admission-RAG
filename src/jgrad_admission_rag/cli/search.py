@@ -12,7 +12,9 @@ from ..retrieval.index_freshness import (
     IndexFreshnessReport,
     StaleIndexError,
     check_index_freshness,
+    load_fresh_index_context,
 )
+from ..retrieval.reference_expansion import ReferenceExpansionError, expand_references
 from ..retrieval.hybrid_search import (
     HybridInputError,
     HybridSearchError,
@@ -54,6 +56,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--query", required=True, help="Non-blank retrieval query.")
     parser.add_argument("--top-k", type=positive_int, default=5)
     parser.add_argument("--retrieval-mode", choices=("vector", "hybrid"), default="vector")
+    parser.add_argument("--expand-references", action="store_true")
     parser.add_argument("--candidate-k", type=positive_int)
     parser.add_argument("--filter-fact-type", action="append")
     parser.add_argument("--filter-scope-type", action="append")
@@ -188,6 +191,8 @@ def main(argv: Sequence[str] | None = None) -> None:
             raise CliConfigurationError("--candidate-k requires --retrieval-mode hybrid")
         if args.retrieval_mode == "vector" and metadata_requested:
             raise CliConfigurationError("metadata options require --retrieval-mode hybrid")
+        if args.retrieval_mode == "vector" and args.expand_references:
+            raise CliConfigurationError("--expand-references requires --retrieval-mode hybrid")
         metadata_filter = None
         scope_preference = None
         if args.retrieval_mode == "hybrid":
@@ -207,7 +212,12 @@ def main(argv: Sequence[str] | None = None) -> None:
             except (HybridInputError, MetadataInputError) as error:
                 raise CliConfigurationError(str(error)) from error
         index = load_local_index(args.index, mmap=True)
-        freshness = check_index_freshness(index, args.current_kb, configuration.identity)
+        fresh_context = None
+        if args.expand_references:
+            fresh_context = load_fresh_index_context(index, args.current_kb, configuration.identity)
+            freshness = fresh_context.freshness
+        else:
+            freshness = check_index_freshness(index, args.current_kb, configuration.identity)
         provider = create_provider(configuration)
         if args.retrieval_mode == "vector":
             result = search_loaded_index(index, args.query, provider, top_k=args.top_k)
@@ -229,6 +239,10 @@ def main(argv: Sequence[str] | None = None) -> None:
                 top_k=args.top_k,
                 candidate_k=args.candidate_k,
             )
+        reference_expansion = None
+        if args.expand_references:
+            assert fresh_context is not None
+            reference_expansion = expand_references(index, fresh_context, result.hits)
     except CliConfigurationError as error:
         _write_json(
             {"error": str(error), "kind": "configuration_error", "provider": args.provider},
@@ -276,6 +290,12 @@ def main(argv: Sequence[str] | None = None) -> None:
             stream=sys.stderr,
         )
         raise SystemExit(2) from None
+    except ReferenceExpansionError as error:
+        _write_json(
+            {"error": str(error), "kind": "reference_expansion_error", "provider": args.provider},
+            stream=sys.stderr,
+        )
+        raise SystemExit(2) from None
     except EmbeddingError as error:
         _write_json(
             {"error": str(error), "kind": "embedding_error", "provider": args.provider},
@@ -289,6 +309,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         summary = _hybrid_success_summary(result, Path(args.index), freshness)
     else:
         summary = _metadata_success_summary(result, Path(args.index), freshness)
+    if reference_expansion is not None:
+        summary["reference_expansion"] = reference_expansion.to_dict()
     _write_json(summary, stream=sys.stdout)
 
 

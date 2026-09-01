@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+from ..schemas.document_kb import DocumentKnowledgeBase
 from ..schemas.index import IndexManifest, validate_source_kb_compatibility
 from .embedding import EmbeddingIdentity
 from .local_index import LocalVectorIndex
@@ -43,12 +44,47 @@ class IndexFreshnessReport:
     checked_fields: tuple[str, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class FreshIndexContext:
+    freshness: IndexFreshnessReport
+    _knowledge_base_snapshot: bytes
+
+    @classmethod
+    def from_knowledge_base(
+        cls,
+        freshness: IndexFreshnessReport,
+        knowledge_base: DocumentKnowledgeBase,
+    ) -> FreshIndexContext:
+        """Freeze a validated KB snapshot while exposing only detached parsed copies."""
+
+        if not isinstance(knowledge_base, DocumentKnowledgeBase):
+            raise TypeError("knowledge_base must be a DocumentKnowledgeBase")
+        return cls(
+            freshness=freshness,
+            _knowledge_base_snapshot=knowledge_base.model_dump_json().encode("utf-8"),
+        )
+
+    @property
+    def knowledge_base(self) -> DocumentKnowledgeBase:
+        return DocumentKnowledgeBase.model_validate_json(self._knowledge_base_snapshot)
+
+
 def check_index_freshness(
     index: IndexManifest | LocalVectorIndex,
     current_kb_path: str | Path,
     declared_identity: EmbeddingIdentity,
 ) -> IndexFreshnessReport:
     """Compare a validated index with exact current KB bytes and declared provider identity."""
+
+    return load_fresh_index_context(index, current_kb_path, declared_identity).freshness
+
+
+def load_fresh_index_context(
+    index: IndexManifest | LocalVectorIndex,
+    current_kb_path: str | Path,
+    declared_identity: EmbeddingIdentity,
+) -> FreshIndexContext:
+    """Read the current KB once and retain the exact validated object used for freshness."""
 
     manifest = index.manifest if isinstance(index, LocalVectorIndex) else index
     if not isinstance(manifest, IndexManifest):
@@ -89,8 +125,9 @@ def check_index_freshness(
     )
     if mismatches:
         raise StaleIndexError(mismatches)
-    return IndexFreshnessReport(
+    report = IndexFreshnessReport(
         fresh=True,
         current_kb_sha256=source.sha256,
         checked_fields=FRESHNESS_CHECKED_FIELDS,
     )
+    return FreshIndexContext.from_knowledge_base(report, source.knowledge_base)
