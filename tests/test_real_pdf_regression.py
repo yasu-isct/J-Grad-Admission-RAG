@@ -10,6 +10,7 @@ from typing import Any
 import numpy as np
 import pytest
 
+from jgrad_admission_rag.cli import build_index as build_index_cli
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -450,3 +451,53 @@ def test_real_pdf_local_index_is_aligned_normalized_and_byte_deterministic(
 
     for filename in ("manifest.json", "payloads.jsonl", "embeddings.npy"):
         assert (first_dir / filename).read_bytes() == (second_dir / filename).read_bytes()
+
+
+def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
+    tmp_path: Path,
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+    capsys,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    output = tmp_path / "cli-index"
+
+    build_index_cli.main(
+        [
+            str(kb_path),
+            "--output",
+            str(output),
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    loaded = load_local_index(output, mmap=True)
+    expected = real_pdf_manifest["expected"]
+    assert captured.err == ""
+    assert len(captured.out.splitlines()) == 1
+    assert summary["payload_count"] == summary["vector_count"] == 298
+    assert summary["embedding_dimension"] == 8
+    assert summary["payloads_sha256"] == expected["index_payloads_sha256"]
+    assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
+    assert loaded.vectors.shape == (298, 8)
+    assert loaded.manifest.payloads_sha256 == (
+        "f1530da8b93f7ae0e816e43bbde0464c453b4d308743f28a2b03029ca0e4beb3"
+    )
+    assert loaded.manifest.vectors_sha256 == (
+        "0b77bb53b6dcca385ce432febbcab74f07cef49963262b5d5026e86751117129"
+    )
