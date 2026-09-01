@@ -117,11 +117,39 @@
     "entity_count": 25,
     "fact_count": 298,
     "retrieval_unit_count": 298,
-    "reference_link_count": 13,
+    "reference_link_count": 7,
     "chunk_size_limit": 6000,
     "max_chunk_chars": 5993,
     "oversized_chunk_count": 0,
     "oversized_chunk_reasons": {},
+    "short_fact_threshold": 100,
+    "short_fact_count": 79,
+    "unknown_scope_fact_count": 170,
+    "raw_reference_occurrence_count": 215,
+    "reference_claim_count": 141,
+    "reference_status_counts": {
+      "resolved": 7,
+      "ambiguous": 6,
+      "unresolved": 128
+    },
+    "fact_content_sha256": "ff93295599a6b233bbd2dc065981e2b927ab4a628244c3949405303a6b0915eb",
+    "resolved_reference_claims": [
+      ["fact:00014", "上記1", "fact:00008"],
+      ["fact:00057", "下記（２）", "fact:00058"],
+      ["fact:00057", "下記（３）", "fact:00059"],
+      ["fact:00064", "下記（２）", "fact:00065"],
+      ["fact:00064", "下記（３）", "fact:00066"],
+      ["fact:00075", "下記１", "fact:00078"],
+      ["fact:00077", "上記（１）", "fact:00072"]
+    ],
+    "removed_ambiguous_links": [
+      ["fact:00022", "上記1", "fact:00016"],
+      ["fact:00023", "上記1", "fact:00016"],
+      ["fact:00057", "下記（１）", "fact:00084"],
+      ["fact:00064", "下記（１）", "fact:00084"],
+      ["fact:00071", "上記（１）", "fact:00016"],
+      ["fact:00081", "下記１", "fact:00084"]
+    ],
     "kb05_split_transitions": {
       "22": [8754, 5437, 3315],
       "29": [6147, 3635, 2510],

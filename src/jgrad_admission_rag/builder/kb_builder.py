@@ -4,14 +4,19 @@ from dataclasses import asdict
 from pathlib import Path
 
 from .chunker import SourcePage, TextChunk, chunk_pages
-from .chunk_filter import filter_chunks
+from .chunk_filter import classify_chunk, filter_chunks
 from .document_index import IndexedChunk, build_document_index
 from .extractor import extract_pdf
-from .reference_resolver import resolve_references
+from .reference_resolver import ReferenceResolution, classify_reference_claims
 from ..schemas.document_kb import (
+    BuildDiagnostics,
+    BuildQualityThresholds,
     DocumentKnowledgeBase,
     KnowledgeEntity,
     KnowledgeManifest,
+    QualityGateResult,
+    QualityGateViolation,
+    ReferenceDiagnostic,
     RetrievalUnit,
     ScopedFact,
 )
@@ -179,7 +184,179 @@ def summarize_chunk_sizes(
     return max((len(chunk.text) for chunk in chunks), default=0), sum(reasons.values()), reasons
 
 
-def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKnowledgeBase:
+def evaluate_quality_gates(
+    diagnostics: BuildDiagnostics,
+    thresholds: BuildQualityThresholds,
+) -> QualityGateResult:
+    metrics: list[tuple[str, int | None, list[str], list[ReferenceDiagnostic]]] = [
+        (
+            "missing_source_pages",
+            thresholds.max_missing_source_pages,
+            diagnostics.missing_source_page_fact_ids,
+            [],
+        ),
+        (
+            "missing_section_paths",
+            thresholds.max_missing_section_paths,
+            diagnostics.missing_section_path_fact_ids,
+            [],
+        ),
+        (
+            "empty_or_noninformative_facts",
+            thresholds.max_empty_or_noninformative_facts,
+            diagnostics.empty_or_noninformative_fact_ids,
+            [],
+        ),
+        (
+            "unexplained_oversized_facts",
+            thresholds.max_unexplained_oversized_facts,
+            diagnostics.unexplained_oversized_fact_ids,
+            [],
+        ),
+        (
+            "unknown_scope_facts",
+            thresholds.max_unknown_scope_facts,
+            diagnostics.unknown_scope_fact_ids,
+            [],
+        ),
+        (
+            "unresolved_references",
+            thresholds.max_unresolved_references,
+            [],
+            [claim for claim in diagnostics.reference_claims if claim.status == "unresolved"],
+        ),
+        (
+            "ambiguous_references",
+            thresholds.max_ambiguous_references,
+            [],
+            [claim for claim in diagnostics.reference_claims if claim.status == "ambiguous"],
+        ),
+    ]
+    violations: list[QualityGateViolation] = []
+    for metric, limit, related_ids, related_claims in metrics:
+        actual = len(related_ids) if related_ids else len(related_claims)
+        if limit is not None and actual > limit:
+            violations.append(
+                QualityGateViolation(
+                    metric=metric,
+                    actual=actual,
+                    limit=limit,
+                    related_ids=related_ids,
+                    related_claims=related_claims,
+                )
+            )
+    return QualityGateResult(passed=not violations, violations=violations)
+
+
+def build_diagnostics(
+    facts: list[ScopedFact],
+    manifest: KnowledgeManifest,
+    reference_resolution: ReferenceResolution,
+    *,
+    short_fact_threshold: int = 100,
+    reference_ambiguity_margin: float = 0.1,
+    quality_thresholds: BuildQualityThresholds | None = None,
+) -> BuildDiagnostics:
+    if short_fact_threshold <= 0:
+        raise ValueError("short_fact_threshold must be positive")
+
+    missing_pages = [fact.fact_id for fact in facts if not fact.source_pages]
+    missing_paths = [fact.fact_id for fact in facts if not fact.section_path]
+    noninformative: list[str] = []
+    for fact in facts:
+        chunk = TextChunk(
+            pdf_name=str(fact.metadata.get("pdf_name", "")),
+            page_numbers=fact.source_pages,
+            title=fact.title,
+            text=fact.text,
+            section_path=fact.section_path,
+            oversize_reason=fact.metadata.get("oversize_reason"),
+        )
+        if classify_chunk(chunk) != "informative":
+            noninformative.append(fact.fact_id)
+
+    oversized = [fact for fact in facts if len(fact.text) > manifest.chunk_size_limit]
+    oversized_reasons: dict[str, int] = {}
+    for fact in oversized:
+        reason = fact.metadata.get("oversize_reason")
+        if reason:
+            oversized_reasons[reason] = oversized_reasons.get(reason, 0) + 1
+    status_counts = {status: 0 for status in ("resolved", "ambiguous", "unresolved")}
+    for claim in reference_resolution.claims:
+        status_counts[claim.status] += 1
+
+    thresholds = quality_thresholds or BuildQualityThresholds()
+    diagnostics = BuildDiagnostics(
+        input_chunk_count=manifest.input_chunk_count,
+        emitted_chunk_count=manifest.chunk_count,
+        dropped_chunk_count=manifest.dropped_chunk_count,
+        dropped_chunk_reasons=manifest.dropped_chunk_reasons,
+        merged_heading_count=manifest.merged_heading_count,
+        missing_source_page_fact_ids=missing_pages,
+        missing_section_path_fact_ids=missing_paths,
+        empty_or_noninformative_fact_ids=noninformative,
+        short_fact_threshold=short_fact_threshold,
+        short_fact_ids=[
+            fact.fact_id for fact in facts if 0 < len(fact.text) < short_fact_threshold
+        ],
+        unknown_scope_fact_ids=[fact.fact_id for fact in facts if fact.scope_type == "unknown"],
+        chunk_size_limit=manifest.chunk_size_limit,
+        max_chunk_chars=max((len(fact.text) for fact in facts), default=0),
+        oversized_fact_ids=[fact.fact_id for fact in oversized],
+        unexplained_oversized_fact_ids=[
+            fact.fact_id
+            for fact in oversized
+            if fact.metadata.get("oversize_reason") != "indivisible_table"
+        ],
+        oversized_reasons=oversized_reasons,
+        raw_reference_occurrence_count=reference_resolution.raw_occurrence_count,
+        reference_claim_count=len(reference_resolution.claims),
+        reference_ambiguity_margin=reference_ambiguity_margin,
+        reference_status_counts=status_counts,
+        reference_claims=reference_resolution.claims,
+        quality_thresholds=thresholds,
+    )
+    diagnostics.quality_gate = evaluate_quality_gates(diagnostics, thresholds)
+    _validate_diagnostics(diagnostics, manifest, facts, len(reference_resolution.links))
+    return diagnostics
+
+
+def _validate_diagnostics(
+    diagnostics: BuildDiagnostics,
+    manifest: KnowledgeManifest,
+    facts: list[ScopedFact],
+    reference_link_count: int,
+) -> None:
+    if diagnostics.emitted_chunk_count != manifest.chunk_count or manifest.chunk_count != len(
+        facts
+    ):
+        raise ValueError("diagnostic emitted count does not reconcile with manifest and Facts")
+    if diagnostics.input_chunk_count != (
+        diagnostics.emitted_chunk_count
+        + diagnostics.dropped_chunk_count
+        + diagnostics.merged_heading_count
+    ):
+        raise ValueError("diagnostic chunk counts do not balance")
+    if diagnostics.max_chunk_chars != manifest.max_chunk_chars:
+        raise ValueError("diagnostic max chunk size does not match manifest")
+    if len(diagnostics.oversized_fact_ids) != manifest.oversized_chunk_count:
+        raise ValueError("diagnostic oversized count does not match manifest")
+    if diagnostics.oversized_reasons != manifest.oversized_chunk_reasons:
+        raise ValueError("diagnostic oversized reasons do not match manifest")
+    if diagnostics.reference_claim_count != sum(diagnostics.reference_status_counts.values()):
+        raise ValueError("reference claim status counts do not balance")
+    if diagnostics.reference_status_counts["resolved"] != reference_link_count:
+        raise ValueError("resolved reference claims do not match emitted links")
+
+
+def build_document_kb(
+    pdf_path: str | Path,
+    max_chars: int = 6000,
+    *,
+    short_fact_threshold: int = 100,
+    reference_ambiguity_margin: float = 0.1,
+    quality_thresholds: BuildQualityThresholds | None = None,
+) -> DocumentKnowledgeBase:
     pdf_path = Path(pdf_path)
     pages = extract_pdf(pdf_path)
     input_chunks: list[TextChunk] = chunk_pages(
@@ -189,7 +366,7 @@ def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKn
     )
     chunks, filter_summary = filter_chunks(input_chunks)
     index = build_document_index(chunks)
-    links = resolve_references(index)
+    reference_resolution = classify_reference_claims(index, reference_ambiguity_margin)
     facts = [indexed_chunk_to_fact(item) for item in index]
     max_chunk_chars, oversized_chunk_count, oversized_reasons = summarize_chunk_sizes(
         chunks, max_chars
@@ -204,17 +381,26 @@ def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKn
         dropped_chunk_count=filter_summary.dropped_chunk_count,
         dropped_chunk_reasons=filter_summary.dropped_chunk_reasons,
         merged_heading_count=filter_summary.merged_heading_count,
-        reference_link_count=len(links),
+        reference_link_count=len(reference_resolution.links),
         chunk_size_limit=max_chars,
         max_chunk_chars=max_chunk_chars,
         oversized_chunk_count=oversized_chunk_count,
         oversized_chunk_reasons=oversized_reasons,
+    )
+    diagnostics = build_diagnostics(
+        facts,
+        manifest,
+        reference_resolution,
+        short_fact_threshold=short_fact_threshold,
+        reference_ambiguity_margin=reference_ambiguity_margin,
+        quality_thresholds=quality_thresholds,
     )
     return DocumentKnowledgeBase(
         manifest=manifest,
         entities=build_entities(index),
         facts=facts,
         retrieval_units=[fact_to_retrieval_unit(fact) for fact in facts],
+        diagnostics=diagnostics,
     )
 
 
