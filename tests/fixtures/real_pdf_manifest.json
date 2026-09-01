@@ -133,6 +133,10 @@
       "unresolved": 128
     },
     "fact_content_sha256": "ff93295599a6b233bbd2dc065981e2b927ab4a628244c3949405303a6b0915eb",
+    "fact_structure_sha256": "0a3c52d01039222af66e97546b809d4c855c356e9a83571c1580ae5fa85ff1a8",
+    "diagnostics_sha256": "3e5136bfb2cb0cd867e5b4acca77ce930d3e47cd34cdf4eeab98f6236ea54519",
+    "embedding_text_v1_sha256": "460566d8c68cbd2eb7a4413f584d4634b4520e50e1170d9dd2f08e68c3c940b9",
+    "embedding_text_v1_fake_vector_sha256": "0a12e00acea485da42b97d2e25548afe41e1513736d1894dfc6181a4e2b953ed",
     "resolved_reference_claims": [
       ["fact:00014", "上記1", "fact:00008"],
       ["fact:00057", "下記（２）", "fact:00058"],

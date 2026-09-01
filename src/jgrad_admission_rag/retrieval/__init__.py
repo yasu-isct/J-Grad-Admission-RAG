@@ -13,6 +13,7 @@ from .embedding import (
     validate_document_embeddings,
     validate_query_embedding,
 )
+from .embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
 
 __all__ = [
     "DeterministicFakeEmbeddingProvider",
@@ -22,6 +23,8 @@ __all__ = [
     "EmbeddingOutputError",
     "EmbeddingProvider",
     "EmbeddingProviderError",
+    "EMBEDDING_TEXT_VERSION",
+    "build_embedding_text",
     "embed_documents_checked",
     "embed_query_checked",
     "validate_document_embeddings",

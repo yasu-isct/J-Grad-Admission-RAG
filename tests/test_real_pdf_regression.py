@@ -17,6 +17,7 @@ from jgrad_admission_rag.retrieval.embedding import (
     DeterministicFakeEmbeddingProvider,
     embed_documents_checked,
 )
+from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -274,10 +275,69 @@ def test_real_pdf_derives_traceable_index_payload_shape(
     assert all(
         payload.unit_id == unit.unit_id
         and payload.fact_id == unit.fact_id
+        and payload.text == unit.text
         and payload.source_pages == unit.source_pages
         and payload.section_path == unit.section_path
+        and payload.metadata == unit.metadata
         for payload, unit in zip(payloads, real_document_kb.retrieval_units, strict=True)
     )
+
+
+def test_real_pdf_embedding_text_v1_is_complete_and_structure_preserving(
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    expected = real_pdf_manifest["expected"]
+    facts = real_document_kb.facts
+    units = real_document_kb.retrieval_units
+    projections = [unit.text for unit in units]
+
+    assert len(facts) == len(units) == expected["retrieval_unit_count"] == 298
+    assert all(fact.embedding_text == unit.text for fact, unit in zip(facts, units, strict=True))
+    assert all(
+        unit.text.endswith(f"text:\n{fact.text}") for fact, unit in zip(facts, units, strict=True)
+    )
+    assert all(fact.metadata["embedding_text_version"] == EMBEDDING_TEXT_VERSION for fact in facts)
+    assert all(unit.metadata["embedding_text_version"] == EMBEDDING_TEXT_VERSION for unit in units)
+    assert all(
+        unit.text.endswith(fact.text) and fact.text[300:] in unit.text
+        for fact, unit in zip(facts, units, strict=True)
+        if len(fact.text) > 300
+    )
+    longest_fact = max(facts, key=lambda fact: len(fact.text))
+    longest_unit = next(unit for unit in units if unit.fact_id == longest_fact.fact_id)
+    assert len(longest_fact.text) == expected["max_chunk_chars"] == 5993
+    assert longest_unit.text.endswith(f"text:\n{longest_fact.text}")
+
+    projection_sha256 = hashlib.sha256(
+        json.dumps(projections, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert projection_sha256 == expected["embedding_text_v1_sha256"]
+
+    structure_projection = [
+        {
+            "fact_id": fact.fact_id,
+            "unit_id": unit.unit_id,
+            "source_pages": fact.source_pages,
+            "section_path": fact.section_path,
+            "scope_type": fact.scope_type,
+            "scope_targets": fact.scope_targets,
+            "parent_college": fact.parent_college,
+        }
+        for fact, unit in zip(facts, units, strict=True)
+    ]
+    structure_sha256 = hashlib.sha256(
+        json.dumps(structure_projection, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    diagnostics_sha256 = hashlib.sha256(
+        json.dumps(
+            real_document_kb.diagnostics.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    assert structure_sha256 == expected["fact_structure_sha256"]
+    assert diagnostics_sha256 == expected["diagnostics_sha256"]
 
 
 def test_real_pdf_fake_embeddings_are_deterministic_without_mutating_kb(
@@ -307,7 +367,11 @@ def test_real_pdf_fake_embeddings_are_deterministic_without_mutating_kb(
     assert len(first) == real_pdf_manifest["expected"]["retrieval_unit_count"] == 298
     assert all(len(vector) == 8 for vector in first)
     assert first == second
-    assert projection_sha256 == "f0367234e3335e171fa067cdb1fef0dd3e132c5fc59035215450f010d19a1e2f"
+    previous_projection_sha256 = "f0367234e3335e171fa067cdb1fef0dd3e132c5fc59035215450f010d19a1e2f"
+    assert projection_sha256 != previous_projection_sha256
+    assert (
+        projection_sha256 == real_pdf_manifest["expected"]["embedding_text_v1_fake_vector_sha256"]
+    )
     assert all(all(math.isfinite(value) for value in vector) for vector in first)
     assert all(any(value != 0.0 for value in vector) for vector in first)
     assert all(
