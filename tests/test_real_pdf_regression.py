@@ -24,6 +24,7 @@ from jgrad_admission_rag.retrieval.embedding import (
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
+from jgrad_admission_rag.retrieval.lexical_search import build_lexical_searcher
 from jgrad_admission_rag.retrieval.vector_search import search_local_index
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
@@ -731,3 +732,48 @@ def test_real_pdf_retrieval_benchmark_gold_maps_to_authoritative_facts(
             assert any(
                 source in gold_ids and target in gold_ids for source, target in resolved_pairs
             )
+
+
+def test_real_pdf_lexical_retrieval_characterization(
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    payloads = derive_index_payloads(real_document_kb)
+    payload_snapshot = [payload.model_dump(mode="json") for payload in payloads]
+    searcher = build_lexical_searcher(payloads)
+    results = {
+        query.query_id: searcher.search(query.query, top_k=10) for query in benchmark.queries
+    }
+
+    assert len(results) == 34
+    top_five_hits = 0
+    top_ten_hits = 0
+    hits_by_style: dict[str, list[int]] = {}
+    top_five_misses: list[str] = []
+    for query in benchmark.queries:
+        result = results[query.query_id]
+        top_five_fact_ids = {hit.fact_id for hit in result.hits[:5]}
+        top_ten_fact_ids = {hit.fact_id for hit in result.hits}
+        hit_at_five = bool(top_five_fact_ids.intersection(query.relevant_fact_ids))
+        hit_at_ten = bool(top_ten_fact_ids.intersection(query.relevant_fact_ids))
+        top_five_hits += hit_at_five
+        top_ten_hits += hit_at_ten
+        style_counts = hits_by_style.setdefault(query.query_style, [0, 0, 0])
+        style_counts[0] += 1
+        style_counts[1] += hit_at_five
+        style_counts[2] += hit_at_ten
+        if not hit_at_five:
+            top_five_misses.append(query.query_id)
+        if query.query_style in {"exact_term", "identifier"}:
+            assert hit_at_ten, query.query_id
+        assert all(hit.source_pages and hit.section_path for hit in result.hits)
+        assert all(hit.fact_id in {payload.fact_id for payload in payloads} for hit in result.hits)
+
+    assert (top_five_hits, top_ten_hits) == (32, 34)
+    assert hits_by_style == {
+        "exact_term": [7, 6, 7],
+        "identifier": [6, 5, 6],
+        "paraphrase": [21, 21, 21],
+    }
+    assert top_five_misses == ["rq:0010", "rq:0019"]
+    assert [payload.model_dump(mode="json") for payload in payloads] == payload_snapshot
