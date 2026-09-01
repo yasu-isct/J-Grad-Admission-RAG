@@ -14,6 +14,9 @@ The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
 [ADR 0001: Derived Vector Index Contract](decisions/0001-derived-vector-index-contract.md).
+The synchronous `EmbeddingProvider` boundary validates text and fixed-width vectors without a model
+dependency. Its immutable `EmbeddingIdentity` maps provider, model, revision, and dimension directly
+to the corresponding IDX-01 manifest fields.
 
 ## Current MVP
 
@@ -25,7 +28,7 @@ chunking, lightweight document index, reference resolver, and recursive retrieva
 
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.
 - `schemas`: durable JSON contracts such as `DocumentKnowledgeBase`.
-- `retrieval`: future vector and hybrid retrieval services.
+- `retrieval`: embedding provider contracts plus future vector and hybrid retrieval services.
 - `reasoning`: future applicant-aware reasoning chains and report generation.
 - `cli`: command-line entry points.
 

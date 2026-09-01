@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
+import math
 import os
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,10 @@ from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
 from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
+from jgrad_admission_rag.retrieval.embedding import (
+    DeterministicFakeEmbeddingProvider,
+    embed_documents_checked,
+)
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -273,3 +278,50 @@ def test_real_pdf_derives_traceable_index_payload_shape(
         and payload.section_path == unit.section_path
         for payload, unit in zip(payloads, real_document_kb.retrieval_units, strict=True)
     )
+
+
+def test_real_pdf_fake_embeddings_are_deterministic_without_mutating_kb(
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    before = real_document_kb.model_dump(mode="json")
+    unit_projection_before = [
+        (
+            unit.unit_id,
+            unit.fact_id,
+            unit.text,
+            list(unit.source_pages),
+            list(unit.section_path),
+        )
+        for unit in real_document_kb.retrieval_units
+    ]
+    texts = [unit.text for unit in real_document_kb.retrieval_units]
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+
+    first = embed_documents_checked(provider, texts)
+    second = embed_documents_checked(provider, texts)
+    projection_sha256 = hashlib.sha256(
+        json.dumps(first, separators=(",", ":")).encode("ascii")
+    ).hexdigest()
+
+    assert len(first) == real_pdf_manifest["expected"]["retrieval_unit_count"] == 298
+    assert all(len(vector) == 8 for vector in first)
+    assert first == second
+    assert projection_sha256 == "f0367234e3335e171fa067cdb1fef0dd3e132c5fc59035215450f010d19a1e2f"
+    assert all(all(math.isfinite(value) for value in vector) for vector in first)
+    assert all(any(value != 0.0 for value in vector) for vector in first)
+    assert all(
+        math.isclose(math.sqrt(sum(value * value for value in vector)), 1.0) for vector in first
+    )
+    assert real_document_kb.manifest.pdf_sha256 == real_pdf_manifest["sha256"]
+    assert real_document_kb.model_dump(mode="json") == before
+    assert [
+        (
+            unit.unit_id,
+            unit.fact_id,
+            unit.text,
+            list(unit.source_pages),
+            list(unit.section_path),
+        )
+        for unit in real_document_kb.retrieval_units
+    ] == unit_projection_before
