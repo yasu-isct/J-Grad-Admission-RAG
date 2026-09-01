@@ -7,8 +7,10 @@ from typing import Any
 
 import pytest
 
+from jgrad_admission_rag.builder.chunk_filter import classify_chunk
+from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
+from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.utils import sha256_file
 
@@ -80,9 +82,16 @@ def test_real_pdf_knowledge_base_matches_baseline(
 ) -> None:
     expected = real_pdf_manifest["expected"]
     manifest = real_document_kb.manifest
-    assert manifest.schema_version == "0.2"
+    assert manifest.schema_version == "0.3"
+    assert manifest.input_chunk_count == expected["input_chunk_count"]
     assert manifest.pdf_sha256 == real_pdf_manifest["sha256"]
     assert manifest.chunk_count == expected["chunk_count"]
+    assert manifest.dropped_chunk_count == expected["dropped_chunk_count"]
+    assert manifest.dropped_chunk_reasons == expected["dropped_chunk_reasons"]
+    assert manifest.merged_heading_count == expected["merged_heading_count"]
+    assert manifest.input_chunk_count == (
+        manifest.chunk_count + manifest.dropped_chunk_count + manifest.merged_heading_count
+    )
     assert manifest.reference_link_count == expected["reference_link_count"]
     assert len(real_document_kb.entities) == expected["entity_count"]
     assert len(real_document_kb.facts) == expected["fact_count"]
@@ -121,3 +130,18 @@ def test_real_pdf_knowledge_base_matches_baseline(
         for fact in real_document_kb.facts
         for reference in fact.metadata["references"]
     )
+
+
+def test_real_pdf_page_only_positions_match_baseline(
+    real_pdf_manifest: dict[str, Any],
+    extracted_pages: list[ExtractedPage],
+) -> None:
+    chunks = chunk_pages(
+        pages_to_source_pages(extracted_pages),
+        real_pdf_manifest["filename"],
+    )
+    positions = [
+        index for index, chunk in enumerate(chunks) if classify_chunk(chunk) == "page_only"
+    ]
+
+    assert positions == real_pdf_manifest["expected"]["page_only_positions"]

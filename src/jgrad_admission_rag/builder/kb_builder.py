@@ -4,6 +4,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from .chunker import SourcePage, TextChunk, chunk_pages
+from .chunk_filter import filter_chunks
 from .document_index import IndexedChunk, build_document_index
 from .extractor import extract_pdf
 from .reference_resolver import resolve_references
@@ -161,11 +162,12 @@ def fact_to_retrieval_unit(fact: ScopedFact) -> RetrievalUnit:
 def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKnowledgeBase:
     pdf_path = Path(pdf_path)
     pages = extract_pdf(pdf_path)
-    chunks: list[TextChunk] = chunk_pages(
+    input_chunks: list[TextChunk] = chunk_pages(
         pages_to_source_pages(pages),
         pdf_path.name,
         max_chars=max_chars,
     )
+    chunks, filter_summary = filter_chunks(input_chunks)
     index = build_document_index(chunks)
     links = resolve_references(index)
     facts = [indexed_chunk_to_fact(item) for item in index]
@@ -174,7 +176,11 @@ def build_document_kb(pdf_path: str | Path, max_chars: int = 6000) -> DocumentKn
         document_id=pdf_path.stem,
         source_pdf=str(pdf_path),
         pdf_sha256=sha256_file(pdf_path),
+        input_chunk_count=filter_summary.input_chunk_count,
         chunk_count=len(chunks),
+        dropped_chunk_count=filter_summary.dropped_chunk_count,
+        dropped_chunk_reasons=filter_summary.dropped_chunk_reasons,
+        merged_heading_count=filter_summary.merged_heading_count,
         reference_link_count=len(links),
     )
     return DocumentKnowledgeBase(
