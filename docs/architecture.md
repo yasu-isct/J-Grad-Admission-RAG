@@ -63,9 +63,11 @@ preferences then add fixed, named bonuses to the complete fused candidate union.
 scope from the query or infers fields absent from the durable payload. See
 [Metadata Retrieval](evaluation/metadata-retrieval.md).
 
-Reference expansion is a read-only, one-hop evidence layer after hybrid ranking. It consumes the
-same parsed KB object used by the freshness gate and validates complete Fact/Unit/payload/diagnostic
-alignment before exposing any link. Only authoritative `resolved` claims attach target evidence;
+Reference expansion is a read-only, one-hop evidence layer after hybrid ranking. Freshness freezes
+the validated KB into an immutable serialized snapshot; public access reparses detached copies, so
+caller mutation cannot change expansion authority. Expansion validates complete
+Fact/Unit/payload/diagnostic alignment before exposing any link. Only authoritative `resolved`
+claims attach target evidence;
 `ambiguous` and `unresolved` claims remain visible without a selected target. Attached targets are
 deduplicated, preserve every incoming relation, and never alter primary ranks or scores. See
 [Reference Expansion](evaluation/reference-expansion.md).

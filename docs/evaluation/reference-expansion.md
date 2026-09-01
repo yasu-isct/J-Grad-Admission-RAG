@@ -39,8 +39,9 @@ unchanged and a separate `reference_expansion` object reports:
 - authoritative and expanded status counts;
 - the exact KB, PDF, payload, and vector hashes used for provenance.
 
-The current KB bytes are read once. The parsed KB retained by freshness checking is the object used
-for expansion, preventing a second read from observing different bytes.
+The current KB bytes are read once. Freshness retains an immutable serialized snapshot of the
+validated KB, while public access returns detached parsed copies. Expansion consumes that frozen
+snapshot, preventing both a second read and post-freshness nested mutation from changing authority.
 
 ## Real-PDF Baseline
 

@@ -117,7 +117,9 @@ def test_fresh_context_reuses_report_and_returns_detached_validated_kb(tmp_path:
 
     assert context.freshness == check_index_freshness(index, kb_path, FAKE_IDENTITY)
     assert context.knowledge_base == _knowledge_base()
-    context.knowledge_base.facts[0].text = "changed"
+    detached = context.knowledge_base
+    detached.facts[0].text = "changed"
+    assert context.knowledge_base.facts[0].text == "出願資格の本文"
     assert second.knowledge_base.facts[0].text == "出願資格の本文"
     assert b"changed" not in kb_path.read_bytes()
     with pytest.raises(FrozenInstanceError):

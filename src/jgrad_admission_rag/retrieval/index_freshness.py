@@ -47,7 +47,26 @@ class IndexFreshnessReport:
 @dataclass(frozen=True, slots=True)
 class FreshIndexContext:
     freshness: IndexFreshnessReport
-    knowledge_base: DocumentKnowledgeBase
+    _knowledge_base_snapshot: bytes
+
+    @classmethod
+    def from_knowledge_base(
+        cls,
+        freshness: IndexFreshnessReport,
+        knowledge_base: DocumentKnowledgeBase,
+    ) -> FreshIndexContext:
+        """Freeze a validated KB snapshot while exposing only detached parsed copies."""
+
+        if not isinstance(knowledge_base, DocumentKnowledgeBase):
+            raise TypeError("knowledge_base must be a DocumentKnowledgeBase")
+        return cls(
+            freshness=freshness,
+            _knowledge_base_snapshot=knowledge_base.model_dump_json().encode("utf-8"),
+        )
+
+    @property
+    def knowledge_base(self) -> DocumentKnowledgeBase:
+        return DocumentKnowledgeBase.model_validate_json(self._knowledge_base_snapshot)
 
 
 def check_index_freshness(
@@ -111,7 +130,4 @@ def load_fresh_index_context(
         current_kb_sha256=source.sha256,
         checked_fields=FRESHNESS_CHECKED_FIELDS,
     )
-    return FreshIndexContext(
-        freshness=report,
-        knowledge_base=source.knowledge_base.model_copy(deep=True),
-    )
+    return FreshIndexContext.from_knowledge_base(report, source.knowledge_base)

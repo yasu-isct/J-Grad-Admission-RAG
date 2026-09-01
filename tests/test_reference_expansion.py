@@ -154,13 +154,13 @@ def _index() -> LocalVectorIndex:
 
 
 def _context(kb: DocumentKnowledgeBase | None = None) -> FreshIndexContext:
-    return FreshIndexContext(
-        freshness=IndexFreshnessReport(
+    return FreshIndexContext.from_knowledge_base(
+        IndexFreshnessReport(
             fresh=True,
             current_kb_sha256="a" * 64,
             checked_fields=FRESHNESS_CHECKED_FIELDS,
         ),
-        knowledge_base=(kb or _kb()).model_copy(deep=True),
+        kb or _kb(),
     )
 
 
@@ -282,6 +282,41 @@ def test_result_and_serialization_are_immutable_detached_and_stable() -> None:
     assert [payload.model_dump(mode="json") for payload in index.payloads] == payload_before
     with pytest.raises(FrozenInstanceError):
         result.max_depth = 2  # type: ignore[misc]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ("selected_target", "status", "candidates", "claim_count", "status_count"),
+)
+def test_mutating_exposed_context_kb_cannot_change_frozen_expansion_authority(
+    mutation: str,
+) -> None:
+    index = _index()
+    context = _context()
+    exposed = context.knowledge_base
+    claim = exposed.diagnostics.reference_claims[0]
+    if mutation == "selected_target":
+        claim.selected_target_fact_id = "fact:3"
+    elif mutation == "status":
+        claim.status = "ambiguous"
+    elif mutation == "candidates":
+        claim.candidate_target_fact_ids = ["fact:3"]
+    elif mutation == "claim_count":
+        exposed.diagnostics.reference_claim_count = 0
+    else:
+        exposed.diagnostics.reference_status_counts["resolved"] = 0
+
+    result = expand_references(index, context, (_hit(index.payloads[0], 1),))
+
+    assert result.expanded_targets[0].fact_id == "fact:2"
+    assert result.candidate_expansions[0].claims[0].status == "resolved"
+    assert result.candidate_expansions[0].claims[0].selected_target_fact_id == "fact:2"
+    assert result.authoritative_claim_count == 5
+    assert result.authoritative_status_counts == {
+        "resolved": 3,
+        "ambiguous": 1,
+        "unresolved": 1,
+    }
 
 
 @pytest.mark.parametrize(
