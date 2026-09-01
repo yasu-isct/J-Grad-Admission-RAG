@@ -1,0 +1,1551 @@
+{
+  "schema_version": "1.0",
+  "benchmark_id": "isct-master-retrieval-v1",
+  "document_id": "isct_2027_4_2026_9_master",
+  "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "expected_kb_schema_version": "0.5",
+  "fact_content_sha256": "ff93295599a6b233bbd2dc065981e2b927ab4a628244c3949405303a6b0915eb",
+  "fact_structure_sha256": "0a3c52d01039222af66e97546b809d4c855c356e9a83571c1580ae5fa85ff1a8",
+  "language": "ja",
+  "annotation_policy_version": "1.0",
+  "queries": [
+    {
+      "query_id": "rq:0001",
+      "query": "インターネット出願の登録開始日と、書類が大学に必着となる出願期間を教えてください。",
+      "category": "application_dates",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00000",
+        "fact:00006",
+        "fact:00084",
+        "fact:00085",
+        "fact:00086",
+        "fact:00087"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00000",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00006",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00084",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00086",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "登録開始と書類必着期間を明記する同一公式日程の全抽出表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0002",
+      "query": "オンラインで登録と支払いを済ませれば出願は完了しますか。必要な手続きを知りたいです。",
+      "category": "documents",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00085",
+        "fact:00087"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "出願完了に必要な五段階と、書類到着が必要であることを直接示す条項。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0003",
+      "query": "入学検定料30,000円のほかにサービス利用料はいくら必要ですか。",
+      "category": "fees",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00085",
+        "fact:00087"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "検定料額と990円のサービス利用料を同じ出願方法条項が明記する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0004",
+      "query": "いったん払った検定料は、願書が受理された後でも返してもらえますか。",
+      "category": "fees",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00015",
+        "fact:00023"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00015",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00023",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "願書受理後の検定料不返還を明記する同一公式条項の全抽出表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0005",
+      "query": "志願者全員が提出する出願書類には何がありますか。",
+      "category": "documents",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00088",
+        "fact:00089"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00088",
+          "source_pages": [
+            10
+          ],
+          "scope_type": "global",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00089",
+          "source_pages": [
+            10
+          ],
+          "scope_type": "global",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "全志願者向け書類一覧を保持するglobal scopeの全抽出表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0006",
+      "query": "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。",
+      "category": "contacts_forms",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00009",
+        "fact:00017",
+        "fact:00023"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00009",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00017",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00023",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "住所変更時の届出項目、時期別メールアドレス、転送手続きを直接示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0007",
+      "query": "障害などで受験時の配慮が必要なときは、いつまでに何をすればよいですか。",
+      "category": "application_dates",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00010",
+        "fact:00018",
+        "fact:00023"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00010",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00018",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00023",
+          "source_pages": [
+            3
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "出願期間前の申出と所定様式・診断書提出を明記する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0008",
+      "query": "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。",
+      "category": "eligibility",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00024",
+        "fact:00025",
+        "fact:00028",
+        "fact:00029",
+        "fact:00031"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00024",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00025",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00028",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00029",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00031",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "9月入学の二つの在留条件と、合格後に始まるCOE手続きを別の直接条項から確認する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0009",
+      "query": "2026年9月入学と2027年4月入学では、卒業や学位取得をいつまでに確定する必要がありますか。",
+      "category": "enrollment",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00027",
+        "fact:00031"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00027",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00031",
+          "source_pages": [
+            4
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "入学時期別の卒業・学位取得確定期限を示す同一条項の全抽出表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0010",
+      "query": "この選抜で選べる2026年9月入学と2027年4月入学の組み合わせはどうなっていますか。",
+      "category": "enrollment",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00054",
+        "fact:00056"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00054",
+          "source_pages": [
+            6
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系",
+            "物理学系",
+            "化学系",
+            "地球惑星科学系",
+            "機械系",
+            "システム制御系",
+            "電気電子系",
+            "情報通信系",
+            "経営工学系",
+            "材料系",
+            "応用化学系",
+            "数理・計算科学系",
+            "情報工学系",
+            "生命理工学系",
+            "建築学系",
+            "土木・環境工学系",
+            "融合理工学系",
+            "社会・人間科学系",
+            "技術経営専門職学位課程"
+          ]
+        }
+      ],
+      "annotation_note": "二つの入学時期選択肢と決定方法を示す同一条項の全抽出表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0011",
+      "query": "情報理工学院の募集人員と、志願できる系の数を教えてください。",
+      "category": "department_requirements",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00053",
+        "fact:00055"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00053",
+          "source_pages": [
+            6
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系",
+            "物理学系",
+            "化学系",
+            "地球惑星科学系",
+            "機械系",
+            "システム制御系",
+            "電気電子系",
+            "情報通信系",
+            "経営工学系",
+            "材料系",
+            "応用化学系",
+            "数理・計算科学系",
+            "情報工学系",
+            "生命理工学系",
+            "建築学系",
+            "土木・環境工学系",
+            "融合理工学系",
+            "社会・人間科学系",
+            "技術経営専門職学位課程"
+          ]
+        },
+        {
+          "fact_id": "fact:00055",
+          "source_pages": [
+            6
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系",
+            "物理学系",
+            "化学系",
+            "地球惑星科学系",
+            "機械系",
+            "システム制御系",
+            "電気電子系",
+            "情報通信系",
+            "経営工学系",
+            "材料系",
+            "応用化学系",
+            "数理・計算科学系",
+            "情報工学系",
+            "生命理工学系",
+            "建築学系",
+            "土木・環境工学系",
+            "融合理工学系",
+            "社会・人間科学系",
+            "技術経営専門職学位課程"
+          ]
+        }
+      ],
+      "annotation_note": "学院別募集人員と一つの系だけに志願できる規則を含むdepartment scopeの表。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0012",
+      "query": "『主な出願資格』で海外大学卒業は『下記（3）』とありますが、具体的な条件は何ですか。",
+      "category": "eligibility",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00057",
+        "fact:00059",
+        "fact:00064",
+        "fact:00066"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00057",
+          "source_pages": [
+            7
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00066",
+          "source_pages": [
+            7
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "下記（3）を示す案内元と、16年課程・学位条件を示す解決先の双方が必要。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": true
+    },
+    {
+      "query_id": "rq:0013",
+      "query": "出願資格（9）～（11）の審査は、最初の連絡から必要書類の郵送までどう進めますか。",
+      "category": "eligibility",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00073",
+        "fact:00074",
+        "fact:00075",
+        "fact:00079",
+        "fact:00080",
+        "fact:00081"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00073",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00074",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00075",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00079",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00080",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00081",
+          "source_pages": [
+            8
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "審査フローと資格区分別書類表という異なる直接条項を組み合わせる。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0014",
+      "query": "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。",
+      "category": "documents",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00085",
+        "fact:00087"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "角形2号封筒、速達書留、郵送先と必着日を一つの出願方法条項が示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0015",
+      "query": "出願用の顔写真データは、撮影時期、容量、ファイル形式にどんな条件がありますか。",
+      "category": "documents",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00085",
+        "fact:00087"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "顔写真の3か月以内、100KB～5MB、JPG/PNG条件を直接示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0016",
+      "query": "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。",
+      "category": "language_tests",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00090",
+        "fact:00091",
+        "fact:00093",
+        "fact:00098",
+        "fact:00121",
+        "fact:00123"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00090",
+          "source_pages": [
+            11
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00091",
+          "source_pages": [
+            11
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00093",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00098",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00121",
+          "source_pages": [
+            19
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00123",
+          "source_pages": [
+            19
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系"
+          ]
+        }
+      ],
+      "annotation_note": "共通提出規則の数学系例外と、数学系固有の英語筆答試験条項を合わせて確認する。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0017",
+      "query": "A日程とB日程のどちらを受けるかは志願者が自分で選べますか。",
+      "category": "selection_exams",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00092",
+        "fact:00097"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00092",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00097",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "系等が出願書類により日程資格を決定し、志願者は選べないと明記する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0018",
+      "query": "A日程はいつ実施され、試験結果はいつ通知されますか。",
+      "category": "selection_exams",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00001",
+        "fact:00004",
+        "fact:00094",
+        "fact:00099",
+        "fact:00101"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00001",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00004",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00094",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系",
+            "物理学系",
+            "社会・人間科学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00099",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数学系",
+            "物理学系",
+            "社会・人間科学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00101",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "A日程の実施日範囲と7月24日の結果通知を保持する全直接表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0019",
+      "query": "B日程の筆答試験日と口頭試問の実施期間を教えてください。",
+      "category": "selection_exams",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00002",
+        "fact:00004",
+        "fact:00006",
+        "fact:00095",
+        "fact:00100",
+        "fact:00101"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00002",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00004",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00006",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00095",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00100",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00101",
+          "source_pages": [
+            12
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "B日程の筆答試験日と口頭試問期間を明記する全直接表現。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0020",
+      "query": "合格者発表は何月何日の何時頃で、どこで確認できますか。",
+      "category": "results",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00002",
+        "fact:00004",
+        "fact:00102",
+        "fact:00104",
+        "fact:00105"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00002",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00004",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00102",
+          "source_pages": [
+            13
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00104",
+          "source_pages": [
+            13
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00105",
+          "source_pages": [
+            13
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "発表日時、大学ウェブサイト、マイページ通知を直接示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0021",
+      "query": "9月入学と4月入学では、合格後の入学手続案内や手続日はどう違いますか。",
+      "category": "enrollment",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00002",
+        "fact:00005",
+        "fact:00006",
+        "fact:00103",
+        "fact:00105"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00002",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00005",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00006",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00103",
+          "source_pages": [
+            13
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00105",
+          "source_pages": [
+            13
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "9月入学と4月入学の別々の案内時期・手続日・コース決定手続きを照合する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0022",
+      "query": "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。",
+      "category": "language_tests",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00108"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00108",
+          "source_pages": [
+            16
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "附録3がTOEIC L&RとTOEFL-PBTの換算式を直接掲載する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0023",
+      "query": "2026年の入試成績提供は、いつからいつまで申請できますか。",
+      "category": "results",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00109",
+        "fact:00113",
+        "fact:00117"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00109",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00113",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00117",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "附録4が2026年10月1日から2027年5月28日必着の申請期間を示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0024",
+      "query": "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。",
+      "category": "documents",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00110",
+        "fact:00111",
+        "fact:00112",
+        "fact:00113",
+        "fact:00114",
+        "fact:00115",
+        "fact:00116",
+        "fact:00117"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00110",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00111",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00112",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00113",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00114",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00115",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00116",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00117",
+          "source_pages": [
+            17
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "郵送方法、申請書、身分証写し、返信用封筒という別々の直接条項が全て必要。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0025",
+      "query": "物理学系の英語スコアシートは出願時に送りますか、それとも筆答試験当日に持参しますか。",
+      "category": "language_tests",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00151"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00151",
+          "source_pages": [
+            21
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "物理学系"
+          ]
+        }
+      ],
+      "annotation_note": "物理学系だけのオンライン版スコア持参時期をdepartment scopeで確認する。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0026",
+      "query": "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。",
+      "category": "department_requirements",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00154"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00154",
+          "source_pages": [
+            23
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "化学系"
+          ]
+        }
+      ],
+      "annotation_note": "化学系固有の1500字程度と事前相談義務を同じdepartment Factが示す。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0027",
+      "query": "材料系の外部英語試験スコアシートは、オンライン版をいつ提出し、後から差し替えられますか。",
+      "category": "language_tests",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00202",
+        "fact:00205"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00202",
+          "source_pages": [
+            42
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "材料系"
+          ]
+        },
+        {
+          "fact_id": "fact:00205",
+          "source_pages": [
+            42
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "材料系"
+          ]
+        }
+      ],
+      "annotation_note": "材料系固有の出願時提出と差替不可をdepartment Factが直接示す。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0028",
+      "query": "数理・計算科学系の志望理由は何字程度で、出願前に誰へ連絡すべきですか。",
+      "category": "department_requirements",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00218",
+        "fact:00219"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00218",
+          "source_pages": [
+            50
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数理・計算科学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00219",
+          "source_pages": [
+            50
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "数理・計算科学系"
+          ]
+        }
+      ],
+      "annotation_note": "数理・計算科学系固有の1000字程度と第一志望教員への事前連絡を示す。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0029",
+      "query": "情報工学系の志望理由書は、日本語と英語でそれぞれどのくらいの長さですか。",
+      "category": "department_requirements",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00221"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00221",
+          "source_pages": [
+            52
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "情報工学系"
+          ]
+        }
+      ],
+      "annotation_note": "情報工学系固有の日本語1500字・英語500ワードという指定を直接示す。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0030",
+      "query": "生命理工学系のB日程口頭試問はオンラインですか。受験資格者はいつ発表されますか。",
+      "category": "selection_exams",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00224",
+        "fact:00225",
+        "fact:00226"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00224",
+          "source_pages": [
+            55
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "生命理工学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00225",
+          "source_pages": [
+            55
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "生命理工学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00226",
+          "source_pages": [
+            55
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "生命理工学系"
+          ]
+        }
+      ],
+      "annotation_note": "生命理工学系固有の8月21日までの発表とオンライン実施を直接示す。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0031",
+      "query": "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。",
+      "category": "selection_exams",
+      "query_style": "exact_term",
+      "relevant_fact_ids": [
+        "fact:00106",
+        "fact:00233",
+        "fact:00234",
+        "fact:00235"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00106",
+          "source_pages": [
+            14
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "建築学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00233",
+          "source_pages": [
+            60
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "建築学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00234",
+          "source_pages": [
+            60
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "建築学系"
+          ]
+        },
+        {
+          "fact_id": "fact:00235",
+          "source_pages": [
+            60
+          ],
+          "scope_type": "department",
+          "scope_targets": [
+            "建築学系"
+          ]
+        }
+      ],
+      "annotation_note": "出願時の科目選択規則と、各専門試験の時間を示す別々のdepartment条項が必要。",
+      "scope_sensitive": true,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0032",
+      "query": "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。",
+      "category": "contacts_forms",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00297"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00297",
+          "source_pages": [
+            85
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "最終ページが入試課の公式メールアドレスとFAQ確認先を示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0033",
+      "query": "受験票はいつから、どこで閲覧して印刷できますか。",
+      "category": "selection_exams",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00000",
+        "fact:00004"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00000",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00004",
+          "source_pages": [
+            2
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "受験票の7月2日正午頃の公開とマイページ印刷を直接示す。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0034",
+      "query": "検定料はクレジットカードとネットバンキングのどちらで支払えますか。",
+      "category": "fees",
+      "query_style": "identifier",
+      "relevant_fact_ids": [
+        "fact:00085",
+        "fact:00087",
+        "fact:00107"
+      ],
+      "gold_evidence": [
+        {
+          "fact_id": "fact:00085",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00087",
+          "source_pages": [
+            9
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        },
+        {
+          "fact_id": "fact:00107",
+          "source_pages": [
+            15
+          ],
+          "scope_type": "unknown",
+          "scope_targets": []
+        }
+      ],
+      "annotation_note": "附録2が利用可能なクレジットカードとネットバンキングを直接案内する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    }
+  ]
+}
