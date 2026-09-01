@@ -10,6 +10,11 @@ Online query
 query/profile -> vector/hybrid retrieval -> reasoning chains -> applicant-aware answer/report
 ```
 
+The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
+`N` is the identity and provenance record for future vector row `N`; the index never replaces the
+authoritative Fact. See
+[ADR 0001: Derived Vector Index Contract](decisions/0001-derived-vector-index-contract.md).
+
 ## Current MVP
 
 The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,

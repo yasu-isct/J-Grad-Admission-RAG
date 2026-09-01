@@ -13,6 +13,7 @@ from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
 from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
+from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -248,4 +249,27 @@ def test_real_pdf_diagnostics_are_deterministic(
 
     assert rebuilt.diagnostics.model_dump(mode="json") == real_document_kb.diagnostics.model_dump(
         mode="json"
+    )
+
+
+def test_real_pdf_derives_traceable_index_payload_shape(
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    payloads = derive_index_payloads(real_document_kb)
+    expected_count = real_pdf_manifest["expected"]["retrieval_unit_count"]
+
+    assert len(payloads) == expected_count == 298
+    assert [payload.row_index for payload in payloads] == list(range(expected_count))
+    assert len({payload.unit_id for payload in payloads}) == expected_count
+    assert len({payload.fact_id for payload in payloads}) == expected_count
+    assert all(payload.document_id == real_document_kb.manifest.document_id for payload in payloads)
+    assert all(payload.source_pages for payload in payloads)
+    assert all(payload.section_path for payload in payloads)
+    assert all(
+        payload.unit_id == unit.unit_id
+        and payload.fact_id == unit.fact_id
+        and payload.source_pages == unit.source_pages
+        and payload.section_path == unit.section_path
+        for payload, unit in zip(payloads, real_document_kb.retrieval_units, strict=True)
     )
