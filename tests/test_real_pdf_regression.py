@@ -16,6 +16,7 @@ from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
 from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
+from jgrad_admission_rag.evaluation.retrieval_queries import load_retrieval_benchmark
 from jgrad_admission_rag.retrieval.embedding import (
     DeterministicFakeEmbeddingProvider,
     embed_documents_checked,
@@ -30,6 +31,7 @@ from jgrad_admission_rag.utils import sha256_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
+RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_v1.json"
 REAL_PDF_ENV = "JGRAD_REAL_PDF"
 
 pytestmark = pytest.mark.real_pdf
@@ -652,3 +654,80 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
     assert json.loads(stale_output.err)["mismatches"] == ["source_kb_sha256"]
     assert stale_kb_path.read_bytes() == stale_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == before
+
+
+def test_real_pdf_retrieval_benchmark_gold_maps_to_authoritative_facts(
+    real_pdf_manifest: dict[str, Any],
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    expected = real_pdf_manifest["expected"]
+    facts = real_document_kb.facts
+
+    fact_content_projection = [
+        {
+            "fact_id": fact.fact_id,
+            "title": fact.title,
+            "text": fact.text,
+            "source_pages": fact.source_pages,
+            "section_path": fact.section_path,
+        }
+        for fact in facts
+    ]
+    fact_content_sha256 = hashlib.sha256(
+        json.dumps(fact_content_projection, ensure_ascii=False, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+    units_by_fact = {unit.fact_id: unit for unit in real_document_kb.retrieval_units}
+    fact_structure_projection = [
+        {
+            "fact_id": fact.fact_id,
+            "unit_id": units_by_fact[fact.fact_id].unit_id,
+            "source_pages": fact.source_pages,
+            "section_path": fact.section_path,
+            "scope_type": fact.scope_type,
+            "scope_targets": fact.scope_targets,
+            "parent_college": fact.parent_college,
+        }
+        for fact in facts
+    ]
+    fact_structure_sha256 = hashlib.sha256(
+        json.dumps(fact_structure_projection, ensure_ascii=False, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+
+    assert real_document_kb.diagnostics.quality_gate.passed
+    assert benchmark.document_id == real_document_kb.manifest.document_id
+    assert benchmark.source_pdf_sha256 == real_document_kb.manifest.pdf_sha256
+    assert benchmark.source_pdf_sha256 == real_pdf_manifest["sha256"]
+    assert benchmark.expected_kb_schema_version == real_document_kb.manifest.schema_version
+    assert benchmark.fact_content_sha256 == fact_content_sha256
+    assert benchmark.fact_content_sha256 == expected["fact_content_sha256"]
+    assert benchmark.fact_structure_sha256 == fact_structure_sha256
+    assert benchmark.fact_structure_sha256 == expected["fact_structure_sha256"]
+
+    facts_by_id = {fact.fact_id: fact for fact in facts}
+    assert len(facts_by_id) == len(facts)
+    for query in benchmark.queries:
+        assert [evidence.fact_id for evidence in query.gold_evidence] == query.relevant_fact_ids
+        for evidence in query.gold_evidence:
+            fact = facts_by_id[evidence.fact_id]
+            assert fact.source_pages
+            assert evidence.source_pages == fact.source_pages
+            assert evidence.scope_type == fact.scope_type
+            assert evidence.scope_targets == fact.scope_targets
+            assert all(1 <= page <= expected["page_count"] for page in evidence.source_pages)
+
+    resolved_pairs = {
+        (claim.source_fact_id, claim.selected_target_fact_id)
+        for claim in real_document_kb.diagnostics.reference_claims
+        if claim.status == "resolved"
+    }
+    for query in benchmark.queries:
+        if query.requires_reference_expansion:
+            gold_ids = set(query.relevant_fact_ids)
+            assert any(
+                source in gold_ids and target in gold_ids for source, target in resolved_pairs
+            )
