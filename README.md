@@ -191,6 +191,25 @@ Only builder-resolved targets become evidence. Ambiguous and unresolved claims a
 guessing, and expansion never changes primary ranks or recursively follows the attached target. See
 [the reference expansion contract](docs/evaluation/reference-expansion.md).
 
+For a stable downstream handoff, hybrid search can emit a canonical `EvidencePack` v1 instead of the
+operator-oriented search summary. Reference expansion is included automatically:
+
+```powershell
+jgrad-search outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
+  --query "情報工学系の出願資格" `
+  --retrieval-mode hybrid `
+  --output-format evidence-pack `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+The pack preserves full official evidence and retrieval diagnostics, but makes no applicant-specific
+decision and generates no answer. See [the EvidencePack v1 contract](docs/evaluation/evidence-pack-v1.md).
+
 ## Sentence Transformers Adapter
 
 Install the optional model runtime separately with `python -m pip install -e .[embedding]`. The

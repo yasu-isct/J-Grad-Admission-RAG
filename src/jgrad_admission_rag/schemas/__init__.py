@@ -1,2 +1,41 @@
 """Pydantic and dataclass schemas for admission RAG knowledge bases."""
 
+from .evidence_pack import (
+    EVIDENCE_PACK_SCHEMA_VERSION,
+    SUPPORTED_EVIDENCE_PACK_SCHEMA_VERSIONS,
+    AttachedReferenceEvidence,
+    EvidenceCounts,
+    EvidenceMetadataFilter,
+    EvidencePack,
+    EvidencePackError,
+    EvidenceRequest,
+    EvidenceRuntime,
+    EvidenceScopePreference,
+    IncomingRelation,
+    PrimaryEvidence,
+    ReferenceWarning,
+    ResolvedReferenceRelation,
+    canonical_evidence_pack_bytes,
+    load_evidence_pack,
+    load_evidence_pack_bytes,
+)
+
+__all__ = [
+    "EVIDENCE_PACK_SCHEMA_VERSION",
+    "SUPPORTED_EVIDENCE_PACK_SCHEMA_VERSIONS",
+    "AttachedReferenceEvidence",
+    "EvidenceCounts",
+    "EvidenceMetadataFilter",
+    "EvidencePack",
+    "EvidencePackError",
+    "EvidenceRequest",
+    "EvidenceRuntime",
+    "EvidenceScopePreference",
+    "IncomingRelation",
+    "PrimaryEvidence",
+    "ReferenceWarning",
+    "ResolvedReferenceRelation",
+    "canonical_evidence_pack_bytes",
+    "load_evidence_pack",
+    "load_evidence_pack_bytes",
+]

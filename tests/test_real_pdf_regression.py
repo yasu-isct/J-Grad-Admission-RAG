@@ -24,6 +24,7 @@ from jgrad_admission_rag.retrieval.embedding import (
     embed_query_checked,
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
+from jgrad_admission_rag.retrieval.evidence_pack import build_evidence_pack
 from jgrad_admission_rag.retrieval.hybrid_search import (
     fuse_ranked_hits,
     search_hybrid_index,
@@ -40,6 +41,10 @@ from jgrad_admission_rag.retrieval.metadata_search import (
 from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, search_local_index
 from jgrad_admission_rag.retrieval.reference_expansion import expand_references
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
+from jgrad_admission_rag.schemas.evidence_pack import (
+    canonical_evidence_pack_bytes,
+    load_evidence_pack_bytes,
+)
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
 
@@ -1249,3 +1254,165 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
     }
     assert ("fact:00057", "fact:00059") in resolved_pairs
     assert ("fact:00064", "fact:00066") in resolved_pairs
+
+
+def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index = load_local_index(index_dir, mmap=True)
+    context = load_fresh_index_context(index, kb_path, provider.identity)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    payload_by_fact = {payload.fact_id: payload for payload in index.payloads}
+    ordered_bytes: list[bytes] = []
+    kb_before = real_document_kb.model_dump(mode="json")
+    benchmark_before = RETRIEVAL_BENCHMARK_PATH.read_bytes()
+    index_before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+
+    for query in benchmark.queries:
+        preference = ScopePreference()
+        if query.scope_sensitive:
+            preference = ScopePreference(
+                preferred_scope_targets=tuple(
+                    sorted(
+                        {
+                            target
+                            for evidence in query.gold_evidence
+                            for target in evidence.scope_targets
+                        }
+                    )
+                )
+            )
+        result = search_metadata_index(
+            index,
+            query.query,
+            provider,
+            scope_preference=preference,
+            top_k=10,
+            candidate_k=50,
+        )
+        expansion = expand_references(index, context, result.hits)
+        result_before = result.to_dict()
+        expansion_before = expansion.to_dict()
+        pack = build_evidence_pack(query.query, result, expansion)
+        canonical = canonical_evidence_pack_bytes(pack)
+        repeated = canonical_evidence_pack_bytes(
+            build_evidence_pack(query.query, result, expansion)
+        )
+
+        assert canonical == repeated
+        assert canonical_evidence_pack_bytes(load_evidence_pack_bytes(canonical)) == canonical
+        assert result.to_dict() == result_before
+        assert expansion.to_dict() == expansion_before
+        assert pack.counts.primary_evidence_count == len(result.hits)
+        assert pack.counts.attached_evidence_count == len(expansion.expanded_targets)
+        assert pack.counts.resolved_relation_count == expansion.resolved_relation_count
+        assert pack.counts.warning_count == (
+            expansion.expanded_status_counts["ambiguous"]
+            + expansion.expanded_status_counts["unresolved"]
+        )
+        for evidence in (*pack.primary_evidence, *pack.attached_reference_evidence):
+            payload = payload_by_fact[evidence.fact_id]
+            assert (
+                evidence.row_index,
+                evidence.document_id,
+                evidence.unit_id,
+                evidence.text,
+                evidence.source_pages,
+                evidence.section_path,
+                evidence.fact_type,
+                evidence.scope_type,
+                evidence.scope_targets,
+                evidence.parent_college,
+                evidence.metadata,
+            ) == (
+                payload.row_index,
+                payload.document_id,
+                payload.unit_id,
+                payload.text,
+                tuple(payload.source_pages),
+                tuple(payload.section_path),
+                payload.fact_type,
+                payload.scope_type,
+                tuple(payload.scope_targets),
+                payload.parent_college,
+                payload.metadata,
+            )
+        ordered_bytes.append(canonical)
+
+    assert len(ordered_bytes) == 34
+    aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
+    assert aggregate_sha256 == "0c2b10c1a68496a9154c9bdf8cf209d2cd0e22507f1c1a9bb7c92383af974f6f"
+    assert real_document_kb.model_dump(mode="json") == kb_before
+    assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
+    assert index.vectors.flags.writeable is False
+
+
+def test_real_pdf_rq0012_evidence_pack_exposes_resolved_targets_without_answers(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index = load_local_index(index_dir, mmap=True)
+    context = load_fresh_index_context(index, kb_path, provider.identity)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    query = next(query for query in benchmark.queries if query.query_id == "rq:0012")
+    full = search_metadata_index(
+        index,
+        query.query,
+        provider,
+        top_k=298,
+        candidate_k=298,
+    )
+    source_fact_ids = ("fact:00057", "fact:00064")
+    source_hits = tuple(
+        replace(next(hit for hit in full.hits if hit.fact_id == fact_id), rank=rank)
+        for rank, fact_id in enumerate(source_fact_ids, start=1)
+    )
+    result = replace(full, top_k_requested=2, hits=source_hits)
+    expansion = expand_references(index, context, result.hits)
+    pack = build_evidence_pack(query.query, result, expansion)
+
+    assert [evidence.fact_id for evidence in pack.primary_evidence] == list(source_fact_ids)
+    assert [evidence.fact_id for evidence in pack.attached_reference_evidence] == [
+        "fact:00058",
+        "fact:00059",
+        "fact:00065",
+        "fact:00066",
+    ]
+    relation_pairs = {
+        (relation.source_fact_id, relation.selected_target_fact_id)
+        for relation in pack.resolved_relations
+    }
+    assert ("fact:00057", "fact:00059") in relation_pairs
+    assert ("fact:00064", "fact:00066") in relation_pairs
+    assert not hasattr(pack, "answer")
+    assert not hasattr(pack, "applicant_profile")
