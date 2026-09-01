@@ -129,6 +129,26 @@ replacement and crash recovery require a separate design. See
 Returned rows are retrieval candidates, not applicant-specific decisions or final answers. Later
 milestones add profile-aware reasoning and reporting.
 
+Hybrid retrieval is opt-in while evaluation thresholds are still being established. It combines
+vector and lexical ranks with fixed Reciprocal Rank Fusion and leaves the default vector response
+unchanged:
+
+```powershell
+jgrad-search outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
+  --query "情報工学系のTOEFL提出条件" `
+  --retrieval-mode hybrid `
+  --candidate-k 50 `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+Hybrid output reports `rrf-v1`, `RRF_K=60`, candidate depths, channel counts, and each hit's vector
+and lexical provenance. See [the hybrid retrieval contract](docs/evaluation/hybrid-retrieval.md).
+
 ## Sentence Transformers Adapter
 
 Install the optional model runtime separately with `python -m pip install -e .[embedding]`. The

@@ -23,9 +23,10 @@ from jgrad_admission_rag.retrieval.embedding import (
     embed_query_checked,
 )
 from jgrad_admission_rag.retrieval.embedding_text import EMBEDDING_TEXT_VERSION
+from jgrad_admission_rag.retrieval.hybrid_search import fuse_ranked_hits
 from jgrad_admission_rag.retrieval.local_index import build_local_index, load_local_index
 from jgrad_admission_rag.retrieval.lexical_search import build_lexical_searcher
-from jgrad_admission_rag.retrieval.vector_search import search_local_index
+from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, search_local_index
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
@@ -777,3 +778,118 @@ def test_real_pdf_lexical_retrieval_characterization(
     }
     assert top_five_misses == ["rq:0010", "rq:0019"]
     assert [payload.model_dump(mode="json") for payload in payloads] == payload_snapshot
+
+
+def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+    capsys,
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    benchmark_bytes = RETRIEVAL_BENCHMARK_PATH.read_bytes()
+    kb_bytes = kb_path.read_bytes()
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index_bytes = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+    index = load_local_index(index_dir, mmap=True)
+    vectors_before = np.array(index.vectors, copy=True)
+    payloads_before = [payload.model_dump(mode="json") for payload in index.payloads]
+    lexical_searcher = build_lexical_searcher(index)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    characterization: list[dict[str, object]] = []
+    aggregate: dict[str, dict[str, list[int]]] = {"style": {}, "category": {}}
+    first_hybrid = None
+
+    for query in benchmark.queries:
+        vector = search_loaded_index(index, query.query, provider, top_k=50)
+        lexical = lexical_searcher.search(query.query, top_k=50)
+        hybrid = fuse_ranked_hits(
+            index,
+            vector.hits,
+            lexical.hits,
+            top_k=10,
+            candidate_k=50,
+        )
+        if first_hybrid is None:
+            first_hybrid = hybrid
+        gold = set(query.relevant_fact_ids)
+
+        row: dict[str, object] = {"query_id": query.query_id}
+        for channel, hits in (
+            ("vector", vector.hits),
+            ("lexical", lexical.hits),
+            ("hybrid", hybrid.hits),
+        ):
+            top_five = [hit.fact_id for hit in hits[:5] if hit.fact_id in gold]
+            top_ten = [hit.fact_id for hit in hits[:10] if hit.fact_id in gold]
+            row[f"{channel}_top5"] = top_five
+            row[f"{channel}_top10"] = top_ten
+            for dimension, value in (
+                ("style", query.query_style),
+                ("category", query.category),
+            ):
+                counts = aggregate[dimension].setdefault(f"{value}:{channel}", [0, 0, 0])
+                counts[0] += 1
+                counts[1] += bool(top_five)
+                counts[2] += bool(top_ten)
+        characterization.append(row)
+
+        assert hybrid.fusion_version == "rrf-v1"
+        assert hybrid.rrf_k == 60
+        assert hybrid.candidate_k_resolved == 50
+        assert hybrid.vector_candidate_count == 50
+        assert 0 < hybrid.lexical_candidate_count <= 50
+        assert all(hit.source_pages and hit.section_path for hit in hybrid.hits)
+
+    characterization_sha256 = hashlib.sha256(
+        json.dumps(characterization, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    aggregate_sha256 = hashlib.sha256(
+        json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    assert characterization_sha256 == (
+        "27a3e6c783af2ea373b3fb0b304cd20d065e5bd3183e613f085bbe34d17d5689"
+    )
+    assert aggregate_sha256 == ("1579c88ad3ffa30eafb8e28778f9df1b360e98f8cdd0e927cecf070dffeba4a2")
+
+    first_query = benchmark.queries[0]
+    search_cli.main(
+        [
+            str(index_dir),
+            "--current-kb",
+            str(kb_path),
+            "--query",
+            first_query.query,
+            "--top-k",
+            "10",
+            "--retrieval-mode",
+            "hybrid",
+            "--candidate-k",
+            "50",
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+    captured = capsys.readouterr()
+    summary = json.loads(captured.out)
+    assert captured.err == ""
+    assert summary["semantic"] is False
+    assert summary["results"] == [hit.to_dict() for hit in first_hybrid.hits]
+    assert np.array_equal(index.vectors, vectors_before)
+    assert [payload.model_dump(mode="json") for payload in index.payloads] == payloads_before
+    assert kb_path.read_bytes() == kb_bytes
+    assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_bytes
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_bytes

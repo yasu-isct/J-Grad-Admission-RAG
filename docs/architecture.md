@@ -50,6 +50,13 @@ ascending row index, excludes zero-score rows, and returns detached evidence wit
 page provenance. It does not fuse vector results or decide applicant applicability. See
 [Lexical Retrieval](evaluation/lexical-retrieval.md).
 
+Hybrid retrieval runs vector and lexical candidate generation over one validated index, then uses
+equal-weight Reciprocal Rank Fusion over their ranks. Version `rrf-v1` never compares or combines the
+raw cosine and BM25 scores. The union remains auditable through per-channel rank and score fields,
+while final evidence is rebuilt from the aligned payload row. Vector mode remains the public CLI
+default until semantic evaluation establishes a quality gate. See
+[Hybrid Retrieval](evaluation/hybrid-retrieval.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may
