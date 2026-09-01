@@ -72,6 +72,12 @@ claims attach target evidence;
 deduplicated, preserve every incoming relation, and never alter primary ranks or scores. See
 [Reference Expansion](evaluation/reference-expansion.md).
 
+`EvidencePack` v1 is the strict boundary between retrieval and future reasoning. It validates and
+canonically packages the exact request, runtime/source bindings, ordered primary evidence, resolved
+one-hop attachments, and authoritative ambiguity warnings. It is a derived request snapshot, never
+an answer: it contains no applicant profile, eligibility conclusion, override decision, summary, or
+rendered citation. See [EvidencePack v1](evaluation/evidence-pack-v1.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may

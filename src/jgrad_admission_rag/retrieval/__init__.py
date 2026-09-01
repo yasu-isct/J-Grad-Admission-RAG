@@ -14,6 +14,7 @@ from .embedding import (
     validate_query_embedding,
 )
 from .embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
+from .evidence_pack import build_evidence_pack
 from .eligible_rows import EligibleRowsError, validate_eligible_rows
 from .index_freshness import (
     FRESHNESS_CHECKED_FIELDS,
@@ -185,6 +186,7 @@ __all__ = [
     "VectorSearchHit",
     "VectorSearchResult",
     "build_embedding_text",
+    "build_evidence_pack",
     "build_local_index",
     "build_lexical_projection",
     "build_lexical_searcher",

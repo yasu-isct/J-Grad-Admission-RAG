@@ -376,6 +376,116 @@ def test_reference_expansion_failure_is_structured_json(
     assert json.loads(captured.err)["kind"] == "reference_expansion_error"
 
 
+def test_evidence_pack_output_is_explicit_hybrid_only_canonical_handoff(
+    tmp_path: Path, capsys
+) -> None:
+    index_dir = _build_reference_index(tmp_path)
+    args = [
+        *_metadata_args(
+            index_dir,
+            "--filter-fact-type",
+            "eligibility",
+            top_k=1,
+        ),
+        "--output-format",
+        "evidence-pack",
+    ]
+
+    search_cli.main(args)
+
+    captured = capsys.readouterr()
+    pack = json.loads(captured.out)
+    assert captured.err == ""
+    assert len(captured.out.splitlines()) == 1
+    assert pack["schema_version"] == "1.0"
+    assert pack["request"]["query"] == "出願資格"
+    assert pack["request"]["retrieval_mode"] == "hybrid"
+    assert pack["primary_evidence"][0]["fact_id"] == "fact:00000"
+    assert pack["attached_reference_evidence"][0]["fact_id"] == "fact:00001"
+    assert pack["resolved_relations"][0]["disposition"] == "attached_target"
+    assert pack["counts"]["unique_evidence_count"] == 2
+    assert "results" not in pack
+    assert "freshness" not in pack
+
+
+def test_evidence_pack_reads_current_kb_once(tmp_path: Path, capsys, monkeypatch) -> None:
+    index_dir = _build_reference_index(tmp_path)
+    kb_path = index_dir.parent / "document_kb.json"
+    original_read_bytes = Path.read_bytes
+    reads = 0
+
+    def counting_read_bytes(path: Path) -> bytes:
+        nonlocal reads
+        if path.resolve() == kb_path.resolve():
+            reads += 1
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", counting_read_bytes)
+    search_cli.main([*_hybrid_args(index_dir, top_k=1), "--output-format", "evidence-pack"])
+
+    assert json.loads(capsys.readouterr().out)["schema_version"] == "1.0"
+    assert reads == 1
+
+
+@pytest.mark.parametrize(
+    "extra_args",
+    (
+        ("--output-format", "evidence-pack"),
+        (
+            "--retrieval-mode",
+            "hybrid",
+            "--output-format",
+            "evidence-pack",
+            "--expand-references",
+        ),
+    ),
+)
+def test_evidence_pack_rejects_vector_and_duplicate_expansion_before_provider(
+    tmp_path: Path, capsys, monkeypatch: pytest.MonkeyPatch, extra_args: tuple[str, ...]
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "create_provider",
+        lambda _configuration: (_ for _ in ()).throw(
+            AssertionError("invalid pack configuration must fail before provider construction")
+        ),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main([*_fake_args(index_dir), *extra_args])
+
+    error = json.loads(capsys.readouterr().err)
+    assert captured_exit.value.code == 2
+    assert error["kind"] == "configuration_error"
+
+
+def test_evidence_pack_failure_is_structured_without_query_echo(
+    tmp_path: Path, capsys, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    index_dir = _build_fake_index(tmp_path)
+    monkeypatch.setattr(
+        search_cli,
+        "build_evidence_pack",
+        lambda *_args: (_ for _ in ()).throw(search_cli.EvidencePackError("pack failed")),
+    )
+
+    with pytest.raises(SystemExit) as captured_exit:
+        search_cli.main(
+            [
+                *_hybrid_args(index_dir, query="SECRET-QUERY"),
+                "--output-format",
+                "evidence-pack",
+            ]
+        )
+
+    captured = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert captured.out == ""
+    assert json.loads(captured.err)["kind"] == "evidence_pack_error"
+    assert "SECRET-QUERY" not in captured.err
+
+
 def test_vector_mode_rejects_candidate_k_without_constructing_provider(
     tmp_path: Path,
     capsys,

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Sequence
 
 from ..retrieval.embedding import EmbeddingError
+from ..retrieval.evidence_pack import build_evidence_pack
 from ..retrieval.index_freshness import (
     CurrentKbInputError,
     IndexFreshnessReport,
@@ -37,6 +38,7 @@ from ..retrieval.vector_search import (
     search_loaded_index,
     validate_search_inputs,
 )
+from ..schemas.evidence_pack import EvidencePackError, canonical_evidence_pack_bytes
 from .provider_config import (
     FAKE_PROVIDER_NAME,
     CliConfigurationError,
@@ -56,6 +58,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--query", required=True, help="Non-blank retrieval query.")
     parser.add_argument("--top-k", type=positive_int, default=5)
     parser.add_argument("--retrieval-mode", choices=("vector", "hybrid"), default="vector")
+    parser.add_argument("--output-format", choices=("search", "evidence-pack"), default="search")
     parser.add_argument("--expand-references", action="store_true")
     parser.add_argument("--candidate-k", type=positive_int)
     parser.add_argument("--filter-fact-type", action="append")
@@ -193,6 +196,10 @@ def main(argv: Sequence[str] | None = None) -> None:
             raise CliConfigurationError("metadata options require --retrieval-mode hybrid")
         if args.retrieval_mode == "vector" and args.expand_references:
             raise CliConfigurationError("--expand-references requires --retrieval-mode hybrid")
+        if args.output_format == "evidence-pack" and args.retrieval_mode != "hybrid":
+            raise CliConfigurationError("evidence-pack output requires --retrieval-mode hybrid")
+        if args.output_format == "evidence-pack" and args.expand_references:
+            raise CliConfigurationError("evidence-pack output already includes reference expansion")
         metadata_filter = None
         scope_preference = None
         if args.retrieval_mode == "hybrid":
@@ -213,7 +220,7 @@ def main(argv: Sequence[str] | None = None) -> None:
                 raise CliConfigurationError(str(error)) from error
         index = load_local_index(args.index, mmap=True)
         fresh_context = None
-        if args.expand_references:
+        if args.expand_references or args.output_format == "evidence-pack":
             fresh_context = load_fresh_index_context(index, args.current_kb, configuration.identity)
             freshness = fresh_context.freshness
         else:
@@ -221,7 +228,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         provider = create_provider(configuration)
         if args.retrieval_mode == "vector":
             result = search_loaded_index(index, args.query, provider, top_k=args.top_k)
-        elif not metadata_requested:
+        elif not metadata_requested and args.output_format == "search":
             result = search_hybrid_index(
                 index,
                 args.query,
@@ -240,9 +247,15 @@ def main(argv: Sequence[str] | None = None) -> None:
                 candidate_k=args.candidate_k,
             )
         reference_expansion = None
-        if args.expand_references:
+        if args.expand_references or args.output_format == "evidence-pack":
             assert fresh_context is not None
             reference_expansion = expand_references(index, fresh_context, result.hits)
+        evidence_pack_bytes = None
+        if args.output_format == "evidence-pack":
+            assert reference_expansion is not None
+            evidence_pack_bytes = canonical_evidence_pack_bytes(
+                build_evidence_pack(args.query, result, reference_expansion)
+            )
     except CliConfigurationError as error:
         _write_json(
             {"error": str(error), "kind": "configuration_error", "provider": args.provider},
@@ -296,6 +309,12 @@ def main(argv: Sequence[str] | None = None) -> None:
             stream=sys.stderr,
         )
         raise SystemExit(2) from None
+    except EvidencePackError as error:
+        _write_json(
+            {"error": str(error), "kind": "evidence_pack_error", "provider": args.provider},
+            stream=sys.stderr,
+        )
+        raise SystemExit(2) from None
     except EmbeddingError as error:
         _write_json(
             {"error": str(error), "kind": "embedding_error", "provider": args.provider},
@@ -303,6 +322,9 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
         raise SystemExit(2) from None
 
+    if evidence_pack_bytes is not None:
+        sys.stdout.write(evidence_pack_bytes.decode("utf-8"))
+        return
     if args.retrieval_mode == "vector":
         summary = _success_summary(result, Path(args.index), args.top_k, freshness)
     elif not metadata_requested:
