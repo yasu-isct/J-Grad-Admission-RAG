@@ -60,6 +60,11 @@ interaction policy. Compatible pairs are covered without warning; reviewed confl
 unreviewed pairs remain structured, evidence-carrying results. This layer exposes incomplete review
 and potential interactions without changing a rule or synthesizing final eligibility.
 
+RSN-06 projects all three validated artifacts into one canonical audit graph. Every rule and policy
+pair becomes a typed step with backward dependencies and exact Fact/page provenance; independent
+loading recomputes graph topology, terminal steps, counts, and completeness. The trace deliberately
+stops before answer prose or final eligibility, giving RSN-07 a narrow, inspectable input boundary.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to

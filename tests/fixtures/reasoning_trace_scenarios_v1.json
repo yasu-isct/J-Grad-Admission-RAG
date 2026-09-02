@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "reasoning-trace-reviewed-v1",
+  "synthetic_scenarios": [
+    {
+      "scenario_id": "confirmed-active-compatible",
+      "rule_ids": ["left", "right"],
+      "step_ids": ["applicability:left", "applicability:right", "resolution:left", "resolution:right", "interaction:[\"eligibility.age\",\"left\",\"right\"]"],
+      "interaction_outcome": "compatible",
+      "analysis_complete": true
+    },
+    {
+      "scenario_id": "pending-and-unreviewed",
+      "rule_statuses": ["confirmed", "needs_information"],
+      "resolution_dispositions": ["active", "pending"],
+      "interaction_outcome": "unreviewed_interaction",
+      "certainty": "potential",
+      "analysis_complete": false
+    },
+    {
+      "scenario_id": "direct-override-inactive-pair",
+      "resolution_dispositions": ["overridden", "active"],
+      "interaction_outcome": "inactive",
+      "analysis_complete": true
+    },
+    {
+      "scenario_id": "reviewed-warning-matrix",
+      "interaction_outcomes": ["conflict", "ambiguity"],
+      "certainties": ["confirmed", "potential"]
+    }
+  ],
+  "real_kb_scenarios": {
+    "rule_id": "isct-master-individual-review-age-22-criterion",
+    "fact_id": "fact:00063",
+    "source_pages": [7],
+    "statuses": ["confirmed", "not_applicable", "needs_information"],
+    "interaction_step_count": 0,
+    "final_eligibility_present": false
+  }
+}
