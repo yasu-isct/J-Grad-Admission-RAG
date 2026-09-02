@@ -109,6 +109,14 @@ rules remain visible, evidence is preserved, and ambiguous multiple overriders f
 layer neither re-evaluates predicates nor synthesizes conflicts or eligibility. See
 [Rule Resolution v1](reasoning/rule-resolution-v1.md).
 
+`RuleInteractionPolicy` and `RuleInteractionReport` v1 add reviewed interaction coverage over the
+RSN-04 rules that remain active or pending. Every live same-subject pair is either reviewed as
+compatible, conflict, or ambiguous, or is exposed as `unreviewed_interaction`; absence of policy is
+never silently treated as compatibility. Confirmed warnings require two active endpoints, while any
+pending endpoint makes the warning potential. The report embeds the validated resolution and
+preserves per-rule Fact/page evidence, but neither changes dispositions nor decides eligibility.
+See [Rule Interaction v1](reasoning/rule-interaction-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
