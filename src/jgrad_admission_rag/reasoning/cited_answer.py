@@ -222,6 +222,9 @@ class InteractionAnswerWarning(CitedAnswerModel):
     def warning_must_cite_both_rules(self) -> InteractionAnswerWarning:
         if self.warning_id != _warning_id(self.pair_id):
             raise ValueError("warning ID does not reconcile")
+        _, left, right = _parse_pair_id(self.pair_id)
+        if self.rule_ids != (left, right):
+            raise ValueError("warning rule pair does not reconcile")
         if self.source_interaction_step_id != f"interaction:{self.pair_id}":
             raise ValueError("warning source step does not reconcile")
         if {item.source_rule_id for item in self.citations} != set(self.rule_ids):
@@ -294,6 +297,7 @@ class CitedAnswer(CitedAnswerModel):
     report_status: ReportStatus
     interaction_analysis_complete: StrictBool
     source_rule_ids: tuple[str, ...] = Field(min_length=1)
+    source_trace_step_ids: tuple[str, ...] = Field(min_length=2)
     rule_findings: tuple[RuleFinding, ...]
     interaction_warnings: tuple[InteractionAnswerWarning, ...]
     missing_information: tuple[MissingInformationEntry, ...]
@@ -403,6 +407,14 @@ def build_cited_answer(answer_id: str, trace: ReasoningTrace) -> CitedAnswer:
             report_status=status,
             interaction_analysis_complete=(validated_trace.coverage.interaction_analysis_complete),
             source_rule_ids=tuple(item.rule_id for item in validated_trace.resolution_steps),
+            source_trace_step_ids=tuple(
+                item.step_id
+                for item in (
+                    validated_trace.applicability_steps
+                    + validated_trace.resolution_steps
+                    + validated_trace.interaction_steps
+                )
+            ),
             rule_findings=findings_tuple,
             interaction_warnings=warnings_tuple,
             missing_information=missing_tuple,
@@ -668,6 +680,8 @@ def _derive_report_status(
 
 
 def _validate_answer_collections(answer: CitedAnswer) -> None:
+    _validate_source_step_inventory(answer.source_rule_ids, answer.source_trace_step_ids)
+    source_steps = set(answer.source_trace_step_ids)
     if answer.rule_findings != tuple(sorted(answer.rule_findings, key=lambda item: item.rule_id)):
         raise ValueError("answer findings are not canonical")
     if len({item.rule_id for item in answer.rule_findings}) != len(answer.rule_findings):
@@ -712,6 +726,99 @@ def _validate_answer_collections(answer: CitedAnswer) -> None:
         raise ValueError("answer citation rules do not reconcile")
     if any(item.document_id != answer.document_id for item in answer.citation_inventory):
         raise ValueError("answer citation identity does not reconcile")
+    for finding in answer.rule_findings:
+        if {
+            finding.source_applicability_step_id,
+            finding.source_resolution_step_id,
+        }.difference(source_steps):
+            raise ValueError("answer finding source steps do not reconcile")
+    for warning in answer.interaction_warnings:
+        if warning.source_interaction_step_id not in source_steps:
+            raise ValueError("answer warning source step does not reconcile")
+    for citation in answer.citation_inventory:
+        if set(citation.source_step_ids).difference(source_steps):
+            raise ValueError("answer citation source steps do not reconcile")
+    for item in answer.missing_information:
+        if item.rule_id not in source_rules or {
+            item.source_applicability_step_id,
+            item.source_resolution_step_id,
+        }.difference(source_steps):
+            raise ValueError("answer missing-information source does not reconcile")
+    for notice in answer.process_notices:
+        _validate_notice_sources(notice, source_rules, source_steps)
+
+
+def _validate_source_step_inventory(rule_ids: tuple[str, ...], step_ids: tuple[str, ...]) -> None:
+    expected_rule_steps = tuple(f"applicability:{item}" for item in rule_ids) + tuple(
+        f"resolution:{item}" for item in rule_ids
+    )
+    if step_ids[: len(expected_rule_steps)] != expected_rule_steps:
+        raise ValueError("answer source step inventory does not reconcile")
+    interaction_steps = step_ids[len(expected_rule_steps) :]
+    if interaction_steps != tuple(sorted(set(interaction_steps))):
+        raise ValueError("answer interaction source steps are not canonical")
+    for step_id in interaction_steps:
+        if not step_id.startswith("interaction:"):
+            raise ValueError("answer source step inventory is invalid")
+        _, left, right = _parse_pair_id(step_id.removeprefix("interaction:"))
+        if left not in rule_ids or right not in rule_ids:
+            raise ValueError("answer interaction source rules do not reconcile")
+
+
+def _validate_notice_sources(
+    notice: ProcessNotice,
+    source_rules: set[str],
+    source_steps: set[str],
+) -> None:
+    if set(notice.rule_ids).difference(source_rules) or set(notice.source_step_ids).difference(
+        source_steps
+    ):
+        raise ValueError("answer notice source does not reconcile")
+    single_rule_kinds = {
+        ProcessNoticeKind.MISSING_OFFICIAL_EVIDENCE,
+        ProcessNoticeKind.MISSING_SCOPE,
+        ProcessNoticeKind.SCOPE_INPUT_CONFLICT,
+    }
+    if notice.kind in single_rule_kinds:
+        if len(notice.rule_ids) != 1:
+            raise ValueError("answer notice rule shape does not reconcile")
+        rule_id = notice.rule_ids[0]
+        expected = tuple(sorted((f"applicability:{rule_id}", f"resolution:{rule_id}")))
+        if notice.source_step_ids != expected:
+            raise ValueError("answer notice step shape does not reconcile")
+        return
+    if notice.kind is ProcessNoticeKind.OVERRIDE_EVIDENCE_INCOMPLETE:
+        if len(notice.rule_ids) != 2:
+            raise ValueError("answer override notice rule shape does not reconcile")
+        expected = tuple(
+            sorted(
+                step_id
+                for rule_id in notice.rule_ids
+                for step_id in (f"applicability:{rule_id}", f"resolution:{rule_id}")
+            )
+        )
+        if notice.source_step_ids != expected:
+            raise ValueError("answer override notice step shape does not reconcile")
+        return
+    if notice.kind is ProcessNoticeKind.INTERACTION_EVIDENCE_INCOMPLETE:
+        if len(notice.rule_ids) != 2 or len(notice.source_step_ids) != 1:
+            raise ValueError("answer interaction notice shape does not reconcile")
+        step_id = notice.source_step_ids[0]
+        if not step_id.startswith("interaction:"):
+            raise ValueError("answer interaction notice step does not reconcile")
+        _, left, right = _parse_pair_id(step_id.removeprefix("interaction:"))
+        if notice.rule_ids != (left, right):
+            raise ValueError("answer interaction notice rules do not reconcile")
+        return
+    if notice.kind is ProcessNoticeKind.INTERACTION_ANALYSIS_INCOMPLETE:
+        if notice.rule_ids or not notice.source_step_ids:
+            raise ValueError("answer incomplete-analysis notice shape does not reconcile")
+        if any(not item.startswith("interaction:") for item in notice.source_step_ids):
+            raise ValueError("answer incomplete-analysis notice steps do not reconcile")
+        for step_id in notice.source_step_ids:
+            _parse_pair_id(step_id.removeprefix("interaction:"))
+        return
+    raise ValueError("answer notice kind is unsupported")
 
 
 def _validate_trace_identifiers(trace: ReasoningTrace) -> None:
@@ -831,6 +938,12 @@ def _status_label(status: ReportStatus) -> str:
 
 
 def _warning_id(pair_id: str) -> str:
+    _parse_pair_id(pair_id)
+    encoded = base64.urlsafe_b64encode(pair_id.encode("utf-8")).decode("ascii").rstrip("=")
+    return f"warning:{encoded}"
+
+
+def _parse_pair_id(pair_id: str) -> tuple[str, str, str]:
     try:
         payload = json.loads(pair_id)
         if (
@@ -850,8 +963,7 @@ def _warning_id(pair_id: str) -> str:
             raise ValueError
     except (json.JSONDecodeError, TypeError, ValueError):
         raise CitedAnswerError("cited answer input is invalid or inconsistent") from None
-    encoded = base64.urlsafe_b64encode(pair_id.encode("utf-8")).decode("ascii").rstrip("=")
-    return f"warning:{encoded}"
+    return subject, left, right
 
 
 def _citation_key(citation: AnswerCitation) -> tuple[Any, ...]:

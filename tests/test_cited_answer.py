@@ -23,6 +23,7 @@ from jgrad_admission_rag.reasoning.applicability import (
 )
 from jgrad_admission_rag.reasoning.cited_answer import (
     CitedAnswerError,
+    ProcessNotice,
     ProcessNoticeKind,
     ReportStatus,
     build_cited_answer,
@@ -743,6 +744,176 @@ def test_canonical_serialization_rejects_uncited_or_tampered_findings() -> None:
     tampered = answer.model_copy(update={"rule_findings": (wrong_step,)})
     with pytest.raises(CitedAnswerError):
         canonical_cited_answer_bytes(tampered)
+
+
+def test_canonical_rejects_review_ghost_missing_information_reproduction() -> None:
+    answer = build_cited_answer(
+        "answer:pending-ghost",
+        _single_trace(ApplicabilityStatus.NEEDS_INFORMATION),
+    )
+    ghost = answer.missing_information[0].model_copy(
+        update={
+            "rule_id": "ghost",
+            "source_applicability_step_id": "applicability:ghost",
+            "source_resolution_step_id": "resolution:ghost",
+        }
+    )
+    tampered = answer.model_copy(update={"missing_information": (ghost,)})
+    with pytest.raises(CitedAnswerError):
+        canonical_cited_answer_bytes(tampered)
+
+
+def test_canonical_rejects_review_ghost_process_notice_reproduction() -> None:
+    answer = build_cited_answer(
+        "answer:notice-ghost",
+        _single_trace(
+            ApplicabilityStatus.NEEDS_INFORMATION,
+            missing_evidence=True,
+        ),
+    )
+    ghost = answer.process_notices[0].model_copy(update={"source_step_ids": ("resolution:ghost",)})
+    tampered = answer.model_copy(update={"process_notices": (ghost,)})
+    with pytest.raises(CitedAnswerError):
+        canonical_cited_answer_bytes(tampered)
+
+
+def _two_rule_compatible_answer():
+    left = _rule("left")
+    right = _rule("right")
+    decisions = (_decision(left), _decision(right))
+    resolution = _resolution(_entry(left, decisions[0]), _entry(right, decisions[1]))
+    return build_cited_answer(
+        "answer:notice-shapes",
+        _trace((left, right), decisions, resolution, InteractionRelationship.COMPATIBLE),
+    )
+
+
+def test_single_rule_notice_rejects_missing_and_extra_source_steps() -> None:
+    answer = _two_rule_compatible_answer()
+    expected = ("applicability:left", "resolution:left")
+    notice = ProcessNotice(
+        kind=ProcessNoticeKind.MISSING_OFFICIAL_EVIDENCE,
+        rule_ids=("left",),
+        source_step_ids=expected,
+    )
+    valid = answer.model_copy(
+        update={
+            "report_status": ReportStatus.NEEDS_REVIEW,
+            "process_notices": (notice,),
+        }
+    )
+    assert canonical_cited_answer_bytes(valid)
+    for steps in (("resolution:left",), expected + ("resolution:right",)):
+        invalid_notice = notice.model_copy(update={"source_step_ids": tuple(sorted(steps))})
+        invalid = valid.model_copy(update={"process_notices": (invalid_notice,)})
+        with pytest.raises(CitedAnswerError):
+            canonical_cited_answer_bytes(invalid)
+
+
+def test_override_notice_requires_both_rules_exact_four_source_steps() -> None:
+    answer = _two_rule_compatible_answer()
+    expected = tuple(
+        sorted(
+            (
+                "applicability:left",
+                "resolution:left",
+                "applicability:right",
+                "resolution:right",
+            )
+        )
+    )
+    notice = ProcessNotice(
+        kind=ProcessNoticeKind.OVERRIDE_EVIDENCE_INCOMPLETE,
+        rule_ids=("left", "right"),
+        source_step_ids=expected,
+    )
+    valid = answer.model_copy(
+        update={"report_status": ReportStatus.NEEDS_REVIEW, "process_notices": (notice,)}
+    )
+    assert canonical_cited_answer_bytes(valid)
+    invalid_notice = notice.model_copy(update={"source_step_ids": expected[:-1]})
+    with pytest.raises(CitedAnswerError):
+        canonical_cited_answer_bytes(
+            valid.model_copy(update={"process_notices": (invalid_notice,)})
+        )
+
+
+def test_interaction_notices_require_member_pair_step_and_exact_rule_pair() -> None:
+    answer = _two_rule_compatible_answer()
+    interaction_step = next(
+        item for item in answer.source_trace_step_ids if item.startswith("interaction:")
+    )
+    notice = ProcessNotice(
+        kind=ProcessNoticeKind.INTERACTION_EVIDENCE_INCOMPLETE,
+        rule_ids=("left", "right"),
+        source_step_ids=(interaction_step,),
+    )
+    valid = answer.model_copy(
+        update={"report_status": ReportStatus.NEEDS_REVIEW, "process_notices": (notice,)}
+    )
+    assert canonical_cited_answer_bytes(valid)
+    for steps in (("resolution:left",), ('interaction:["eligibility.age","left","ghost"]',)):
+        invalid_notice = notice.model_copy(update={"source_step_ids": steps})
+        with pytest.raises(CitedAnswerError):
+            canonical_cited_answer_bytes(
+                valid.model_copy(update={"process_notices": (invalid_notice,)})
+            )
+
+
+def test_incomplete_analysis_notice_rejects_empty_noninteraction_and_ghost_steps() -> None:
+    left = _rule("left")
+    right = _rule("right")
+    decisions = (_decision(left), _decision(right))
+    resolution = _resolution(_entry(left, decisions[0]), _entry(right, decisions[1]))
+    answer = build_cited_answer(
+        "answer:incomplete-notice",
+        _trace((left, right), decisions, resolution),
+    )
+    notice = next(
+        item
+        for item in answer.process_notices
+        if item.kind is ProcessNoticeKind.INTERACTION_ANALYSIS_INCOMPLETE
+    )
+    for steps in (
+        (),
+        ("resolution:left",),
+        ('interaction:["eligibility.age","left","ghost"]',),
+    ):
+        invalid_notice = notice.model_copy(update={"source_step_ids": steps})
+        invalid = answer.model_copy(
+            update={
+                "process_notices": tuple(
+                    invalid_notice if item is notice else item for item in answer.process_notices
+                )
+            }
+        )
+        with pytest.raises(CitedAnswerError):
+            canonical_cited_answer_bytes(invalid)
+
+
+def test_source_step_inventory_rejects_ghost_resolution_step() -> None:
+    answer = build_cited_answer(
+        "answer:step-inventory", _single_trace(ApplicabilityStatus.CONFIRMED)
+    )
+    tampered = answer.model_copy(
+        update={
+            "source_trace_step_ids": (
+                "applicability:age-rule",
+                "resolution:ghost",
+            )
+        }
+    )
+    with pytest.raises(CitedAnswerError):
+        canonical_cited_answer_bytes(tampered)
+
+    interaction_ghost = answer.model_copy(
+        update={
+            "source_trace_step_ids": answer.source_trace_step_ids
+            + ('interaction:["eligibility.age","age-rule","ghost"]',)
+        }
+    )
+    with pytest.raises(CitedAnswerError):
+        canonical_cited_answer_bytes(interaction_ghost)
 
 
 @pytest.mark.parametrize("tamper", ["identity", "unsafe_trace", "unsafe_rule"])

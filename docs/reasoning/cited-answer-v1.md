@@ -46,6 +46,11 @@ source step IDs. The machine inventory sorts and deduplicates the complete tuple
 pages, rules, or provenance links remain distinct. Markdown exposes stable markers such as
 `[fact:00063, p.7]` and `[fact:00063, pp.7,9,10]`. It never copies official passage text.
 
+The answer also carries the canonical source rule IDs and trace step IDs, but not the complete
+trace. Model validation closes every finding, warning, missing-information entry, citation, and
+typed process notice against that ID inventory. Notice kinds enforce exact rule/step shapes, so a
+ghost, omitted, or extra source step fails canonical serialization without adding a provenance hash.
+
 ## Rendering And Privacy
 
 The renderer always uses these sections in order: report readiness, rule findings, optional missing
