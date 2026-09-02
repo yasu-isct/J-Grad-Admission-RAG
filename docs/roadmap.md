@@ -50,6 +50,11 @@ now compare allowlisted profile fields and explicit scope with retrieved primary
 evidence. The result is deliberately limited to three-valued rule applicability; rule priority,
 conflict synthesis, eligibility conclusions, and answer prose remain later tasks.
 
+RSN-04 orders those independently evaluated rules with a reviewed precedence policy. A narrower
+scope validates a direct override edge but never creates one; both endpoints must be confirmed,
+pending and not-applicable results stay visible, and evidence survives unchanged. The output is a
+deterministic resolution artifact, not a conflict or eligibility conclusion.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to
