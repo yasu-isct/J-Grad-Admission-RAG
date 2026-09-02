@@ -534,6 +534,28 @@ def test_evaluator_rejects_incomplete_pairing_gold_influence_and_tampering(mutat
         evaluate_retrieval(benchmark, kb, index, changed)
 
 
+def test_evaluator_rejects_payload_and_pack_tampered_together() -> None:
+    benchmark, kb, index, packs = _inputs()
+    tampered_payload = index.payloads[0].model_copy(update={"source_pages": [99]})
+    tampered_index = LocalVectorIndex(
+        manifest=index.manifest,
+        payloads=(tampered_payload, *index.payloads[1:]),
+        vectors=index.vectors,
+    )
+    tampered_primary = packs[0].primary_evidence[0].model_copy(update={"source_pages": (99,)})
+    tampered_pack = packs[0].model_copy(
+        update={"primary_evidence": (tampered_primary, *packs[0].primary_evidence[1:])}
+    )
+
+    with pytest.raises(RetrievalEvaluationError, match="inconsistent"):
+        evaluate_retrieval(
+            benchmark,
+            kb,
+            tampered_index,
+            (tampered_pack, *packs[1:]),
+        )
+
+
 def test_fewer_than_k_available_rows_keep_all_requested_metric_labels() -> None:
     kb = _kb(count=2)
     query = _query(1, (1,), kb, category="fees", style="exact_term")

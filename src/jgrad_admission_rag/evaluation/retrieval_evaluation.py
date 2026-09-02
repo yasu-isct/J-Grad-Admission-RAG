@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from ..retrieval.local_index import LocalVectorIndex
 from ..schemas.document_kb import DocumentKnowledgeBase
 from ..schemas.evidence_pack import EvidencePack, EvidenceRuntime
+from ..schemas.index import derive_index_payloads
 from .retrieval_queries import QueryCategory, QueryStyle, RetrievalBenchmark, RetrievalQuery
 
 RETRIEVAL_EVALUATION_SCHEMA_VERSION = "1.0"
@@ -524,6 +525,9 @@ def _validate_inputs(
     ):
         raise ValueError("index does not match benchmark document")
     facts = {fact.fact_id: fact for fact in knowledge_base.facts}
+    expected_payloads = tuple(derive_index_payloads(knowledge_base))
+    if index.payloads != expected_payloads:
+        raise ValueError("index payloads do not match the authoritative knowledge base")
     payloads = {payload.fact_id: payload for payload in index.payloads}
     payload_fact_ids = set(payloads)
     if len(facts) != len(knowledge_base.facts) or payload_fact_ids != set(facts):
