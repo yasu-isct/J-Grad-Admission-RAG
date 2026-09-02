@@ -1,1 +1,41 @@
 """Reasoning utilities for admission RAG knowledge bases."""
+
+from .applicant_profile import (
+    APPLICANT_PROFILE_SCHEMA_VERSION,
+    SUPPORTED_APPLICANT_PROFILE_SCHEMA_VERSIONS,
+    AcademicCredential,
+    ApplicantProfile,
+    ApplicantProfileError,
+    CitizenshipAndResidence,
+    CompletionState,
+    DegreeLevel,
+    EligibilityFacts,
+    IndividualReviewStatus,
+    IntakeMonth,
+    LanguageResultStatus,
+    LanguageTestResult,
+    TargetApplication,
+    canonical_applicant_profile_bytes,
+    load_applicant_profile,
+    load_applicant_profile_bytes,
+)
+
+__all__ = [
+    "APPLICANT_PROFILE_SCHEMA_VERSION",
+    "SUPPORTED_APPLICANT_PROFILE_SCHEMA_VERSIONS",
+    "AcademicCredential",
+    "ApplicantProfile",
+    "ApplicantProfileError",
+    "CitizenshipAndResidence",
+    "CompletionState",
+    "DegreeLevel",
+    "EligibilityFacts",
+    "IndividualReviewStatus",
+    "IntakeMonth",
+    "LanguageResultStatus",
+    "LanguageTestResult",
+    "TargetApplication",
+    "canonical_applicant_profile_bytes",
+    "load_applicant_profile",
+    "load_applicant_profile_bytes",
+]

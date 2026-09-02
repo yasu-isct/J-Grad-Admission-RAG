@@ -34,7 +34,11 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M5 Multi-document corpus | v0.6 | Multiple schools, years, and programs can coexist safely | Version and document filters prevent accidental mixing |
 | M6 Usable service | v1.0 | API and report output expose the complete workflow | End-to-end scenarios are reproducible and observable |
 
-## Current Sprint: M1 Trusted Knowledge Base
+## Current Sprint: M4 Applicant-Aware Reasoning
+
+M1, M2, and M3 are complete. M4 begins by defining the controlled, explicit applicant facts that
+later reasoning may compare with retrieved official evidence. It does not introduce eligibility
+decisions before the profile and evidence boundaries are independently testable.
 
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
