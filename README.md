@@ -129,6 +129,24 @@ replacement and crash recovery require a separate design. See
 Returned rows are retrieval candidates, not applicant-specific decisions or final answers. Later
 milestones add profile-aware reasoning and reporting.
 
+The benchmark evaluator produces a strict diagnostic report over the exact declared queries:
+
+```powershell
+jgrad-evaluate-retrieval outputs\index\sample-bge-m3 `
+  --current-kb outputs\kb\sample\document_kb.json `
+  --benchmark tests\fixtures\retrieval_queries_v1.json `
+  --provider sentence-transformers `
+  --model BAAI/bge-m3 `
+  --revision <same-40-character-commit-sha> `
+  --dimension 1024 `
+  --cache-folder .cache\models
+```
+
+It runs cache-only hybrid retrieval with empty filters and preferences, then reports primary-only
+Recall@1/3/5/10, MRR, breakdowns, and missing-gold diagnostics. Fake embeddings validate plumbing
+but are never quality-eligible. See
+[Retrieval Evaluation v1](docs/evaluation/retrieval-evaluation-v1.md).
+
 Hybrid retrieval is opt-in while evaluation thresholds are still being established. It combines
 vector and lexical ranks with fixed Reciprocal Rank Fusion and leaves the default vector response
 unchanged:

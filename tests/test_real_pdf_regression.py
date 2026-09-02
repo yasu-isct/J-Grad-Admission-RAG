@@ -12,12 +12,18 @@ import numpy as np
 import pytest
 
 from jgrad_admission_rag.cli import build_index as build_index_cli
+from jgrad_admission_rag.cli import evaluate_retrieval as evaluate_retrieval_cli
 from jgrad_admission_rag.cli import search as search_cli
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
 from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
 from jgrad_admission_rag.evaluation.retrieval_queries import load_retrieval_benchmark
+from jgrad_admission_rag.evaluation.retrieval_evaluation import (
+    canonical_retrieval_evaluation_bytes,
+    evaluate_retrieval,
+    load_retrieval_evaluation_bytes,
+)
 from jgrad_admission_rag.retrieval.embedding import (
     DeterministicFakeEmbeddingProvider,
     embed_documents_checked,
@@ -1357,6 +1363,146 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
     assert aggregate_sha256 == "0c2b10c1a68496a9154c9bdf8cf209d2cd0e22507f1c1a9bb7c92383af974f6f"
+    assert real_document_kb.model_dump(mode="json") == kb_before
+    assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
+    assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
+    assert index.vectors.flags.writeable is False
+
+
+def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_scored(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    kb_path = tmp_path / "document_kb.json"
+    kb_path.write_text(
+        json.dumps(
+            real_document_kb.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
+    index_dir = tmp_path / "fake-index"
+    provider = DeterministicFakeEmbeddingProvider(dimension=8)
+    build_local_index(kb_path, index_dir, provider)
+    index = load_local_index(index_dir, mmap=True)
+    context = load_fresh_index_context(index, kb_path, provider.identity)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    kb_before = real_document_kb.model_dump(mode="json")
+    benchmark_before = RETRIEVAL_BENCHMARK_PATH.read_bytes()
+    index_before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+    packs = []
+
+    for query in benchmark.queries:
+        result = search_metadata_index(
+            index,
+            query.query,
+            provider,
+            metadata_filter=MetadataFilter(),
+            scope_preference=ScopePreference(),
+            top_k=10,
+            candidate_k=50,
+        )
+        expansion = expand_references(index, context, result.hits)
+        packs.append(build_evidence_pack(query.query, result, expansion))
+
+    report = evaluate_retrieval(benchmark, context.knowledge_base, index, tuple(packs))
+    canonical = canonical_retrieval_evaluation_bytes(report)
+    loaded = load_retrieval_evaluation_bytes(canonical)
+
+    assert len(report.queries) == 34
+    assert report.quality.semantic_evaluation is False
+    assert report.quality.quality_eligible is False
+    assert report.quality.gate_status == "not_evaluated"
+    assert canonical_retrieval_evaluation_bytes(loaded) == canonical
+    assert canonical_retrieval_evaluation_bytes(report) == canonical
+
+    for query, result in zip(report.queries, benchmark.queries, strict=True):
+        ranked = [item.fact_id for item in query.ranked_primary_facts]
+        gold = set(result.relevant_fact_ids)
+        relevant_ranks = [rank for rank, fact_id in enumerate(ranked, start=1) if fact_id in gold]
+        expected_first = min(relevant_ranks) if relevant_ranks else None
+        assert query.first_relevant_rank == expected_first
+        assert query.reciprocal_rank == (1.0 / expected_first if expected_first else 0.0)
+        for depth, actual in zip((1, 3, 5, 10), query.recall.ordered(), strict=True):
+            assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
+
+    assert hashlib.sha256(canonical).hexdigest() == (
+        "0fef7dfa6bdc7e43eccad6cb1c3b3f5f90e187416fdf12993fc699a6d77e4c75"
+    )
+
+    class RecordingProvider:
+        def __init__(self) -> None:
+            self.delegate = DeterministicFakeEmbeddingProvider(dimension=8)
+            self.query_texts: list[str] = []
+
+        @property
+        def identity(self):
+            return self.delegate.identity
+
+        def embed_query(self, text: str):
+            self.query_texts.append(text)
+            return self.delegate.embed_query(text)
+
+    recording_provider = RecordingProvider()
+    loads = {"index": 0, "freshness": 0, "benchmark": 0, "provider": 0}
+    original_load_index = evaluate_retrieval_cli.load_local_index
+    original_load_freshness = evaluate_retrieval_cli.load_fresh_index_context
+    original_load_benchmark = evaluate_retrieval_cli.load_evaluation_benchmark
+
+    def load_index_once(path, *, mmap):
+        loads["index"] += 1
+        return original_load_index(path, mmap=mmap)
+
+    def load_freshness_once(loaded_index, path, identity):
+        loads["freshness"] += 1
+        return original_load_freshness(loaded_index, path, identity)
+
+    def load_benchmark_once(path):
+        loads["benchmark"] += 1
+        return original_load_benchmark(path)
+
+    def create_provider_once(configuration):
+        loads["provider"] += 1
+        assert configuration.identity == recording_provider.identity
+        return recording_provider
+
+    monkeypatch.setattr(evaluate_retrieval_cli, "load_local_index", load_index_once)
+    monkeypatch.setattr(
+        evaluate_retrieval_cli,
+        "load_fresh_index_context",
+        load_freshness_once,
+    )
+    monkeypatch.setattr(
+        evaluate_retrieval_cli,
+        "load_evaluation_benchmark",
+        load_benchmark_once,
+    )
+    monkeypatch.setattr(evaluate_retrieval_cli, "create_provider", create_provider_once)
+
+    evaluate_retrieval_cli.main(
+        [
+            str(index_dir),
+            "--current-kb",
+            str(kb_path),
+            "--benchmark",
+            str(RETRIEVAL_BENCHMARK_PATH),
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+    captured = capsys.readouterr()
+
+    assert captured.err == ""
+    assert captured.out.encode("utf-8") == canonical
+    assert loads == {"index": 1, "freshness": 1, "benchmark": 1, "provider": 1}
+    assert recording_provider.query_texts == [query.query for query in benchmark.queries]
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before

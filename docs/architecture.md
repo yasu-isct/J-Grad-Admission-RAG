@@ -78,6 +78,13 @@ one-hop attachments, and authoritative ambiguity warnings. It is a derived reque
 an answer: it contains no applicant profile, eligibility conclusion, override decision, summary, or
 rendered citation. See [EvidencePack v1](evaluation/evidence-pack-v1.md).
 
+Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
+exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
+reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
+preferences prevent benchmark annotations from influencing retrieval. Fake embeddings provide a
+deterministic plumbing baseline but are explicitly ineligible for quality gates. See
+[Retrieval Evaluation v1](evaluation/retrieval-evaluation-v1.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may
