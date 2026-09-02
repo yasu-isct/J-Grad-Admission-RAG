@@ -91,6 +91,11 @@ primary-only metrics, and diagnostic Fact IDs without committing the model, inde
 Its `quality_eligible` result is evidence for a later threshold decision, never a threshold by
 itself. See [BGE-M3 Semantic Baseline](evaluation/semantic-baseline-bge-m3.md).
 
+The semantic regression gate is a separate pure verifier over a compact report, approved policy,
+and signed retrieval-affecting implementation set. It never loads a model, KB, or vector index in
+CI; model-dependent re-evaluation remains an explicit offline operation. See
+[ADR 0003: Semantic Retrieval Regression Gate](decisions/0003-semantic-retrieval-regression-gate.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may

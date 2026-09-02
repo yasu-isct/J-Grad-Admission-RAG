@@ -136,9 +136,11 @@ The prior deterministic-fake plumbing report had Recall@1/3/5/10 of
 quality-ineligible. The semantic result demonstrates why a semantic baseline was needed, but its
 values are not targets and do not establish thresholds.
 
-No GitHub CI check is configured for this baseline. RET-09 must review these full-precision results,
-the six diagnostic rows, and acceptable slice tolerances before it defines an offline regression gate.
-Model files, the PDF, semantic index, and the three local reports remain untracked.
+RET-09 reviewed these full-precision results, the six diagnostic rows, and the approved tolerances.
+The resulting offline semantic regression gate binds this report, its runtime inputs, and the
+retrieval-affecting implementation set without loading the model in CI. See
+[ADR 0003](../decisions/0003-semantic-retrieval-regression-gate.md). Model files, the PDF, semantic
+index, and the three local reports remain untracked.
 
 ## Verification
 

@@ -79,7 +79,9 @@ def expand_chunks_by_references(
     max_depth: int = 1,
 ) -> tuple[list[TextChunk], list[ExpansionRecord]]:
     id_by_key = _index_by_identity(all_chunks)
-    selected_indexes = [id_by_key[_chunk_key(chunk)] for chunk in selected_chunks if _chunk_key(chunk) in id_by_key]
+    selected_indexes = [
+        id_by_key[_chunk_key(chunk)] for chunk in selected_chunks if _chunk_key(chunk) in id_by_key
+    ]
     expanded_indexes, records = expand_chunk_indexes(selected_indexes, links, max_depth=max_depth)
     return [all_chunks[index] for index in expanded_indexes], records
 
@@ -112,7 +114,9 @@ def write_reference_expansion(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Expand selected chunks through resolved reference links.")
+    parser = argparse.ArgumentParser(
+        description="Expand selected chunks through resolved reference links."
+    )
     parser.add_argument("chunks_json")
     parser.add_argument("selected_chunks_json")
     parser.add_argument("--links", required=True)
@@ -131,7 +135,11 @@ def main() -> None:
         max_depth=args.max_depth,
     )
     chunks_path = Path(args.selected_chunks_json)
-    output = Path(args.output) if args.output else ensure_dir(chunks_path.parent) / "reference_expanded_chunks.json"
+    output = (
+        Path(args.output)
+        if args.output
+        else ensure_dir(chunks_path.parent) / "reference_expanded_chunks.json"
+    )
     records_output = (
         Path(args.records_output)
         if args.records_output
