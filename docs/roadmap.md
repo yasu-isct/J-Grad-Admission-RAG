@@ -40,6 +40,11 @@ M1, M2, and M3 are complete. M4 begins by defining the controlled, explicit appl
 later reasoning may compare with retrieved official evidence. It does not introduce eligibility
 decisions before the profile and evidence boundaries are independently testable.
 
+RSN-02 adds the complementary query boundary: a reviewed, conservative Japanese lexical catalog
+records explicit question intent and scope before mapping scope only to existing soft retrieval
+preferences. It deliberately does not extract applicant facts, hide global evidence with hard
+filters, or decide rule applicability.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to

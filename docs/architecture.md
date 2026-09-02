@@ -85,6 +85,12 @@ Fact IDs, pages, or reasoning traces. Later applicability code will compare this
 with an `EvidencePack`; neither artifact replaces the other. See
 [ApplicantProfile v1](reasoning/applicant-profile-v1.md).
 
+`QueryIntent` v1 is the other M4 input boundary. Its pure Japanese lexical parser records only
+reviewed intent terms and explicit scope mentions with original offsets. The adapter maps department
+and parent-college mentions to soft retrieval preferences, never parser-derived hard filters, so
+global clauses remain candidates. It does not create an `ApplicantProfile`, decide applicability,
+or alter retrieval ranking behavior. See [QueryIntent v1](reasoning/query-intent-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
