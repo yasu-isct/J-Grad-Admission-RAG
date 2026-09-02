@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import pytest
@@ -104,3 +105,45 @@ def test_cli_rejects_noncanonical_manifest_before_evaluating(tmp_path: Path, cap
 
     assert captured_exit.value.code == 2
     assert '"kind":"semantic_gate_error"' in capsys.readouterr().err
+
+
+def test_cli_reports_an_altered_valid_report_as_a_safe_exit_one(tmp_path: Path, capsys) -> None:
+    manifest = tmp_path / "manifest.json"
+    report = tmp_path / "report.json"
+    manifest.write_bytes(_manifest())
+    payload = json.loads(REPORT.read_bytes())
+    payload["runtime"]["embedding_model"] = "different-model"
+    report.write_bytes(
+        (
+            json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
+        ).encode("utf-8")
+    )
+    args = _args(manifest)
+    args[args.index(str(REPORT))] = str(report)
+
+    with pytest.raises(SystemExit) as captured_exit:
+        cli.main(args)
+
+    output = json.loads(capsys.readouterr().out)
+    assert captured_exit.value.code == 1
+    assert {"report_sha256", "runtime.model"} <= set(output["failure_codes"])
+
+
+def test_cli_never_echoes_malformed_report_content(tmp_path: Path, capsys) -> None:
+    secret = "do-not-echo-this-query"
+    manifest = tmp_path / "manifest.json"
+    report = tmp_path / "report.json"
+    manifest.write_bytes(_manifest())
+    payload = json.loads(REPORT.read_bytes())
+    payload["query"] = secret
+    report.write_text(json.dumps(payload), encoding="utf-8")
+    args = _args(manifest)
+    args[args.index(str(REPORT))] = str(report)
+
+    with pytest.raises(SystemExit) as captured_exit:
+        cli.main(args)
+
+    captured = capsys.readouterr()
+    assert captured_exit.value.code == 2
+    assert secret not in captured.out
+    assert secret not in captured.err

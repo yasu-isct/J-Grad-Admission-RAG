@@ -295,9 +295,16 @@ def test_runtime_binding_drift_is_explicit(field: str, value: str | int, code: s
     assert code in result.failure_codes
 
 
-def test_reference_recovery_requires_primary_and_attachment_credit() -> None:
+def test_reference_attachments_do_not_receive_primary_ranked_credit() -> None:
     report = load_retrieval_evaluation_bytes(_report_bytes())
     query = next(item for item in report.queries if item.query_id == "rq:0012")
+    assert query.recall.recall_at_10 == 0.5
+    assert query.reference_only_gold_fact_ids == ("fact:00059", "fact:00066")
+    assert not {
+        "fact:00059",
+        "fact:00066",
+    }.intersection(item.fact_id for item in query.ranked_primary_facts)
+
     changed_query = query.model_copy(update={"reference_only_gold_fact_ids": ()})
     changed = report.model_copy(
         update={
@@ -319,6 +326,20 @@ def test_reference_recovery_requires_primary_and_attachment_credit() -> None:
     assert {"rq0012.combined_reference_coverage", "rq0012.reference_only_fact_ids"} <= set(
         result.failure_codes
     )
+
+
+def test_reference_primary_floor_accepts_the_exact_boundary_and_rejects_nextafter() -> None:
+    policy = _policy()
+    assert _evaluate(policy=policy).passed is True
+    changed = policy.model_copy(
+        update={
+            "reference_recovery": policy.reference_recovery.model_copy(
+                update={"primary_recall_at_10_floor": math.nextafter(0.5, math.inf)}
+            )
+        }
+    )
+
+    assert "rq0012.primary_recall_at_10" in _evaluate(policy=changed).failure_codes
 
 
 def test_strict_policy_rejects_nonfinite_and_unknown_schema_fields() -> None:
@@ -354,3 +375,48 @@ def test_implementation_contract_rejects_extra_paths_and_symlinks(tmp_path: Path
         pytest.skip("symlink creation is unavailable on this platform")
     with pytest.raises(ImplementationContractError, match="symlinks"):
         implementation_contract(tmp_path, ("link.py",))
+
+
+def test_gate_rejects_hash_drift_and_a_missing_declared_file() -> None:
+    policy_bytes = POLICY_PATH.read_bytes()
+    manifest = _manifest(policy_bytes, _report_bytes()).model_copy(
+        update={"implementation_sha256": "0" * 64}
+    )
+    result = _evaluate(manifest=manifest)
+    assert "manifest.implementation_sha256" in result.failure_codes
+
+    with pytest.raises(ImplementationContractError, match="did not match"):
+        implementation_contract(ROOT, ("missing-implementation.py",))
+
+    report = load_retrieval_evaluation_bytes(_report_bytes())
+    result = evaluate_semantic_gate(
+        report,
+        _policy(),
+        _manifest(policy_bytes, _report_bytes()),
+        ROOT,
+        report_sha256=_sha256(_report_bytes()),
+        policy_sha256=_sha256(policy_bytes),
+        benchmark_sha256="0" * 64,
+    )
+    assert result.failure_codes == ("benchmark.file",)
+
+
+def test_report_and_manifest_schema_reject_unknown_versions_fields_and_nonfinite_values() -> None:
+    report_payload = json.loads(_report_bytes())
+    report_payload["unexpected"] = True
+    with pytest.raises(Exception, match="invalid or unsupported"):
+        load_retrieval_evaluation_bytes(json.dumps(report_payload).encode("utf-8"))
+
+    report_payload = json.loads(_report_bytes())
+    report_payload["aggregates"]["overall"]["mrr"] = math.nan
+    with pytest.raises(Exception, match="invalid or unsupported"):
+        load_retrieval_evaluation_bytes(json.dumps(report_payload, allow_nan=True).encode("utf-8"))
+
+    manifest_payload = json.loads(MANIFEST_PATH.read_bytes())
+    manifest_payload["schema_version"] = "2.0"
+    with pytest.raises(Exception, match="invalid or unsupported"):
+        load_semantic_gate_manifest_bytes(json.dumps(manifest_payload).encode("utf-8"))
+    manifest_payload = json.loads(MANIFEST_PATH.read_bytes())
+    manifest_payload["unexpected"] = True
+    with pytest.raises(Exception, match="invalid or unsupported"):
+        load_semantic_gate_manifest_bytes(json.dumps(manifest_payload).encode("utf-8"))
