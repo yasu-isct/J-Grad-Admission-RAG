@@ -55,6 +55,11 @@ scope validates a direct override edge but never creates one; both endpoints mus
 pending and not-applicable results stay visible, and evidence survives unchanged. The output is a
 deterministic resolution artifact, not a conflict or eligibility conclusion.
 
+RSN-05 inspects every active/pending same-subject pair left by RSN-04 against an explicit reviewed
+interaction policy. Compatible pairs are covered without warning; reviewed conflict/ambiguity and
+unreviewed pairs remain structured, evidence-carrying results. This layer exposes incomplete review
+and potential interactions without changing a rule or synthesizing final eligibility.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to

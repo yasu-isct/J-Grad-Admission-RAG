@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "rule-interaction-reviewed-v1",
+  "synthetic_cases": [
+    {"scenario_id": "compatible-live", "relationship": "compatible", "dispositions": ["active", "active"], "warning": null, "analysis_complete": true},
+    {"scenario_id": "confirmed-conflict", "relationship": "conflict", "dispositions": ["active", "active"], "warning": ["conflict", "confirmed"], "analysis_complete": true},
+    {"scenario_id": "potential-conflict", "relationship": "conflict", "dispositions": ["active", "pending"], "warning": ["conflict", "potential"], "analysis_complete": true},
+    {"scenario_id": "confirmed-ambiguity", "relationship": "ambiguous", "dispositions": ["active", "active"], "warning": ["ambiguity", "confirmed"], "analysis_complete": true},
+    {"scenario_id": "potential-ambiguity", "relationship": "ambiguous", "dispositions": ["pending", "pending"], "warning": ["ambiguity", "potential"], "analysis_complete": true},
+    {"scenario_id": "unreviewed-live", "relationship": "unreviewed", "dispositions": ["active", "active"], "warning": ["unreviewed_interaction", "confirmed"], "analysis_complete": false}
+  ],
+  "real_kb_characterization": {
+    "document_id": "isct_2027_4_2026_9_master",
+    "source_kb_sha256": "8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d",
+    "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "subject_key": "application.documents",
+    "candidate_pair": [
+      {"rule_id": "characterize-documents-part-a", "fact_id": "fact:00088", "scope_type": "global", "scope_targets": [], "parent_college": null, "source_pages": [10], "authoritative_fact_text_sha256": "6658d04174e9ed89e206b80dc8b01906027ba5663241dbc72bc366c6dd287b31"},
+      {"rule_id": "characterize-documents-part-b", "fact_id": "fact:00089", "scope_type": "global", "scope_targets": [], "parent_college": null, "source_pages": [10], "authoritative_fact_text_sha256": "e4a4d2d631e38e3ac8256ade971964eb087cebe7b2bd9849792168c39e0e7c8d"}
+    ],
+    "reviewed_relationship": "unreviewed",
+    "defensible_conflict_or_ambiguity_found": false,
+    "review_reason": "Both Facts are adjacent parts of the application-documents section, but the current reviewed annotations do not establish that they are mutually incompatible, semantically ambiguous, or safely compatible as independently executable rules."
+  }
+}
