@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "isct-master-applicability-v1",
+  "document_id": "isct_2027_4_2026_9_master",
+  "source_kb_sha256": "8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d",
+  "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "synthetic_contract_cases": {
+    "atomic": [
+      {"profile_value": 22, "operator": "minimum", "expected_value": 22, "expected_status": "confirmed"},
+      {"profile_value": 21, "operator": "minimum", "expected_value": 22, "expected_status": "not_applicable"},
+      {"profile_value": null, "operator": "minimum", "expected_value": 22, "expected_status": "needs_information"}
+    ],
+    "all_truth_table": [
+      {"inputs": ["confirmed", "confirmed"], "expected_status": "confirmed"},
+      {"inputs": ["confirmed", "not_applicable"], "expected_status": "not_applicable"},
+      {"inputs": ["confirmed", "needs_information"], "expected_status": "needs_information"}
+    ],
+    "any_truth_table": [
+      {"inputs": ["not_applicable", "confirmed"], "expected_status": "confirmed"},
+      {"inputs": ["not_applicable", "not_applicable"], "expected_status": "not_applicable"},
+      {"inputs": ["not_applicable", "needs_information"], "expected_status": "needs_information"}
+    ],
+    "validation_failures": [
+      "unallowlisted_field_path",
+      "incompatible_operator",
+      "implicit_type_coercion",
+      "duplicate_evidence_binding",
+      "source_identity_mismatch"
+    ]
+  },
+  "fact": {
+    "fact_id": "fact:00063",
+    "source_pages": [7],
+    "fact_text_sha256": "7a9c4608ccf7e379e131ebdb993983d8d11806f3ebd99a4e0cf08cc4553b5a8e"
+  },
+  "rule": {
+    "rule_id": "isct-master-individual-review-age-22",
+    "mode": "all",
+    "scope": {
+      "scope_type": "department",
+      "scope_targets": ["技術経営専門職学位課程"],
+      "parent_college": "環境・社会理工学院"
+    },
+    "predicates": [
+      {
+        "field_path": "eligibility_facts.age_at_enrollment",
+        "operator": "minimum",
+        "expected_value": 22
+      },
+      {
+        "field_path": "eligibility_facts.individual_review_completed",
+        "operator": "equals",
+        "expected_value": true
+      }
+    ],
+    "annotation_note": "Human-reviewed clause: the named professional degree program route requires completed individual review and age 22 by enrollment. This is rule applicability, not a final eligibility decision."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "confirmed",
+      "age_at_enrollment": 22,
+      "expected_status": "confirmed",
+      "expected_diagnostics": []
+    },
+    {
+      "scenario_id": "not-applicable",
+      "age_at_enrollment": 21,
+      "expected_status": "not_applicable",
+      "expected_diagnostics": []
+    },
+    {
+      "scenario_id": "needs-information",
+      "age_at_enrollment": null,
+      "expected_status": "needs_information",
+      "expected_diagnostics": ["missing_profile_fact"]
+    }
+  ]
+}
