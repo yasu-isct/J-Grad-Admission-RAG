@@ -125,6 +125,13 @@ from embedded, privacy-safe source snapshots and fails closed on any mismatch. I
 applicant values, annotation prose, official text, hidden chain-of-thought, or final eligibility.
 See [Reasoning Trace v1](reasoning/reasoning-trace-v1.md).
 
+`CitedAnswer` v1 is the final M4 presentation projection. It converts a validated trace into
+evidence-required rule findings, missing-information entries, interaction warnings, process
+notices, and one canonical citation inventory, then renders fixed Japanese Markdown. Report status
+means presentation readiness rather than eligibility. Every factual finding and review warning
+retains exact Fact/page provenance; evidence gaps suppress the unsupported sentence. Hashes remain
+machine metadata and never enter Markdown. See [Cited Answer v1](reasoning/cited-answer-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "cited-answer-reviewed-v1",
+  "real_fact_00063": {
+    "fact_id": "fact:00063",
+    "source_pages": [7],
+    "scenarios": [
+      {"applicability": "confirmed", "disposition": "active", "report_status": "complete"},
+      {"applicability": "not_applicable", "disposition": "not_applicable", "report_status": "complete"},
+      {"applicability": "needs_information", "disposition": "pending", "report_status": "needs_information"}
+    ],
+    "final_eligibility_present": false
+  },
+  "synthetic_scenarios": [
+    {"scenario_id": "direct-override", "dispositions": ["overridden", "active"], "report_status": "complete", "citation_rule_count": 2},
+    {"scenario_id": "compatible", "interaction": "compatible", "warning_count": 0, "report_status": "complete"},
+    {"scenario_id": "confirmed-conflict", "interaction": "conflict", "certainty": "confirmed", "report_status": "needs_review"},
+    {"scenario_id": "potential-conflict", "interaction": "conflict", "certainty": "potential", "report_status": "needs_review"},
+    {"scenario_id": "ambiguity", "interaction": "ambiguity", "report_status": "needs_review"},
+    {"scenario_id": "unreviewed", "interaction": "unreviewed_interaction", "analysis_complete": false, "report_status": "needs_review"},
+    {"scenario_id": "missing-evidence", "finding_count": 0, "notice": "missing_official_evidence", "report_status": "needs_review"},
+    {"scenario_id": "attached-multi-page", "role": "attached", "pages": [7, 9, 10], "marker": "[fact:00063, pp.7,9,10]"}
+  ]
+}

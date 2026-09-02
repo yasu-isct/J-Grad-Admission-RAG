@@ -65,6 +65,12 @@ pair becomes a typed step with backward dependencies and exact Fact/page provena
 loading recomputes graph topology, terminal steps, counts, and completeness. The trace deliberately
 stops before answer prose or final eligibility, giving RSN-07 a narrow, inspectable input boundary.
 
+RSN-07 renders that validated trace as strict cited rule findings and fixed Japanese Markdown.
+`complete`, `needs_information`, and `needs_review` describe report readiness only. Every factual
+sentence requires exact Fact/page evidence, while pending inputs, missing evidence, and unresolved
+interactions remain explicit. This completes M4's reasoning-to-presentation slice without adding a
+final eligibility verdict or model-generated prose.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to
