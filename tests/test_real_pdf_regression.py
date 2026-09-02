@@ -46,9 +46,27 @@ from jgrad_admission_rag.retrieval.metadata_search import (
 )
 from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, search_local_index
 from jgrad_admission_rag.retrieval.reference_expansion import expand_references
+from jgrad_admission_rag.reasoning.applicability import (
+    ApplicabilityRule,
+    OfficialEvidenceBinding,
+    evaluate_applicability,
+)
+from jgrad_admission_rag.reasoning.applicant_profile import ApplicantProfile
+from jgrad_admission_rag.reasoning.query_intent import (
+    DiagnosticCode,
+    QueryIntent,
+    RequestedScope,
+)
 from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
 from jgrad_admission_rag.schemas.evidence_pack import (
+    EvidenceCounts,
+    EvidenceMetadataFilter,
     canonical_evidence_pack_bytes,
+    EvidencePack,
+    EvidenceRequest,
+    EvidenceRuntime,
+    EvidenceScopePreference,
+    PrimaryEvidence,
     load_evidence_pack_bytes,
 )
 from jgrad_admission_rag.schemas.index import derive_index_payloads
@@ -57,6 +75,9 @@ from jgrad_admission_rag.utils import sha256_file
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
 RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_v1.json"
+APPLICABILITY_FIXTURE_PATH = (
+    REPO_ROOT / "tests" / "fixtures" / "applicability_real_scenarios_v1.json"
+)
 REAL_PDF_ENV = "JGRAD_REAL_PDF"
 
 pytestmark = pytest.mark.real_pdf
@@ -216,6 +237,198 @@ def test_real_pdf_knowledge_base_matches_baseline(
         reference["label"].startswith("下記")
         for fact in real_document_kb.facts
         for reference in fact.metadata["references"]
+    )
+
+
+def test_real_pdf_reviewed_applicability_scenarios(
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    fixture = json.loads(APPLICABILITY_FIXTURE_PATH.read_text(encoding="utf-8"))
+    fact_fixture = fixture["fact"]
+    fact = next(
+        candidate
+        for candidate in real_document_kb.facts
+        if candidate.fact_id == fact_fixture["fact_id"]
+    )
+    assert fact.source_pages == fact_fixture["source_pages"]
+    assert (
+        hashlib.sha256(fact.text.encode("utf-8")).hexdigest()
+        == fact_fixture["authoritative_fact_text_sha256"]
+    )
+    assert (
+        hashlib.sha256(fact.embedding_text.encode("utf-8")).hexdigest()
+        != fact_fixture["authoritative_fact_text_sha256"]
+    )
+
+    query = "出願資格審査の年齢条件"
+    intent = QueryIntent(
+        schema_version="1.0",
+        parser_version="lexical-ja-v1",
+        catalog_version="real-fixture-v1",
+        query=query,
+        requested_categories=(),
+        requested_scope=RequestedScope(
+            department_or_program_targets=(),
+            parent_college_values=(),
+            target_degree_level=None,
+            intake_year=None,
+            intake_month=None,
+        ),
+        matched_mentions=(),
+        diagnostics=(DiagnosticCode.NO_RECOGNIZED_INTENT,),
+    )
+    pack = _real_applicability_pack(query, real_document_kb, fact, fixture)
+    binding = OfficialEvidenceBinding(
+        document_id=fixture["document_id"],
+        source_kb_sha256=fixture["source_kb_sha256"],
+        source_pdf_sha256=fixture["source_pdf_sha256"],
+        fact_id=fact.fact_id,
+        source_pages=tuple(fact.source_pages),
+        authoritative_fact_text_sha256=fact_fixture["authoritative_fact_text_sha256"],
+    )
+    rule = ApplicabilityRule.model_validate(
+        {
+            **fixture["rule"],
+            "schema_version": "1.0",
+            "evidence_bindings": [binding.model_dump(mode="json")],
+        }
+    )
+
+    actual = {}
+    for scenario in fixture["scenarios"]:
+        profile = _real_applicability_profile(
+            scenario["age_at_enrollment"], fixture["rule"]["scope"]
+        )
+        decision = evaluate_applicability(profile, intent, pack, rule)
+        actual[scenario["scenario_id"]] = {
+            "status": decision.status.value,
+            "diagnostics": [value.value for value in decision.diagnostics],
+            "pages": [list(reference.source_pages) for reference in decision.official_evidence],
+        }
+
+    assert actual == {
+        scenario["scenario_id"]: {
+            "status": scenario["expected_status"],
+            "diagnostics": scenario["expected_diagnostics"],
+            "pages": [fact_fixture["source_pages"]],
+        }
+        for scenario in fixture["scenarios"]
+    }
+
+
+def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> ApplicantProfile:
+    return ApplicantProfile.model_validate(
+        {
+            "schema_version": "1.0",
+            "target_application": {
+                "graduate_school_or_college": scope["parent_college"],
+                "department_or_program": scope["scope_targets"][0],
+                "requested_degree_level": "professional",
+                "intake_year": 2027,
+                "intake_month": 4,
+                "application_route": "individual eligibility review route",
+            },
+            "citizenship_and_residence": {
+                "citizenship_country_codes": None,
+                "current_residence_country_code": None,
+                "residence_status_category": None,
+            },
+            "academic_credentials": None,
+            "eligibility_facts": {
+                "age_at_enrollment": age,
+                "professional_experience_months": None,
+                "research_experience_months": None,
+                "individual_review_status": None,
+                "individual_review_requested": None,
+                "individual_review_completed": None,
+            },
+            "language_test_results": None,
+        }
+    )
+
+
+def _real_applicability_pack(
+    query: str,
+    kb: DocumentKnowledgeBase,
+    fact: Any,
+    fixture: dict[str, Any],
+) -> EvidencePack:
+    fact_index = int(fact.fact_id.split(":")[1])
+    primary = PrimaryEvidence(
+        primary_rank=1,
+        ranking_score=2 / 61,
+        fused_score=2 / 61,
+        scope_boost_total=0.0,
+        fusion_version="rrf-v1",
+        vector_rank=1,
+        vector_score=1.0,
+        lexical_rank=1,
+        lexical_score=1.0,
+        matched_channels=("vector", "lexical"),
+        row_index=fact_index,
+        document_id=fixture["document_id"],
+        unit_id=f"unit:{fact_index:05d}",
+        fact_id=fact.fact_id,
+        text=fact.embedding_text,
+        source_pages=tuple(fact.source_pages),
+        section_path=tuple(fact.section_path),
+        fact_type=fact.fact_type,
+        scope_type=fact.scope_type,
+        scope_targets=tuple(fact.scope_targets),
+        parent_college=fact.parent_college,
+        metadata={"embedding_text_version": "1"},
+    )
+    runtime = EvidenceRuntime(
+        document_id=fixture["document_id"],
+        source_kb_sha256=fixture["source_kb_sha256"],
+        source_pdf_sha256=fixture["source_pdf_sha256"],
+        index_schema_version="0.1",
+        source_kb_schema_version="0.5",
+        payloads_sha256="c" * 64,
+        vectors_sha256="d" * 64,
+        index_builder_version="0.1.0",
+        embedding_provider="deterministic-fake",
+        embedding_model="sha256-counter-v1",
+        embedding_dimension=8,
+        distance_metric="cosine",
+        semantic=False,
+        lexical_tokenizer_version="nfkc-casefold-ja23-v1",
+        lexical_scoring_version="bm25-v1",
+        fusion_version="rrf-v1",
+        rrf_k=60,
+        metadata_filter_version="exact-metadata-v1",
+        scope_rerank_version="scope-match-v1",
+        scope_target_match_boost=0.0,
+        parent_college_match_boost=0.0,
+        reference_expansion_version="reference-one-hop-v1",
+        reference_expansion_depth=1,
+        corpus_row_count=len(kb.facts),
+        eligible_row_count=len(kb.facts),
+        vector_candidate_count=1,
+        lexical_candidate_count=1,
+    )
+    return EvidencePack(
+        request=EvidenceRequest(
+            query=query,
+            top_k_requested=1,
+            candidate_k_requested=1,
+            candidate_k_resolved=1,
+            metadata_filter=EvidenceMetadataFilter(),
+            scope_preference=EvidenceScopePreference(),
+        ),
+        runtime=runtime,
+        primary_evidence=(primary,),
+        attached_reference_evidence=(),
+        resolved_relations=(),
+        reference_warnings=(),
+        counts=EvidenceCounts(
+            primary_evidence_count=1,
+            attached_evidence_count=0,
+            resolved_relation_count=0,
+            warning_count=0,
+            warning_status_counts={"ambiguous": 0, "unresolved": 0},
+            unique_evidence_count=1,
+        ),
     )
 
 

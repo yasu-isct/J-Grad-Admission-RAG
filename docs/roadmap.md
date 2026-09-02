@@ -45,6 +45,11 @@ records explicit question intent and scope before mapping scope only to existing
 preferences. It deliberately does not extract applicant facts, hide global evidence with hard
 filters, or decide rule applicability.
 
+RSN-03 adds the first executable reasoning boundary. Human-reviewed, evidence-hash-bound rules can
+now compare allowlisted profile fields and explicit scope with retrieved primary or attached
+evidence. The result is deliberately limited to three-valued rule applicability; rule priority,
+conflict synthesis, eligibility conclusions, and answer prose remain later tasks.
+
 The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
 RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
 unresolved. These known scope/reference debts are reported by default and can be promoted to
@@ -110,7 +115,7 @@ tolerances and CI policy only after reviewing that evidence.
 | --- | --- | --- |
 | RSN-01 | Define `ApplicantProfile` | Structured profile with explicit unknown values |
 | RSN-02 | Parse query intent and requested scope | Query model consumed by retrieval |
-| RSN-03 | Check fact applicability | `confirmed`, `not_applicable`, or `needs_information` |
+| RSN-03 | Check fact applicability | Reviewed, evidence-bound three-valued decision contract |
 | RSN-04 | Apply specificity and override rules | Department rules can override general rules transparently |
 | RSN-05 | Detect conflicts and ambiguity | Structured warnings with supporting facts |
 | RSN-06 | Record reasoning traces | Each conclusion links to facts and pages |

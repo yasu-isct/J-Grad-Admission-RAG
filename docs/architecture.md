@@ -91,6 +91,16 @@ and parent-college mentions to soft retrieval preferences, never parser-derived 
 global clauses remain candidates. It does not create an `ApplicantProfile`, decide applicability,
 or alter retrieval ranking behavior. See [QueryIntent v1](reasoning/query-intent-v1.md).
 
+`ApplicabilityRule` and `ApplicabilityDecision` v1 form the first deterministic M4 reasoning layer.
+A small human-reviewed rule binds allowlisted typed profile predicates and explicit scope to exact
+EvidencePack document/KB/PDF identity, Fact IDs, pages, and an offline-audited authoritative Fact
+text hash. Online evaluation uses the validated KB identity plus Fact ID/pages; it never mistakes
+the derived embedding projection for `ScopedFact.text`. Evaluation fully revalidates all inputs and
+returns only `confirmed`, `not_applicable`, or `needs_information`; missing evidence and conflicting
+profile/query scope fail closed. It does not infer rules from Japanese text, use retrieval scores,
+order competing rules, or decide eligibility. See
+[Applicability v1](reasoning/applicability-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
@@ -128,7 +138,7 @@ chunking, lightweight document index, reference resolver, and recursive retrieva
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.
 - `schemas`: durable JSON contracts such as `DocumentKnowledgeBase`.
 - `retrieval`: embedding provider contracts plus future vector and hybrid retrieval services.
-- `reasoning`: future applicant-aware reasoning chains and report generation.
+- `reasoning`: strict applicant/query inputs, reviewed-rule applicability, and later reasoning chains.
 - `cli`: command-line entry points.
 
 ## Knowledge And Diagnostics

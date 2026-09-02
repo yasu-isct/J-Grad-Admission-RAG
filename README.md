@@ -275,7 +275,7 @@ src/jgrad_admission_rag/
   builder/      PDF extraction, chunking, document index, reference links, KB builder
   schemas/      Durable JSON contracts such as DocumentKnowledgeBase
   retrieval/    Embedding providers, local vector indexes, and future retrieval services
-  reasoning/    Future applicant-aware reasoning chains and report generation
+  reasoning/    Applicant/query contracts, reviewed applicability rules, later reasoning
   cli/          Command-line entry points
 docs/           Architecture and migration notes
 tests/          Focused unit tests
