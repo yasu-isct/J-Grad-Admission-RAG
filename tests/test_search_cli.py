@@ -1109,7 +1109,8 @@ def test_subprocess_smoke_uses_current_python_and_temporary_index(
     if entrypoint == "module":
         command = [sys.executable, "-m", "jgrad_admission_rag.cli.search"]
     else:
-        executable = Path(sys.executable).with_name("jgrad-search.exe")
+        suffix = ".exe" if os.name == "nt" else ""
+        executable = Path(sys.executable).with_name(f"jgrad-search{suffix}")
         assert executable.is_file()
         command = [str(executable)]
 

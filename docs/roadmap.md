@@ -89,7 +89,7 @@ size or measured latency requires it.
 | RET-06 | Define `EvidencePack` | Stable retrieval-to-reasoning contract |
 | RET-07 | Add deterministic retrieval evaluation | Recall@K, MRR, breakdowns, and readable diagnostics |
 | RET-08 | Capture a pinned semantic baseline | Three cache-only BGE-M3 runs and reviewed failures |
-| RET-09 | Define semantic threshold and CI policy | Approved tolerances and offline regression gate |
+| RET-09 | Define semantic threshold and CI policy | Approved tolerances, signed implementation contract, and offline regression gate |
 
 RET-07 establishes a reproducible evaluator and report contract without inventing semantic quality
 thresholds. RET-08 records one accepted semantic characterization. RET-09 may define regression

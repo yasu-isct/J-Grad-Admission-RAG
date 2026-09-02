@@ -147,6 +147,26 @@ Recall@1/3/5/10, MRR, breakdowns, and missing-gold diagnostics. Fake embeddings 
 but are never quality-eligible. See
 [Retrieval Evaluation v1](docs/evaluation/retrieval-evaluation-v1.md).
 
+## Semantic Regression Gate
+
+The checked-in semantic gate verifies the reviewed RET-08 baseline without loading a model, KB, or
+vector index. It binds the compact report, frozen benchmark, BGE-M3 identity, retrieval metrics,
+and signed retrieval-affecting source set. It is the CI guard for retrieval changes, not a replacement
+for a new semantic evaluation when the benchmark or intended behavior changes:
+
+```powershell
+jgrad-check-retrieval-gate `
+  --report tests\fixtures\semantic_retrieval_baseline_v1.json `
+  --policy config\semantic_retrieval_gate_v1.json `
+  --manifest config\semantic_retrieval_gate_manifest_v1.json `
+  --repository-root .
+```
+
+Exit code `0` means the frozen baseline satisfies policy, `1` means a measured policy failure, and
+`2` means an unsafe or malformed input/contract. The command is cache-free and CI sets Hugging Face
+and Transformers to offline mode. See
+[ADR 0003](docs/decisions/0003-semantic-retrieval-regression-gate.md).
+
 Hybrid retrieval is opt-in while evaluation thresholds are still being established. It combines
 vector and lexical ranks with fixed Reciprocal Rank Fusion and leaves the default vector response
 unchanged:

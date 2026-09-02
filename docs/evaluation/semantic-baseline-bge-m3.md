@@ -77,8 +77,10 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-All three reports have SHA-256
-`86624fdcca3e939bfb4ce341135349d5415738e0acfd3a09d431be7d60edc40a` and are byte-identical.
+All three Windows-produced reports had SHA-256
+`86624fdcca3e939bfb4ce341135349d5415738e0acfd3a09d431be7d60edc40a` and were byte-identical.
+For cross-platform CI, RET-09 commits the evaluator's canonical LF JSON representation; its SHA-256
+is `0599df0e7b8f8838b872e959a9f755265071a83302599fef19dfbdf4de1895a8`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |
@@ -136,9 +138,11 @@ The prior deterministic-fake plumbing report had Recall@1/3/5/10 of
 quality-ineligible. The semantic result demonstrates why a semantic baseline was needed, but its
 values are not targets and do not establish thresholds.
 
-No GitHub CI check is configured for this baseline. RET-09 must review these full-precision results,
-the six diagnostic rows, and acceptable slice tolerances before it defines an offline regression gate.
-Model files, the PDF, semantic index, and the three local reports remain untracked.
+RET-09 reviewed these full-precision results, the six diagnostic rows, and the approved tolerances.
+The resulting offline semantic regression gate binds this report, its runtime inputs, and the
+retrieval-affecting implementation set without loading the model in CI. See
+[ADR 0003](../decisions/0003-semantic-retrieval-regression-gate.md). Model files, the PDF, semantic
+index, and the three local reports remain untracked.
 
 ## Verification
 

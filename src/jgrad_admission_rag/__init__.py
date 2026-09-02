@@ -1,2 +1,1 @@
 """J-Grad Admission RAG."""
-
