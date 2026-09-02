@@ -70,8 +70,9 @@ precondition. Conflicting explicit profile and query scopes produce `needs_infor
 `scope_input_conflict`; neither input silently wins.
 
 A missing bound Fact produces `needs_information` with `missing_official_evidence`. A present but
-identity-, page-, hash-, or scope-mismatched Fact is an invalid input and fails with a generic
-`ApplicabilityError`.
+identity-, page-, or scope-mismatched Fact is an invalid input and fails with a generic
+`ApplicabilityError`. Authoritative text-hash mismatch is detected only by the offline real-KB
+audit described above, because EvidencePack v1 does not carry `ScopedFact.text` separately.
 
 ## Decision Contract
 
