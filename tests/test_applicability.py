@@ -8,6 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from jgrad_admission_rag.reasoning.applicability import (
+    ApplicabilityDecision,
     ApplicabilityDiagnostic,
     ApplicabilityError,
     ApplicabilityPredicate,
@@ -16,7 +17,9 @@ from jgrad_admission_rag.reasoning.applicability import (
     EvidenceRole,
     LogicalMode,
     OfficialEvidenceBinding,
+    OfficialEvidenceReference,
     PredicateOperator,
+    PredicateOutcome,
     RuleScope,
     canonical_applicability_decision_bytes,
     canonical_applicability_rule_bytes,
@@ -318,7 +321,7 @@ def _binding(**changes: object) -> OfficialEvidenceBinding:
         "source_pdf_sha256": PDF_HASH,
         "fact_id": "fact:rule",
         "source_pages": (2,),
-        "fact_text_sha256": hashlib.sha256(OFFICIAL_TEXT.encode()).hexdigest(),
+        "authoritative_fact_text_sha256": hashlib.sha256(OFFICIAL_TEXT.encode()).hexdigest(),
     }
     payload.update(changes)
     return OfficialEvidenceBinding.model_validate(payload)
@@ -580,16 +583,24 @@ def test_missing_evidence_never_confirms_rule() -> None:
         {"source_kb_sha256": "e" * 64},
         {"source_pdf_sha256": "e" * 64},
         {"source_pages": (1,)},
-        {"fact_text_sha256": "e" * 64},
     ],
 )
-def test_evidence_identity_page_and_text_mismatches_fail_closed(
+def test_evidence_source_identity_and_page_mismatches_fail_closed(
     binding_change: dict[str, object],
 ) -> None:
     with pytest.raises(ApplicabilityError, match="binding is inconsistent"):
         evaluate_applicability(
             _profile(), _intent(), _pack(), _rule(binding=_binding(**binding_change))
         )
+
+
+def test_authoritative_fact_hash_is_not_confused_with_evidence_projection_hash() -> None:
+    rule = _rule(binding=_binding(authoritative_fact_text_sha256="e" * 64))
+
+    decision = evaluate_applicability(_profile(), _intent(), _pack(), rule)
+
+    assert decision.status is ApplicabilityStatus.CONFIRMED
+    assert decision.source_kb_sha256 == KB_HASH
 
 
 def test_wrong_fact_id_is_missing_evidence_and_duplicate_binding_is_rejected() -> None:
@@ -710,6 +721,117 @@ def test_predicate_contract_rejects_untyped_or_unallowlisted_rules(
 ) -> None:
     with pytest.raises(ValidationError):
         ApplicabilityPredicate.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    "predicates",
+    [
+        (
+            _predicate(operator=PredicateOperator.MINIMUM, value=22),
+            _predicate(operator=PredicateOperator.MAXIMUM, value=21),
+        ),
+        (
+            _predicate(operator=PredicateOperator.EQUALS, value=22),
+            _predicate(operator=PredicateOperator.NOT_EQUALS, value=22),
+        ),
+        (
+            _predicate(operator=PredicateOperator.EQUALS, value=22),
+            _predicate(operator=PredicateOperator.EQUALS, value=23),
+        ),
+        (
+            _predicate(
+                "citizenship_and_residence.citizenship_country_codes",
+                PredicateOperator.CONTAINS,
+                "JP",
+            ),
+            _predicate(
+                "citizenship_and_residence.citizenship_country_codes",
+                PredicateOperator.IS_EMPTY,
+                None,
+            ),
+        ),
+    ],
+)
+def test_all_mode_rejects_obvious_predicate_contradictions(
+    predicates: tuple[ApplicabilityPredicate, ...],
+) -> None:
+    with pytest.raises(ValidationError, match="contradictory"):
+        _rule(*predicates, mode=LogicalMode.ALL)
+
+    assert _rule(*predicates, mode=LogicalMode.ANY).mode is LogicalMode.ANY
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        {
+            "status": "confirmed",
+            "missing_profile_fields": ["eligibility_facts.age_at_enrollment"],
+            "diagnostics": ["missing_profile_fact"],
+        },
+        {
+            "status": "confirmed",
+            "official_evidence": [],
+            "diagnostics": ["missing_official_evidence"],
+        },
+        {
+            "status": "confirmed",
+            "scope_status": "needs_information",
+            "diagnostics": ["scope_input_conflict"],
+        },
+        {
+            "status": "confirmed",
+            "predicate_outcomes": [
+                {
+                    "field_path": "eligibility_facts.age_at_enrollment",
+                    "operator": "minimum",
+                    "status": "not_applicable",
+                }
+            ],
+        },
+    ],
+)
+def test_decision_contract_rejects_internally_contradictory_states(
+    mutation: dict[str, object],
+) -> None:
+    decision = evaluate_applicability(_profile(), _intent(), _pack(), _rule())
+    payload = decision.model_dump(mode="json")
+    payload.update(mutation)
+    typed_mutation = dict(mutation)
+    if "status" in typed_mutation:
+        typed_mutation["status"] = ApplicabilityStatus(typed_mutation["status"])
+    if "scope_status" in typed_mutation:
+        typed_mutation["scope_status"] = ApplicabilityStatus(typed_mutation["scope_status"])
+    if "missing_profile_fields" in typed_mutation:
+        typed_mutation["missing_profile_fields"] = tuple(typed_mutation["missing_profile_fields"])
+    if "diagnostics" in typed_mutation:
+        typed_mutation["diagnostics"] = tuple(
+            ApplicabilityDiagnostic(value) for value in typed_mutation["diagnostics"]
+        )
+    if "predicate_outcomes" in typed_mutation:
+        typed_mutation["predicate_outcomes"] = tuple(
+            PredicateOutcome.model_validate(value) for value in typed_mutation["predicate_outcomes"]
+        )
+    if "official_evidence" in typed_mutation:
+        typed_mutation["official_evidence"] = tuple(
+            OfficialEvidenceReference.model_validate(value)
+            for value in typed_mutation["official_evidence"]
+        )
+
+    with pytest.raises(ValidationError):
+        ApplicabilityDecision.model_validate(payload)
+    unsafe_copy = decision.model_copy(update=typed_mutation)
+    with pytest.raises(ApplicabilityError, match="invalid or unsupported"):
+        canonical_applicability_decision_bytes(unsafe_copy)
+    unsafe_construct = ApplicabilityDecision.model_construct(
+        **{**decision.__dict__, **typed_mutation}
+    )
+    with pytest.raises(ApplicabilityError, match="invalid or unsupported"):
+        canonical_applicability_decision_bytes(unsafe_construct)
+    with pytest.raises(ApplicabilityError, match="invalid or unsupported"):
+        load_applicability_decision_bytes(
+            (json.dumps(payload, ensure_ascii=False) + "\n").encode("utf-8")
+        )
 
 
 def test_rules_and_decisions_are_immutable_canonical_and_detached() -> None:

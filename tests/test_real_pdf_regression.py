@@ -252,8 +252,12 @@ def test_real_pdf_reviewed_applicability_scenarios(
     )
     assert fact.source_pages == fact_fixture["source_pages"]
     assert (
+        hashlib.sha256(fact.text.encode("utf-8")).hexdigest()
+        == fact_fixture["authoritative_fact_text_sha256"]
+    )
+    assert (
         hashlib.sha256(fact.embedding_text.encode("utf-8")).hexdigest()
-        == fact_fixture["fact_text_sha256"]
+        != fact_fixture["authoritative_fact_text_sha256"]
     )
 
     query = "出願資格審査の年齢条件"
@@ -280,7 +284,7 @@ def test_real_pdf_reviewed_applicability_scenarios(
         source_pdf_sha256=fixture["source_pdf_sha256"],
         fact_id=fact.fact_id,
         source_pages=tuple(fact.source_pages),
-        fact_text_sha256=fact_fixture["fact_text_sha256"],
+        authoritative_fact_text_sha256=fact_fixture["authoritative_fact_text_sha256"],
     )
     rule = ApplicabilityRule.model_validate(
         {
@@ -322,7 +326,7 @@ def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> Appli
                 "requested_degree_level": "professional",
                 "intake_year": 2027,
                 "intake_month": 4,
-                "application_route": "individual eligibility review",
+                "application_route": "individual eligibility review route",
             },
             "citizenship_and_residence": {
                 "citizenship_country_codes": None,
@@ -334,9 +338,9 @@ def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> Appli
                 "age_at_enrollment": age,
                 "professional_experience_months": None,
                 "research_experience_months": None,
-                "individual_review_status": "completed",
-                "individual_review_requested": True,
-                "individual_review_completed": True,
+                "individual_review_status": None,
+                "individual_review_requested": None,
+                "individual_review_completed": None,
             },
             "language_test_results": None,
         }

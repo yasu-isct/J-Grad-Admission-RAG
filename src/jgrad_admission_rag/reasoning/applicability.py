@@ -6,7 +6,6 @@ guideline text and does not make final eligibility or admission decisions.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 from dataclasses import dataclass
@@ -257,7 +256,7 @@ class OfficialEvidenceBinding(ApplicabilityModel):
     source_pdf_sha256: str
     fact_id: str
     source_pages: tuple[int, ...]
-    fact_text_sha256: str
+    authoritative_fact_text_sha256: str
 
     @field_validator("document_id", "fact_id")
     @classmethod
@@ -265,7 +264,11 @@ class OfficialEvidenceBinding(ApplicabilityModel):
         _validate_trimmed(value, "evidence identifier")
         return value
 
-    @field_validator("source_kb_sha256", "source_pdf_sha256", "fact_text_sha256")
+    @field_validator(
+        "source_kb_sha256",
+        "source_pdf_sha256",
+        "authoritative_fact_text_sha256",
+    )
     @classmethod
     def hashes_must_be_sha256(cls, value: str) -> str:
         if len(value) != 64 or any(character not in "0123456789abcdef" for character in value):
@@ -300,7 +303,12 @@ class ApplicabilityRule(ApplicabilityModel):
     @model_validator(mode="after")
     def predicates_and_bindings_must_be_unique(self) -> ApplicabilityRule:
         predicate_keys = tuple(
-            (predicate.field_path, predicate.operator.value) for predicate in self.predicates
+            (
+                predicate.field_path,
+                predicate.operator.value,
+                json.dumps(predicate.expected_value, ensure_ascii=False, sort_keys=True),
+            )
+            for predicate in self.predicates
         )
         binding_keys = tuple(
             (binding.document_id, binding.fact_id) for binding in self.evidence_bindings
@@ -309,6 +317,8 @@ class ApplicabilityRule(ApplicabilityModel):
             raise ValueError("rule predicates must be unique")
         if len(binding_keys) != len(set(binding_keys)):
             raise ValueError("evidence bindings must be unique")
+        if self.mode is LogicalMode.ALL:
+            _validate_all_predicates_consistent(self.predicates)
         return self
 
 
@@ -317,6 +327,13 @@ class PredicateOutcome(ApplicabilityModel):
     operator: PredicateOperator
     status: ApplicabilityStatus
 
+    @model_validator(mode="after")
+    def field_and_operator_must_be_supported(self) -> PredicateOutcome:
+        spec = _FIELD_SPECS.get(self.field_path)
+        if spec is None or self.operator not in _OPERATORS_BY_KIND[spec.kind]:
+            raise ValueError("predicate outcome is unsupported")
+        return self
+
 
 class OfficialEvidenceReference(ApplicabilityModel):
     document_id: str
@@ -324,12 +341,28 @@ class OfficialEvidenceReference(ApplicabilityModel):
     source_pages: tuple[int, ...]
     role: EvidenceRole
 
+    @field_validator("document_id", "fact_id")
+    @classmethod
+    def identifiers_must_be_explicit(cls, value: str) -> str:
+        _validate_trimmed(value, "evidence reference identifier")
+        return value
+
+    @field_validator("source_pages")
+    @classmethod
+    def pages_must_be_canonical(cls, values: tuple[int, ...]) -> tuple[int, ...]:
+        if not values or any(value <= 0 for value in values):
+            raise ValueError("evidence reference pages must be positive and non-empty")
+        if values != tuple(sorted(set(values))):
+            raise ValueError("evidence reference pages must be sorted and unique")
+        return values
+
 
 class ApplicabilityDecision(ApplicabilityModel):
     schema_version: Literal["1.0"] = APPLICABILITY_DECISION_SCHEMA_VERSION
     rule_id: str
+    logical_mode: LogicalMode
     status: ApplicabilityStatus
-    predicate_outcomes: tuple[PredicateOutcome, ...]
+    predicate_outcomes: tuple[PredicateOutcome, ...] = Field(min_length=1)
     missing_profile_fields: tuple[str, ...] = ()
     diagnostics: tuple[ApplicabilityDiagnostic, ...] = ()
     official_evidence: tuple[OfficialEvidenceReference, ...]
@@ -337,6 +370,41 @@ class ApplicabilityDecision(ApplicabilityModel):
     document_id: str
     source_kb_sha256: str
     source_pdf_sha256: str
+
+    @field_validator("rule_id", "document_id")
+    @classmethod
+    def identifiers_must_be_explicit(cls, value: str) -> str:
+        _validate_trimmed(value, "decision identifier")
+        return value
+
+    @field_validator("source_kb_sha256", "source_pdf_sha256")
+    @classmethod
+    def source_hashes_must_be_sha256(cls, value: str) -> str:
+        _validate_sha256(value, "decision source hash")
+        return value
+
+    @field_validator("missing_profile_fields")
+    @classmethod
+    def missing_fields_must_be_canonical(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        if any(value not in _FIELD_SPECS for value in values):
+            raise ValueError("missing profile field is not allowlisted")
+        if values != tuple(sorted(set(values))):
+            raise ValueError("missing profile fields must be sorted and unique")
+        return values
+
+    @field_validator("diagnostics")
+    @classmethod
+    def diagnostics_must_be_canonical(
+        cls, values: tuple[ApplicabilityDiagnostic, ...]
+    ) -> tuple[ApplicabilityDiagnostic, ...]:
+        if values != tuple(sorted(set(values), key=lambda value: value.value)):
+            raise ValueError("diagnostics must be sorted and unique")
+        return values
+
+    @model_validator(mode="after")
+    def fields_must_reconcile(self) -> ApplicabilityDecision:
+        _validate_decision_consistency(self)
+        return self
 
 
 def evaluate_applicability(
@@ -368,6 +436,7 @@ def evaluate_applicability(
     runtime = evidence_pack.runtime
     return ApplicabilityDecision(
         rule_id=rule.rule_id,
+        logical_mode=rule.mode,
         status=status,
         predicate_outcomes=outcomes,
         missing_profile_fields=missing_fields,
@@ -465,7 +534,6 @@ def _bind_official_evidence(
         if (
             record.document_id != binding.document_id
             or record.source_pages != binding.source_pages
-            or _sha256_text(record.text) != binding.fact_text_sha256
             or not _evidence_scope_matches_rule(record, rule.scope)
         ):
             raise ApplicabilityError("official evidence binding is inconsistent")
@@ -617,6 +685,106 @@ def _combine_scope_components(
     return ApplicabilityStatus.NEEDS_INFORMATION, (ApplicabilityDiagnostic.MISSING_SCOPE,)
 
 
+def _validate_all_predicates_consistent(
+    predicates: tuple[ApplicabilityPredicate, ...],
+) -> None:
+    by_path: dict[str, list[ApplicabilityPredicate]] = {}
+    for predicate in predicates:
+        by_path.setdefault(predicate.field_path, []).append(predicate)
+    for field_path, field_predicates in by_path.items():
+        expected_by_operator: dict[PredicateOperator, list[Any]] = {}
+        for predicate in field_predicates:
+            expected_by_operator.setdefault(predicate.operator, []).append(
+                _normalized_expected(predicate)
+            )
+        equals_values = expected_by_operator.get(PredicateOperator.EQUALS, [])
+        not_equals_values = expected_by_operator.get(PredicateOperator.NOT_EQUALS, [])
+        if len(set(equals_values)) > 1 or set(equals_values).intersection(not_equals_values):
+            raise ValueError("all-mode predicates are contradictory")
+        equals = equals_values[0] if equals_values else None
+
+        spec = _FIELD_SPECS[field_path]
+        if spec.kind in {"integer", "date"}:
+            lower_values = expected_by_operator.get(
+                PredicateOperator.MINIMUM, []
+            ) + expected_by_operator.get(PredicateOperator.ON_OR_AFTER, [])
+            upper_values = expected_by_operator.get(
+                PredicateOperator.MAXIMUM, []
+            ) + expected_by_operator.get(PredicateOperator.ON_OR_BEFORE, [])
+            lower = max(lower_values) if lower_values else None
+            upper = min(upper_values) if upper_values else None
+            if lower is not None and upper is not None and lower > upper:
+                raise ValueError("all-mode predicates are contradictory")
+            if equals is not None and (
+                (lower is not None and equals < lower) or (upper is not None and equals > upper)
+            ):
+                raise ValueError("all-mode predicates are contradictory")
+
+        operators = set(expected_by_operator)
+        if PredicateOperator.IS_EMPTY in operators and operators.intersection(
+            {PredicateOperator.IS_NON_EMPTY, PredicateOperator.CONTAINS}
+        ):
+            raise ValueError("all-mode predicates are contradictory")
+
+
+def _normalized_expected(predicate: ApplicabilityPredicate) -> Any:
+    if _FIELD_SPECS[predicate.field_path].kind == "date" and predicate.expected_value is not None:
+        return date.fromisoformat(str(predicate.expected_value))
+    return predicate.expected_value
+
+
+def _validate_decision_consistency(decision: ApplicabilityDecision) -> None:
+    missing_from_outcomes = tuple(
+        sorted(
+            {
+                outcome.field_path
+                for outcome in decision.predicate_outcomes
+                if outcome.status is ApplicabilityStatus.NEEDS_INFORMATION
+            }
+        )
+    )
+    if decision.missing_profile_fields != missing_from_outcomes:
+        raise ValueError("decision missing profile fields do not reconcile")
+
+    diagnostics = set(decision.diagnostics)
+    has_missing_profile = ApplicabilityDiagnostic.MISSING_PROFILE_FACT in diagnostics
+    if has_missing_profile != bool(decision.missing_profile_fields):
+        raise ValueError("decision missing profile diagnostic does not reconcile")
+
+    scope_diagnostics = diagnostics.intersection(
+        {
+            ApplicabilityDiagnostic.MISSING_SCOPE,
+            ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT,
+        }
+    )
+    if decision.scope_status is ApplicabilityStatus.NEEDS_INFORMATION:
+        if len(scope_diagnostics) != 1:
+            raise ValueError("decision scope diagnostics do not reconcile")
+    elif scope_diagnostics:
+        raise ValueError("decision scope diagnostics do not reconcile")
+
+    missing_evidence = ApplicabilityDiagnostic.MISSING_OFFICIAL_EVIDENCE in diagnostics
+    if not decision.official_evidence and not missing_evidence:
+        raise ValueError("decision official evidence does not reconcile")
+    evidence_keys = tuple(
+        (reference.document_id, reference.fact_id, reference.role)
+        for reference in decision.official_evidence
+    )
+    if len(evidence_keys) != len(set(evidence_keys)):
+        raise ValueError("decision official evidence must be unique")
+    if any(
+        reference.document_id != decision.document_id for reference in decision.official_evidence
+    ):
+        raise ValueError("decision evidence document does not reconcile")
+
+    predicate_status = _combine_predicates(decision.logical_mode, decision.predicate_outcomes)
+    expected_status = _combine_with_scope(predicate_status, decision.scope_status)
+    if missing_evidence:
+        expected_status = ApplicabilityStatus.NEEDS_INFORMATION
+    if decision.status is not expected_status:
+        raise ValueError("decision status does not reconcile")
+
+
 def _evidence_scope_matches_rule(record: Any, scope: RuleScope) -> bool:
     if scope.scope_type == "global":
         return record.scope_type == "global"
@@ -714,13 +882,14 @@ def _known_disjoint(left: set[str], right: set[str]) -> bool:
     return bool(left and right and left.isdisjoint(right))
 
 
-def _sha256_text(value: str) -> str:
-    return hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-
 def _validate_trimmed(value: str, name: str) -> None:
     if not value or value != value.strip():
         raise ValueError(f"{name} must be non-empty and trimmed")
+
+
+def _validate_sha256(value: str, name: str) -> None:
+    if len(value) != 64 or any(character not in "0123456789abcdef" for character in value):
+        raise ValueError(f"{name} must be lowercase SHA-256")
 
 
 def _validate_sorted_unique_strings(values: tuple[str, ...], name: str) -> None:

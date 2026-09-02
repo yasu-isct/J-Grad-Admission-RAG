@@ -31,12 +31,15 @@ Every immutable rule contains:
 - `all` or `any` aggregation;
 - allowlisted typed profile predicates;
 - global or explicit college/department/program scope;
-- one or more document, KB, PDF, Fact, page, and text-hash bindings;
+- one or more document, KB, PDF, Fact, page, and authoritative Fact-text-hash bindings;
 - a short reviewed paraphrase.
 
 Supported operations are exact equality/inequality, collection containment, numeric minimum or
 maximum, date boundaries, and explicit empty/non-empty checks. Field and operator combinations are
 closed and validated. There is no expression language or arbitrary dotted traversal.
+For `all`, obviously impossible combinations such as a minimum above a maximum, equality plus the
+same inequality, or `contains` plus `is_empty` are rejected at rule load time. The same predicates
+remain valid alternatives under `any`.
 
 Canonical rule and decision JSON is UTF-8, sorted, single-line JSON ending in LF. File loaders
 accept only regular, non-symlinked files and expose generic errors that do not repeat supplied data
@@ -46,9 +49,12 @@ or filesystem paths.
 
 Each public input is serialized and fully revalidated before use, including Pydantic objects made
 with `model_construct` or unsafe copies. Query text must match the EvidencePack request exactly.
-Each rule binding must match the pack's runtime document, KB, and PDF identity; the bound evidence
-must be present as primary or attached evidence with exact Fact ID, pages, text hash, and compatible
-scope.
+Each rule binding must match the pack's validated runtime document, KB, and PDF identity; the bound
+evidence must be present as primary or attached evidence with exact Fact ID, pages, and compatible
+scope. `EvidencePack.text` is a derived embedding projection, so online evaluation never treats its
+hash as the authoritative Fact-text hash. The real-KB regression independently verifies
+`authoritative_fact_text_sha256` against `ScopedFact.text`; the validated source-KB hash then closes
+the runtime trust chain without changing the frozen retrieval contract.
 
 Atomic semantics are fixed:
 
@@ -76,21 +82,25 @@ credit or score.
 
 The decision deliberately omits raw applicant values, the complete profile or query, official text,
 retrieval scores, generated explanations, and eligibility conclusions.
+Its model validator recomputes the aggregate predicate/scope status and rejects mismatched missing
+fields, diagnostics, evidence presence, or final status, including unsafe Pydantic copies.
 
 ## Audited Real Scenarios
 
-The versioned fixture binds the existing 85-page corpus to `fact:00063`, page 7. A reviewer checked
-the professional-degree individual-review clause before recording its age and review predicates.
-No PDF or long official passage is committed.
+The versioned fixture binds the existing 85-page corpus to `fact:00063`, page 7. A reviewer narrowed
+the annotation to one necessary but insufficient age criterion for the named individual-review
+route. `confirmed` therefore means only that this atomic criterion applies; it does not mean the
+review was approved, later alternatives were satisfied, or the complete route applies. No PDF or
+long official passage is committed.
 
 | Scenario | Known/missing profile facts | Expected and actual | Diagnostic |
 | --- | --- | --- | --- |
-| confirmed | age 22; review completed; explicit matching program/college | `confirmed` | none |
-| not-applicable | age 21; review completed; explicit matching program/college | `not_applicable` | none |
-| needs-information | age missing; review completed; explicit matching program/college | `needs_information` | `missing_profile_fact` |
+| confirmed | review route; age 22; explicit matching program/college | `confirmed` | none |
+| not-applicable | review route; age 21; explicit matching program/college | `not_applicable` | none |
+| needs-information | review route; age missing; explicit matching program/college | `needs_information` | `missing_profile_fact` |
 
-The fixture pins Fact ID, page, evidence text hash, source KB hash, and source PDF hash. It is a
-contract characterization, not comprehensive admissions advice.
+The fixture pins Fact ID, page, authoritative Fact-text hash, source KB hash, and source PDF hash.
+It is a contract characterization, not comprehensive admissions advice.
 
 ## Deliberate Limits
 

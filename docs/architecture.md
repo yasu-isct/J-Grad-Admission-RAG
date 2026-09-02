@@ -93,10 +93,12 @@ or alter retrieval ranking behavior. See [QueryIntent v1](reasoning/query-intent
 
 `ApplicabilityRule` and `ApplicabilityDecision` v1 form the first deterministic M4 reasoning layer.
 A small human-reviewed rule binds allowlisted typed profile predicates and explicit scope to exact
-EvidencePack document/KB/PDF identity, Fact IDs, pages, and text hashes. Evaluation fully revalidates
-all inputs and returns only `confirmed`, `not_applicable`, or `needs_information`; missing evidence
-and conflicting profile/query scope fail closed. It does not infer rules from Japanese text, use
-retrieval scores, order competing rules, or decide eligibility. See
+EvidencePack document/KB/PDF identity, Fact IDs, pages, and an offline-audited authoritative Fact
+text hash. Online evaluation uses the validated KB identity plus Fact ID/pages; it never mistakes
+the derived embedding projection for `ScopedFact.text`. Evaluation fully revalidates all inputs and
+returns only `confirmed`, `not_applicable`, or `needs_information`; missing evidence and conflicting
+profile/query scope fail closed. It does not infer rules from Japanese text, use retrieval scores,
+order competing rules, or decide eligibility. See
 [Applicability v1](reasoning/applicability-v1.md).
 
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
