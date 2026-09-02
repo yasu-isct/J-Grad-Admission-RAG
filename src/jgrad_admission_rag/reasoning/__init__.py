@@ -131,6 +131,22 @@ from .reasoning_trace import (
     load_reasoning_trace,
     load_reasoning_trace_bytes,
 )
+from .cited_answer import (
+    CITED_ANSWER_SCHEMA_VERSION,
+    SUPPORTED_CITED_ANSWER_SCHEMA_VERSIONS,
+    AnswerCitation,
+    CitedAnswer,
+    CitedAnswerError,
+    InteractionAnswerWarning,
+    MissingInformationEntry,
+    ProcessNotice,
+    ProcessNoticeKind,
+    ReportStatus,
+    RuleFinding,
+    build_cited_answer,
+    canonical_cited_answer_bytes,
+    render_cited_answer_markdown,
+)
 
 __all__ = [
     "APPLICANT_PROFILE_SCHEMA_VERSION",
@@ -252,4 +268,18 @@ __all__ = [
     "canonical_reasoning_trace_bytes",
     "load_reasoning_trace",
     "load_reasoning_trace_bytes",
+    "CITED_ANSWER_SCHEMA_VERSION",
+    "SUPPORTED_CITED_ANSWER_SCHEMA_VERSIONS",
+    "AnswerCitation",
+    "CitedAnswer",
+    "CitedAnswerError",
+    "InteractionAnswerWarning",
+    "MissingInformationEntry",
+    "ProcessNotice",
+    "ProcessNoticeKind",
+    "ReportStatus",
+    "RuleFinding",
+    "build_cited_answer",
+    "canonical_cited_answer_bytes",
+    "render_cited_answer_markdown",
 ]

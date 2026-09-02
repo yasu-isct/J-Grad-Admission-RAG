@@ -4,6 +4,11 @@
 maps synthetic graph cases and the real `fact:00063` page 7 characterization to expected
 typed steps without storing applicant values, official prose, or final answers.
 
+`cited_answer_scenarios_v1.json` records the compact RSN-07 presentation matrix: the three
+real `fact:00063` page 7 rule findings plus synthetic override, interaction, incomplete-review,
+missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
+official prose, model output, or final eligibility verdict.
+
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
 
