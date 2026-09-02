@@ -85,6 +85,12 @@ preferences prevent benchmark annotations from influencing retrieval. Fake embed
 deterministic plumbing baseline but are explicitly ineligible for quality gates. See
 [Retrieval Evaluation v1](evaluation/retrieval-evaluation-v1.md).
 
+The first semantic baseline uses one externally cached, pinned BGE-M3 revision to characterize the
+frozen benchmark with three byte-identical cache-only runs. It records model and artifact bindings,
+primary-only metrics, and diagnostic Fact IDs without committing the model, index, PDF, or reports.
+Its `quality_eligible` result is evidence for a later threshold decision, never a threshold by
+itself. See [BGE-M3 Semantic Baseline](evaluation/semantic-baseline-bge-m3.md).
+
 Freshness is a separate read-only gate after self-integrity and before model activity. It hashes the
 exact current KB bytes once, validates that KB, then compares the KB hash, document/PDF provenance,
 and declared provider/model/revision/dimension with the index manifest. Only a fresh comparison may
