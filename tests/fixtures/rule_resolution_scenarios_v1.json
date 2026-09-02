@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "rule-resolution-reviewed-v1",
+  "synthetic_contract": {
+    "specificity_order": ["global", "college", "department", "program"],
+    "positive_override": {
+      "subject_key": "eligibility.age",
+      "overrider_rule_id": "department-age-rule",
+      "overridden_rule_id": "global-age-rule",
+      "required_statuses": ["confirmed", "confirmed"]
+    },
+    "activation_truth_table": [
+      {"overrider": "confirmed", "overridden": "confirmed", "activated": true},
+      {"overrider": "confirmed", "overridden": "needs_information", "activated": false},
+      {"overrider": "needs_information", "overridden": "confirmed", "activated": false},
+      {"overrider": "not_applicable", "overridden": "confirmed", "activated": false},
+      {"overrider": "confirmed", "overridden": "not_applicable", "activated": false}
+    ],
+    "invalid_edges": [
+      "self_edge",
+      "duplicate_edge",
+      "cycle",
+      "missing_endpoint",
+      "subject_mismatch",
+      "equal_specificity",
+      "broader_to_narrower",
+      "unproven_containment",
+      "multiple_active_overriders"
+    ]
+  },
+  "real_kb_characterization": {
+    "document_id": "isct_2027_4_2026_9_master",
+    "source_kb_sha256": "8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d",
+    "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "scope_inventory": {"department": 126, "global": 2, "unknown": 170},
+    "candidate_pair": [
+      {
+        "rule_id": "characterize-global-documents",
+        "fact_id": "fact:00088",
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "source_pages": [10],
+        "authoritative_fact_text_sha256": "6658d04174e9ed89e206b80dc8b01906027ba5663241dbc72bc366c6dd287b31"
+      },
+      {
+        "rule_id": "isct-master-individual-review-age-22-criterion",
+        "fact_id": "fact:00063",
+        "scope_type": "department",
+        "scope_targets": ["技術経営専門職学位課程"],
+        "parent_college": "環境・社会理工学院",
+        "source_pages": [7],
+        "authoritative_fact_text_sha256": "1986232791fbaf5907807eee5bd8d524f782f1c4bcf96807cc140e0363c596dc"
+      }
+    ],
+    "defensible_override_found": false,
+    "review_conclusion": "The real global documents fact and department eligibility fact prove scope ordering and detached evidence preservation, but they are not semantically the same subject and therefore do not justify an override edge."
+  }
+}

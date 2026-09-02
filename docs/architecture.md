@@ -101,6 +101,14 @@ profile/query scope fail closed. It does not infer rules from Japanese text, use
 order competing rules, or decide eligibility. See
 [Applicability v1](reasoning/applicability-v1.md).
 
+`RulePrecedencePolicy` and `RuleResolution` v1 add deterministic multi-rule ordering after
+applicability. Specificity is a frozen validation order (`global < college < department < program`),
+not an implicit winner: suppression requires a reviewed direct edge between rules assigned to the
+same subject. Edges activate only when both decisions are confirmed; pending and not-applicable
+rules remain visible, evidence is preserved, and ambiguous multiple overriders fail closed. This
+layer neither re-evaluates predicates nor synthesizes conflicts or eligibility. See
+[Rule Resolution v1](reasoning/rule-resolution-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
