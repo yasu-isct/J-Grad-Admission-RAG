@@ -48,11 +48,24 @@ def test_reviewed_annotation_fixture_parses_exact_categories_scope_and_diagnosti
             list(intent.requested_scope.department_or_program_targets)
             == annotation["scope_targets"]
         )
-        assert [diagnostic.value for diagnostic in intent.diagnostics] == annotation["diagnostics"]
-        assert all(
-            intent.query[mention.start_offset : mention.end_offset] == mention.surface
-            for mention in intent.matched_mentions
+        assert (
+            list(intent.requested_scope.parent_college_values)
+            == annotation["parent_college_values"]
         )
+        assert intent.requested_scope.target_degree_level == annotation["target_degree_level"]
+        assert intent.requested_scope.intake_year == annotation["intake_year"]
+        assert intent.requested_scope.intake_month == annotation["intake_month"]
+        assert [diagnostic.value for diagnostic in intent.diagnostics] == annotation["diagnostics"]
+        assert [
+            [
+                mention.mention_kind.value,
+                mention.canonical_value,
+                mention.surface,
+                mention.start_offset,
+                mention.end_offset,
+            ]
+            for mention in intent.matched_mentions
+        ] == annotation["mentions"]
 
 
 def test_alias_unicode_longest_match_repeated_mentions_and_stable_canonical_bytes() -> None:
@@ -69,6 +82,9 @@ def test_alias_unicode_longest_match_repeated_mentions_and_stable_canonical_byte
     assert canonical_query_intent_bytes(intent) == canonical_query_intent_bytes(
         parse_query_intent("情報工学系と情報工学の英語スコア", catalog)
     )
+    module = importlib.import_module("jgrad_admission_rag.reasoning.query_intent")
+    assert module._normalize_with_offsets("ガ") == module._normalize_with_offsets("カ\u3099")
+    assert module._normalize_with_offsets("ＴＯＥＦＬ") == module._normalize_with_offsets("toefl")
 
 
 def test_scope_is_soft_only_and_global_candidates_remain_eligible() -> None:
@@ -146,6 +162,10 @@ def test_durable_contracts_fail_closed_and_keep_query_values_private(tmp_path: P
             catalog.model_copy(update={"catalog_version": " invalid "})
         )
     with pytest.raises(QueryIntentError):
+        parse_query_intent("出願資格", QueryIntentCatalog.model_construct())
+    with pytest.raises(QueryIntentError):
+        to_metadata_request(QueryIntent.model_construct())
+    with pytest.raises(QueryIntentError):
         load_query_intent_catalog(tmp_path / "missing.json")
 
     source = tmp_path / "catalog.json"
@@ -166,6 +186,11 @@ def test_catalog_validation_rejects_extra_wrong_version_duplicates_and_bad_offse
         QueryIntentCatalog.model_validate(catalog_payload)
 
     catalog_payload = json.loads(CATALOG_PATH.read_text("utf-8"))
+    catalog_payload["intent_lexicon"][1]["aliases"] = ["出願期間"]
+    with pytest.raises(ValidationError):
+        QueryIntentCatalog.model_validate(catalog_payload)
+
+    catalog_payload = json.loads(CATALOG_PATH.read_text("utf-8"))
     catalog_payload["schema_version"] = "2.0"
     with pytest.raises(ValidationError):
         QueryIntentCatalog.model_validate(catalog_payload)
@@ -177,6 +202,11 @@ def test_catalog_validation_rejects_extra_wrong_version_duplicates_and_bad_offse
 
     payload = parse_query_intent("出願資格", _catalog()).model_dump(mode="json")
     payload["matched_mentions"][0]["end_offset"] = 1
+    with pytest.raises(ValidationError):
+        QueryIntent.model_validate(payload)
+
+    payload = parse_query_intent("出願資格", _catalog()).model_dump(mode="json")
+    payload["requested_categories"] = []
     with pytest.raises(ValidationError):
         QueryIntent.model_validate(payload)
 

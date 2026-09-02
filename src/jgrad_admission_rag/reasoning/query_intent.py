@@ -161,6 +161,70 @@ class QueryIntent(QueryIntentModel):
             if key <= previous:
                 raise ValueError("mentions must use stable strictly increasing order")
             previous = key
+        categories = tuple(
+            sorted(
+                {
+                    IntentCategory(mention.canonical_value)
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.INTENT
+                },
+                key=lambda value: value.value,
+            )
+        )
+        targets = tuple(
+            sorted(
+                {
+                    mention.canonical_value
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.SCOPE_TARGET
+                }
+            )
+        )
+        colleges = tuple(
+            sorted(
+                {
+                    mention.canonical_value
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.PARENT_COLLEGE
+                }
+            )
+        )
+        degrees = tuple(
+            sorted(
+                {
+                    mention.canonical_value
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.DEGREE_LEVEL
+                }
+            )
+        )
+        years = tuple(
+            sorted(
+                {
+                    int(mention.canonical_value)
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.INTAKE_YEAR
+                }
+            )
+        )
+        months = tuple(
+            sorted(
+                {
+                    int(mention.canonical_value)
+                    for mention in self.matched_mentions
+                    if mention.mention_kind is MentionKind.INTAKE_MONTH
+                }
+            )
+        )
+        if (
+            self.requested_categories != categories
+            or self.requested_scope.department_or_program_targets != targets
+            or self.requested_scope.parent_college_values != colleges
+            or self.requested_scope.target_degree_level != (degrees[0] if degrees else None)
+            or self.requested_scope.intake_year != (years[0] if years else None)
+            or self.requested_scope.intake_month != (months[0] if months else None)
+        ):
+            raise ValueError("query intent fields must reconcile with matched mentions")
         return self
 
 
@@ -263,6 +327,18 @@ class QueryIntentCatalog(QueryIntentModel):
         for key, values in declared_ambiguous.items():
             if alias_targets.get(key) != values:
                 raise ValueError("ambiguous aliases must match declared entity aliases")
+        canonical_surfaces = {
+            (entry.mention_kind.value, entry.canonical_value) for entry in self.entities
+        }
+        for (kind, alias), values in alias_targets.items():
+            if (kind, alias) in canonical_surfaces:
+                raise ValueError("catalog aliases cannot collide with canonical names")
+        intent_aliases: set[str] = set()
+        for entry in self.intent_lexicon:
+            for alias in entry.aliases:
+                if alias in intent_aliases:
+                    raise ValueError("intent aliases must be unique")
+                intent_aliases.add(alias)
         return self
 
 
@@ -286,11 +362,12 @@ class _Candidate:
 def parse_query_intent(query: str, catalog: QueryIntentCatalog) -> QueryIntent:
     """Parse only reviewed lexical terms; unsupported wording remains unselected."""
 
-    if not isinstance(catalog, QueryIntentCatalog):
-        raise QueryIntentError("query intent catalog is invalid or unsupported")
     try:
+        if not isinstance(catalog, QueryIntentCatalog):
+            raise TypeError("catalog must be a QueryIntentCatalog")
+        catalog = QueryIntentCatalog.model_validate(catalog.model_dump(mode="json"))
         _validate_trimmed(query, "query")
-    except (TypeError, ValueError):
+    except (TypeError, ValidationError, ValueError):
         raise QueryIntentError("query intent input is invalid or unsupported") from None
 
     normalized_query, offsets = _normalize_with_offsets(query)
@@ -440,8 +517,12 @@ def parse_query_intent(query: str, catalog: QueryIntentCatalog) -> QueryIntent:
 def to_metadata_request(intent: QueryIntent) -> QueryIntentRetrievalRequest:
     """Map explicit scope only to existing soft preferences; never create parser hard filters."""
 
-    if not isinstance(intent, QueryIntent):
-        raise QueryIntentError("query intent is invalid or unsupported")
+    try:
+        if not isinstance(intent, QueryIntent):
+            raise TypeError("intent must be a QueryIntent")
+        intent = QueryIntent.model_validate(intent.model_dump(mode="json"))
+    except (TypeError, ValidationError, ValueError):
+        raise QueryIntentError("query intent is invalid or unsupported") from None
     return QueryIntentRetrievalRequest(
         metadata_filter=MetadataFilter(),
         scope_preference=ScopePreference(
@@ -508,10 +589,15 @@ def _load_bytes(raw_bytes: bytes, model_type: type[QueryIntentModel], name: str)
 def _normalize_with_offsets(value: str) -> tuple[str, tuple[int, ...]]:
     pieces: list[str] = []
     offsets: list[int] = []
-    for index, character in enumerate(value):
-        normalized = unicodedata.normalize("NFKC", character).casefold()
+    index = 0
+    while index < len(value):
+        end = index + 1
+        while end < len(value) and unicodedata.combining(value[end]):
+            end += 1
+        normalized = unicodedata.normalize("NFKC", value[index:end]).casefold()
         pieces.append(normalized)
         offsets.extend([index] * len(normalized))
+        index = end
     return "".join(pieces), tuple(offsets)
 
 
