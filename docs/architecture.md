@@ -117,6 +117,14 @@ pending endpoint makes the warning potential. The report embeds the validated re
 preserves per-rule Fact/page evidence, but neither changes dispositions nor decides eligibility.
 See [Rule Interaction v1](reasoning/rule-interaction-v1.md).
 
+`ReasoningTrace` v1 is the deterministic audit projection over those three M4 layers. It emits one
+typed applicability and resolution step per reviewed rule plus one interaction step per live or
+inactive reviewed pair. Explicit backward dependencies, terminal step IDs, coverage counts, and
+per-rule Fact/page evidence make the path independently inspectable. The loader rebuilds the graph
+from embedded, privacy-safe source snapshots and fails closed on any mismatch. It does not expose
+applicant values, annotation prose, official text, hidden chain-of-thought, or final eligibility.
+See [Reasoning Trace v1](reasoning/reasoning-trace-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope

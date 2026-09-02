@@ -1,5 +1,9 @@
 # Real PDF Regression Fixture
 
+`reasoning_trace_scenarios_v1.json` is the compact reviewed RSN-06 scenario table. It
+maps synthetic graph cases and the real `fact:00063` page 7 characterization to expected
+typed steps without storing applicant values, official prose, or final answers.
+
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
 
