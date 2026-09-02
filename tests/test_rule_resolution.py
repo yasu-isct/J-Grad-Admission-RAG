@@ -397,7 +397,7 @@ def test_output_is_canonical_immutable_and_round_trips() -> None:
         resolution.entries[0].rule_id = "changed"  # type: ignore[misc]
 
 
-def test_loaded_resolution_rejects_tampered_override_subject_and_evidence_document() -> None:
+def test_loaded_resolution_rejects_tampered_entry_relationships() -> None:
     broad = _rule("broad", _scope("global"))
     narrow = _rule("narrow", _scope("college", targets=("Engineering",)))
     resolution = resolve_rule_precedence(
@@ -411,8 +411,45 @@ def test_loaded_resolution_rejects_tampered_override_subject_and_evidence_docume
     with pytest.raises(RuleResolutionError):
         load_rule_resolution_bytes(json.dumps(payload).encode())
 
+    for tampered_overrider in ("ghost", "broad"):
+        payload = resolution.model_dump(mode="json")
+        overridden = next(item for item in payload["entries"] if item["rule_id"] == "broad")
+        overridden["activated_override"]["overrider_rule_id"] = tampered_overrider
+        with pytest.raises(RuleResolutionError):
+            load_rule_resolution_bytes(json.dumps(payload).encode())
+
     payload = resolution.model_dump(mode="json")
     payload["entries"][0]["official_evidence"][0]["document_id"] = "different"
+    with pytest.raises(RuleResolutionError):
+        load_rule_resolution_bytes(json.dumps(payload).encode())
+
+    payload = resolution.model_dump(mode="json")
+    confirmed = next(item for item in payload["entries"] if item["rule_id"] == "narrow")
+    confirmed["official_evidence"] = []
+    with pytest.raises(RuleResolutionError):
+        load_rule_resolution_bytes(json.dumps(payload).encode())
+
+
+@pytest.mark.parametrize("overrider_status", ["needs_information", "not_applicable"])
+def test_loaded_resolution_rejects_nonconfirmed_overrider(overrider_status: str) -> None:
+    broad = _rule("broad", _scope("global"))
+    narrow = _rule("narrow", _scope("college", targets=("Engineering",)))
+    resolution = resolve_rule_precedence(
+        (broad, narrow),
+        (_decision(broad), _decision(narrow)),
+        _policy((broad, narrow), (("eligibility.age", "narrow", "broad"),)),
+    )
+    payload = resolution.model_dump(mode="json")
+    narrow_entry = next(item for item in payload["entries"] if item["rule_id"] == "narrow")
+    narrow_entry["original_status"] = overrider_status
+    narrow_entry["disposition"] = (
+        "pending" if overrider_status == "needs_information" else "not_applicable"
+    )
+    payload["active_rule_ids"] = []
+    if overrider_status == "needs_information":
+        payload["pending_rule_ids"] = ["narrow"]
+    else:
+        payload["not_applicable_rule_ids"] = ["narrow"]
     with pytest.raises(RuleResolutionError):
         load_rule_resolution_bytes(json.dumps(payload).encode())
 

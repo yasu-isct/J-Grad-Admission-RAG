@@ -196,12 +196,29 @@ class RuleResolution(RuleResolutionModel):
         entry_ids = tuple(entry.rule_id for entry in self.entries)
         if len(entry_ids) != len(set(entry_ids)):
             raise ValueError("resolution entries must have unique rules")
+        entry_by_id = {entry.rule_id: entry for entry in self.entries}
         if any(
             evidence.document_id != self.document_id
             for entry in self.entries
             for evidence in entry.official_evidence
         ):
             raise ValueError("resolution evidence document does not reconcile")
+        for entry in self.entries:
+            if (
+                entry.original_status is ApplicabilityStatus.CONFIRMED
+                and not entry.official_evidence
+            ):
+                raise ValueError("confirmed resolution entry must preserve official evidence")
+            if entry.activated_override is None:
+                continue
+            overrider = entry_by_id.get(entry.activated_override.overrider_rule_id)
+            if (
+                overrider is None
+                or overrider.subject_key != entry.subject_key
+                or overrider.original_status is not ApplicabilityStatus.CONFIRMED
+                or not _is_proven_narrower(overrider.scope, entry.scope)
+            ):
+                raise ValueError("resolution override reference does not reconcile")
         expected_order = tuple(sorted(self.entries, key=_entry_sort_key))
         if self.entries != expected_order:
             raise ValueError("resolution entries are not canonical")
