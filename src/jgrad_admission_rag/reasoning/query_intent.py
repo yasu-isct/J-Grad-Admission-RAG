@@ -586,9 +586,9 @@ def _load_bytes(raw_bytes: bytes, model_type: type[QueryIntentModel], name: str)
         raise QueryIntentError(f"{name} bytes are invalid or unsupported") from None
 
 
-def _normalize_with_offsets(value: str) -> tuple[str, tuple[int, ...]]:
+def _normalize_with_offsets(value: str) -> tuple[str, tuple[tuple[int, int], ...]]:
     pieces: list[str] = []
-    offsets: list[int] = []
+    offsets: list[tuple[int, int]] = []
     index = 0
     while index < len(value):
         end = index + 1
@@ -596,7 +596,7 @@ def _normalize_with_offsets(value: str) -> tuple[str, tuple[int, ...]]:
             end += 1
         normalized = unicodedata.normalize("NFKC", value[index:end]).casefold()
         pieces.append(normalized)
-        offsets.extend([index] * len(normalized))
+        offsets.extend([(index, end)] * len(normalized))
         index = end
     return "".join(pieces), tuple(offsets)
 
@@ -611,8 +611,8 @@ def _find_normalized(query: str, surface: str) -> tuple[tuple[int, int], ...]:
     return tuple(found)
 
 
-def _original_range(offsets: tuple[int, ...], start: int, end: int) -> tuple[int, int]:
-    return offsets[start], offsets[end - 1] + 1
+def _original_range(offsets: tuple[tuple[int, int], ...], start: int, end: int) -> tuple[int, int]:
+    return offsets[start][0], offsets[end - 1][1]
 
 
 def _select_longest_non_overlapping(

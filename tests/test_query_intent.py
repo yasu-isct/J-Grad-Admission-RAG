@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from jgrad_admission_rag.reasoning import (
     DiagnosticCode,
+    CatalogEntity,
     QueryIntent,
     QueryIntentCatalog,
     QueryIntentError,
@@ -20,6 +21,7 @@ from jgrad_admission_rag.reasoning import (
     parse_query_intent,
     to_metadata_request,
 )
+from jgrad_admission_rag.reasoning.query_intent import MentionKind
 from jgrad_admission_rag.retrieval.metadata_search import derive_eligible_rows
 from jgrad_admission_rag.schemas.index import IndexPayload
 
@@ -83,8 +85,31 @@ def test_alias_unicode_longest_match_repeated_mentions_and_stable_canonical_byte
         parse_query_intent("情報工学系と情報工学の英語スコア", catalog)
     )
     module = importlib.import_module("jgrad_admission_rag.reasoning.query_intent")
-    assert module._normalize_with_offsets("ガ") == module._normalize_with_offsets("カ\u3099")
-    assert module._normalize_with_offsets("ＴＯＥＦＬ") == module._normalize_with_offsets("toefl")
+    assert module._normalize_with_offsets("ガ")[0] == module._normalize_with_offsets("カ\u3099")[0]
+    assert (
+        module._normalize_with_offsets("ＴＯＥＦＬ")[0]
+        == module._normalize_with_offsets("toefl")[0]
+    )
+
+
+def test_composed_catalog_term_preserves_the_full_decomposed_source_span() -> None:
+    catalog = QueryIntentCatalog(
+        schema_version="1.0",
+        catalog_version="unicode-test-v1",
+        entities=(
+            CatalogEntity(canonical_value="ガ", mention_kind=MentionKind.SCOPE_TARGET, aliases=()),
+        ),
+        intent_lexicon=(),
+        ambiguous_aliases=(),
+    )
+    query = "カ\u3099"
+
+    intent = parse_query_intent(query, catalog)
+
+    assert [
+        (mention.start_offset, mention.end_offset, mention.surface)
+        for mention in intent.matched_mentions
+    ] == [(0, 2, query)]
 
 
 def test_scope_is_soft_only_and_global_candidates_remain_eligible() -> None:
