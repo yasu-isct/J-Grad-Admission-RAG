@@ -77,8 +77,10 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-All three reports have SHA-256
-`86624fdcca3e939bfb4ce341135349d5415738e0acfd3a09d431be7d60edc40a` and are byte-identical.
+All three Windows-produced reports had SHA-256
+`86624fdcca3e939bfb4ce341135349d5415738e0acfd3a09d431be7d60edc40a` and were byte-identical.
+For cross-platform CI, RET-09 commits the evaluator's canonical LF JSON representation; its SHA-256
+is `0599df0e7b8f8838b872e959a9f755265071a83302599fef19dfbdf4de1895a8`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |

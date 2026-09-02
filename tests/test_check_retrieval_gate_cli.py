@@ -16,6 +16,7 @@ ROOT = Path(__file__).parents[1]
 REPORT = ROOT / "tests" / "fixtures" / "semantic_retrieval_baseline_v1.json"
 POLICY = ROOT / "config" / "semantic_retrieval_gate_v1.json"
 GLOBS = (
+    ".gitattributes",
     "pyproject.toml",
     "src/jgrad_admission_rag/cli/*.py",
     "src/jgrad_admission_rag/evaluation/*.py",

@@ -24,6 +24,9 @@ malformed, stale, or non-canonical configuration returns `2`.
 The manifest signs the exact retrieval-affecting files resolved from a fixed, non-overlapping glob
 set. A new matching file, missing file, duplicate glob match, symlink, or hash mismatch fails
 closed. The hash input is each sorted relative POSIX path, a NUL byte, its raw bytes, and a NUL byte.
+Repository text and the committed frozen fixtures are normalized to LF, so their signed bytes are
+identical on Windows and Linux. The historical Windows CRLF report hash remains recorded in the
+semantic-baseline document, but is not the CI contract.
 
 GitHub Actions runs normal offline tests, Ruff, compilation, whitespace checks, then the gate. It
 installs only `.[dev]`, sets Hugging Face and Transformers offline variables, and confirms that its
