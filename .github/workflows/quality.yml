@@ -17,7 +17,7 @@ jobs:
       DO_NOT_TRACK: "1"
       HF_HUB_DISABLE_TELEMETRY: "1"
       HF_HUB_OFFLINE: "1"
-      HF_HOME: ${{ runner.temp }}/jgrad-hf-home
+      HF_HOME: /tmp/jgrad-hf-home
       TRANSFORMERS_OFFLINE: "1"
     steps:
       - uses: actions/checkout@v4
