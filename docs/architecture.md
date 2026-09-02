@@ -78,6 +78,13 @@ one-hop attachments, and authoritative ambiguity warnings. It is a derived reque
 an answer: it contains no applicant profile, eligibility conclusion, override decision, summary, or
 rendered citation. See [EvidencePack v1](evaluation/evidence-pack-v1.md).
 
+`ApplicantProfile` v1 is the parallel, caller-supplied boundary in the `reasoning` package for M4. It models explicit target,
+citizenship/residence, academic, eligibility-review, and language-result facts with required nulls
+for unknowns. It has no dependency on retrieval or official evidence and cannot carry conclusions,
+Fact IDs, pages, or reasoning traces. Later applicability code will compare this immutable profile
+with an `EvidencePack`; neither artifact replaces the other. See
+[ApplicantProfile v1](reasoning/applicant-profile-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
