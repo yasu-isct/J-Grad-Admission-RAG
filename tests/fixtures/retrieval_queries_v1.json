@@ -3,7 +3,7 @@
   "benchmark_id": "isct-master-retrieval-v1",
   "document_id": "isct_2027_4_2026_9_master",
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
-  "expected_kb_schema_version": "0.5",
+  "expected_kb_schema_version": "0.6",
   "fact_content_sha256": "ff93295599a6b233bbd2dc065981e2b927ab4a628244c3949405303a6b0915eb",
   "fact_structure_sha256": "0a3c52d01039222af66e97546b809d4c855c356e9a83571c1580ae5fa85ff1a8",
   "language": "ja",

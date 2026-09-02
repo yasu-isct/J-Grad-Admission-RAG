@@ -13,7 +13,7 @@ queried many times by different applicants:
 
 ```text
 Offline build:
-PDF -> chunks -> document index -> scoped facts -> diagnostics/gates -> document_kb.json
+reviewed identity + exact PDF -> chunks -> scoped facts -> diagnostics/gates -> document_kb.json
 
 Online query:
 student query/profile -> vector/hybrid retrieval -> reasoning chains -> answer/report
@@ -39,6 +39,7 @@ python -m venv .venv
 python -m pip install -e .[dev]
 
 python -m jgrad_admission_rag.cli.build_kb samples\admission.pdf `
+  --identity samples\admission.identity.json `
   --output outputs\kb\sample\document_kb.json
 ```
 
@@ -46,6 +47,11 @@ The generated `document_kb.json` is the handoff artifact for vector indexing and
 retrieval. It also contains a `diagnostics` section with traceable Fact IDs, reference claims,
 the active quality thresholds, and their gate result. A failed enabled gate still writes the
 artifact and makes the CLI exit with code `2` so the evidence can be inspected.
+
+The required identity file is reviewed metadata, not extracted data. It binds one exact PDF hash to
+an institution, document family, edition, degree coverage, and intake terms. The builder verifies
+the hash before extraction and never infers these fields from a filename or title. See
+[Document Identity v1](docs/document-identity-v1.md).
 
 ## Build A Local Index
 

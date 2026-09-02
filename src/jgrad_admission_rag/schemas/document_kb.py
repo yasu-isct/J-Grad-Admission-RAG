@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+
+from .document_identity import DocumentIdentity
 
 EntityType = Literal["university", "college", "department", "program", "course", "unknown"]
 ScopeType = Literal["global", "university", "college", "department", "program", "unknown"]
@@ -10,11 +14,12 @@ ReferenceStatus = Literal["resolved", "ambiguous", "unresolved"]
 
 
 class KnowledgeManifest(BaseModel):
-    document_id: str
+    model_config = ConfigDict(extra="forbid")
+
+    identity: DocumentIdentity
     source_pdf: str
-    pdf_sha256: str
     builder_version: str = "0.1.0"
-    schema_version: str = "0.5"
+    schema_version: Literal["0.6"] = "0.6"
     input_chunk_count: int = 0
     chunk_count: int
     dropped_chunk_count: int = 0
@@ -25,6 +30,18 @@ class KnowledgeManifest(BaseModel):
     max_chunk_chars: int = 0
     oversized_chunk_count: int = 0
     oversized_chunk_reasons: dict[str, int] = Field(default_factory=dict)
+
+    @property
+    def document_id(self) -> str:
+        """Compatibility view of the exact-edition ID from the sole identity authority."""
+
+        return self.identity.document_id
+
+    @property
+    def pdf_sha256(self) -> str:
+        """Compatibility view of the reviewed exact PDF binding."""
+
+        return self.identity.source_pdf_sha256
 
 
 class KnowledgeEntity(BaseModel):
@@ -133,8 +150,144 @@ class BuildDiagnostics(BaseModel):
 
 
 class DocumentKnowledgeBase(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     manifest: KnowledgeManifest
     entities: list[KnowledgeEntity] = Field(default_factory=list)
     facts: list[ScopedFact] = Field(default_factory=list)
     retrieval_units: list[RetrievalUnit] = Field(default_factory=list)
     diagnostics: BuildDiagnostics = Field(default_factory=BuildDiagnostics)
+
+
+class DocumentKnowledgeBaseError(Exception):
+    """Raised when a KB or explicit legacy migration fails closed."""
+
+
+class LegacyKnowledgeManifestV05(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    document_id: str
+    source_pdf: str
+    pdf_sha256: str
+    builder_version: str = "0.1.0"
+    schema_version: Literal["0.5"] = "0.5"
+    input_chunk_count: int = 0
+    chunk_count: int
+    dropped_chunk_count: int = 0
+    dropped_chunk_reasons: dict[str, int] = Field(default_factory=dict)
+    merged_heading_count: int = 0
+    reference_link_count: int = 0
+    chunk_size_limit: int = 6000
+    max_chunk_chars: int = 0
+    oversized_chunk_count: int = 0
+    oversized_chunk_reasons: dict[str, int] = Field(default_factory=dict)
+
+
+class LegacyDocumentKnowledgeBaseV05(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    manifest: LegacyKnowledgeManifestV05
+    entities: list[KnowledgeEntity] = Field(default_factory=list)
+    facts: list[ScopedFact] = Field(default_factory=list)
+    retrieval_units: list[RetrievalUnit] = Field(default_factory=list)
+    diagnostics: BuildDiagnostics = Field(default_factory=BuildDiagnostics)
+
+
+def migrate_document_kb_v05(
+    legacy: LegacyDocumentKnowledgeBaseV05,
+    identity: DocumentIdentity,
+) -> DocumentKnowledgeBase:
+    """Migrate one validated v0.5 KB using caller-reviewed identity metadata."""
+
+    try:
+        validated_legacy = LegacyDocumentKnowledgeBaseV05.model_validate(
+            legacy.model_dump(mode="json")
+        )
+        validated_identity = DocumentIdentity.model_validate(identity.model_dump(mode="json"))
+        if (
+            validated_legacy.manifest.document_id != validated_identity.document_id
+            or validated_legacy.manifest.pdf_sha256 != validated_identity.source_pdf_sha256
+        ):
+            raise ValueError
+        manifest_payload = validated_legacy.manifest.model_dump(mode="json")
+        for field in ("document_id", "pdf_sha256", "schema_version"):
+            manifest_payload.pop(field)
+        return DocumentKnowledgeBase(
+            manifest=KnowledgeManifest(identity=validated_identity, **manifest_payload),
+            entities=validated_legacy.entities,
+            facts=validated_legacy.facts,
+            retrieval_units=validated_legacy.retrieval_units,
+            diagnostics=validated_legacy.diagnostics,
+        )
+    except (AttributeError, TypeError, ValidationError, ValueError):
+        raise DocumentKnowledgeBaseError(
+            "legacy KB migration input is invalid or inconsistent"
+        ) from None
+
+
+def migrate_document_kb_v05_bytes(
+    raw_bytes: bytes,
+    identity: DocumentIdentity,
+) -> DocumentKnowledgeBase:
+    """Parse and explicitly migrate canonical-compatible v0.5 JSON bytes."""
+
+    try:
+        if not isinstance(raw_bytes, bytes):
+            raise TypeError
+        payload = json.loads(raw_bytes.decode("utf-8"), parse_constant=_reject_constant)
+        legacy = LegacyDocumentKnowledgeBaseV05.model_validate(payload)
+    except (
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValidationError,
+        ValueError,
+    ):
+        raise DocumentKnowledgeBaseError("legacy KB bytes are invalid or unsupported") from None
+    return migrate_document_kb_v05(legacy, identity)
+
+
+def canonical_document_kb_bytes(kb: DocumentKnowledgeBase) -> bytes:
+    try:
+        validated = DocumentKnowledgeBase.model_validate(kb.model_dump(mode="json"))
+        serialized = json.dumps(
+            validated.model_dump(mode="json"),
+            ensure_ascii=False,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+    except (AttributeError, TypeError, ValidationError, ValueError):
+        raise DocumentKnowledgeBaseError("document KB is invalid or unsupported") from None
+    return f"{serialized}\n".encode("utf-8")
+
+
+def load_document_kb_bytes(raw_bytes: bytes) -> DocumentKnowledgeBase:
+    try:
+        if not isinstance(raw_bytes, bytes):
+            raise TypeError
+        payload = json.loads(raw_bytes.decode("utf-8"), parse_constant=_reject_constant)
+        return DocumentKnowledgeBase.model_validate(payload)
+    except (
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        TypeError,
+        ValidationError,
+        ValueError,
+    ):
+        raise DocumentKnowledgeBaseError("document KB bytes are invalid or unsupported") from None
+
+
+def load_document_kb(path_value: str | Path) -> DocumentKnowledgeBase:
+    try:
+        path = Path(path_value)
+        if path.is_symlink() or not path.is_file():
+            raise OSError
+        raw_bytes = path.read_bytes()
+    except (OSError, TypeError, ValueError):
+        raise DocumentKnowledgeBaseError("document KB file is unavailable or unsafe") from None
+    return load_document_kb_bytes(raw_bytes)
+
+
+def _reject_constant(_: str) -> Any:
+    raise ValueError("non-finite JSON numbers are unsupported")

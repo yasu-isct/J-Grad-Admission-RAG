@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from .chunker import SourcePage, TextChunk, chunk_pages
 from .chunk_filter import classify_chunk, filter_chunks
 from .document_index import IndexedChunk, build_document_index
@@ -20,6 +22,7 @@ from ..schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from ..schemas.document_identity import DocumentIdentity
 from ..retrieval.embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
 from ..utils import ensure_dir, sha256_file, write_json
 
@@ -37,6 +40,10 @@ COLLEGE_DEPARTMENTS = {
         "技術経営専門職学位課程",
     ],
 }
+
+
+class DocumentBuildError(Exception):
+    """Raised when reviewed identity and source PDF cannot be bound safely."""
 
 
 def pages_to_markdown(pages: list) -> str:
@@ -345,13 +352,23 @@ def _validate_diagnostics(
 
 def build_document_kb(
     pdf_path: str | Path,
+    identity: DocumentIdentity,
     max_chars: int = 6000,
     *,
     short_fact_threshold: int = 100,
     reference_ambiguity_margin: float = 0.1,
     quality_thresholds: BuildQualityThresholds | None = None,
 ) -> DocumentKnowledgeBase:
-    pdf_path = Path(pdf_path)
+    try:
+        pdf_path = Path(pdf_path)
+        validated_identity = DocumentIdentity.model_validate(identity.model_dump(mode="json"))
+        actual_pdf_sha256 = sha256_file(pdf_path)
+        if actual_pdf_sha256 != validated_identity.source_pdf_sha256:
+            raise ValueError
+    except (AttributeError, OSError, TypeError, ValidationError, ValueError):
+        raise DocumentBuildError(
+            "source PDF and reviewed document identity are invalid or inconsistent"
+        ) from None
     pages = extract_pdf(pdf_path)
     input_chunks: list[TextChunk] = chunk_pages(
         pages_to_source_pages(pages),
@@ -367,9 +384,8 @@ def build_document_kb(
     )
 
     manifest = KnowledgeManifest(
-        document_id=pdf_path.stem,
+        identity=validated_identity,
         source_pdf=str(pdf_path),
-        pdf_sha256=sha256_file(pdf_path),
         input_chunk_count=filter_summary.input_chunk_count,
         chunk_count=len(chunks),
         dropped_chunk_count=filter_summary.dropped_chunk_count,

@@ -30,6 +30,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from tests.identity_helpers import make_document_identity
 
 PDF_HASH = "b" * 64
 
@@ -104,9 +105,8 @@ def _knowledge_base(*, empty: bool = False) -> DocumentKnowledgeBase:
             )
     return DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="sample-document",
+            identity=make_document_identity(document_id="sample-document", pdf_sha256=PDF_HASH),
             source_pdf="sample.pdf",
-            pdf_sha256=PDF_HASH,
             chunk_count=len(facts),
         ),
         facts=facts,

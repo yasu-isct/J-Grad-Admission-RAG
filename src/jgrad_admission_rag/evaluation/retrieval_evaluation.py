@@ -49,7 +49,7 @@ class BenchmarkBinding(_StrictModel):
     annotation_policy_version: Literal["1.0"]
     document_id: str
     source_pdf_sha256: str
-    expected_kb_schema_version: Literal["0.5"]
+    expected_kb_schema_version: Literal["0.5", "0.6"]
     fact_content_sha256: str
     fact_structure_sha256: str
     ordered_query_count: int = Field(gt=0)
@@ -71,7 +71,7 @@ class EvaluationRuntime(_StrictModel):
     source_kb_sha256: str
     source_pdf_sha256: str
     index_schema_version: Literal["0.1"]
-    source_kb_schema_version: Literal["0.5"]
+    source_kb_schema_version: Literal["0.5", "0.6"]
     payloads_sha256: str
     vectors_sha256: str
     index_builder_version: Literal["0.1.0"]

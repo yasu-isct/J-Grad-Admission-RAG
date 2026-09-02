@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from .document_kb import DocumentKnowledgeBase, ScopeType
 
 SUPPORTED_INDEX_SCHEMA_VERSIONS = frozenset({"0.1"})
-SUPPORTED_SOURCE_KB_SCHEMA_VERSIONS = frozenset({"0.5"})
+SUPPORTED_SOURCE_KB_SCHEMA_VERSIONS = frozenset({"0.5", "0.6"})
 SHA256_FIELDS = (
     "source_kb_sha256",
     "source_pdf_sha256",

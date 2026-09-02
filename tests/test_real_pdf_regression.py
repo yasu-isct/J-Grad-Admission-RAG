@@ -57,7 +57,11 @@ from jgrad_admission_rag.reasoning.query_intent import (
     QueryIntent,
     RequestedScope,
 )
-from jgrad_admission_rag.schemas.document_kb import DocumentKnowledgeBase
+from jgrad_admission_rag.schemas.document_kb import (
+    DocumentKnowledgeBase,
+    migrate_document_kb_v05_bytes,
+)
+from jgrad_admission_rag.schemas.document_identity import DocumentIdentity, load_document_identity
 from jgrad_admission_rag.schemas.evidence_pack import (
     EvidenceCounts,
     EvidenceMetadataFilter,
@@ -119,8 +123,15 @@ def extracted_pages(real_pdf_path: Path) -> list[ExtractedPage]:
 
 
 @pytest.fixture(scope="module")
-def real_document_kb(real_pdf_path: Path) -> DocumentKnowledgeBase:
-    return build_document_kb(real_pdf_path)
+def real_document_identity(real_pdf_manifest: dict[str, Any]) -> DocumentIdentity:
+    return load_document_identity(MANIFEST_PATH.parent / real_pdf_manifest["identity_file"])
+
+
+@pytest.fixture(scope="module")
+def real_document_kb(
+    real_pdf_path: Path, real_document_identity: DocumentIdentity
+) -> DocumentKnowledgeBase:
+    return build_document_kb(real_pdf_path, real_document_identity)
 
 
 def test_real_pdf_extraction_matches_baseline(
@@ -144,7 +155,12 @@ def test_real_pdf_knowledge_base_matches_baseline(
 ) -> None:
     expected = real_pdf_manifest["expected"]
     manifest = real_document_kb.manifest
-    assert manifest.schema_version == "0.5"
+    assert manifest.schema_version == "0.6"
+    assert manifest.identity.document_id == real_pdf_manifest["fixture_id"]
+    assert [(term.year, term.month) for term in manifest.identity.intake_terms] == [
+        (2026, 9),
+        (2027, 4),
+    ]
     assert manifest.input_chunk_count == expected["input_chunk_count"]
     assert manifest.pdf_sha256 == real_pdf_manifest["sha256"]
     assert manifest.chunk_count == expected["chunk_count"]
@@ -495,13 +511,34 @@ def test_real_pdf_reference_diagnostics_are_traceable(
 
 def test_real_pdf_diagnostics_are_deterministic(
     real_pdf_path: Path,
+    real_document_identity: DocumentIdentity,
     real_document_kb: DocumentKnowledgeBase,
 ) -> None:
-    rebuilt = build_document_kb(real_pdf_path)
+    rebuilt = build_document_kb(real_pdf_path, real_document_identity)
 
     assert rebuilt.diagnostics.model_dump(mode="json") == real_document_kb.diagnostics.model_dump(
         mode="json"
     )
+
+
+def test_real_pdf_v05_migration_preserves_all_knowledge_content(
+    real_document_identity: DocumentIdentity,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    current = real_document_kb.model_dump(mode="json")
+    legacy = json.loads(json.dumps(current, ensure_ascii=False))
+    identity = legacy["manifest"].pop("identity")
+    legacy["manifest"]["document_id"] = identity["document_id"]
+    legacy["manifest"]["pdf_sha256"] = identity["source_pdf_sha256"]
+    legacy["manifest"]["schema_version"] = "0.5"
+
+    migrated = migrate_document_kb_v05_bytes(
+        json.dumps(legacy, ensure_ascii=False, separators=(",", ":")).encode(),
+        real_document_identity,
+    ).model_dump(mode="json")
+
+    for field in ("entities", "facts", "retrieval_units", "diagnostics"):
+        assert migrated[field] == legacy[field]
 
 
 def test_real_pdf_derives_traceable_index_payload_shape(
@@ -1575,7 +1612,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "0c2b10c1a68496a9154c9bdf8cf209d2cd0e22507f1c1a9bb7c92383af974f6f"
+    assert aggregate_sha256 == "57061be7749f9dd0ba1cdfa3a9ff3495ad760a92bf76468196775e4b607adbc0"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -1645,7 +1682,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "0fef7dfa6bdc7e43eccad6cb1c3b3f5f90e187416fdf12993fc699a6d77e4c75"
+        "0d9701c3a8d39902f063cd300a822d20f62611aa59b1e1d33cfc6f7c13c4e207"
     )
 
     class RecordingProvider:

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "fixture_id": "document-identity-scenarios-v1",
+  "same_filename": [
+    {"institution_id": "alpha-u", "document_id": "alpha-master-2027", "filename": "guideline.pdf"},
+    {"institution_id": "beta-u", "document_id": "beta-master-2027", "filename": "guideline.pdf"}
+  ],
+  "two_editions": [
+    {"document_family_id": "alpha-master-guidelines", "edition_id": "original", "document_id": "alpha-master-2027-original", "source_pdf_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"document_family_id": "alpha-master-guidelines", "edition_id": "corrected", "document_id": "alpha-master-2027-corrected", "source_pdf_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+  ],
+  "degree_coverage": ["master", "doctoral", "professional_degree"],
+  "mixed_degree_coverage": ["doctoral", "master", "professional_degree"],
+  "multiple_intakes": [{"year": 2026, "month": 9}, {"year": 2027, "month": 4}],
+  "active_edition_selected": false
+}

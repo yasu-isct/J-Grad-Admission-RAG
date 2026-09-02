@@ -4,8 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from ..builder.kb_builder import build_document_kb, write_document_kb
+from ..builder.kb_builder import DocumentBuildError, build_document_kb, write_document_kb
 from ..schemas.document_kb import BuildQualityThresholds, DocumentKnowledgeBase
+from ..schemas.document_identity import DocumentIdentityError, load_document_identity
 
 
 def _positive_int(value: str) -> int:
@@ -35,6 +36,7 @@ def build_summary(kb: DocumentKnowledgeBase, output: Path) -> dict:
     diagnostics = kb.diagnostics
     return {
         "output": str(output),
+        "document_id": kb.manifest.document_id,
         "schema_version": kb.manifest.schema_version,
         "chunks": kb.manifest.chunk_count,
         "facts": len(kb.facts),
@@ -67,6 +69,11 @@ def build_summary(kb: DocumentKnowledgeBase, output: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build a RAG-ready admission document KB.")
     parser.add_argument("pdf", help="Source admission guideline PDF.")
+    parser.add_argument(
+        "--identity",
+        required=True,
+        help="Reviewed DocumentIdentity v1 JSON file.",
+    )
     parser.add_argument("--output", default=None, help="Output document_kb.json path.")
     parser.add_argument("--max-chars", type=_positive_int, default=6000)
     parser.add_argument("--short-fact-threshold", type=_positive_int, default=100)
@@ -87,10 +94,14 @@ def main() -> None:
     args = parser.parse_args()
 
     pdf_path = Path(args.pdf)
+    try:
+        identity = load_document_identity(args.identity)
+    except DocumentIdentityError:
+        parser.error("reviewed document identity is invalid or unavailable")
     output = (
         Path(args.output)
         if args.output
-        else Path("outputs") / "kb" / pdf_path.stem / "document_kb.json"
+        else Path("outputs") / "kb" / identity.document_id / "document_kb.json"
     )
     thresholds = BuildQualityThresholds(
         max_missing_source_pages=args.max_missing_source_pages,
@@ -101,13 +112,17 @@ def main() -> None:
         max_unresolved_references=args.max_unresolved_references,
         max_ambiguous_references=args.max_ambiguous_references,
     )
-    kb = build_document_kb(
-        pdf_path,
-        max_chars=args.max_chars,
-        short_fact_threshold=args.short_fact_threshold,
-        reference_ambiguity_margin=args.reference_ambiguity_margin,
-        quality_thresholds=thresholds,
-    )
+    try:
+        kb = build_document_kb(
+            pdf_path,
+            identity,
+            max_chars=args.max_chars,
+            short_fact_threshold=args.short_fact_threshold,
+            reference_ambiguity_margin=args.reference_ambiguity_margin,
+            quality_thresholds=thresholds,
+        )
+    except DocumentBuildError:
+        parser.error("source PDF does not match the reviewed document identity")
     write_document_kb(kb, output)
     print(json.dumps(build_summary(kb, output), ensure_ascii=False, indent=2))
     if not kb.diagnostics.quality_gate.passed:
