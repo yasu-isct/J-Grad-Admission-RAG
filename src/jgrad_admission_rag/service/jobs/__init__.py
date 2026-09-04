@@ -10,10 +10,21 @@ from .repository import (
     JobValidationError,
     OwnedJobInputs,
 )
+from .worker import (
+    BuildJobWorker,
+    BuildRunner,
+    MAX_SHUTDOWN_GRACE_SECONDS,
+    MAX_WORKER_CONCURRENCY,
+    WorkerDiagnosticCode,
+    WorkerSnapshot,
+    WorkerStatus,
+)
 
 __all__ = [
     "BuildJobRecord",
     "BuildJobRepository",
+    "BuildJobWorker",
+    "BuildRunner",
     "JobConflictError",
     "JobDiagnosticCode",
     "JobNotFoundError",
@@ -23,5 +34,10 @@ __all__ = [
     "JobState",
     "JobTransition",
     "JobValidationError",
+    "MAX_SHUTDOWN_GRACE_SECONDS",
+    "MAX_WORKER_CONCURRENCY",
     "OwnedJobInputs",
+    "WorkerDiagnosticCode",
+    "WorkerSnapshot",
+    "WorkerStatus",
 ]

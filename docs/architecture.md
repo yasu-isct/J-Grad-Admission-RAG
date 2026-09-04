@@ -59,6 +59,11 @@ one OS owner lock and performs deterministic recovery; repository transactions s
 cancel, publication, retry, and exact terminal deletion. This layer invokes neither HTTP nor the
 builder. See [Durable Build Job Storage v1](service-job-storage-v1.md).
 
+APP-02B adds an explicit bounded worker over that repository. Fixed claim loops run all repository
+and builder calls off the event loop, share APP-01's response assembly, and publish only through the
+repository state machine. Event-driven wakeup, deterministic cancellation checks, bounded shutdown,
+and privacy-safe health are defined in [Durable Build Worker v1](service-build-worker-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
