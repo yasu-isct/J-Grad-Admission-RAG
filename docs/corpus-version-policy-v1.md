@@ -46,6 +46,15 @@ version mismatch, and disallowed multiplicity are distinct typed failures.
 and complete detached corpus entries, including validated index-manifest snapshots. It is ordered by
 exact document ID and contains no ranking implication.
 
+Loading result JSON establishes structural validity only. Before COR-05 or another consumer uses a
+saved result, call `revalidate_corpus_selection_result(result, manifest, policy)`. This pure in-memory
+operation validates the current policy against the current manifest, repeats the complete selection
+from the embedded request, and requires canonical equality with the saved result. It therefore
+rejects omitted or substituted entries, changed active/historical classifications, and same-document
+index metadata changes. All such stale or incompatible handoffs use the generic
+`CorpusSelectionResultCompatibilityError`; callers do not infer recovery from an internal selection
+failure.
+
 Selection reads only the supplied manifest and policy objects. It does not open KB/index files,
 audit freshness, call an embedding provider, rank Facts, or generate an answer. The caller must run
 the COR-02 artifact audit before query-time use; COR-05 will consume the selected ready entries.

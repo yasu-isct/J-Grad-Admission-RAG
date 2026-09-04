@@ -56,6 +56,10 @@ class CorpusSelectionAmbiguousError(CorpusSelectionError):
         super().__init__("multiple documents matched but multiple selection is disabled")
 
 
+class CorpusSelectionResultCompatibilityError(CorpusSelectionError):
+    """Raised when a saved selection does not match the current reviewed selection."""
+
+
 @dataclass(frozen=True, slots=True)
 class ValidatedCorpusVersionPolicy:
     policy: CorpusVersionPolicy
@@ -196,6 +200,29 @@ def select_corpus_documents(
         raise CorpusSelectionError("corpus selection result validation failed") from error
 
 
+def revalidate_corpus_selection_result(
+    result: CorpusSelectionResult,
+    manifest: CorpusManifest,
+    policy: CorpusVersionPolicy,
+) -> CorpusSelectionResult:
+    """Bind a structurally loaded result to the complete current reviewed selection."""
+
+    try:
+        if not isinstance(result, CorpusSelectionResult):
+            raise TypeError
+        detached_result = CorpusSelectionResult.model_validate(result.model_dump(mode="json"))
+        expected = select_corpus_documents(manifest, policy, detached_result.request)
+        if canonical_corpus_selection_result_bytes(detached_result) != (
+            canonical_corpus_selection_result_bytes(expected)
+        ):
+            raise ValueError
+    except (TypeError, ValidationError, ValueError, CorpusSelectionError) as error:
+        raise CorpusSelectionResultCompatibilityError(
+            "corpus selection result does not match the current manifest and policy"
+        ) from error
+    return detached_result
+
+
 def _matches_identity(
     entry: CorpusDocumentEntry,
     request: CorpusSelectionRequest,
@@ -234,8 +261,10 @@ __all__ = [
     "CorpusSelectionNoMatchError",
     "CorpusSelectionNotReadyError",
     "CorpusSelectionRequestError",
+    "CorpusSelectionResultCompatibilityError",
     "CorpusSelectionVersionMismatchError",
     "ValidatedCorpusVersionPolicy",
+    "revalidate_corpus_selection_result",
     "select_corpus_documents",
     "validate_corpus_version_policy",
 ]

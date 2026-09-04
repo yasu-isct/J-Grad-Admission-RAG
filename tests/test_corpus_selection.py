@@ -12,7 +12,9 @@ from jgrad_admission_rag.corpus_selection import (
     CorpusSelectionAmbiguousError,
     CorpusSelectionNoMatchError,
     CorpusSelectionNotReadyError,
+    CorpusSelectionResultCompatibilityError,
     CorpusSelectionVersionMismatchError,
+    revalidate_corpus_selection_result,
     select_corpus_documents,
     validate_corpus_version_policy,
 )
@@ -533,3 +535,123 @@ def test_result_model_rejects_not_ready_entry(tmp_path: Path) -> None:
             selected_family_count=1,
             selected_institution_count=1,
         )
+
+
+def test_result_revalidation_accepts_current_canonical_selection(
+    tmp_path: Path, monkeypatch
+) -> None:
+    manifest, policy = _manifest_and_policy(tmp_path)
+    result = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(
+            document_family_ids=("alpha",),
+            version_mode="all_versions",
+            allow_multiple_documents=True,
+        ),
+    )
+    loaded = load_corpus_selection_result_bytes(canonical_corpus_selection_result_bytes(result))
+
+    def forbid_file_open(*args, **kwargs):
+        raise AssertionError("result revalidation must not open artifacts")
+
+    monkeypatch.setattr(Path, "open", forbid_file_open)
+
+    revalidated = revalidate_corpus_selection_result(loaded, manifest, policy)
+
+    assert revalidated == result
+    assert revalidated is not loaded
+
+
+def test_result_revalidation_rejects_omitted_or_substituted_selection(
+    tmp_path: Path,
+) -> None:
+    manifest, policy = _manifest_and_policy(tmp_path)
+    request = CorpusSelectionRequest(
+        institution_ids=("alpha-u", "beta-u"),
+        allow_multiple_documents=True,
+    )
+    result = select_corpus_documents(manifest, policy, request)
+    omitted = CorpusSelectionResult(
+        corpus_id=result.corpus_id,
+        request=request,
+        selected_documents=(result.selected_documents[0],),
+        selected_document_count=1,
+        selected_family_count=1,
+        selected_institution_count=1,
+    )
+    alpha_old = next(
+        entry for entry in manifest.entries if entry.identity.document_id == "alpha-old"
+    )
+    substituted = CorpusSelectionResult(
+        corpus_id=result.corpus_id,
+        request=request,
+        selected_documents=(
+            {
+                "version_classification": "active",
+                "entry": alpha_old,
+            },
+            result.selected_documents[1],
+        ),
+        selected_document_count=2,
+        selected_family_count=2,
+        selected_institution_count=2,
+    )
+
+    for stale_result in (omitted, substituted):
+        with pytest.raises(CorpusSelectionResultCompatibilityError):
+            revalidate_corpus_selection_result(stale_result, manifest, policy)
+
+
+def test_result_revalidation_rejects_active_classification_change(tmp_path: Path) -> None:
+    manifest, policy = _manifest_and_policy(tmp_path)
+    result = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(
+            document_family_ids=("alpha",),
+            version_mode="all_versions",
+            allow_multiple_documents=True,
+        ),
+    )
+    changed_policy = policy.model_copy(
+        update={
+            "family_policies": tuple(
+                family.model_copy(
+                    update={
+                        "active_document_id": "alpha-old",
+                        "historical_document_ids": ("alpha-new",),
+                    }
+                )
+                if family.document_family_id == "alpha"
+                else family
+                for family in policy.family_policies
+            )
+        }
+    )
+
+    with pytest.raises(CorpusSelectionResultCompatibilityError):
+        revalidate_corpus_selection_result(result, manifest, changed_policy)
+
+
+def test_result_revalidation_rejects_same_id_index_metadata_change(tmp_path: Path) -> None:
+    manifest, policy = _manifest_and_policy(tmp_path)
+    result = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(document_ids=("alpha-new",)),
+    )
+    changed_manifest = manifest.model_copy(
+        update={
+            "entries": tuple(
+                entry.model_copy(update={"index_path": "indexes/rebuilt-alpha-new"})
+                if entry.identity.document_id == "alpha-new"
+                else entry
+                for entry in manifest.entries
+            )
+        }
+    )
+    assert validate_corpus_version_policy(policy, changed_manifest).policy == policy
+
+    with pytest.raises(CorpusSelectionResultCompatibilityError):
+        revalidate_corpus_selection_result(result, changed_manifest, policy)
