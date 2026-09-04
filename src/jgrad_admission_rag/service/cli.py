@@ -1,0 +1,60 @@
+"""Command-line launcher for the optional local HTTP service."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+from typing import Sequence
+
+from ..cli.provider_config import (
+    CliConfigurationError,
+    add_provider_arguments,
+    create_provider,
+    resolve_provider_configuration,
+)
+from .app import create_app
+from .runtime import ServiceDependencies, ServiceSettings
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Run the local, versioned J-Grad Admission RAG HTTP API."
+    )
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--corpus-root", required=True)
+    parser.add_argument("--manifest", required=True)
+    parser.add_argument("--policy", required=True)
+    parser.add_argument("--max-pdf-bytes", type=int, default=25 * 1024 * 1024)
+    add_provider_arguments(parser)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    args = _parser().parse_args(argv)
+    if not 1 <= args.port <= 65535 or args.max_pdf_bytes <= 0:
+        _parser().error("--port and --max-pdf-bytes must be positive and in range")
+    try:
+        provider_configuration = resolve_provider_configuration(args)
+        settings = ServiceSettings(
+            corpus_root=Path(args.corpus_root).resolve(strict=False),
+            manifest_path=Path(args.manifest).resolve(strict=False),
+            policy_path=Path(args.policy).resolve(strict=False),
+            max_pdf_bytes=args.max_pdf_bytes,
+        )
+    except (CliConfigurationError, ValueError) as error:
+        print(f"configuration error: {error}", file=sys.stderr)
+        raise SystemExit(2) from None
+
+    app = create_app(
+        settings,
+        ServiceDependencies(provider_factory=lambda: create_provider(provider_configuration)),
+    )
+    import uvicorn
+
+    uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()
