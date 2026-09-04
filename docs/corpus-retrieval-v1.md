@@ -58,7 +58,10 @@ documents with zero eligible rows or final hits.
 Structural loading proves only internal consistency. It does not reopen current files or prove that
 policy, selection, or index bytes have not changed. Prepare a new context to recheck disk state, then
 call `revalidate_corpus_search_result` to re-execute the saved request and require canonical exact
-equality. No result hash is added.
+equality. Structural validation proves that final hit count fills the available global depth, but a
+result does not carry every non-final payload's scope metadata; therefore exact top-membership under
+scope preference is established by that current-context re-execution, not by the loader alone. No
+result hash is added.
 
 ## Deliberate Limits
 

@@ -457,6 +457,80 @@ def test_result_is_canonical_structural_and_requires_context_revalidation(
         revalidate_corpus_search_result(changed, context, provider)
 
 
+def test_result_loader_rejects_ghost_duplicate_and_out_of_range_eligible_keys(
+    tmp_path: Path,
+) -> None:
+    _, _, _, context, identity = _prepared_two_document_corpus(tmp_path)
+    result = search_corpus(
+        context,
+        "common",
+        ControlledProvider(identity=identity),
+        top_k=2,
+        candidate_k=2,
+    )
+
+    ghost = result.model_dump(mode="json")
+    ghost["eligible_keys"].append(
+        {
+            "document_id": "ghost-document",
+            "local_row_index": 0,
+            "unit_id": "unit:00001",
+            "fact_id": "fact:00001",
+        }
+    )
+    ghost["eligible_keys"] = _sort_key_payloads(ghost["eligible_keys"])
+    ghost["eligible_row_count"] += 1
+    with pytest.raises(CorpusSearchSchemaError):
+        load_corpus_search_result_bytes(json.dumps(ghost).encode())
+
+    duplicate = result.model_dump(mode="json")
+    repeated_coordinate = dict(duplicate["eligible_keys"][0])
+    repeated_coordinate["unit_id"] = "unit:99999"
+    repeated_coordinate["fact_id"] = "fact:99999"
+    duplicate["eligible_keys"].append(repeated_coordinate)
+    duplicate["eligible_keys"] = _sort_key_payloads(duplicate["eligible_keys"])
+    duplicate["eligible_row_count"] += 1
+    duplicate["per_document_counts"][0]["eligible_row_count"] += 1
+    with pytest.raises(CorpusSearchSchemaError):
+        load_corpus_search_result_bytes(json.dumps(duplicate).encode())
+
+    outside = result.model_dump(mode="json")
+    outside["eligible_keys"].append(
+        {
+            "document_id": "alpha-2027",
+            "local_row_index": 99,
+            "unit_id": "unit:99999",
+            "fact_id": "fact:99999",
+        }
+    )
+    outside["eligible_keys"] = _sort_key_payloads(outside["eligible_keys"])
+    outside["eligible_row_count"] += 1
+    outside["per_document_counts"][0]["eligible_row_count"] += 1
+    with pytest.raises(CorpusSearchSchemaError):
+        load_corpus_search_result_bytes(json.dumps(outside).encode())
+
+
+def test_result_loader_rejects_incomplete_final_hit_prefix(tmp_path: Path) -> None:
+    _, _, _, context, identity = _prepared_two_document_corpus(tmp_path)
+    result = search_corpus(
+        context,
+        "common",
+        ControlledProvider(identity=identity),
+        top_k=2,
+        candidate_k=2,
+    )
+    payload = result.model_dump(mode="json")
+    removed = payload["hits"].pop(0)
+    payload["hits"][0]["rank"] = 1
+    payload["result_count"] = 1
+    for counts in payload["per_document_counts"]:
+        if counts["document_id"] == removed["key"]["document_id"]:
+            counts["result_count"] -= 1
+
+    with pytest.raises(CorpusSearchSchemaError):
+        load_corpus_search_result_bytes(json.dumps(payload).encode())
+
+
 def test_provider_identity_is_checked_before_query_embedding(tmp_path: Path) -> None:
     _, _, _, context, _ = _prepared_two_document_corpus(tmp_path)
     provider = ControlledProvider(identity=EmbeddingIdentity("other", "axes", "r1", 2))
@@ -597,3 +671,15 @@ def test_result_models_are_frozen_and_reject_nonfinite_scores(tmp_path: Path) ->
     payload["hits"][0]["ranking_score"] = float("nan")
     with pytest.raises(CorpusSearchSchemaError):
         load_corpus_search_result_bytes(json.dumps(payload).encode())
+
+
+def _sort_key_payloads(values: list[dict]) -> list[dict]:
+    return sorted(
+        values,
+        key=lambda item: (
+            item["document_id"],
+            item["local_row_index"],
+            item["unit_id"],
+            item["fact_id"],
+        ),
+    )

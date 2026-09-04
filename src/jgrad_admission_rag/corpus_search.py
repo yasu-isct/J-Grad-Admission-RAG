@@ -330,6 +330,17 @@ class CorpusSearchResult(SearchModel):
         }
         if len(expected_rows) != len(selected):
             raise ValueError("selected documents must contain index manifests")
+        eligible_coordinates: set[tuple[str, int]] = set()
+        for key in eligible_keys:
+            document_id, row_index, _, _ = key
+            coordinate = (document_id, row_index)
+            if (
+                document_id not in expected_rows
+                or row_index >= expected_rows[document_id]
+                or coordinate in eligible_coordinates
+            ):
+                raise ValueError("eligible keys are outside or duplicate selected rows")
+            eligible_coordinates.add(coordinate)
 
         hit_keys: set[tuple[str, int, str, str]] = set()
         previous_order: tuple[float, str, int] | None = None
@@ -400,6 +411,9 @@ class CorpusSearchResult(SearchModel):
 
         if len(self.hits) > self.request.top_k:
             raise ValueError("result count exceeds top_k")
+        candidate_union = set(vector_by_key).union(lexical_by_key)
+        if len(self.hits) != min(self.request.top_k, len(candidate_union)):
+            raise ValueError("final hits do not fill the available global result depth")
         expected_per_document = {}
         for document_id in selected_ids:
             expected_per_document[document_id] = (
@@ -418,6 +432,12 @@ class CorpusSearchResult(SearchModel):
                 observed.result_count,
             ) != expected_per_document[document_id]:
                 raise ValueError("per-document counts are invalid")
+            if (
+                observed.vector_candidate_count > observed.eligible_row_count
+                or observed.lexical_candidate_count > observed.eligible_row_count
+                or observed.result_count > sum(key[0] == document_id for key in candidate_union)
+            ):
+                raise ValueError("per-document counts exceed eligible or candidate rows")
         totals = (
             sum(value[0] for value in expected_per_document.values()),
             len(eligible_keys),
@@ -434,6 +454,15 @@ class CorpusSearchResult(SearchModel):
         )
         if observed_totals != totals:
             raise ValueError("global counts are invalid")
+        per_document_totals = (
+            sum(item.corpus_row_count for item in self.per_document_counts),
+            sum(item.eligible_row_count for item in self.per_document_counts),
+            sum(item.vector_candidate_count for item in self.per_document_counts),
+            sum(item.lexical_candidate_count for item in self.per_document_counts),
+            sum(item.result_count for item in self.per_document_counts),
+        )
+        if observed_totals != per_document_totals:
+            raise ValueError("global and per-document counts do not reconcile")
         return self
 
 
