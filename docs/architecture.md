@@ -45,6 +45,13 @@ collide. Results are retrieval candidates, not applicant conclusions, and curren
 revalidation is separate from structural JSON loading. See
 [Corpus Retrieval v1](corpus-retrieval-v1.md).
 
+The optional APP-01 FastAPI boundary is a thin local transport over the same contracts. Multipart
+build requests stream to invocation-owned temporary storage and return a detached complete KB;
+query requests reload server-owned manifest/policy state and run COR-04 then COR-05. Provider setup
+belongs to lifespan, query embedding is serialized at the provider boundary, and imports remain
+free of file/model/server activity. The API returns evidence candidates rather than applicant
+conclusions. See [Service API v1](service-api-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
@@ -206,6 +213,7 @@ chunking, lightweight document index, reference resolver, and recursive retrieva
 - `retrieval`: embedding provider contracts plus future vector and hybrid retrieval services.
 - `reasoning`: strict applicant/query inputs, reviewed-rule applicability, and later reasoning chains.
 - `cli`: command-line entry points.
+- `service`: optional versioned HTTP transport, lifecycle, and runtime configuration.
 
 ## Knowledge And Diagnostics
 

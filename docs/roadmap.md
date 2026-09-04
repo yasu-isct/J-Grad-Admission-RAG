@@ -35,12 +35,12 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M5 Multi-document corpus | v0.6 | Multiple schools, years, and programs can coexist safely | Version and document filters prevent accidental mixing |
 | M6 Usable service | v1.0 | API and report output expose the complete workflow | End-to-end scenarios are reproducible and observable |
 
-## Current Sprint: M5 Multi-Document Corpus
+## Current Sprint: M6 Usable Service
 
-M1 through M4 are complete. M5 gives every exact guideline edition reviewed identity, builds an
-explicit corpus inventory, activates controlled updates, and separates reviewed active/historical
-policy from inventory. COR-05 is the exit task: it audits an explicit selection and performs one
-document-qualified global hybrid ranking across compatible ready indexes without merging them.
+M1 through M5 are complete. M6 exposes the accepted engine boundaries as versioned local APIs,
+adds observable durable build operations, then connects cited applicant reports and a focused
+evidence-review interface. APP-01 is the first transport slice: synchronous build and reviewed
+corpus query remain thin wrappers over the existing builder and COR-04/COR-05 contracts.
 
 ### Completed M4 Summary
 

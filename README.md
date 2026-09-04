@@ -65,6 +65,30 @@ every candidate remains qualified by document identity and official page provena
 merge index files or make eligibility decisions. See
 [Corpus Retrieval v1](docs/corpus-retrieval-v1.md).
 
+## Run The Local API
+
+The optional APP-01 service exposes the accepted build and corpus-query workflows without adding a
+second implementation:
+
+```powershell
+python -m pip install -e ".[service]"
+jgrad-serve `
+  --corpus-root D:\corpus `
+  --manifest D:\corpus\corpus.json `
+  --policy D:\corpus\policy.json `
+  --provider deterministic-fake `
+  --dimension 8
+```
+
+OpenAPI is served at `http://127.0.0.1:8000/openapi.json`, with local interactive docs at
+`http://127.0.0.1:8000/docs`. The API provides `/v1/health/live`, `/v1/health/ready`, synchronous
+multipart KB build, and strict reviewed-corpus query routes. See [Service API v1](docs/service-api-v1.md).
+
+The default bind is loopback and real model loading is cache-only unless download is explicitly
+authorized. The service has no authentication, TLS, rate limiting, or public-deployment hardening;
+do not expose it directly to a network. Use an authenticated reverse proxy and a separate
+operational review before any non-loopback deployment.
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 
