@@ -88,6 +88,8 @@ coordination.
 Only `failed` or `cancelled` jobs with intact validated input blobs can create one retry child. The
 child uses a new server UUID, points to exactly one parent, and increments its attempt. A unique
 database constraint makes concurrent duplicate retry requests deterministic conflicts.
+Every open also validates the complete retry graph: each parent must exist in an eligible terminal
+state, attempts must increment exactly once per edge, and every chain must be acyclic and unbroken.
 
 ## Privacy-Safe Failures
 

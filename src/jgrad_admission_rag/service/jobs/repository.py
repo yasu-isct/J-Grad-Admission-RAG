@@ -493,6 +493,7 @@ class BuildJobRepository:
             raise JobRepositoryUnavailableError("job repository layout is invalid")
         rows = connection.execute("SELECT * FROM jobs").fetchall()
         records = {UUID(row["job_id"]): _load_record_row(row) for row in rows}
+        _validate_retry_relationships(records)
         self._recover_pending_markers(records)
         for entry in tuple(staging.iterdir()):
             if entry.is_symlink():
@@ -903,6 +904,24 @@ def _load_record_row(row: sqlite3.Row) -> BuildJobRecord:
     if observed != expected:
         raise JobRepositoryUnavailableError("job database columns are inconsistent")
     return record
+
+
+def _validate_retry_relationships(records: dict[UUID, BuildJobRecord]) -> None:
+    for record in records.values():
+        current = record
+        visited: set[UUID] = set()
+        while current.parent_job_id is not None:
+            if current.job_id in visited:
+                raise JobRepositoryUnavailableError("job retry history is invalid")
+            visited.add(current.job_id)
+            parent = records.get(current.parent_job_id)
+            if (
+                parent is None
+                or parent.state not in {JobState.FAILED, JobState.CANCELLED}
+                or current.attempt != parent.attempt + 1
+            ):
+                raise JobRepositoryUnavailableError("job retry history is invalid")
+            current = parent
 
 
 def _detach(record: BuildJobRecord) -> BuildJobRecord:

@@ -472,6 +472,41 @@ def test_retry_rejects_ineligible_parent_and_missing_inputs(tmp_path: Path) -> N
             repository.create_retry(failed.job_id)
 
 
+@pytest.mark.parametrize("corruption", ("orphan_parent", "wrong_attempt"))
+def test_reopen_rejects_corrupt_retry_relationships(tmp_path: Path, corruption: str) -> None:
+    identity, options, pdf = _inputs(tmp_path)
+    root = (tmp_path / "store").resolve()
+    repository = _repository(root).open()
+    parent = repository.create(identity, options, pdf)
+    repository.claim_next_queued()
+    repository.finish_failed(parent.job_id)
+    child = repository.create_retry(parent.job_id)
+    repository.close()
+
+    with sqlite3.connect(root / "jobs.sqlite3") as connection:
+        row = connection.execute(
+            "SELECT record_json FROM jobs WHERE job_id = ?", (str(child.job_id),)
+        ).fetchone()
+        payload = json.loads(row[0])
+        if corruption == "orphan_parent":
+            value = "00000000-0000-4000-8000-999999999999"
+            payload["parent_job_id"] = value
+            column = "parent_job_id"
+        else:
+            value = 3
+            payload["attempt"] = value
+            column = "attempt"
+        connection.execute(
+            f"UPDATE jobs SET {column} = ?, record_json = ? WHERE job_id = ?",
+            (value, json.dumps(payload), str(child.job_id)),
+        )
+
+    with pytest.raises(JobRepositoryUnavailableError) as captured:
+        BuildJobRepository(root).open()
+    assert str(captured.value) == "job retry history is invalid"
+    assert str(root) not in str(captured.value)
+
+
 def test_exact_terminal_deletion_preserves_sibling_and_external_sentinels(
     tmp_path: Path,
 ) -> None:
