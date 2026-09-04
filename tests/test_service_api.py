@@ -420,6 +420,12 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert operations == {
         "getV1HealthLive",
         "getV1HealthReady",
+        "postV1BuildJobs",
+        "getV1BuildJob",
+        "getV1BuildJobResult",
+        "postV1BuildJobCancel",
+        "postV1BuildJobRetry",
+        "deleteV1BuildJob",
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
     }
@@ -456,6 +462,8 @@ def test_service_settings_require_complete_absolute_query_paths(tmp_path: Path) 
             manifest_path=Path("manifest.json"),
             policy_path=Path("policy.json"),
         )
+    with pytest.raises(ValueError):
+        ServiceSettings(job_root=Path("relative-jobs"))
 
 
 def test_cli_defaults_to_loopback_and_defers_provider_creation(

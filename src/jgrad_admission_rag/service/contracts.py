@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any, Literal
+from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from ..corpus_search import CorpusSearchRequest, CorpusSearchResult
 from ..schemas.corpus_version import CorpusSelectionRequest
@@ -92,6 +94,168 @@ class BuildResponse(ApiModel):
         return self
 
 
+JobStateValue = Literal[
+    "queued", "running", "cancel_requested", "succeeded", "quality_failed", "failed", "cancelled"
+]
+JobPhaseValue = Literal["waiting", "building", "cancelling", "finished"]
+JobDiagnosticValue = Literal["worker_interrupted", "build_failed", "cancelled_by_request"]
+_JOB_PHASE_BY_STATE = {
+    "queued": "waiting",
+    "running": "building",
+    "cancel_requested": "cancelling",
+    "succeeded": "finished",
+    "quality_failed": "finished",
+    "failed": "finished",
+    "cancelled": "finished",
+}
+_JOB_RESULT_STATES = {"succeeded", "quality_failed"}
+_JOB_TERMINAL_STATES = _JOB_RESULT_STATES | {"failed", "cancelled"}
+_JOB_LEGAL_TRANSITIONS = {
+    "queued": {"running", "cancelled"},
+    "running": {"cancel_requested", "succeeded", "quality_failed", "failed", "cancelled"},
+    "cancel_requested": {"cancelled"},
+    "succeeded": set(),
+    "quality_failed": set(),
+    "failed": set(),
+    "cancelled": set(),
+}
+
+
+class BuildJobTransition(ApiModel):
+    sequence: int = Field(ge=1, strict=True)
+    from_state: JobStateValue | None
+    to_state: JobStateValue
+    phase: JobPhaseValue
+    at: datetime
+    diagnostic_code: JobDiagnosticValue | None = None
+
+    @field_validator("at")
+    @classmethod
+    def transition_timestamp_must_be_utc(cls, value: datetime) -> datetime:
+        return _utc_timestamp(value)
+
+    @model_validator(mode="after")
+    def transition_must_be_consistent(self) -> BuildJobTransition:
+        if self.phase != _JOB_PHASE_BY_STATE[self.to_state]:
+            raise ValueError("job transition phase is invalid")
+        if self.from_state is None:
+            if self.sequence != 1 or self.to_state != "queued":
+                raise ValueError("initial job transition is invalid")
+        elif self.to_state not in _JOB_LEGAL_TRANSITIONS[self.from_state]:
+            raise ValueError("job transition is invalid")
+        if self.to_state == "failed":
+            if self.diagnostic_code not in {"build_failed", "worker_interrupted"}:
+                raise ValueError("job failure diagnostic is invalid")
+        elif self.to_state == "cancelled":
+            if self.diagnostic_code != "cancelled_by_request":
+                raise ValueError("job cancellation diagnostic is invalid")
+        elif self.diagnostic_code is not None:
+            raise ValueError("job diagnostic is invalid")
+        return self
+
+
+class BuildJobReceipt(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    job_id: UUID
+    state: JobStateValue
+    phase: JobPhaseValue
+    attempt: int = Field(ge=1, strict=True)
+    parent_job_id: UUID | None = None
+    created_at: datetime
+    updated_at: datetime
+    result_available: bool = Field(strict=True)
+    status_path: str
+    result_path: str
+
+    @field_validator("job_id", "parent_job_id", mode="before")
+    @classmethod
+    def job_ids_must_be_canonical(cls, value: object) -> object:
+        if value is None or isinstance(value, UUID):
+            return value
+        if not isinstance(value, str):
+            raise ValueError("job ID is invalid")
+        try:
+            parsed = UUID(value)
+        except ValueError:
+            raise ValueError("job ID is invalid") from None
+        if str(parsed) != value:
+            raise ValueError("job ID is invalid")
+        return value
+
+    @field_validator("created_at", "updated_at")
+    @classmethod
+    def receipt_timestamps_must_be_utc(cls, value: datetime) -> datetime:
+        return _utc_timestamp(value)
+
+    @model_validator(mode="after")
+    def receipt_links_must_be_relative_and_consistent(self) -> BuildJobReceipt:
+        job_id = str(self.job_id)
+        if self.status_path != f"/v1/build-jobs/{job_id}":
+            raise ValueError("job status path is invalid")
+        if self.result_path != f"/v1/build-jobs/{job_id}/result":
+            raise ValueError("job result path is invalid")
+        if (self.attempt == 1) != (self.parent_job_id is None):
+            raise ValueError("job attempt linkage is invalid")
+        if self.phase != _JOB_PHASE_BY_STATE[self.state]:
+            raise ValueError("job phase is invalid")
+        if self.result_available != (self.state in _JOB_RESULT_STATES):
+            raise ValueError("job result availability is invalid")
+        if self.created_at > self.updated_at:
+            raise ValueError("job timestamps are invalid")
+        return self
+
+
+class BuildJobStatus(BuildJobReceipt):
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
+    diagnostic_code: JobDiagnosticValue | None = None
+    transitions: tuple[BuildJobTransition, ...]
+
+    @field_validator("started_at", "finished_at")
+    @classmethod
+    def status_timestamps_must_be_utc(cls, value: datetime | None) -> datetime | None:
+        return None if value is None else _utc_timestamp(value)
+
+    @model_validator(mode="after")
+    def status_must_match_history(self) -> BuildJobStatus:
+        if not self.transitions or tuple(item.sequence for item in self.transitions) != tuple(
+            range(1, len(self.transitions) + 1)
+        ):
+            raise ValueError("job transition sequence is invalid")
+        if self.transitions[0].at != self.created_at:
+            raise ValueError("job creation history is invalid")
+        for previous, current in zip(self.transitions, self.transitions[1:]):
+            if current.from_state != previous.to_state or current.at < previous.at:
+                raise ValueError("job transition history is invalid")
+        final = self.transitions[-1]
+        if (
+            final.to_state != self.state
+            or final.phase != self.phase
+            or final.at != self.updated_at
+            or final.diagnostic_code != self.diagnostic_code
+        ):
+            raise ValueError("job status does not match history")
+        if (self.state in _JOB_TERMINAL_STATES) != (self.finished_at is not None):
+            raise ValueError("job finish timestamp is invalid")
+        if self.state in {"running", "cancel_requested", "succeeded", "quality_failed", "failed"}:
+            if self.started_at is None:
+                raise ValueError("job start timestamp is missing")
+        present = [
+            value
+            for value in (self.created_at, self.started_at, self.finished_at, self.updated_at)
+            if value is not None
+        ]
+        if any(left > right for left, right in zip(present, present[1:])):
+            raise ValueError("job timestamps are invalid")
+        return self
+
+
+def _utc_timestamp(value: datetime) -> datetime:
+    if value.tzinfo is None or value.utcoffset() != timezone.utc.utcoffset(value):
+        raise ValueError("job timestamp must be timezone-aware UTC")
+    return value
+
+
 class CorpusQueryRequest(ApiModel):
     schema_version: Literal["1.0"] = "1.0"
     selection: CorpusSelectionRequest
@@ -99,6 +263,9 @@ class CorpusQueryRequest(ApiModel):
 
 
 BUILD_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (409, 413, 415, 422, 500)}
+JOB_ERROR_RESPONSES = {
+    status: {"model": ErrorEnvelope} for status in (404, 409, 413, 415, 422, 500, 503)
+}
 HEALTH_ERROR_RESPONSES = {500: {"model": ErrorEnvelope}}
 QUERY_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
@@ -106,6 +273,9 @@ QUERY_ERROR_RESPONSES = {
 
 
 __all__ = [
+    "BuildJobReceipt",
+    "BuildJobStatus",
+    "BuildJobTransition",
     "BuildOptions",
     "BuildQualityOptions",
     "BuildResponse",
@@ -116,6 +286,7 @@ __all__ = [
     "ErrorEnvelope",
     "HEALTH_ERROR_RESPONSES",
     "HealthResponse",
+    "JOB_ERROR_RESPONSES",
     "QUERY_ERROR_RESPONSES",
     "QualityViolationSummary",
 ]
