@@ -4,6 +4,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from tempfile import SpooledTemporaryFile
 from pathlib import Path
 
 import fitz
@@ -220,6 +221,62 @@ def test_build_enforces_content_type_shape_and_size() -> None:
     )
     assert (unknown.status_code, unknown.json()["code"]) == (422, "invalid_request")
     assert (duplicate.status_code, duplicate.json()["code"]) == (422, "invalid_request")
+
+
+def test_build_enforces_metadata_limit_while_parsing_multipart() -> None:
+    pdf = _pdf_bytes()
+    app = create_app(ServiceSettings(max_metadata_bytes=64))
+    with TestClient(app) as client:
+        response = client.post("/v1/knowledge-bases/build", files=_build_files(pdf))
+
+    assert (response.status_code, response.json()["code"]) == (413, "payload_too_large")
+
+
+def test_build_metadata_limit_can_exceed_framework_default() -> None:
+    pdf = _pdf_bytes()
+    oversized_for_default = json.dumps({"padding": "x" * (1024 * 1024 + 1)})
+    files = _build_files(pdf)
+    files["identity"] = (None, oversized_for_default, "application/json")
+    app = create_app(ServiceSettings(max_metadata_bytes=2 * 1024 * 1024))
+    with TestClient(app) as client:
+        response = client.post("/v1/knowledge-bases/build", files=files)
+
+    assert (response.status_code, response.json()["code"]) == (422, "invalid_request")
+
+
+@pytest.mark.parametrize("failure", ("identity", "options", "unknown", "duplicate"))
+def test_build_closes_uploads_after_multipart_validation_failure(
+    failure: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    closed: list[object] = []
+    original_close = SpooledTemporaryFile.close
+
+    def recording_close(upload) -> None:
+        closed.append(upload)
+        original_close(upload)
+
+    monkeypatch.setattr(SpooledTemporaryFile, "close", recording_close)
+    pdf = _pdf_bytes()
+    files = _build_files(pdf)
+    if failure == "identity":
+        files["identity"] = (None, "{}", "application/json")
+    elif failure == "options":
+        files["options"] = (None, "{", "application/json")
+    elif failure == "unknown":
+        files["extra"] = (None, "x")
+    else:
+        identity = files["identity"]
+        files = [
+            ("pdf", ("first.pdf", pdf, "application/pdf")),
+            ("pdf", ("second.pdf", pdf, "application/pdf")),
+            ("identity", identity),
+        ]
+
+    with TestClient(create_app()) as client:
+        response = client.post("/v1/knowledge-bases/build", files=files)
+
+    assert response.status_code == 422
+    assert closed
 
 
 def test_build_cleans_owned_temporary_directory_after_builder_failure(

@@ -8,12 +8,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
+from anyio import CancelScope
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.datastructures import UploadFile
+from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..corpus_search import (
@@ -197,8 +198,11 @@ def create_app(
         openapi_extra=BUILD_OPENAPI_EXTRA,
     )
     async def build_knowledge_base(request: Request) -> BuildResponse:
-        pdf, identity_bytes, options = await _parse_build_form(request, selected_settings)
-        return await _build_uploaded_kb(pdf, identity_bytes, options, selected_settings)
+        form, pdf, identity_bytes, options = await _parse_build_form(request, selected_settings)
+        try:
+            return await _build_uploaded_kb(pdf, identity_bytes, options, selected_settings)
+        finally:
+            await _close_form(form)
 
     @app.post(
         "/v1/corpus/query",
@@ -214,42 +218,63 @@ def create_app(
 
 async def _parse_build_form(
     request: Request, settings: ServiceSettings
-) -> tuple[UploadFile, bytes, BuildOptions]:
+) -> tuple[FormData, UploadFile, bytes, BuildOptions]:
     try:
-        form = await request.form(max_files=1, max_fields=3)
+        form = await request.form(
+            max_files=1,
+            max_fields=3,
+            max_part_size=settings.max_metadata_bytes,
+        )
+    except StarletteHTTPException as error:
+        if error.status_code == 400 and "maximum size" in str(error.detail).lower():
+            raise ApiProblem(
+                413,
+                "payload_too_large",
+                "metadata part exceeds configured limit",
+            ) from None
+        raise ApiProblem(422, "invalid_request", "multipart request is invalid") from None
     except Exception:
         raise ApiProblem(422, "invalid_request", "multipart request is invalid") from None
-    items = list(form.multi_items())
-    names = [name for name, _ in items]
-    allowed = {"pdf", "identity", "options"}
-    if set(names) - allowed or any(names.count(name) != 1 for name in set(names)):
-        raise ApiProblem(422, "invalid_request", "multipart fields are invalid")
-    values = dict(items)
-    if set(values) not in ({"pdf", "identity"}, {"pdf", "identity", "options"}):
-        raise ApiProblem(422, "invalid_request", "required multipart fields are missing")
-    pdf = values["pdf"]
-    identity_value = values["identity"]
-    options_value = values.get("options")
-    if (
-        not isinstance(pdf, UploadFile)
-        or not isinstance(identity_value, str)
-        or (options_value is not None and not isinstance(options_value, str))
-    ):
-        raise ApiProblem(422, "invalid_request", "multipart field types are invalid")
-    if pdf.content_type != "application/pdf":
-        raise ApiProblem(415, "unsupported_media_type", "uploaded file must be a PDF")
-    identity_bytes = identity_value.encode("utf-8")
-    options_bytes = options_value.encode("utf-8") if options_value is not None else b"{}"
-    if (
-        len(identity_bytes) > settings.max_metadata_bytes
-        or len(options_bytes) > settings.max_metadata_bytes
-    ):
-        raise ApiProblem(413, "payload_too_large", "metadata part exceeds configured limit")
     try:
-        options = BuildOptions.model_validate_json(options_bytes)
-    except ValidationError:
-        raise ApiProblem(422, "invalid_request", "build options are invalid") from None
-    return pdf, identity_bytes, options
+        items = list(form.multi_items())
+        names = [name for name, _ in items]
+        allowed = {"pdf", "identity", "options"}
+        if set(names) - allowed or any(names.count(name) != 1 for name in set(names)):
+            raise ApiProblem(422, "invalid_request", "multipart fields are invalid")
+        values = dict(items)
+        if set(values) not in ({"pdf", "identity"}, {"pdf", "identity", "options"}):
+            raise ApiProblem(422, "invalid_request", "required multipart fields are missing")
+        pdf = values["pdf"]
+        identity_value = values["identity"]
+        options_value = values.get("options")
+        if (
+            not isinstance(pdf, UploadFile)
+            or not isinstance(identity_value, str)
+            or (options_value is not None and not isinstance(options_value, str))
+        ):
+            raise ApiProblem(422, "invalid_request", "multipart field types are invalid")
+        if pdf.content_type != "application/pdf":
+            raise ApiProblem(415, "unsupported_media_type", "uploaded file must be a PDF")
+        identity_bytes = identity_value.encode("utf-8")
+        options_bytes = options_value.encode("utf-8") if options_value is not None else b"{}"
+        if (
+            len(identity_bytes) > settings.max_metadata_bytes
+            or len(options_bytes) > settings.max_metadata_bytes
+        ):
+            raise ApiProblem(413, "payload_too_large", "metadata part exceeds configured limit")
+        try:
+            options = BuildOptions.model_validate_json(options_bytes)
+        except ValidationError:
+            raise ApiProblem(422, "invalid_request", "build options are invalid") from None
+        return form, pdf, identity_bytes, options
+    except BaseException:
+        await _close_form(form)
+        raise
+
+
+async def _close_form(form: FormData) -> None:
+    with CancelScope(shield=True):
+        await form.close()
 
 
 async def _build_uploaded_kb(
@@ -267,18 +292,15 @@ async def _build_uploaded_kb(
         digest = hashlib.sha256()
         size = 0
         header = b""
-        try:
-            with pdf_path.open("wb") as handle:
-                while chunk := await upload.read(settings.upload_chunk_bytes):
-                    size += len(chunk)
-                    if size > settings.max_pdf_bytes:
-                        raise ApiProblem(413, "payload_too_large", "PDF exceeds configured limit")
-                    if len(header) < 5:
-                        header += chunk[: 5 - len(header)]
-                    digest.update(chunk)
-                    handle.write(chunk)
-        finally:
-            await upload.close()
+        with pdf_path.open("wb") as handle:
+            while chunk := await upload.read(settings.upload_chunk_bytes):
+                size += len(chunk)
+                if size > settings.max_pdf_bytes:
+                    raise ApiProblem(413, "payload_too_large", "PDF exceeds configured limit")
+                if len(header) < 5:
+                    header += chunk[: 5 - len(header)]
+                digest.update(chunk)
+                handle.write(chunk)
         if size == 0 or header != b"%PDF-":
             raise ApiProblem(422, "invalid_request", "uploaded payload is not a valid PDF")
         if digest.hexdigest() != identity.source_pdf_sha256:
