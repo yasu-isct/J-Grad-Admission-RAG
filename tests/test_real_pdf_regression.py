@@ -977,7 +977,12 @@ def test_real_pdf_retrieval_benchmark_gold_maps_to_authoritative_facts(
     assert benchmark.document_id == real_document_kb.manifest.document_id
     assert benchmark.source_pdf_sha256 == real_document_kb.manifest.pdf_sha256
     assert benchmark.source_pdf_sha256 == real_pdf_manifest["sha256"]
-    assert benchmark.expected_kb_schema_version == real_document_kb.manifest.schema_version
+    assert benchmark.expected_kb_schema_version == "0.5"
+    current_benchmark = benchmark.model_copy(
+        update={"expected_kb_schema_version": real_document_kb.manifest.schema_version},
+        deep=True,
+    )
+    assert current_benchmark.expected_kb_schema_version == "0.6"
     assert benchmark.fact_content_sha256 == fact_content_sha256
     assert benchmark.fact_content_sha256 == expected["fact_content_sha256"]
     assert benchmark.fact_structure_sha256 == fact_structure_sha256
@@ -1641,7 +1646,17 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
     build_local_index(kb_path, index_dir, provider)
     index = load_local_index(index_dir, mmap=True)
     context = load_fresh_index_context(index, kb_path, provider.identity)
-    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH)
+    benchmark = load_retrieval_benchmark(RETRIEVAL_BENCHMARK_PATH).model_copy(
+        update={"expected_kb_schema_version": real_document_kb.manifest.schema_version},
+        deep=True,
+    )
+    current_benchmark_path = tmp_path / "retrieval_queries_kb06.json"
+    current_benchmark_path.write_text(
+        json.dumps(benchmark.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":"))
+        + "\n",
+        encoding="utf-8",
+        newline="",
+    )
     kb_before = real_document_kb.model_dump(mode="json")
     benchmark_before = RETRIEVAL_BENCHMARK_PATH.read_bytes()
     index_before = {path.name: path.read_bytes() for path in index_dir.iterdir()}
@@ -1740,7 +1755,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             "--current-kb",
             str(kb_path),
             "--benchmark",
-            str(RETRIEVAL_BENCHMARK_PATH),
+            str(current_benchmark_path),
             "--provider",
             "deterministic-fake",
             "--dimension",

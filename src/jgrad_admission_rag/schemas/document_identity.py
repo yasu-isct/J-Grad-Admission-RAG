@@ -51,8 +51,8 @@ class DegreeLevel(str, Enum):
 
 
 class IntakeTerm(IdentityModel):
-    year: int = Field(gt=0)
-    month: int = Field(ge=1, le=12)
+    year: int = Field(gt=0, strict=True)
+    month: int = Field(ge=1, le=12, strict=True)
 
 
 class DocumentIdentity(IdentityModel):

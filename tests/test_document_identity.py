@@ -112,6 +112,24 @@ def test_identity_rejects_duplicate_coverage_and_invalid_intakes() -> None:
             DocumentIdentity.model_validate(payload)
 
 
+@pytest.mark.parametrize(
+    "intake",
+    [
+        {"year": "2027", "month": 4},
+        {"year": 2027, "month": "4"},
+        {"year": True, "month": 4},
+        {"year": 2027, "month": False},
+        {"year": 2027.0, "month": 4},
+        {"year": 2027, "month": 4.0},
+    ],
+)
+def test_intake_terms_reject_implicit_integer_coercion(intake: dict) -> None:
+    payload = make_document_identity().model_dump(mode="json")
+    payload["intake_terms"] = [intake]
+    with pytest.raises(ValidationError):
+        DocumentIdentity.model_validate(payload)
+
+
 def test_identity_serialization_and_loading_are_deterministic_and_fail_closed(
     tmp_path: Path,
 ) -> None:
