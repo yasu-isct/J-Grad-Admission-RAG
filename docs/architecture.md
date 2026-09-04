@@ -52,6 +52,13 @@ belongs to lifespan, query embedding is serialized at the provider boundary, and
 free of file/model/server activity. The API returns evidence candidates rather than applicant
 conclusions. See [Service API v1](service-api-v1.md).
 
+APP-02A adds a separate durable build-job boundary beneath the future asynchronous API. Strict job
+records and transition history live in SQLite, while canonical identity/options, the identity-bound
+PDF, and validated complete results live in UUID-derived owned directories. Explicit open acquires
+one OS owner lock and performs deterministic recovery; repository transactions serialize claim,
+cancel, publication, retry, and exact terminal deletion. This layer invokes neither HTTP nor the
+builder. See [Durable Build Job Storage v1](service-job-storage-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
