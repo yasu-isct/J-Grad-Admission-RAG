@@ -58,6 +58,22 @@ an immutable inventory of exact document identities, KB-byte hashes, and optiona
 indexes; it does not scan folders or choose a current edition. See
 [Corpus Manifest v1](docs/corpus-manifest-v1.md).
 
+After initializing a canonical manifest through the library builder, activate one prepared KB/index
+registration without touching other artifacts:
+
+```powershell
+jgrad-update-corpus D:\corpus\corpus.json `
+  --corpus-root D:\corpus `
+  --action add `
+  --kb isct/2028/document_kb.json `
+  --index indexes/isct-2028
+```
+
+Registration paths are POSIX relative paths, so use `/` inside `--kb` and `--index` even on Windows.
+`replace` additionally requires `--replace-document-id`. The command validates and audits before
+atomically replacing only the manifest file; it never builds or deletes an index. See
+[ADR 0004](docs/decisions/0004-atomic-corpus-manifest-activation.md).
+
 ## Build A Local Index
 
 The deterministic fake provider verifies the indexing pipeline without downloading a model. Its
