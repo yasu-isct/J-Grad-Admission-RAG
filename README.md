@@ -53,6 +53,11 @@ an institution, document family, edition, degree coverage, and intake terms. The
 the hash before extraction and never infers these fields from a filename or title. See
 [Document Identity v1](docs/document-identity-v1.md).
 
+Multiple validated KBs can be assembled through the explicit `CorpusManifest` API. The manifest is
+an immutable inventory of exact document identities, KB-byte hashes, and optional validated fresh
+indexes; it does not scan folders or choose a current edition. See
+[Corpus Manifest v1](docs/corpus-manifest-v1.md).
+
 ## Build A Local Index
 
 The deterministic fake provider verifies the indexing pipeline without downloading a model. Its

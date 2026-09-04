@@ -15,6 +15,13 @@ KB manifest embeds it and exposes compatibility views for `document_id` and `pdf
 values are not duplicated in serialized output. The builder validates the actual PDF hash before
 extraction. See [Document Identity v1](document-identity-v1.md).
 
+`CorpusManifest` v1 is the explicit multi-document inventory above those individual KBs. Its
+builder accepts only caller-named relative KB and optional index paths, validates KB identity and
+quality, reuses local-index integrity and freshness gates, and enforces corpus-wide uniqueness. A
+pure structural loader never opens artifacts; an explicit audit operation does. The catalog does
+not scan directories, choose a current edition, or perform retrieval. See
+[Corpus Manifest v1](corpus-manifest-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
