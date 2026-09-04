@@ -35,14 +35,18 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M5 Multi-document corpus | v0.6 | Multiple schools, years, and programs can coexist safely | Version and document filters prevent accidental mixing |
 | M6 Usable service | v1.0 | API and report output expose the complete workflow | End-to-end scenarios are reproducible and observable |
 
-## Current Sprint: M4 Applicant-Aware Reasoning
+## Current Sprint: M5 Multi-Document Corpus
 
-M1, M2, and M3 are complete. M4 begins by defining the controlled, explicit applicant facts that
-later reasoning may compare with retrieved official evidence. It does not introduce eligibility
-decisions before the profile and evidence boundaries are independently testable.
+M1 through M4 are complete. M5 first gives every exact guideline edition reviewed identity, then
+builds an explicit corpus inventory above those independently validated KBs and indexes. COR-02
+records `ready` and `not_indexed` entries without scanning directories, mixing payload rows, or
+selecting an active edition. COR-03 and COR-04 will add controlled updates and version selection on
+top of that stable inventory.
 
-RSN-02 adds the complementary query boundary: a reviewed, conservative Japanese lexical catalog
-records explicit question intent and scope before mapping scope only to existing soft retrieval
+### Completed M4 Summary
+
+RSN-02 added the complementary query boundary: a reviewed, conservative Japanese lexical catalog
+records explicit question intent and maps explicit scope only to existing soft retrieval
 preferences. It deliberately does not extract applicant facts, hide global evidence with hard
 filters, or decide rule applicability.
 

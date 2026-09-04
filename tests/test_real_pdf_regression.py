@@ -14,6 +14,7 @@ import pytest
 from jgrad_admission_rag.cli import build_index as build_index_cli
 from jgrad_admission_rag.cli import evaluate_retrieval as evaluate_retrieval_cli
 from jgrad_admission_rag.cli import search as search_cli
+from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -59,6 +60,7 @@ from jgrad_admission_rag.reasoning.query_intent import (
 )
 from jgrad_admission_rag.schemas.document_kb import (
     DocumentKnowledgeBase,
+    canonical_document_kb_bytes,
     migrate_document_kb_v05_bytes,
 )
 from jgrad_admission_rag.schemas.document_identity import DocumentIdentity, load_document_identity
@@ -163,6 +165,7 @@ def test_real_pdf_knowledge_base_matches_baseline(
     ]
     assert manifest.input_chunk_count == expected["input_chunk_count"]
     assert manifest.pdf_sha256 == real_pdf_manifest["sha256"]
+
     assert manifest.chunk_count == expected["chunk_count"]
     assert manifest.dropped_chunk_count == expected["dropped_chunk_count"]
     assert manifest.dropped_chunk_reasons == expected["dropped_chunk_reasons"]
@@ -254,6 +257,35 @@ def test_real_pdf_knowledge_base_matches_baseline(
         for fact in real_document_kb.facts
         for reference in fact.metadata["references"]
     )
+
+
+def test_real_pdf_kb_registers_as_ready_corpus_entry(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "isct" / "document_kb.json"
+    kb_path.parent.mkdir()
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    build_local_index(
+        kb_path,
+        tmp_path / "indexes" / "isct",
+        DeterministicFakeEmbeddingProvider(8),
+    )
+
+    corpus = build_corpus_manifest(
+        "isct-real-regression",
+        tmp_path,
+        (CorpusRegistration("isct/document_kb.json", "indexes/isct"),),
+    )
+
+    entry = corpus.entries[0]
+    assert [(term.year, term.month) for term in entry.identity.intake_terms] == [
+        (2026, 9),
+        (2027, 4),
+    ]
+    assert entry.index_state == "ready"
+    assert entry.index_manifest is not None
+    assert entry.index_manifest.payload_count == entry.index_manifest.vector_count == 298
 
 
 def test_real_pdf_reviewed_applicability_scenarios(

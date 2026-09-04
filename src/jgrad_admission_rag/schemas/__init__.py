@@ -1,5 +1,17 @@
 """Pydantic and dataclass schemas for admission RAG knowledge bases."""
 
+from .corpus_manifest import (
+    CORPUS_MANIFEST_SCHEMA_VERSION,
+    SUPPORTED_CORPUS_MANIFEST_SCHEMA_VERSIONS,
+    CorpusDocumentEntry,
+    CorpusIndexManifest,
+    CorpusManifest,
+    CorpusManifestError,
+    canonical_corpus_manifest_bytes,
+    load_corpus_manifest,
+    load_corpus_manifest_bytes,
+)
+
 from .document_identity import (
     DOCUMENT_IDENTITY_SCHEMA_VERSION,
     SUPPORTED_DOCUMENT_IDENTITY_SCHEMA_VERSIONS,
@@ -45,6 +57,15 @@ from .evidence_pack import (
 )
 
 __all__ = [
+    "CORPUS_MANIFEST_SCHEMA_VERSION",
+    "SUPPORTED_CORPUS_MANIFEST_SCHEMA_VERSIONS",
+    "CorpusDocumentEntry",
+    "CorpusIndexManifest",
+    "CorpusManifest",
+    "CorpusManifestError",
+    "canonical_corpus_manifest_bytes",
+    "load_corpus_manifest",
+    "load_corpus_manifest_bytes",
     "DOCUMENT_IDENTITY_SCHEMA_VERSION",
     "SUPPORTED_DOCUMENT_IDENTITY_SCHEMA_VERSIONS",
     "DegreeLevel",
