@@ -37,11 +37,10 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 
 ## Current Sprint: M5 Multi-Document Corpus
 
-M1 through M4 are complete. M5 first gives every exact guideline edition reviewed identity, then
-builds an explicit corpus inventory above those independently validated KBs and indexes. COR-02
-records `ready` and `not_indexed` entries without scanning directories, mixing payload rows, or
-selecting an active edition. COR-03 and COR-04 will add controlled updates and version selection on
-top of that stable inventory.
+M1 through M4 are complete. M5 gives every exact guideline edition reviewed identity, builds an
+explicit corpus inventory, activates controlled updates, and separates reviewed active/historical
+policy from inventory. COR-05 is the exit task: it audits an explicit selection and performs one
+document-qualified global hybrid ranking across compatible ready indexes without merging them.
 
 ### Completed M4 Summary
 
@@ -155,7 +154,7 @@ tolerances and CI policy only after reviewing that evidence.
 | COR-02 | Add a corpus manifest | Inventory of all knowledge bases and index state |
 | COR-03 | Add atomic corpus updates | Add or replace one registration without rebuilding indexes |
 | COR-04 | Select reviewed active/historical versions | Constrained defaults cannot mix editions silently |
-| COR-05 | Add cross-document retrieval tests | Safe comparison across schools and programs |
+| COR-05 | Add safe global retrieval across selected documents | One audited, document-qualified global hybrid rank |
 
 ### M6 Usable Service
 

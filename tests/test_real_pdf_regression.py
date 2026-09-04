@@ -20,6 +20,7 @@ from jgrad_admission_rag.corpus import (
     update_corpus_manifest,
 )
 from jgrad_admission_rag.corpus_selection import select_corpus_documents
+from jgrad_admission_rag.corpus_search import prepare_corpus_search_context, search_corpus
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -407,6 +408,103 @@ def test_real_pdf_identity_is_selected_only_by_reviewed_active_policy(
     assert selected.entry.index_manifest is not None
     assert selected.entry.index_manifest.payload_count == 298
     assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 298
+
+
+def test_real_pdf_global_corpus_search_preserves_document_qualified_pages(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    real_path = tmp_path / "isct" / "document_kb.json"
+    real_path.parent.mkdir()
+    real_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    build_local_index(
+        real_path,
+        tmp_path / "indexes" / "isct",
+        DeterministicFakeEmbeddingProvider(8),
+    )
+
+    synthetic_identity = real_document_kb.manifest.identity.model_copy(
+        update={
+            "document_id": "synthetic_2028_master",
+            "document_family_id": "synthetic-master-guidelines",
+            "edition_id": "2028-april",
+            "institution_id": "synthetic-u",
+            "institution_name": "Synthetic University",
+            "official_title": "Synthetic 2028 Guidelines",
+            "official_source_url": "https://example.edu/2028/guidelines.pdf",
+            "source_pdf_sha256": "d" * 64,
+        }
+    )
+    synthetic_kb = real_document_kb.model_copy(deep=True)
+    synthetic_kb.manifest.identity = synthetic_identity
+    synthetic_path = tmp_path / "synthetic" / "document_kb.json"
+    synthetic_path.parent.mkdir()
+    synthetic_path.write_bytes(canonical_document_kb_bytes(synthetic_kb))
+    build_local_index(
+        synthetic_path,
+        tmp_path / "indexes" / "synthetic",
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "real-global-search",
+        tmp_path,
+        (
+            CorpusRegistration("isct/document_kb.json", "indexes/isct"),
+            CorpusRegistration("synthetic/document_kb.json", "indexes/synthetic"),
+        ),
+    )
+    real_identity = real_document_kb.manifest.identity
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=real_identity.document_family_id,
+                active_document_id=real_identity.document_id,
+            ),
+            CorpusFamilyVersionPolicy(
+                document_family_id=synthetic_identity.document_family_id,
+                active_document_id=synthetic_identity.document_id,
+            ),
+        ),
+    )
+    selection = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(
+            institution_ids=(real_identity.institution_id, synthetic_identity.institution_id),
+            allow_multiple_documents=True,
+        ),
+    )
+    context = prepare_corpus_search_context(tmp_path, manifest, policy, selection)
+    result = search_corpus(
+        context,
+        "出願資格",
+        DeterministicFakeEmbeddingProvider(8),
+        top_k=10,
+        candidate_k=20,
+    )
+
+    assert context.row_count == 596
+    assert [(term.year, term.month) for term in real_identity.intake_terms] == [
+        (2026, 9),
+        (2027, 4),
+    ]
+    real_entry = next(
+        item.entry
+        for item in result.selected_documents
+        if item.entry.identity.document_id == real_identity.document_id
+    )
+    assert real_entry.identity == real_identity
+    assert real_entry.index_manifest is not None
+    assert real_entry.index_manifest.payload_count == 298
+    real_hits = [hit for hit in result.hits if hit.key.document_id == real_identity.document_id]
+    assert real_hits
+    assert all(hit.source_pages for hit in real_hits)
+    assert all(hit.payload.source_pages == list(hit.source_pages) for hit in real_hits)
+    assert {item.document_id for item in result.per_document_counts} == {
+        real_identity.document_id,
+        synthetic_identity.document_id,
+    }
 
 
 def test_real_pdf_reviewed_applicability_scenarios(
