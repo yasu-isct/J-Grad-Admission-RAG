@@ -89,6 +89,12 @@ authorized. The service has no authentication, TLS, rate limiting, or public-dep
 do not expose it directly to a network. Use an authenticated reverse proxy and a separate
 operational review before any non-loopback deployment.
 
+The asynchronous build foundation stores strict job records in SQLite and identity-bound inputs in
+server-owned UUID directories. It provides atomic state transitions, restart recovery, explicit
+retry, validated result publication, and exact terminal deletion for the later worker/API slice; it
+does not start background work by itself. See
+[Durable Build Job Storage v1](docs/service-job-storage-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 
