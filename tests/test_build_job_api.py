@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 import asyncio
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from fastapi.testclient import TestClient
+import pytest
 
 from jgrad_admission_rag.schemas.document_identity import canonical_document_identity_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from jgrad_admission_rag.service.jobs import (
     BuildJobRepository,
     BuildJobWorker,
+    JobRepositoryUnavailableError,
     WorkerSnapshot,
     WorkerStatus,
 )
@@ -210,6 +214,74 @@ def test_cancel_retry_delete_and_wake_follow_repository_state(tmp_path: Path) ->
     assert workers[0].stops == 1
 
 
+def test_submit_wakes_immediately_after_commit_before_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import jgrad_admission_rag.service.app as app_module
+
+    cleanup_entered = threading.Event()
+    cleanup_release = threading.Event()
+    real_temporary_directory = app_module.TemporaryDirectory
+
+    class BlockingTemporaryDirectory:
+        def __init__(self, *args, **kwargs) -> None:
+            self._inner = real_temporary_directory(*args, **kwargs)
+            self.name = self._inner.name
+
+        def cleanup(self) -> None:
+            cleanup_entered.set()
+            assert cleanup_release.wait(3)
+            self._inner.cleanup()
+
+    workers: list[_PassiveWorker] = []
+    ids = iter(JOB_IDS)
+
+    def worker_factory(repository, **kwargs):
+        worker = _PassiveWorker(repository, **kwargs)
+        workers.append(worker)
+        return worker
+
+    dependencies = ServiceDependencies(
+        repository_factory=lambda root: BuildJobRepository(root, id_factory=lambda: next(ids)),
+        worker_factory=worker_factory,
+    )
+    monkeypatch.setattr(app_module, "TemporaryDirectory", BlockingTemporaryDirectory)
+    with TestClient(create_app(_settings(tmp_path), dependencies)) as client:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            submitted = pool.submit(client.post, "/v1/build-jobs", files=_build_files(_pdf_bytes()))
+            assert cleanup_entered.wait(2)
+            assert workers[0].wakes == 1
+            assert len(workers[0].repository.list()) == 1
+            cleanup_release.set()
+            assert submitted.result().status_code == 202
+
+
+def test_failed_durable_create_never_wakes_worker(tmp_path: Path) -> None:
+    class FailingCreateRepository(BuildJobRepository):
+        def create(self, *_args, **_kwargs):
+            raise JobRepositoryUnavailableError("private path and document text")
+
+    workers: list[_PassiveWorker] = []
+
+    def worker_factory(repository, **kwargs):
+        worker = _PassiveWorker(repository, **kwargs)
+        workers.append(worker)
+        return worker
+
+    dependencies = ServiceDependencies(
+        repository_factory=lambda root: FailingCreateRepository(root),
+        worker_factory=worker_factory,
+    )
+    with TestClient(create_app(_settings(tmp_path), dependencies)) as client:
+        response = client.post("/v1/build-jobs", files=_build_files(_pdf_bytes()))
+    assert (response.status_code, response.json()["code"]) == (
+        503,
+        "job_service_unavailable",
+    )
+    assert workers[0].wakes == 0
+    assert "private" not in response.text
+
+
 def test_unconfigured_invalid_and_failed_job_service_errors_are_stable(tmp_path: Path) -> None:
     with TestClient(create_app()) as client:
         unavailable = client.get("/v1/build-jobs/00000000-0000-4000-8000-000000000001")
@@ -228,7 +300,7 @@ def test_unconfigured_invalid_and_failed_job_service_errors_are_stable(tmp_path:
         failed = client.get("/v1/build-jobs/../private-secret.txt")
         assert failed.status_code in {404, 422}
         canonical_bad = client.get("/v1/build-jobs/%7B00000000-0000-4000-8000-000000000001%7D")
-        assert canonical_bad.status_code == 503
+        assert canonical_bad.status_code == 422
         assert "private" not in canonical_bad.text
 
 

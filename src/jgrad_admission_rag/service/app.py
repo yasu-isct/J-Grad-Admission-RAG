@@ -8,6 +8,7 @@ from functools import partial
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, AsyncIterator
+from uuid import UUID
 
 from anyio import CancelScope, open_file, to_thread
 from fastapi import FastAPI, Request, Response
@@ -276,7 +277,7 @@ def create_app(
                             pdf_path,
                         )
                     )
-                    record = await to_thread.run_sync(repository.get, record.job_id)
+                    worker.wake()
                 except JobValidationError:
                     raise ApiProblem(
                         409,
@@ -287,7 +288,6 @@ def create_app(
                     raise ApiProblem(
                         503, "job_service_unavailable", "job service is unavailable"
                     ) from None
-            worker.wake()
             return _job_receipt(record)
         finally:
             await _close_form(form)
@@ -299,6 +299,7 @@ def create_app(
         operation_id="getV1BuildJob",
     )
     async def get_build_job(job_id: str) -> BuildJobStatus:
+        job_id = _canonical_job_id(job_id)
         repository, _ = _require_job_runtime(state)
         return _job_status(await _job_repository_call(repository.get, job_id))
 
@@ -309,6 +310,7 @@ def create_app(
         operation_id="getV1BuildJobResult",
     )
     async def get_build_job_result(job_id: str) -> BuildResponse:
+        job_id = _canonical_job_id(job_id)
         repository, _ = _require_job_runtime(state)
         try:
             return await to_thread.run_sync(repository.read_result, job_id)
@@ -324,6 +326,7 @@ def create_app(
         operation_id="postV1BuildJobCancel",
     )
     async def cancel_build_job(job_id: str) -> BuildJobStatus:
+        job_id = _canonical_job_id(job_id)
         repository, _ = _require_job_runtime(state)
         current = await _job_repository_call(repository.get, job_id)
         if current.state == JobState.CANCELLED:
@@ -349,6 +352,7 @@ def create_app(
         operation_id="postV1BuildJobRetry",
     )
     async def retry_build_job(job_id: str) -> BuildJobReceipt:
+        job_id = _canonical_job_id(job_id)
         repository, worker = _require_job_runtime(state)
         try:
             record = await to_thread.run_sync(repository.create_retry, job_id)
@@ -367,6 +371,7 @@ def create_app(
         operation_id="deleteV1BuildJob",
     )
     async def delete_build_job(job_id: str) -> Response:
+        job_id = _canonical_job_id(job_id)
         repository, _ = _require_job_runtime(state)
         try:
             await to_thread.run_sync(repository.delete_terminal, job_id)
@@ -524,6 +529,16 @@ def _job_route_responses() -> dict[int, dict[str, type[ErrorEnvelope]]]:
         for status, value in JOB_ERROR_RESPONSES.items()
         if status in {404, 409, 422, 500, 503}
     }
+
+
+def _canonical_job_id(value: str) -> str:
+    try:
+        parsed = UUID(value)
+    except (AttributeError, TypeError, ValueError):
+        raise ApiProblem(422, "invalid_request", "job ID or request is invalid") from None
+    if str(parsed) != value:
+        raise ApiProblem(422, "invalid_request", "job ID or request is invalid")
+    return value
 
 
 def _job_worker_ready(state: ServiceState) -> bool:
