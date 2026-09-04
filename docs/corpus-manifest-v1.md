@@ -64,3 +64,15 @@ manifest = build_corpus_manifest(
 
 The first entry must have a self-consistent, fresh index and becomes `ready`; the second remains a
 valid `not_indexed` catalog entry. No document is selected as the answer source at this stage.
+
+## Atomic Single-Document Updates
+
+`update_corpus_manifest` adds one explicit registration or replaces one explicitly named document.
+It first audits the current catalog and validates the candidate through the same build boundary. A
+replacement with a new document ID must retain institution and document family; a replacement with
+the same document ID must retain the complete identity. Keeping both editions uses `add`.
+
+The operation stages the complete canonical manifest beside the current file, validates and audits
+that staged file, checks that the original bytes have not changed, and atomically replaces only the
+manifest. It never creates embeddings or writes, rebuilds, renames, or deletes KB/index artifacts.
+See [ADR 0004](decisions/0004-atomic-corpus-manifest-activation.md).

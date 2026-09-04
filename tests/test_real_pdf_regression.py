@@ -14,7 +14,11 @@ import pytest
 from jgrad_admission_rag.cli import build_index as build_index_cli
 from jgrad_admission_rag.cli import evaluate_retrieval as evaluate_retrieval_cli
 from jgrad_admission_rag.cli import search as search_cli
-from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
+from jgrad_admission_rag.corpus import (
+    CorpusRegistration,
+    build_corpus_manifest,
+    update_corpus_manifest,
+)
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -64,6 +68,10 @@ from jgrad_admission_rag.schemas.document_kb import (
     migrate_document_kb_v05_bytes,
 )
 from jgrad_admission_rag.schemas.document_identity import DocumentIdentity, load_document_identity
+from jgrad_admission_rag.schemas.corpus_manifest import (
+    canonical_corpus_manifest_bytes,
+    load_corpus_manifest,
+)
 from jgrad_admission_rag.schemas.evidence_pack import (
     EvidenceCounts,
     EvidenceMetadataFilter,
@@ -286,6 +294,63 @@ def test_real_pdf_kb_registers_as_ready_corpus_entry(
     assert entry.index_state == "ready"
     assert entry.index_manifest is not None
     assert entry.index_manifest.payload_count == entry.index_manifest.vector_count == 298
+
+
+def test_real_pdf_entry_is_unchanged_when_adding_second_institution(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    real_path = tmp_path / "isct" / "document_kb.json"
+    real_path.parent.mkdir()
+    real_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    initial = build_corpus_manifest(
+        "real-update-regression",
+        tmp_path,
+        (CorpusRegistration("isct/document_kb.json"),),
+    )
+    manifest_path = tmp_path / "corpus.json"
+    manifest_path.write_bytes(canonical_corpus_manifest_bytes(initial))
+    original_entry = initial.entries[0]
+
+    synthetic_identity = real_document_kb.manifest.identity.model_copy(
+        update={
+            "document_id": "synthetic_2028_master",
+            "document_family_id": "synthetic-master-guidelines",
+            "edition_id": "2028-april",
+            "institution_id": "synthetic-u",
+            "institution_name": "Synthetic University",
+            "official_title": "Synthetic 2028 Guidelines",
+            "official_source_url": "https://example.edu/2028/guidelines.pdf",
+            "source_pdf_sha256": "d" * 64,
+        }
+    )
+    synthetic_kb = real_document_kb.model_copy(deep=True)
+    synthetic_kb.manifest.identity = synthetic_identity
+    synthetic_path = tmp_path / "synthetic" / "document_kb.json"
+    synthetic_path.parent.mkdir()
+    synthetic_path.write_bytes(canonical_document_kb_bytes(synthetic_kb))
+
+    update_corpus_manifest(
+        tmp_path,
+        manifest_path,
+        action="add",
+        candidate=CorpusRegistration("synthetic/document_kb.json"),
+    )
+
+    updated = load_corpus_manifest(manifest_path)
+    assert (
+        next(
+            entry
+            for entry in updated.entries
+            if entry.identity.document_id == original_entry.identity.document_id
+        )
+        == original_entry
+    )
+    assert [(term.year, term.month) for term in original_entry.identity.intake_terms] == [
+        (2026, 9),
+        (2027, 4),
+    ]
+    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 298
 
 
 def test_real_pdf_reviewed_applicability_scenarios(

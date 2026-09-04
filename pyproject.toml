@@ -30,6 +30,7 @@ jgrad-build-index = "jgrad_admission_rag.cli.build_index:main"
 jgrad-search = "jgrad_admission_rag.cli.search:main"
 jgrad-evaluate-retrieval = "jgrad_admission_rag.cli.evaluate_retrieval:main"
 jgrad-check-retrieval-gate = "jgrad_admission_rag.cli.check_retrieval_gate:main"
+jgrad-update-corpus = "jgrad_admission_rag.cli.update_corpus:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

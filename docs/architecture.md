@@ -22,6 +22,13 @@ pure structural loader never opens artifacts; an explicit audit operation does. 
 not scan directories, choose a current edition, or perform retrieval. See
 [Corpus Manifest v1](corpus-manifest-v1.md).
 
+Incremental corpus activation changes only that canonical manifest file. One explicit add or
+replacement is validated in memory, written to a same-directory staging file, audited, guarded by a
+final exact-byte comparison, and activated with an atomic file replace. Candidate indexes must
+already exist in new validated directories; old, candidate, and unrelated artifacts are never
+rewritten or deleted. See
+[ADR 0004: Atomic Corpus Manifest Activation](decisions/0004-atomic-corpus-manifest-activation.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
