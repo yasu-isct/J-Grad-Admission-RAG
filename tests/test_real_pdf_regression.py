@@ -19,6 +19,7 @@ from jgrad_admission_rag.corpus import (
     build_corpus_manifest,
     update_corpus_manifest,
 )
+from jgrad_admission_rag.corpus_selection import select_corpus_documents
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
 from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
@@ -71,6 +72,11 @@ from jgrad_admission_rag.schemas.document_identity import DocumentIdentity, load
 from jgrad_admission_rag.schemas.corpus_manifest import (
     canonical_corpus_manifest_bytes,
     load_corpus_manifest,
+)
+from jgrad_admission_rag.schemas.corpus_version import (
+    CorpusFamilyVersionPolicy,
+    CorpusSelectionRequest,
+    CorpusVersionPolicy,
 )
 from jgrad_admission_rag.schemas.evidence_pack import (
     EvidenceCounts,
@@ -350,6 +356,56 @@ def test_real_pdf_entry_is_unchanged_when_adding_second_institution(
         (2026, 9),
         (2027, 4),
     ]
+    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 298
+
+
+def test_real_pdf_identity_is_selected_only_by_reviewed_active_policy(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    kb_path = tmp_path / "isct" / "document_kb.json"
+    kb_path.parent.mkdir()
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    build_local_index(
+        kb_path,
+        tmp_path / "indexes" / "isct",
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "isct-selection-regression",
+        tmp_path,
+        (CorpusRegistration("isct/document_kb.json", "indexes/isct"),),
+    )
+    identity = real_document_kb.manifest.identity
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=identity.document_family_id,
+                active_document_id=identity.document_id,
+            ),
+        ),
+    )
+
+    result = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(
+            institution_ids=(identity.institution_id,),
+            intake_terms=({"year": 2026, "month": 9}, {"year": 2027, "month": 4}),
+        ),
+    )
+
+    selected = result.selected_documents[0]
+    assert selected.version_classification == "active"
+    assert selected.entry.identity == identity
+    assert selected.entry.identity.source_pdf_sha256 == real_document_kb.manifest.pdf_sha256
+    assert [(term.year, term.month) for term in selected.entry.identity.intake_terms] == [
+        (2026, 9),
+        (2027, 4),
+    ]
+    assert selected.entry.index_manifest is not None
+    assert selected.entry.index_manifest.payload_count == 298
     assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 298
 
 

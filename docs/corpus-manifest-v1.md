@@ -76,3 +76,7 @@ The operation stages the complete canonical manifest beside the current file, va
 that staged file, checks that the original bytes have not changed, and atomically replaces only the
 manifest. It never creates embeddings or writes, rebuilds, renames, or deletes KB/index artifacts.
 See [ADR 0004](decisions/0004-atomic-corpus-manifest-activation.md).
+
+Active and historical labels are deliberately not stored in this inventory. They belong to the
+separately reviewed [Corpus Version Policy v1](corpus-version-policy-v1.md), so a catalog update
+cannot silently decide which edition future retrieval should use.
