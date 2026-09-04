@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import hashlib
 from contextlib import asynccontextmanager
+from functools import partial
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
-from anyio import CancelScope
+from anyio import CancelScope, to_thread
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -42,14 +43,13 @@ from ..schemas.document_identity import (
     DocumentIdentityError,
     load_document_identity_bytes,
 )
-from ..schemas.document_kb import BuildQualityThresholds, DocumentKnowledgeBase
+from .build_execution import build_response
 from .contracts import (
     BUILD_ERROR_RESPONSES,
     HEALTH_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
     BuildOptions,
     BuildResponse,
-    BuildSummary,
     CorpusQueryRequest,
     ErrorEnvelope,
     HealthResponse,
@@ -306,15 +306,15 @@ async def _build_uploaded_kb(
         if digest.hexdigest() != identity.source_pdf_sha256:
             raise ApiProblem(409, "source_binding_mismatch", "PDF does not match reviewed identity")
         try:
-            kb = build_document_kb(
-                pdf_path,
-                identity,
-                max_chars=options.max_chars,
-                short_fact_threshold=options.short_fact_threshold,
-                reference_ambiguity_margin=options.reference_ambiguity_margin,
-                quality_thresholds=BuildQualityThresholds.model_validate(
-                    options.quality_thresholds.model_dump()
-                ),
+            return await to_thread.run_sync(
+                partial(
+                    build_response,
+                    pdf_path,
+                    identity,
+                    options,
+                    source_pdf="uploaded.pdf",
+                    builder=build_document_kb,
+                )
             )
         except DocumentBuildError:
             raise ApiProblem(
@@ -322,15 +322,6 @@ async def _build_uploaded_kb(
             ) from None
         except Exception:
             raise ApiProblem(500, "internal_error", "knowledge-base build failed") from None
-        kb = DocumentKnowledgeBase.model_validate(kb.model_dump(mode="json"))
-        kb.manifest.source_pdf = "uploaded.pdf"
-        passed = kb.diagnostics.quality_gate.passed
-        return BuildResponse(
-            status="quality_passed" if passed else "quality_failed",
-            accepted_for_indexing=passed,
-            knowledge_base=kb,
-            summary=_build_summary(kb),
-        )
 
 
 def _query_corpus(
@@ -399,39 +390,6 @@ def _query_corpus(
         raise ApiProblem(503, "provider_unavailable", "query provider is unavailable") from None
     except CorpusSearchError:
         raise ApiProblem(503, "corpus_unavailable", "corpus runtime is unavailable") from None
-
-
-def _build_summary(kb: DocumentKnowledgeBase) -> BuildSummary:
-    diagnostics = kb.diagnostics
-    return BuildSummary(
-        document_id=kb.manifest.document_id,
-        kb_schema_version=kb.manifest.schema_version,
-        chunks=kb.manifest.chunk_count,
-        facts=len(kb.facts),
-        retrieval_units=len(kb.retrieval_units),
-        dropped_chunks=diagnostics.dropped_chunk_count,
-        dropped_chunk_reasons=dict(diagnostics.dropped_chunk_reasons),
-        missing_source_pages=len(diagnostics.missing_source_page_fact_ids),
-        missing_section_paths=len(diagnostics.missing_section_path_fact_ids),
-        empty_or_noninformative=len(diagnostics.empty_or_noninformative_fact_ids),
-        short_facts=len(diagnostics.short_fact_ids),
-        unknown_scopes=len(diagnostics.unknown_scope_fact_ids),
-        max_chunk_chars=diagnostics.max_chunk_chars,
-        oversized_facts=len(diagnostics.oversized_fact_ids),
-        reference_links=kb.manifest.reference_link_count,
-        reference_status_counts=dict(diagnostics.reference_status_counts),
-        quality_gate_passed=diagnostics.quality_gate.passed,
-        quality_gate_violations=tuple(
-            {
-                "metric": item.metric,
-                "actual": item.actual,
-                "limit": item.limit,
-                "related_id_count": len(item.related_ids),
-                "related_claim_count": len(item.related_claims),
-            }
-            for item in diagnostics.quality_gate.violations
-        ),
-    )
 
 
 def _error(code: str, message: str, details: dict[str, Any] | None = None) -> ErrorEnvelope:

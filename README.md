@@ -95,6 +95,11 @@ retry, validated result publication, and exact terminal deletion for the later w
 does not start background work by itself. See
 [Durable Build Job Storage v1](docs/service-job-storage-v1.md).
 
+The bounded local build worker explicitly opens that repository, drains queued jobs off the async
+event loop, and records complete quality, failure, or cancellation outcomes. It is lifecycle-owned
+and event-driven; public job routes remain a later slice. See
+[Durable Build Worker v1](docs/service-build-worker-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 

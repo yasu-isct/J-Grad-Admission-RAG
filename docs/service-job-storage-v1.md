@@ -1,6 +1,6 @@
 # Durable Build Job Storage v1
 
-APP-02A defines the local durable ledger used by the later APP-02B worker and HTTP routes. It owns
+APP-02A defines the local durable ledger used by the APP-02B worker and later APP-02C HTTP routes. It owns
 job metadata and build inputs/results, but does not invoke the builder, start a worker, or add an
 HTTP route.
 
@@ -95,4 +95,4 @@ state, attempts must increment exactly once per edge, and every chain must be ac
 
 Public repository exceptions use fixed messages: validation, conflict, not-found, or unavailable.
 They do not include paths, supplied bytes, document text, SQLite details, traceback names, or raw
-exceptions. APP-02B will translate these internal categories into the versioned HTTP envelope.
+exceptions. APP-02C will translate these internal categories into the versioned HTTP envelope.

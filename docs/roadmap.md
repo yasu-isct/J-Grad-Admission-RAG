@@ -162,7 +162,8 @@ tolerances and CI policy only after reviewing that evidence.
 | --- | --- | --- |
 | APP-01 | Expose build and query APIs | Stable request, response, and error contracts |
 | APP-02A | Define durable build-job records and repository | Crash-safe SQLite/blob job ownership |
-| APP-02B | Add job HTTP routes and bounded worker | Observable long-running document builds |
+| APP-02B | Run durable jobs through a bounded worker | Lifecycle-owned local build execution |
+| APP-02C | Expose durable job HTTP routes | Observable long-running document builds |
 | APP-03 | Generate cited applicant reports | Natural-language output derived from reasoning results |
 | APP-04 | Add a focused evidence-review interface | Search, profile input, evidence, and report views |
 
