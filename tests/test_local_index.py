@@ -28,6 +28,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from tests.identity_helpers import make_document_identity
 
 PDF_HASH = "b" * 64
 
@@ -49,7 +50,7 @@ class StaticProvider:
         raise NotImplementedError
 
 
-def _kb(*, empty: bool = False, passed: bool = True, schema_version: str = "0.5"):
+def _kb(*, empty: bool = False, passed: bool = True, schema_version: str = "0.6"):
     facts = []
     units = []
     if not empty:
@@ -76,14 +77,15 @@ def _kb(*, empty: bool = False, passed: bool = True, schema_version: str = "0.5"
                     metadata={"embedding_text_version": "1"},
                 )
             )
+    manifest = KnowledgeManifest(
+        identity=make_document_identity(document_id="sample-document", pdf_sha256=PDF_HASH),
+        source_pdf="not-serialized-as-index-path.pdf",
+        chunk_count=len(facts),
+    )
+    if schema_version != "0.6":
+        manifest.schema_version = schema_version
     return DocumentKnowledgeBase(
-        manifest=KnowledgeManifest(
-            document_id="sample-document",
-            source_pdf="not-serialized-as-index-path.pdf",
-            pdf_sha256=PDF_HASH,
-            schema_version=schema_version,
-            chunk_count=len(facts),
-        ),
+        manifest=manifest,
         facts=facts,
         retrieval_units=units,
         diagnostics=BuildDiagnostics(quality_gate=QualityGateResult(passed=passed)),

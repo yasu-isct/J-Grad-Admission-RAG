@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from jgrad_admission_rag.builder.kb_builder import build_document_kb
+from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.retrieval.embedding import embed_documents_checked, embed_query_checked
 from jgrad_admission_rag.retrieval.sentence_transformer import (
     SentenceTransformerConfig,
@@ -37,7 +38,10 @@ def test_explicit_sentence_transformer_model_against_real_projection() -> None:
             cache_folder=os.getenv("JGRAD_ST_CACHE"),
         )
     )
-    kb = build_document_kb(Path(pdf_path))
+    identity = load_document_identity(
+        Path(__file__).parent / "fixtures" / "document_identity_isct_master_v1.json"
+    )
+    kb = build_document_kb(Path(pdf_path), identity)
     texts = [unit.text for unit in kb.retrieval_units]
     token_counts = provider._token_counts(texts, operation="documents")
     assert provider._max_seq_length is not None

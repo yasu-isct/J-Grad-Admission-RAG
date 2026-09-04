@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+import jgrad_admission_rag.builder.kb_builder as kb_builder_module
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk, filter_chunks
 from jgrad_admission_rag.builder.chunker import SourcePage, TextChunk, chunk_pages
 from jgrad_admission_rag.builder.document_index import (
@@ -14,11 +15,14 @@ from jgrad_admission_rag.builder.document_index import (
     write_document_index,
 )
 from jgrad_admission_rag.builder.kb_builder import (
+    DocumentBuildError,
+    build_document_kb,
     fact_to_retrieval_unit,
     infer_scope,
     indexed_chunk_to_fact,
     summarize_chunk_sizes,
 )
+from tests.identity_helpers import make_document_identity
 
 
 def _text_chunk(
@@ -398,3 +402,39 @@ def test_indexed_chunk_to_fact_builds_embedding_text() -> None:
     assert fact.scope_type == "global"
     assert "english_requirements" in fact.embedding_text
     assert retrieval_unit.source_pages == fact.source_pages == [15]
+
+
+def test_build_document_kb_verifies_reviewed_hash_before_extraction(
+    monkeypatch, tmp_path: Path
+) -> None:
+    pdf_path = tmp_path / "same-name.pdf"
+    pdf_path.write_bytes(b"reviewed exact PDF bytes")
+    extraction_calls: list[Path] = []
+
+    def fake_extract(path: Path):
+        extraction_calls.append(path)
+        return []
+
+    monkeypatch.setattr(kb_builder_module, "extract_pdf", fake_extract)
+    mismatched = make_document_identity(document_id="reviewed-id", pdf_sha256="b" * 64)
+    with pytest.raises(DocumentBuildError, match="invalid or inconsistent"):
+        build_document_kb(pdf_path, mismatched)
+    assert extraction_calls == []
+
+    actual_hash = kb_builder_module.sha256_file(pdf_path)
+    identity = make_document_identity(document_id="reviewed-id", pdf_sha256=actual_hash)
+    kb = build_document_kb(pdf_path, identity)
+    assert extraction_calls == [pdf_path]
+    assert kb.manifest.document_id == "reviewed-id"
+    assert kb.manifest.pdf_sha256 == actual_hash
+    assert kb.manifest.source_pdf == str(pdf_path)
+
+
+def test_build_document_kb_revalidates_copied_identity(tmp_path: Path) -> None:
+    pdf_path = tmp_path / "source.pdf"
+    pdf_path.write_bytes(b"pdf")
+    invalid = make_document_identity().model_copy(update={"source_pdf_sha256": "secret"})
+    with pytest.raises(DocumentBuildError, match="invalid or inconsistent") as error:
+        build_document_kb(pdf_path, invalid)
+    assert "secret" not in str(error.value)
+    assert str(pdf_path) not in str(error.value)

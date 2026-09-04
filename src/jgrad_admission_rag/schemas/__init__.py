@@ -1,5 +1,29 @@
 """Pydantic and dataclass schemas for admission RAG knowledge bases."""
 
+from .document_identity import (
+    DOCUMENT_IDENTITY_SCHEMA_VERSION,
+    SUPPORTED_DOCUMENT_IDENTITY_SCHEMA_VERSIONS,
+    DegreeLevel,
+    DocumentIdentity,
+    DocumentIdentityError,
+    IntakeTerm,
+    canonical_document_identity_bytes,
+    load_document_identity,
+    load_document_identity_bytes,
+)
+from .document_kb import (
+    DocumentKnowledgeBase,
+    DocumentKnowledgeBaseError,
+    KnowledgeManifest,
+    LegacyDocumentKnowledgeBaseV05,
+    LegacyKnowledgeManifestV05,
+    canonical_document_kb_bytes,
+    load_document_kb,
+    load_document_kb_bytes,
+    migrate_document_kb_v05,
+    migrate_document_kb_v05_bytes,
+)
+
 from .evidence_pack import (
     EVIDENCE_PACK_SCHEMA_VERSION,
     SUPPORTED_EVIDENCE_PACK_SCHEMA_VERSIONS,
@@ -21,6 +45,25 @@ from .evidence_pack import (
 )
 
 __all__ = [
+    "DOCUMENT_IDENTITY_SCHEMA_VERSION",
+    "SUPPORTED_DOCUMENT_IDENTITY_SCHEMA_VERSIONS",
+    "DegreeLevel",
+    "DocumentIdentity",
+    "DocumentIdentityError",
+    "IntakeTerm",
+    "canonical_document_identity_bytes",
+    "load_document_identity",
+    "load_document_identity_bytes",
+    "DocumentKnowledgeBase",
+    "DocumentKnowledgeBaseError",
+    "KnowledgeManifest",
+    "LegacyDocumentKnowledgeBaseV05",
+    "LegacyKnowledgeManifestV05",
+    "canonical_document_kb_bytes",
+    "load_document_kb",
+    "load_document_kb_bytes",
+    "migrate_document_kb_v05",
+    "migrate_document_kb_v05_bytes",
     "EVIDENCE_PACK_SCHEMA_VERSION",
     "SUPPORTED_EVIDENCE_PACK_SCHEMA_VERSIONS",
     "AttachedReferenceEvidence",

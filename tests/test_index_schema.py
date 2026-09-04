@@ -21,6 +21,7 @@ from jgrad_admission_rag.schemas.index import (
     validate_payload_collection,
     validate_source_kb_compatibility,
 )
+from tests.identity_helpers import make_document_identity
 
 HASH = "a" * 64
 
@@ -200,9 +201,8 @@ def test_payload_derivation_joins_retrieval_unit_to_authoritative_fact() -> None
     )
     kb = DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="sample",
+            identity=make_document_identity(document_id="sample", pdf_sha256=HASH),
             source_pdf="sample.pdf",
-            pdf_sha256=HASH,
             chunk_count=1,
         ),
         facts=[fact],
@@ -241,9 +241,8 @@ def test_payload_derivation_rejects_missing_or_mismatched_fact_links() -> None:
     )
     kb = DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="sample",
+            identity=make_document_identity(document_id="sample", pdf_sha256=HASH),
             source_pdf="sample.pdf",
-            pdf_sha256=HASH,
             chunk_count=1,
         ),
         facts=[fact],

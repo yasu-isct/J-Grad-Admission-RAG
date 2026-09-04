@@ -4,11 +4,16 @@ J-Grad Admission RAG separates admission guideline ingestion from applicant-spec
 
 ```text
 Offline build
-PDF -> extracted pages -> chunks -> document index -> scoped facts -> diagnostics/gates -> document_kb.json
+reviewed identity + exact PDF -> extracted pages -> chunks -> scoped facts -> document_kb.json
 
 Online query
 query/profile -> vector/hybrid retrieval -> reasoning chains -> applicant-aware answer/report
 ```
+
+`DocumentIdentity` v1 is the reviewed authority for document identity and exact source version. The
+KB manifest embeds it and exposes compatibility views for `document_id` and `pdf_sha256`; those
+values are not duplicated in serialized output. The builder validates the actual PDF hash before
+extraction. See [Document Identity v1](document-identity-v1.md).
 
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the

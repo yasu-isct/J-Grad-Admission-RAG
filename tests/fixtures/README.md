@@ -11,6 +11,8 @@ official prose, model output, or final eligibility verdict.
 
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
+Its `identity_file` points to the reviewed `DocumentIdentity` fixture used by every real build; the
+identity hash must exactly match the manifest and local PDF.
 
 The PDF itself is not committed because the university has not granted this repository an explicit
 redistribution license. The test never downloads files and therefore remains offline and

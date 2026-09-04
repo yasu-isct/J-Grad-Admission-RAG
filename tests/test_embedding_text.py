@@ -13,6 +13,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     KnowledgeManifest,
     ScopedFact,
 )
+from tests.identity_helpers import make_document_identity
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 
 
@@ -172,9 +173,8 @@ def test_index_payload_copies_rebuilt_unit_text_and_metadata_exactly() -> None:
     unit = fact_to_retrieval_unit(fact)
     kb = DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="sample",
+            identity=make_document_identity(document_id="sample"),
             source_pdf="sample.pdf",
-            pdf_sha256="a" * 64,
             chunk_count=1,
         ),
         facts=[fact],

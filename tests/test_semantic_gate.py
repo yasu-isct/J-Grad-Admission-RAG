@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from jgrad_admission_rag.evaluation.retrieval_evaluation import load_retrieval_evaluation_bytes
+from jgrad_admission_rag.evaluation.retrieval_queries import load_retrieval_benchmark
 from jgrad_admission_rag.evaluation.semantic_gate import (
     MetricFloors,
     ImplementationContractError,
@@ -94,6 +95,18 @@ def test_frozen_semantic_baseline_passes_every_required_check() -> None:
         "rq0012.combined_reference_coverage",
         "rq0012.reference_only_fact_ids",
     }
+
+
+def test_frozen_benchmark_report_and_policy_share_one_kb_schema_binding() -> None:
+    benchmark_path = ROOT / "tests/fixtures/retrieval_queries_v1.json"
+    benchmark = load_retrieval_benchmark(benchmark_path)
+    report = load_retrieval_evaluation_bytes(_report_bytes())
+    policy = _policy()
+
+    assert benchmark.expected_kb_schema_version == "0.5"
+    assert report.benchmark.expected_kb_schema_version == benchmark.expected_kb_schema_version
+    assert report.runtime.source_kb_schema_version == benchmark.expected_kb_schema_version
+    assert policy.baseline.benchmark_sha256 == _sha256(benchmark_path.read_bytes())
 
 
 def test_checked_in_manifest_matches_the_current_implementation_contract() -> None:

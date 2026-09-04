@@ -6,6 +6,7 @@
   "downloaded_on": "2026-07-05",
   "redistribution": "The source PDF is public but is not redistributed by this repository.",
   "filename": "isct_2027_4_2026_9_master.pdf",
+  "identity_file": "document_identity_isct_master_v1.json",
   "sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "expected": {
     "page_count": 85,

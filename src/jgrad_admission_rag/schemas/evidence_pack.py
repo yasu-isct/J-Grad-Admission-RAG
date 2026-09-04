@@ -79,7 +79,7 @@ class EvidenceRuntime(StrictModel):
     source_kb_sha256: str
     source_pdf_sha256: str
     index_schema_version: Literal["0.1"]
-    source_kb_schema_version: Literal["0.5"]
+    source_kb_schema_version: Literal["0.5", "0.6"]
     payloads_sha256: str
     vectors_sha256: str
     index_builder_version: Literal["0.1.0"]

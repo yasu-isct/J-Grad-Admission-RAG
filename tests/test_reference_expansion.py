@@ -28,6 +28,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from tests.identity_helpers import make_document_identity
 from jgrad_admission_rag.schemas.index import IndexManifest, IndexPayload
 
 
@@ -111,9 +112,8 @@ def _kb(claims: list[ReferenceDiagnostic] | None = None) -> DocumentKnowledgeBas
         counts[claim.status] += 1
     return DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="doc",
+            identity=make_document_identity(document_id="doc", pdf_sha256="b" * 64),
             source_pdf="source.pdf",
-            pdf_sha256="b" * 64,
             chunk_count=5,
             reference_link_count=counts["resolved"],
         ),
@@ -134,7 +134,7 @@ def _index() -> LocalVectorIndex:
     vectors.setflags(write=False)
     return LocalVectorIndex(
         manifest=IndexManifest(
-            source_kb_schema_version="0.5",
+            source_kb_schema_version="0.6",
             document_id="doc",
             source_kb_sha256="a" * 64,
             source_pdf_sha256="b" * 64,
@@ -338,7 +338,11 @@ def test_mutating_exposed_context_kb_cannot_change_frozen_expansion_authority(
                     context.knowledge_base.model_copy(
                         update={
                             "manifest": context.knowledge_base.manifest.model_copy(
-                                update={"document_id": "other"}
+                                update={
+                                    "identity": context.knowledge_base.manifest.identity.model_copy(
+                                        update={"document_id": "other"}
+                                    )
+                                }
                             )
                         }
                     )

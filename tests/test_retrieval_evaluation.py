@@ -36,6 +36,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     RetrievalUnit,
     ScopedFact,
 )
+from tests.identity_helpers import make_document_identity
 from jgrad_admission_rag.schemas.evidence_pack import (
     AttachedReferenceEvidence,
     EvidenceCounts,
@@ -86,9 +87,8 @@ def _kb(count: int = 12) -> DocumentKnowledgeBase:
         )
     return DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="doc",
+            identity=make_document_identity(document_id="doc", pdf_sha256=PDF_HASH),
             source_pdf="source.pdf",
-            pdf_sha256=PDF_HASH,
             chunk_count=count,
         ),
         facts=facts,
@@ -120,7 +120,7 @@ def _index(kb: DocumentKnowledgeBase) -> LocalVectorIndex:
     vectors.setflags(write=False)
     return LocalVectorIndex(
         manifest=IndexManifest(
-            source_kb_schema_version="0.5",
+            source_kb_schema_version="0.6",
             document_id="doc",
             source_kb_sha256=KB_HASH,
             source_pdf_sha256=PDF_HASH,
@@ -198,7 +198,7 @@ def _benchmark(kb: DocumentKnowledgeBase) -> RetrievalBenchmark:
         benchmark_id="synthetic-v1",
         document_id="doc",
         source_pdf_sha256=PDF_HASH,
-        expected_kb_schema_version="0.5",
+        expected_kb_schema_version="0.6",
         fact_content_sha256=fact_content_sha256(kb),
         fact_structure_sha256=fact_structure_sha256(kb),
         language="ja",
@@ -213,7 +213,7 @@ def _runtime(count: int) -> EvidenceRuntime:
         source_kb_sha256=KB_HASH,
         source_pdf_sha256=PDF_HASH,
         index_schema_version="0.1",
-        source_kb_schema_version="0.5",
+        source_kb_schema_version="0.6",
         payloads_sha256=PAYLOAD_HASH,
         vectors_sha256=VECTOR_HASH,
         index_builder_version="0.1.0",
@@ -564,7 +564,7 @@ def test_fewer_than_k_available_rows_keep_all_requested_metric_labels() -> None:
         benchmark_id="small-v1",
         document_id="doc",
         source_pdf_sha256=PDF_HASH,
-        expected_kb_schema_version="0.5",
+        expected_kb_schema_version="0.6",
         fact_content_sha256=fact_content_sha256(kb),
         fact_structure_sha256=fact_structure_sha256(kb),
         language="ja",

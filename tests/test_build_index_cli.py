@@ -23,6 +23,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     ScopedFact,
 )
 from jgrad_admission_rag.schemas.index import IndexManifest
+from tests.identity_helpers import make_document_identity
 
 REVISION = "a" * 40
 PDF_HASH = "b" * 64
@@ -56,9 +57,8 @@ def _knowledge_base(*, passed: bool = True) -> DocumentKnowledgeBase:
         )
     return DocumentKnowledgeBase(
         manifest=KnowledgeManifest(
-            document_id="sample-document",
+            identity=make_document_identity(document_id="sample-document", pdf_sha256=PDF_HASH),
             source_pdf="sample.pdf",
-            pdf_sha256=PDF_HASH,
             chunk_count=2,
         ),
         facts=facts,

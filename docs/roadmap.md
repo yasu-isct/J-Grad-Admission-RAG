@@ -17,6 +17,7 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 ## Engineering Boundaries
 
 - `ScopedFact` is the authoritative domain fact and must remain source-traceable.
+- `DocumentIdentity` is reviewed input and the sole authority for document and exact-PDF identity.
 - `RetrievalUnit` is a rebuildable search projection, not the source of truth.
 - Index artifacts are derived from `document_kb.json` and may be deleted and rebuilt safely.
 - Retrieval returns evidence; reasoning determines applicability; output code formats the result.
