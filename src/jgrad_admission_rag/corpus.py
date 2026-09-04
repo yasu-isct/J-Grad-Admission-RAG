@@ -117,6 +117,7 @@ def _build_entry(root: Path, registration: CorpusRegistration) -> CorpusDocument
             )
             fresh = load_fresh_index_context(index, kb_path, identity)
         except (IndexLoadError, IndexFreshnessError, TypeError, ValueError) as error:
+            _raise_legacy_migration_if_needed(kb_path, error)
             raise CorpusBuildError("registered index is invalid, stale, or unsafe") from error
         kb = fresh.knowledge_base
         kb_sha256 = fresh.freshness.current_kb_sha256
@@ -163,16 +164,20 @@ def _read_registered_kb(path: Path) -> ExactSourceKnowledgeBase:
     try:
         return read_source_kb_exact(path)
     except SourceKbReadError as error:
-        try:
-            payload = json.loads(path.read_bytes().decode("utf-8"))
-            version = payload.get("manifest", {}).get("schema_version")
-        except (AttributeError, OSError, UnicodeError, ValueError):
-            version = None
-        if version == "0.5":
-            raise CorpusBuildError(
-                "registered KB schema 0.5 requires explicit migration to schema 0.6"
-            ) from error
+        _raise_legacy_migration_if_needed(path, error)
         raise CorpusBuildError("registered KB is missing, unsafe, or invalid") from error
+
+
+def _raise_legacy_migration_if_needed(path: Path, cause: Exception) -> None:
+    try:
+        payload = json.loads(path.read_bytes().decode("utf-8"))
+        version = payload.get("manifest", {}).get("schema_version")
+    except (AttributeError, OSError, UnicodeError, ValueError):
+        return
+    if version == "0.5":
+        raise CorpusBuildError(
+            "registered KB schema 0.5 requires explicit migration to schema 0.6"
+        ) from cause
 
 
 def _registered_target(

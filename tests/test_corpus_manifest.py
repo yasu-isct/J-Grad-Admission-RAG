@@ -346,6 +346,27 @@ def test_legacy_kb_requires_explicit_migration(tmp_path: Path) -> None:
         build_corpus_manifest("corpus", tmp_path, (CorpusRegistration("legacy.json"),))
 
 
+def test_indexed_legacy_kb_requires_explicit_migration(tmp_path: Path) -> None:
+    identity = _identity("legacy-indexed")
+    kb_path = _write_kb(tmp_path, "legacy.json", identity)
+    index_path = tmp_path / "index"
+    build_local_index(kb_path, index_path, DeterministicFakeEmbeddingProvider(4))
+
+    payload = _kb(identity).model_dump(mode="json")
+    payload["manifest"]["schema_version"] = "0.5"
+    payload["manifest"]["document_id"] = identity.document_id
+    payload["manifest"]["pdf_sha256"] = identity.source_pdf_sha256
+    del payload["manifest"]["identity"]
+    kb_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(CorpusBuildError, match="explicit migration"):
+        build_corpus_manifest(
+            "corpus",
+            tmp_path,
+            (CorpusRegistration("legacy.json", "index"),),
+        )
+
+
 def test_loader_rejects_symlink_manifest_when_supported(tmp_path: Path) -> None:
     manifest, _, _ = _two_document_corpus(tmp_path)
     target = tmp_path / "manifest-target.json"
