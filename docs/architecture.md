@@ -36,6 +36,15 @@ requires opt-in for historical, all-version, or multi-document selection. It rea
 and performs no retrieval; COR-02 audit remains the artifact gate before COR-05 consumes selected
 entries. See [Corpus Version Policy v1](corpus-version-policy-v1.md).
 
+`CorpusSearchContext` is the audited, immutable bridge from reviewed selection to cross-document
+retrieval. It retains only selected ready/fresh indexes with one compatible embedding and cosine
+contract. Each query embeds once, filters document-qualified rows, creates one global vector rank
+and one union-corpus BM25 rank, then applies the existing RRF and scope preference policy once.
+Evidence identity is `(document_id, local row, Unit ID, Fact ID)`, so repeated local IDs cannot
+collide. Results are retrieval candidates, not applicant conclusions, and current-state result
+revalidation is separate from structural JSON loading. See
+[Corpus Retrieval v1](corpus-retrieval-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See

@@ -58,6 +58,13 @@ an immutable inventory of exact document identities, KB-byte hashes, and optiona
 indexes; it does not scan folders or choose a current edition. See
 [Corpus Manifest v1](docs/corpus-manifest-v1.md).
 
+Reviewed active/historical policy can select one or several exact ready editions, after which the
+library-level corpus search path audits those artifacts and builds an immutable in-memory context.
+Each query uses one embedding plus corpus-global vector, BM25, RRF, and scope-preference ranking;
+every candidate remains qualified by document identity and official page provenance. It does not
+merge index files or make eligibility decisions. See
+[Corpus Retrieval v1](docs/corpus-retrieval-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 
