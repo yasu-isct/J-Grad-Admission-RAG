@@ -7,10 +7,11 @@ from contextlib import asynccontextmanager
 from functools import partial
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, AsyncIterator
+from uuid import UUID
 
-from anyio import CancelScope, to_thread
-from fastapi import FastAPI, Request
+from anyio import CancelScope, open_file, to_thread
+from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
@@ -41,18 +42,33 @@ from ..schemas.corpus_version import CorpusVersionSchemaError, load_corpus_versi
 from ..schemas.document_identity import (
     DocumentIdentity,
     DocumentIdentityError,
+    canonical_document_identity_bytes,
     load_document_identity_bytes,
 )
 from .build_execution import build_response
 from .contracts import (
     BUILD_ERROR_RESPONSES,
     HEALTH_ERROR_RESPONSES,
+    JOB_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
+    BuildJobReceipt,
+    BuildJobStatus,
     BuildOptions,
     BuildResponse,
     CorpusQueryRequest,
     ErrorEnvelope,
     HealthResponse,
+)
+from .jobs import (
+    BuildJobRecord,
+    BuildJobRepository,
+    BuildJobWorker,
+    JobConflictError,
+    JobNotFoundError,
+    JobRepositoryError,
+    JobRepositoryUnavailableError,
+    JobState,
+    JobValidationError,
 )
 from .runtime import ServiceDependencies, ServiceSettings, ServiceState
 
@@ -113,13 +129,42 @@ def create_app(
             except Exception:
                 state.initialization_failed = True
                 state.provider = None
-        yield
-        state.provider = None
+        if selected_settings.job_root is not None:
+            try:
+                repository_factory = selected_dependencies.repository_factory or BuildJobRepository
+                repository = repository_factory(selected_settings.job_root)
+                state.job_repository = repository
+                worker_factory = selected_dependencies.worker_factory or BuildJobWorker
+                worker = worker_factory(
+                    repository,
+                    max_active=selected_settings.job_worker_max_active,
+                    shutdown_grace_seconds=selected_settings.job_shutdown_grace_seconds,
+                )
+                state.job_worker = worker
+                snapshot = await worker.start()
+                state.job_initialization_failed = not snapshot.healthy
+            except Exception:
+                state.job_initialization_failed = True
+        try:
+            yield
+        finally:
+            if state.job_worker is not None:
+                try:
+                    await state.job_worker.stop()
+                except Exception:
+                    state.job_initialization_failed = True
+            elif state.job_repository is not None:
+                try:
+                    await to_thread.run_sync(state.job_repository.close)
+                except Exception:
+                    state.job_initialization_failed = True
+            state.provider = None
 
     app = FastAPI(
         title="J-Grad Admission RAG API",
         version="1.0.0",
         lifespan=lifespan,
+        redirect_slashes=False,
     )
     app.state.service_settings = selected_settings
     app.state.service_state = state
@@ -148,12 +193,13 @@ def create_app(
     async def enforce_media_type(request: Request, call_next):
         if request.method == "POST" and request.url.path in {
             "/v1/knowledge-bases/build",
+            "/v1/build-jobs",
             "/v1/corpus/query",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
                 "multipart/form-data"
-                if request.url.path == "/v1/knowledge-bases/build"
+                if request.url.path in {"/v1/knowledge-bases/build", "/v1/build-jobs"}
                 else "application/json"
             )
             if media_type != expected:
@@ -188,6 +234,8 @@ def create_app(
             )
         )
         is_ready = configured and state.provider is not None and not state.initialization_failed
+        if selected_settings.job_root is not None:
+            is_ready = is_ready and _job_worker_ready(state)
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
 
     @app.post(
@@ -203,6 +251,135 @@ def create_app(
             return await _build_uploaded_kb(pdf, identity_bytes, options, selected_settings)
         finally:
             await _close_form(form)
+
+    @app.post(
+        "/v1/build-jobs",
+        response_model=BuildJobReceipt,
+        status_code=202,
+        responses={status: value for status, value in JOB_ERROR_RESPONSES.items() if status != 404},
+        operation_id="postV1BuildJobs",
+        openapi_extra=BUILD_OPENAPI_EXTRA,
+    )
+    async def submit_build_job(request: Request) -> BuildJobReceipt:
+        repository, worker = _require_job_runtime(state)
+        form, pdf, identity_bytes, options = await _parse_build_form(request, selected_settings)
+        try:
+            async with _validated_upload(
+                pdf, identity_bytes, selected_settings, owned_filename="source.pdf"
+            ) as staged:
+                pdf_path, identity = staged
+                try:
+                    record = await to_thread.run_sync(
+                        partial(
+                            repository.create,
+                            canonical_document_identity_bytes(identity),
+                            options.model_dump_json().encode("utf-8"),
+                            pdf_path,
+                        )
+                    )
+                    worker.wake()
+                except JobValidationError:
+                    raise ApiProblem(
+                        409,
+                        "source_binding_mismatch",
+                        "PDF does not match reviewed identity",
+                    ) from None
+                except JobRepositoryError:
+                    raise ApiProblem(
+                        503, "job_service_unavailable", "job service is unavailable"
+                    ) from None
+            return _job_receipt(record)
+        finally:
+            await _close_form(form)
+
+    @app.get(
+        "/v1/build-jobs/{job_id}",
+        response_model=BuildJobStatus,
+        responses=_job_route_responses(),
+        operation_id="getV1BuildJob",
+    )
+    async def get_build_job(job_id: str) -> BuildJobStatus:
+        job_id = _canonical_job_id(job_id)
+        repository, _ = _require_job_runtime(state)
+        return _job_status(await _job_repository_call(repository.get, job_id))
+
+    @app.get(
+        "/v1/build-jobs/{job_id}/result",
+        response_model=BuildResponse,
+        responses=_job_route_responses(),
+        operation_id="getV1BuildJobResult",
+    )
+    async def get_build_job_result(job_id: str) -> BuildResponse:
+        job_id = _canonical_job_id(job_id)
+        repository, _ = _require_job_runtime(state)
+        try:
+            return await to_thread.run_sync(repository.read_result, job_id)
+        except JobConflictError:
+            raise ApiProblem(409, "job_result_not_ready", "job result is not available") from None
+        except Exception as error:
+            _raise_job_problem(error)
+
+    @app.post(
+        "/v1/build-jobs/{job_id}/cancel",
+        response_model=BuildJobStatus,
+        responses=_job_route_responses(),
+        operation_id="postV1BuildJobCancel",
+    )
+    async def cancel_build_job(job_id: str) -> BuildJobStatus:
+        job_id = _canonical_job_id(job_id)
+        repository, _ = _require_job_runtime(state)
+        current = await _job_repository_call(repository.get, job_id)
+        if current.state == JobState.CANCELLED:
+            return _job_status(current)
+        try:
+            return _job_status(await to_thread.run_sync(repository.request_cancel, job_id))
+        except JobConflictError:
+            try:
+                current = await to_thread.run_sync(repository.get, job_id)
+            except Exception as error:
+                _raise_job_problem(error)
+            if current.state == JobState.CANCELLED:
+                return _job_status(current)
+            raise ApiProblem(409, "job_cancellation_conflict", "job cannot be cancelled") from None
+        except Exception as error:
+            _raise_job_problem(error)
+
+    @app.post(
+        "/v1/build-jobs/{job_id}/retry",
+        response_model=BuildJobReceipt,
+        status_code=202,
+        responses=_job_route_responses(),
+        operation_id="postV1BuildJobRetry",
+    )
+    async def retry_build_job(job_id: str) -> BuildJobReceipt:
+        job_id = _canonical_job_id(job_id)
+        repository, worker = _require_job_runtime(state)
+        try:
+            record = await to_thread.run_sync(repository.create_retry, job_id)
+        except JobConflictError:
+            raise ApiProblem(409, "job_retry_conflict", "job cannot be retried") from None
+        except Exception as error:
+            _raise_job_problem(error)
+        worker.wake()
+        return _job_receipt(record)
+
+    @app.delete(
+        "/v1/build-jobs/{job_id}",
+        status_code=204,
+        response_class=Response,
+        responses=_job_route_responses(),
+        operation_id="deleteV1BuildJob",
+    )
+    async def delete_build_job(job_id: str) -> Response:
+        job_id = _canonical_job_id(job_id)
+        repository, _ = _require_job_runtime(state)
+        try:
+            await to_thread.run_sync(repository.delete_terminal, job_id)
+        except JobConflictError:
+            raise ApiProblem(409, "job_delete_conflict", "job cannot be deleted") from None
+        except Exception as error:
+            _raise_job_problem(error)
+        return Response(status_code=204)
 
     @app.post(
         "/v1/corpus/query",
@@ -283,28 +460,10 @@ async def _build_uploaded_kb(
     options: BuildOptions,
     settings: ServiceSettings,
 ) -> BuildResponse:
-    try:
-        identity = load_document_identity_bytes(identity_bytes)
-    except DocumentIdentityError:
-        raise ApiProblem(422, "invalid_request", "reviewed identity is invalid") from None
-    with TemporaryDirectory(prefix="jgrad-build-") as temporary:
-        pdf_path = Path(temporary) / "uploaded.pdf"
-        digest = hashlib.sha256()
-        size = 0
-        header = b""
-        with pdf_path.open("wb") as handle:
-            while chunk := await upload.read(settings.upload_chunk_bytes):
-                size += len(chunk)
-                if size > settings.max_pdf_bytes:
-                    raise ApiProblem(413, "payload_too_large", "PDF exceeds configured limit")
-                if len(header) < 5:
-                    header += chunk[: 5 - len(header)]
-                digest.update(chunk)
-                handle.write(chunk)
-        if size == 0 or header != b"%PDF-":
-            raise ApiProblem(422, "invalid_request", "uploaded payload is not a valid PDF")
-        if digest.hexdigest() != identity.source_pdf_sha256:
-            raise ApiProblem(409, "source_binding_mismatch", "PDF does not match reviewed identity")
+    async with _validated_upload(
+        upload, identity_bytes, settings, owned_filename="uploaded.pdf"
+    ) as staged:
+        pdf_path, identity = staged
         try:
             return await to_thread.run_sync(
                 partial(
@@ -322,6 +481,141 @@ async def _build_uploaded_kb(
             ) from None
         except Exception:
             raise ApiProblem(500, "internal_error", "knowledge-base build failed") from None
+
+
+@asynccontextmanager
+async def _validated_upload(
+    upload: UploadFile,
+    identity_bytes: bytes,
+    settings: ServiceSettings,
+    *,
+    owned_filename: str,
+) -> AsyncIterator[tuple[Path, DocumentIdentity]]:
+    if owned_filename not in {"source.pdf", "uploaded.pdf"}:
+        raise ApiProblem(500, "internal_error", "internal service error")
+    try:
+        identity = load_document_identity_bytes(identity_bytes)
+    except DocumentIdentityError:
+        raise ApiProblem(422, "invalid_request", "reviewed identity is invalid") from None
+    temporary = await to_thread.run_sync(partial(TemporaryDirectory, prefix="jgrad-build-"))
+    try:
+        pdf_path = Path(temporary.name).resolve() / owned_filename
+        digest = hashlib.sha256()
+        size = 0
+        header = b""
+        handle = await open_file(pdf_path, "wb")
+        async with handle:
+            while chunk := await upload.read(settings.upload_chunk_bytes):
+                size += len(chunk)
+                if size > settings.max_pdf_bytes:
+                    raise ApiProblem(413, "payload_too_large", "PDF exceeds configured limit")
+                if len(header) < 5:
+                    header += chunk[: 5 - len(header)]
+                digest.update(chunk)
+                await handle.write(chunk)
+        if size == 0 or header != b"%PDF-":
+            raise ApiProblem(422, "invalid_request", "uploaded payload is not a valid PDF")
+        if digest.hexdigest() != identity.source_pdf_sha256:
+            raise ApiProblem(409, "source_binding_mismatch", "PDF does not match reviewed identity")
+        yield pdf_path, identity
+    finally:
+        with CancelScope(shield=True):
+            await to_thread.run_sync(temporary.cleanup)
+
+
+def _job_route_responses() -> dict[int, dict[str, type[ErrorEnvelope]]]:
+    return {
+        status: value
+        for status, value in JOB_ERROR_RESPONSES.items()
+        if status in {404, 409, 422, 500, 503}
+    }
+
+
+def _canonical_job_id(value: str) -> str:
+    try:
+        parsed = UUID(value)
+    except (AttributeError, TypeError, ValueError):
+        raise ApiProblem(422, "invalid_request", "job ID or request is invalid") from None
+    if str(parsed) != value:
+        raise ApiProblem(422, "invalid_request", "job ID or request is invalid")
+    return value
+
+
+def _job_worker_ready(state: ServiceState) -> bool:
+    try:
+        return (
+            state.job_repository is not None
+            and state.job_worker is not None
+            and state.job_repository.is_open
+            and state.job_worker.snapshot.healthy
+            and not state.job_initialization_failed
+        )
+    except Exception:
+        return False
+
+
+def _require_job_runtime(state: ServiceState):
+    if not _job_worker_ready(state):
+        raise ApiProblem(503, "job_service_unavailable", "job service is unavailable")
+    return state.job_repository, state.job_worker
+
+
+async def _job_repository_call(function, *args):
+    try:
+        return await to_thread.run_sync(function, *args)
+    except Exception as error:
+        _raise_job_problem(error)
+
+
+def _raise_job_problem(error: Exception) -> None:
+    if isinstance(error, JobValidationError):
+        raise ApiProblem(422, "invalid_request", "job ID or request is invalid") from None
+    if isinstance(error, JobNotFoundError):
+        raise ApiProblem(404, "job_not_found", "job was not found") from None
+    if isinstance(error, JobConflictError):
+        raise ApiProblem(
+            409, "job_state_conflict", "job state does not allow this operation"
+        ) from None
+    if isinstance(error, (JobRepositoryUnavailableError, JobRepositoryError)):
+        raise ApiProblem(503, "job_service_unavailable", "job service is unavailable") from None
+    raise ApiProblem(500, "internal_error", "internal service error") from None
+
+
+def _job_receipt(record: BuildJobRecord) -> BuildJobReceipt:
+    job_id = str(record.job_id)
+    return BuildJobReceipt(
+        job_id=record.job_id,
+        state=record.state.value,
+        phase=record.phase.value,
+        attempt=record.attempt,
+        parent_job_id=record.parent_job_id,
+        created_at=record.created_at,
+        updated_at=record.updated_at,
+        result_available=record.result_available,
+        status_path=f"/v1/build-jobs/{job_id}",
+        result_path=f"/v1/build-jobs/{job_id}/result",
+    )
+
+
+def _job_status(record: BuildJobRecord) -> BuildJobStatus:
+    receipt = _job_receipt(record)
+    return BuildJobStatus(
+        **receipt.model_dump(mode="python"),
+        started_at=record.started_at,
+        finished_at=record.finished_at,
+        diagnostic_code=(record.diagnostic_code.value if record.diagnostic_code else None),
+        transitions=tuple(
+            {
+                "sequence": item.sequence,
+                "from_state": item.from_state.value if item.from_state else None,
+                "to_state": item.to_state.value,
+                "phase": item.phase.value,
+                "at": item.at,
+                "diagnostic_code": (item.diagnostic_code.value if item.diagnostic_code else None),
+            }
+            for item in record.transitions
+        ),
+    )
 
 
 def _query_corpus(

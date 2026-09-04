@@ -27,14 +27,22 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--policy", required=True)
     parser.add_argument("--max-pdf-bytes", type=int, default=25 * 1024 * 1024)
+    parser.add_argument("--job-root")
+    parser.add_argument("--job-worker-max-active", type=int, default=1)
+    parser.add_argument("--job-shutdown-grace-seconds", type=float, default=0.25)
     add_provider_arguments(parser)
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> None:
     args = _parser().parse_args(argv)
-    if not 1 <= args.port <= 65535 or args.max_pdf_bytes <= 0:
-        _parser().error("--port and --max-pdf-bytes must be positive and in range")
+    if (
+        not 1 <= args.port <= 65535
+        or args.max_pdf_bytes <= 0
+        or not 1 <= args.job_worker_max_active <= 8
+        or not 0 <= args.job_shutdown_grace_seconds <= 60
+    ):
+        _parser().error("port, upload, worker concurrency, or shutdown grace is out of range")
     try:
         provider_configuration = resolve_provider_configuration(args)
         settings = ServiceSettings(
@@ -42,6 +50,9 @@ def main(argv: Sequence[str] | None = None) -> None:
             manifest_path=Path(args.manifest).resolve(strict=False),
             policy_path=Path(args.policy).resolve(strict=False),
             max_pdf_bytes=args.max_pdf_bytes,
+            job_root=(Path(args.job_root).resolve(strict=False) if args.job_root else None),
+            job_worker_max_active=args.job_worker_max_active,
+            job_shutdown_grace_seconds=args.job_shutdown_grace_seconds,
         )
     except (CliConfigurationError, ValueError) as error:
         print(f"configuration error: {error}", file=sys.stderr)

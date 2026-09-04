@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
 
 import pytest
@@ -120,3 +121,48 @@ def test_real_pdf_build_and_query_preserve_http_identity_and_pages(tmp_path: Pat
     assert result.json()["hits"]
     assert all(hit["source_pages"] for hit in result.json()["hits"])
     assert all(hit["key"]["document_id"] == identity.document_id for hit in result.json()["hits"])
+
+
+def test_real_pdf_durable_http_job_survives_restart_and_deletes_exactly(tmp_path: Path) -> None:
+    pdf_path, identity = _real_inputs()
+    settings = ServiceSettings(job_root=(tmp_path / "durable-jobs").resolve())
+    files = {
+        "pdf": ("untrusted.pdf", pdf_path.read_bytes(), "application/pdf"),
+        "identity": (
+            None,
+            canonical_document_identity_bytes(identity),
+            "application/json",
+        ),
+    }
+    with TestClient(create_app(settings)) as client:
+        submitted = client.post("/v1/build-jobs", files=files)
+        assert submitted.status_code == 202
+        receipt = submitted.json()
+        deadline = time.monotonic() + 30
+        while time.monotonic() < deadline:
+            status = client.get(receipt["status_path"])
+            assert status.status_code == 200
+            if status.json()["state"] in {"succeeded", "quality_failed", "failed"}:
+                break
+            time.sleep(0.02)
+        assert status.json()["state"] == "succeeded"
+        result = client.get(receipt["result_path"])
+        assert result.status_code == 200
+        kb = DocumentKnowledgeBase.model_validate(result.json()["knowledge_base"])
+        assert len(kb.facts) == len(kb.retrieval_units) == 298
+        assert {(term.year, term.month) for term in kb.manifest.identity.intake_terms} == {
+            (2026, 9),
+            (2027, 4),
+        }
+        assert not kb.diagnostics.missing_source_page_fact_ids
+        assert all(fact.source_pages for fact in kb.facts)
+
+    sibling = tmp_path / "corpus-cache-sentinel"
+    sibling.write_text("keep", encoding="utf-8")
+    with TestClient(create_app(settings)) as restarted:
+        assert restarted.get(receipt["status_path"]).json()["state"] == "succeeded"
+        assert restarted.get(receipt["result_path"]).status_code == 200
+        deleted = restarted.delete(receipt["status_path"])
+        assert deleted.status_code == 204 and deleted.content == b""
+        assert restarted.get(receipt["status_path"]).status_code == 404
+    assert sibling.read_text(encoding="utf-8") == "keep"

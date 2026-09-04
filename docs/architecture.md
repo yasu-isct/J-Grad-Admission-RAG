@@ -64,6 +64,10 @@ and builder calls off the event loop, share APP-01's response assembly, and publ
 repository state machine. Event-driven wakeup, deterministic cancellation checks, bounded shutdown,
 and privacy-safe health are defined in [Durable Build Worker v1](service-build-worker-v1.md).
 
+APP-02C exposes that accepted repository/worker pair through thin versioned build-job routes.
+Multipart ingestion is shared with APP-01; handlers perform repository calls off-loop and translate
+only typed durable outcomes. Server-owned job storage is optional and opens only during lifespan.
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
