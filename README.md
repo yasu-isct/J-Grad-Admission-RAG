@@ -74,6 +74,12 @@ Registration paths are POSIX relative paths, so use `/` inside `--kb` and `--ind
 atomically replacing only the manifest file; it never builds or deletes an index. See
 [ADR 0004](docs/decisions/0004-atomic-corpus-manifest-activation.md).
 
+Before cross-document retrieval, a separate reviewed `CorpusVersionPolicy` must classify every
+manifest document as active or historical. Selection requires a positive identity constraint and
+defaults to one active, ready document; historical, all-version, and multi-document use are explicit
+opt-ins. The selector reads no index files and performs no ranking. See
+[Corpus Version Policy v1](docs/corpus-version-policy-v1.md).
+
 ## Build A Local Index
 
 The deterministic fake provider verifies the indexing pipeline without downloading a model. Its

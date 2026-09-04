@@ -154,7 +154,7 @@ tolerances and CI policy only after reviewing that evidence.
 | COR-01 | Define document identity and versioning | School, year, degree, intake, and source hash |
 | COR-02 | Add a corpus manifest | Inventory of all knowledge bases and index state |
 | COR-03 | Add atomic corpus updates | Add or replace one registration without rebuilding indexes |
-| COR-04 | Filter active and historical versions | Queries do not mix incompatible guidelines by default |
+| COR-04 | Select reviewed active/historical versions | Constrained defaults cannot mix editions silently |
 | COR-05 | Add cross-document retrieval tests | Safe comparison across schools and programs |
 
 ### M6 Usable Service

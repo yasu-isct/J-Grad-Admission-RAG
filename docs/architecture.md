@@ -29,6 +29,13 @@ already exist in new validated directories; old, candidate, and unrelated artifa
 rewritten or deleted. See
 [ADR 0004: Atomic Corpus Manifest Activation](decisions/0004-atomic-corpus-manifest-activation.md).
 
+`CorpusVersionPolicy` keeps reviewed active/historical intent outside the inventory. Compatibility
+validation requires complete exact family/document coverage of the current manifest. The pure
+selector then applies explicit identity constraints, defaults to one active ready document, and
+requires opt-in for historical, all-version, or multi-document selection. It reads no index files
+and performs no retrieval; COR-02 audit remains the artifact gate before COR-05 consumes selected
+entries. See [Corpus Version Policy v1](corpus-version-policy-v1.md).
+
 The M1-to-M2 handoff is a versioned, derived index manifest plus ordered payload rows. Payload row
 `N` is the identity and provenance record for future vector row `N`; the index never replaces the
 authoritative Fact. See
