@@ -108,7 +108,7 @@ class ReferenceRecoveryRule(_StrictModel):
     query_id: Literal["rq:0012"]
     primary_recall_at_10_floor: float = Field(ge=0, le=1)
     combined_coverage: Literal[1.0]
-    reference_only_fact_ids: tuple[Literal["fact:00059", "fact:00066"], ...]
+    reference_only_fact_ids: tuple[Literal["fact:00062", "fact:00070"], ...]
 
     @field_validator("primary_recall_at_10_floor")
     @classmethod
@@ -119,7 +119,7 @@ class ReferenceRecoveryRule(_StrictModel):
     @field_validator("reference_only_fact_ids")
     @classmethod
     def reference_ids_must_be_exact(cls, values: tuple[str, ...]) -> tuple[str, ...]:
-        if values != ("fact:00059", "fact:00066"):
+        if values != ("fact:00062", "fact:00070"):
             raise ValueError("reference-only Fact IDs must preserve the accepted pair")
         return values
 

@@ -67,8 +67,8 @@ def test_real_pdf_worker_publishes_reviewed_complete_result(tmp_path: Path) -> N
         result = await asyncio.to_thread(repository.read_result, queued.job_id)
         assert result.accepted_for_indexing
         assert result.knowledge_base.manifest.source_pdf == "source.pdf"
-        assert len(result.knowledge_base.facts) == 298
-        assert len(result.knowledge_base.retrieval_units) == 298
+        assert len(result.knowledge_base.facts) == 304
+        assert len(result.knowledge_base.retrieval_units) == 304
         assert not result.knowledge_base.diagnostics.missing_source_page_fact_ids
         assert all(fact.source_pages for fact in result.knowledge_base.facts)
         assert {

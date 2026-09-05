@@ -36,7 +36,7 @@ area. The older 382-unit `outputs/kb/isct_master` artifact was not used.
 | Semantic vectors | `2ea4241fc7a9242d8e4d26f01fb5b40c5c831b13802fc9756b27a6e1ad96e95e` |
 | Index manifest | `99f275eb9f766fd703097317c646550bfe4e823319a1aca4ca43472282e89b19` |
 
-The semantic index is a new absent-directory build with 298 normalized vectors. It binds the model
+The semantic index is a new absent-directory build with 304 normalized vectors. It binds the model
 identity above and uses `hybrid`, `bm25-v1`, `rrf-v1`, `RRF_K=60`, `top_k=10`, and
 `candidate_k=50`. Every request has empty metadata filters and empty scope preferences.
 
@@ -77,15 +77,13 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-All three Windows-produced reports had SHA-256
-`86624fdcca3e939bfb4ce341135349d5415738e0acfd3a09d431be7d60edc40a` and were byte-identical.
-For cross-platform CI, RET-09 commits the evaluator's canonical LF JSON representation; its SHA-256
-is `0599df0e7b8f8838b872e959a9f755265071a83302599fef19dfbdf4de1895a8`.
+The RULE-01A Windows report and committed canonical LF JSON have SHA-256
+`c70009b6887b7f3ee6f6c3eebe11329fe5e7ca0814e77f8fbabbdee3c9448ce9`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Overall, 34 | 0.4194 | 0.7569 | 0.8564 | 0.9417 | 0.9608 | none |
+| Overall, 34 | 0.4199 | 0.7621 | 0.8641 | 0.9396 | 0.9608 | none |
 
 The values above are display-rounded only. The canonical report and its SHA retain full precision.
 Independent recomputation from the emitted primary Fact IDs matched all 34 per-query values and the
@@ -96,21 +94,21 @@ macro values exactly.
 | category: application_dates | 2 | 0.2500 | 0.7500 | 0.9167 | 1.0000 | 1.0000 |
 | category: contacts_forms | 2 | 0.6667 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 | category: department_requirements | 4 | 0.7500 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| category: documents | 5 | 0.4250 | 0.6500 | 0.8000 | 0.9000 | 1.0000 |
+| category: documents | 5 | 0.4286 | 0.6857 | 0.7857 | 0.8857 | 1.0000 |
 | category: eligibility | 3 | 0.2056 | 0.5333 | 0.6444 | 0.7667 | 1.0000 |
 | category: enrollment | 3 | 0.2333 | 0.7000 | 0.9333 | 0.9333 | 0.7778 |
 | category: fees | 3 | 0.2778 | 0.7222 | 0.8333 | 1.0000 | 0.7778 |
 | category: language_tests | 4 | 0.6667 | 0.8750 | 0.9583 | 1.0000 | 1.0000 |
-| category: results | 2 | 0.2667 | 0.6333 | 0.8333 | 1.0000 | 1.0000 |
+| category: results | 2 | 0.2667 | 0.6333 | 1.0000 | 1.0000 | 1.0000 |
 | category: selection_exams | 6 | 0.3250 | 0.7250 | 0.7583 | 0.9028 | 1.0000 |
 | style: exact_term | 7 | 0.2667 | 0.6690 | 0.6976 | 0.8452 | 0.9048 |
-| style: identifier | 6 | 0.3889 | 0.7222 | 0.9167 | 1.0000 | 0.8889 |
-| style: paraphrase | 21 | 0.4790 | 0.7960 | 0.8921 | 0.9571 | 1.0000 |
-| scope_sensitive: false | 25 | 0.3603 | 0.7127 | 0.8347 | 0.9307 | 0.9467 |
+| style: identifier | 6 | 0.3889 | 0.7222 | 0.9722 | 1.0000 | 0.8889 |
+| style: paraphrase | 21 | 0.4798 | 0.8045 | 0.8887 | 0.9537 | 1.0000 |
+| scope_sensitive: false | 25 | 0.3610 | 0.7198 | 0.8451 | 0.9278 | 0.9467 |
 | scope_sensitive: true | 9 | 0.5833 | 0.8796 | 0.9167 | 0.9722 | 1.0000 |
-| multiple_clause: false | 27 | 0.4778 | 0.8160 | 0.9000 | 0.9877 | 0.9506 |
-| multiple_clause: true | 7 | 0.1940 | 0.5286 | 0.6881 | 0.7643 | 1.0000 |
-| reference_expansion: false | 33 | 0.4245 | 0.7646 | 0.8672 | 0.9551 | 0.9596 |
+| multiple_clause: false | 27 | 0.4778 | 0.8160 | 0.9123 | 0.9877 | 0.9506 |
+| multiple_clause: true | 7 | 0.1966 | 0.5541 | 0.6779 | 0.7541 | 1.0000 |
+| reference_expansion: false | 33 | 0.4250 | 0.7701 | 0.8751 | 0.9529 | 0.9596 |
 | reference_expansion: true | 1 | 0.2500 | 0.5000 | 0.5000 | 0.5000 | 1.0000 |
 
 ## Partial-Coverage Diagnostics
@@ -120,12 +118,12 @@ are evidence references only; no benchmark question or admission text is reprodu
 
 | Query | Category/style/flags | Gold IDs | Primary Top-10 IDs | First rank | Reference-only | Classification and evidence |
 | --- | --- | --- | --- | ---: | --- | --- |
-| `rq:0008` | eligibility / paraphrase / multi | `24,25,28,29,31` | `24,31,28,88,106,103,89,105,271,25` | 1 | none | `multi_clause_partial`: `fact:00029` is fused rank 12. |
-| `rq:0012` | eligibility / exact_term / multi, reference | `57,59,64,66` | `57,64,75,83,63,81,106,70,77,88` | 1 | `59,66` | `reference_only_recovery`: attached resolved targets recover `59` and `66`; their primary fused ranks are 31 and 32. |
-| `rq:0019` | selection_exams / exact_term | `2,4,6,95,100,101` | `95,100,225,166,177,168,193,2,4,178` | 1 | none | `semantic_candidate_missing`: `fact:00006` is absent from the 50-result fused candidate set; `101` is fused rank 17. |
-| `rq:0021` | enrollment / paraphrase / multi | `2,5,6,103,105` | `5,2,105,103,109,31,27,54,271,280` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00006` lexical rank 6, vector rank 17, fused rank 11. |
-| `rq:0024` | documents / paraphrase / multi | `110,111,112,113,114,115,116,117` | `113,117,109,110,114,119,87,118,91,89` | 1 | none | `semantic_candidate_missing`: `112` and `116` are absent from the fused top 50; `111` and `115` are ranks 36 and 37. |
-| `rq:0031` | selection_exams / exact_term / scope | `106,233,234,235` | `234,235,233,236,238,186,237,177,241,178` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00106` lexical rank 5, vector rank 31, fused rank 12. |
+| `rq:0008` | eligibility / paraphrase / multi | `24,26,29,31,33` | `24,33,29,90,108,105,107,91,277,26` | 1 | none | `multi_clause_partial`: `fact:00031` remains outside primary Top-10. |
+| `rq:0012` | eligibility / exact_term / multi, reference | `59,62,67,70` | `59,67,78,85,66,83,74,108,80,76` | 1 | `62,70` | `reference_only_recovery`: attached resolved targets recover `62` and `70`. |
+| `rq:0019` | selection_exams / exact_term | `2,4,6,97,102,103` | `102,97,231,166,177,168,193,2,4,178` | 1 | none | `semantic_candidate_missing`: `fact:00006` and `fact:00103` are outside primary Top-10. |
+| `rq:0021` | enrollment / paraphrase / multi | `2,5,6,105,107` | `5,2,107,105,111,28,33,56,277,286` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00006` remains outside primary Top-10. |
+| `rq:0024` | documents / paraphrase / multi | `111,112,113,114,115,116,117` | `114,117,111,119,89,93,118,91,90,87` | 1 | none | `semantic_candidate_missing`: `112`, `113`, `115`, and `116` remain outside primary Top-10. |
+| `rq:0031` | selection_exams / exact_term / scope | `108,239,240,241` | `240,241,239,242,244,186,243,177,247,178` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00108` remains outside primary Top-10. |
 
 Fact IDs in compact cells omit `fact:` and leading zeroes. These classifications are a closed,
 evidence-backed description of the observed run. They do not edit annotations, revise Fact

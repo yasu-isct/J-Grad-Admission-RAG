@@ -68,7 +68,7 @@ def test_real_pdf_build_and_query_preserve_http_identity_and_pages(tmp_path: Pat
     assert built.status_code == 200
     assert built.json()["status"] == "quality_passed"
     kb = DocumentKnowledgeBase.model_validate(built.json()["knowledge_base"])
-    assert len(kb.facts) == len(kb.retrieval_units) == 298
+    assert len(kb.facts) == len(kb.retrieval_units) == 304
     assert {(term.year, term.month) for term in kb.manifest.identity.intake_terms} == {
         (2026, 9),
         (2027, 4),
@@ -149,7 +149,7 @@ def test_real_pdf_durable_http_job_survives_restart_and_deletes_exactly(tmp_path
         result = client.get(receipt["result_path"])
         assert result.status_code == 200
         kb = DocumentKnowledgeBase.model_validate(result.json()["knowledge_base"])
-        assert len(kb.facts) == len(kb.retrieval_units) == 298
+        assert len(kb.facts) == len(kb.retrieval_units) == 304
         assert {(term.year, term.month) for term in kb.manifest.identity.intake_terms} == {
             (2026, 9),
             (2027, 4),

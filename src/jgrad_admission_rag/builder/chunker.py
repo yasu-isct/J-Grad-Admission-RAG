@@ -10,7 +10,7 @@ from typing import Sequence
 from ..utils import INTERMEDIATE_DIR
 
 TITLE_RE = re.compile(
-    r"^(?:[【\[][^】\]]+[】\]]|[0-9０-９]+[\.．、]\s*.+|[（(][0-9０-９一二三四五六七八九十]+[）)]\s*.+)$",
+    r"^(?:[【\[][^】\]]+[】\]]|[0-9０-９]+[\.．、]\s*.+|[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+)$",
     re.MULTILINE,
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
@@ -287,7 +287,7 @@ def _chunk_markdown(
     chunks: list[TextChunk] = []
     for title, section_path, section in sections:
         for page_part in _split_on_page_boundaries(section):
-            if page_part.text == title:
+            if page_part.text == title and not PARENTHESIZED_TITLE_RE.match(title):
                 continue
             for part in _split_without_cutting_tables(page_part, max_chars):
                 chunks.append(

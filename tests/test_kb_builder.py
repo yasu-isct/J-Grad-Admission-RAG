@@ -47,6 +47,15 @@ def test_classify_chunk_uses_only_exact_non_informative_rules() -> None:
     assert classify_chunk(_text_chunk("## Page 7\n\n[Documents]", title="[Documents]")) == (
         "heading_only"
     )
+    assert (
+        classify_chunk(
+            _text_chunk(
+                "（１）我が国において、大学を卒業した者",
+                title="（１）我が国において、大学を卒業した者",
+            )
+        )
+        == "informative"
+    )
     for short_fact in ["目 次", "2027-04-01", "30,000円", "情報工学系"]:
         assert classify_chunk(_text_chunk(short_fact)) == "informative"
 
@@ -188,6 +197,39 @@ def test_chunk_pages_builds_deterministic_heading_stack() -> None:
     ]
 
 
+def test_chunk_pages_keeps_single_line_numbered_clause() -> None:
+    chunks = chunk_pages(
+        [
+            SourcePage(
+                page_number=7,
+                text=(
+                    "3. Eligibility\nintro\n"
+                    "（１）我が国において、大学を卒業した者\n"
+                    "（２）大学評価・学位授与機構から学士の学位を授与された者\ncontinued"
+                ),
+            )
+        ],
+        "sample.pdf",
+    )
+
+    assert chunks[1].text == "（１）我が国において、大学を卒業した者"
+    assert chunks[1].page_numbers == [7]
+    assert chunks[1].section_path[-1] == "（１）我が国において、大学を卒業した者"
+
+
+def test_chunk_pages_does_not_split_parenthesized_range_in_body() -> None:
+    notice = (
+        "[Special notice]\n"
+        "9月28日～9月30日の間に上記\n"
+        "（１）～（６）の出願資格を満たす者は、入試課へお知らせください。"
+    )
+
+    chunks = chunk_pages([SourcePage(page_number=8, text=notice)], "sample.pdf")
+
+    assert len(chunks) == 1
+    assert chunks[0].text == notice
+
+
 def test_section_path_survives_marker_free_pages_and_character_splits() -> None:
     chunks = chunk_pages(
         [
@@ -289,6 +331,23 @@ def test_section_path_propagates_through_index_fact_and_retrieval_unit() -> None
     assert retrieval_unit.section_path == fact.section_path
     assert "section_path: 3. Eligibility" in fact.embedding_text
     assert "section_path: 3. Eligibility" in retrieval_unit.text
+
+
+def test_common_eligibility_section_infers_global_scope_without_target() -> None:
+    item = IndexedChunk(
+        chunk_id=0,
+        pdf_name="sample.pdf",
+        pages=[7],
+        title="（１）大学を卒業した者",
+        text="（１）大学を卒業した者",
+        section_path=["３．出願資格", "（１）大学を卒業した者"],
+        category="eligibility",
+        anchors=[],
+        references=[],
+        text_preview="（１）大学を卒業した者",
+    )
+
+    assert infer_scope(item) == ("global", [], None, 0.7)
 
 
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:

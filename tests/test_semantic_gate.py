@@ -103,7 +103,7 @@ def test_frozen_benchmark_report_and_policy_share_one_kb_schema_binding() -> Non
     report = load_retrieval_evaluation_bytes(_report_bytes())
     policy = _policy()
 
-    assert benchmark.expected_kb_schema_version == "0.5"
+    assert benchmark.expected_kb_schema_version == "0.6"
     assert report.benchmark.expected_kb_schema_version == benchmark.expected_kb_schema_version
     assert report.runtime.source_kb_schema_version == benchmark.expected_kb_schema_version
     assert policy.baseline.benchmark_sha256 == _sha256(benchmark_path.read_bytes())
@@ -192,10 +192,10 @@ def test_gate_modules_do_not_import_embedding_runtime() -> None:
 @pytest.mark.parametrize(
     ("field", "observed"),
     (
-        ("recall_at_1", 0.4193627450980392),
-        ("recall_at_3", 0.7568627450980392),
-        ("recall_at_5", 0.8563725490196079),
-        ("recall_at_10", 0.9416666666666667),
+        ("recall_at_1", 0.4198879551820728),
+        ("recall_at_3", 0.7621148459383753),
+        ("recall_at_5", 0.8640756302521009),
+        ("recall_at_10", 0.9395658263305322),
         ("mrr", 0.9607843137254901),
     ),
 )
@@ -312,10 +312,10 @@ def test_reference_attachments_do_not_receive_primary_ranked_credit() -> None:
     report = load_retrieval_evaluation_bytes(_report_bytes())
     query = next(item for item in report.queries if item.query_id == "rq:0012")
     assert query.recall.recall_at_10 == 0.5
-    assert query.reference_only_gold_fact_ids == ("fact:00059", "fact:00066")
+    assert query.reference_only_gold_fact_ids == ("fact:00062", "fact:00070")
     assert not {
-        "fact:00059",
-        "fact:00066",
+        "fact:00062",
+        "fact:00070",
     }.intersection(item.fact_id for item in query.ranked_primary_facts)
 
     changed_query = query.model_copy(update={"reference_only_gold_fact_ids": ()})
