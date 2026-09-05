@@ -25,11 +25,13 @@ shows the returned document title and ID, Fact ID, official pages, exact search 
 scope, Fact type, and vector/lexical/fusion diagnostics. Results are evidence candidates, not rule
 applicability, overall eligibility, admission probability, or a recommendation.
 
-The report form exposes only the currently supported target application, age/experience, and
-individual-review fields. Unknown values stay explicit JSON `null`; blank is never treated as
-false or zero. Citizenship/residence members are null and credentials/language-test collections
-are null in this v1 form. The browser does not infer intent, evaluate rules, rebuild traces, or
-create citations. The UI does not alter selection, ranking, provider lifecycle, or corpus state.
+The report form exposes the supported target application, one academic credential, age/experience,
+and individual-review fields. The credential includes country, degree level, reviewed basis,
+completion state, completion/expected date, and years of education. Unknown values stay explicit
+JSON `null`; blank is never treated as false or zero. Citizenship/residence members and the
+language-test collection remain null in this form. The browser does not infer intent, evaluate
+rules, rebuild traces, or create citations. The UI does not alter selection, ranking, provider
+lifecycle, or corpus state.
 
 ## Configuration
 
@@ -55,7 +57,9 @@ configured catalog fails readiness closed. The parser accepts only a non-empty q
 Select one reviewed document, open **申請条件レポート**, and enter a question containing a reviewed
 intent phrase such as `情報理工学院の出願資格`. Fill only facts you know. Leaving age blank sends
 `age_at_enrollment: null`, while entering `0` sends zero; choosing "いいえ" sends false. Contradictory
-individual-review fields are blocked before submission.
+individual-review or credential completion fields are blocked before submission. The form submits
+at most one credential; multiple-credential selection remains a server-side fail-safe rather than
+a browser-side best-match guess.
 
 The result labels `complete`, `needs_information`, or `needs_review` as report preparation status.
 It then preserves server order for rule findings, missing fields, interaction/process diagnostics,

@@ -105,6 +105,7 @@ class ApplicabilityDiagnostic(str, Enum):
     MISSING_PROFILE_FACT = "missing_profile_fact"
     MISSING_SCOPE = "missing_scope"
     SCOPE_INPUT_CONFLICT = "scope_input_conflict"
+    MULTIPLE_ACADEMIC_CREDENTIALS = "multiple_academic_credentials"
 
 
 class EvidenceRole(str, Enum):
@@ -161,6 +162,21 @@ _FIELD_SPECS = {
     ),
     "academic_credentials.first.expected_completion_date": _FieldSpec(
         "date", ("academic_credentials", "first", "expected_completion_date")
+    ),
+    "academic_credentials.first.institution_country_code": _FieldSpec(
+        "string", ("academic_credentials", "first", "institution_country_code")
+    ),
+    "academic_credentials.first.degree_level": _FieldSpec(
+        "string", ("academic_credentials", "first", "degree_level")
+    ),
+    "academic_credentials.first.credential_basis": _FieldSpec(
+        "string", ("academic_credentials", "first", "credential_basis")
+    ),
+    "academic_credentials.first.completion_state": _FieldSpec(
+        "string", ("academic_credentials", "first", "completion_state")
+    ),
+    "academic_credentials.first.years_of_education": _FieldSpec(
+        "integer", ("academic_credentials", "first", "years_of_education")
     ),
     "language_test_results.first.test_date": _FieldSpec(
         "date", ("language_test_results", "first", "test_date")
@@ -507,10 +523,17 @@ def _evaluate_applicability_core(
         diagnostics.append(ApplicabilityDiagnostic.MISSING_PROFILE_FACT)
     if evidence_missing:
         diagnostics.append(ApplicabilityDiagnostic.MISSING_OFFICIAL_EVIDENCE)
+    multiple_credentials = _uses_first_credential(rule) and bool(
+        profile.academic_credentials and len(profile.academic_credentials) > 1
+    )
+    if multiple_credentials:
+        diagnostics.append(ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS)
 
     predicate_status = _combine_predicates(rule.mode, outcomes)
     status = _combine_with_scope(predicate_status, scope_status)
     if evidence_missing:
+        status = ApplicabilityStatus.NEEDS_INFORMATION
+    if multiple_credentials:
         status = ApplicabilityStatus.NEEDS_INFORMATION
 
     return ApplicabilityDecision(
@@ -714,6 +737,13 @@ def _profile_value(profile: ApplicantProfile, path: str) -> Any:
     return value
 
 
+def _uses_first_credential(rule: ApplicabilityRule) -> bool:
+    return any(
+        predicate.field_path.startswith("academic_credentials.first.")
+        for predicate in rule.predicates
+    )
+
+
 def _predicate_status(value: Any, predicate: ApplicabilityPredicate) -> ApplicabilityStatus:
     expected: Any = predicate.expected_value
     if _FIELD_SPECS[predicate.field_path].kind == "date":
@@ -910,6 +940,8 @@ def _validate_decision_consistency(decision: ApplicabilityDecision) -> None:
     predicate_status = _combine_predicates(decision.logical_mode, decision.predicate_outcomes)
     expected_status = _combine_with_scope(predicate_status, decision.scope_status)
     if missing_evidence:
+        expected_status = ApplicabilityStatus.NEEDS_INFORMATION
+    if ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS in diagnostics:
         expected_status = ApplicabilityStatus.NEEDS_INFORMATION
     if decision.status is not expected_status:
         raise ValueError("decision status does not reconcile")

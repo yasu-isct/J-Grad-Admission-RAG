@@ -99,6 +99,20 @@
               </fieldset>
 
               <fieldset>
+                <legend>学歴と修了時期</legend>
+                <p class="field-detail">現在は一度に1件の学歴だけを安全に確認します。複数の学歴がある場合は、完全な資料による確認が必要です。</p>
+                <div class="form-grid">
+                  <div><label for="credential-country">学校・授与機関の国</label><input id="credential-country" maxlength="2" pattern="[A-Z]{2}" placeholder="JP" autocomplete="off"></div>
+                  <div><label for="credential-degree-level">取得学位の水準</label><select id="credential-degree-level"><option value="">不明</option><option value="bachelor">学士・学士相当</option><option value="master">修士</option><option value="doctorate">博士</option><option value="professional">専門職学位</option><option value="other">その他</option></select></div>
+                  <div><label for="credential-basis">学歴の区分</label><select id="credential-basis"><option value="">不明</option><option value="university_graduation">大学卒業</option><option value="niad_qe_bachelor_award">大学改革支援・学位授与機構による学士授与</option><option value="foreign_16_year_bachelor_equivalent">外国の16年課程・学士相当学位</option></select></div>
+                  <div><label for="completion-state">修了状態</label><select id="completion-state"><option value="">不明</option><option value="completed">修了済み</option><option value="expected">修了見込み</option><option value="not_completed">未修了・見込み日なし</option></select></div>
+                  <div><label for="completion-date">修了・学位授与日</label><input id="completion-date" type="date"></div>
+                  <div><label for="expected-completion-date">修了・学位授与見込日</label><input id="expected-completion-date" type="date"></div>
+                  <div><label for="years-of-education">学校教育の年数</label><input id="years-of-education" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
                 <legend>現在確認できる申請者情報</legend>
                 <p class="field-detail">不明な項目は「不明」または空欄のままにしてください。空欄は「いいえ」や 0 ではありません。</p>
                 <div class="form-grid">

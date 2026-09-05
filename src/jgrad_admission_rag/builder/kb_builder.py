@@ -116,6 +116,9 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     if matched_colleges:
         return "college", matched_colleges, None, 0.7
 
+    if item.section_path and item.section_path[0].startswith(("２．入学時期", "３．出願資格")):
+        return "global", [], None, 0.7
+
     if any(token in haystack for token in ["全学院", "全系", "共通", "全志願者"]):
         return "global", [], None, 0.65
 

@@ -15,6 +15,7 @@ from jgrad_admission_rag.reasoning import (
     AcademicCredential,
     ApplicantProfile,
     ApplicantProfileError,
+    CredentialBasis,
     DegreeLevel,
     EligibilityFacts,
     IndividualReviewStatus,
@@ -48,6 +49,7 @@ def _profile_payload() -> dict[str, object]:
             {
                 "institution_country_code": "US",
                 "degree_level": "bachelor",
+                "credential_basis": "foreign_16_year_bachelor_equivalent",
                 "completion_state": "expected",
                 "completion_date": None,
                 "expected_completion_date": "2027-03-31",
@@ -113,6 +115,11 @@ def test_full_known_profile_round_trips_as_canonical_json() -> None:
     assert json.loads(canonical) == profile.model_dump(mode="json")
     assert load_applicant_profile_bytes(canonical) == profile
     assert profile.citizenship_and_residence.citizenship_country_codes == ("JP", "US")
+    assert profile.academic_credentials is not None
+    assert (
+        profile.academic_credentials[0].credential_basis
+        is CredentialBasis.FOREIGN_16_YEAR_BACHELOR_EQUIVALENT
+    )
 
 
 def test_all_unknown_fields_are_explicitly_null() -> None:

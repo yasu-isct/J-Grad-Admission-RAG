@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "fixture_id": "isct-master-applicability-v1",
   "document_id": "isct_2027_4_2026_9_master",
-  "source_kb_sha256": "8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d",
+  "source_kb_sha256": "ce22a04ca93979c294ec2fd9346d16b46a9955f446dcb5af0a4f9882892c774e",
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "synthetic_contract_cases": {
     "atomic": [
@@ -29,7 +29,7 @@
     ]
   },
   "fact": {
-    "fact_id": "fact:00063",
+    "fact_id": "fact:00066",
     "source_pages": [7],
     "authoritative_fact_text_sha256": "1986232791fbaf5907807eee5bd8d524f782f1c4bcf96807cc140e0363c596dc"
   },

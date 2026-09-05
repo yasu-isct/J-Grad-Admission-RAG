@@ -12,8 +12,8 @@
     "page_count": 85,
     "table_count": 285,
     "scanned_page_count": 0,
-    "input_chunk_count": 390,
-    "chunk_count": 298,
+    "input_chunk_count": 396,
+    "chunk_count": 304,
     "dropped_chunk_count": 92,
     "dropped_chunk_reasons": {
       "whitespace_only": 0,
@@ -25,25 +25,25 @@
       7,
       25,
       26,
-      35,
-      57,
-      58,
-      63,
-      64,
-      79,
-      93,
-      94,
-      99,
-      100,
-      103,
-      106,
-      107,
-      118,
-      119,
-      124,
+      37,
+      59,
+      60,
+      65,
+      66,
+      83,
+      95,
+      96,
+      101,
+      102,
+      105,
+      108,
+      109,
+      120,
+      121,
       126,
       128,
       130,
+      132,
       140,
       142,
       148,
@@ -67,30 +67,27 @@
       236,
       238,
       240,
-      244,
-      246,
-      254,
-      255,
-      258,
+      248,
+      250,
+      260,
       261,
       264,
-      266,
-      268,
+      267,
       270,
       272,
+      274,
       276,
       278,
-      280,
       282,
       284,
+      286,
       288,
-      291,
+      290,
       294,
-      296,
-      298,
+      297,
+      300,
       302,
       304,
-      306,
       308,
       310,
       312,
@@ -101,71 +98,168 @@
       322,
       324,
       326,
+      328,
       330,
       332,
-      334,
-      348,
-      349,
-      368,
-      372,
+      336,
+      338,
+      340,
+      354,
+      355,
+      374,
       378,
-      380,
-      382,
       384,
       386,
-      388
+      388,
+      390,
+      392,
+      394
     ],
     "entity_count": 25,
-    "fact_count": 298,
-    "retrieval_unit_count": 298,
-    "reference_link_count": 7,
+    "fact_count": 304,
+    "retrieval_unit_count": 304,
+    "reference_link_count": 10,
     "chunk_size_limit": 6000,
     "max_chunk_chars": 5993,
     "oversized_chunk_count": 0,
     "oversized_chunk_reasons": {},
     "short_fact_threshold": 100,
-    "short_fact_count": 79,
-    "unknown_scope_fact_count": 170,
-    "raw_reference_occurrence_count": 215,
-    "reference_claim_count": 141,
+    "short_fact_count": 87,
+    "unknown_scope_fact_count": 157,
+    "raw_reference_occurrence_count": 217,
+    "reference_claim_count": 143,
     "reference_status_counts": {
-      "resolved": 7,
-      "ambiguous": 6,
+      "resolved": 10,
+      "ambiguous": 5,
       "unresolved": 128
     },
-    "fact_content_sha256": "ff93295599a6b233bbd2dc065981e2b927ab4a628244c3949405303a6b0915eb",
-    "fact_structure_sha256": "0a3c52d01039222af66e97546b809d4c855c356e9a83571c1580ae5fa85ff1a8",
-    "diagnostics_sha256": "3e5136bfb2cb0cd867e5b4acca77ce930d3e47cd34cdf4eeab98f6236ea54519",
-    "embedding_text_v1_sha256": "460566d8c68cbd2eb7a4413f584d4634b4520e50e1170d9dd2f08e68c3c940b9",
-    "embedding_text_v1_fake_vector_sha256": "0a12e00acea485da42b97d2e25548afe41e1513736d1894dfc6181a4e2b953ed",
-    "index_payloads_sha256": "f1530da8b93f7ae0e816e43bbde0464c453b4d308743f28a2b03029ca0e4beb3",
-    "index_fake_vectors_npy_sha256": "0b77bb53b6dcca385ce432febbcab74f07cef49963262b5d5026e86751117129",
+    "fact_content_sha256": "0133fbcbd5cc3e5223e8464e84bfa06a01954348b30ab5add44a1b6a5f213263",
+    "fact_structure_sha256": "813d865658c091d6a28d213e140661417b9a7c076b1bcd3035ae91fc3ddc2a10",
+    "diagnostics_sha256": "9871ea67d780911095011fbc15c16a246219ea21b388b40d730ab1900dbb8f39",
+    "embedding_text_v1_sha256": "c990d735488568c2a703d65ab003724f01179097f94dff2d2a8162a2db0086dd",
+    "embedding_text_v1_fake_vector_sha256": "224392b0e3d71c9b73772859eb24e7ad07b8dc5f51e8ad3397937654fa4a5b0f",
+    "index_payloads_sha256": "f880d8744611facde1fdbbfcdb51e3174539467eb3033656662d21501d605009",
+    "index_fake_vectors_npy_sha256": "02fe8ea99d58fb2fd03174e026fed063cd7f4ecdfad8f5ff7e5348f7cfbdbe39",
     "resolved_reference_claims": [
-      ["fact:00014", "上記1", "fact:00008"],
-      ["fact:00057", "下記（２）", "fact:00058"],
-      ["fact:00057", "下記（３）", "fact:00059"],
-      ["fact:00064", "下記（２）", "fact:00065"],
-      ["fact:00064", "下記（３）", "fact:00066"],
-      ["fact:00075", "下記１", "fact:00078"],
-      ["fact:00077", "上記（１）", "fact:00072"]
+      [
+        "fact:00014",
+        "上記1",
+        "fact:00008"
+      ],
+      [
+        "fact:00059",
+        "下記（１）",
+        "fact:00060"
+      ],
+      [
+        "fact:00059",
+        "下記（２）",
+        "fact:00061"
+      ],
+      [
+        "fact:00059",
+        "下記（３）",
+        "fact:00062"
+      ],
+      [
+        "fact:00067",
+        "下記（１）",
+        "fact:00068"
+      ],
+      [
+        "fact:00067",
+        "下記（２）",
+        "fact:00069"
+      ],
+      [
+        "fact:00067",
+        "下記（３）",
+        "fact:00070"
+      ],
+      [
+        "fact:00078",
+        "下記１",
+        "fact:00080"
+      ],
+      [
+        "fact:00080",
+        "上記（１）",
+        "fact:00075"
+      ],
+      [
+        "fact:00080",
+        "上記\n（１）",
+        "fact:00075"
+      ]
     ],
     "removed_ambiguous_links": [
-      ["fact:00022", "上記1", "fact:00016"],
-      ["fact:00023", "上記1", "fact:00016"],
-      ["fact:00057", "下記（１）", "fact:00084"],
-      ["fact:00064", "下記（１）", "fact:00084"],
-      ["fact:00071", "上記（１）", "fact:00016"],
-      ["fact:00081", "下記１", "fact:00084"]
+      [
+        "fact:00022",
+        "上記1",
+        "fact:00016"
+      ],
+      [
+        "fact:00023",
+        "上記1",
+        "fact:00016"
+      ],
+      [
+        "fact:00075",
+        "上記（１）",
+        "fact:00068"
+      ],
+      [
+        "fact:00075",
+        "上記\n（１）",
+        "fact:00068"
+      ],
+      [
+        "fact:00083",
+        "下記１",
+        "fact:00086"
+      ]
     ],
     "kb05_split_transitions": {
-      "22": [8754, 5437, 3315],
-      "29": [6147, 3635, 2510],
-      "30": [8003, 4813, 3188],
-      "32": [6023, 5988, 33],
-      "44": [6455, 3622, 2831],
-      "45": [6482, 3671, 2809],
-      "56": [6273, 3684, 2587],
-      "57": [6211, 3676, 2533]
+      "22": [
+        8754,
+        5437,
+        3315
+      ],
+      "29": [
+        6147,
+        3635,
+        2510
+      ],
+      "30": [
+        8003,
+        4813,
+        3188
+      ],
+      "32": [
+        6023,
+        5988,
+        33
+      ],
+      "44": [
+        6455,
+        3622,
+        2831
+      ],
+      "45": [
+        6482,
+        3671,
+        2809
+      ],
+      "56": [
+        6273,
+        3684,
+        2587
+      ],
+      "57": [
+        6211,
+        3676,
+        2533
+      ]
     }
   },
   "text_markers": [

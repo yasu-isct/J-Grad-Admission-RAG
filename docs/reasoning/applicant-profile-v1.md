@@ -26,14 +26,20 @@ as unknown.
 
 The profile sections are `target_application`, `citizenship_and_residence`,
 `academic_credentials`, `eligibility_facts`, and `language_test_results`. The controlled values are
-stable enums: degree level, credential completion state, intake month, individual review state, and
-language-result state. Countries use uppercase ISO 3166-1 alpha-2 codes. User-entered strings must
+stable enums: degree level, credential completion state, credential basis, intake month, individual
+review state, and language-result state. The closed credential bases cover regular university
+graduation, a NIAD-QE bachelor award, and a foreign 16-year/bachelor-equivalent path. Countries use
+uppercase ISO 3166-1 alpha-2 codes. User-entered strings must
 be non-empty, already trimmed, and cannot use placeholders such as `unknown`, `N/A`, or `未定`.
 
 Citizenship is an unordered set: duplicate codes are rejected and valid codes are sorted in the
 canonical representation. Academic credentials and language tests are ordered histories, so their
 order is preserved. No names, emails, phone numbers, addresses, identity documents, tokens, uploads,
 raw query text, Fact IDs, source pages, evidence, conclusions, or reasoning traces belong here.
+
+The current direct-eligibility rules deliberately read `academic_credentials.first`. They can
+evaluate exactly one supplied credential. If a profile contains multiple credentials, those rules
+return `needs_information` with `multiple_academic_credentials` instead of selecting one silently.
 
 ## Safe Serialization
 

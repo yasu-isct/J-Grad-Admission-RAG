@@ -195,12 +195,12 @@ def test_real_reviewed_plan_fixture_reuses_the_accepted_rule() -> None:
     assert plan.coverage_status == "partial_reviewed_rules"
     assert plan.covered_categories == (IntentCategory.ELIGIBILITY,)
     assert plan.source_kb_sha256 == (
-        "d752d58b073f9bf57dc399e477ec8325f4ed0ccaaca351f67a05c9f8304f258f"
+        "ce22a04ca93979c294ec2fd9346d16b46a9955f446dcb5af0a4f9882892c774e"
     )
     rule = plan.rules[0]
     binding = rule.evidence_bindings[0]
     assert rule.rule_id == "isct-master-individual-review-age-22-criterion"
-    assert binding.fact_id == "fact:00063"
+    assert binding.fact_id == "fact:00066"
     assert binding.source_pages == (7,)
     assert canonical_reviewed_report_plan_bytes(
         load_reviewed_report_plan_bytes(canonical_reviewed_report_plan_bytes(plan))
