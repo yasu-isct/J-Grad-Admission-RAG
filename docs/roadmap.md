@@ -52,6 +52,9 @@ the exact bound official Facts into an in-memory evidence bundle. It performs no
 applicant reasoning. APP-03C consumes that exact evidence with one profile and covered intent,
 reuses the complete M4 public chain, and returns a strict self-auditing report plus safe fixed
 Japanese Markdown. Its visible status remains report readiness under explicitly partial coverage.
+APP-03D places that accepted chain behind one strict local HTTP route. Server-owned reviewed plans
+are explicit lifespan configuration, and every request still selects exactly one corpus document;
+the endpoint adds transport only, not retrieval, new rules, persistence, or broader conclusions.
 
 ### Completed M4 Summary
 
@@ -178,6 +181,7 @@ tolerances and CI policy only after reviewing that evidence.
 | APP-03A | Define reviewed single-document report plans | Canonical partial rulebook for later report execution |
 | APP-03B | Materialize exact reviewed report evidence | Audited bound Facts with official text, pages, and rule IDs |
 | APP-03C | Assemble deterministic cited applicant reports | Exact selected evidence and M4 results become a self-auditing partial report |
+| APP-03D | Expose cited applicant report HTTP route | Strict single-document report request returns the validated report and exact Markdown |
 | APP-04 | Add a focused evidence-review interface | Search, profile input, evidence, and report views |
 
 ## GitHub Workflow

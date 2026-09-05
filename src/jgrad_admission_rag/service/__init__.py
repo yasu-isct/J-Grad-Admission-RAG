@@ -10,5 +10,12 @@ except ModuleNotFoundError as error:
     raise
 
 from .runtime import ServiceDependencies, ServiceSettings
+from .contracts import ApplicantReportRequest, ApplicantReportResponse
 
-__all__ = ["ServiceDependencies", "ServiceSettings", "create_app"]
+__all__ = [
+    "ApplicantReportRequest",
+    "ApplicantReportResponse",
+    "ServiceDependencies",
+    "ServiceSettings",
+    "create_app",
+]

@@ -9,6 +9,9 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from ..corpus_search import CorpusSearchRequest, CorpusSearchResult
+from ..reasoning.applicant_profile import ApplicantProfile
+from ..reasoning.applicant_report import ApplicantReport, render_applicant_report_markdown
+from ..reasoning.query_intent import QueryIntent
 from ..schemas.corpus_version import CorpusSelectionRequest
 from ..schemas.document_kb import DocumentKnowledgeBase
 
@@ -262,12 +265,35 @@ class CorpusQueryRequest(ApiModel):
     search: CorpusSearchRequest
 
 
+class ApplicantReportRequest(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    report_id: str = Field(pattern=r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
+    profile: ApplicantProfile
+    intent: QueryIntent
+    selection: CorpusSelectionRequest
+
+
+class ApplicantReportResponse(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    report: ApplicantReport
+    markdown: str
+
+    @model_validator(mode="after")
+    def markdown_must_match_report(self) -> ApplicantReportResponse:
+        if self.markdown != render_applicant_report_markdown(self.report):
+            raise ValueError("applicant report Markdown does not reconcile")
+        return self
+
+
 BUILD_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (409, 413, 415, 422, 500)}
 JOB_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 413, 415, 422, 500, 503)
 }
 HEALTH_ERROR_RESPONSES = {500: {"model": ErrorEnvelope}}
 QUERY_ERROR_RESPONSES = {
+    status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
+}
+REPORT_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
 }
 
@@ -280,6 +306,8 @@ __all__ = [
     "BuildQualityOptions",
     "BuildResponse",
     "BuildSummary",
+    "ApplicantReportRequest",
+    "ApplicantReportResponse",
     "BUILD_ERROR_RESPONSES",
     "CorpusQueryRequest",
     "CorpusSearchResult",
@@ -288,5 +316,6 @@ __all__ = [
     "HealthResponse",
     "JOB_ERROR_RESPONSES",
     "QUERY_ERROR_RESPONSES",
+    "REPORT_ERROR_RESPONSES",
     "QualityViolationSummary",
 ]

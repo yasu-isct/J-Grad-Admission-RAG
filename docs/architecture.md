@@ -214,6 +214,14 @@ prominent and renders exact official text inside inert dynamic fences. No profil
 retrieval metadata, model prose, overall eligibility conclusion, persistence, or HTTP route enters
 this layer. See [Applicant Report v1](reasoning/applicant-report-v1.md).
 
+APP-03D exposes that chain through `POST /v1/applicant-reports`. The transport accepts only a safe
+report ID plus existing profile, intent, and single-document selection contracts. During lifespan,
+the service strictly loads an explicit allowlist of absolute reviewed-plan paths and rejects
+duplicate IDs, duplicate document identities, or identities outside the audited corpus. Each
+request delegates to COR-04, APP-03B, and APP-03C on the existing thread-offload boundary; it does
+not perform ranked retrieval, model activity, persistence, or duplicate reasoning. No configured
+plans preserves older readiness semantics, while configured invalid plans fail overall readiness.
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope

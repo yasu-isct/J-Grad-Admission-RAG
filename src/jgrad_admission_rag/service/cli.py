@@ -26,6 +26,13 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--corpus-root", required=True)
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--policy", required=True)
+    parser.add_argument(
+        "--report-plan",
+        action="append",
+        default=[],
+        metavar="ABSOLUTE_PATH",
+        help="Reviewed report plan JSON path; repeat for each explicitly enabled document.",
+    )
     parser.add_argument("--max-pdf-bytes", type=int, default=25 * 1024 * 1024)
     parser.add_argument("--job-root")
     parser.add_argument("--job-worker-max-active", type=int, default=1)
@@ -45,10 +52,14 @@ def main(argv: Sequence[str] | None = None) -> None:
         _parser().error("port, upload, worker concurrency, or shutdown grace is out of range")
     try:
         provider_configuration = resolve_provider_configuration(args)
+        report_plan_paths = tuple(Path(path) for path in args.report_plan)
+        if any(not path.is_absolute() for path in report_plan_paths):
+            raise ValueError("reviewed report plan paths must be absolute")
         settings = ServiceSettings(
             corpus_root=Path(args.corpus_root).resolve(strict=False),
             manifest_path=Path(args.manifest).resolve(strict=False),
             policy_path=Path(args.policy).resolve(strict=False),
+            report_plan_paths=tuple(path.resolve(strict=False) for path in report_plan_paths),
             max_pdf_bytes=args.max_pdf_bytes,
             job_root=(Path(args.job_root).resolve(strict=False) if args.job_root else None),
             job_worker_max_active=args.job_worker_max_active,

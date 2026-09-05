@@ -7,6 +7,7 @@ retrieval implementation.
 ```text
 multipart upload -> exact identity check -> DocumentKnowledgeBase 0.6 + diagnostics
 strict JSON -> COR-04 selection -> COR-05 prepare/search -> CorpusSearchResult 1.0
+strict profile/intent -> COR-04 -> reviewed evidence -> ApplicantReport 1.0 + fixed Markdown
 ```
 
 ## Routes
@@ -17,6 +18,7 @@ strict JSON -> COR-04 selection -> COR-05 prepare/search -> CorpusSearchResult 1
 | GET | `/v1/health/ready` | 200 | Whether query paths and the lifespan provider are ready |
 | POST | `/v1/knowledge-bases/build` | 200 | Complete detached KB, summary, and quality decision |
 | POST | `/v1/corpus/query` | 200 | Complete document-qualified corpus retrieval result |
+| POST | `/v1/applicant-reports` | 200 | Partial reviewed-rule report plus exact Japanese Markdown |
 | POST | `/v1/build-jobs` | 202 | Durably accept one validated asynchronous build |
 | GET | `/v1/build-jobs/{job_id}` | 200 | Read fresh durable status and transition history |
 | GET | `/v1/build-jobs/{job_id}/result` | 200 | Read a complete passing or quality-failed result |
@@ -70,6 +72,85 @@ configured model adapter may not be thread-safe; file validation and ranking rem
 The result is `CorpusSearchResult 1.0`. Its hits are evidence candidates with document-qualified
 Fact/Unit IDs and official pages. They are not eligibility decisions or applicant answers.
 
+## Applicant Report Request
+
+Enable reporting with one explicit absolute plan path per reviewed document. Plans are loaded and
+validated only during service lifespan; the service never discovers plans by scanning a directory.
+Missing, invalid, duplicate, or corpus-incompatible configured plans make readiness false. With no
+plans configured, existing readiness behavior is unchanged and only the report route is unavailable.
+
+The strict JSON request contains only `schema_version`, a safe `report_id`, one existing
+`ApplicantProfile`, one existing `QueryIntent`, and one `CorpusSelectionRequest` that must select
+exactly one ready document. Rules, evidence, paths, providers, models, and conclusions are rejected
+as extra fields. For example:
+
+```json
+{
+  "schema_version": "1.0",
+  "report_id": "demo-report-001",
+  "profile": {
+    "schema_version": "1.0",
+    "target_application": {
+      "graduate_school_or_college": "Example College",
+      "department_or_program": "Example Program",
+      "requested_degree_level": "master",
+      "intake_year": 2027,
+      "intake_month": 4,
+      "application_route": null
+    },
+    "citizenship_and_residence": {
+      "citizenship_country_codes": null,
+      "current_residence_country_code": null,
+      "residence_status_category": null
+    },
+    "academic_credentials": null,
+    "eligibility_facts": {
+      "age_at_enrollment": 24,
+      "professional_experience_months": null,
+      "research_experience_months": null,
+      "individual_review_status": null,
+      "individual_review_requested": null,
+      "individual_review_completed": null
+    },
+    "language_test_results": null
+  },
+  "intent": {
+    "schema_version": "1.0",
+    "parser_version": "lexical-ja-v1",
+    "catalog_version": "example-v1",
+    "query": "eligibility",
+    "requested_categories": ["eligibility"],
+    "requested_scope": {
+      "department_or_program_targets": [],
+      "parent_college_values": [],
+      "target_degree_level": null,
+      "intake_year": null,
+      "intake_month": null
+    },
+    "matched_mentions": [{
+      "canonical_value": "eligibility",
+      "mention_kind": "intent",
+      "start_offset": 0,
+      "end_offset": 11,
+      "surface": "eligibility"
+    }],
+    "diagnostics": []
+  },
+  "selection": {
+    "schema_version": "1.0",
+    "document_ids": ["example-2027"]
+  }
+}
+```
+
+Each request reloads current manifest and policy state, uses COR-04 for single-document selection,
+materializes exact plan-bound official Facts through APP-03B, and delegates all reasoning and
+rendering to APP-03C. Ranked retrieval and the embedding provider are not used. The response embeds
+the complete self-auditing `ApplicantReport` and its exact deterministic Markdown rendering.
+Neither request nor response is persisted. Markdown excludes profile values, raw query text,
+hashes, paths, and ranking metadata, and prominently states partial reviewed coverage rather than
+overall eligibility or admission.
+
 ## Errors
 
 All non-2xx JSON responses use `ErrorEnvelope 1.0` with `code`, a short public `message`, and only
@@ -90,9 +171,14 @@ allowlisted `details`. Validation consistently uses 422.
 | 413 | `payload_too_large` | Configured upload/metadata limit exceeded |
 | 415 | `unsupported_media_type` | Route or PDF part content type is unsupported |
 | 422 | `invalid_request` | Strict transport/domain input validation failed |
+| 404 | `report_plan_not_found` | Selected document has no allowlisted reviewed plan |
+| 409 | `corpus_selection_conflict` | Selection cannot produce one current report document |
+| 409 | `report_preparation_failed` | Current plan, corpus, and evidence no longer reconcile |
 | 503 | `corpus_unavailable` | Current policy/manifest/index cannot pass safety checks |
 | 503 | `provider_unavailable` | Provider initialization or query failed |
 | 503 | `job_service_unavailable` | Durable jobs are unconfigured or unhealthy |
+| 503 | `report_service_unavailable` | Report plans or current corpus cannot pass startup/runtime checks |
+| 500 | `report_generation_failed` | Accepted report orchestration failed safely |
 | 500 | `internal_error` | Build or service failed without exposing internals |
 
 ## Local Runtime
@@ -105,6 +191,19 @@ jgrad-serve `
   --corpus-root D:\corpus `
   --manifest D:\corpus\corpus.json `
   --policy D:\corpus\policy.json `
+  --provider deterministic-fake `
+  --dimension 8
+```
+
+Enable one or more reviewed report plans explicitly:
+
+```powershell
+jgrad-serve `
+  --corpus-root D:\corpus `
+  --manifest D:\corpus\corpus.json `
+  --policy D:\corpus\policy.json `
+  --report-plan D:\jgrad-plans\example-master-2027.json `
+  --report-plan D:\jgrad-plans\example-doctoral-2027.json `
   --provider deterministic-fake `
   --dimension 8
 ```
