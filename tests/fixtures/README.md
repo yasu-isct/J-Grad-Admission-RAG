@@ -9,6 +9,11 @@ real `fact:00063` page 7 rule findings plus synthetic override, interaction, inc
 missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
 official prose, model output, or final eligibility verdict.
 
+`reviewed_report_plan_isct_master_v1.json` is the server-owned APP-03A plan for the same exact
+document. It reuses the accepted `fact:00063` page 7 rule and declares only partial eligibility
+intent coverage. It contains reviewed configuration and hashes, but no official Fact text,
+applicant data, query, retrieval score, generated report, or overall eligibility state.
+
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
 Its `identity_file` points to the reviewed `DocumentIdentity` fixture used by every real build; the

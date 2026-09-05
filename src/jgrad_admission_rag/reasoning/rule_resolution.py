@@ -78,7 +78,7 @@ class RulePrecedencePolicy(RuleResolutionModel):
     schema_version: Literal["1.0"] = RULE_PRECEDENCE_POLICY_SCHEMA_VERSION
     policy_id: str
     subjects: tuple[RuleSubjectAssignment, ...] = Field(min_length=1)
-    override_edges: tuple[OverrideEdge, ...] = Field(min_length=1)
+    override_edges: tuple[OverrideEdge, ...] = ()
 
     @field_validator("policy_id")
     @classmethod

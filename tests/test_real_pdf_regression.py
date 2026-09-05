@@ -64,6 +64,7 @@ from jgrad_admission_rag.reasoning.query_intent import (
     QueryIntent,
     RequestedScope,
 )
+from jgrad_admission_rag.reasoning.reviewed_report_plan import load_reviewed_report_plan
 from jgrad_admission_rag.schemas.document_kb import (
     DocumentKnowledgeBase,
     canonical_document_kb_bytes,
@@ -98,6 +99,9 @@ MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
 RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_v1.json"
 APPLICABILITY_FIXTURE_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "applicability_real_scenarios_v1.json"
+)
+REVIEWED_REPORT_PLAN_PATH = (
+    REPO_ROOT / "tests" / "fixtures" / "reviewed_report_plan_isct_master_v1.json"
 )
 REAL_PDF_ENV = "JGRAD_REAL_PDF"
 
@@ -581,6 +585,26 @@ def test_real_pdf_reviewed_applicability_scenarios(
         }
         for scenario in fixture["scenarios"]
     }
+
+
+def test_real_pdf_reviewed_report_plan_resolves_exact_current_fact(
+    real_document_identity: DocumentIdentity,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
+    binding = plan.rules[0].evidence_bindings[0]
+    fact = next(item for item in real_document_kb.facts if item.fact_id == binding.fact_id)
+    applicability_fixture = json.loads(APPLICABILITY_FIXTURE_PATH.read_text(encoding="utf-8"))
+
+    assert len(real_document_kb.facts) == 298
+    assert plan.document_identity == real_document_identity
+    assert binding.source_kb_sha256 == applicability_fixture["source_kb_sha256"]
+    assert binding.document_id == real_document_kb.manifest.identity.document_id
+    assert binding.source_pdf_sha256 == real_document_kb.manifest.pdf_sha256
+    assert tuple(fact.source_pages) == binding.source_pages == (7,)
+    assert hashlib.sha256(fact.text.encode("utf-8")).hexdigest() == (
+        binding.authoritative_fact_text_sha256
+    )
 
 
 def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> ApplicantProfile:
