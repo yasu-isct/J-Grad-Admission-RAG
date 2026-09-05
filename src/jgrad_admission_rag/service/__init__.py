@@ -13,6 +13,7 @@ from .runtime import ServiceDependencies, ServiceSettings
 from .contracts import (
     ApplicantReportRequest,
     ApplicantReportResponse,
+    QueryIntentParseRequest,
     ReviewedDocumentCatalogItem,
     ReviewedDocumentCatalogResponse,
     ReviewedDocumentPublicIdentity,
@@ -21,6 +22,7 @@ from .contracts import (
 __all__ = [
     "ApplicantReportRequest",
     "ApplicantReportResponse",
+    "QueryIntentParseRequest",
     "ReviewedDocumentCatalogItem",
     "ReviewedDocumentCatalogResponse",
     "ReviewedDocumentPublicIdentity",

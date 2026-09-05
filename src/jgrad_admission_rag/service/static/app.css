@@ -18,7 +18,8 @@ body {
 
 button,
 select,
-textarea {
+textarea,
+input {
   font: inherit;
   letter-spacing: 0;
 }
@@ -117,7 +118,8 @@ label {
 }
 
 select,
-textarea {
+textarea,
+input {
   width: 100%;
   border: 1px solid #9ca9a6;
   border-radius: 5px;
@@ -137,8 +139,14 @@ textarea {
   line-height: 1.55;
 }
 
+input {
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
 select:focus-visible,
 textarea:focus-visible,
+input:focus-visible,
 button:focus-visible {
   outline: 3px solid #f2b84b;
   outline-offset: 2px;
@@ -146,6 +154,7 @@ button:focus-visible {
 
 select:disabled,
 textarea:disabled,
+input:disabled,
 button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
@@ -194,6 +203,165 @@ button:hover:not(:disabled) {
 button.secondary {
   color: #174b47;
   background: #ffffff;
+}
+
+button.quiet {
+  border-color: #6b7a77;
+  color: #34413f;
+  background: transparent;
+}
+
+.document-bar {
+  padding: 20px 0;
+  border-bottom: 1px solid #cbd3d1;
+}
+
+.document-field {
+  max-width: 760px;
+  margin-top: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #9ca9a6;
+  padding-top: 18px;
+}
+
+.tab-button {
+  min-height: 44px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: #465451;
+  background: transparent;
+}
+
+.tab-button:hover:not(:disabled) {
+  color: #0f5b54;
+  background: #e8efed;
+}
+
+.tab-button[aria-selected="true"] {
+  border-bottom-color: #0f5b54;
+  color: #0f5b54;
+  background: #ffffff;
+}
+
+.coverage-notice {
+  padding: 18px 0;
+  border-bottom: 1px solid #cbd3d1;
+}
+
+.coverage-notice h2,
+.report-form-panel h2,
+.report-results-panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.coverage-notice p {
+  margin: 7px 0 0;
+  line-height: 1.55;
+}
+
+.coverage-notice strong,
+.final-notice {
+  color: #8a341f;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) minmax(0, 1fr);
+  gap: 32px;
+  padding-top: 26px;
+}
+
+fieldset {
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  width: 100%;
+  margin-bottom: 14px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #cbd3d1;
+  font-weight: 800;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.report-output {
+  min-width: 0;
+}
+
+.report-section {
+  padding: 20px 0;
+  border-bottom: 1px solid #cbd3d1;
+}
+
+.report-section h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.report-section h4 {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.coverage-result {
+  border-left: 4px solid #a67113;
+  padding-left: 14px;
+  background: #fff8e8;
+}
+
+.readiness-value {
+  font-weight: 800;
+}
+
+.finding-list,
+.diagnostic-list,
+.compact-list {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.finding-list > li,
+.diagnostic-list > li {
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+
+.compact-list {
+  margin-top: 10px;
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 12px;
+}
+
+.report-evidence {
+  margin-top: 18px;
+}
+
+.report-evidence p {
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.final-notice {
+  padding: 16px;
+  border: 1px solid #b56c58;
+  font-weight: 800;
+  line-height: 1.6;
+  background: #fff5f1;
 }
 
 .results-header {
@@ -326,6 +494,11 @@ button.secondary {
   .workspace-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 34px;
+  }
+
+  .report-grid,
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .actions button {

@@ -77,23 +77,27 @@ jgrad-serve `
   --manifest D:\corpus\corpus.json `
   --policy D:\corpus\policy.json `
   --report-plan D:\jgrad-plans\example-master-2027.json `
+  --query-intent-catalog D:\jgrad-config\query_intent_catalog_v1.json `
   --provider deterministic-fake `
   --dimension 8
 ```
 
 OpenAPI is served at `http://127.0.0.1:8000/openapi.json`, with local interactive docs at
 `http://127.0.0.1:8000/docs`. The evidence-review UI is available at
-`http://127.0.0.1:8000/app`. The API provides `/v1/health/live`, `/v1/health/ready`, synchronous
+`http://127.0.0.1:8000/app`. The two local tabs provide evidence search and a partial applicant
+report over reviewed rules. The API provides `/v1/health/live`, `/v1/health/ready`, synchronous
 multipart KB build, strict reviewed-corpus query, and cited applicant-report routes. Report plans
 are optional, server-owned, explicitly allowlisted with repeatable absolute `--report-plan` paths,
-and loaded only during service lifespan; no directory discovery occurs. See
+and browser question parsing uses one explicit absolute `--query-intent-catalog` path. Both are
+loaded only during service lifespan; no directory discovery occurs. See
 [Service API v1](docs/service-api-v1.md).
 
 The packaged [Local Evidence Review UI](docs/local-evidence-ui.md) lists only audited, ready
-documents with a unique reviewed plan and sends one-document searches to the existing query API.
-It displays exact evidence candidates and search diagnostics, not applicant applicability,
-eligibility, or admission conclusions. The page and its assets are local and dependency-free; no
-npm build, CDN, browser storage, analytics, or query persistence is used.
+documents with a unique reviewed plan. One tab sends one-document searches to the existing query
+API; the other builds a strict applicant profile, obtains intent from the server, and displays the
+existing partial cited report. Neither view makes an overall eligibility or admission conclusion.
+The page and its assets are local and dependency-free; no npm build, CDN, browser storage,
+analytics, or query/profile persistence is used.
 
 The default bind is loopback and real model loading is cache-only unless download is explicitly
 authorized. The service has no authentication, TLS, rate limiting, or public-deployment hardening;

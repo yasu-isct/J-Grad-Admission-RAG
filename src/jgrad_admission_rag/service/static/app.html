@@ -13,66 +13,119 @@
         <p class="product-mark" aria-hidden="true">JG</p>
         <div>
           <h1>J-Grad Evidence Review</h1>
-          <p>大学院募集要項の公式記載を確認するローカル検索</p>
+          <p>大学院募集要項の公式記載と審査済み規則を確認するローカルツール</p>
         </div>
       </div>
     </header>
 
     <main class="workspace" aria-labelledby="workspace-heading">
       <section class="notice" aria-labelledby="workspace-heading">
-        <h2 id="workspace-heading">公式文書の根拠候補を確認</h2>
-        <p><strong>検索結果は根拠候補です。</strong> 出願資格や合否の判定ではありません。</p>
+        <h2 id="workspace-heading">公式文書に基づく部分的な確認</h2>
+        <p><strong>根拠候補は出願資格や合否の判定ではありません。レポートも、総合的な出願資格、合否、合格可能性、または推奨を示しません。</strong></p>
       </section>
 
-      <div class="workspace-grid">
-        <section class="search-panel" aria-labelledby="search-heading">
-          <h2 id="search-heading">検索条件</h2>
-          <form id="evidence-form" novalidate>
-            <div class="field-group">
-              <label for="document-select">募集要項</label>
-              <select id="document-select" name="document" required disabled>
-                <option value="">読み込み中</option>
-              </select>
-              <p id="document-detail" class="field-detail"></p>
-            </div>
+      <section class="document-bar" aria-labelledby="document-heading">
+        <div class="field-group document-field">
+          <label for="document-select">募集要項</label>
+          <select id="document-select" name="document" required disabled>
+            <option value="">読み込み中</option>
+          </select>
+        </div>
+        <p id="document-detail" class="field-detail"></p>
+      </section>
 
-            <div class="field-group">
-              <label for="query-input">確認したい内容</label>
-              <textarea
-                id="query-input"
-                name="query"
-                rows="5"
-                maxlength="1000"
-                required
-                placeholder="例：個別入学資格審査の年齢要件"
-              ></textarea>
-              <div class="input-meta">
-                <span>日本語で入力</span>
-                <output id="query-count" for="query-input">0 / 1000</output>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button id="submit-button" type="submit" disabled>証拠を検索</button>
-              <button id="retry-button" class="secondary" type="button" hidden>再試行</button>
-            </div>
-          </form>
-        </section>
-
-        <section class="results-panel" aria-labelledby="results-heading">
-          <div class="results-header">
-            <div>
-              <p class="section-label">Evidence candidates</p>
-              <h2 id="results-heading">検索結果</h2>
-            </div>
-            <p id="result-count" class="result-count" hidden></p>
-          </div>
-          <div id="status-message" class="status-message" role="status" aria-live="polite" tabindex="-1">
-            募集要項を読み込んでいます。
-          </div>
-          <ol id="evidence-list" class="evidence-list"></ol>
-        </section>
+      <div class="tabs" role="tablist" aria-label="確認方法">
+        <button id="evidence-tab" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="evidence-view">根拠検索</button>
+        <button id="report-tab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="report-view" tabindex="-1">申請条件レポート</button>
       </div>
+
+      <section id="evidence-view" class="tab-view" role="tabpanel" aria-labelledby="evidence-tab">
+        <div class="workspace-grid">
+          <section class="search-panel" aria-labelledby="search-heading">
+            <h2 id="search-heading">検索条件</h2>
+            <form id="evidence-form" novalidate>
+              <div class="field-group">
+                <label for="query-input">確認したい内容</label>
+                <textarea id="query-input" name="query" rows="5" maxlength="1000" required placeholder="例：個別入学資格審査の年齢要件"></textarea>
+                <div class="input-meta"><span>日本語で入力</span><output id="query-count" for="query-input">0 / 1000</output></div>
+              </div>
+              <div class="actions">
+                <button id="submit-button" type="submit" disabled>証拠を検索</button>
+                <button id="retry-button" class="secondary" type="button" hidden>再試行</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="results-panel" aria-labelledby="results-heading">
+            <div class="results-header">
+              <div><p class="section-label">Evidence candidates</p><h2 id="results-heading">検索結果</h2></div>
+              <p id="result-count" class="result-count" hidden></p>
+            </div>
+            <div id="status-message" class="status-message" role="status" aria-live="polite" tabindex="-1">募集要項を読み込んでいます。</div>
+            <ol id="evidence-list" class="evidence-list"></ol>
+          </section>
+        </div>
+      </section>
+
+      <section id="report-view" class="tab-view" role="tabpanel" aria-labelledby="report-tab" hidden>
+        <div class="coverage-notice" aria-labelledby="coverage-heading">
+          <h2 id="coverage-heading">審査済み範囲</h2>
+          <p><strong>部分的な規則範囲です。</strong></p>
+          <p id="report-coverage"></p>
+          <p id="report-limitation"></p>
+        </div>
+        <div class="report-grid">
+          <section class="report-form-panel" aria-labelledby="report-form-heading">
+            <h2 id="report-form-heading">申請条件を入力</h2>
+            <form id="report-form" novalidate>
+              <fieldset>
+                <legend>質問</legend>
+                <label for="report-query">確認したい出願資格</label>
+                <textarea id="report-query" rows="4" maxlength="1000" required placeholder="例：情報理工学院の個別出願資格審査"></textarea>
+                <p class="field-detail">氏名、連絡先、IDなど、不要な個人情報は入力しないでください。</p>
+                <output id="report-query-count" for="report-query">0 / 1000</output>
+              </fieldset>
+
+              <fieldset>
+                <legend>対象の出願</legend>
+                <div class="form-grid">
+                  <div><label for="graduate-school">学院・研究科</label><input id="graduate-school" maxlength="200" autocomplete="off"></div>
+                  <div><label for="department-program">系・専攻・プログラム</label><input id="department-program" maxlength="200" autocomplete="off"></div>
+                  <div><label for="degree-level">課程</label><select id="degree-level"><option value="">不明</option><option value="bachelor">学士</option><option value="master">修士</option><option value="doctorate">博士</option><option value="professional">専門職学位</option><option value="other">その他</option></select></div>
+                  <div><label for="intake-year">入学年度</label><input id="intake-year" type="number" min="1" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="intake-month">入学月</label><select id="intake-month"><option value="">不明</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></div>
+                  <div><label for="application-route">出願区分・ルート</label><input id="application-route" maxlength="200" autocomplete="off"></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>現在確認できる申請者情報</legend>
+                <p class="field-detail">不明な項目は「不明」または空欄のままにしてください。空欄は「いいえ」や 0 ではありません。</p>
+                <div class="form-grid">
+                  <div><label for="age-at-enrollment">入学時年齢</label><input id="age-at-enrollment" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="professional-months">実務経験（月）</label><input id="professional-months" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="research-months">研究経験（月）</label><input id="research-months" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="review-status">個別資格審査の状態</label><select id="review-status"><option value="">不明</option><option value="not_requested">未申請</option><option value="requested">申請済み</option><option value="completed">完了</option></select></div>
+                  <div><label for="review-requested">個別資格審査を申請したか</label><select id="review-requested"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="review-completed">個別資格審査が完了したか</label><select id="review-completed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                </div>
+              </fieldset>
+
+              <div class="actions">
+                <button id="report-submit" type="submit" disabled>レポートを作成</button>
+                <button id="report-retry" class="secondary" type="button" hidden>再試行</button>
+                <button id="report-clear" class="quiet" type="button">入力と結果を消去</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="report-results-panel" aria-labelledby="report-results-heading">
+            <div class="results-header"><div><p class="section-label">Reviewed rule report</p><h2 id="report-results-heading">レポート</h2></div></div>
+            <div id="report-status" class="status-message" role="status" aria-live="polite" tabindex="-1">質問と分かる範囲の条件を入力してください。</div>
+            <div id="report-output" class="report-output"></div>
+          </section>
+        </div>
+      </section>
     </main>
   </body>
 </html>

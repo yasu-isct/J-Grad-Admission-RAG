@@ -44,6 +44,13 @@ from ..reasoning.applicant_report import (
     build_applicant_report,
     render_applicant_report_markdown,
 )
+from ..reasoning.query_intent import (
+    DiagnosticCode,
+    QueryIntent,
+    QueryIntentError,
+    load_query_intent_catalog,
+    parse_query_intent,
+)
 from ..reasoning.reviewed_report_evidence import (
     ReviewedReportEvidenceError,
     ReviewedReportEvidenceFailure,
@@ -68,6 +75,7 @@ from .contracts import (
     CATALOG_ERROR_RESPONSES,
     HEALTH_ERROR_RESPONSES,
     JOB_ERROR_RESPONSES,
+    INTENT_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
     REPORT_ERROR_RESPONSES,
     ApplicantReportRequest,
@@ -79,6 +87,7 @@ from .contracts import (
     CorpusQueryRequest,
     ErrorEnvelope,
     HealthResponse,
+    QueryIntentParseRequest,
     ReviewedDocumentCatalogItem,
     ReviewedDocumentCatalogResponse,
     ReviewedDocumentPublicIdentity,
@@ -177,6 +186,15 @@ def create_app(
             except Exception:
                 state.report_initialization_failed = True
                 state.report_plans = ()
+        if selected_settings.query_intent_catalog_path is not None:
+            try:
+                state.query_intent_catalog = await to_thread.run_sync(
+                    load_query_intent_catalog,
+                    selected_settings.query_intent_catalog_path,
+                )
+            except Exception:
+                state.query_intent_initialization_failed = True
+                state.query_intent_catalog = None
         try:
             yield
         finally:
@@ -192,6 +210,7 @@ def create_app(
                     state.job_initialization_failed = True
             state.provider = None
             state.report_plans = ()
+            state.query_intent_catalog = None
 
     app = FastAPI(
         title="J-Grad Admission RAG API",
@@ -229,6 +248,7 @@ def create_app(
             "/v1/build-jobs",
             "/v1/corpus/query",
             "/v1/applicant-reports",
+            "/v1/query-intents/parse",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -287,6 +307,8 @@ def create_app(
             is_ready = is_ready and _job_worker_ready(state)
         if selected_settings.report_plan_paths:
             is_ready = is_ready and _report_service_ready(state)
+        if selected_settings.query_intent_catalog_path is not None:
+            is_ready = is_ready and _query_intent_service_ready(state)
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
 
     @app.get(
@@ -305,6 +327,37 @@ def create_app(
         return await to_thread.run_sync(
             partial(_build_reviewed_document_catalog, selected_settings, state)
         )
+
+    @app.post(
+        "/v1/query-intents/parse",
+        response_model=QueryIntent,
+        responses=INTENT_ERROR_RESPONSES,
+        operation_id="postV1QueryIntentsParse",
+    )
+    def parse_intent(request: QueryIntentParseRequest) -> QueryIntent:
+        if not _query_intent_service_ready(state):
+            raise ApiProblem(
+                503,
+                "intent_service_unavailable",
+                "query intent service is unavailable",
+            )
+        try:
+            intent = parse_query_intent(request.query, state.query_intent_catalog)
+        except QueryIntentError:
+            raise ApiProblem(422, "invalid_request", "query intent is invalid") from None
+        except Exception:
+            raise ApiProblem(
+                503,
+                "intent_service_unavailable",
+                "query intent service is unavailable",
+            ) from None
+        rejected = {
+            DiagnosticCode.NO_RECOGNIZED_INTENT,
+            DiagnosticCode.AMBIGUOUS_ALIAS,
+        }
+        if rejected.intersection(intent.diagnostics):
+            raise ApiProblem(422, "invalid_request", "query intent is invalid")
+        return intent
 
     @app.post(
         "/v1/knowledge-bases/build",
@@ -866,6 +919,10 @@ def _build_reviewed_document_catalog(
 
 def _report_service_ready(state: ServiceState) -> bool:
     return bool(state.report_plans) and not state.report_initialization_failed
+
+
+def _query_intent_service_ready(state: ServiceState) -> bool:
+    return state.query_intent_catalog is not None and not state.query_intent_initialization_failed
 
 
 def _build_applicant_report_response(

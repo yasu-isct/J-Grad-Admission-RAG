@@ -294,7 +294,6 @@ def test_local_ui_contract_has_accessible_states_and_safe_rendering() -> None:
         "document.cookie",
         "serviceWorker",
         "console.",
-        "/v1/applicant-reports",
     ):
         assert forbidden not in javascript
     assert "textContent" in javascript

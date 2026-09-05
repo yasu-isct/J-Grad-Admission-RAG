@@ -120,6 +120,7 @@ APPLICABILITY_FIXTURE_PATH = (
 REVIEWED_REPORT_PLAN_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "reviewed_report_plan_isct_master_v1.json"
 )
+QUERY_INTENT_CATALOG_PATH = REPO_ROOT / "config" / "query_intent_catalog_v1.json"
 REAL_PDF_ENV = "JGRAD_REAL_PDF"
 
 pytestmark = pytest.mark.real_pdf
@@ -896,6 +897,7 @@ def test_real_pdf_applicant_report_http_scenarios(
         manifest_path=manifest_path,
         policy_path=policy_path,
         report_plan_paths=(REVIEWED_REPORT_PLAN_PATH.resolve(),),
+        query_intent_catalog_path=QUERY_INTENT_CATALOG_PATH.resolve(),
     )
     app = create_app(
         settings,
@@ -910,14 +912,23 @@ def test_real_pdf_applicant_report_http_scenarios(
     with TestClient(app) as client:
         assert client.get("/v1/health/ready").json()["ready"] is True
         for scenario_id, profile, include_scope, expected_rule, expected_report in scenarios:
-            scenario_intent = _real_report_intent(matching_scope, include_scope=include_scope)
+            question = (
+                "環境・社会理工学院 技術経営専門職学位課程の出願資格 QUERY_SECRET"
+                if include_scope
+                else "出願資格 QUERY_SECRET"
+            )
+            intent_response = client.post(
+                "/v1/query-intents/parse",
+                json={"schema_version": "1.0", "query": question},
+            )
+            assert intent_response.status_code == 200
             response = client.post(
                 "/v1/applicant-reports",
                 json={
                     "schema_version": "1.0",
                     "report_id": f"real-http-{scenario_id}-v1",
                     "profile": profile.model_dump(mode="json"),
-                    "intent": scenario_intent.model_dump(mode="json"),
+                    "intent": intent_response.json(),
                     "selection": selection.model_dump(mode="json"),
                 },
             )
@@ -935,6 +946,7 @@ def test_real_pdf_applicant_report_http_scenarios(
             assert "部分的な規則範囲です" in body["markdown"]
             assert "総合的な出願資格" in body["markdown"]
             assert "QUERY_SECRET" not in body["markdown"]
+            assert question not in body["markdown"]
             assert plan.source_kb_sha256 not in body["markdown"]
             assert "応募者は不適格" not in body["markdown"]
 

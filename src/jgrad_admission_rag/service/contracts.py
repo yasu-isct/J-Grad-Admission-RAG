@@ -286,6 +286,18 @@ class ApplicantReportResponse(ApiModel):
         return self
 
 
+class QueryIntentParseRequest(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    query: str = Field(min_length=1, max_length=1000)
+
+    @field_validator("query")
+    @classmethod
+    def query_must_be_explicit(cls, value: str) -> str:
+        if value != value.strip() or any(ord(character) < 32 for character in value):
+            raise ValueError("query must be explicit")
+        return value
+
+
 class ReviewedDocumentPublicIdentity(ApiModel):
     schema_version: Literal["1.0"] = "1.0"
     document_id: str
@@ -355,6 +367,7 @@ QUERY_ERROR_RESPONSES = {
 REPORT_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
 }
+INTENT_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (415, 422, 500, 503)}
 CATALOG_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (500, 503)}
 
 
@@ -368,6 +381,7 @@ __all__ = [
     "BuildSummary",
     "ApplicantReportRequest",
     "ApplicantReportResponse",
+    "QueryIntentParseRequest",
     "BUILD_ERROR_RESPONSES",
     "CorpusQueryRequest",
     "CorpusSearchResult",
@@ -377,6 +391,7 @@ __all__ = [
     "JOB_ERROR_RESPONSES",
     "QUERY_ERROR_RESPONSES",
     "REPORT_ERROR_RESPONSES",
+    "INTENT_ERROR_RESPONSES",
     "CATALOG_ERROR_RESPONSES",
     "ReviewedDocumentCatalogItem",
     "ReviewedDocumentCatalogResponse",
