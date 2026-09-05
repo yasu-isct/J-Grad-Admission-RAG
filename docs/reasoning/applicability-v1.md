@@ -19,6 +19,19 @@ ApplicantProfile + QueryIntent + EvidencePack + reviewed ApplicabilityRule
   -> later RSN-04/05 rule ordering and conflict handling
 ```
 
+APP-03C adds a second typed entry for evidence that a reviewed plan already binds exactly:
+
+```text
+ApplicantProfile + QueryIntent + DirectOfficialEvidence + reviewed ApplicabilityRule
+  -> the same typed three-valued predicate/scope core
+```
+
+`DirectOfficialEvidence` contains only exact document/KB/PDF identity and primary Fact/page
+references. It has no retrieval request, query, rank, score, channel, row, or embedding metadata.
+The existing `EvidencePack` entry retains its original query-consistency and primary/attached
+binding behavior; both entries delegate to the same implementation of predicate truth tables,
+missing-profile fields, scope diagnostics, and decision status.
+
 Retrieval has already selected official evidence. RSN-03 does not rank evidence, parse Japanese
 rules, call a model, or generate prose. A reviewer must author each rule after inspecting the bound
 Fact locally.

@@ -15,8 +15,8 @@ reviewed selected DocumentIdentity
 ```
 
 The plan does not run an `ApplicantProfile`, retrieve evidence, materialize official Fact text,
-construct a `ReasoningTrace`, or render a report. APP-03B will perform those operations against one
-selected, audited document after matching it to an allowlisted plan.
+construct a `ReasoningTrace`, or render a report. APP-03B materializes the exact bound Facts after
+matching one selected audited document; APP-03C separately runs the reviewed M4 report chain.
 
 ## Contract
 
@@ -68,6 +68,6 @@ Retrieval rank is evidence discovery metadata, not a reviewed admission rule. A 
 status describes processing progress, not an applicant conclusion. Neither may be promoted into a
 plan or reasoning outcome.
 
-Official Fact text is also absent from the plan. APP-03B will resolve each exact evidence binding
-against the audited selected KB, verify its Fact ID, pages, and authoritative text hash, and only
-then materialize evidence for the cited report.
+Official Fact text is also absent from the plan. APP-03B resolves each exact evidence binding
+against the audited selected KB, verifies its Fact ID, pages, and authoritative text hash, and only
+then materializes evidence for APP-03C's cited report.

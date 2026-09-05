@@ -205,6 +205,15 @@ and scope. It never fabricates retrieval metadata or returns a partial bundle. O
 persisted by default and no applicant reasoning runs in this layer. See
 [Reviewed Report Evidence v1](reasoning/reviewed-report-evidence-v1.md).
 
+`ApplicantReport` v1 is APP-03C's deterministic orchestration and self-audit boundary. Ranked
+`EvidencePack` inputs and exact `DirectOfficialEvidence` use separate typed adapters but share the
+single applicability core; the report then calls the existing precedence, interaction, trace, and
+cited-answer builders. It embeds the reviewed source plan and exact evidence so loading can rebuild
+every derived layer and close all citations. Fixed Japanese Markdown keeps partial coverage
+prominent and renders exact official text inside inert dynamic fences. No profile values, raw query,
+retrieval metadata, model prose, overall eligibility conclusion, persistence, or HTTP route enters
+this layer. See [Applicant Report v1](reasoning/applicant-report-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope

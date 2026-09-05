@@ -55,12 +55,21 @@ from jgrad_admission_rag.retrieval.vector_search import search_loaded_index, sea
 from jgrad_admission_rag.retrieval.reference_expansion import expand_references
 from jgrad_admission_rag.reasoning.applicability import (
     ApplicabilityRule,
+    ApplicabilityStatus,
     OfficialEvidenceBinding,
     evaluate_applicability,
 )
 from jgrad_admission_rag.reasoning.applicant_profile import ApplicantProfile
+from jgrad_admission_rag.reasoning.applicant_report import (
+    build_applicant_report,
+    render_applicant_report_markdown,
+)
+from jgrad_admission_rag.reasoning.cited_answer import ReportStatus
 from jgrad_admission_rag.reasoning.query_intent import (
     DiagnosticCode,
+    IntentCategory,
+    IntentMention,
+    MentionKind,
     QueryIntent,
     RequestedScope,
 )
@@ -686,6 +695,162 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
                 (stale_plan,),
             )
         assert exc_info.value.code is expected
+
+
+def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    document_id = real_document_kb.manifest.identity.document_id
+    kb_relative = f"documents/{document_id}/document_kb.json"
+    kb_path = tmp_path / Path(*kb_relative.split("/"))
+    kb_path.parent.mkdir(parents=True)
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    index_relative = f"indexes/{document_id}"
+    build_local_index(
+        kb_path,
+        tmp_path / Path(*index_relative.split("/")),
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "real-applicant-report-corpus",
+        tmp_path,
+        (CorpusRegistration(kb_relative, index_relative),),
+    )
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=real_document_kb.manifest.identity.document_family_id,
+                active_document_id=document_id,
+            ),
+        ),
+    )
+    selection = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(document_ids=(document_id,)),
+    )
+    plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
+    evidence = prepare_reviewed_report_evidence(
+        tmp_path,
+        manifest,
+        policy,
+        selection,
+        (plan,),
+    )
+    record = evidence.evidence_records[0]
+    matching_scope = plan.rules[0].scope
+
+    def intent(*, include_scope: bool) -> QueryIntent:
+        target = matching_scope.scope_targets[0]
+        query = "eligibility" + (f" {target}" if include_scope else "") + " QUERY_SECRET"
+        mentions = [
+            IntentMention(
+                canonical_value=IntentCategory.ELIGIBILITY.value,
+                mention_kind=MentionKind.INTENT,
+                start_offset=0,
+                end_offset=len("eligibility"),
+                surface="eligibility",
+            )
+        ]
+        if include_scope:
+            start = query.index(target)
+            mentions.append(
+                IntentMention(
+                    canonical_value=target,
+                    mention_kind=MentionKind.SCOPE_TARGET,
+                    start_offset=start,
+                    end_offset=start + len(target),
+                    surface=target,
+                )
+            )
+        return QueryIntent(
+            schema_version="1.0",
+            parser_version="lexical-ja-v1",
+            catalog_version="real-report-v1",
+            query=query,
+            requested_categories=(IntentCategory.ELIGIBILITY,),
+            requested_scope=RequestedScope(
+                department_or_program_targets=(target,) if include_scope else (),
+                parent_college_values=(),
+                target_degree_level=None,
+                intake_year=None,
+                intake_month=None,
+            ),
+            matched_mentions=tuple(mentions),
+            diagnostics=(),
+        )
+
+    matching_profile = _real_applicability_profile(22, matching_scope.model_dump(mode="json"))
+    missing_scope_payload = matching_profile.model_dump(mode="json")
+    missing_scope_payload["target_application"]["graduate_school_or_college"] = None
+    missing_scope_payload["target_application"]["department_or_program"] = None
+    conflict_payload = matching_profile.model_dump(mode="json")
+    conflict_payload["target_application"]["department_or_program"] = "Other Program"
+    scenarios = (
+        (
+            "confirmed",
+            matching_profile,
+            intent(include_scope=True),
+            ApplicabilityStatus.CONFIRMED,
+            ReportStatus.COMPLETE,
+        ),
+        (
+            "not-applicable",
+            _real_applicability_profile(21, matching_scope.model_dump(mode="json")),
+            intent(include_scope=True),
+            ApplicabilityStatus.NOT_APPLICABLE,
+            ReportStatus.COMPLETE,
+        ),
+        (
+            "missing-age",
+            _real_applicability_profile(None, matching_scope.model_dump(mode="json")),
+            intent(include_scope=True),
+            ApplicabilityStatus.NEEDS_INFORMATION,
+            ReportStatus.NEEDS_INFORMATION,
+        ),
+        (
+            "missing-scope",
+            ApplicantProfile.model_validate(missing_scope_payload),
+            intent(include_scope=False),
+            ApplicabilityStatus.NEEDS_INFORMATION,
+            ReportStatus.NEEDS_INFORMATION,
+        ),
+        (
+            "conflicting-scope",
+            ApplicantProfile.model_validate(conflict_payload),
+            intent(include_scope=True),
+            ApplicabilityStatus.NEEDS_INFORMATION,
+            ReportStatus.NEEDS_REVIEW,
+        ),
+    )
+
+    for (
+        scenario_id,
+        profile,
+        scenario_intent,
+        expected_rule_status,
+        expected_report_status,
+    ) in scenarios:
+        report = build_applicant_report(
+            f"real-{scenario_id}-v1",
+            profile,
+            scenario_intent,
+            plan,
+            evidence,
+        )
+        markdown = render_applicant_report_markdown(report)
+        assert report.reasoning_trace.source_decisions[0].status is expected_rule_status
+        assert report.report_status is expected_report_status
+        assert report.evidence_bundle.evidence_records[0].fact_id == "fact:00063"
+        assert record.text in markdown
+        assert "[fact:00063, p.7]" in markdown
+        assert "部分的な規則範囲です" in markdown
+        assert "総合的な出願資格" in markdown
+        assert "QUERY_SECRET" not in markdown
+        assert plan.source_kb_sha256 not in markdown
+        assert "応募者は不適格" not in markdown
 
 
 def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> ApplicantProfile:

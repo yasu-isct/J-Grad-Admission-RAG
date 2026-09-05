@@ -48,6 +48,7 @@ __all__ = [
     "ApplicabilityPredicate",
     "ApplicabilityRule",
     "ApplicabilityStatus",
+    "DirectOfficialEvidence",
     "EvidenceRole",
     "LogicalMode",
     "OfficialEvidenceBinding",
@@ -58,6 +59,7 @@ __all__ = [
     "canonical_applicability_decision_bytes",
     "canonical_applicability_rule_bytes",
     "evaluate_applicability",
+    "evaluate_applicability_with_direct_evidence",
     "load_applicability_decision",
     "load_applicability_decision_bytes",
     "load_applicability_rule",
@@ -357,6 +359,39 @@ class OfficialEvidenceReference(ApplicabilityModel):
         return values
 
 
+class DirectOfficialEvidence(ApplicabilityModel):
+    """Exact plan-bound evidence with no retrieval request or ranking metadata."""
+
+    document_id: str
+    source_kb_sha256: str
+    source_pdf_sha256: str
+    official_evidence: tuple[OfficialEvidenceReference, ...] = Field(min_length=1)
+
+    @field_validator("document_id")
+    @classmethod
+    def document_id_must_be_explicit(cls, value: str) -> str:
+        _validate_trimmed(value, "direct evidence document identifier")
+        return value
+
+    @field_validator("source_kb_sha256", "source_pdf_sha256")
+    @classmethod
+    def source_hashes_must_be_sha256(cls, value: str) -> str:
+        _validate_sha256(value, "direct evidence source hash")
+        return value
+
+    @model_validator(mode="after")
+    def references_must_be_exact_primary_evidence(self) -> DirectOfficialEvidence:
+        keys = tuple((item.document_id, item.fact_id, item.role) for item in self.official_evidence)
+        if len(keys) != len(set(keys)):
+            raise ValueError("direct official evidence must be unique")
+        if any(
+            item.document_id != self.document_id or item.role is not EvidenceRole.PRIMARY
+            for item in self.official_evidence
+        ):
+            raise ValueError("direct official evidence identity or role does not reconcile")
+        return self
+
+
 class ApplicabilityDecision(ApplicabilityModel):
     schema_version: Literal["1.0"] = APPLICABILITY_DECISION_SCHEMA_VERSION
     rule_id: str
@@ -420,6 +455,51 @@ def evaluate_applicability(
         raise ApplicabilityError("applicability inputs are inconsistent")
 
     evidence_refs, evidence_missing = _bind_official_evidence(evidence_pack, rule)
+    runtime = evidence_pack.runtime
+    return _evaluate_applicability_core(
+        profile,
+        intent,
+        rule,
+        evidence_refs,
+        evidence_missing,
+        (runtime.document_id, runtime.source_kb_sha256, runtime.source_pdf_sha256),
+    )
+
+
+def evaluate_applicability_with_direct_evidence(
+    profile: ApplicantProfile,
+    intent: QueryIntent,
+    direct_evidence: DirectOfficialEvidence,
+    rule: ApplicabilityRule,
+) -> ApplicabilityDecision:
+    """Execute one reviewed rule using exact evidence without fabricating retrieval state."""
+
+    profile, intent, direct_evidence, rule = _revalidate_direct_inputs(
+        profile, intent, direct_evidence, rule
+    )
+    evidence_refs = _bind_direct_official_evidence(direct_evidence, rule)
+    return _evaluate_applicability_core(
+        profile,
+        intent,
+        rule,
+        evidence_refs,
+        False,
+        (
+            direct_evidence.document_id,
+            direct_evidence.source_kb_sha256,
+            direct_evidence.source_pdf_sha256,
+        ),
+    )
+
+
+def _evaluate_applicability_core(
+    profile: ApplicantProfile,
+    intent: QueryIntent,
+    rule: ApplicabilityRule,
+    evidence_refs: tuple[OfficialEvidenceReference, ...],
+    evidence_missing: bool,
+    source_identity: tuple[str, str, str],
+) -> ApplicabilityDecision:
     outcomes, missing_fields = _evaluate_predicates(profile, rule.predicates)
     scope_status, scope_diagnostics = _evaluate_scope(profile, intent, rule.scope)
     diagnostics = list(scope_diagnostics)
@@ -433,7 +513,6 @@ def evaluate_applicability(
     if evidence_missing:
         status = ApplicabilityStatus.NEEDS_INFORMATION
 
-    runtime = evidence_pack.runtime
     return ApplicabilityDecision(
         rule_id=rule.rule_id,
         logical_mode=rule.mode,
@@ -443,9 +522,9 @@ def evaluate_applicability(
         diagnostics=tuple(sorted(set(diagnostics), key=lambda value: value.value)),
         official_evidence=evidence_refs,
         scope_status=scope_status,
-        document_id=runtime.document_id,
-        source_kb_sha256=runtime.source_kb_sha256,
-        source_pdf_sha256=runtime.source_pdf_sha256,
+        document_id=source_identity[0],
+        source_kb_sha256=source_identity[1],
+        source_pdf_sha256=source_identity[2],
     )
 
 
@@ -508,6 +587,27 @@ def _revalidate_inputs(
         raise ApplicabilityError("applicability inputs are invalid or unsupported") from None
 
 
+def _revalidate_direct_inputs(
+    profile: ApplicantProfile,
+    intent: QueryIntent,
+    direct_evidence: DirectOfficialEvidence,
+    rule: ApplicabilityRule,
+) -> tuple[ApplicantProfile, QueryIntent, DirectOfficialEvidence, ApplicabilityRule]:
+    try:
+        if not isinstance(direct_evidence, DirectOfficialEvidence) or set(
+            direct_evidence.__dict__
+        ) != set(DirectOfficialEvidence.model_fields):
+            raise TypeError
+        return (
+            ApplicantProfile.model_validate(profile.model_dump(mode="json")),
+            QueryIntent.model_validate(intent.model_dump(mode="json")),
+            DirectOfficialEvidence.model_validate(direct_evidence.model_dump(mode="json")),
+            ApplicabilityRule.model_validate(rule.model_dump(mode="json")),
+        )
+    except (AttributeError, TypeError, ValidationError, ValueError):
+        raise ApplicabilityError("applicability inputs are invalid or unsupported") from None
+
+
 def _bind_official_evidence(
     evidence_pack: EvidencePack, rule: ApplicabilityRule
 ) -> tuple[tuple[OfficialEvidenceReference, ...], bool]:
@@ -546,6 +646,36 @@ def _bind_official_evidence(
             )
         )
     return tuple(references), missing
+
+
+def _bind_direct_official_evidence(
+    direct_evidence: DirectOfficialEvidence,
+    rule: ApplicabilityRule,
+) -> tuple[OfficialEvidenceReference, ...]:
+    identity = (
+        direct_evidence.document_id,
+        direct_evidence.source_kb_sha256,
+        direct_evidence.source_pdf_sha256,
+    )
+    references = {item.fact_id: item for item in direct_evidence.official_evidence}
+    if set(references) != {binding.fact_id for binding in rule.evidence_bindings}:
+        raise ApplicabilityError("direct official evidence binding is inconsistent")
+    ordered: list[OfficialEvidenceReference] = []
+    for binding in rule.evidence_bindings:
+        if (
+            binding.document_id,
+            binding.source_kb_sha256,
+            binding.source_pdf_sha256,
+        ) != identity:
+            raise ApplicabilityError("direct official evidence binding is inconsistent")
+        reference = references[binding.fact_id]
+        if (
+            reference.document_id != binding.document_id
+            or reference.source_pages != binding.source_pages
+        ):
+            raise ApplicabilityError("direct official evidence binding is inconsistent")
+        ordered.append(reference)
+    return tuple(ordered)
 
 
 def _evaluate_predicates(
