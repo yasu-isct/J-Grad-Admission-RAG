@@ -47,6 +47,10 @@ server-owned plan binds one exact document identity to existing reviewed rules a
 declares only partial intent coverage. It does not run a profile, materialize official text, or
 claim overall eligibility. APP-03B will consume that boundary only after APP-03A is accepted.
 
+APP-03B audits one selected corpus document, matches its unique server-owned plan, and materializes
+the exact bound official Facts into an in-memory evidence bundle. It performs no ranked retrieval or
+applicant reasoning; the following reviewed slice will consume this exact evidence.
+
 ### Completed M4 Summary
 
 RSN-02 added the complementary query boundary: a reviewed, conservative Japanese lexical catalog
@@ -170,6 +174,7 @@ tolerances and CI policy only after reviewing that evidence.
 | APP-02B | Run durable jobs through a bounded worker | Lifecycle-owned local build execution |
 | APP-02C | Expose durable job HTTP routes | Observable long-running document builds |
 | APP-03A | Define reviewed single-document report plans | Canonical partial rulebook for later report execution |
+| APP-03B | Materialize exact reviewed report evidence | Audited bound Facts with official text, pages, and rule IDs |
 | APP-03 | Generate cited applicant reports | Exact selected evidence and M4 results become a cited report |
 | APP-04 | Add a focused evidence-review interface | Search, profile input, evidence, and report views |
 

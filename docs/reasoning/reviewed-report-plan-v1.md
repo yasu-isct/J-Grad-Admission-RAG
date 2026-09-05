@@ -60,6 +60,10 @@ confirmed atomic rule says that rule applies to the supplied facts; it does not 
 applicant is eligible, has passed review, will be admitted, or should apply. Completeness requires a
 separate reviewed rule-coverage decision and is not representable in v1.
 
+For current corpus execution, that plan's nested rule binding uses the independently recomputed
+canonical schema-0.6 298-Fact KB hash. Historical M4/RET-09 schema-0.5 fixtures remain frozen and are
+not treated as an alternate runtime binding.
+
 Retrieval rank is evidence discovery metadata, not a reviewed admission rule. A durable build-job
 status describes processing progress, not an applicant conclusion. Neither may be promoted into a
 plan or reasoning outcome.

@@ -65,6 +65,11 @@ from jgrad_admission_rag.reasoning.query_intent import (
     RequestedScope,
 )
 from jgrad_admission_rag.reasoning.reviewed_report_plan import load_reviewed_report_plan
+from jgrad_admission_rag.reasoning.reviewed_report_evidence import (
+    ReviewedReportEvidenceError,
+    ReviewedReportEvidenceFailure,
+    prepare_reviewed_report_evidence,
+)
 from jgrad_admission_rag.schemas.document_kb import (
     DocumentKnowledgeBase,
     canonical_document_kb_bytes,
@@ -594,17 +599,93 @@ def test_real_pdf_reviewed_report_plan_resolves_exact_current_fact(
     plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
     binding = plan.rules[0].evidence_bindings[0]
     fact = next(item for item in real_document_kb.facts if item.fact_id == binding.fact_id)
-    applicability_fixture = json.loads(APPLICABILITY_FIXTURE_PATH.read_text(encoding="utf-8"))
-
     assert len(real_document_kb.facts) == 298
     assert plan.document_identity == real_document_identity
-    assert binding.source_kb_sha256 == applicability_fixture["source_kb_sha256"]
+    assert hashlib.sha256(canonical_document_kb_bytes(real_document_kb)).hexdigest() == (
+        binding.source_kb_sha256
+    )
     assert binding.document_id == real_document_kb.manifest.identity.document_id
     assert binding.source_pdf_sha256 == real_document_kb.manifest.pdf_sha256
     assert tuple(fact.source_pages) == binding.source_pages == (7,)
     assert hashlib.sha256(fact.text.encode("utf-8")).hexdigest() == (
         binding.authoritative_fact_text_sha256
     )
+
+
+def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_staleness(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    document_id = real_document_kb.manifest.identity.document_id
+    kb_relative = f"documents/{document_id}/document_kb.json"
+    kb_path = tmp_path / Path(*kb_relative.split("/"))
+    kb_path.parent.mkdir(parents=True)
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    index_relative = f"indexes/{document_id}"
+    build_local_index(
+        kb_path,
+        tmp_path / Path(*index_relative.split("/")),
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "real-report-corpus",
+        tmp_path,
+        (CorpusRegistration(kb_relative, index_relative),),
+    )
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=real_document_kb.manifest.identity.document_family_id,
+                active_document_id=document_id,
+            ),
+        ),
+    )
+    selection = select_corpus_documents(
+        manifest,
+        policy,
+        CorpusSelectionRequest(document_ids=(document_id,)),
+    )
+    plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
+
+    bundle = prepare_reviewed_report_evidence(
+        tmp_path,
+        manifest,
+        policy,
+        selection,
+        (plan,),
+    )
+    record = bundle.evidence_records[0]
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00063")
+    assert len(real_document_kb.facts) == 298
+    assert len(bundle.evidence_records) == 1
+    assert record.fact_id == "fact:00063"
+    assert record.source_pages == (7,)
+    assert record.text == fact.text
+    assert record.rule_ids == ("isct-master-individual-review-age-22-criterion",)
+
+    stale_cases = (
+        ("source_kb_sha256", "d" * 64, ReviewedReportEvidenceFailure.KB_HASH_MISMATCH),
+        ("source_pages", [8], ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH),
+        (
+            "authoritative_fact_text_sha256",
+            "d" * 64,
+            ReviewedReportEvidenceFailure.FACT_TEXT_MISMATCH,
+        ),
+    )
+    for field, value, expected in stale_cases:
+        payload = plan.model_dump(mode="json")
+        payload["rules"][0]["evidence_bindings"][0][field] = value
+        stale_plan = type(plan).model_validate(payload)
+        with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+            prepare_reviewed_report_evidence(
+                tmp_path,
+                manifest,
+                policy,
+                selection,
+                (stale_plan,),
+            )
+        assert exc_info.value.code is expected
 
 
 def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> ApplicantProfile:

@@ -195,7 +195,7 @@ def test_real_reviewed_plan_fixture_reuses_the_accepted_rule() -> None:
     assert plan.coverage_status == "partial_reviewed_rules"
     assert plan.covered_categories == (IntentCategory.ELIGIBILITY,)
     assert plan.source_kb_sha256 == (
-        "8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d"
+        "d752d58b073f9bf57dc399e477ec8325f4ed0ccaaca351f67a05c9f8304f258f"
     )
     rule = plan.rules[0]
     binding = rule.evidence_bindings[0]

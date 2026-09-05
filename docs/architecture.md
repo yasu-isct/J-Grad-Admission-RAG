@@ -198,6 +198,13 @@ allowlisted registry will reject ambiguous duplicate plans for the selected iden
 materialize exact Facts and run the existing M4 pipeline. See
 [Reviewed Report Plan v1](reasoning/reviewed-report-plan-v1.md).
 
+`ReviewedReportEvidenceBundle` v1 is APP-03B's in-memory materialization boundary. It first audits
+the current corpus and revalidates an exact one-document selection, matches one server-owned plan by
+complete identity, then resolves each reviewed binding directly to authoritative Fact text, pages,
+and scope. It never fabricates retrieval metadata or returns a partial bundle. Official text is not
+persisted by default and no applicant reasoning runs in this layer. See
+[Reviewed Report Evidence v1](reasoning/reviewed-report-evidence-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
