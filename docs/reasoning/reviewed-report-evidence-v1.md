@@ -61,5 +61,6 @@ message, never the corpus root, registered path, hash, secret, or official text.
 APP-03B handles one selected document only. It does not run `ApplicantProfile`, applicability,
 precedence, interaction analysis, `ReasoningTrace`, `CitedAnswer`, or Markdown rendering. It does not
 modify corpus files, build indexes, load an embedding model, search, or expose an HTTP/CLI route.
-The next reviewed APP-03 slice will adapt this direct evidence into the existing reasoning pipeline
-without fabricating retrieval metadata or duplicating predicate and scope logic.
+APP-03C adapts this direct evidence into the existing reasoning pipeline through a typed
+`DirectOfficialEvidence` boundary, without fabricating retrieval metadata or duplicating predicate
+and scope logic.

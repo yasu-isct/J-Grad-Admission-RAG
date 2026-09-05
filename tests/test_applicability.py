@@ -14,6 +14,7 @@ from jgrad_admission_rag.reasoning.applicability import (
     ApplicabilityPredicate,
     ApplicabilityRule,
     ApplicabilityStatus,
+    DirectOfficialEvidence,
     EvidenceRole,
     LogicalMode,
     OfficialEvidenceBinding,
@@ -24,6 +25,7 @@ from jgrad_admission_rag.reasoning.applicability import (
     canonical_applicability_decision_bytes,
     canonical_applicability_rule_bytes,
     evaluate_applicability,
+    evaluate_applicability_with_direct_evidence,
     load_applicability_decision,
     load_applicability_decision_bytes,
     load_applicability_rule,
@@ -566,6 +568,78 @@ def test_evidence_binding_accepts_primary_and_attached_records(role: EvidenceRol
 
     assert decision.status is ApplicabilityStatus.CONFIRMED
     assert decision.official_evidence[0].role is role
+
+
+def test_direct_official_evidence_reuses_the_existing_applicability_core() -> None:
+    profile = _profile()
+    intent = _intent()
+    rule = _rule()
+    expected = evaluate_applicability(profile, intent, _pack(), rule)
+    direct = DirectOfficialEvidence(
+        document_id="doc",
+        source_kb_sha256=KB_HASH,
+        source_pdf_sha256=PDF_HASH,
+        official_evidence=(
+            OfficialEvidenceReference(
+                document_id="doc",
+                fact_id="fact:rule",
+                source_pages=(2,),
+                role=EvidenceRole.PRIMARY,
+            ),
+        ),
+    )
+
+    actual = evaluate_applicability_with_direct_evidence(profile, intent, direct, rule)
+
+    assert actual == expected
+
+
+def test_direct_official_evidence_rejects_missing_extra_or_non_primary_bindings() -> None:
+    reference = OfficialEvidenceReference(
+        document_id="doc",
+        fact_id="fact:rule",
+        source_pages=(2,),
+        role=EvidenceRole.PRIMARY,
+    )
+    for references in (
+        (reference, reference.model_copy(update={"fact_id": "fact:extra"})),
+        (reference.model_copy(update={"fact_id": "fact:other"}),),
+    ):
+        direct = DirectOfficialEvidence(
+            document_id="doc",
+            source_kb_sha256=KB_HASH,
+            source_pdf_sha256=PDF_HASH,
+            official_evidence=references,
+        )
+        with pytest.raises(ApplicabilityError):
+            evaluate_applicability_with_direct_evidence(
+                _profile(),
+                _intent(),
+                direct,
+                _rule(),
+            )
+
+    with pytest.raises(ValidationError):
+        DirectOfficialEvidence(
+            document_id="doc",
+            source_kb_sha256=KB_HASH,
+            source_pdf_sha256=PDF_HASH,
+            official_evidence=(reference.model_copy(update={"role": EvidenceRole.ATTACHED}),),
+        )
+
+    bypassed = DirectOfficialEvidence(
+        document_id="doc",
+        source_kb_sha256=KB_HASH,
+        source_pdf_sha256=PDF_HASH,
+        official_evidence=(reference,),
+    ).model_copy(update={"query": "forbidden"})
+    with pytest.raises(ApplicabilityError):
+        evaluate_applicability_with_direct_evidence(
+            _profile(),
+            _intent(),
+            bypassed,
+            _rule(),
+        )
 
 
 def test_missing_evidence_never_confirms_rule() -> None:

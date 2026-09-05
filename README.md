@@ -112,6 +112,12 @@ audit and one-document selection revalidation. This in-memory boundary preserves
 pages without fabricating search ranks or running applicant reasoning. See
 [Reviewed Report Evidence v1](docs/reasoning/reviewed-report-evidence-v1.md).
 
+`ApplicantReport` combines that reviewed plan and exact evidence with one profile and covered intent,
+then delegates to the existing applicability, precedence, interaction, trace, and cited-answer APIs.
+The strict report and fixed Japanese Markdown remain visibly partial, include a literal official-text
+appendix, and never claim overall eligibility or admission. See
+[Applicant Report v1](docs/reasoning/applicant-report-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 
