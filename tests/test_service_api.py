@@ -420,6 +420,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert operations == {
         "getV1HealthLive",
         "getV1HealthReady",
+        "getV1ReviewedDocuments",
         "postV1BuildJobs",
         "getV1BuildJob",
         "getV1BuildJobResult",
@@ -431,6 +432,14 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1ApplicantReports",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
+    catalog_operation = schema["paths"]["/v1/reviewed-documents"]["get"]
+    assert catalog_operation["operationId"] == "getV1ReviewedDocuments"
+    assert set(catalog_operation["responses"]) == {"200", "500", "503"}
+    assert "source_pdf_sha256" not in str(
+        schema["components"]["schemas"]["ReviewedDocumentPublicIdentity"]
+    )
+    assert "/app" not in schema["paths"]
+    assert "/assets/app.css" not in schema["paths"]
     build_operation = schema["paths"]["/v1/knowledge-bases/build"]["post"]
     multipart = build_operation["requestBody"]["content"]["multipart/form-data"]
     assert multipart["schema"]["required"] == ["pdf", "identity"]

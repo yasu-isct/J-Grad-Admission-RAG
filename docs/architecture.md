@@ -222,6 +222,14 @@ request delegates to COR-04, APP-03B, and APP-03C on the existing thread-offload
 not perform ranked retrieval, model activity, persistence, or duplicate reasoning. No configured
 plans preserves older readiness semantics, while configured invalid plans fail overall readiness.
 
+APP-04A adds a read-only presentation boundary over this service. The reviewed-document catalog
+re-audits current corpus/policy state and projects only hash-free public identity and partial-plan
+coverage for ready documents with one exact lifespan plan. Packaged `/app` HTML/CSS/JavaScript then
+constructs an existing one-document `CorpusQueryRequest` and renders server-order evidence through
+text-only DOM operations. It has no profile/report controls, applicant reasoning, Markdown
+rendering, storage, telemetry, external assets, or retrieval changes. See
+[Local Evidence Review UI](local-evidence-ui.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope

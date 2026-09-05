@@ -13,7 +13,7 @@ from uuid import UUID
 from anyio import CancelScope, open_file, to_thread
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import ValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.datastructures import FormData, UploadFile
@@ -65,6 +65,7 @@ from ..schemas.document_identity import (
 from .build_execution import build_response
 from .contracts import (
     BUILD_ERROR_RESPONSES,
+    CATALOG_ERROR_RESPONSES,
     HEALTH_ERROR_RESPONSES,
     JOB_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
@@ -78,6 +79,9 @@ from .contracts import (
     CorpusQueryRequest,
     ErrorEnvelope,
     HealthResponse,
+    ReviewedDocumentCatalogItem,
+    ReviewedDocumentCatalogResponse,
+    ReviewedDocumentPublicIdentity,
 )
 from .jobs import (
     BuildJobRecord,
@@ -233,11 +237,26 @@ def create_app(
                 else "application/json"
             )
             if media_type != expected:
-                return _error_response(
-                    415,
-                    _error("unsupported_media_type", "request content type is unsupported"),
+                return _secure_response(
+                    request.url.path,
+                    _error_response(
+                        415,
+                        _error("unsupported_media_type", "request content type is unsupported"),
+                    ),
                 )
-        return await call_next(request)
+        return _secure_response(request.url.path, await call_next(request))
+
+    @app.get("/app", include_in_schema=False)
+    def local_app() -> FileResponse:
+        return FileResponse(_ui_asset_path("app.html"), media_type="text/html; charset=utf-8")
+
+    @app.get("/assets/app.css", include_in_schema=False)
+    def local_app_css() -> FileResponse:
+        return FileResponse(_ui_asset_path("app.css"), media_type="text/css; charset=utf-8")
+
+    @app.get("/assets/app.js", include_in_schema=False)
+    def local_app_js() -> FileResponse:
+        return FileResponse(_ui_asset_path("app.js"), media_type="text/javascript; charset=utf-8")
 
     @app.get(
         "/v1/health/live",
@@ -269,6 +288,23 @@ def create_app(
         if selected_settings.report_plan_paths:
             is_ready = is_ready and _report_service_ready(state)
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
+
+    @app.get(
+        "/v1/reviewed-documents",
+        response_model=ReviewedDocumentCatalogResponse,
+        responses=CATALOG_ERROR_RESPONSES,
+        operation_id="getV1ReviewedDocuments",
+    )
+    async def reviewed_documents() -> ReviewedDocumentCatalogResponse:
+        if not _report_service_ready(state):
+            raise ApiProblem(
+                503,
+                "report_service_unavailable",
+                "reviewed document catalog is unavailable",
+            )
+        return await to_thread.run_sync(
+            partial(_build_reviewed_document_catalog, selected_settings, state)
+        )
 
     @app.post(
         "/v1/knowledge-bases/build",
@@ -758,6 +794,76 @@ def _load_report_plans(settings: ServiceSettings) -> tuple[ReviewedReportPlan, .
     return plans
 
 
+def _build_reviewed_document_catalog(
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> ReviewedDocumentCatalogResponse:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+    ):
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "reviewed document catalog is unavailable",
+        )
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        policy = load_corpus_version_policy(settings.policy_path)
+        audited = audit_corpus_manifest(manifest, settings.corpus_root)
+        validated_policy = validate_corpus_version_policy(policy, audited)
+        classifications = dict(validated_policy.classification_by_document_id)
+        corpus_identities = {entry.identity for entry in audited.entries}
+        if any(plan.document_identity not in corpus_identities for plan in state.report_plans):
+            raise ValueError
+
+        items = []
+        for entry in audited.entries:
+            matching_plans = tuple(
+                plan for plan in state.report_plans if plan.document_identity == entry.identity
+            )
+            if len(matching_plans) > 1:
+                raise ValueError
+            if entry.index_state != "ready" or not matching_plans:
+                continue
+            plan = matching_plans[0]
+            identity = entry.identity
+            items.append(
+                ReviewedDocumentCatalogItem(
+                    identity=ReviewedDocumentPublicIdentity(
+                        document_id=identity.document_id,
+                        document_family_id=identity.document_family_id,
+                        edition_id=identity.edition_id,
+                        institution_id=identity.institution_id,
+                        institution_name=identity.institution_name,
+                        degree_levels=identity.degree_levels,
+                        intake_terms=identity.intake_terms,
+                        official_title=identity.official_title,
+                        official_source_url=identity.official_source_url,
+                        publication_date=identity.publication_date,
+                        revision_date=identity.revision_date,
+                    ),
+                    version_classification=classifications[identity.document_id],
+                    plan_id=plan.plan_id,
+                    coverage_status=plan.coverage_status,
+                    covered_categories=plan.covered_categories,
+                    reviewed_coverage_statement=plan.reviewed_coverage_statement,
+                    limitation_statement=plan.limitation_statement,
+                )
+            )
+        items.sort(key=lambda item: item.identity.document_id)
+        return ReviewedDocumentCatalogResponse(items=tuple(items))
+    except ApiProblem:
+        raise
+    except Exception:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "reviewed document catalog is unavailable",
+        ) from None
+
+
 def _report_service_ready(state: ServiceState) -> bool:
     return bool(state.report_plans) and not state.report_initialization_failed
 
@@ -930,6 +1036,29 @@ def _error(code: str, message: str, details: dict[str, Any] | None = None) -> Er
 
 def _error_response(status: int, envelope: ErrorEnvelope) -> JSONResponse:
     return JSONResponse(status_code=status, content=envelope.model_dump(mode="json"))
+
+
+def _ui_asset_path(filename: str) -> Path:
+    return Path(__file__).with_name("static") / filename
+
+
+def _secure_response(path: str, response: Response) -> Response:
+    if path.startswith("/v1/") or path == "/app" or path.startswith("/assets/"):
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["Cache-Control"] = "no-store"
+    if path == "/app" or path.startswith("/assets/"):
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'none'; script-src 'self'; style-src 'self'; "
+            "connect-src 'self'; img-src 'self'; base-uri 'none'; "
+            "form-action 'self'; frame-ancestors 'none'; object-src 'none'"
+        )
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        )
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        response.headers["X-Frame-Options"] = "DENY"
+    return response
 
 
 __all__ = ["create_app"]

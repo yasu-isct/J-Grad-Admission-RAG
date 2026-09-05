@@ -42,6 +42,9 @@ jgrad-serve = "jgrad_admission_rag.service.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"jgrad_admission_rag.service.static" = ["*.html", "*.css", "*.js"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]

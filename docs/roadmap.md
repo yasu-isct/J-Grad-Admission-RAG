@@ -55,6 +55,9 @@ Japanese Markdown. Its visible status remains report readiness under explicitly 
 APP-03D places that accepted chain behind one strict local HTTP route. Server-owned reviewed plans
 are explicit lifespan configuration, and every request still selects exactly one corpus document;
 the endpoint adds transport only, not retrieval, new rules, persistence, or broader conclusions.
+APP-04A begins the focused UI with a safe reviewed-document catalog and an offline evidence-search
+screen. It exposes exact query hits and diagnostics only; applicant profile and report presentation
+remain a separate APP-04B slice.
 
 ### Completed M4 Summary
 
@@ -182,6 +185,8 @@ tolerances and CI policy only after reviewing that evidence.
 | APP-03B | Materialize exact reviewed report evidence | Audited bound Facts with official text, pages, and rule IDs |
 | APP-03C | Assemble deterministic cited applicant reports | Exact selected evidence and M4 results become a self-auditing partial report |
 | APP-03D | Expose cited applicant report HTTP route | Strict single-document report request returns the validated report and exact Markdown |
+| APP-04A | Add local evidence-review UI and reviewed-document catalog | Offline one-document search exposes exact evidence and diagnostics |
+| APP-04B | Add applicant profile and cited-report UI | Bounded profile controls call the frozen APP-03D contract |
 | APP-04 | Add a focused evidence-review interface | Search, profile input, evidence, and report views |
 
 ## GitHub Workflow

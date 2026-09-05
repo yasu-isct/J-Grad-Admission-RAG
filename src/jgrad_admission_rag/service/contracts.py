@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Any, Literal
 from uuid import UUID
 
@@ -11,8 +11,9 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from ..corpus_search import CorpusSearchRequest, CorpusSearchResult
 from ..reasoning.applicant_profile import ApplicantProfile
 from ..reasoning.applicant_report import ApplicantReport, render_applicant_report_markdown
-from ..reasoning.query_intent import QueryIntent
+from ..reasoning.query_intent import IntentCategory, QueryIntent
 from ..schemas.corpus_version import CorpusSelectionRequest
+from ..schemas.document_identity import DegreeLevel, DocumentIdentity, IntakeTerm
 from ..schemas.document_kb import DocumentKnowledgeBase
 
 
@@ -285,6 +286,64 @@ class ApplicantReportResponse(ApiModel):
         return self
 
 
+class ReviewedDocumentPublicIdentity(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    document_id: str
+    document_family_id: str
+    edition_id: str
+    institution_id: str
+    institution_name: str
+    degree_levels: tuple[DegreeLevel, ...] = Field(min_length=1)
+    intake_terms: tuple[IntakeTerm, ...] = Field(min_length=1)
+    official_title: str
+    official_source_url: str
+    publication_date: date | None = None
+    revision_date: date | None = None
+
+    @model_validator(mode="after")
+    def public_identity_must_remain_valid(self) -> ReviewedDocumentPublicIdentity:
+        DocumentIdentity(
+            **self.model_dump(mode="python"),
+            source_pdf_sha256="0" * 64,
+        )
+        return self
+
+
+class ReviewedDocumentCatalogItem(ApiModel):
+    identity: ReviewedDocumentPublicIdentity
+    version_classification: Literal["active", "historical"]
+    plan_id: str = Field(pattern=r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
+    coverage_status: Literal["partial_reviewed_rules"]
+    covered_categories: tuple[IntentCategory, ...] = Field(min_length=1)
+    reviewed_coverage_statement: str = Field(min_length=1, max_length=500)
+    limitation_statement: str = Field(min_length=1, max_length=500)
+
+    @field_validator("covered_categories")
+    @classmethod
+    def categories_must_be_canonical(
+        cls, values: tuple[IntentCategory, ...]
+    ) -> tuple[IntentCategory, ...]:
+        if values != tuple(sorted(set(values), key=lambda item: item.value)):
+            raise ValueError("covered categories must be sorted and unique")
+        return values
+
+
+class ReviewedDocumentCatalogResponse(ApiModel):
+    schema_version: Literal["1.0"] = "1.0"
+    items: tuple[ReviewedDocumentCatalogItem, ...]
+
+    @field_validator("items")
+    @classmethod
+    def items_must_be_canonical(
+        cls, values: tuple[ReviewedDocumentCatalogItem, ...]
+    ) -> tuple[ReviewedDocumentCatalogItem, ...]:
+        document_ids = tuple(item.identity.document_id for item in values)
+        plan_ids = tuple(item.plan_id for item in values)
+        if document_ids != tuple(sorted(set(document_ids))) or len(plan_ids) != len(set(plan_ids)):
+            raise ValueError("catalog items must be canonical and unique")
+        return values
+
+
 BUILD_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (409, 413, 415, 422, 500)}
 JOB_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 413, 415, 422, 500, 503)
@@ -296,6 +355,7 @@ QUERY_ERROR_RESPONSES = {
 REPORT_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
 }
+CATALOG_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (500, 503)}
 
 
 __all__ = [
@@ -317,5 +377,9 @@ __all__ = [
     "JOB_ERROR_RESPONSES",
     "QUERY_ERROR_RESPONSES",
     "REPORT_ERROR_RESPONSES",
+    "CATALOG_ERROR_RESPONSES",
+    "ReviewedDocumentCatalogItem",
+    "ReviewedDocumentCatalogResponse",
+    "ReviewedDocumentPublicIdentity",
     "QualityViolationSummary",
 ]
