@@ -157,6 +157,18 @@ from .reviewed_report_plan import (
     load_reviewed_report_plan,
     load_reviewed_report_plan_bytes,
 )
+from .reviewed_report_evidence import (
+    REVIEWED_REPORT_EVIDENCE_SCHEMA_VERSION,
+    SUPPORTED_REVIEWED_REPORT_EVIDENCE_SCHEMA_VERSIONS,
+    ReviewedReportEvidenceBundle,
+    ReviewedReportEvidenceCounts,
+    ReviewedReportEvidenceError,
+    ReviewedReportEvidenceFailure,
+    ReviewedReportEvidenceRecord,
+    canonical_reviewed_report_evidence_bundle_bytes,
+    load_reviewed_report_evidence_bundle_bytes,
+    prepare_reviewed_report_evidence,
+)
 
 __all__ = [
     "APPLICANT_PROFILE_SCHEMA_VERSION",
@@ -300,4 +312,14 @@ __all__ = [
     "canonical_reviewed_report_plan_bytes",
     "load_reviewed_report_plan",
     "load_reviewed_report_plan_bytes",
+    "REVIEWED_REPORT_EVIDENCE_SCHEMA_VERSION",
+    "SUPPORTED_REVIEWED_REPORT_EVIDENCE_SCHEMA_VERSIONS",
+    "ReviewedReportEvidenceBundle",
+    "ReviewedReportEvidenceCounts",
+    "ReviewedReportEvidenceError",
+    "ReviewedReportEvidenceFailure",
+    "ReviewedReportEvidenceRecord",
+    "canonical_reviewed_report_evidence_bundle_bytes",
+    "load_reviewed_report_evidence_bundle_bytes",
+    "prepare_reviewed_report_evidence",
 ]

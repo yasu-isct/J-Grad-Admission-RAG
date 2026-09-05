@@ -295,6 +295,20 @@ def audit_corpus_manifest(
         raise CorpusAuditError("corpus manifest audit failed") from error
 
 
+def resolve_registered_corpus_kb_path(
+    corpus_root: str | Path,
+    kb_path: str,
+) -> Path:
+    """Resolve one validated corpus-relative KB path beneath a server-owned root."""
+
+    try:
+        validate_corpus_relative_path(kb_path, directory=False)
+        root = _validated_root(corpus_root)
+        return _registered_target(root, kb_path, expected="file")
+    except (CorpusBuildError, TypeError, ValueError) as error:
+        raise CorpusAuditError("registered corpus KB path is unavailable or unsafe") from error
+
+
 def _build_entry(root: Path, registration: CorpusRegistration) -> CorpusDocumentEntry:
     kb_path = _registered_target(root, registration.kb_path, expected="file")
     if registration.index_path is None:
@@ -516,5 +530,6 @@ __all__ = [
     "CorpusUpdateValidationError",
     "audit_corpus_manifest",
     "build_corpus_manifest",
+    "resolve_registered_corpus_kb_path",
     "update_corpus_manifest",
 ]

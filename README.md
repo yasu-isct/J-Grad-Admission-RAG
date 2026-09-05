@@ -107,6 +107,11 @@ partial coverage. It is configuration rather than a request or conclusion; exact
 text is materialized only by the later report workflow. See
 [Reviewed Report Plan v1](docs/reasoning/reviewed-report-plan-v1.md).
 
+`ReviewedReportEvidenceBundle` then materializes only the exact Facts named by that plan after corpus
+audit and one-document selection revalidation. This in-memory boundary preserves official text and
+pages without fabricating search ranks or running applicant reasoning. See
+[Reviewed Report Evidence v1](docs/reasoning/reviewed-report-evidence-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 

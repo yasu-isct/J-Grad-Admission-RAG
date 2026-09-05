@@ -13,6 +13,8 @@ official prose, model output, or final eligibility verdict.
 document. It reuses the accepted `fact:00063` page 7 rule and declares only partial eligibility
 intent coverage. It contains reviewed configuration and hashes, but no official Fact text,
 applicant data, query, retrieval score, generated report, or overall eligibility state.
+Its nested rule is explicitly bound to the current canonical schema-0.6 298-Fact KB for APP-03B;
+the historical M4/RET-09 schema-0.5 fixtures remain unchanged.
 
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
