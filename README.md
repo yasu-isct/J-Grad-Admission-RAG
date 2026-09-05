@@ -101,6 +101,12 @@ routes expose submit/status/result/cancel/retry/exact-delete operations when an 
 `--job-root` is configured. See
 [Durable Build Worker v1](docs/service-build-worker-v1.md).
 
+Applicant reporting begins from a server-owned `ReviewedReportPlan`, which binds one exact reviewed
+document to its existing applicability, precedence, and interaction policies while declaring only
+partial coverage. It is configuration rather than a request or conclusion; exact official Fact
+text is materialized only by the later report workflow. See
+[Reviewed Report Plan v1](docs/reasoning/reviewed-report-plan-v1.md).
+
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:
 

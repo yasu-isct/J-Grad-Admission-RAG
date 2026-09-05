@@ -147,6 +147,16 @@ from .cited_answer import (
     canonical_cited_answer_bytes,
     render_cited_answer_markdown,
 )
+from .reviewed_report_plan import (
+    REVIEWED_REPORT_PLAN_SCHEMA_VERSION,
+    SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS,
+    PlanValidationFailure,
+    ReviewedReportPlan,
+    ReviewedReportPlanError,
+    canonical_reviewed_report_plan_bytes,
+    load_reviewed_report_plan,
+    load_reviewed_report_plan_bytes,
+)
 
 __all__ = [
     "APPLICANT_PROFILE_SCHEMA_VERSION",
@@ -282,4 +292,12 @@ __all__ = [
     "build_cited_answer",
     "canonical_cited_answer_bytes",
     "render_cited_answer_markdown",
+    "REVIEWED_REPORT_PLAN_SCHEMA_VERSION",
+    "SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS",
+    "PlanValidationFailure",
+    "ReviewedReportPlan",
+    "ReviewedReportPlanError",
+    "canonical_reviewed_report_plan_bytes",
+    "load_reviewed_report_plan",
+    "load_reviewed_report_plan_bytes",
 ]

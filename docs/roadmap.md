@@ -42,6 +42,11 @@ adds observable durable build operations, then connects cited applicant reports 
 evidence-review interface. APP-01 is the first transport slice: synchronous build and reviewed
 corpus query remain thin wrappers over the existing builder and COR-04/COR-05 contracts.
 
+APP-03A adds the reviewed rulebook needed before applicant reporting can be orchestrated. One
+server-owned plan binds one exact document identity to existing reviewed rules and policies and
+declares only partial intent coverage. It does not run a profile, materialize official text, or
+claim overall eligibility. APP-03B will consume that boundary only after APP-03A is accepted.
+
 ### Completed M4 Summary
 
 RSN-02 added the complementary query boundary: a reviewed, conservative Japanese lexical catalog
@@ -164,7 +169,8 @@ tolerances and CI policy only after reviewing that evidence.
 | APP-02A | Define durable build-job records and repository | Crash-safe SQLite/blob job ownership |
 | APP-02B | Run durable jobs through a bounded worker | Lifecycle-owned local build execution |
 | APP-02C | Expose durable job HTTP routes | Observable long-running document builds |
-| APP-03 | Generate cited applicant reports | Natural-language output derived from reasoning results |
+| APP-03A | Define reviewed single-document report plans | Canonical partial rulebook for later report execution |
+| APP-03 | Generate cited applicant reports | Exact selected evidence and M4 results become a cited report |
 | APP-04 | Add a focused evidence-review interface | Search, profile input, evidence, and report views |
 
 ## GitHub Workflow

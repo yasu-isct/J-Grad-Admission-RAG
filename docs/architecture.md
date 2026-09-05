@@ -190,6 +190,14 @@ means presentation readiness rather than eligibility. Every factual finding and 
 retains exact Fact/page provenance; evidence gaps suppress the unsupported sentence. Hashes remain
 machine metadata and never enter Markdown. See [Cited Answer v1](reasoning/cited-answer-v1.md).
 
+`ReviewedReportPlan` v1 is the first APP-03 configuration boundary. For one exact reviewed
+`DocumentIdentity`, it groups the existing applicability rules, precedence policy, interaction
+policy, and an explicit partial intent-coverage declaration. The plan is server-owned and contains
+no profile, query, retrieval rank, job status, official Fact text, or generated prose. A later
+allowlisted registry will reject ambiguous duplicate plans for the selected identity; APP-03B will
+materialize exact Facts and run the existing M4 pipeline. See
+[Reviewed Report Plan v1](reasoning/reviewed-report-plan-v1.md).
+
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
 exact benchmark Fact IDs against ranked primary evidence with Recall@1/3/5/10 and MRR; attached
 reference-only gold is reported separately and never changes ranked credit. Empty filters and scope
