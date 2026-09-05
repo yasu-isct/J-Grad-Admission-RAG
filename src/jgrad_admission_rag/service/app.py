@@ -19,6 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
+from ..corpus import audit_corpus_manifest
 from ..corpus_search import (
     CorpusSearchError,
     CorpusSearchInputError,
@@ -35,6 +36,22 @@ from ..corpus_selection import (
     CorpusSelectionRequestError,
     CorpusSelectionVersionMismatchError,
     select_corpus_documents,
+    validate_corpus_version_policy,
+)
+from ..reasoning.applicant_report import (
+    ApplicantReportError,
+    ApplicantReportFailure,
+    build_applicant_report,
+    render_applicant_report_markdown,
+)
+from ..reasoning.reviewed_report_evidence import (
+    ReviewedReportEvidenceError,
+    ReviewedReportEvidenceFailure,
+    prepare_reviewed_report_evidence,
+)
+from ..reasoning.reviewed_report_plan import (
+    ReviewedReportPlan,
+    load_reviewed_report_plan,
 )
 from ..retrieval.metadata_search import MetadataFilter, ScopePreference
 from ..schemas.corpus_manifest import CorpusManifestError, load_corpus_manifest
@@ -51,6 +68,9 @@ from .contracts import (
     HEALTH_ERROR_RESPONSES,
     JOB_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
+    REPORT_ERROR_RESPONSES,
+    ApplicantReportRequest,
+    ApplicantReportResponse,
     BuildJobReceipt,
     BuildJobStatus,
     BuildOptions,
@@ -145,6 +165,14 @@ def create_app(
                 state.job_initialization_failed = not snapshot.healthy
             except Exception:
                 state.job_initialization_failed = True
+        if selected_settings.report_plan_paths:
+            try:
+                state.report_plans = await to_thread.run_sync(
+                    partial(_load_report_plans, selected_settings)
+                )
+            except Exception:
+                state.report_initialization_failed = True
+                state.report_plans = ()
         try:
             yield
         finally:
@@ -159,6 +187,7 @@ def create_app(
                 except Exception:
                     state.job_initialization_failed = True
             state.provider = None
+            state.report_plans = ()
 
     app = FastAPI(
         title="J-Grad Admission RAG API",
@@ -195,6 +224,7 @@ def create_app(
             "/v1/knowledge-bases/build",
             "/v1/build-jobs",
             "/v1/corpus/query",
+            "/v1/applicant-reports",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -236,6 +266,8 @@ def create_app(
         is_ready = configured and state.provider is not None and not state.initialization_failed
         if selected_settings.job_root is not None:
             is_ready = is_ready and _job_worker_ready(state)
+        if selected_settings.report_plan_paths:
+            is_ready = is_ready and _report_service_ready(state)
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
 
     @app.post(
@@ -389,6 +421,23 @@ def create_app(
     )
     def query_corpus(request: CorpusQueryRequest) -> CorpusSearchResult:
         return _query_corpus(request, selected_settings, state)
+
+    @app.post(
+        "/v1/applicant-reports",
+        response_model=ApplicantReportResponse,
+        responses=REPORT_ERROR_RESPONSES,
+        operation_id="postV1ApplicantReports",
+    )
+    async def applicant_report(request: ApplicantReportRequest) -> ApplicantReportResponse:
+        if not _report_service_ready(state):
+            raise ApiProblem(
+                503,
+                "report_service_unavailable",
+                "applicant report service is unavailable",
+            )
+        return await to_thread.run_sync(
+            partial(_build_applicant_report_response, request, selected_settings, state)
+        )
 
     return app
 
@@ -684,6 +733,195 @@ def _query_corpus(
         raise ApiProblem(503, "provider_unavailable", "query provider is unavailable") from None
     except CorpusSearchError:
         raise ApiProblem(503, "corpus_unavailable", "corpus runtime is unavailable") from None
+
+
+def _load_report_plans(settings: ServiceSettings) -> tuple[ReviewedReportPlan, ...]:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+        or not settings.report_plan_paths
+    ):
+        raise ValueError
+    plans = tuple(load_reviewed_report_plan(path) for path in settings.report_plan_paths)
+    plan_ids = tuple(plan.plan_id for plan in plans)
+    identities = tuple(plan.document_identity for plan in plans)
+    if len(plan_ids) != len(set(plan_ids)) or len(identities) != len(set(identities)):
+        raise ValueError
+    manifest = load_corpus_manifest(settings.manifest_path)
+    policy = load_corpus_version_policy(settings.policy_path)
+    audited = audit_corpus_manifest(manifest, settings.corpus_root)
+    validate_corpus_version_policy(policy, audited)
+    corpus_identities = {entry.identity for entry in audited.entries}
+    if any(identity not in corpus_identities for identity in identities):
+        raise ValueError
+    return plans
+
+
+def _report_service_ready(state: ServiceState) -> bool:
+    return bool(state.report_plans) and not state.report_initialization_failed
+
+
+def _build_applicant_report_response(
+    request: ApplicantReportRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> ApplicantReportResponse:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+    ):
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        )
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        policy = load_corpus_version_policy(settings.policy_path)
+    except (CorpusManifestError, CorpusVersionSchemaError):
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        ) from None
+    try:
+        selection = select_corpus_documents(manifest, policy, request.selection)
+    except CorpusSelectionRequestError:
+        raise ApiProblem(422, "invalid_request", "applicant report request is invalid") from None
+    except CorpusSelectionNoMatchError:
+        raise ApiProblem(
+            404,
+            "report_plan_not_found",
+            "no reviewed report plan matches the selection",
+        ) from None
+    except (
+        CorpusSelectionAmbiguousError,
+        CorpusSelectionNotReadyError,
+        CorpusSelectionVersionMismatchError,
+    ):
+        raise ApiProblem(
+            409,
+            "corpus_selection_conflict",
+            "corpus selection cannot produce one current report",
+        ) from None
+    except CorpusPolicyCompatibilityError:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        ) from None
+    if len(selection.selected_documents) != 1:
+        raise ApiProblem(
+            409,
+            "corpus_selection_conflict",
+            "corpus selection cannot produce one current report",
+        )
+    selected_identity = selection.selected_documents[0].entry.identity
+    matching_plans = tuple(
+        plan for plan in state.report_plans if plan.document_identity == selected_identity
+    )
+    if not matching_plans:
+        raise ApiProblem(
+            404,
+            "report_plan_not_found",
+            "no reviewed report plan matches the selection",
+        )
+    if len(matching_plans) != 1:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        )
+    try:
+        evidence = prepare_reviewed_report_evidence(
+            settings.corpus_root,
+            manifest,
+            policy,
+            selection,
+            state.report_plans,
+        )
+    except ReviewedReportEvidenceError as error:
+        _raise_report_evidence_problem(error)
+    plan = matching_plans[0]
+    try:
+        report = build_applicant_report(
+            request.report_id,
+            request.profile,
+            request.intent,
+            plan,
+            evidence,
+        )
+    except ApplicantReportError as error:
+        if error.code in {
+            ApplicantReportFailure.INVALID_INPUT,
+            ApplicantReportFailure.UNSUPPORTED_INTENT,
+        }:
+            raise ApiProblem(
+                422,
+                "invalid_request",
+                "applicant report request is invalid",
+            ) from None
+        if error.code is ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH:
+            raise ApiProblem(
+                409,
+                "report_preparation_failed",
+                "reviewed report preparation failed",
+            ) from None
+        raise ApiProblem(
+            500,
+            "report_generation_failed",
+            "applicant report generation failed",
+        ) from None
+    except Exception:
+        raise ApiProblem(
+            500,
+            "report_generation_failed",
+            "applicant report generation failed",
+        ) from None
+    try:
+        markdown = render_applicant_report_markdown(report)
+        return ApplicantReportResponse(report=report, markdown=markdown)
+    except Exception:
+        raise ApiProblem(
+            500,
+            "report_generation_failed",
+            "applicant report generation failed",
+        ) from None
+
+
+def _raise_report_evidence_problem(error: ReviewedReportEvidenceError) -> None:
+    if error.code is ReviewedReportEvidenceFailure.PLAN_NOT_FOUND:
+        raise ApiProblem(
+            404,
+            "report_plan_not_found",
+            "no reviewed report plan matches the selection",
+        ) from None
+    if error.code in {
+        ReviewedReportEvidenceFailure.SELECTION_CARDINALITY,
+        ReviewedReportEvidenceFailure.SELECTION_STALE,
+    }:
+        raise ApiProblem(
+            409,
+            "corpus_selection_conflict",
+            "corpus selection cannot produce one current report",
+        ) from None
+    if error.code in {
+        ReviewedReportEvidenceFailure.CORPUS_AUDIT_FAILED,
+        ReviewedReportEvidenceFailure.KB_UNAVAILABLE,
+        ReviewedReportEvidenceFailure.KB_QUALITY_FAILED,
+    }:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        ) from None
+    raise ApiProblem(
+        409,
+        "report_preparation_failed",
+        "reviewed report preparation failed",
+    ) from None
 
 
 def _error(code: str, message: str, details: dict[str, Any] | None = None) -> ErrorEnvelope:

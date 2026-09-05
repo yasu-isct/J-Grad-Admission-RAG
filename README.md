@@ -76,13 +76,17 @@ jgrad-serve `
   --corpus-root D:\corpus `
   --manifest D:\corpus\corpus.json `
   --policy D:\corpus\policy.json `
+  --report-plan D:\jgrad-plans\example-master-2027.json `
   --provider deterministic-fake `
   --dimension 8
 ```
 
 OpenAPI is served at `http://127.0.0.1:8000/openapi.json`, with local interactive docs at
 `http://127.0.0.1:8000/docs`. The API provides `/v1/health/live`, `/v1/health/ready`, synchronous
-multipart KB build, and strict reviewed-corpus query routes. See [Service API v1](docs/service-api-v1.md).
+multipart KB build, strict reviewed-corpus query, and cited applicant-report routes. Report plans
+are optional, server-owned, explicitly allowlisted with repeatable absolute `--report-plan` paths,
+and loaded only during service lifespan; no directory discovery occurs. See
+[Service API v1](docs/service-api-v1.md).
 
 The default bind is loopback and real model loading is cache-only unless download is explicitly
 authorized. The service has no authentication, TLS, rate limiting, or public-deployment hardening;
@@ -117,6 +121,11 @@ then delegates to the existing applicability, precedence, interaction, trace, an
 The strict report and fixed Japanese Markdown remain visibly partial, include a literal official-text
 appendix, and never claim overall eligibility or admission. See
 [Applicant Report v1](docs/reasoning/applicant-report-v1.md).
+
+`POST /v1/applicant-reports` is the thin APP-03D transport over those accepted boundaries. It
+requires one exact corpus document and unique allowlisted plan, then returns the complete strict
+report and byte-for-byte deterministic Markdown without retrieval, model calls, persistence, or an
+overall eligibility/admission claim.
 
 After initializing a canonical manifest through the library builder, activate one prepared KB/index
 registration without touching other artifacts:

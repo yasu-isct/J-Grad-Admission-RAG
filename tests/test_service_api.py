@@ -428,6 +428,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "deleteV1BuildJob",
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
+        "postV1ApplicantReports",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
     build_operation = schema["paths"]["/v1/knowledge-bases/build"]["post"]
@@ -442,6 +443,23 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "422",
         "500",
     }
+    assert set(schema["paths"]["/v1/applicant-reports"]["post"]["responses"]) == {
+        "200",
+        "404",
+        "409",
+        "415",
+        "422",
+        "500",
+        "503",
+    }
+    report_operation = schema["paths"]["/v1/applicant-reports"]["post"]
+    report_request = schema["components"]["schemas"]["ApplicantReportRequest"]
+    report_response = schema["components"]["schemas"]["ApplicantReportResponse"]
+    assert report_operation["requestBody"]["content"].keys() == {"application/json"}
+    assert report_request["additionalProperties"] is False
+    assert set(report_request["required"]) == {"report_id", "profile", "intent", "selection"}
+    assert report_response["additionalProperties"] is False
+    assert set(report_response["required"]) == {"report", "markdown"}
 
 
 def test_head_behavior_is_deliberate_and_does_not_leak_alternate_body() -> None:
@@ -464,6 +482,13 @@ def test_service_settings_require_complete_absolute_query_paths(tmp_path: Path) 
         )
     with pytest.raises(ValueError):
         ServiceSettings(job_root=Path("relative-jobs"))
+
+
+def test_service_exports_applicant_report_contracts() -> None:
+    from jgrad_admission_rag.service import ApplicantReportRequest, ApplicantReportResponse
+
+    assert ApplicantReportRequest.model_fields["schema_version"].default == "1.0"
+    assert ApplicantReportResponse.model_fields["schema_version"].default == "1.0"
 
 
 def test_cli_defaults_to_loopback_and_defers_provider_creation(
@@ -498,3 +523,60 @@ def test_cli_defaults_to_loopback_and_defers_provider_creation(
     app, host, port = calls[0]
     assert (host, port) == ("127.0.0.1", 8000)
     assert app.state.service_state.provider is None
+
+
+def test_cli_accepts_repeatable_absolute_report_plans(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import uvicorn
+
+    from jgrad_admission_rag.service import cli as service_cli
+
+    captured = []
+    monkeypatch.setattr(uvicorn, "run", lambda app, host, port: captured.append(app))
+    plan_a = (tmp_path / "plan-a.json").resolve()
+    plan_b = (tmp_path / "plan-b.json").resolve()
+    service_cli.main(
+        [
+            "--corpus-root",
+            str(tmp_path),
+            "--manifest",
+            str(tmp_path / "corpus.json"),
+            "--policy",
+            str(tmp_path / "policy.json"),
+            "--report-plan",
+            str(plan_a),
+            "--report-plan",
+            str(plan_b),
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+
+    assert captured[0].state.service_settings.report_plan_paths == (plan_a, plan_b)
+
+
+def test_cli_rejects_relative_report_plan_path(tmp_path: Path) -> None:
+    from jgrad_admission_rag.service import cli as service_cli
+
+    with pytest.raises(SystemExit) as exc_info:
+        service_cli.main(
+            [
+                "--corpus-root",
+                str(tmp_path),
+                "--manifest",
+                str(tmp_path / "corpus.json"),
+                "--policy",
+                str(tmp_path / "policy.json"),
+                "--report-plan",
+                "relative-plan.json",
+                "--provider",
+                "deterministic-fake",
+                "--dimension",
+                "8",
+            ]
+        )
+
+    assert exc_info.value.code == 2

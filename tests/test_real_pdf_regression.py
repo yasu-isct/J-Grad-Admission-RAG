@@ -10,6 +10,7 @@ from typing import Any
 
 import numpy as np
 import pytest
+from fastapi.testclient import TestClient
 
 from jgrad_admission_rag.cli import build_index as build_index_cli
 from jgrad_admission_rag.cli import evaluate_retrieval as evaluate_retrieval_cli
@@ -93,6 +94,7 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusFamilyVersionPolicy,
     CorpusSelectionRequest,
     CorpusVersionPolicy,
+    canonical_corpus_version_policy_bytes,
 )
 from jgrad_admission_rag.schemas.evidence_pack import (
     EvidenceCounts,
@@ -107,6 +109,7 @@ from jgrad_admission_rag.schemas.evidence_pack import (
 )
 from jgrad_admission_rag.schemas.index import derive_index_payloads
 from jgrad_admission_rag.utils import sha256_file
+from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
@@ -742,46 +745,6 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
     record = evidence.evidence_records[0]
     matching_scope = plan.rules[0].scope
 
-    def intent(*, include_scope: bool) -> QueryIntent:
-        target = matching_scope.scope_targets[0]
-        query = "eligibility" + (f" {target}" if include_scope else "") + " QUERY_SECRET"
-        mentions = [
-            IntentMention(
-                canonical_value=IntentCategory.ELIGIBILITY.value,
-                mention_kind=MentionKind.INTENT,
-                start_offset=0,
-                end_offset=len("eligibility"),
-                surface="eligibility",
-            )
-        ]
-        if include_scope:
-            start = query.index(target)
-            mentions.append(
-                IntentMention(
-                    canonical_value=target,
-                    mention_kind=MentionKind.SCOPE_TARGET,
-                    start_offset=start,
-                    end_offset=start + len(target),
-                    surface=target,
-                )
-            )
-        return QueryIntent(
-            schema_version="1.0",
-            parser_version="lexical-ja-v1",
-            catalog_version="real-report-v1",
-            query=query,
-            requested_categories=(IntentCategory.ELIGIBILITY,),
-            requested_scope=RequestedScope(
-                department_or_program_targets=(target,) if include_scope else (),
-                parent_college_values=(),
-                target_degree_level=None,
-                intake_year=None,
-                intake_month=None,
-            ),
-            matched_mentions=tuple(mentions),
-            diagnostics=(),
-        )
-
     matching_profile = _real_applicability_profile(22, matching_scope.model_dump(mode="json"))
     missing_scope_payload = matching_profile.model_dump(mode="json")
     missing_scope_payload["target_application"]["graduate_school_or_college"] = None
@@ -792,35 +755,35 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
         (
             "confirmed",
             matching_profile,
-            intent(include_scope=True),
+            _real_report_intent(matching_scope, include_scope=True),
             ApplicabilityStatus.CONFIRMED,
             ReportStatus.COMPLETE,
         ),
         (
             "not-applicable",
             _real_applicability_profile(21, matching_scope.model_dump(mode="json")),
-            intent(include_scope=True),
+            _real_report_intent(matching_scope, include_scope=True),
             ApplicabilityStatus.NOT_APPLICABLE,
             ReportStatus.COMPLETE,
         ),
         (
             "missing-age",
             _real_applicability_profile(None, matching_scope.model_dump(mode="json")),
-            intent(include_scope=True),
+            _real_report_intent(matching_scope, include_scope=True),
             ApplicabilityStatus.NEEDS_INFORMATION,
             ReportStatus.NEEDS_INFORMATION,
         ),
         (
             "missing-scope",
             ApplicantProfile.model_validate(missing_scope_payload),
-            intent(include_scope=False),
+            _real_report_intent(matching_scope, include_scope=False),
             ApplicabilityStatus.NEEDS_INFORMATION,
             ReportStatus.NEEDS_INFORMATION,
         ),
         (
             "conflicting-scope",
             ApplicantProfile.model_validate(conflict_payload),
-            intent(include_scope=True),
+            _real_report_intent(matching_scope, include_scope=True),
             ApplicabilityStatus.NEEDS_INFORMATION,
             ReportStatus.NEEDS_REVIEW,
         ),
@@ -851,6 +814,180 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
         assert "QUERY_SECRET" not in markdown
         assert plan.source_kb_sha256 not in markdown
         assert "応募者は不適格" not in markdown
+
+
+def test_real_pdf_applicant_report_http_scenarios(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    document_id = real_document_kb.manifest.identity.document_id
+    kb_relative = f"documents/{document_id}/document_kb.json"
+    kb_path = tmp_path / Path(*kb_relative.split("/"))
+    kb_path.parent.mkdir(parents=True)
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    index_relative = f"indexes/{document_id}"
+    build_local_index(
+        kb_path,
+        tmp_path / Path(*index_relative.split("/")),
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "real-applicant-report-http-corpus",
+        tmp_path,
+        (CorpusRegistration(kb_relative, index_relative),),
+    )
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=real_document_kb.manifest.identity.document_family_id,
+                active_document_id=document_id,
+            ),
+        ),
+    )
+    manifest_path = (tmp_path / "corpus.json").resolve()
+    policy_path = (tmp_path / "policy.json").resolve()
+    manifest_path.write_bytes(canonical_corpus_manifest_bytes(manifest))
+    policy_path.write_bytes(canonical_corpus_version_policy_bytes(policy))
+    selection = CorpusSelectionRequest(document_ids=(document_id,))
+    plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00063")
+    matching_scope = plan.rules[0].scope
+    matching_profile = _real_applicability_profile(22, matching_scope.model_dump(mode="json"))
+    missing_scope_payload = matching_profile.model_dump(mode="json")
+    missing_scope_payload["target_application"]["graduate_school_or_college"] = None
+    missing_scope_payload["target_application"]["department_or_program"] = None
+    conflict_payload = matching_profile.model_dump(mode="json")
+    conflict_payload["target_application"]["department_or_program"] = "Other Program"
+    scenarios = (
+        ("confirmed", matching_profile, True, "confirmed", "complete"),
+        (
+            "not-applicable",
+            _real_applicability_profile(21, matching_scope.model_dump(mode="json")),
+            True,
+            "not_applicable",
+            "complete",
+        ),
+        (
+            "missing-age",
+            _real_applicability_profile(None, matching_scope.model_dump(mode="json")),
+            True,
+            "needs_information",
+            "needs_information",
+        ),
+        (
+            "missing-scope",
+            ApplicantProfile.model_validate(missing_scope_payload),
+            False,
+            "needs_information",
+            "needs_information",
+        ),
+        (
+            "conflicting-scope",
+            ApplicantProfile.model_validate(conflict_payload),
+            True,
+            "needs_information",
+            "needs_review",
+        ),
+    )
+    settings = ServiceSettings(
+        corpus_root=tmp_path.resolve(),
+        manifest_path=manifest_path,
+        policy_path=policy_path,
+        report_plan_paths=(REVIEWED_REPORT_PLAN_PATH.resolve(),),
+    )
+    app = create_app(
+        settings,
+        ServiceDependencies(provider_factory=lambda: DeterministicFakeEmbeddingProvider(8)),
+    )
+    before = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+
+    with TestClient(app) as client:
+        assert client.get("/v1/health/ready").json()["ready"] is True
+        for scenario_id, profile, include_scope, expected_rule, expected_report in scenarios:
+            scenario_intent = _real_report_intent(matching_scope, include_scope=include_scope)
+            response = client.post(
+                "/v1/applicant-reports",
+                json={
+                    "schema_version": "1.0",
+                    "report_id": f"real-http-{scenario_id}-v1",
+                    "profile": profile.model_dump(mode="json"),
+                    "intent": scenario_intent.model_dump(mode="json"),
+                    "selection": selection.model_dump(mode="json"),
+                },
+            )
+            assert response.status_code == 200
+            body = response.json()
+            assert body["report"]["report_status"] == expected_report
+            decision = body["report"]["reasoning_trace"]["source_decisions"][0]
+            assert decision["status"] == expected_rule
+            assert body["report"]["evidence_bundle"]["evidence_records"][0]["fact_id"] == (
+                "fact:00063"
+            )
+            assert body["report"]["evidence_bundle"]["evidence_records"][0]["source_pages"] == [7]
+            assert fact.text in body["markdown"]
+            assert "[fact:00063, p.7]" in body["markdown"]
+            assert "部分的な規則範囲です" in body["markdown"]
+            assert "総合的な出願資格" in body["markdown"]
+            assert "QUERY_SECRET" not in body["markdown"]
+            assert plan.source_kb_sha256 not in body["markdown"]
+            assert "応募者は不適格" not in body["markdown"]
+
+    after = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+    assert len(real_document_kb.facts) == 298
+    assert after == before
+    assert "QUERY_SECRET" not in caplog.text
+    assert plan.source_kb_sha256 not in caplog.text
+
+
+def _real_report_intent(scope, *, include_scope: bool) -> QueryIntent:
+    target = scope.scope_targets[0]
+    query = "eligibility" + (f" {target}" if include_scope else "") + " QUERY_SECRET"
+    mentions = [
+        IntentMention(
+            canonical_value=IntentCategory.ELIGIBILITY.value,
+            mention_kind=MentionKind.INTENT,
+            start_offset=0,
+            end_offset=len("eligibility"),
+            surface="eligibility",
+        )
+    ]
+    if include_scope:
+        start = query.index(target)
+        mentions.append(
+            IntentMention(
+                canonical_value=target,
+                mention_kind=MentionKind.SCOPE_TARGET,
+                start_offset=start,
+                end_offset=start + len(target),
+                surface=target,
+            )
+        )
+    return QueryIntent(
+        schema_version="1.0",
+        parser_version="lexical-ja-v1",
+        catalog_version="real-report-http-v1",
+        query=query,
+        requested_categories=(IntentCategory.ELIGIBILITY,),
+        requested_scope=RequestedScope(
+            department_or_program_targets=(target,) if include_scope else (),
+            parent_college_values=(),
+            target_degree_level=None,
+            intake_year=None,
+            intake_month=None,
+        ),
+        matched_mentions=tuple(mentions),
+        diagnostics=(),
+    )
 
 
 def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> ApplicantProfile:
