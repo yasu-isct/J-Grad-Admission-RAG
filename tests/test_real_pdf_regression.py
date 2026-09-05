@@ -949,6 +949,123 @@ def test_real_pdf_applicant_report_http_scenarios(
     assert plan.source_kb_sha256 not in caplog.text
 
 
+def test_real_pdf_local_ui_catalog_and_query_payload(
+    tmp_path: Path,
+    real_document_kb: DocumentKnowledgeBase,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    document_id = real_document_kb.manifest.identity.document_id
+    kb_relative = f"documents/{document_id}/document_kb.json"
+    kb_path = tmp_path / Path(*kb_relative.split("/"))
+    kb_path.parent.mkdir(parents=True)
+    kb_path.write_bytes(canonical_document_kb_bytes(real_document_kb))
+    index_relative = f"indexes/{document_id}"
+    build_local_index(
+        kb_path,
+        tmp_path / Path(*index_relative.split("/")),
+        DeterministicFakeEmbeddingProvider(8),
+    )
+    manifest = build_corpus_manifest(
+        "real-local-ui-corpus",
+        tmp_path,
+        (CorpusRegistration(kb_relative, index_relative),),
+    )
+    policy = CorpusVersionPolicy(
+        corpus_id=manifest.corpus_id,
+        family_policies=(
+            CorpusFamilyVersionPolicy(
+                document_family_id=real_document_kb.manifest.identity.document_family_id,
+                active_document_id=document_id,
+            ),
+        ),
+    )
+    manifest_path = (tmp_path / "ui-corpus.json").resolve()
+    policy_path = (tmp_path / "ui-policy.json").resolve()
+    manifest_path.write_bytes(canonical_corpus_manifest_bytes(manifest))
+    policy_path.write_bytes(canonical_corpus_version_policy_bytes(policy))
+    settings = ServiceSettings(
+        corpus_root=tmp_path.resolve(),
+        manifest_path=manifest_path,
+        policy_path=policy_path,
+        report_plan_paths=(REVIEWED_REPORT_PLAN_PATH.resolve(),),
+    )
+    app = create_app(
+        settings,
+        ServiceDependencies(provider_factory=lambda: DeterministicFakeEmbeddingProvider(8)),
+    )
+    before = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+    query = "個別の出願資格審査 22歳 入学する日の前日"
+    ui_payload = {
+        "schema_version": "1.0",
+        "selection": {
+            "schema_version": "1.0",
+            "document_ids": [document_id],
+            "institution_ids": [],
+            "document_family_ids": [],
+            "degree_levels": [],
+            "intake_terms": [],
+            "version_mode": "active_only",
+            "allow_multiple_documents": False,
+        },
+        "search": {
+            "query": query,
+            "top_k": 5,
+            "candidate_k": 20,
+            "metadata_filter": {
+                "fact_types": [],
+                "scope_types": [],
+                "scope_targets": [],
+                "parent_colleges": [],
+            },
+            "scope_preference": {
+                "preferred_scope_targets": [],
+                "preferred_parent_colleges": [],
+            },
+        },
+    }
+
+    with TestClient(app) as client:
+        catalog = client.get("/v1/reviewed-documents")
+        response = client.post("/v1/corpus/query", json=ui_payload)
+
+    assert catalog.status_code == 200
+    catalog_item = catalog.json()["items"][0]
+    assert catalog_item["identity"]["document_id"] == document_id
+    assert catalog_item["version_classification"] == "active"
+    assert catalog_item["coverage_status"] == "partial_reviewed_rules"
+    assert "source_pdf_sha256" not in catalog.text
+    assert response.status_code == 200
+    hits = response.json()["hits"]
+    target = next(hit for hit in hits if hit["key"]["fact_id"] == "fact:00063")
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00063")
+    assert target["rank"] == hits.index(target) + 1
+    assert target["key"]["document_id"] == document_id
+    assert target["source_pages"] == [7]
+    assert target["text"] == fact.embedding_text
+    assert target["identity"]["document_id"] == document_id
+    assert {
+        "rank",
+        "matched_channels",
+        "vector_score",
+        "lexical_score",
+        "scope_type",
+        "scope_targets",
+        "section_path",
+    }.issubset(target)
+    after = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in tmp_path.rglob("*")
+        if path.is_file()
+    }
+    assert after == before
+    assert query not in caplog.text
+    assert fact.text not in caplog.text
+
+
 def _real_report_intent(scope, *, include_scope: bool) -> QueryIntent:
     target = scope.scope_targets[0]
     query = "eligibility" + (f" {target}" if include_scope else "") + " QUERY_SECRET"

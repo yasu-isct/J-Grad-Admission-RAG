@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>J-Grad Evidence Review</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <p class="product-mark" aria-hidden="true">JG</p>
+        <div>
+          <h1>J-Grad Evidence Review</h1>
+          <p>大学院募集要項の公式記載を確認するローカル検索</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace" aria-labelledby="workspace-heading">
+      <section class="notice" aria-labelledby="workspace-heading">
+        <h2 id="workspace-heading">公式文書の根拠候補を確認</h2>
+        <p><strong>検索結果は根拠候補です。</strong> 出願資格や合否の判定ではありません。</p>
+      </section>
+
+      <div class="workspace-grid">
+        <section class="search-panel" aria-labelledby="search-heading">
+          <h2 id="search-heading">検索条件</h2>
+          <form id="evidence-form" novalidate>
+            <div class="field-group">
+              <label for="document-select">募集要項</label>
+              <select id="document-select" name="document" required disabled>
+                <option value="">読み込み中</option>
+              </select>
+              <p id="document-detail" class="field-detail"></p>
+            </div>
+
+            <div class="field-group">
+              <label for="query-input">確認したい内容</label>
+              <textarea
+                id="query-input"
+                name="query"
+                rows="5"
+                maxlength="1000"
+                required
+                placeholder="例：個別入学資格審査の年齢要件"
+              ></textarea>
+              <div class="input-meta">
+                <span>日本語で入力</span>
+                <output id="query-count" for="query-input">0 / 1000</output>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="submit-button" type="submit" disabled>証拠を検索</button>
+              <button id="retry-button" class="secondary" type="button" hidden>再試行</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="results-panel" aria-labelledby="results-heading">
+          <div class="results-header">
+            <div>
+              <p class="section-label">Evidence candidates</p>
+              <h2 id="results-heading">検索結果</h2>
+            </div>
+            <p id="result-count" class="result-count" hidden></p>
+          </div>
+          <div id="status-message" class="status-message" role="status" aria-live="polite" tabindex="-1">
+            募集要項を読み込んでいます。
+          </div>
+          <ol id="evidence-list" class="evidence-list"></ol>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

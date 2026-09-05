@@ -19,6 +19,7 @@ strict profile/intent -> COR-04 -> reviewed evidence -> ApplicantReport 1.0 + fi
 | POST | `/v1/knowledge-bases/build` | 200 | Complete detached KB, summary, and quality decision |
 | POST | `/v1/corpus/query` | 200 | Complete document-qualified corpus retrieval result |
 | POST | `/v1/applicant-reports` | 200 | Partial reviewed-rule report plus exact Japanese Markdown |
+| GET | `/v1/reviewed-documents` | 200 | Safe deterministic catalog for local evidence selection |
 | POST | `/v1/build-jobs` | 202 | Durably accept one validated asynchronous build |
 | GET | `/v1/build-jobs/{job_id}` | 200 | Read fresh durable status and transition history |
 | GET | `/v1/build-jobs/{job_id}/result` | 200 | Read a complete passing or quality-failed result |
@@ -150,6 +151,24 @@ the complete self-auditing `ApplicantReport` and its exact deterministic Markdow
 Neither request nor response is persisted. Markdown excludes profile values, raw query text,
 hashes, paths, and ranking metadata, and prominently states partial reviewed coverage rather than
 overall eligibility or admission.
+
+## Reviewed Document Catalog
+
+`GET /v1/reviewed-documents` supports the packaged evidence-review UI. It requires configured
+reviewed plans, then reloads and audits the current manifest and version policy on each call. Only
+ready policy-classified documents with exactly one lifespan-loaded plan appear, sorted by document
+ID. A valid configuration may return an empty `items` array when its reviewed document is not
+currently ready.
+
+Each item contains a hash-free public identity, active/historical classification, plan ID, literal
+`partial_reviewed_rules` status, covered intent categories, reviewed coverage statement, and
+limitation statement. It never exposes source/KB hashes, filesystem paths, index/provider/model
+configuration, rule predicates, evidence, or applicant data. Missing or stale configuration uses
+the privacy-safe `report_service_unavailable` envelope.
+
+The local page at `/app` and fixed `/assets/app.css` and `/assets/app.js` resources are excluded from
+OpenAPI. They are installed as Python package data and make no external requests. See
+[Local Evidence Review UI](local-evidence-ui.md).
 
 ## Errors
 
