@@ -8,6 +8,7 @@ retrieval implementation.
 multipart upload -> exact identity check -> DocumentKnowledgeBase 0.6 + diagnostics
 strict JSON -> COR-04 selection -> COR-05 prepare/search -> CorpusSearchResult 1.0
 strict profile/intent -> COR-04 -> reviewed evidence -> ApplicantReport 1.0 + fixed Markdown
+strict question -> server-owned RSN-02 catalog -> QueryIntent 1.0
 ```
 
 ## Routes
@@ -20,6 +21,7 @@ strict profile/intent -> COR-04 -> reviewed evidence -> ApplicantReport 1.0 + fi
 | POST | `/v1/corpus/query` | 200 | Complete document-qualified corpus retrieval result |
 | POST | `/v1/applicant-reports` | 200 | Partial reviewed-rule report plus exact Japanese Markdown |
 | GET | `/v1/reviewed-documents` | 200 | Safe deterministic catalog for local evidence selection |
+| POST | `/v1/query-intents/parse` | 200 | Parse one bounded question with the lifespan-owned RSN-02 catalog |
 | POST | `/v1/build-jobs` | 202 | Durably accept one validated asynchronous build |
 | GET | `/v1/build-jobs/{job_id}` | 200 | Read fresh durable status and transition history |
 | GET | `/v1/build-jobs/{job_id}/result` | 200 | Read a complete passing or quality-failed result |
@@ -152,6 +154,20 @@ Neither request nor response is persisted. Markdown excludes profile values, raw
 hashes, paths, and ranking metadata, and prominently states partial reviewed coverage rather than
 overall eligibility or admission.
 
+## Query Intent Parse Request
+
+`POST /v1/query-intents/parse` accepts exactly `schema_version="1.0"` and one trimmed, non-empty
+`query` of at most 1,000 characters. Configure one absolute `--query-intent-catalog` path; the
+accepted RSN-02 loader reads it only during lifespan. The endpoint delegates only to
+`parse_query_intent` and returns the existing validated `QueryIntent` directly. It does not extract
+applicant facts, search the corpus, call a model/network, or persist/log the question.
+
+No catalog configuration leaves existing readiness semantics unchanged and makes only this parser
+and the browser report workflow unavailable. A configured missing or invalid catalog makes
+readiness false. Malformed, unrecognized, or ambiguous input returns fixed `422 invalid_request`;
+catalog/runtime failures return fixed `503 intent_service_unavailable`. Neither response echoes the
+question, path, catalog content, or exception.
+
 ## Reviewed Document Catalog
 
 `GET /v1/reviewed-documents` supports the packaged evidence-review UI. It requires configured
@@ -197,6 +213,7 @@ allowlisted `details`. Validation consistently uses 422.
 | 503 | `provider_unavailable` | Provider initialization or query failed |
 | 503 | `job_service_unavailable` | Durable jobs are unconfigured or unhealthy |
 | 503 | `report_service_unavailable` | Report plans or current corpus cannot pass startup/runtime checks |
+| 503 | `intent_service_unavailable` | The explicitly configured intent catalog is unavailable or invalid |
 | 500 | `report_generation_failed` | Accepted report orchestration failed safely |
 | 500 | `internal_error` | Build or service failed without exposing internals |
 
@@ -223,6 +240,7 @@ jgrad-serve `
   --policy D:\corpus\policy.json `
   --report-plan D:\jgrad-plans\example-master-2027.json `
   --report-plan D:\jgrad-plans\example-doctoral-2027.json `
+  --query-intent-catalog D:\jgrad-config\query_intent_catalog_v1.json `
   --provider deterministic-fake `
   --dimension 8
 ```

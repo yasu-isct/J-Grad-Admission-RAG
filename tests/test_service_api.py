@@ -430,6 +430,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
         "postV1ApplicantReports",
+        "postV1QueryIntentsParse",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
     catalog_operation = schema["paths"]["/v1/reviewed-documents"]["get"]
@@ -494,10 +495,15 @@ def test_service_settings_require_complete_absolute_query_paths(tmp_path: Path) 
 
 
 def test_service_exports_applicant_report_contracts() -> None:
-    from jgrad_admission_rag.service import ApplicantReportRequest, ApplicantReportResponse
+    from jgrad_admission_rag.service import (
+        ApplicantReportRequest,
+        ApplicantReportResponse,
+        QueryIntentParseRequest,
+    )
 
     assert ApplicantReportRequest.model_fields["schema_version"].default == "1.0"
     assert ApplicantReportResponse.model_fields["schema_version"].default == "1.0"
+    assert QueryIntentParseRequest.model_fields["schema_version"].default == "1.0"
 
 
 def test_cli_defaults_to_loopback_and_defers_provider_creation(
@@ -565,6 +571,36 @@ def test_cli_accepts_repeatable_absolute_report_plans(
     )
 
     assert captured[0].state.service_settings.report_plan_paths == (plan_a, plan_b)
+
+
+def test_cli_accepts_absolute_query_intent_catalog(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import uvicorn
+
+    from jgrad_admission_rag.service import cli as service_cli
+
+    captured = []
+    monkeypatch.setattr(uvicorn, "run", lambda app, host, port: captured.append(app))
+    catalog = (tmp_path / "query-intent.json").resolve()
+    service_cli.main(
+        [
+            "--corpus-root",
+            str(tmp_path),
+            "--manifest",
+            str(tmp_path / "corpus.json"),
+            "--policy",
+            str(tmp_path / "policy.json"),
+            "--query-intent-catalog",
+            str(catalog),
+            "--provider",
+            "deterministic-fake",
+            "--dimension",
+            "8",
+        ]
+    )
+
+    assert captured[0].state.service_settings.query_intent_catalog_path == catalog
 
 
 def test_cli_rejects_relative_report_plan_path(tmp_path: Path) -> None:

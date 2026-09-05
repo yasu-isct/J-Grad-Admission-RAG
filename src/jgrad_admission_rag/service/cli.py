@@ -33,6 +33,11 @@ def _parser() -> argparse.ArgumentParser:
         metavar="ABSOLUTE_PATH",
         help="Reviewed report plan JSON path; repeat for each explicitly enabled document.",
     )
+    parser.add_argument(
+        "--query-intent-catalog",
+        metavar="ABSOLUTE_PATH",
+        help="Server-owned query intent catalog JSON used by the local report UI.",
+    )
     parser.add_argument("--max-pdf-bytes", type=int, default=25 * 1024 * 1024)
     parser.add_argument("--job-root")
     parser.add_argument("--job-worker-max-active", type=int, default=1)
@@ -55,11 +60,21 @@ def main(argv: Sequence[str] | None = None) -> None:
         report_plan_paths = tuple(Path(path) for path in args.report_plan)
         if any(not path.is_absolute() for path in report_plan_paths):
             raise ValueError("reviewed report plan paths must be absolute")
+        query_intent_catalog_path = (
+            Path(args.query_intent_catalog) if args.query_intent_catalog else None
+        )
+        if query_intent_catalog_path is not None and not query_intent_catalog_path.is_absolute():
+            raise ValueError("query intent catalog path must be absolute")
         settings = ServiceSettings(
             corpus_root=Path(args.corpus_root).resolve(strict=False),
             manifest_path=Path(args.manifest).resolve(strict=False),
             policy_path=Path(args.policy).resolve(strict=False),
             report_plan_paths=tuple(path.resolve(strict=False) for path in report_plan_paths),
+            query_intent_catalog_path=(
+                query_intent_catalog_path.resolve(strict=False)
+                if query_intent_catalog_path is not None
+                else None
+            ),
             max_pdf_bytes=args.max_pdf_bytes,
             job_root=(Path(args.job_root).resolve(strict=False) if args.job_root else None),
             job_worker_max_active=args.job_worker_max_active,

@@ -57,7 +57,8 @@ are explicit lifespan configuration, and every request still selects exactly one
 the endpoint adds transport only, not retrieval, new rules, persistence, or broader conclusions.
 APP-04A begins the focused UI with a safe reviewed-document catalog and an offline evidence-search
 screen. It exposes exact query hits and diagnostics only; applicant profile and report presentation
-remain a separate APP-04B slice.
+remain a separate APP-04B slice. APP-04B adds that profile/report tab through a server-owned intent
+parser and the frozen APP-03D contract, while preserving the partial-coverage boundary.
 
 ### Completed M4 Summary
 

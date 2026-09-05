@@ -226,8 +226,13 @@ APP-04A adds a read-only presentation boundary over this service. The reviewed-d
 re-audits current corpus/policy state and projects only hash-free public identity and partial-plan
 coverage for ready documents with one exact lifespan plan. Packaged `/app` HTML/CSS/JavaScript then
 constructs an existing one-document `CorpusQueryRequest` and renders server-order evidence through
-text-only DOM operations. It has no profile/report controls, applicant reasoning, Markdown
-rendering, storage, telemetry, external assets, or retrieval changes. See
+text-only DOM operations. APP-04B adds a separate form that sends the question to a lifespan-owned
+RSN-02 catalog through
+`POST /v1/query-intents/parse`, constructs the strict `ApplicantProfile` with explicit unknowns,
+and delegates unchanged to APP-03D. Browser code displays only structured statuses, findings,
+diagnostics, and exact evidence; it never evaluates rules or manufactures citations.
+Both workflows avoid Markdown rendering, storage, telemetry, external assets, and retrieval
+changes. See
 [Local Evidence Review UI](local-evidence-ui.md).
 
 Retrieval evaluation consumes validated EvidencePacks only after retrieval completes. It scores
