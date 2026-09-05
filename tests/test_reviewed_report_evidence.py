@@ -549,6 +549,58 @@ def test_audited_but_noncanonical_kb_is_rejected(tmp_path: Path) -> None:
     assert exc_info.value.code is ReviewedReportEvidenceFailure.KB_NOT_CANONICAL
 
 
+def test_quality_failure_before_audit_is_a_corpus_failure_without_partial_records(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    context = _context(tmp_path)
+    failed_kb = _kb(context.plan.document_identity, passed=False)
+    context.kb_path.write_bytes(canonical_document_kb_bytes(failed_kb))
+    from jgrad_admission_rag.reasoning import reviewed_report_evidence as module
+
+    calls: list[str] = []
+    original = module._record_from_fact
+
+    def record_spy(document_id, fact, rule_ids):
+        calls.append(fact.fact_id)
+        return original(document_id, fact, rule_ids)
+
+    monkeypatch.setattr(module, "_record_from_fact", record_spy)
+    with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+        _prepare(context)
+    assert exc_info.value.code is ReviewedReportEvidenceFailure.CORPUS_AUDIT_FAILED
+    assert calls == []
+
+
+def test_quality_failure_after_audit_is_a_kb_failure_without_partial_records(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    context = _context(tmp_path)
+    failed_kb_bytes = canonical_document_kb_bytes(_kb(context.plan.document_identity, passed=False))
+    from jgrad_admission_rag.reasoning import reviewed_report_evidence as module
+
+    original_audit = module.audit_corpus_manifest
+    original_record = module._record_from_fact
+    calls: list[str] = []
+
+    def audit_then_drift(manifest, corpus_root):
+        audited = original_audit(manifest, corpus_root)
+        context.kb_path.write_bytes(failed_kb_bytes)
+        return audited
+
+    def record_spy(document_id, fact, rule_ids):
+        calls.append(fact.fact_id)
+        return original_record(document_id, fact, rule_ids)
+
+    monkeypatch.setattr(module, "audit_corpus_manifest", audit_then_drift)
+    monkeypatch.setattr(module, "_record_from_fact", record_spy)
+    with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+        _prepare(context)
+    assert exc_info.value.code is ReviewedReportEvidenceFailure.KB_QUALITY_FAILED
+    assert calls == []
+
+
 def test_later_failed_binding_returns_no_partial_records(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
