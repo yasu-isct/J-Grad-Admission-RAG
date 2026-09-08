@@ -30,11 +30,11 @@ area. The older 382-unit `outputs/kb/isct_master` artifact was not used.
 | Binding | SHA-256 / value |
 | --- | --- |
 | Source PDF | `57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735` |
-| Current KB, schema `0.5`, 298 Facts/Units | `8223fb91628a5c2d52536075057a4b954fee0f0abf0640db017c4acf8013f66d` |
-| Frozen benchmark | `3b2d0452c1d81be5a0da78ed05a4d09684bed174e5a621af79a4b2a9109845fd` |
-| Payloads | `f1530da8b93f7ae0e816e43bbde0464c453b4d308743f28a2b03029ca0e4beb3` |
-| Semantic vectors | `2ea4241fc7a9242d8e4d26f01fb5b40c5c831b13802fc9756b27a6e1ad96e95e` |
-| Index manifest | `99f275eb9f766fd703097317c646550bfe4e823319a1aca4ca43472282e89b19` |
+| Current KB, schema `0.6`, 304 Facts/Units | `51b711389c8173608f49b9ad00614b68a0e7f9631abf89e236cbc6d24e67e6c3` |
+| Frozen benchmark, canonical LF bytes | `1072812174aff7dd8481dd83553898f2179118e3b32ca7ce4e1fca1a2f3aab38` |
+| Payloads | `f880d8744611facde1fdbbfcdb51e3174539467eb3033656662d21501d605009` |
+| Semantic vectors | `aa272ba60577c116750e5ddb2d62bd90d5a7271fd1ffa9e5f6faf9cdc3e69ab0` |
+| Index manifest | `7b005785c0b4726ce1ef8a8cbdef7beb489fd4f3e959616777b72450d73f2e21` |
 
 The semantic index is a new absent-directory build with 304 normalized vectors. It binds the model
 identity above and uses `hybrid`, `bm25-v1`, `rrf-v1`, `RRF_K=60`, `top_k=10`, and
@@ -77,8 +77,8 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-The RULE-01A Windows report and committed canonical LF JSON have SHA-256
-`c70009b6887b7f3ee6f6c3eebe11329fe5e7ca0814e77f8fbabbdee3c9448ce9`.
+The RULE-01A report is stored as canonical LF JSON on Windows and in the committed Git blob. Both
+have SHA-256 `b650a1a0c15456bc0cb2ba62f5aec5ed437f13e2e02feac4e699b19159bfb068`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |
