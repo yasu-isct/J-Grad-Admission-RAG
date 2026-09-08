@@ -293,6 +293,14 @@ function nullableBoolean(id) {
   return value === "" ? null : value === "true";
 }
 
+function nullableNumber(id) {
+  const raw = byId(id).value;
+  if (raw === "") return null;
+  const value = Number(raw);
+  if (!Number.isFinite(value)) throw new Error("number");
+  return value;
+}
+
 function academicCredentials() {
   const credential = {
     institution_country_code: nullableText("credential-country"),
@@ -309,7 +317,23 @@ function academicCredentials() {
     completion_timing_verification_status: nullableText(
       "completion-timing-verification-status"
     ),
-    person_designation_status: nullableText("person-designation-status")
+    person_designation_status: nullableText("person-designation-status"),
+    years_enrolled_at_eligibility_cutoff: nullableInteger(
+      "years-enrolled-at-eligibility-cutoff"
+    ),
+    prescribed_credits_excellence_status: nullableText(
+      "prescribed-credits-excellence-status"
+    ),
+    institution_is_target_university: nullableBoolean("institution-is-target-university"),
+    gpt_after_two_years: nullableNumber("gpt-after-two-years"),
+    credits_after_two_years: nullableInteger("credits-after-two-years"),
+    required_specialization_courses_expected_status: nullableText(
+      "required-specialization-courses-status"
+    ),
+    expected_specialist_credits: nullableInteger("expected-specialist-credits"),
+    liberal_arts_requirements_expected_status: nullableText(
+      "liberal-arts-requirements-status"
+    )
   };
   return Object.values(credential).every((value) => value === null) ? null : [credential];
 }
@@ -430,7 +454,7 @@ function renderReport(payload) {
       addMetadata(details, "上書き", `${override.overrider_rule_id} | ${override.subject_key} | ${override.rationale}`);
     }
     const reviewedRule = rulesById.get(finding.rule_id);
-    if (finding.disposition === "active" && reviewedRule && finding.rule_id.startsWith("isct-master-direct-path-")) {
+    if (finding.disposition === "active" && reviewedRule && reviewedRule.annotation_note) {
       addMetadata(details, "審査済み説明", reviewedRule.annotation_note);
     }
     item.append(title, details, citationList(finding.citations));

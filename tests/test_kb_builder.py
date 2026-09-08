@@ -277,6 +277,26 @@ def test_fullwidth_bracketed_notice_starts_a_new_section() -> None:
     assert chunks[1].section_path == ["［2026年9月入学希望者への注意］"]
 
 
+def test_numbered_single_line_statement_is_not_dropped_as_heading_only() -> None:
+    statement = "２．本学に2年間在学した時点でGPTが3.00以上かつ90単位以上であること。"
+
+    chunks = chunk_pages([SourcePage(page_number=8, text=statement)], "admission.pdf")
+
+    filtered, summary = filter_chunks(chunks)
+
+    assert len(filtered) == 1
+    assert filtered[0].title == statement
+    assert filtered[0].text == statement
+    assert filtered[0].page_numbers == [8]
+    assert summary.dropped_chunk_count == 0
+
+
+def test_numbered_single_line_section_heading_is_still_dropped() -> None:
+    chunks = chunk_pages([SourcePage(page_number=8, text="２．出願資格")], "admission.pdf")
+
+    assert chunks == []
+
+
 def test_section_path_survives_marker_free_pages_and_character_splits() -> None:
     chunks = chunk_pages(
         [
@@ -392,6 +412,23 @@ def test_common_eligibility_section_infers_global_scope_without_target() -> None
         anchors=[],
         references=[],
         text_preview="（１）大学を卒業した者",
+    )
+
+    assert infer_scope(item) == ("global", [], None, 0.7)
+
+
+def test_path9_numbered_university_requirement_infers_global_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=90,
+        pdf_name="sample.pdf",
+        pages=[8],
+        title="２．本学に2年間在学した時点においてGPTが3.00以上",
+        text="２．本学に2年間在学した時点においてGPTが3.00以上であり、かつ、原則として90単位以上を修得していること。",
+        section_path=["２．本学に2年間在学した時点においてGPTが3.00以上"],
+        category="general",
+        anchors=[],
+        references=[],
+        text_preview="GPTが3.00以上",
     )
 
     assert infer_scope(item) == ("global", [], None, 0.7)

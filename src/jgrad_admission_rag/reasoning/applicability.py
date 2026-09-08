@@ -118,7 +118,7 @@ PredicateValue = str | StrictInt | StrictFloat | StrictBool | None
 
 @dataclass(frozen=True)
 class _FieldSpec:
-    kind: Literal["string", "integer", "boolean", "collection", "date"]
+    kind: Literal["string", "integer", "number", "boolean", "collection", "date"]
     getter: tuple[str, ...]
 
 
@@ -197,6 +197,32 @@ _FIELD_SPECS = {
     "academic_credentials.first.person_designation_status": _FieldSpec(
         "string", ("academic_credentials", "first", "person_designation_status")
     ),
+    "academic_credentials.first.years_enrolled_at_eligibility_cutoff": _FieldSpec(
+        "integer", ("academic_credentials", "first", "years_enrolled_at_eligibility_cutoff")
+    ),
+    "academic_credentials.first.prescribed_credits_excellence_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "prescribed_credits_excellence_status")
+    ),
+    "academic_credentials.first.institution_is_target_university": _FieldSpec(
+        "boolean", ("academic_credentials", "first", "institution_is_target_university")
+    ),
+    "academic_credentials.first.gpt_after_two_years": _FieldSpec(
+        "number", ("academic_credentials", "first", "gpt_after_two_years")
+    ),
+    "academic_credentials.first.credits_after_two_years": _FieldSpec(
+        "integer", ("academic_credentials", "first", "credits_after_two_years")
+    ),
+    "academic_credentials.first.required_specialization_courses_expected_status": _FieldSpec(
+        "string",
+        ("academic_credentials", "first", "required_specialization_courses_expected_status"),
+    ),
+    "academic_credentials.first.expected_specialist_credits": _FieldSpec(
+        "integer", ("academic_credentials", "first", "expected_specialist_credits")
+    ),
+    "academic_credentials.first.liberal_arts_requirements_expected_status": _FieldSpec(
+        "string",
+        ("academic_credentials", "first", "liberal_arts_requirements_expected_status"),
+    ),
     "language_test_results.first.test_date": _FieldSpec(
         "date", ("language_test_results", "first", "test_date")
     ),
@@ -205,6 +231,14 @@ _FIELD_SPECS = {
 _OPERATORS_BY_KIND = {
     "string": frozenset({PredicateOperator.EQUALS, PredicateOperator.NOT_EQUALS}),
     "integer": frozenset(
+        {
+            PredicateOperator.EQUALS,
+            PredicateOperator.NOT_EQUALS,
+            PredicateOperator.MINIMUM,
+            PredicateOperator.MAXIMUM,
+        }
+    ),
+    "number": frozenset(
         {
             PredicateOperator.EQUALS,
             PredicateOperator.NOT_EQUALS,
