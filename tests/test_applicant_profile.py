@@ -23,6 +23,7 @@ from jgrad_admission_rag.reasoning import (
     LanguageResultStatus,
     LanguageTestResult,
     OfficialVerificationStatus,
+    PriorEducationCategory,
     TargetApplication,
     canonical_applicant_profile_bytes,
     load_applicant_profile,
@@ -107,6 +108,7 @@ def _unknown_profile_payload() -> dict[str, object]:
             "individual_review_status": None,
             "individual_review_requested": None,
             "individual_review_completed": None,
+            "age_at_eligibility_cutoff": None,
         },
         "language_test_results": None,
     }
@@ -141,6 +143,28 @@ def test_all_unknown_fields_are_explicitly_null() -> None:
     profile = ApplicantProfile.model_validate(_unknown_profile_payload())
 
     assert profile.model_dump(mode="json") == _unknown_profile_payload()
+
+
+def test_rule02b_profile_fields_are_strict_and_typed() -> None:
+    payload = _profile_payload()
+    credential = payload["academic_credentials"][0]  # type: ignore[index]
+    credential.update(  # type: ignore[union-attr]
+        credential_basis="review_path10_mot_professional_experience",
+        prior_education_category="university_withdrawal",
+        years_enrolled_before_withdrawal=2,
+        post_university_research_months=12,
+        graduate_equivalent_recognition_status="officially_confirmed",
+    )
+    payload["eligibility_facts"]["age_at_eligibility_cutoff"] = 22  # type: ignore[index]
+
+    profile = ApplicantProfile.model_validate(payload)
+
+    assert profile.academic_credentials is not None
+    assert (
+        profile.academic_credentials[0].prior_education_category
+        is PriorEducationCategory.UNIVERSITY_WITHDRAWAL
+    )
+    assert profile.eligibility_facts.age_at_eligibility_cutoff == 22
 
 
 @pytest.mark.parametrize(

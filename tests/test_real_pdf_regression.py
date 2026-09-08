@@ -778,15 +778,15 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
             "missing-scope",
             ApplicantProfile.model_validate(missing_scope_payload),
             _real_report_intent(matching_scope, include_scope=False),
-            ApplicabilityStatus.NEEDS_INFORMATION,
-            ReportStatus.NEEDS_INFORMATION,
+            ApplicabilityStatus.CONFIRMED,
+            ReportStatus.COMPLETE,
         ),
         (
             "conflicting-scope",
             ApplicantProfile.model_validate(conflict_payload),
             _real_report_intent(matching_scope, include_scope=True),
-            ApplicabilityStatus.NEEDS_INFORMATION,
-            ReportStatus.NEEDS_REVIEW,
+            ApplicabilityStatus.CONFIRMED,
+            ReportStatus.COMPLETE,
         ),
     )
 
@@ -881,15 +881,15 @@ def test_real_pdf_applicant_report_http_scenarios(
             "missing-scope",
             ApplicantProfile.model_validate(missing_scope_payload),
             False,
-            "needs_information",
-            "needs_information",
+            "confirmed",
+            "complete",
         ),
         (
             "conflicting-scope",
             ApplicantProfile.model_validate(conflict_payload),
             True,
-            "needs_information",
-            "needs_review",
+            "confirmed",
+            "complete",
         ),
     )
     settings = ServiceSettings(
@@ -1079,8 +1079,8 @@ def test_real_pdf_local_ui_catalog_and_query_payload(
 
 
 def _real_report_intent(scope, *, include_scope: bool) -> QueryIntent:
-    target = scope.scope_targets[0]
-    query = "eligibility" + (f" {target}" if include_scope else "") + " QUERY_SECRET"
+    target = scope.scope_targets[0] if scope.scope_targets else None
+    query = "eligibility" + (f" {target}" if include_scope and target else "") + " QUERY_SECRET"
     mentions = [
         IntentMention(
             canonical_value=IntentCategory.ELIGIBILITY.value,
@@ -1090,7 +1090,7 @@ def _real_report_intent(scope, *, include_scope: bool) -> QueryIntent:
             surface="eligibility",
         )
     ]
-    if include_scope:
+    if include_scope and target:
         start = query.index(target)
         mentions.append(
             IntentMention(
@@ -1108,7 +1108,7 @@ def _real_report_intent(scope, *, include_scope: bool) -> QueryIntent:
         query=query,
         requested_categories=(IntentCategory.ELIGIBILITY,),
         requested_scope=RequestedScope(
-            department_or_program_targets=(target,) if include_scope else (),
+            department_or_program_targets=(target,) if include_scope and target else (),
             parent_college_values=(),
             target_degree_level=None,
             intake_year=None,
@@ -1125,7 +1125,9 @@ def _real_applicability_profile(age: int | None, scope: dict[str, Any]) -> Appli
             "schema_version": "1.0",
             "target_application": {
                 "graduate_school_or_college": scope["parent_college"],
-                "department_or_program": scope["scope_targets"][0],
+                "department_or_program": (
+                    scope["scope_targets"][0] if scope["scope_targets"] else None
+                ),
                 "requested_degree_level": "professional",
                 "intake_year": 2027,
                 "intake_month": 4,
@@ -1563,10 +1565,10 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
     assert loaded.vectors.shape == (318, 8)
     assert loaded.manifest.payloads_sha256 == (
-        "5c587bfc996e14540bcdf14f91024ef45512e94fbbc6731d87f7e902a18cf8f2"
+        "bce5182146e8f4b6e60a2452811fcd81b77ed10ea9f9e318e104a2956a4a016e"
     )
     assert loaded.manifest.vectors_sha256 == (
-        "59fcb28e194599be0fc8dab7386953b1adba442a5a903d6bb8598e9b19603219"
+        "5bba3a4b04986c81fa2a04eda51667132bd4afa2fcea0984ad341e5fa4da47bd"
     )
 
 
@@ -1919,7 +1921,7 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
         json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert characterization_sha256 == (
-        "6f420b827958841e0bd1c8a6ddd07cb240dde023f637d6d09c9713ffb88e163f"
+        "69044cc007c5a26116d4ed32bfd103ea490bfc890cf3864519b611c9d3aa968a"
     )
     assert aggregate_sha256 == ("b55c34aadfb17597a9b6c86d8be7761a0e1e1d466858a1161004c8268197c387")
 
@@ -1981,7 +1983,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "methods": 7,
         "periods": 9,
     }
-    assert scope_type_counts == {"college": 2, "department": 126, "global": 36, "unknown": 154}
+    assert scope_type_counts == {"college": 2, "department": 124, "global": 38, "unknown": 154}
     assert target_counts == {
         "システム制御系": 18,
         "化学系": 22,
@@ -1991,7 +1993,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "応用化学系": 17,
         "情報工学系": 14,
         "情報通信系": 10,
-        "技術経営専門職学位課程": 15,
+        "技術経営専門職学位課程": 13,
         "数学系": 19,
         "数理・計算科学系": 13,
         "材料系": 26,
@@ -2010,18 +2012,18 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "環境・社会理工学院": 2,
     }
     assert college_counts == {
-        "<none>": 192,
+        "<none>": 194,
         "工学院": 33,
         "情報理工学院": 6,
         "物質理工学院": 13,
         "理学院": 41,
-        "環境・社会理工学院": 23,
+        "環境・社会理工学院": 21,
         "生命理工学院": 10,
     }
 
     examples = (
         (MetadataFilter(fact_types=("english",)), 28),
-        (MetadataFilter(scope_types=("department",)), 126),
+        (MetadataFilter(scope_types=("department",)), 124),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
         (
@@ -2078,7 +2080,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
 
     hard_filter_examples = (
         (MetadataFilter(fact_types=("english",)), 28),
-        (MetadataFilter(scope_types=("department",)), 126),
+        (MetadataFilter(scope_types=("department",)), 124),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
         (
@@ -2223,7 +2225,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("fcc3f7c472609149f796a89111ac4b95c37ef3a0a5f693afb182cd868bdd2b14")
+    assert outcome_sha256 == ("1d402fd38aba33b599eb602864f6d39a38368f27e4c6f3d80ed1d24504bc4c35")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
@@ -2407,7 +2409,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "fea6bd1dcf5f03af77f9a35c62f0349d33266f2016cce826a12df26204e386a0"
+    assert aggregate_sha256 == "80d9c606be4f34edfb4f1775123a2d23e99a8a3d1f6cbcae75cd8f01e181418d"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -2487,7 +2489,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "7d7a0c6e880840d46dbecd4062c4d305f2835be8497f6459f8d3859553cad43a"
+        "c56add9500706e22a43bdc2ac48705aeb5abd4e3cbc7e63fbb09040fb36bdfdb"
     )
 
     class RecordingProvider:

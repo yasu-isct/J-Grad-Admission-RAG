@@ -333,7 +333,16 @@ function academicCredentials() {
     expected_specialist_credits: nullableInteger("expected-specialist-credits"),
     liberal_arts_requirements_expected_status: nullableText(
       "liberal-arts-requirements-status"
-    )
+    ),
+    prior_education_category: nullableText("prior-education-category"),
+    sixteen_year_equivalence_status: nullableText("sixteen-year-equivalence-status"),
+    ministerial_course_standard_status: nullableText("ministerial-course-standard-status"),
+    ministerial_completion_deadline_status: nullableText("ministerial-completion-deadline-status"),
+    years_enrolled_before_withdrawal: nullableInteger("years-enrolled-before-withdrawal"),
+    under_sixteen_year_bachelor_country_status: nullableText("under-sixteen-year-country-status"),
+    university_education_completion_status: nullableText("university-education-completion-status"),
+    post_university_research_months: nullableInteger("post-university-research-months"),
+    graduate_equivalent_recognition_status: nullableText("graduate-equivalent-recognition-status")
   };
   return Object.values(credential).every((value) => value === null) ? null : [credential];
 }
@@ -361,7 +370,8 @@ function applicantProfile() {
       research_experience_months: nullableInteger("research-months"),
       individual_review_status: nullableText("review-status"),
       individual_review_requested: nullableBoolean("review-requested"),
-      individual_review_completed: nullableBoolean("review-completed")
+      individual_review_completed: nullableBoolean("review-completed"),
+      age_at_eligibility_cutoff: nullableInteger("age-at-eligibility-cutoff")
     },
     language_test_results: null
   };
