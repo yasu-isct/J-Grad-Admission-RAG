@@ -29,7 +29,7 @@ def test_v1_fixture_loads_with_frozen_coverage() -> None:
     assert benchmark.source_pdf_sha256 == (
         "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
     )
-    assert benchmark.expected_kb_schema_version == "0.5"
+    assert benchmark.expected_kb_schema_version == "0.6"
     assert benchmark_coverage(benchmark) == {
         "total_queries": 34,
         "by_category": {
@@ -45,7 +45,7 @@ def test_v1_fixture_loads_with_frozen_coverage() -> None:
             "selection_exams": 6,
         },
         "by_style": {"exact_term": 7, "identifier": 6, "paraphrase": 21},
-        "by_scope": {"department": 25, "global": 2, "unknown": 79},
+        "by_scope": {"department": 25, "global": 10, "unknown": 70},
         "single_fact_queries": 5,
         "multi_fact_queries": 29,
         "single_clause_queries": 27,

@@ -53,7 +53,7 @@ def test_explicit_sentence_transformer_model_against_real_projection() -> None:
     assert over_limit_ids == []
     vectors = embed_documents_checked(provider, texts)
 
-    assert len(vectors) == len(texts) == 298
+    assert len(vectors) == len(texts) == 304
     assert all(len(vector) == expected_dimension for vector in vectors)
     assert all(all(math.isfinite(value) for value in vector) for vector in vectors)
     assert all(any(value != 0.0 for value in vector) for vector in vectors)

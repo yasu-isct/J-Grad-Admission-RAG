@@ -644,7 +644,7 @@ def test_real_fact_00063_trace_preserves_reviewed_status_and_page(
     )
 
     assert trace.applicability_steps[0].status is expected_status
-    assert trace.applicability_steps[0].official_evidence[0].fact_id == "fact:00063"
+    assert trace.applicability_steps[0].official_evidence[0].fact_id == "fact:00066"
     assert trace.applicability_steps[0].official_evidence[0].source_pages == (7,)
     assert trace.interaction_steps == ()
     assert fixture_rule["annotation_note"] not in canonical_reasoning_trace_bytes(trace).decode()

@@ -9,67 +9,39 @@
     "institution_id": "isct",
     "institution_name": "Institute of Science Tokyo",
     "degree_levels": ["master"],
-    "intake_terms": [
-      {"year": 2026, "month": 9},
-      {"year": 2027, "month": 4}
-    ],
+    "intake_terms": [{"year": 2026, "month": 9}, {"year": 2027, "month": 4}],
     "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
     "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
     "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
     "publication_date": null,
     "revision_date": null
   },
-  "rules": [
-    {
-      "schema_version": "1.0",
-      "rule_id": "isct-master-individual-review-age-22-criterion",
-      "mode": "all",
-      "predicates": [
-        {
-          "field_path": "target_application.application_route",
-          "operator": "equals",
-          "expected_value": "individual eligibility review route"
-        },
-        {
-          "field_path": "eligibility_facts.age_at_enrollment",
-          "operator": "minimum",
-          "expected_value": 22
-        }
-      ],
-      "scope": {
-        "scope_type": "department",
-        "scope_targets": ["技術経営専門職学位課程"],
-        "parent_college": "環境・社会理工学院"
-      },
-      "evidence_bindings": [
-        {
-          "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "d752d58b073f9bf57dc399e477ec8325f4ed0ccaaca351f67a05c9f8304f258f",
-          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
-          "fact_id": "fact:00063",
-          "source_pages": [7],
-          "authoritative_fact_text_sha256": "1986232791fbaf5907807eee5bd8d524f782f1c4bcf96807cc140e0363c596dc"
-        }
-      ],
-      "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
-    }
-  ],
+  "rules": [{
+    "schema_version": "1.0",
+    "rule_id": "isct-master-individual-review-age-22-criterion",
+    "mode": "all",
+    "predicates": [
+      {"field_path": "target_application.application_route", "operator": "equals", "expected_value": "individual eligibility review route"},
+      {"field_path": "eligibility_facts.age_at_enrollment", "operator": "minimum", "expected_value": 22}
+    ],
+    "scope": {"scope_type": "department", "scope_targets": ["技術経営専門職学位課程"], "parent_college": "環境・社会理工学院"},
+    "evidence_bindings": [{
+      "document_id": "isct_2027_4_2026_9_master",
+      "source_kb_sha256": "ce22a04ca93979c294ec2fd9346d16b46a9955f446dcb5af0a4f9882892c774e",
+      "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+      "fact_id": "fact:00066",
+      "source_pages": [7],
+      "authoritative_fact_text_sha256": "1986232791fbaf5907807eee5bd8d524f782f1c4bcf96807cc140e0363c596dc"
+    }],
+    "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
+  }],
   "precedence_policy": {
     "schema_version": "1.0",
     "policy_id": "isct-master-reviewed-precedence-v1",
-    "subjects": [
-      {
-        "rule_id": "isct-master-individual-review-age-22-criterion",
-        "subject_key": "eligibility.individual_review.age"
-      }
-    ],
+    "subjects": [{"rule_id": "isct-master-individual-review-age-22-criterion", "subject_key": "eligibility.individual_review.age"}],
     "override_edges": []
   },
-  "interaction_policy": {
-    "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-interactions-v1",
-    "interactions": []
-  },
+  "interaction_policy": {"schema_version": "1.0", "policy_id": "isct-master-reviewed-interactions-v1", "interactions": []},
   "covered_categories": ["eligibility"],
   "coverage_status": "partial_reviewed_rules",
   "reviewed_coverage_statement": "Covers the reviewed age criterion for the named individual eligibility review route.",

@@ -80,6 +80,7 @@ class ProcessNoticeKind(str, Enum):
     MISSING_SCOPE = "missing_scope"
     SCOPE_INPUT_CONFLICT = "scope_input_conflict"
     INTERACTION_ANALYSIS_INCOMPLETE = "interaction_analysis_incomplete"
+    MULTIPLE_ACADEMIC_CREDENTIALS = "multiple_academic_credentials"
 
 
 _REVIEW_NOTICE_KINDS = frozenset(
@@ -353,15 +354,16 @@ def build_cited_answer(answer_id: str, trace: ReasoningTrace) -> CitedAnswer:
         notices: list[ProcessNotice] = []
         for resolution in validated_trace.resolution_steps:
             applicability = applicability_by_rule[resolution.rule_id]
-            for field_path in applicability.missing_profile_fields:
-                missing.append(
-                    MissingInformationEntry(
-                        rule_id=resolution.rule_id,
-                        field_path=field_path,
-                        source_applicability_step_id=applicability.step_id,
-                        source_resolution_step_id=resolution.step_id,
+            if resolution.disposition is ResolutionDisposition.PENDING:
+                for field_path in applicability.missing_profile_fields:
+                    missing.append(
+                        MissingInformationEntry(
+                            rule_id=resolution.rule_id,
+                            field_path=field_path,
+                            source_applicability_step_id=applicability.step_id,
+                            source_resolution_step_id=resolution.step_id,
+                        )
                     )
-                )
             notices.extend(_diagnostic_notices(applicability, resolution))
             finding = _build_finding(resolution, applicability.step_id, resolution_by_rule)
             if isinstance(finding, ProcessNotice):
@@ -615,6 +617,9 @@ def _diagnostic_notices(
         ),
         ApplicabilityDiagnostic.MISSING_SCOPE: ProcessNoticeKind.MISSING_SCOPE,
         ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT: (ProcessNoticeKind.SCOPE_INPUT_CONFLICT),
+        ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS: (
+            ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS
+        ),
     }
     return tuple(
         ProcessNotice(
@@ -778,6 +783,7 @@ def _validate_notice_sources(
         ProcessNoticeKind.MISSING_OFFICIAL_EVIDENCE,
         ProcessNoticeKind.MISSING_SCOPE,
         ProcessNoticeKind.SCOPE_INPUT_CONFLICT,
+        ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS,
     }
     if notice.kind in single_rule_kinds:
         if len(notice.rule_ids) != 1:
@@ -881,6 +887,7 @@ def _render_notice(notice: ProcessNotice) -> str:
         ProcessNoticeKind.MISSING_SCOPE: "対象範囲の情報が不足しています。",
         ProcessNoticeKind.SCOPE_INPUT_CONFLICT: "対象範囲の入力が整合していないため、確認が必要です。",
         ProcessNoticeKind.INTERACTION_ANALYSIS_INCOMPLETE: "規則間関係の確認が完了していません。",
+        ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS: "複数の学歴から安全に一件を選べないため、確認が必要です。",
     }
     rules = ""
     if notice.rule_ids:

@@ -293,6 +293,19 @@ function nullableBoolean(id) {
   return value === "" ? null : value === "true";
 }
 
+function academicCredentials() {
+  const credential = {
+    institution_country_code: nullableText("credential-country"),
+    degree_level: nullableText("credential-degree-level"),
+    credential_basis: nullableText("credential-basis"),
+    completion_state: nullableText("completion-state"),
+    completion_date: nullableText("completion-date"),
+    expected_completion_date: nullableText("expected-completion-date"),
+    years_of_education: nullableInteger("years-of-education")
+  };
+  return Object.values(credential).every((value) => value === null) ? null : [credential];
+}
+
 function applicantProfile() {
   return {
     schema_version: "1.0",
@@ -309,7 +322,7 @@ function applicantProfile() {
       current_residence_country_code: null,
       residence_status_category: null
     },
-    academic_credentials: null,
+    academic_credentials: academicCredentials(),
     eligibility_facts: {
       age_at_enrollment: nullableInteger("age-at-enrollment"),
       professional_experience_months: nullableInteger("professional-months"),
@@ -325,6 +338,10 @@ function applicantProfile() {
 function validateProfile(profile) {
   if (!reportForm.checkValidity()) return "入力値の範囲と形式を確認してください。";
   const facts = profile.eligibility_facts;
+  const credential = profile.academic_credentials ? profile.academic_credentials[0] : null;
+  if (credential && credential.completion_state === "completed" && credential.expected_completion_date !== null) return "修了済みの学歴に見込日を入力することはできません。";
+  if (credential && credential.completion_state === "expected" && credential.completion_date !== null) return "修了見込みの学歴に修了済みの日付を入力することはできません。";
+  if (credential && credential.completion_state === "not_completed" && (credential.completion_date !== null || credential.expected_completion_date !== null)) return "未修了・見込み日なしの学歴に修了日を入力することはできません。";
   const status = facts.individual_review_status;
   if (status === "not_requested" && (facts.individual_review_requested === true || facts.individual_review_completed === true)) return "個別資格審査の状態と申請・完了の回答が矛盾しています。";
   if (status === "requested" && (facts.individual_review_requested === false || facts.individual_review_completed === true)) return "個別資格審査の状態と申請・完了の回答が矛盾しています。";
@@ -363,6 +380,7 @@ function renderReport(payload) {
   clearReportResult();
   const report = payload.report;
   const answer = report.cited_answer;
+  const rulesById = new Map(report.source_plan.rules.map((rule) => [rule.rule_id, rule]));
   const coverage = document.createElement("section");
   coverage.className = "report-section coverage-result";
   coverage.append(heading(3, "部分的な審査済み範囲"));
@@ -402,6 +420,10 @@ function renderReport(payload) {
     if (finding.activated_override) {
       const override = finding.activated_override;
       addMetadata(details, "上書き", `${override.overrider_rule_id} | ${override.subject_key} | ${override.rationale}`);
+    }
+    const reviewedRule = rulesById.get(finding.rule_id);
+    if (finding.disposition === "active" && reviewedRule && finding.rule_id.startsWith("isct-master-direct-path-")) {
+      addMetadata(details, "審査済み説明", reviewedRule.annotation_note);
     }
     item.append(title, details, citationList(finding.citations));
     findingList.append(item);

@@ -101,7 +101,7 @@ fields, diagnostics, evidence presence, or final status, including unsafe Pydant
 
 ## Audited Real Scenarios
 
-The versioned fixture binds the existing 85-page corpus to `fact:00063`, page 7. A reviewer narrowed
+The versioned fixture binds the existing 85-page corpus to `fact:00066`, page 7. A reviewer narrowed
 the annotation to one necessary but insufficient age criterion for the named individual-review
 route. `confirmed` therefore means only that this atomic criterion applies; it does not mean the
 review was approved, later alternatives were satisfied, or the complete route applies. No PDF or
@@ -115,6 +115,12 @@ long official passage is committed.
 
 The fixture pins Fact ID, page, authoritative Fact-text hash, source KB hash, and source PDF hash.
 It is a contract characterization, not comprehensive admissions advice.
+
+RULE-01A adds reviewed rules for direct paths (1)-(3): Japanese university graduation, NIAD-QE
+bachelor award, and foreign 16-year education with a bachelor-equivalent degree. Completed and
+expected-completion branches are separate. April 2027 uses `2027-03-31`; September 2026 uses
+`2026-09-27`, with a separate page-8 prior-email notice for `2026-09-28` through `2026-09-30`.
+These statuses describe only the named reviewed path and never overall eligibility.
 
 ## Deliberate Limits
 

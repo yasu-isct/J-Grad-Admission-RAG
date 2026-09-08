@@ -10,6 +10,7 @@ ChunkClassification = Literal["whitespace_only", "page_only", "heading_only", "i
 DropReason = Literal["whitespace_only", "page_only", "heading_only_unmerged"]
 
 PAGE_LINE_RE = re.compile(r"## Page \d+")
+NUMBERED_CLAUSE_RE = re.compile(r"^[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*\S")
 DROP_REASONS: tuple[DropReason, ...] = (
     "whitespace_only",
     "page_only",
@@ -43,6 +44,8 @@ def classify_chunk(chunk: TextChunk) -> ChunkClassification:
 
     title = _normalize(chunk.title)
     if title and content == title:
+        if NUMBERED_CLAUSE_RE.match(content):
+            return "informative"
         return "heading_only"
     return "informative"
 

@@ -23,6 +23,13 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "intake-year",
         "intake-month",
         "application-route",
+        "credential-country",
+        "credential-degree-level",
+        "credential-basis",
+        "completion-state",
+        "completion-date",
+        "expected-completion-date",
+        "years-of-education",
         "age-at-enrollment",
         "professional-months",
         "research-months",
@@ -42,7 +49,11 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert "citizenship_country_codes: null" in javascript
     assert "current_residence_country_code: null" in javascript
     assert "residence_status_category: null" in javascript
-    assert "academic_credentials: null" in javascript
+    assert "academic_credentials: academicCredentials()" in javascript
+    assert 'credential_basis: nullableText("credential-basis")' in javascript
+    assert 'completion_date: nullableText("completion-date")' in javascript
+    assert 'expected_completion_date: nullableText("expected-completion-date")' in javascript
+    assert 'years_of_education: nullableInteger("years-of-education")' in javascript
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript
@@ -62,6 +73,8 @@ def test_report_ui_renders_only_safe_structured_report_fields() -> None:
         "interaction_warnings",
         "process_notices",
         "evidence_records",
+        "source_plan",
+        "annotation_note",
         "source_pages",
     ):
         assert field in javascript

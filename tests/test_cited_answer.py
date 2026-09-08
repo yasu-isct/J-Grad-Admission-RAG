@@ -343,12 +343,12 @@ def test_real_fact_00063_rule_findings_preserve_status_page_and_non_eligibility(
     assert answer.report_status is report_status
     assert finding.original_status is status
     assert finding.disposition is disposition
-    assert finding.citations[0].fact_id == "fact:00063"
+    assert finding.citations[0].fact_id == "fact:00066"
     assert finding.citations[0].source_pages == (7,)
     assert answer.document_id == REAL_DATA["document_id"]
     assert answer.source_kb_sha256 == REAL_DATA["source_kb_sha256"]
     assert answer.source_pdf_sha256 == REAL_DATA["source_pdf_sha256"]
-    assert "[fact:00063, p.7]" in markdown
+    assert "[fact:00066, p.7]" in markdown
     assert phrase in markdown
     assert "入学資格、合否、合格可能性、または出願推奨を示すものではありません" in markdown
     assert "適格" not in markdown
@@ -365,11 +365,11 @@ def test_active_real_markdown_snapshot_is_exact_and_deterministic() -> None:
 
 ## 規則ごとの確認結果
 
-- 規則 `isct-master-individual-review-age-22-criterion`（対象: department: 技術経営専門職学位課程, 環境・社会理工学院）: このトレースに記録された情報に対して、確認済みの規則が適用されます。 [fact:00063, p.7]
+- 規則 `isct-master-individual-review-age-22-criterion`（対象: department: 技術経営専門職学位課程, 環境・社会理工学院）: このトレースに記録された情報に対して、確認済みの規則が適用されます。 [fact:00066, p.7]
 
 ## 出典一覧
 
-- [fact:00063, p.7] 文書 `isct_2027_4_2026_9_master` / 規則 `isct-master-individual-review-age-22-criterion` / 役割: 主要 / 参照元: 規則所見
+- [fact:00066, p.7] 文書 `isct_2027_4_2026_9_master` / 規則 `isct-master-individual-review-age-22-criterion` / 役割: 主要 / 参照元: 規則所見
 
 ## 制約
 

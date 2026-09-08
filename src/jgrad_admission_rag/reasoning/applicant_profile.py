@@ -32,6 +32,7 @@ __all__ = [
     "ApplicantProfileError",
     "CitizenshipAndResidence",
     "CompletionState",
+    "CredentialBasis",
     "DegreeLevel",
     "EligibilityFacts",
     "IndividualReviewStatus",
@@ -67,6 +68,12 @@ class CompletionState(str, Enum):
     COMPLETED = "completed"
     EXPECTED = "expected"
     NOT_COMPLETED = "not_completed"
+
+
+class CredentialBasis(str, Enum):
+    UNIVERSITY_GRADUATION = "university_graduation"
+    NIAD_QE_BACHELOR_AWARD = "niad_qe_bachelor_award"
+    FOREIGN_16_YEAR_BACHELOR_EQUIVALENT = "foreign_16_year_bachelor_equivalent"
 
 
 class IntakeMonth(int, Enum):
@@ -153,6 +160,7 @@ class CitizenshipAndResidence(ApplicantProfileModel):
 class AcademicCredential(ApplicantProfileModel):
     institution_country_code: str | None
     degree_level: DegreeLevel | None
+    credential_basis: CredentialBasis | None = None
     completion_state: CompletionState | None
     completion_date: date | None
     expected_completion_date: date | None

@@ -78,6 +78,7 @@ def _profile(**changes: object) -> ApplicantProfile:
             {
                 "institution_country_code": "JP",
                 "degree_level": "bachelor",
+                "credential_basis": "university_graduation",
                 "completion_state": "completed",
                 "completion_date": "2026-03-20",
                 "expected_completion_date": None,
@@ -356,6 +357,16 @@ def _rule(
         ("eligibility_facts.professional_experience_months", "minimum", 24, "not_applicable"),
         ("eligibility_facts.individual_review_requested", "equals", False, "confirmed"),
         ("academic_credentials.first.completion_date", "on_or_before", "2026-03-20", "confirmed"),
+        ("academic_credentials.first.institution_country_code", "equals", "JP", "confirmed"),
+        ("academic_credentials.first.degree_level", "equals", "bachelor", "confirmed"),
+        (
+            "academic_credentials.first.credential_basis",
+            "equals",
+            "university_graduation",
+            "confirmed",
+        ),
+        ("academic_credentials.first.completion_state", "equals", "completed", "confirmed"),
+        ("academic_credentials.first.years_of_education", "minimum", 16, "confirmed"),
         ("academic_credentials.first.completion_date", "on_or_after", "2026-03-20", "confirmed"),
         (
             "academic_credentials.first.completion_date",
@@ -397,6 +408,31 @@ def test_all_and_any_truth_tables(
         evaluate_applicability(_profile(), _intent(), _pack(), _rule(*predicates, mode=mode)).status
         is expected
     )
+
+
+def test_first_credential_rule_fails_safe_for_multiple_credentials() -> None:
+    payload = _profile().model_dump(mode="json")
+    credentials = payload["academic_credentials"]
+    assert isinstance(credentials, list)
+    credentials.append(dict(credentials[0]))
+    profile = ApplicantProfile.model_validate(payload)
+
+    decision = evaluate_applicability(
+        profile,
+        _intent(),
+        _pack(),
+        _rule(
+            _predicate(
+                "academic_credentials.first.credential_basis",
+                PredicateOperator.EQUALS,
+                "university_graduation",
+            )
+        ),
+    )
+
+    assert decision.status is ApplicabilityStatus.NEEDS_INFORMATION
+    assert decision.missing_profile_fields == ()
+    assert decision.diagnostics == (ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS,)
 
 
 def test_versioned_synthetic_fixture_freezes_atomic_and_aggregate_contract() -> None:
