@@ -365,7 +365,7 @@ def test_active_real_markdown_snapshot_is_exact_and_deterministic() -> None:
 
 ## 規則ごとの確認結果
 
-- 規則 `isct-master-individual-review-age-22-criterion`（対象: department: 技術経営専門職学位課程, 環境・社会理工学院）: このトレースに記録された情報に対して、確認済みの規則が適用されます。 [fact:00069, p.7]
+- 規則 `isct-master-individual-review-age-22-criterion`（対象: 全体）: このトレースに記録された情報に対して、確認済みの規則が適用されます。 [fact:00069, p.7]
 
 ## 出典一覧
 

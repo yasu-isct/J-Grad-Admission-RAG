@@ -45,16 +45,14 @@
         }
       ],
       "scope": {
-        "scope_type": "department",
-        "scope_targets": [
-          "技術経営専門職学位課程"
-        ],
-        "parent_college": "環境・社会理工学院"
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
       },
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [

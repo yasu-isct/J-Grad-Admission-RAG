@@ -44,12 +44,22 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "required-specialization-courses-status",
         "expected-specialist-credits",
         "liberal-arts-requirements-status",
+        "prior-education-category",
+        "sixteen-year-equivalence-status",
+        "ministerial-course-standard-status",
+        "ministerial-completion-deadline-status",
+        "years-enrolled-before-withdrawal",
+        "under-sixteen-year-country-status",
+        "university-education-completion-status",
+        "post-university-research-months-at-eligibility-cutoff",
+        "graduate-equivalent-recognition-status",
         "age-at-enrollment",
         "professional-months",
         "research-months",
         "review-status",
         "review-requested",
         "review-completed",
+        "age-at-eligibility-cutoff",
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
@@ -89,6 +99,13 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
         'expected_specialist_credits: nullableInteger("expected-specialist-credits")' in javascript
     )
     assert "liberal_arts_requirements_expected_status: nullableText(" in javascript
+    assert 'prior_education_category: nullableText("prior-education-category")' in javascript
+    assert "sixteen_year_equivalence_status: nullableText(" in javascript
+    assert "ministerial_completion_deadline_status: nullableText(" in javascript
+    assert "post_university_research_months_at_eligibility_cutoff: nullableInteger(" in javascript
+    assert '"post-university-research-months-at-eligibility-cutoff"' in javascript
+    assert "graduate_equivalent_recognition_status: nullableText(" in javascript
+    assert 'age_at_eligibility_cutoff: nullableInteger("age-at-eligibility-cutoff")' in javascript
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

@@ -434,6 +434,27 @@ def test_path9_numbered_university_requirement_infers_global_scope() -> None:
     assert infer_scope(item) == ("global", [], None, 0.7)
 
 
+def test_path10_whole_rule_is_global_despite_mot_subclause() -> None:
+    text = (
+        "★（10）本学大学院において、個別の出願資格審査により、大学を卒業した者と"
+        "同等以上の学力があると認めた者であって、技術経営専門職学位課程志願者のみ"
+    )
+    item = IndexedChunk(
+        chunk_id=69,
+        pdf_name="sample.pdf",
+        pages=[7],
+        title="★（10）本学大学院において、個別の出願資格審査により、",
+        text=text,
+        section_path=["３．出願資格"],
+        category="general",
+        anchors=[],
+        references=[],
+        text_preview=text,
+    )
+
+    assert infer_scope(item) == ("global", [], None, 0.7)
+
+
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:
     chunk = chunk_pages(
         [SourcePage(page_number=7, text="3. Eligibility\nrule")],

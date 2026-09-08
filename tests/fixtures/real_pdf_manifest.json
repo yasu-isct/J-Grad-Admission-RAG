@@ -135,12 +135,12 @@
       "unresolved": 127
     },
     "fact_content_sha256": "f62ee5e317b491385b221946e6a593cbc7e6e5089b1bd57dd13cdeab8cecc42b",
-    "fact_structure_sha256": "6c29a8438dfbcfe1a0f7d2a74a3ffa09172ec328eb146f06ea4a1ee8c6bb802f",
+    "fact_structure_sha256": "5dd62030775169980f01425e0bd412322905b5ced9045a020255db08fd58ef2e",
     "diagnostics_sha256": "2f37fe906c70e4accebe3bd385b73ee8940f2ad186eeee9b2815f7f625a597a0",
-    "embedding_text_v1_sha256": "3f665de2726b8483a4c88d3892ad9c95caa7f83db789b7efa0e5fa91bf5856bd",
-    "embedding_text_v1_fake_vector_sha256": "94ab5f5dd715cac8628abbbbb8037eebd4489551dc308c01207c02e3c4083685",
-    "index_payloads_sha256": "5c587bfc996e14540bcdf14f91024ef45512e94fbbc6731d87f7e902a18cf8f2",
-    "index_fake_vectors_npy_sha256": "59fcb28e194599be0fc8dab7386953b1adba442a5a903d6bb8598e9b19603219",
+    "embedding_text_v1_sha256": "47bc9ba74460fea0844c232698b0356c35acc268d5f9a295aaa163f3c76a5b78",
+    "embedding_text_v1_fake_vector_sha256": "2c007fc1d09d055875424b63138fbccd7573c9198c86d8297442c1243fd9e59f",
+    "index_payloads_sha256": "bce5182146e8f4b6e60a2452811fcd81b77ed10ea9f9e318e104a2956a4a016e",
+    "index_fake_vectors_npy_sha256": "5bba3a4b04986c81fa2a04eda51667132bd4afa2fcea0984ad341e5fa4da47bd",
     "resolved_reference_claims": [
       [
         "fact:00014",

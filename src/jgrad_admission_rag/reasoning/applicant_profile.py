@@ -40,6 +40,7 @@ __all__ = [
     "LanguageResultStatus",
     "LanguageTestResult",
     "OfficialVerificationStatus",
+    "PriorEducationCategory",
     "TargetApplication",
     "canonical_applicant_profile_bytes",
     "load_applicant_profile",
@@ -83,6 +84,23 @@ class CredentialBasis(str, Enum):
     UNIVERSITY_THREE_YEAR_ENROLLMENT = "university_three_year_enrollment"
     FOREIGN_15_YEAR_EDUCATION = "foreign_15_year_education"
     DESIGNATED_FOREIGN_15_YEAR_PROGRAM_IN_JAPAN = "designated_foreign_15_year_program_in_japan"
+    REVIEW_PATH10_SIXTEEN_YEAR_EQUIVALENT = "review_path10_sixteen_year_equivalent"
+    REVIEW_PATH10_FOUR_YEAR_SPECIALIZED_COURSE = "review_path10_four_year_specialized_course"
+    REVIEW_PATH10_MOT_PROFESSIONAL_EXPERIENCE = "review_path10_mot_professional_experience"
+    REVIEW_PATH11_UNDER_SIXTEEN_YEAR_BACHELOR = "review_path11_under_sixteen_year_bachelor"
+
+
+class PriorEducationCategory(str, Enum):
+    TECHNICAL_COLLEGE_ADVANCED_COURSE = "technical_college_advanced_course"
+    JUNIOR_COLLEGE_ADVANCED_COURSE = "junior_college_advanced_course"
+    KOREA_UNIVERSITY = "korea_university"
+    NON_DESIGNATED_FOREIGN_UNIVERSITY_JAPAN_CAMPUS = (
+        "non_designated_foreign_university_japan_campus"
+    )
+    SPECIALIZED_TRAINING_COLLEGE = "specialized_training_college"
+    TECHNICAL_COLLEGE = "technical_college"
+    JUNIOR_COLLEGE = "junior_college"
+    UNIVERSITY_WITHDRAWAL = "university_withdrawal"
 
 
 class OfficialVerificationStatus(str, Enum):
@@ -194,6 +212,15 @@ class AcademicCredential(ApplicantProfileModel):
     required_specialization_courses_expected_status: OfficialVerificationStatus | None = None
     expected_specialist_credits: StrictInt | None = None
     liberal_arts_requirements_expected_status: OfficialVerificationStatus | None = None
+    prior_education_category: PriorEducationCategory | None = None
+    sixteen_year_equivalence_status: OfficialVerificationStatus | None = None
+    ministerial_course_standard_status: OfficialVerificationStatus | None = None
+    ministerial_completion_deadline_status: OfficialVerificationStatus | None = None
+    years_enrolled_before_withdrawal: StrictInt | None = None
+    under_sixteen_year_bachelor_country_status: OfficialVerificationStatus | None = None
+    university_education_completion_status: OfficialVerificationStatus | None = None
+    post_university_research_months_at_eligibility_cutoff: StrictInt | None = None
+    graduate_equivalent_recognition_status: OfficialVerificationStatus | None = None
 
     @field_validator("institution_country_code")
     @classmethod
@@ -208,6 +235,8 @@ class AcademicCredential(ApplicantProfileModel):
         "years_enrolled_at_eligibility_cutoff",
         "credits_after_two_years",
         "expected_specialist_credits",
+        "years_enrolled_before_withdrawal",
+        "post_university_research_months_at_eligibility_cutoff",
     )
     @classmethod
     def years_of_education_must_not_be_negative(cls, value: int | None) -> int | None:
@@ -245,9 +274,13 @@ class EligibilityFacts(ApplicantProfileModel):
     individual_review_status: IndividualReviewStatus | None
     individual_review_requested: StrictBool | None
     individual_review_completed: StrictBool | None
+    age_at_eligibility_cutoff: StrictInt | None = None
 
     @field_validator(
-        "age_at_enrollment", "professional_experience_months", "research_experience_months"
+        "age_at_enrollment",
+        "professional_experience_months",
+        "research_experience_months",
+        "age_at_eligibility_cutoff",
     )
     @classmethod
     def quantities_must_not_be_negative(cls, value: int | None) -> int | None:

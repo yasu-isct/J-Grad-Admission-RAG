@@ -9,9 +9,10 @@ real `fact:00063` page 7 rule findings plus synthetic override, interaction, inc
 missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
 official prose, model output, or final eligibility verdict.
 
-`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, and `rule02a`
-extensions are server-owned reviewed plans for the same exact document. The RULE-02A plan adds
-eligibility path 9 and the individual-review process while preserving the earlier plan coverage.
+`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, and `rule02b`
+extensions are server-owned reviewed plans for the same exact document. The RULE-02 plans add
+eligibility paths 9 through 11 and the shared individual-review process while preserving the
+earlier plan coverage.
 They contain reviewed configuration and hashes, but no applicant data, query, retrieval score,
 generated report, or overall eligibility state. The current plans are explicitly bound to the
 canonical schema-0.6 318-Fact KB; historical M4/RET-09 schema-0.5 fixtures remain unchanged.

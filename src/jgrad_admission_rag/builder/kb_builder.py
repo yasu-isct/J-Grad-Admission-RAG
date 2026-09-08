@@ -45,6 +45,7 @@ COLLEGE_DEPARTMENTS = {
 PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
     r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
 )
+PATH10_ELIGIBILITY_RE = re.compile(r"^★（10）本学大学院において、個別の出願資格審査により、")
 
 
 class DocumentBuildError(Exception):
@@ -103,6 +104,9 @@ def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
 
 def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     haystack = f"{item.title}\n{item.text}"
+    if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
+        return "global", [], None, 0.7
+
     matched_departments = [
         department
         for departments in COLLEGE_DEPARTMENTS.values()

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "plan_id": "isct-master-reviewed-report-plan-v4",
+  "plan_id": "isct-master-reviewed-report-plan-v5",
   "document_identity": {
     "schema_version": "1.0",
     "document_id": "isct_2027_4_2026_9_master",
@@ -3310,6 +3310,3206 @@
     },
     {
       "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-four_year_specialized_course-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2027-03-31（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-four_year_specialized_course-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2026-09-27（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-mot_professional_experience-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2027-03-31（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-mot_professional_experience-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2026-09-27（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-sixteen_year_equivalent-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2027-03-31（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-age-sixteen_year_equivalent-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "2026-09-27（入学日前日）までに22歳に達する原子条件だけを示し、最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-completed-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-completed-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-expected-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-expected-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-korea_university-completed-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "korea_university"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-korea_university-completed-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "korea_university"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-korea_university-expected-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "korea_university"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-korea_university-expected-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "korea_university"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "non_designated_foreign_university_japan_campus"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "non_designated_foreign_university_japan_campus"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "non_designated_foreign_university_japan_campus"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "non_designated_foreign_university_japan_campus"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-completed-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-completed-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-expected-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2027-03-31までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-expected-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college_advanced_course"
+        },
+        {
+          "field_path": "academic_credentials.first.sixteen_year_equivalence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）一の教育機関区分、16年課程相当の公式認定及び2026-09-27までの卒業事実だけを確認します。学校の個別資格認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-2-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.ministerial_course_standard_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.ministerial_completion_deadline_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）二の4年以上の専門課程、大臣基準及び大臣が別に定める日以前の修了が公式に確認されたかだけを示します。出願資格（7）の指定課程とは別の条件です。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-2-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.ministerial_course_standard_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.ministerial_completion_deadline_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）二の4年以上の専門課程、大臣基準及び大臣が別に定める日以前の修了が公式に確認されたかだけを示します。出願資格（7）の指定課程とは別の条件です。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-junior_college-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-junior_college-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "junior_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-specialized_training_college-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-specialized_training_college-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-technical_college-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-technical_college-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "technical_college"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の許可された卒業区分と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用せず、最終認定や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-university-withdrawal-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "university_withdrawal"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_before_withdrawal",
+          "operator": "minimum",
+          "expected_value": 2
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の大学2年以上在学後の退学と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-entry-3-university-withdrawal-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.prior_education_category",
+          "operator": "equals",
+          "expected_value": "university_withdrawal"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_before_withdrawal",
+          "operator": "minimum",
+          "expected_value": 2
+        },
+        {
+          "field_path": "eligibility_facts.professional_experience_months",
+          "operator": "minimum",
+          "expected_value": 24
+        },
+        {
+          "field_path": "target_application.graduate_school_or_college",
+          "operator": "equals",
+          "expected_value": "環境・社会理工学院"
+        },
+        {
+          "field_path": "target_application.department_or_program",
+          "operator": "equals",
+          "expected_value": "技術経営専門職学位課程"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "出願資格（10）三の大学2年以上在学後の退学と企業等で合計24か月以上の職務経験だけを確認します。MOT以外には適用しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-four_year_specialized_course-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-four_year_specialized_course-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-mot_professional_experience-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-mot_professional_experience-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-sixteen_year_equivalent-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-review-process-sixteen_year_equivalent-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（10）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-four_year_specialized_course-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-four_year_specialized_course-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_four_year_specialized_course"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-mot_professional_experience-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-mot_professional_experience-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_mot_professional_experience"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-sixteen_year_equivalent-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-10-school-recognition-sixteen_year_equivalent-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path10_sixteen_year_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "本学大学院が大学卒業者と同等以上の学力を正式認定したとの確認だけを示します。審査の申請・完了や自己申告から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-age-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "2027-03-31までに22歳に達する原子条件だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-age-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "2026-09-27までに22歳に達する原子条件だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-candidate-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.under_sixteen_year_bachelor_country_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "16年未満で学士相当学位を取得する国からの外国人留学生又は同等対象であるとの公式確認だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-candidate-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.under_sixteen_year_bachelor_country_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "16年未満で学士相当学位を取得する国からの外国人留学生又は同等対象であるとの公式確認だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-research-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.post_university_research_months_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 12
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "大学教育修了後、対象研究機関で2027-03-31までに12か月以上となる研究歴だけを確認します。任意の職務経験では代替しません。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-research-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.post_university_research_months_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 12
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "大学教育修了後、対象研究機関で2026-09-27までに12か月以上となる研究歴だけを確認します。任意の職務経験では代替しません。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-review-process-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（11）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-review-process-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（11）の候補者は学歴・経歴を入試課へメールで事前確認します。審査対象なら書類は2026年5月11日必着、結果は5月19日頃に通知され、届かない場合は5月21日までに確認し、出願時に結果通知メールを印刷して提出します。これは手続案内であり学校の承認を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-school-recognition-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "本学大学院による日本の大学卒業者と同等以上の学力の正式認定だけを示し、審査完了や自己申告から推定しません。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-school-recognition-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.graduate_equivalent_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "本学大学院による日本の大学卒業者と同等以上の学力の正式認定だけを示し、審査完了や自己申告から推定しません。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-university-completion-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.university_education_completion_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "大学教育を修了したとの公式確認だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-11-university-completion-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "review_path11_under_sixteen_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.university_education_completion_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "2751fa29ec5928e39660637ebf31b58f0cff254ee3eaceee4bcb8be61275226e",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00070",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "c61adca0bb9ae1f6f56c65956861020e1ba7ecca4875fd8ac9b2756202ca990e"
+        }
+      ],
+      "annotation_note": "大学教育を修了したとの公式確認だけを示します。 最終的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
       "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr",
       "mode": "all",
       "predicates": [
@@ -4961,7 +8161,7 @@
   ],
   "precedence_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-precedence-v4",
+    "policy_id": "isct-master-reviewed-precedence-v5",
     "subjects": [
       {
         "rule_id": "isct-master-direct-path-1-university-apr-completed",
@@ -5112,6 +8312,230 @@
         "subject_key": "eligibility.reviewed.isct-master-individual-review-age-22-criterion"
       },
       {
+        "rule_id": "isct-master-path-10-age-four_year_specialized_course-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-four_year_specialized_course-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-age-four_year_specialized_course-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-four_year_specialized_course-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-age-mot_professional_experience-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-mot_professional_experience-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-age-mot_professional_experience-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-mot_professional_experience-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-age-sixteen_year_equivalent-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-sixteen_year_equivalent-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-age-sixteen_year_equivalent-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-age-sixteen_year_equivalent-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-completed-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-junior_college_advanced_course-completed-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-completed-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-junior_college_advanced_course-completed-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-expected-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-junior_college_advanced_course-expected-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-junior_college_advanced_course-expected-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-junior_college_advanced_course-expected-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-korea_university-completed-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-korea_university-completed-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-korea_university-completed-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-korea_university-completed-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-korea_university-expected-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-korea_university-expected-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-korea_university-expected-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-korea_university-expected-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-completed-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-non_designated_foreign_university_japan_campus-expected-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-completed-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-technical_college_advanced_course-completed-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-completed-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-technical_college_advanced_course-completed-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-expected-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-technical_college_advanced_course-expected-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-1-technical_college_advanced_course-expected-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-1-technical_college_advanced_course-expected-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-2-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-2-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-2-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-2-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-junior_college-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-junior_college-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-junior_college-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-junior_college-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-specialized_training_college-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-specialized_training_college-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-specialized_training_college-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-specialized_training_college-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-technical_college-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-technical_college-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-technical_college-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-technical_college-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-university-withdrawal-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-university-withdrawal-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-entry-3-university-withdrawal-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-entry-3-university-withdrawal-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-four_year_specialized_course-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-four_year_specialized_course-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-four_year_specialized_course-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-four_year_specialized_course-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-mot_professional_experience-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-mot_professional_experience-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-mot_professional_experience-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-mot_professional_experience-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-sixteen_year_equivalent-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-sixteen_year_equivalent-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-review-process-sixteen_year_equivalent-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-review-process-sixteen_year_equivalent-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-four_year_specialized_course-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-four_year_specialized_course-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-four_year_specialized_course-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-four_year_specialized_course-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-mot_professional_experience-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-mot_professional_experience-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-mot_professional_experience-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-mot_professional_experience-sep"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-sixteen_year_equivalent-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-sixteen_year_equivalent-apr"
+      },
+      {
+        "rule_id": "isct-master-path-10-school-recognition-sixteen_year_equivalent-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-10-school-recognition-sixteen_year_equivalent-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-age-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-age-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-age-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-age-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-candidate-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-candidate-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-candidate-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-candidate-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-research-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-research-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-research-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-research-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-review-process-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-review-process-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-review-process-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-review-process-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-school-recognition-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-school-recognition-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-school-recognition-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-school-recognition-sep"
+      },
+      {
+        "rule_id": "isct-master-path-11-university-completion-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-university-completion-apr"
+      },
+      {
+        "rule_id": "isct-master-path-11-university-completion-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-11-university-completion-sep"
+      },
+      {
         "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr",
         "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr"
       },
@@ -5228,13 +8652,13 @@
   },
   "interaction_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-interactions-v4",
+    "policy_id": "isct-master-reviewed-interactions-v5",
     "interactions": []
   },
   "covered_categories": [
     "eligibility"
   ],
   "coverage_status": "partial_reviewed_rules",
-  "reviewed_coverage_statement": "Covers reviewed atomic conditions for education paths (1)-(9), including path (9) candidate bases, school recognition, Science Tokyo early-entry requirements, and the shared individual-review procedure supported by the fixed official PDF.",
-  "limitation_statement": "Uses exactly one academic credential and never treats applicant claims as school approval. External-university equivalence and final individual review remain official decisions. It does not cover paths (10)-(11), general application dates, language scores, complete materials, program scope, overall eligibility, admission, or recommendations."
+  "reviewed_coverage_statement": "この計画は、固定した東京科学大学修士課程募集要項について、出願資格（1）から（11）の学歴・個別資格審査に関する原子条件と、出願資格（9）から（11）の共通審査手続を人工確認した範囲だけを扱います。",
+  "limitation_statement": "confirmedは入力値が人工確認済みの原子条件と一致したことだけを示し、学校による個別資格審査の承認、総合的な出願資格、合否又は合格可能性を示しません。審査の申請済み・完了だけから有利な正式認定を推定しません。通用の出願日程、語学、完全な提出書類・プログラム条件は未確認です。"
 }

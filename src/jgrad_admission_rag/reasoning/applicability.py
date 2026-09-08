@@ -123,6 +123,12 @@ class _FieldSpec:
 
 
 _FIELD_SPECS = {
+    "target_application.graduate_school_or_college": _FieldSpec(
+        "string", ("target_application", "graduate_school_or_college")
+    ),
+    "target_application.department_or_program": _FieldSpec(
+        "string", ("target_application", "department_or_program")
+    ),
     "target_application.requested_degree_level": _FieldSpec(
         "string", ("target_application", "requested_degree_level")
     ),
@@ -150,6 +156,9 @@ _FIELD_SPECS = {
     ),
     "eligibility_facts.research_experience_months": _FieldSpec(
         "integer", ("eligibility_facts", "research_experience_months")
+    ),
+    "eligibility_facts.age_at_eligibility_cutoff": _FieldSpec(
+        "integer", ("eligibility_facts", "age_at_eligibility_cutoff")
     ),
     "eligibility_facts.individual_review_requested": _FieldSpec(
         "boolean", ("eligibility_facts", "individual_review_requested")
@@ -222,6 +231,38 @@ _FIELD_SPECS = {
     "academic_credentials.first.liberal_arts_requirements_expected_status": _FieldSpec(
         "string",
         ("academic_credentials", "first", "liberal_arts_requirements_expected_status"),
+    ),
+    "academic_credentials.first.prior_education_category": _FieldSpec(
+        "string", ("academic_credentials", "first", "prior_education_category")
+    ),
+    "academic_credentials.first.sixteen_year_equivalence_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "sixteen_year_equivalence_status")
+    ),
+    "academic_credentials.first.ministerial_course_standard_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "ministerial_course_standard_status")
+    ),
+    "academic_credentials.first.ministerial_completion_deadline_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "ministerial_completion_deadline_status")
+    ),
+    "academic_credentials.first.years_enrolled_before_withdrawal": _FieldSpec(
+        "integer", ("academic_credentials", "first", "years_enrolled_before_withdrawal")
+    ),
+    "academic_credentials.first.under_sixteen_year_bachelor_country_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "under_sixteen_year_bachelor_country_status")
+    ),
+    "academic_credentials.first.university_education_completion_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "university_education_completion_status")
+    ),
+    "academic_credentials.first.post_university_research_months_at_eligibility_cutoff": _FieldSpec(
+        "integer",
+        (
+            "academic_credentials",
+            "first",
+            "post_university_research_months_at_eligibility_cutoff",
+        ),
+    ),
+    "academic_credentials.first.graduate_equivalent_recognition_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "graduate_equivalent_recognition_status")
     ),
     "language_test_results.first.test_date": _FieldSpec(
         "date", ("language_test_results", "first", "test_date")
