@@ -27,11 +27,11 @@
     "scope": {"scope_type": "department", "scope_targets": ["技術経営専門職学位課程"], "parent_college": "環境・社会理工学院"},
     "evidence_bindings": [{
       "document_id": "isct_2027_4_2026_9_master",
-      "source_kb_sha256": "ce22a04ca93979c294ec2fd9346d16b46a9955f446dcb5af0a4f9882892c774e",
+      "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
       "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
-      "fact_id": "fact:00066",
+      "fact_id": "fact:00069",
       "source_pages": [7],
-      "authoritative_fact_text_sha256": "1986232791fbaf5907807eee5bd8d524f782f1c4bcf96807cc140e0363c596dc"
+      "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
     }],
     "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
   }],

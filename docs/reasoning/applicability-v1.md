@@ -101,7 +101,7 @@ fields, diagnostics, evidence presence, or final status, including unsafe Pydant
 
 ## Audited Real Scenarios
 
-The versioned fixture binds the existing 85-page corpus to `fact:00066`, page 7. A reviewer narrowed
+The versioned fixture binds the existing 85-page corpus to `fact:00069`, page 7. A reviewer narrowed
 the annotation to one necessary but insufficient age criterion for the named individual-review
 route. `confirmed` therefore means only that this atomic criterion applies; it does not mean the
 review was approved, later alternatives were satisfied, or the complete route applies. No PDF or
@@ -121,6 +121,14 @@ bachelor award, and foreign 16-year education with a bachelor-equivalent degree.
 expected-completion branches are separate. April 2027 uses `2027-03-31`; September 2026 uses
 `2026-09-27`, with a separate page-8 prior-email notice for `2026-09-28` through `2026-09-30`.
 These statuses describe only the named reviewed path and never overall eligibility.
+
+RULE-01B extends the reviewed direct-path set through (8). Paths (4)-(8) use explicit credential
+bases and, where the guideline requires them, Japan-coursework, minimum-duration, or official
+recognition/designation predicates. Path (6) retains the pre-application email action. The special
+September 28-30 notice applies only to paths (1)-(6); paths (7) and (8) do not inherit it. Path (7)
+does not invent a completion cutoff: it separately requires official confirmation that the
+completion timing satisfies the ministerial effective-date condition. Path (8) confirms only from
+official person-designation evidence. Unknown verification produces `needs_information`.
 
 ## Deliberate Limits
 

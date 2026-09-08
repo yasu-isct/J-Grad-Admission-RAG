@@ -270,7 +270,7 @@ def test_rule01a_sep_special_contact_is_explicit_and_cited(rule01a_client) -> No
     finding = next(
         item for item in report["cited_answer"]["rule_findings"] if item["rule_id"] == rule_id
     )
-    assert any(citation["fact_id"] == "fact:00075" for citation in finding["citations"])
+    assert any(citation["fact_id"] == "fact:00085" for citation in finding["citations"])
     assert any(
         record["source_pages"] == [8] for record in report["evidence_bundle"]["evidence_records"]
     )
@@ -360,11 +360,10 @@ def test_rule01a_real_fact_boundaries_are_exact(rule01a_client) -> None:
         "（１）我が国において、大学を卒業した者及び2027年3月31日までに卒業見込みの者"
     )
     assert facts["fact:00060"].source_pages == [7]
-    assert facts["fact:00075"].text == (
-        "## Page 8\n\n"
+    assert facts["fact:00085"].text == (
         "［2026年9月入学希望者で、9月28日から9月30日までの間に上記（１）～（６）の出願資格を満たす者への注意］\n"
         "2026年9月入学希望者（希望する入学時期②選択の者）で、9月28日時点で出願資格を満たさず、9月28日～9月30日の間に上記\n"
         "（１）～（６）の出願資格を満たす者は、事前に「卒業見込み（授与見込み、修了見込み）の年月日」をメールにて、入試課\n"
         "(inquiries.grad.se@adm.isct.ac.jp)へお知らせください。"
     )
-    assert facts["fact:00075"].source_pages == [8]
+    assert facts["fact:00085"].source_pages == [8]

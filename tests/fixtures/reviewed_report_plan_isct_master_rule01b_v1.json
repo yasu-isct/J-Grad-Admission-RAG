@@ -1,0 +1,3480 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "isct-master-reviewed-report-plan-v3",
+  "document_identity": {
+    "schema_version": "1.0",
+    "document_id": "isct_2027_4_2026_9_master",
+    "document_family_id": "isct-master-admission-guidelines",
+    "edition_id": "2027-april-2026-september",
+    "institution_id": "isct",
+    "institution_name": "Institute of Science Tokyo",
+    "degree_levels": [
+      "master"
+    ],
+    "intake_terms": [
+      {
+        "year": 2026,
+        "month": 9
+      },
+      {
+        "year": 2027,
+        "month": 4
+      }
+    ],
+    "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "publication_date": null,
+    "revision_date": null
+  },
+  "rules": [
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-1-university-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_graduation"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（1）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-1-university-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_graduation"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（1）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-1-university-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_graduation"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（1）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-1-university-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_graduation"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（1）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-1-university-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_graduation"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（1）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。 2026年9月28日から30日に条件を満たす場合は、募集要項8ページのとおり、事前に入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-2-niad_qe-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "niad_qe_bachelor_award"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00061",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "cedcc2e7f931cd1d1d154b5458d62790dc4006f3459aee2f79833b7ce61ed86a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（2）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-2-niad_qe-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "niad_qe_bachelor_award"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00061",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "cedcc2e7f931cd1d1d154b5458d62790dc4006f3459aee2f79833b7ce61ed86a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（2）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-2-niad_qe-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "niad_qe_bachelor_award"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00061",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "cedcc2e7f931cd1d1d154b5458d62790dc4006f3459aee2f79833b7ce61ed86a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（2）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-2-niad_qe-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "niad_qe_bachelor_award"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00061",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "cedcc2e7f931cd1d1d154b5458d62790dc4006f3459aee2f79833b7ce61ed86a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（2）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-2-niad_qe-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "niad_qe_bachelor_award"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00061",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "cedcc2e7f931cd1d1d154b5458d62790dc4006f3459aee2f79833b7ce61ed86a"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（2）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。 2026年9月28日から30日に条件を満たす場合は、募集要項8ページのとおり、事前に入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-3-foreign_16_year-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_16_year_bachelor_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00062",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "5810dcdad782262a1c25870fffc0b3b79d0d93f6571e805b4ada518f711a2794"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（3）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-3-foreign_16_year-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_16_year_bachelor_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00062",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "5810dcdad782262a1c25870fffc0b3b79d0d93f6571e805b4ada518f711a2794"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（3）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_16_year_bachelor_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00062",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "5810dcdad782262a1c25870fffc0b3b79d0d93f6571e805b4ada518f711a2794"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（3）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_16_year_bachelor_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00062",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "5810dcdad782262a1c25870fffc0b3b79d0d93f6571e805b4ada518f711a2794"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（3）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_16_year_bachelor_equivalent"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00062",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "5810dcdad782262a1c25870fffc0b3b79d0d93f6571e805b4ada518f711a2794"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（3）のこの直接経路の審査済み条件と一致するかだけを示します。総合的な出願資格や合否は示しません。 2026年9月28日から30日に条件を満たす場合は、募集要項8ページのとおり、事前に入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-4-distance_in_japan-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_distance_education_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.coursework_in_japan",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00063",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "e22c4a676d7abccffc8fa36374e8f941dfc0234357b28dbfbf0098396d645dde"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（4）の外国学校通信教育を日本で履修する直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-4-distance_in_japan-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_distance_education_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.coursework_in_japan",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00063",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "e22c4a676d7abccffc8fa36374e8f941dfc0234357b28dbfbf0098396d645dde"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（4）の外国学校通信教育を日本で履修する直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_distance_education_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.coursework_in_japan",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00063",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "e22c4a676d7abccffc8fa36374e8f941dfc0234357b28dbfbf0098396d645dde"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（4）の外国学校通信教育を日本で履修する直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_distance_education_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.coursework_in_japan",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00063",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "e22c4a676d7abccffc8fa36374e8f941dfc0234357b28dbfbf0098396d645dde"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（4）の外国学校通信教育を日本で履修する直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_distance_education_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.coursework_in_japan",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00063",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "e22c4a676d7abccffc8fa36374e8f941dfc0234357b28dbfbf0098396d645dde"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（4）の外国学校通信教育を日本で履修する直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 9月28日から30日に条件を満たす場合は、募集要項8ページの事前メール連絡も必要です。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_university_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "73ef99a7c860e56ac3446eeb27972ec242082f6c402e9dcce6682906e4e86974"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（5）の日本国内にある指定外国大学課程の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_university_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "73ef99a7c860e56ac3446eeb27972ec242082f6c402e9dcce6682906e4e86974"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（5）の日本国内にある指定外国大学課程の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_university_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "73ef99a7c860e56ac3446eeb27972ec242082f6c402e9dcce6682906e4e86974"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（5）の日本国内にある指定外国大学課程の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_university_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "73ef99a7c860e56ac3446eeb27972ec242082f6c402e9dcce6682906e4e86974"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（5）の日本国内にある指定外国大学課程の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_university_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "equals",
+          "expected_value": 16
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00064",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "73ef99a7c860e56ac3446eeb27972ec242082f6c402e9dcce6682906e4e86974"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（5）の日本国内にある指定外国大学課程の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 9月28日から30日に条件を満たす場合は、募集要項8ページの事前メール連絡も必要です。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "recognized_foreign_three_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.institution_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00065",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "01a1574bcda3459b0e2939a0678e25fe441026213d566df9db395c372e65c072"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（6）の認証された外国学校3年以上課程・学士相当学位の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 出願資格（6）は、出願期間前に具体的な学歴・経歴を入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "recognized_foreign_three_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.institution_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00065",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "01a1574bcda3459b0e2939a0678e25fe441026213d566df9db395c372e65c072"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（6）の認証された外国学校3年以上課程・学士相当学位の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 出願資格（6）は、出願期間前に具体的な学歴・経歴を入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "recognized_foreign_three_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.institution_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00065",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "01a1574bcda3459b0e2939a0678e25fe441026213d566df9db395c372e65c072"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（6）の認証された外国学校3年以上課程・学士相当学位の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 出願資格（6）は、出願期間前に具体的な学歴・経歴を入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "recognized_foreign_three_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.institution_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00065",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "01a1574bcda3459b0e2939a0678e25fe441026213d566df9db395c372e65c072"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（6）の認証された外国学校3年以上課程・学士相当学位の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 出願資格（6）は、出願期間前に具体的な学歴・経歴を入試課へメールで知らせる必要があります。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-special-contact",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "recognized_foreign_three_year_bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.degree_level",
+          "operator": "equals",
+          "expected_value": "bachelor"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.institution_recognition_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-09-28"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-30"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00065",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "01a1574bcda3459b0e2939a0678e25fe441026213d566df9db395c372e65c072"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00085",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "f18090ff35f986d2e7fc6cbe8d2cd805bbdfd5581e7efb6fc687e53a89a19f6a"
+        }
+      ],
+      "annotation_note": "この判定は、提出された1件の学歴について、出願資格（6）の認証された外国学校3年以上課程・学士相当学位の直接経路の審査済み原子条件と一致するかだけを示します。学校による最終確認、総合的な出願資格又は合否は示しません。 出願資格（6）は、出願期間前に具体的な学歴・経歴を入試課へメールで知らせる必要があります。 9月28日から30日に条件を満たす場合は、募集要項8ページの事前メール連絡も必要です。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-7-designated_vocational-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00066",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-7-designated_vocational-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00066",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-7-designated_vocational-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00066",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-7-designated_vocational-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_specialized_training_college"
+        },
+        {
+          "field_path": "academic_credentials.first.program_duration_years",
+          "operator": "minimum",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00066",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-8-minister_designated-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "minister_designated_person"
+        },
+        {
+          "field_path": "academic_credentials.first.person_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00067",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "db7449a7c286db5ad95b675c8e720dd643ee0fad6a9fa5600f64519e3ccd866b"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（8）の文部科学大臣指定者であることを示す正式な根拠が確認済みかだけを示します。氏名、学校種別又はモデルから指定者であることを推測しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-direct-path-8-minister_designated-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "minister_designated_person"
+        },
+        {
+          "field_path": "academic_credentials.first.person_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00056",
+          "source_pages": [
+            6
+          ],
+          "authoritative_fact_text_sha256": "2ee91250939623d24bfec4882b2b1450ccd322469caa919fbf86c60084475037"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00067",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "db7449a7c286db5ad95b675c8e720dd643ee0fad6a9fa5600f64519e3ccd866b"
+        }
+      ],
+      "annotation_note": "この判定は、出願資格（8）の文部科学大臣指定者であることを示す正式な根拠が確認済みかだけを示します。氏名、学校種別又はモデルから指定者であることを推測しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-individual-review-age-22-criterion",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.application_route",
+          "operator": "equals",
+          "expected_value": "individual eligibility review route"
+        },
+        {
+          "field_path": "eligibility_facts.age_at_enrollment",
+          "operator": "minimum",
+          "expected_value": 22
+        }
+      ],
+      "scope": {
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程"
+        ],
+        "parent_college": "環境・社会理工学院"
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00069",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
+        }
+      ],
+      "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
+    }
+  ],
+  "precedence_policy": {
+    "schema_version": "1.0",
+    "policy_id": "isct-master-reviewed-precedence-v3",
+    "subjects": [
+      {
+        "rule_id": "isct-master-direct-path-1-university-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-1-university-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-1-university-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-1-university-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-1-university-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-2-niad_qe-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-2-niad_qe-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-2-niad_qe-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-2-niad_qe-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-2-niad_qe-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-2-niad_qe-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-2-niad_qe-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-2-niad_qe-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-2-niad_qe-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-2-niad_qe-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-3-foreign_16_year-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-3-foreign_16_year-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-3-foreign_16_year-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-3-foreign_16_year-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-3-foreign_16_year-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-3-foreign_16_year-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-3-foreign_16_year-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-3-foreign_16_year-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-4-distance_in_japan-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-4-distance_in_japan-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-4-distance_in_japan-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-4-distance_in_japan-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-4-distance_in_japan-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-4-distance_in_japan-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-4-distance_in_japan-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-4-distance_in_japan-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-5-foreign_program_in_japan-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-5-foreign_program_in_japan-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-5-foreign_program_in_japan-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-5-foreign_program_in_japan-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-5-foreign_program_in_japan-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-5-foreign_program_in_japan-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-6-recognized_foreign_three_year-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-6-recognized_foreign_three_year-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-6-recognized_foreign_three_year-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-6-recognized_foreign_three_year-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-6-recognized_foreign_three_year-sep-special-contact",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-6-recognized_foreign_three_year-sep-special-contact"
+      },
+      {
+        "rule_id": "isct-master-direct-path-7-designated_vocational-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-7-designated_vocational-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-7-designated_vocational-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-7-designated_vocational-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-7-designated_vocational-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-7-designated_vocational-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-direct-path-7-designated_vocational-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-7-designated_vocational-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-direct-path-8-minister_designated-apr",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-8-minister_designated-apr"
+      },
+      {
+        "rule_id": "isct-master-direct-path-8-minister_designated-sep",
+        "subject_key": "eligibility.reviewed.isct-master-direct-path-8-minister_designated-sep"
+      },
+      {
+        "rule_id": "isct-master-individual-review-age-22-criterion",
+        "subject_key": "eligibility.reviewed.isct-master-individual-review-age-22-criterion"
+      }
+    ],
+    "override_edges": []
+  },
+  "interaction_policy": {
+    "schema_version": "1.0",
+    "policy_id": "isct-master-reviewed-interactions-v3",
+    "interactions": []
+  },
+  "covered_categories": [
+    "eligibility"
+  ],
+  "coverage_status": "partial_reviewed_rules",
+  "reviewed_coverage_statement": "Covers reviewed atomic conditions for direct education paths (1)-(8), including only the completion cutoffs and contact actions explicitly supported by the fixed official PDF, plus the existing named age criterion.",
+  "limitation_statement": "Uses exactly one academic credential; official recognition or designation must be supplied as confirmed evidence. It does not cover individual review paths (9)-(11) as a whole, school final verification, overall eligibility, admission, or recommendations."
+}

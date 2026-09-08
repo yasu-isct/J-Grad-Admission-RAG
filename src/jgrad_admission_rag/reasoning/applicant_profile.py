@@ -39,6 +39,7 @@ __all__ = [
     "IntakeMonth",
     "LanguageResultStatus",
     "LanguageTestResult",
+    "OfficialVerificationStatus",
     "TargetApplication",
     "canonical_applicant_profile_bytes",
     "load_applicant_profile",
@@ -74,6 +75,17 @@ class CredentialBasis(str, Enum):
     UNIVERSITY_GRADUATION = "university_graduation"
     NIAD_QE_BACHELOR_AWARD = "niad_qe_bachelor_award"
     FOREIGN_16_YEAR_BACHELOR_EQUIVALENT = "foreign_16_year_bachelor_equivalent"
+    FOREIGN_DISTANCE_EDUCATION_IN_JAPAN = "foreign_distance_education_in_japan"
+    FOREIGN_UNIVERSITY_PROGRAM_IN_JAPAN = "foreign_university_program_in_japan"
+    RECOGNIZED_FOREIGN_THREE_YEAR_BACHELOR = "recognized_foreign_three_year_bachelor"
+    DESIGNATED_SPECIALIZED_TRAINING_COLLEGE = "designated_specialized_training_college"
+    MINISTER_DESIGNATED_PERSON = "minister_designated_person"
+
+
+class OfficialVerificationStatus(str, Enum):
+    APPLICANT_CLAIMED = "applicant_claimed"
+    OFFICIALLY_CONFIRMED = "officially_confirmed"
+    NOT_CONFIRMED = "not_confirmed"
 
 
 class IntakeMonth(int, Enum):
@@ -165,6 +177,12 @@ class AcademicCredential(ApplicantProfileModel):
     completion_date: date | None
     expected_completion_date: date | None
     years_of_education: StrictInt | None
+    coursework_in_japan: StrictBool | None = None
+    program_duration_years: StrictInt | None = None
+    institution_recognition_status: OfficialVerificationStatus | None = None
+    program_designation_status: OfficialVerificationStatus | None = None
+    completion_timing_verification_status: OfficialVerificationStatus | None = None
+    person_designation_status: OfficialVerificationStatus | None = None
 
     @field_validator("institution_country_code")
     @classmethod
@@ -173,7 +191,7 @@ class AcademicCredential(ApplicantProfileModel):
             _validate_country_code(value, "institution_country_code")
         return value
 
-    @field_validator("years_of_education")
+    @field_validator("years_of_education", "program_duration_years")
     @classmethod
     def years_of_education_must_not_be_negative(cls, value: int | None) -> int | None:
         if value is not None and value < 0:

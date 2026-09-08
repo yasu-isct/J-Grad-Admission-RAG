@@ -230,6 +230,53 @@ def test_chunk_pages_does_not_split_parenthesized_range_in_body() -> None:
     assert chunks[0].text == notice
 
 
+def test_semantic_marker_parenthesized_clauses_start_new_sections() -> None:
+    markdown = (
+        "3. Eligibility\n"
+        "（５）指定施設の課程を修了した者\n"
+        "◆（６）認証を受けた外国学校の課程を修了した者\n"
+        "（８）文部科学大臣の指定した者\n"
+        "★（９）個別審査の対象者"
+    )
+
+    chunks = chunk_pages([SourcePage(page_number=7, text=markdown)], "admission.pdf")
+
+    assert [chunk.title for chunk in chunks] == [
+        "（５）指定施設の課程を修了した者",
+        "◆（６）認証を受けた外国学校の課程を修了した者",
+        "（８）文部科学大臣の指定した者",
+        "★（９）個別審査の対象者",
+    ]
+    assert chunks[1].section_path == [
+        "3. Eligibility",
+        "◆（６）認証を受けた外国学校の課程を修了した者",
+    ]
+    assert chunks[2].text == "（８）文部科学大臣の指定した者"
+
+
+def test_semantic_marker_does_not_turn_number_ranges_into_titles() -> None:
+    markdown = "（５）条件本文\n◆（１）～（６）の条件に関する注意"
+
+    chunks = chunk_pages([SourcePage(page_number=7, text=markdown)], "admission.pdf")
+
+    assert len(chunks) == 1
+    assert chunks[0].text == markdown
+
+
+def test_fullwidth_bracketed_notice_starts_a_new_section() -> None:
+    markdown = (
+        "★（11）個別審査の対象者\n［2026年9月入学希望者への注意］\n事前に入試課へ知らせてください。"
+    )
+
+    chunks = chunk_pages([SourcePage(page_number=8, text=markdown)], "admission.pdf")
+
+    assert [chunk.title for chunk in chunks] == [
+        "★（11）個別審査の対象者",
+        "［2026年9月入学希望者への注意］",
+    ]
+    assert chunks[1].section_path == ["［2026年9月入学希望者への注意］"]
+
+
 def test_section_path_survives_marker_free_pages_and_character_splits() -> None:
     chunks = chunk_pages(
         [

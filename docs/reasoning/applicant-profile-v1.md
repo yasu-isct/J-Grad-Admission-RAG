@@ -26,9 +26,11 @@ as unknown.
 
 The profile sections are `target_application`, `citizenship_and_residence`,
 `academic_credentials`, `eligibility_facts`, and `language_test_results`. The controlled values are
-stable enums: degree level, credential completion state, credential basis, intake month, individual
-review state, and language-result state. The closed credential bases cover regular university
-graduation, a NIAD-QE bachelor award, and a foreign 16-year/bachelor-equivalent path. Countries use
+stable enums: degree level, credential completion state, credential basis, official-verification
+status, intake month, individual review state, and language-result state. The closed credential
+bases cover direct admission paths (1)-(8), including Japan-based foreign distance/program study,
+a recognized foreign three-year bachelor, a designated specialized-training program, and a
+minister-designated person. Countries use
 uppercase ISO 3166-1 alpha-2 codes. User-entered strings must
 be non-empty, already trimmed, and cannot use placeholders such as `unknown`, `N/A`, or `未定`.
 
@@ -40,6 +42,13 @@ raw query text, Fact IDs, source pages, evidence, conclusions, or reasoning trac
 The current direct-eligibility rules deliberately read `academic_credentials.first`. They can
 evaluate exactly one supplied credential. If a profile contains multiple credentials, those rules
 return `needs_information` with `multiple_academic_credentials` instead of selecting one silently.
+
+RULE-01B adds nullable `coursework_in_japan`, `program_duration_years`, and separate institution,
+program, completion-timing, and person designation statuses. Each status is tri-state:
+applicant-claimed, officially-confirmed, or not-confirmed. The completion-timing status records
+whether a path-(7) completion point has been checked against the ministerial effective-date rule;
+it does not store or infer that date. Missing official confirmation remains unknown, and an
+applicant claim is never promoted to official evidence.
 
 ## Safe Serialization
 

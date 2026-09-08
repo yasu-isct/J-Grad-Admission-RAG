@@ -322,7 +322,7 @@ def test_real_pdf_kb_registers_as_ready_corpus_entry(
     ]
     assert entry.index_state == "ready"
     assert entry.index_manifest is not None
-    assert entry.index_manifest.payload_count == entry.index_manifest.vector_count == 304
+    assert entry.index_manifest.payload_count == entry.index_manifest.vector_count == 316
 
 
 def test_real_pdf_entry_is_unchanged_when_adding_second_institution(
@@ -379,7 +379,7 @@ def test_real_pdf_entry_is_unchanged_when_adding_second_institution(
         (2026, 9),
         (2027, 4),
     ]
-    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 304
+    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 316
 
 
 def test_real_pdf_identity_is_selected_only_by_reviewed_active_policy(
@@ -428,8 +428,8 @@ def test_real_pdf_identity_is_selected_only_by_reviewed_active_policy(
         (2027, 4),
     ]
     assert selected.entry.index_manifest is not None
-    assert selected.entry.index_manifest.payload_count == 304
-    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 304
+    assert selected.entry.index_manifest.payload_count == 316
+    assert len(real_document_kb.facts) == len(real_document_kb.retrieval_units) == 316
 
 
 def test_real_pdf_global_corpus_search_preserves_document_qualified_pages(
@@ -506,7 +506,7 @@ def test_real_pdf_global_corpus_search_preserves_document_qualified_pages(
         candidate_k=20,
     )
 
-    assert context.row_count == 608
+    assert context.row_count == 632
     assert [(term.year, term.month) for term in real_identity.intake_terms] == [
         (2026, 9),
         (2027, 4),
@@ -518,7 +518,7 @@ def test_real_pdf_global_corpus_search_preserves_document_qualified_pages(
     )
     assert real_entry.identity == real_identity
     assert real_entry.index_manifest is not None
-    assert real_entry.index_manifest.payload_count == 304
+    assert real_entry.index_manifest.payload_count == 316
     real_hits = [hit for hit in result.hits if hit.key.document_id == real_identity.document_id]
     assert real_hits
     assert all(hit.source_pages for hit in real_hits)
@@ -612,7 +612,7 @@ def test_real_pdf_reviewed_report_plan_resolves_exact_current_fact(
     plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
     binding = plan.rules[0].evidence_bindings[0]
     fact = next(item for item in real_document_kb.facts if item.fact_id == binding.fact_id)
-    assert len(real_document_kb.facts) == 304
+    assert len(real_document_kb.facts) == 316
     assert plan.document_identity == real_document_identity
     assert hashlib.sha256(canonical_document_kb_bytes(real_document_kb)).hexdigest() == (
         binding.source_kb_sha256
@@ -669,10 +669,10 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
         (plan,),
     )
     record = bundle.evidence_records[0]
-    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00066")
-    assert len(real_document_kb.facts) == 304
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00069")
+    assert len(real_document_kb.facts) == 316
     assert len(bundle.evidence_records) == 1
-    assert record.fact_id == "fact:00066"
+    assert record.fact_id == "fact:00069"
     assert record.source_pages == (7,)
     assert record.text == fact.text
     assert record.rule_ids == ("isct-master-individual-review-age-22-criterion",)
@@ -807,9 +807,9 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
         markdown = render_applicant_report_markdown(report)
         assert report.reasoning_trace.source_decisions[0].status is expected_rule_status
         assert report.report_status is expected_report_status
-        assert report.evidence_bundle.evidence_records[0].fact_id == "fact:00066"
+        assert report.evidence_bundle.evidence_records[0].fact_id == "fact:00069"
         assert record.text in markdown
-        assert "[fact:00066, p.7]" in markdown
+        assert "[fact:00069, p.7]" in markdown
         assert "部分的な規則範囲です" in markdown
         assert "総合的な出願資格" in markdown
         assert "QUERY_SECRET" not in markdown
@@ -853,7 +853,7 @@ def test_real_pdf_applicant_report_http_scenarios(
     policy_path.write_bytes(canonical_corpus_version_policy_bytes(policy))
     selection = CorpusSelectionRequest(document_ids=(document_id,))
     plan = load_reviewed_report_plan(REVIEWED_REPORT_PLAN_PATH)
-    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00066")
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00069")
     matching_scope = plan.rules[0].scope
     matching_profile = _real_applicability_profile(22, matching_scope.model_dump(mode="json"))
     missing_scope_payload = matching_profile.model_dump(mode="json")
@@ -938,11 +938,11 @@ def test_real_pdf_applicant_report_http_scenarios(
             decision = body["report"]["reasoning_trace"]["source_decisions"][0]
             assert decision["status"] == expected_rule
             assert body["report"]["evidence_bundle"]["evidence_records"][0]["fact_id"] == (
-                "fact:00066"
+                "fact:00069"
             )
             assert body["report"]["evidence_bundle"]["evidence_records"][0]["source_pages"] == [7]
             assert fact.text in body["markdown"]
-            assert "[fact:00066, p.7]" in body["markdown"]
+            assert "[fact:00069, p.7]" in body["markdown"]
             assert "部分的な規則範囲です" in body["markdown"]
             assert "総合的な出願資格" in body["markdown"]
             assert "QUERY_SECRET" not in body["markdown"]
@@ -955,7 +955,7 @@ def test_real_pdf_applicant_report_http_scenarios(
         for path in tmp_path.rglob("*")
         if path.is_file()
     }
-    assert len(real_document_kb.facts) == 304
+    assert len(real_document_kb.facts) == 316
     assert after == before
     assert "QUERY_SECRET" not in caplog.text
     assert plan.source_kb_sha256 not in caplog.text
@@ -1052,8 +1052,8 @@ def test_real_pdf_local_ui_catalog_and_query_payload(
     assert "source_pdf_sha256" not in catalog.text
     assert response.status_code == 200
     hits = response.json()["hits"]
-    target = next(hit for hit in hits if hit["key"]["fact_id"] == "fact:00066")
-    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00066")
+    target = next(hit for hit in hits if hit["key"]["fact_id"] == "fact:00069")
+    fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00069")
     assert target["rank"] == hits.index(target) + 1
     assert target["key"]["document_id"] == document_id
     assert target["source_pages"] == [7]
@@ -1335,7 +1335,7 @@ def test_real_pdf_derives_traceable_index_payload_shape(
     payloads = derive_index_payloads(real_document_kb)
     expected_count = real_pdf_manifest["expected"]["retrieval_unit_count"]
 
-    assert len(payloads) == expected_count == 304
+    assert len(payloads) == expected_count == 316
     assert [payload.row_index for payload in payloads] == list(range(expected_count))
     assert len({payload.unit_id for payload in payloads}) == expected_count
     assert len({payload.fact_id for payload in payloads}) == expected_count
@@ -1362,7 +1362,7 @@ def test_real_pdf_embedding_text_v1_is_complete_and_structure_preserving(
     units = real_document_kb.retrieval_units
     projections = [unit.text for unit in units]
 
-    assert len(facts) == len(units) == expected["retrieval_unit_count"] == 304
+    assert len(facts) == len(units) == expected["retrieval_unit_count"] == 316
     assert all(fact.embedding_text == unit.text for fact, unit in zip(facts, units, strict=True))
     assert all(
         unit.text.endswith(f"text:\n{fact.text}") for fact, unit in zip(facts, units, strict=True)
@@ -1434,7 +1434,7 @@ def test_real_pdf_fake_embeddings_are_deterministic_without_mutating_kb(
         json.dumps(first, separators=(",", ":")).encode("ascii")
     ).hexdigest()
 
-    assert len(first) == real_pdf_manifest["expected"]["retrieval_unit_count"] == 304
+    assert len(first) == real_pdf_manifest["expected"]["retrieval_unit_count"] == 316
     assert all(len(vector) == 8 for vector in first)
     assert first == second
     previous_projection_sha256 = "f0367234e3335e171fa067cdb1fef0dd3e132c5fc59035215450f010d19a1e2f"
@@ -1494,11 +1494,11 @@ def test_real_pdf_local_index_is_aligned_normalized_and_byte_deterministic(
     assert first_manifest == second_manifest
     assert first_manifest.source_kb_sha256 == hashlib.sha256(kb_bytes).hexdigest()
     assert first_manifest.source_pdf_sha256 == real_pdf_manifest["sha256"]
-    assert first_manifest.payload_count == first_manifest.vector_count == 304
+    assert first_manifest.payload_count == first_manifest.vector_count == 316
     assert first_manifest.embedding_dimension == 8
     assert first_manifest.payloads_sha256 == expected["index_payloads_sha256"]
     assert first_manifest.vectors_sha256 == expected["index_fake_vectors_npy_sha256"]
-    assert mapped.vectors.shape == (304, 8)
+    assert mapped.vectors.shape == (316, 8)
     assert mapped.vectors.dtype == np.dtype("<f4")
     assert isinstance(mapped.vectors, np.memmap)
     assert not mapped.vectors.flags.writeable
@@ -1514,7 +1514,7 @@ def test_real_pdf_local_index_is_aligned_normalized_and_byte_deterministic(
     assert [payload.model_dump(mode="json") for payload in mapped.payloads] == [
         payload.model_dump(mode="json") for payload in derived_payloads
     ]
-    assert [payload.row_index for payload in mapped.payloads] == list(range(304))
+    assert [payload.row_index for payload in mapped.payloads] == list(range(316))
 
     for filename in ("manifest.json", "payloads.jsonl", "embeddings.npy"):
         assert (first_dir / filename).read_bytes() == (second_dir / filename).read_bytes()
@@ -1557,16 +1557,16 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     expected = real_pdf_manifest["expected"]
     assert captured.err == ""
     assert len(captured.out.splitlines()) == 1
-    assert summary["payload_count"] == summary["vector_count"] == 304
+    assert summary["payload_count"] == summary["vector_count"] == 316
     assert summary["embedding_dimension"] == 8
     assert summary["payloads_sha256"] == expected["index_payloads_sha256"]
     assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
-    assert loaded.vectors.shape == (304, 8)
+    assert loaded.vectors.shape == (316, 8)
     assert loaded.manifest.payloads_sha256 == (
-        "f880d8744611facde1fdbbfcdb51e3174539467eb3033656662d21501d605009"
+        "3ad79e4399842c4b3f281b20347cd41769d3f2e0375cc29fbddf4d39c2dc965b"
     )
     assert loaded.manifest.vectors_sha256 == (
-        "02fe8ea99d58fb2fd03174e026fed063cd7f4ecdfad8f5ff7e5348f7cfbdbe39"
+        "5333314533473183ab0c3fd1ce28c195101067474a90b60106686f3620e00e2b"
     )
 
 
@@ -1613,7 +1613,7 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
     expected_rows = np.lexsort((rows, -independent_scores.astype(np.float64)))[:5]
     expected = [loaded.payloads[int(row)] for row in expected_rows]
 
-    assert result.manifest.payload_count == result.manifest.vector_count == 304
+    assert result.manifest.payload_count == result.manifest.vector_count == 316
     assert (
         result.manifest.payloads_sha256 == (real_pdf_manifest["expected"]["index_payloads_sha256"])
     )
@@ -1627,7 +1627,7 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
         rel=0.0,
         abs=1e-7,
     )
-    assert [hit.row_index for hit in result.hits] == [215, 303, 55, 259, 18]
+    assert [hit.row_index for hit in result.hits] == [226, 315, 55, 271, 18]
     assert [hit.score for hit in result.hits] == pytest.approx(
         [
             0.9264391660690308,
@@ -1830,13 +1830,13 @@ def test_real_pdf_lexical_retrieval_characterization(
         assert all(hit.source_pages and hit.section_path for hit in result.hits)
         assert all(hit.fact_id in {payload.fact_id for payload in payloads} for hit in result.hits)
 
-    assert (top_five_hits, top_ten_hits) == (32, 34)
+    assert (top_five_hits, top_ten_hits) == (33, 34)
     assert hits_by_style == {
         "exact_term": [7, 6, 7],
-        "identifier": [6, 5, 6],
+        "identifier": [6, 6, 6],
         "paraphrase": [21, 21, 21],
     }
-    assert top_five_misses == ["rq:0010", "rq:0019"]
+    assert top_five_misses == ["rq:0019"]
     assert [payload.model_dump(mode="json") for payload in payloads] == payload_snapshot
 
 
@@ -1919,9 +1919,9 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
         json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert characterization_sha256 == (
-        "b804d00e2a45b3d74576ae36a0445c525896e244ec1ed639fa914bc041e26f85"
+        "7e10bf9d3ddc1332165f60cca036f2be870bd22bd65a5c64ff0892ade7be2c30"
     )
-    assert aggregate_sha256 == ("26e2ac5faeae7020bf710d54751517b71fb9f8559930abbf8d51b628e57c50a7")
+    assert aggregate_sha256 == ("552b7a25a24be2cd9753fcdcb5b8d1f2c02df006e2efb7e93b8113ff5ce50759")
 
     first_query = benchmark.queries[0]
     search_cli.main(
@@ -1971,17 +1971,17 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         college = payload.parent_college or "<none>"
         college_counts[college] = college_counts.get(college, 0) + 1
 
-    assert len(payloads) == 304
+    assert len(payloads) == 316
     assert fact_type_counts == {
         "documents": 17,
-        "english": 27,
-        "exams": 73,
+        "english": 28,
+        "exams": 66,
         "fees": 13,
-        "general": 158,
+        "general": 176,
         "methods": 7,
         "periods": 9,
     }
-    assert scope_type_counts == {"department": 126, "global": 21, "unknown": 157}
+    assert scope_type_counts == {"college": 2, "department": 126, "global": 30, "unknown": 158}
     assert target_counts == {
         "システム制御系": 18,
         "化学系": 22,
@@ -2002,9 +2002,15 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "経営工学系": 13,
         "融合理工学系": 25,
         "電気電子系": 21,
+        "理学院": 2,
+        "工学院": 2,
+        "物質理工学院": 2,
+        "情報理工学院": 2,
+        "生命理工学院": 2,
+        "環境・社会理工学院": 2,
     }
     assert college_counts == {
-        "<none>": 178,
+        "<none>": 190,
         "工学院": 33,
         "情報理工学院": 6,
         "物質理工学院": 13,
@@ -2014,7 +2020,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
     }
 
     examples = (
-        (MetadataFilter(fact_types=("english",)), 27),
+        (MetadataFilter(fact_types=("english",)), 28),
         (MetadataFilter(scope_types=("department",)), 126),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
@@ -2071,7 +2077,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     scope_outcomes: list[dict[str, object]] = []
 
     hard_filter_examples = (
-        (MetadataFilter(fact_types=("english",)), 27),
+        (MetadataFilter(fact_types=("english",)), 28),
         (MetadataFilter(scope_types=("department",)), 126),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
@@ -2114,11 +2120,11 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
             preferred_scope_targets=("情報工学系",),
             preferred_parent_colleges=("情報理工学院",),
         ),
-        top_k=304,
-        candidate_k=304,
+        top_k=316,
+        candidate_k=316,
     )
-    assert len(full_preference.hits) == 304
-    assert full_preference.eligible_row_count == 304
+    assert len(full_preference.hits) == 316
+    assert full_preference.eligible_row_count == 316
     both = next(
         hit
         for hit in full_preference.hits
@@ -2217,7 +2223,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("b268359b28e71823d44d16507aab36bde37c591b663c8300974da46d67a864bd")
+    assert outcome_sha256 == ("480d5daad0a75edb3ecef515ba3932f778f5bd6cb82caf54b0867819548f36f7")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
@@ -2245,24 +2251,24 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
         index,
         "出願資格",
         provider,
-        top_k=304,
-        candidate_k=304,
+        top_k=316,
+        candidate_k=316,
     ).hits
     all_expansion = expand_references(index, context, all_hits)
 
-    assert all_expansion.authoritative_claim_count == 143
+    assert all_expansion.authoritative_claim_count == 142
     assert all_expansion.authoritative_status_counts == {
         "resolved": 10,
         "ambiguous": 5,
-        "unresolved": 128,
+        "unresolved": 127,
     }
-    assert all_expansion.expanded_claim_count == 143
+    assert all_expansion.expanded_claim_count == 142
     assert all_expansion.expanded_status_counts == all_expansion.authoritative_status_counts
     assert all_expansion.disposition_counts == {
         "attached_target": 0,
         "already_primary": 10,
         "ambiguous": 5,
-        "unresolved": 128,
+        "unresolved": 127,
     }
     assert all_expansion.resolved_relation_count == 10
     assert all_expansion.unique_expanded_target_count == 0
@@ -2270,14 +2276,14 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
     visible_claims = [
         claim for candidate in all_expansion.candidate_expansions for claim in candidate.claims
     ]
-    assert len(visible_claims) == 143
+    assert len(visible_claims) == 142
     assert all(
         claim.target_row_index is None and claim.already_primary_rank is None
         for claim in visible_claims
         if claim.status != "resolved"
     )
 
-    source_fact_ids = ("fact:00059", "fact:00067")
+    source_fact_ids = ("fact:00059", "fact:00072")
     source_hits = tuple(
         replace(next(hit for hit in all_hits if hit.fact_id == fact_id), rank=rank)
         for rank, fact_id in enumerate(source_fact_ids, start=1)
@@ -2287,9 +2293,9 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
         "fact:00060",
         "fact:00061",
         "fact:00062",
-        "fact:00068",
-        "fact:00069",
-        "fact:00070",
+        "fact:00073",
+        "fact:00074",
+        "fact:00075",
     ]
     resolved_pairs = {
         (claim.source_fact_id, claim.selected_target_fact_id)
@@ -2298,7 +2304,7 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
         if claim.status == "resolved"
     }
     assert ("fact:00059", "fact:00062") in resolved_pairs
-    assert ("fact:00067", "fact:00070") in resolved_pairs
+    assert ("fact:00072", "fact:00075") in resolved_pairs
 
 
 def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
@@ -2401,7 +2407,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "324fdf3048d30633d9ec7e36af0b1faabec02cf9a8478beea5f7d4595df3deab"
+    assert aggregate_sha256 == "dd2f0bd80c0032933fb8bfe3fa8d9a02129997f8f309ab0554158b1739750df3"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -2481,7 +2487,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "cd4119802cc1bbfaf166ed5e809f44fac5a36c579fa3db2a214d487703430679"
+        "7fff27187aecf81ff0adab4f11f89e77b54d5a68ed99639601a2aae3b8e24e78"
     )
 
     class RecordingProvider:
@@ -2584,10 +2590,10 @@ def test_real_pdf_rq0012_evidence_pack_exposes_resolved_targets_without_answers(
         index,
         query.query,
         provider,
-        top_k=304,
-        candidate_k=304,
+        top_k=316,
+        candidate_k=316,
     )
-    source_fact_ids = ("fact:00059", "fact:00067")
+    source_fact_ids = ("fact:00059", "fact:00072")
     source_hits = tuple(
         replace(next(hit for hit in full.hits if hit.fact_id == fact_id), rank=rank)
         for rank, fact_id in enumerate(source_fact_ids, start=1)
@@ -2601,15 +2607,15 @@ def test_real_pdf_rq0012_evidence_pack_exposes_resolved_targets_without_answers(
         "fact:00060",
         "fact:00061",
         "fact:00062",
-        "fact:00068",
-        "fact:00069",
-        "fact:00070",
+        "fact:00073",
+        "fact:00074",
+        "fact:00075",
     ]
     relation_pairs = {
         (relation.source_fact_id, relation.selected_target_fact_id)
         for relation in pack.resolved_relations
     }
     assert ("fact:00059", "fact:00062") in relation_pairs
-    assert ("fact:00067", "fact:00070") in relation_pairs
+    assert ("fact:00072", "fact:00075") in relation_pairs
     assert not hasattr(pack, "answer")
     assert not hasattr(pack, "applicant_profile")
