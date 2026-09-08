@@ -178,6 +178,21 @@ _FIELD_SPECS = {
     "academic_credentials.first.years_of_education": _FieldSpec(
         "integer", ("academic_credentials", "first", "years_of_education")
     ),
+    "academic_credentials.first.coursework_in_japan": _FieldSpec(
+        "boolean", ("academic_credentials", "first", "coursework_in_japan")
+    ),
+    "academic_credentials.first.program_duration_years": _FieldSpec(
+        "integer", ("academic_credentials", "first", "program_duration_years")
+    ),
+    "academic_credentials.first.institution_recognition_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "institution_recognition_status")
+    ),
+    "academic_credentials.first.program_designation_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "program_designation_status")
+    ),
+    "academic_credentials.first.person_designation_status": _FieldSpec(
+        "string", ("academic_credentials", "first", "person_designation_status")
+    ),
     "language_test_results.first.test_date": _FieldSpec(
         "date", ("language_test_results", "first", "test_date")
     ),

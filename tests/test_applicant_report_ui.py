@@ -30,6 +30,11 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "completion-date",
         "expected-completion-date",
         "years-of-education",
+        "coursework-in-japan",
+        "program-duration-years",
+        "institution-recognition-status",
+        "program-designation-status",
+        "person-designation-status",
         "age-at-enrollment",
         "professional-months",
         "research-months",
@@ -54,6 +59,12 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert 'completion_date: nullableText("completion-date")' in javascript
     assert 'expected_completion_date: nullableText("expected-completion-date")' in javascript
     assert 'years_of_education: nullableInteger("years-of-education")' in javascript
+    assert 'coursework_in_japan: nullableBoolean("coursework-in-japan")' in javascript
+    assert 'program_duration_years: nullableInteger("program-duration-years")' in javascript
+    assert (
+        'institution_recognition_status: nullableText("institution-recognition-status")'
+        in javascript
+    )
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

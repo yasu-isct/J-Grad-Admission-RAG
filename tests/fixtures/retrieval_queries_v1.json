@@ -4,8 +4,8 @@
   "document_id": "isct_2027_4_2026_9_master",
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "expected_kb_schema_version": "0.6",
-  "fact_content_sha256": "0133fbcbd5cc3e5223e8464e84bfa06a01954348b30ab5add44a1b6a5f213263",
-  "fact_structure_sha256": "813d865658c091d6a28d213e140661417b9a7c076b1bcd3035ae91fc3ddc2a10",
+  "fact_content_sha256": "59dacaf7ee19f02fc47ec01c97198e8efcd40a2825541c843fccd4d55987f831",
+  "fact_structure_sha256": "df7cbbf8daca4e01fcfed95604f1290c02ef62940ec400471f028cdcb232c8cd",
   "language": "ja",
   "annotation_policy_version": "1.0",
   "queries": [
@@ -17,10 +17,10 @@
       "relevant_fact_ids": [
         "fact:00000",
         "fact:00006",
-        "fact:00086",
-        "fact:00087",
-        "fact:00088",
-        "fact:00089"
+        "fact:00097",
+        "fact:00098",
+        "fact:00099",
+        "fact:00100"
       ],
       "gold_evidence": [
         {
@@ -40,7 +40,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00086",
+          "fact_id": "fact:00097",
           "source_pages": [
             9
           ],
@@ -48,7 +48,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -56,7 +56,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00088",
+          "fact_id": "fact:00099",
           "source_pages": [
             9
           ],
@@ -64,7 +64,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -83,12 +83,12 @@
       "category": "documents",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00087",
-        "fact:00089"
+        "fact:00098",
+        "fact:00100"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -96,7 +96,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -115,12 +115,12 @@
       "category": "fees",
       "query_style": "exact_term",
       "relevant_fact_ids": [
-        "fact:00087",
-        "fact:00089"
+        "fact:00098",
+        "fact:00100"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -128,7 +128,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -179,12 +179,12 @@
       "category": "documents",
       "query_style": "exact_term",
       "relevant_fact_ids": [
-        "fact:00090",
-        "fact:00091"
+        "fact:00101",
+        "fact:00102"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00090",
+          "fact_id": "fact:00101",
           "source_pages": [
             10
           ],
@@ -192,7 +192,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00091",
+          "fact_id": "fact:00102",
           "source_pages": [
             10
           ],
@@ -510,8 +510,8 @@
       "relevant_fact_ids": [
         "fact:00059",
         "fact:00062",
-        "fact:00067",
-        "fact:00070"
+        "fact:00072",
+        "fact:00075"
       ],
       "gold_evidence": [
         {
@@ -531,7 +531,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00067",
+          "fact_id": "fact:00072",
           "source_pages": [
             7
           ],
@@ -539,7 +539,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00070",
+          "fact_id": "fact:00075",
           "source_pages": [
             7
           ],
@@ -558,16 +558,16 @@
       "category": "eligibility",
       "query_style": "identifier",
       "relevant_fact_ids": [
-        "fact:00076",
-        "fact:00077",
-        "fact:00078",
-        "fact:00081",
-        "fact:00082",
-        "fact:00083"
+        "fact:00086",
+        "fact:00087",
+        "fact:00088",
+        "fact:00092",
+        "fact:00093",
+        "fact:00094"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00076",
+          "fact_id": "fact:00086",
           "source_pages": [
             8
           ],
@@ -575,7 +575,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00077",
+          "fact_id": "fact:00087",
           "source_pages": [
             8
           ],
@@ -583,7 +583,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00078",
+          "fact_id": "fact:00088",
           "source_pages": [
             8
           ],
@@ -591,7 +591,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00081",
+          "fact_id": "fact:00092",
           "source_pages": [
             8
           ],
@@ -599,7 +599,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00082",
+          "fact_id": "fact:00093",
           "source_pages": [
             8
           ],
@@ -607,7 +607,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00083",
+          "fact_id": "fact:00094",
           "source_pages": [
             8
           ],
@@ -626,12 +626,12 @@
       "category": "documents",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00087",
-        "fact:00089"
+        "fact:00098",
+        "fact:00100"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -639,7 +639,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -658,12 +658,12 @@
       "category": "documents",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00087",
-        "fact:00089"
+        "fact:00098",
+        "fact:00100"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -671,7 +671,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -690,16 +690,16 @@
       "category": "language_tests",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00092",
-        "fact:00093",
-        "fact:00095",
-        "fact:00100",
-        "fact:00121",
-        "fact:00123"
+        "fact:00103",
+        "fact:00104",
+        "fact:00106",
+        "fact:00111",
+        "fact:00132",
+        "fact:00134"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00092",
+          "fact_id": "fact:00103",
           "source_pages": [
             11
           ],
@@ -709,7 +709,7 @@
           ]
         },
         {
-          "fact_id": "fact:00093",
+          "fact_id": "fact:00104",
           "source_pages": [
             11
           ],
@@ -719,7 +719,7 @@
           ]
         },
         {
-          "fact_id": "fact:00095",
+          "fact_id": "fact:00106",
           "source_pages": [
             12
           ],
@@ -729,7 +729,7 @@
           ]
         },
         {
-          "fact_id": "fact:00100",
+          "fact_id": "fact:00111",
           "source_pages": [
             12
           ],
@@ -739,7 +739,7 @@
           ]
         },
         {
-          "fact_id": "fact:00121",
+          "fact_id": "fact:00132",
           "source_pages": [
             19
           ],
@@ -749,7 +749,7 @@
           ]
         },
         {
-          "fact_id": "fact:00123",
+          "fact_id": "fact:00134",
           "source_pages": [
             19
           ],
@@ -770,12 +770,12 @@
       "category": "selection_exams",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00094",
-        "fact:00099"
+        "fact:00105",
+        "fact:00110"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00094",
+          "fact_id": "fact:00105",
           "source_pages": [
             12
           ],
@@ -783,7 +783,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00099",
+          "fact_id": "fact:00110",
           "source_pages": [
             12
           ],
@@ -804,9 +804,9 @@
       "relevant_fact_ids": [
         "fact:00001",
         "fact:00004",
-        "fact:00096",
-        "fact:00101",
-        "fact:00103"
+        "fact:00107",
+        "fact:00112",
+        "fact:00114"
       ],
       "gold_evidence": [
         {
@@ -826,7 +826,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00096",
+          "fact_id": "fact:00107",
           "source_pages": [
             12
           ],
@@ -838,7 +838,7 @@
           ]
         },
         {
-          "fact_id": "fact:00101",
+          "fact_id": "fact:00112",
           "source_pages": [
             12
           ],
@@ -850,7 +850,7 @@
           ]
         },
         {
-          "fact_id": "fact:00103",
+          "fact_id": "fact:00114",
           "source_pages": [
             12
           ],
@@ -872,9 +872,9 @@
         "fact:00002",
         "fact:00004",
         "fact:00006",
-        "fact:00097",
-        "fact:00102",
-        "fact:00103"
+        "fact:00108",
+        "fact:00113",
+        "fact:00114"
       ],
       "gold_evidence": [
         {
@@ -902,7 +902,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00097",
+          "fact_id": "fact:00108",
           "source_pages": [
             12
           ],
@@ -910,7 +910,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00102",
+          "fact_id": "fact:00113",
           "source_pages": [
             12
           ],
@@ -918,7 +918,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00103",
+          "fact_id": "fact:00114",
           "source_pages": [
             12
           ],
@@ -939,9 +939,9 @@
       "relevant_fact_ids": [
         "fact:00002",
         "fact:00004",
-        "fact:00104",
-        "fact:00106",
-        "fact:00107"
+        "fact:00115",
+        "fact:00117",
+        "fact:00118"
       ],
       "gold_evidence": [
         {
@@ -961,7 +961,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00104",
+          "fact_id": "fact:00115",
           "source_pages": [
             13
           ],
@@ -969,7 +969,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00106",
+          "fact_id": "fact:00117",
           "source_pages": [
             13
           ],
@@ -977,7 +977,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00107",
+          "fact_id": "fact:00118",
           "source_pages": [
             13
           ],
@@ -999,8 +999,8 @@
         "fact:00002",
         "fact:00005",
         "fact:00006",
-        "fact:00105",
-        "fact:00107"
+        "fact:00116",
+        "fact:00118"
       ],
       "gold_evidence": [
         {
@@ -1028,7 +1028,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00105",
+          "fact_id": "fact:00116",
           "source_pages": [
             13
           ],
@@ -1036,7 +1036,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00107",
+          "fact_id": "fact:00118",
           "source_pages": [
             13
           ],
@@ -1055,11 +1055,11 @@
       "category": "language_tests",
       "query_style": "identifier",
       "relevant_fact_ids": [
-        "fact:00110"
+        "fact:00121"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00110",
+          "fact_id": "fact:00121",
           "source_pages": [
             16
           ],
@@ -1078,13 +1078,13 @@
       "category": "results",
       "query_style": "identifier",
       "relevant_fact_ids": [
-        "fact:00111",
-        "fact:00114",
-        "fact:00117"
+        "fact:00122",
+        "fact:00125",
+        "fact:00128"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00111",
+          "fact_id": "fact:00122",
           "source_pages": [
             17
           ],
@@ -1092,7 +1092,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00114",
+          "fact_id": "fact:00125",
           "source_pages": [
             17
           ],
@@ -1100,7 +1100,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00117",
+          "fact_id": "fact:00128",
           "source_pages": [
             17
           ],
@@ -1119,17 +1119,17 @@
       "category": "documents",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00111",
-        "fact:00112",
-        "fact:00113",
-        "fact:00114",
-        "fact:00115",
-        "fact:00116",
-        "fact:00117"
+        "fact:00122",
+        "fact:00123",
+        "fact:00124",
+        "fact:00125",
+        "fact:00126",
+        "fact:00127",
+        "fact:00128"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00111",
+          "fact_id": "fact:00122",
           "source_pages": [
             17
           ],
@@ -1137,7 +1137,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00112",
+          "fact_id": "fact:00123",
           "source_pages": [
             17
           ],
@@ -1145,7 +1145,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00113",
+          "fact_id": "fact:00124",
           "source_pages": [
             17
           ],
@@ -1153,7 +1153,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00114",
+          "fact_id": "fact:00125",
           "source_pages": [
             17
           ],
@@ -1161,7 +1161,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00115",
+          "fact_id": "fact:00126",
           "source_pages": [
             17
           ],
@@ -1169,7 +1169,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00116",
+          "fact_id": "fact:00127",
           "source_pages": [
             17
           ],
@@ -1177,7 +1177,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00117",
+          "fact_id": "fact:00128",
           "source_pages": [
             17
           ],
@@ -1196,11 +1196,11 @@
       "category": "language_tests",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00151"
+        "fact:00162"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00151",
+          "fact_id": "fact:00162",
           "source_pages": [
             21
           ],
@@ -1221,11 +1221,11 @@
       "category": "department_requirements",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00154"
+        "fact:00165"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00154",
+          "fact_id": "fact:00165",
           "source_pages": [
             23
           ],
@@ -1246,12 +1246,12 @@
       "category": "language_tests",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00207",
-        "fact:00211"
+        "fact:00218",
+        "fact:00222"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00207",
+          "fact_id": "fact:00218",
           "source_pages": [
             42
           ],
@@ -1261,7 +1261,7 @@
           ]
         },
         {
-          "fact_id": "fact:00211",
+          "fact_id": "fact:00222",
           "source_pages": [
             42
           ],
@@ -1282,12 +1282,12 @@
       "category": "department_requirements",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00224",
-        "fact:00225"
+        "fact:00235",
+        "fact:00236"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00224",
+          "fact_id": "fact:00235",
           "source_pages": [
             50
           ],
@@ -1297,7 +1297,7 @@
           ]
         },
         {
-          "fact_id": "fact:00225",
+          "fact_id": "fact:00236",
           "source_pages": [
             50
           ],
@@ -1318,11 +1318,11 @@
       "category": "department_requirements",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00227"
+        "fact:00238"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00227",
+          "fact_id": "fact:00238",
           "source_pages": [
             52
           ],
@@ -1343,13 +1343,13 @@
       "category": "selection_exams",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00230",
-        "fact:00231",
-        "fact:00232"
+        "fact:00241",
+        "fact:00242",
+        "fact:00243"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00230",
+          "fact_id": "fact:00241",
           "source_pages": [
             55
           ],
@@ -1359,7 +1359,7 @@
           ]
         },
         {
-          "fact_id": "fact:00231",
+          "fact_id": "fact:00242",
           "source_pages": [
             55
           ],
@@ -1369,7 +1369,7 @@
           ]
         },
         {
-          "fact_id": "fact:00232",
+          "fact_id": "fact:00243",
           "source_pages": [
             55
           ],
@@ -1390,14 +1390,14 @@
       "category": "selection_exams",
       "query_style": "exact_term",
       "relevant_fact_ids": [
-        "fact:00108",
-        "fact:00239",
-        "fact:00240",
-        "fact:00241"
+        "fact:00119",
+        "fact:00250",
+        "fact:00251",
+        "fact:00252"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00108",
+          "fact_id": "fact:00119",
           "source_pages": [
             14
           ],
@@ -1407,7 +1407,7 @@
           ]
         },
         {
-          "fact_id": "fact:00239",
+          "fact_id": "fact:00250",
           "source_pages": [
             60
           ],
@@ -1417,7 +1417,7 @@
           ]
         },
         {
-          "fact_id": "fact:00240",
+          "fact_id": "fact:00251",
           "source_pages": [
             60
           ],
@@ -1427,7 +1427,7 @@
           ]
         },
         {
-          "fact_id": "fact:00241",
+          "fact_id": "fact:00252",
           "source_pages": [
             60
           ],
@@ -1448,11 +1448,11 @@
       "category": "contacts_forms",
       "query_style": "paraphrase",
       "relevant_fact_ids": [
-        "fact:00303"
+        "fact:00315"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00303",
+          "fact_id": "fact:00315",
           "source_pages": [
             85
           ],
@@ -1503,13 +1503,13 @@
       "category": "fees",
       "query_style": "identifier",
       "relevant_fact_ids": [
-        "fact:00087",
-        "fact:00089",
-        "fact:00109"
+        "fact:00098",
+        "fact:00100",
+        "fact:00120"
       ],
       "gold_evidence": [
         {
-          "fact_id": "fact:00087",
+          "fact_id": "fact:00098",
           "source_pages": [
             9
           ],
@@ -1517,7 +1517,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00089",
+          "fact_id": "fact:00100",
           "source_pages": [
             9
           ],
@@ -1525,7 +1525,7 @@
           "scope_targets": []
         },
         {
-          "fact_id": "fact:00109",
+          "fact_id": "fact:00120",
           "source_pages": [
             15
           ],

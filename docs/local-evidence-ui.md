@@ -33,6 +33,11 @@ language-test collection remain null in this form. The browser does not infer in
 rules, rebuild traces, or create citations. The UI does not alter selection, ranking, provider
 lifecycle, or corpus state.
 
+For reviewed paths (4)-(8), the same credential row also exposes Japan-coursework, program duration,
+and institution/program/person verification controls. Their Japanese options preserve the API's
+three states: applicant claim, official confirmation, and explicit non-confirmation. Leaving a
+control at `不明` sends `null`, so the server can return an exact missing-information request.
+
 ## Configuration
 
 The document catalog is available only when reporting is configured with one or more repeatable

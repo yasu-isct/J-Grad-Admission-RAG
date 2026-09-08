@@ -30,13 +30,13 @@ area. The older 382-unit `outputs/kb/isct_master` artifact was not used.
 | Binding | SHA-256 / value |
 | --- | --- |
 | Source PDF | `57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735` |
-| Current KB, schema `0.6`, 304 Facts/Units | `51b711389c8173608f49b9ad00614b68a0e7f9631abf89e236cbc6d24e67e6c3` |
-| Frozen benchmark, canonical LF bytes | `1072812174aff7dd8481dd83553898f2179118e3b32ca7ce4e1fca1a2f3aab38` |
-| Payloads | `f880d8744611facde1fdbbfcdb51e3174539467eb3033656662d21501d605009` |
-| Semantic vectors | `aa272ba60577c116750e5ddb2d62bd90d5a7271fd1ffa9e5f6faf9cdc3e69ab0` |
-| Index manifest | `7b005785c0b4726ce1ef8a8cbdef7beb489fd4f3e959616777b72450d73f2e21` |
+| Current KB, schema `0.6`, 316 Facts/Units | `f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106` |
+| Frozen benchmark, canonical LF bytes | `d0ddca5beb3453f640e75210902add20691f75d7f9fb1b8c7fab952f5ddffd3e` |
+| Payloads | `f6368aa24177af955a111b49f801662c41562f2d959ae75ab5f4df561a052a50` |
+| Semantic vectors | `c572be91232311bdbe76043edc0917af9c069fdd91800528c68c1f74fc8ede7d` |
+| Index manifest | `934341d39e0635eef1860659df7c167c3169c807c4bb288387c69873c0350443` |
 
-The semantic index is a new absent-directory build with 304 normalized vectors. It binds the model
+The semantic index is a new absent-directory build with 316 normalized vectors. It binds the model
 identity above and uses `hybrid`, `bm25-v1`, `rrf-v1`, `RRF_K=60`, `top_k=10`, and
 `candidate_k=50`. Every request has empty metadata filters and empty scope preferences.
 
@@ -77,13 +77,13 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-The RULE-01A report is stored as canonical LF JSON on Windows and in the committed Git blob. Both
-have SHA-256 `b650a1a0c15456bc0cb2ba62f5aec5ed437f13e2e02feac4e699b19159bfb068`.
+The RULE-01B report is stored as canonical LF JSON on Windows and in the committed Git blob. Both
+have SHA-256 `9ce74f992a3ac77a7e97ce6f46a20eb3c4fedeab52cb11e0b25d65f4f539e796`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Overall, 34 | 0.4199 | 0.7621 | 0.8641 | 0.9396 | 0.9608 | none |
+| Overall, 34 | 0.4199 | 0.7621 | 0.8582 | 0.9396 | 0.9608 | none |
 
 The values above are display-rounded only. The canonical report and its SHA retain full precision.
 Independent recomputation from the emitted primary Fact IDs matched all 34 per-query values and the
@@ -100,15 +100,15 @@ macro values exactly.
 | category: fees | 3 | 0.2778 | 0.7222 | 0.8333 | 1.0000 | 0.7778 |
 | category: language_tests | 4 | 0.6667 | 0.8750 | 0.9583 | 1.0000 | 1.0000 |
 | category: results | 2 | 0.2667 | 0.6333 | 1.0000 | 1.0000 | 1.0000 |
-| category: selection_exams | 6 | 0.3250 | 0.7250 | 0.7583 | 0.9028 | 1.0000 |
-| style: exact_term | 7 | 0.2667 | 0.6690 | 0.6976 | 0.8452 | 0.9048 |
+| category: selection_exams | 6 | 0.3250 | 0.7250 | 0.7250 | 0.9028 | 1.0000 |
+| style: exact_term | 7 | 0.2667 | 0.6690 | 0.6690 | 0.8452 | 0.9048 |
 | style: identifier | 6 | 0.3889 | 0.7222 | 0.9722 | 1.0000 | 0.8889 |
 | style: paraphrase | 21 | 0.4798 | 0.8045 | 0.8887 | 0.9537 | 1.0000 |
-| scope_sensitive: false | 25 | 0.3610 | 0.7198 | 0.8451 | 0.9278 | 0.9467 |
+| scope_sensitive: false | 25 | 0.3610 | 0.7198 | 0.8371 | 0.9278 | 0.9467 |
 | scope_sensitive: true | 9 | 0.5833 | 0.8796 | 0.9167 | 0.9722 | 1.0000 |
-| multiple_clause: false | 27 | 0.4778 | 0.8160 | 0.9123 | 0.9877 | 0.9506 |
+| multiple_clause: false | 27 | 0.4778 | 0.8160 | 0.9049 | 0.9877 | 0.9506 |
 | multiple_clause: true | 7 | 0.1966 | 0.5541 | 0.6779 | 0.7541 | 1.0000 |
-| reference_expansion: false | 33 | 0.4250 | 0.7701 | 0.8751 | 0.9529 | 0.9596 |
+| reference_expansion: false | 33 | 0.4250 | 0.7701 | 0.8690 | 0.9529 | 0.9596 |
 | reference_expansion: true | 1 | 0.2500 | 0.5000 | 0.5000 | 0.5000 | 1.0000 |
 
 ## Partial-Coverage Diagnostics
@@ -118,12 +118,12 @@ are evidence references only; no benchmark question or admission text is reprodu
 
 | Query | Category/style/flags | Gold IDs | Primary Top-10 IDs | First rank | Reference-only | Classification and evidence |
 | --- | --- | --- | --- | ---: | --- | --- |
-| `rq:0008` | eligibility / paraphrase / multi | `24,26,29,31,33` | `24,33,29,90,108,105,107,91,277,26` | 1 | none | `multi_clause_partial`: `fact:00031` remains outside primary Top-10. |
-| `rq:0012` | eligibility / exact_term / multi, reference | `59,62,67,70` | `59,67,78,85,66,83,74,108,80,76` | 1 | `62,70` | `reference_only_recovery`: attached resolved targets recover `62` and `70`. |
-| `rq:0019` | selection_exams / exact_term | `2,4,6,97,102,103` | `102,97,231,166,177,168,193,2,4,178` | 1 | none | `semantic_candidate_missing`: `fact:00006` and `fact:00103` are outside primary Top-10. |
-| `rq:0021` | enrollment / paraphrase / multi | `2,5,6,105,107` | `5,2,107,105,111,28,33,56,277,286` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00006` remains outside primary Top-10. |
-| `rq:0024` | documents / paraphrase / multi | `111,112,113,114,115,116,117` | `114,117,111,119,89,93,118,91,90,87` | 1 | none | `semantic_candidate_missing`: `112`, `113`, `115`, and `116` remain outside primary Top-10. |
-| `rq:0031` | selection_exams / exact_term / scope | `108,239,240,241` | `240,241,239,242,244,186,243,177,247,178` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00108` remains outside primary Top-10. |
+| `rq:0008` | eligibility / paraphrase / multi | `24,26,29,31,33` | `24,33,29,116,101,119,289,118,26,102` | 1 | none | `multi_clause_partial`: `fact:00031` remains outside primary Top-10. |
+| `rq:0012` | eligibility / exact_term / multi, reference | `59,62,72,75` | `59,72,96,88,119,94,90,86,92,101` | 1 | `62,75` | `reference_only_recovery`: attached resolved targets recover `62` and `75`. |
+| `rq:0019` | selection_exams / exact_term | `2,4,6,108,113,114` | `113,108,242,177,188,179,2,204,4,189` | 1 | none | `semantic_candidate_missing`: `fact:00006` and `fact:00114` are outside primary Top-10. |
+| `rq:0021` | enrollment / paraphrase / multi | `2,5,6,116,118` | `5,2,118,116,122,28,33,56,289,298` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00006` remains outside primary Top-10. |
+| `rq:0024` | documents / paraphrase / multi | `122,123,124,125,126,127,128` | `125,128,122,130,100,129,104,102,98,101` | 1 | none | `semantic_candidate_missing`: `123`, `124`, `126`, and `127` remain outside primary Top-10. |
+| `rq:0031` | selection_exams / exact_term / scope | `119,250,251,252` | `251,252,250,253,256,197,254,188,189,201` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00119` remains outside primary Top-10. |
 
 Fact IDs in compact cells omit `fact:` and leading zeroes. These classifications are a closed,
 evidence-backed description of the observed run. They do not edit annotations, revise Fact
@@ -149,12 +149,14 @@ set. No Python source file changed in RET-08, so changed-file formatting had no 
 
 | Check | Result |
 | --- | --- |
-| `pytest -m model_integration` | 1 passed, 484 deselected |
-| `pytest -m "not model_integration"` | 482 passed, 2 skipped, 1 deselected |
-| `pytest -m real_pdf` | 21 passed, 464 deselected |
+| BGE-M3 index build plus three offline evaluations | 316 vectors; all three reports byte-identical |
+| `pytest -m "not model_integration" -q` | 1,179 passed, 16 skipped, 1 deselected |
+| Semantic gate and CLI focused tests | 36 passed, 1 skipped |
+| Chromium scenarios 1, 3, 4, 5, and 6 | passed at 1,440 px and 390 px; no horizontal overflow |
 | `ruff check . --no-cache` | passed |
+| `ruff format --check --no-cache .` | passed |
 | `compileall -q src tests` | passed |
 | `git diff --check` | passed |
 
-The model integration run emitted a third-party future-API warning and the known Windows pytest-cache
-permission warning. Neither changes the model identity, offline mode, or test result.
+The non-model run emitted one Starlette/httpx deprecation warning. It does not change the model
+identity, offline mode, or test result.

@@ -10,13 +10,13 @@ from typing import Sequence
 from ..utils import INTERMEDIATE_DIR
 
 TITLE_RE = re.compile(
-    r"^(?:[【\[][^】\]]+[】\]]|[0-9０-９]+[\.．、]\s*.+|[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+)$",
+    r"^(?:[【\[［][^】\]］]+[】\]］]|[0-9０-９]+[\.．、]\s*.+|[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+)$",
     re.MULTILINE,
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
 MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
-BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\])$")
-PARENTHESIZED_TITLE_RE = re.compile(r"^[（(][0-9０-９一二三四五六七八九十]+[）)]")
+BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\]|［.*］)$")
+PARENTHESIZED_TITLE_RE = re.compile(r"^[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)]")
 TABLE_DELIMITER_RE = re.compile(r"(?m)^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$")
 
 

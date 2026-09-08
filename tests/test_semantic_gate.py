@@ -194,7 +194,7 @@ def test_gate_modules_do_not_import_embedding_runtime() -> None:
     (
         ("recall_at_1", 0.4198879551820728),
         ("recall_at_3", 0.7621148459383753),
-        ("recall_at_5", 0.8640756302521009),
+        ("recall_at_5", 0.8581932773109243),
         ("recall_at_10", 0.9395658263305322),
         ("mrr", 0.9607843137254901),
     ),
@@ -312,10 +312,10 @@ def test_reference_attachments_do_not_receive_primary_ranked_credit() -> None:
     report = load_retrieval_evaluation_bytes(_report_bytes())
     query = next(item for item in report.queries if item.query_id == "rq:0012")
     assert query.recall.recall_at_10 == 0.5
-    assert query.reference_only_gold_fact_ids == ("fact:00062", "fact:00070")
+    assert query.reference_only_gold_fact_ids == ("fact:00062", "fact:00075")
     assert not {
         "fact:00062",
-        "fact:00070",
+        "fact:00075",
     }.intersection(item.fact_id for item in query.ranked_primary_facts)
 
     changed_query = query.model_copy(update={"reference_only_gold_fact_ids": ()})
