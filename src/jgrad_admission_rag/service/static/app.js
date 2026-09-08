@@ -341,7 +341,9 @@ function academicCredentials() {
     years_enrolled_before_withdrawal: nullableInteger("years-enrolled-before-withdrawal"),
     under_sixteen_year_bachelor_country_status: nullableText("under-sixteen-year-country-status"),
     university_education_completion_status: nullableText("university-education-completion-status"),
-    post_university_research_months: nullableInteger("post-university-research-months"),
+    post_university_research_months_at_eligibility_cutoff: nullableInteger(
+      "post-university-research-months-at-eligibility-cutoff",
+    ),
     graduate_equivalent_recognition_status: nullableText("graduate-equivalent-recognition-status")
   };
   return Object.values(credential).every((value) => value === null) ? null : [credential];

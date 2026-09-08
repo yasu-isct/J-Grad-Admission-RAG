@@ -51,7 +51,7 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "years-enrolled-before-withdrawal",
         "under-sixteen-year-country-status",
         "university-education-completion-status",
-        "post-university-research-months",
+        "post-university-research-months-at-eligibility-cutoff",
         "graduate-equivalent-recognition-status",
         "age-at-enrollment",
         "professional-months",
@@ -102,10 +102,8 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert 'prior_education_category: nullableText("prior-education-category")' in javascript
     assert "sixteen_year_equivalence_status: nullableText(" in javascript
     assert "ministerial_completion_deadline_status: nullableText(" in javascript
-    assert (
-        'post_university_research_months: nullableInteger("post-university-research-months")'
-        in javascript
-    )
+    assert "post_university_research_months_at_eligibility_cutoff: nullableInteger(" in javascript
+    assert '"post-university-research-months-at-eligibility-cutoff"' in javascript
     assert "graduate_equivalent_recognition_status: nullableText(" in javascript
     assert 'age_at_eligibility_cutoff: nullableInteger("age-at-eligibility-cutoff")' in javascript
     assert "language_test_results: null" in javascript

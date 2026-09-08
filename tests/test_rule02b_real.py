@@ -99,7 +99,7 @@ def _path11(**overrides: Any) -> dict[str, Any]:
     credential.update(
         under_sixteen_year_bachelor_country_status="officially_confirmed",
         university_education_completion_status="officially_confirmed",
-        post_university_research_months=12,
+        post_university_research_months_at_eligibility_cutoff=12,
         graduate_equivalent_recognition_status="officially_confirmed",
     )
     credential.update(overrides)
@@ -226,7 +226,63 @@ def test_scenario_4_path10_entry3_is_mot_only_and_24_month_boundary(rule02b_clie
     )
 
 
-@pytest.mark.parametrize("field,value", [("post_university_research_months", 11), ("age", 21)])
+def test_path10_university_withdrawal_requires_two_years_and_24_months_in_mot(
+    rule02b_client,
+) -> None:
+    client, document_id = rule02b_client
+    credential = _credential(
+        basis="review_path10_mot_professional_experience",
+        state="not_completed",
+        completion_date=None,
+    )
+    credential.update(
+        prior_education_category="university_withdrawal",
+        years_enrolled_before_withdrawal=2,
+        graduate_equivalent_recognition_status="officially_confirmed",
+    )
+    rule_id = "isct-master-path-10-entry-3-university-withdrawal-apr"
+
+    exact = _with_facts(_profile(credential), age=22, work=24)
+    assert _statuses(_report(client, document_id, exact, "p10-withdrawal-exact"))[rule_id] == (
+        "confirmed"
+    )
+
+    one_year = dict(credential, years_enrolled_before_withdrawal=1)
+    assert (
+        _statuses(
+            _report(
+                client,
+                document_id,
+                _with_facts(_profile(one_year), age=22, work=24),
+                "p10-withdrawal-one-year",
+            )
+        )[rule_id]
+        == "not_applicable"
+    )
+
+    assert (
+        _statuses(
+            _report(
+                client,
+                document_id,
+                _with_facts(_profile(credential), age=22, work=23),
+                "p10-withdrawal-23-months",
+            )
+        )[rule_id]
+        == "not_applicable"
+    )
+
+    wrong_target = _with_facts(_profile(credential), age=22, work=24)
+    wrong_target["target_application"]["department_or_program"] = "建築学系"
+    assert (
+        _statuses(_report(client, document_id, wrong_target, "p10-withdrawal-not-mot"))[rule_id]
+        == "not_applicable"
+    )
+
+
+@pytest.mark.parametrize(
+    "field,value", [("post_university_research_months_at_eligibility_cutoff", 11), ("age", 21)]
+)
 def test_scenario_5_path11_boundaries(rule02b_client, field, value) -> None:
     client, document_id = rule02b_client
     exact = _with_facts(_profile(_path11()), age=22)
@@ -242,6 +298,27 @@ def test_scenario_5_path11_boundaries(rule02b_client, field, value) -> None:
     assert (
         _statuses(_report(client, document_id, changed, f"p11-{field}"))[target] == "not_applicable"
     )
+
+
+def test_path11_september_research_cutoff_exact_and_missing(rule02b_client) -> None:
+    client, document_id = rule02b_client
+    rule_id = "isct-master-path-11-research-sep"
+    exact = _with_facts(_profile(_path11(), year=2026, month=9), age=22)
+    assert _statuses(_report(client, document_id, exact, "p11-sep-research-exact"))[rule_id] == (
+        "confirmed"
+    )
+
+    missing = _path11(post_university_research_months_at_eligibility_cutoff=None)
+    report = _report(
+        client,
+        document_id,
+        _with_facts(_profile(missing, year=2026, month=9), age=22),
+        "p11-sep-research-missing",
+    )
+    assert _statuses(report)[rule_id] == "needs_information"
+    assert _missing(report, rule_id) == {
+        "academic_credentials.first.post_university_research_months_at_eligibility_cutoff"
+    }
 
 
 def test_scenario_6_review_completion_does_not_imply_recognition(rule02b_client) -> None:

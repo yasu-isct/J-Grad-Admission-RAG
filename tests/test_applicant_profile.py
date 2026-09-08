@@ -152,7 +152,7 @@ def test_rule02b_profile_fields_are_strict_and_typed() -> None:
         credential_basis="review_path10_mot_professional_experience",
         prior_education_category="university_withdrawal",
         years_enrolled_before_withdrawal=2,
-        post_university_research_months=12,
+        post_university_research_months_at_eligibility_cutoff=12,
         graduate_equivalent_recognition_status="officially_confirmed",
     )
     payload["eligibility_facts"]["age_at_eligibility_cutoff"] = 22  # type: ignore[index]

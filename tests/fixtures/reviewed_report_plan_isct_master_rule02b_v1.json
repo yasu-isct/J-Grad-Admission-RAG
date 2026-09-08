@@ -6144,7 +6144,7 @@
           "expected_value": "review_path11_under_sixteen_year_bachelor"
         },
         {
-          "field_path": "academic_credentials.first.post_university_research_months",
+          "field_path": "academic_credentials.first.post_university_research_months_at_eligibility_cutoff",
           "operator": "minimum",
           "expected_value": 12
         }
@@ -6194,7 +6194,7 @@
           "expected_value": "review_path11_under_sixteen_year_bachelor"
         },
         {
-          "field_path": "academic_credentials.first.post_university_research_months",
+          "field_path": "academic_credentials.first.post_university_research_months_at_eligibility_cutoff",
           "operator": "minimum",
           "expected_value": 12
         }

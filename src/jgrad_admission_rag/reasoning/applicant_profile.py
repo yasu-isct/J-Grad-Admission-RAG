@@ -219,7 +219,7 @@ class AcademicCredential(ApplicantProfileModel):
     years_enrolled_before_withdrawal: StrictInt | None = None
     under_sixteen_year_bachelor_country_status: OfficialVerificationStatus | None = None
     university_education_completion_status: OfficialVerificationStatus | None = None
-    post_university_research_months: StrictInt | None = None
+    post_university_research_months_at_eligibility_cutoff: StrictInt | None = None
     graduate_equivalent_recognition_status: OfficialVerificationStatus | None = None
 
     @field_validator("institution_country_code")
@@ -236,7 +236,7 @@ class AcademicCredential(ApplicantProfileModel):
         "credits_after_two_years",
         "expected_specialist_credits",
         "years_enrolled_before_withdrawal",
-        "post_university_research_months",
+        "post_university_research_months_at_eligibility_cutoff",
     )
     @classmethod
     def years_of_education_must_not_be_negative(cls, value: int | None) -> int | None:

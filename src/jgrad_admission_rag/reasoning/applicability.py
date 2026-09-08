@@ -253,8 +253,13 @@ _FIELD_SPECS = {
     "academic_credentials.first.university_education_completion_status": _FieldSpec(
         "string", ("academic_credentials", "first", "university_education_completion_status")
     ),
-    "academic_credentials.first.post_university_research_months": _FieldSpec(
-        "integer", ("academic_credentials", "first", "post_university_research_months")
+    "academic_credentials.first.post_university_research_months_at_eligibility_cutoff": _FieldSpec(
+        "integer",
+        (
+            "academic_credentials",
+            "first",
+            "post_university_research_months_at_eligibility_cutoff",
+        ),
     ),
     "academic_credentials.first.graduate_equivalent_recognition_status": _FieldSpec(
         "string", ("academic_credentials", "first", "graduate_equivalent_recognition_status")
