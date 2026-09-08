@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
+import re
 
 from pydantic import ValidationError
 
@@ -40,6 +41,10 @@ COLLEGE_DEPARTMENTS = {
         "技術経営専門職学位課程",
     ],
 }
+
+PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
+    r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
+)
 
 
 class DocumentBuildError(Exception):
@@ -117,6 +122,9 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
         return "college", matched_colleges, None, 0.7
 
     if item.section_path and item.section_path[0].startswith(("２．入学時期", "３．出願資格")):
+        return "global", [], None, 0.7
+
+    if item.pages == [8] and PATH9_UNIVERSITY_REQUIREMENT_RE.match(item.text):
         return "global", [], None, 0.7
 
     if any(token in haystack for token in ["全学院", "全系", "共通", "全志願者"]):

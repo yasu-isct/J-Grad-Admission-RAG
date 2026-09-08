@@ -2,23 +2,74 @@
   "schema_version": "1.0",
   "fixture_id": "isct-master-applicability-v1",
   "document_id": "isct_2027_4_2026_9_master",
-  "source_kb_sha256": "f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106",
+  "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "synthetic_contract_cases": {
     "atomic": [
-      {"profile_value": 22, "operator": "minimum", "expected_value": 22, "expected_status": "confirmed"},
-      {"profile_value": 21, "operator": "minimum", "expected_value": 22, "expected_status": "not_applicable"},
-      {"profile_value": null, "operator": "minimum", "expected_value": 22, "expected_status": "needs_information"}
+      {
+        "profile_value": 22,
+        "operator": "minimum",
+        "expected_value": 22,
+        "expected_status": "confirmed"
+      },
+      {
+        "profile_value": 21,
+        "operator": "minimum",
+        "expected_value": 22,
+        "expected_status": "not_applicable"
+      },
+      {
+        "profile_value": null,
+        "operator": "minimum",
+        "expected_value": 22,
+        "expected_status": "needs_information"
+      }
     ],
     "all_truth_table": [
-      {"inputs": ["confirmed", "confirmed"], "expected_status": "confirmed"},
-      {"inputs": ["confirmed", "not_applicable"], "expected_status": "not_applicable"},
-      {"inputs": ["confirmed", "needs_information"], "expected_status": "needs_information"}
+      {
+        "inputs": [
+          "confirmed",
+          "confirmed"
+        ],
+        "expected_status": "confirmed"
+      },
+      {
+        "inputs": [
+          "confirmed",
+          "not_applicable"
+        ],
+        "expected_status": "not_applicable"
+      },
+      {
+        "inputs": [
+          "confirmed",
+          "needs_information"
+        ],
+        "expected_status": "needs_information"
+      }
     ],
     "any_truth_table": [
-      {"inputs": ["not_applicable", "confirmed"], "expected_status": "confirmed"},
-      {"inputs": ["not_applicable", "not_applicable"], "expected_status": "not_applicable"},
-      {"inputs": ["not_applicable", "needs_information"], "expected_status": "needs_information"}
+      {
+        "inputs": [
+          "not_applicable",
+          "confirmed"
+        ],
+        "expected_status": "confirmed"
+      },
+      {
+        "inputs": [
+          "not_applicable",
+          "not_applicable"
+        ],
+        "expected_status": "not_applicable"
+      },
+      {
+        "inputs": [
+          "not_applicable",
+          "needs_information"
+        ],
+        "expected_status": "needs_information"
+      }
     ],
     "validation_failures": [
       "unallowlisted_field_path",
@@ -30,7 +81,9 @@
   },
   "fact": {
     "fact_id": "fact:00069",
-    "source_pages": [7],
+    "source_pages": [
+      7
+    ],
     "authoritative_fact_text_sha256": "7c99b619b4af1b5c0288fd2c875a488b56e818629e72bd0c66393b03cd35a2e1"
   },
   "rule": {
@@ -38,7 +91,9 @@
     "mode": "all",
     "scope": {
       "scope_type": "department",
-      "scope_targets": ["技術経営専門職学位課程"],
+      "scope_targets": [
+        "技術経営専門職学位課程"
+      ],
       "parent_college": "環境・社会理工学院"
     },
     "predicates": [
@@ -72,7 +127,9 @@
       "scenario_id": "needs-information",
       "age_at_enrollment": null,
       "expected_status": "needs_information",
-      "expected_diagnostics": ["missing_profile_fact"]
+      "expected_diagnostics": [
+        "missing_profile_fact"
+      ]
     }
   ]
 }

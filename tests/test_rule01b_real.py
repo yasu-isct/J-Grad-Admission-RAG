@@ -134,7 +134,7 @@ def test_rule01b_real_fact_boundaries_are_complete_and_independent(rule01b_clien
         "fact:00067": "（８）文部科学大臣の指定した者",
     }
 
-    assert len(kb.facts) == 316
+    assert len(kb.facts) == 318
     for fact_id, prefix in expected_prefixes.items():
         assert facts[fact_id].text.startswith(prefix)
         assert facts[fact_id].source_pages == [7]

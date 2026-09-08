@@ -80,6 +80,9 @@ class CredentialBasis(str, Enum):
     RECOGNIZED_FOREIGN_THREE_YEAR_BACHELOR = "recognized_foreign_three_year_bachelor"
     DESIGNATED_SPECIALIZED_TRAINING_COLLEGE = "designated_specialized_training_college"
     MINISTER_DESIGNATED_PERSON = "minister_designated_person"
+    UNIVERSITY_THREE_YEAR_ENROLLMENT = "university_three_year_enrollment"
+    FOREIGN_15_YEAR_EDUCATION = "foreign_15_year_education"
+    DESIGNATED_FOREIGN_15_YEAR_PROGRAM_IN_JAPAN = "designated_foreign_15_year_program_in_japan"
 
 
 class OfficialVerificationStatus(str, Enum):
@@ -183,6 +186,14 @@ class AcademicCredential(ApplicantProfileModel):
     program_designation_status: OfficialVerificationStatus | None = None
     completion_timing_verification_status: OfficialVerificationStatus | None = None
     person_designation_status: OfficialVerificationStatus | None = None
+    years_enrolled_at_eligibility_cutoff: StrictInt | None = None
+    prescribed_credits_excellence_status: OfficialVerificationStatus | None = None
+    institution_is_target_university: StrictBool | None = None
+    gpt_after_two_years: StrictFloat | StrictInt | None = None
+    credits_after_two_years: StrictInt | None = None
+    required_specialization_courses_expected_status: OfficialVerificationStatus | None = None
+    expected_specialist_credits: StrictInt | None = None
+    liberal_arts_requirements_expected_status: OfficialVerificationStatus | None = None
 
     @field_validator("institution_country_code")
     @classmethod
@@ -191,11 +202,24 @@ class AcademicCredential(ApplicantProfileModel):
             _validate_country_code(value, "institution_country_code")
         return value
 
-    @field_validator("years_of_education", "program_duration_years")
+    @field_validator(
+        "years_of_education",
+        "program_duration_years",
+        "years_enrolled_at_eligibility_cutoff",
+        "credits_after_two_years",
+        "expected_specialist_credits",
+    )
     @classmethod
     def years_of_education_must_not_be_negative(cls, value: int | None) -> int | None:
         if value is not None and value < 0:
             raise ValueError("years_of_education must not be negative")
+        return value
+
+    @field_validator("gpt_after_two_years")
+    @classmethod
+    def gpt_must_be_finite_and_non_negative(cls, value: int | float | None) -> int | float | None:
+        if value is not None and (not math.isfinite(value) or value < 0):
+            raise ValueError("gpt_after_two_years must be finite and non-negative")
         return value
 
     @model_validator(mode="after")

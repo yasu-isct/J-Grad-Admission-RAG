@@ -18,6 +18,7 @@ MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
 BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\]|［.*］)$")
 PARENTHESIZED_TITLE_RE = re.compile(r"^[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)]")
 TABLE_DELIMITER_RE = re.compile(r"(?m)^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$")
+NUMBERED_REQUIREMENT_END_RE = re.compile(r"こと。$")
 
 
 @dataclass
@@ -287,7 +288,11 @@ def _chunk_markdown(
     chunks: list[TextChunk] = []
     for title, section_path, section in sections:
         for page_part in _split_on_page_boundaries(section):
-            if page_part.text == title and not PARENTHESIZED_TITLE_RE.match(title):
+            if (
+                page_part.text == title
+                and not PARENTHESIZED_TITLE_RE.match(title)
+                and not NUMBERED_REQUIREMENT_END_RE.search(title)
+            ):
                 continue
             for part in _split_without_cutting_tables(page_part, max_chars):
                 chunks.append(

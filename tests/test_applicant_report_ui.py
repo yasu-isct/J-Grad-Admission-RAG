@@ -36,6 +36,14 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "program-designation-status",
         "completion-timing-verification-status",
         "person-designation-status",
+        "years-enrolled-at-eligibility-cutoff",
+        "prescribed-credits-excellence-status",
+        "institution-is-target-university",
+        "gpt-after-two-years",
+        "credits-after-two-years",
+        "required-specialization-courses-status",
+        "expected-specialist-credits",
+        "liberal-arts-requirements-status",
         "age-at-enrollment",
         "professional-months",
         "research-months",
@@ -68,11 +76,28 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     )
     assert "completion_timing_verification_status: nullableText(" in javascript
     assert '"completion-timing-verification-status"' in javascript
+    assert "years_enrolled_at_eligibility_cutoff: nullableInteger(" in javascript
+    assert "prescribed_credits_excellence_status: nullableText(" in javascript
+    assert (
+        'institution_is_target_university: nullableBoolean("institution-is-target-university")'
+        in javascript
+    )
+    assert 'gpt_after_two_years: nullableNumber("gpt-after-two-years")' in javascript
+    assert 'credits_after_two_years: nullableInteger("credits-after-two-years")' in javascript
+    assert "required_specialization_courses_expected_status: nullableText(" in javascript
+    assert (
+        'expected_specialist_credits: nullableInteger("expected-specialist-credits")' in javascript
+    )
+    assert "liberal_arts_requirements_expected_status: nullableText(" in javascript
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript
     assert "reportRequest(item, profile, intentPayload)" in javascript
     assert "if (reportPending) return" in javascript
+    assert (
+        'finding.disposition === "active" && reviewedRule && reviewedRule.annotation_note'
+        in javascript
+    )
     assert "parse_query_intent" not in javascript
 
 

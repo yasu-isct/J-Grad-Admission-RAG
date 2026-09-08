@@ -12,8 +12,8 @@
     "page_count": 85,
     "table_count": 285,
     "scanned_page_count": 0,
-    "input_chunk_count": 409,
-    "chunk_count": 316,
+    "input_chunk_count": 411,
+    "chunk_count": 318,
     "dropped_chunk_count": 93,
     "dropped_chunk_reasons": {
       "whitespace_only": 0,
@@ -22,25 +22,111 @@
     },
     "merged_heading_count": 0,
     "page_only_positions": [
-      7, 25, 26, 37, 59, 60, 65, 66, 93, 94, 107, 108, 113, 114, 117, 120,
-      121, 132, 133, 138, 140, 142, 144, 152, 154, 160, 188, 190, 193, 195,
-      197, 209, 211, 213, 217, 220, 223, 227, 230, 236, 242, 244, 246, 248,
-      250, 252, 260, 262, 272, 273, 276, 279, 282, 284, 286, 288, 290, 294,
-      296, 298, 300, 302, 306, 309, 312, 314, 316, 321, 323, 325, 327, 329,
-      331, 333, 335, 337, 339, 341, 343, 345, 349, 351, 353, 367, 368, 387,
-      391, 397, 399, 401, 403, 405, 407
+      7,
+      25,
+      26,
+      37,
+      59,
+      60,
+      65,
+      66,
+      93,
+      94,
+      109,
+      110,
+      115,
+      116,
+      119,
+      122,
+      123,
+      134,
+      135,
+      140,
+      142,
+      144,
+      146,
+      154,
+      156,
+      162,
+      190,
+      192,
+      195,
+      197,
+      199,
+      211,
+      213,
+      215,
+      219,
+      222,
+      225,
+      229,
+      232,
+      238,
+      244,
+      246,
+      248,
+      250,
+      252,
+      254,
+      262,
+      264,
+      274,
+      275,
+      278,
+      281,
+      284,
+      286,
+      288,
+      290,
+      292,
+      296,
+      298,
+      300,
+      302,
+      304,
+      308,
+      311,
+      314,
+      316,
+      318,
+      323,
+      325,
+      327,
+      329,
+      331,
+      333,
+      335,
+      337,
+      339,
+      341,
+      343,
+      345,
+      347,
+      351,
+      353,
+      355,
+      369,
+      370,
+      389,
+      393,
+      399,
+      401,
+      403,
+      405,
+      407,
+      409
     ],
     "entity_count": 25,
-    "fact_count": 316,
-    "retrieval_unit_count": 316,
+    "fact_count": 318,
+    "retrieval_unit_count": 318,
     "reference_link_count": 10,
     "chunk_size_limit": 6000,
     "max_chunk_chars": 5993,
     "oversized_chunk_count": 0,
     "oversized_chunk_reasons": {},
     "short_fact_threshold": 100,
-    "short_fact_count": 89,
-    "unknown_scope_fact_count": 158,
+    "short_fact_count": 91,
+    "unknown_scope_fact_count": 154,
     "raw_reference_occurrence_count": 218,
     "reference_claim_count": 142,
     "reference_status_counts": {
@@ -48,41 +134,133 @@
       "ambiguous": 5,
       "unresolved": 127
     },
-    "fact_content_sha256": "59dacaf7ee19f02fc47ec01c97198e8efcd40a2825541c843fccd4d55987f831",
-    "fact_structure_sha256": "df7cbbf8daca4e01fcfed95604f1290c02ef62940ec400471f028cdcb232c8cd",
-    "diagnostics_sha256": "09cca203e66f3b7de3cbd809d22129a145bb681a7acc4d24888b47846776e1cf",
-    "embedding_text_v1_sha256": "d168c1e19b3c306241eca58c4d21d340aa0ca62ff9f0ec3923990bcb99a0adc1",
-    "embedding_text_v1_fake_vector_sha256": "0a85577d33d731b415fb0bbb7ff03f505be054034195bfe70e1ca8eea9560f0c",
-    "index_payloads_sha256": "3ad79e4399842c4b3f281b20347cd41769d3f2e0375cc29fbddf4d39c2dc965b",
-    "index_fake_vectors_npy_sha256": "5333314533473183ab0c3fd1ce28c195101067474a90b60106686f3620e00e2b",
+    "fact_content_sha256": "f62ee5e317b491385b221946e6a593cbc7e6e5089b1bd57dd13cdeab8cecc42b",
+    "fact_structure_sha256": "6c29a8438dfbcfe1a0f7d2a74a3ffa09172ec328eb146f06ea4a1ee8c6bb802f",
+    "diagnostics_sha256": "2f37fe906c70e4accebe3bd385b73ee8940f2ad186eeee9b2815f7f625a597a0",
+    "embedding_text_v1_sha256": "3f665de2726b8483a4c88d3892ad9c95caa7f83db789b7efa0e5fa91bf5856bd",
+    "embedding_text_v1_fake_vector_sha256": "94ab5f5dd715cac8628abbbbb8037eebd4489551dc308c01207c02e3c4083685",
+    "index_payloads_sha256": "5c587bfc996e14540bcdf14f91024ef45512e94fbbc6731d87f7e902a18cf8f2",
+    "index_fake_vectors_npy_sha256": "59fcb28e194599be0fc8dab7386953b1adba442a5a903d6bb8598e9b19603219",
     "resolved_reference_claims": [
-      ["fact:00014", "上記1", "fact:00008"],
-      ["fact:00059", "下記（１）", "fact:00060"],
-      ["fact:00059", "下記（２）", "fact:00061"],
-      ["fact:00059", "下記（３）", "fact:00062"],
-      ["fact:00072", "下記（１）", "fact:00073"],
-      ["fact:00072", "下記（２）", "fact:00074"],
-      ["fact:00072", "下記（３）", "fact:00075"],
-      ["fact:00088", "下記１", "fact:00091"],
-      ["fact:00091", "上記（１）", "fact:00085"],
-      ["fact:00091", "上記\n（１）", "fact:00085"]
+      [
+        "fact:00014",
+        "上記1",
+        "fact:00008"
+      ],
+      [
+        "fact:00059",
+        "下記（１）",
+        "fact:00060"
+      ],
+      [
+        "fact:00059",
+        "下記（２）",
+        "fact:00061"
+      ],
+      [
+        "fact:00059",
+        "下記（３）",
+        "fact:00062"
+      ],
+      [
+        "fact:00072",
+        "下記（１）",
+        "fact:00073"
+      ],
+      [
+        "fact:00072",
+        "下記（２）",
+        "fact:00074"
+      ],
+      [
+        "fact:00072",
+        "下記（３）",
+        "fact:00075"
+      ],
+      [
+        "fact:00088",
+        "下記１",
+        "fact:00092"
+      ],
+      [
+        "fact:00092",
+        "上記（１）",
+        "fact:00085"
+      ],
+      [
+        "fact:00092",
+        "上記\n（１）",
+        "fact:00085"
+      ]
     ],
     "removed_ambiguous_links": [
-      ["fact:00022", "上記1", "fact:00016"],
-      ["fact:00023", "上記1", "fact:00016"],
-      ["fact:00085", "上記（１）", "fact:00073"],
-      ["fact:00085", "上記\n（１）", "fact:00073"],
-      ["fact:00094", "下記１", "fact:00097"]
+      [
+        "fact:00022",
+        "上記1",
+        "fact:00016"
+      ],
+      [
+        "fact:00023",
+        "上記1",
+        "fact:00016"
+      ],
+      [
+        "fact:00085",
+        "上記（１）",
+        "fact:00073"
+      ],
+      [
+        "fact:00085",
+        "上記\n（１）",
+        "fact:00073"
+      ],
+      [
+        "fact:00095",
+        "下記１",
+        "fact:00099"
+      ]
     ],
     "kb05_split_transitions": {
-      "22": [8754, 5437, 3315],
-      "29": [6147, 3635, 2510],
-      "30": [8003, 4813, 3188],
-      "32": [6023, 5988, 33],
-      "44": [6455, 3622, 2831],
-      "45": [6482, 3671, 2809],
-      "56": [6273, 3684, 2587],
-      "57": [6211, 3676, 2533]
+      "22": [
+        8754,
+        5437,
+        3315
+      ],
+      "29": [
+        6147,
+        3635,
+        2510
+      ],
+      "30": [
+        8003,
+        4813,
+        3188
+      ],
+      "32": [
+        6023,
+        5988,
+        33
+      ],
+      "44": [
+        6455,
+        3622,
+        2831
+      ],
+      "45": [
+        6482,
+        3671,
+        2809
+      ],
+      "56": [
+        6273,
+        3684,
+        2587
+      ],
+      "57": [
+        6211,
+        3676,
+        2533
+      ]
     }
   },
   "text_markers": [

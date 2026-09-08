@@ -374,6 +374,16 @@ def test_public_schema_import_has_no_retrieval_model_or_network_dependency() -> 
     assert ApplicantProfile.model_fields["target_application"].is_required()
     assert TargetApplication.model_fields["intake_month"].annotation == IntakeMonth | None
     assert AcademicCredential.model_fields["degree_level"].annotation == DegreeLevel | None
+    assert {
+        "years_enrolled_at_eligibility_cutoff",
+        "prescribed_credits_excellence_status",
+        "institution_is_target_university",
+        "gpt_after_two_years",
+        "credits_after_two_years",
+        "required_specialization_courses_expected_status",
+        "expected_specialist_credits",
+        "liberal_arts_requirements_expected_status",
+    } <= AcademicCredential.model_fields.keys()
     assert (
         EligibilityFacts.model_fields["individual_review_status"].annotation
         == IndividualReviewStatus | None

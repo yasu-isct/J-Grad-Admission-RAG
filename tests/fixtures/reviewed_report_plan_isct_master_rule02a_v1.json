@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "plan_id": "isct-master-reviewed-report-plan-v3",
+  "plan_id": "isct-master-reviewed-report-plan-v4",
   "document_identity": {
     "schema_version": "1.0",
     "document_id": "isct_2027_4_2026_9_master",
@@ -3309,11 +3309,1661 @@
         }
       ],
       "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "minimum",
+          "expected_value": 15
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_country_code",
+          "operator": "not_equals",
+          "expected_value": "JP"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "minimum",
+          "expected_value": 15
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-foreign-15-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "minimum",
+          "expected_value": 15
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-foreign-15-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        },
+        {
+          "field_path": "academic_credentials.first.years_of_education",
+          "operator": "minimum",
+          "expected_value": 15
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-university-three-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-candidate-university-three-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "この判定は出願資格（9）の候補入口となる原子条件との一致だけを示します。所定単位を優れた成績で修得したとの本学認定、個別資格審査の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-1-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "本学学士課程からの飛び入学について、資格基準日時点の大学在学期間が3年に達するという第1要件だけを示します。学校の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-1-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.years_enrolled_at_eligibility_cutoff",
+          "operator": "minimum",
+          "expected_value": 3
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "not_completed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "本学学士課程からの飛び入学について、資格基準日時点の大学在学期間が3年に達するという第1要件だけを示します。学校の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-2-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.gpt_after_two_years",
+          "operator": "minimum",
+          "expected_value": 3.0
+        },
+        {
+          "field_path": "academic_credentials.first.credits_after_two_years",
+          "operator": "minimum",
+          "expected_value": 90
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00090",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "8129a6da8b5cc40e10cb64ff94750876ff6db233dac126979bc2dde3f1dd7852"
+        }
+      ],
+      "annotation_note": "本学に2年間在学した時点のGPTが3.00以上、かつ原則90単位以上という第2要件だけを示します。GPTを一般的なGPAへ読み替えず、学校の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-2-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.gpt_after_two_years",
+          "operator": "minimum",
+          "expected_value": 3.0
+        },
+        {
+          "field_path": "academic_credentials.first.credits_after_two_years",
+          "operator": "minimum",
+          "expected_value": 90
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00090",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "8129a6da8b5cc40e10cb64ff94750876ff6db233dac126979bc2dde3f1dd7852"
+        }
+      ],
+      "annotation_note": "本学に2年間在学した時点のGPTが3.00以上、かつ原則90単位以上という第2要件だけを示します。GPTを一般的なGPAへ読み替えず、学校の承認、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-3-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.required_specialization_courses_expected_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_specialist_credits",
+          "operator": "minimum",
+          "expected_value": 60
+        },
+        {
+          "field_path": "academic_credentials.first.liberal_arts_requirements_expected_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00091",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "380e61a4fbdcf5f6d3009d5d5dca641f6219a3a3783f3ebf50705f596bc7af7f"
+        }
+      ],
+      "annotation_note": "本学大学院入学までの必修・選択必修科目、専門科目群60単位以上及び教養科目群の要件に関する第3要件だけを示します。各確認は大学による公式確認を必要とし、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-isct-early-entry-requirement-3-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.institution_is_target_university",
+          "operator": "equals",
+          "expected_value": true
+        },
+        {
+          "field_path": "academic_credentials.first.required_specialization_courses_expected_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_specialist_credits",
+          "operator": "minimum",
+          "expected_value": 60
+        },
+        {
+          "field_path": "academic_credentials.first.liberal_arts_requirements_expected_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00088",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "441efbb95db591dcb53eb62d901f23df0fcc7e9674d9052b390dac9ecaaba00b"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00091",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "380e61a4fbdcf5f6d3009d5d5dca641f6219a3a3783f3ebf50705f596bc7af7f"
+        }
+      ],
+      "annotation_note": "本学大学院入学までの必修・選択必修科目、専門科目群60単位以上及び教養科目群の要件に関する第3要件だけを示します。各確認は大学による公式確認を必要とし、総合的な出願資格又は合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-redirect-to-path-1-apr-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "この学歴は基準日までに大学を卒業済み又は卒業見込みであるため、募集要項の指示どおり出願資格（1）を確認してください。出願資格（9）の個別資格審査は不要と記載されています。これは総合的な出願資格又は合否を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-redirect-to-path-1-apr-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2027-03-31"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "この学歴は基準日までに大学を卒業済み又は卒業見込みであるため、募集要項の指示どおり出願資格（1）を確認してください。出願資格（9）の個別資格審査は不要と記載されています。これは総合的な出願資格又は合否を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-redirect-to-path-1-sep-completed",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "completed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "この学歴は基準日までに大学を卒業済み又は卒業見込みであるため、募集要項の指示どおり出願資格（1）を確認してください。出願資格（9）の個別資格審査は不要と記載されています。これは総合的な出願資格又は合否を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-redirect-to-path-1-sep-expected",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_state",
+          "operator": "equals",
+          "expected_value": "expected"
+        },
+        {
+          "field_path": "academic_credentials.first.expected_completion_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-09-27"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00059",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "42e9cf0b3dd92fd09a01af0df0f9311f355fd62971d7bf2c5e7bb888699bef5d"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00060",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "0f1dac2a15b0956822e253628b5b67b13341512ab5d2fc5af63fcd0a1369d1e0"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00089",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "235e81e2dfdcce04bb6e3b8cd206225cccf66add21ac27382eb121888c1df755"
+        }
+      ],
+      "annotation_note": "この学歴は基準日までに大学を卒業済み又は卒業見込みであるため、募集要項の指示どおり出願資格（1）を確認してください。出願資格（9）の個別資格審査は不要と記載されています。これは総合的な出願資格又は合否を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-designated-foreign-15-year-in-japan-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-designated-foreign-15-year-in-japan-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-foreign-15-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-foreign-15-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-university-three-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-review-process-university-three-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00086",
+          "source_pages": [
+            8
+          ],
+          "authoritative_fact_text_sha256": "0e570f1a25102b76aeab364bd134ac70593dbd2b61a5148c63772c4ae3bc94f3"
+        }
+      ],
+      "annotation_note": "出願資格（9）の候補者は、具体的な学歴・経歴を入試課へメールで送り事前確認を受けてください。審査対象なら書類は2026年5月11日必着、結果は5月19日頃にメール通知され、届かない場合は5月21日までに確認が必要です。出願時には結果通知メールを印刷して提出します。これは手続案内であり、学校の承認や最終的な出願資格を示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "designated_foreign_15_year_program_in_japan"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-foreign-15-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-foreign-15-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "foreign_15_year_education"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-university-three-year-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-path-9-school-recognition-university-three-year-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "academic_credentials.first.credential_basis",
+          "operator": "equals",
+          "expected_value": "university_three_year_enrollment"
+        },
+        {
+          "field_path": "academic_credentials.first.prescribed_credits_excellence_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "6d8aa47b82f670d1bd088cea9e0e7b741eda1fb4f2c8c1869e5a94e5460cd298",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00068",
+          "source_pages": [
+            7
+          ],
+          "authoritative_fact_text_sha256": "669dad623c3f03c1eb82c21b07ea1b571dda32bc95d4eef9a77fff15a1f48953"
+        }
+      ],
+      "annotation_note": "出願資格（9）に必要な『所定の単位を優れた成績で修得した』との本学認定が公式に確認されたかだけを示します。申請者の自己申告から推定せず、個別資格審査全体の承認や合否は示しません。"
     }
   ],
   "precedence_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-precedence-v3",
+    "policy_id": "isct-master-reviewed-precedence-v4",
     "subjects": [
       {
         "rule_id": "isct-master-direct-path-1-university-apr-completed",
@@ -3462,19 +5112,131 @@
       {
         "rule_id": "isct-master-individual-review-age-22-criterion",
         "subject_key": "eligibility.reviewed.isct-master-individual-review-age-22-criterion"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-designated-foreign-15-year-in-japan-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-designated-foreign-15-year-in-japan-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-designated-foreign-15-year-in-japan-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-foreign-15-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-foreign-15-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-foreign-15-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-foreign-15-year-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-university-three-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-university-three-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-candidate-university-three-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-candidate-university-three-year-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-1-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-1-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-1-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-1-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-2-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-2-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-2-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-2-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-3-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-3-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-isct-early-entry-requirement-3-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-isct-early-entry-requirement-3-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-redirect-to-path-1-apr-completed",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-redirect-to-path-1-apr-completed"
+      },
+      {
+        "rule_id": "isct-master-path-9-redirect-to-path-1-apr-expected",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-redirect-to-path-1-apr-expected"
+      },
+      {
+        "rule_id": "isct-master-path-9-redirect-to-path-1-sep-completed",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-redirect-to-path-1-sep-completed"
+      },
+      {
+        "rule_id": "isct-master-path-9-redirect-to-path-1-sep-expected",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-redirect-to-path-1-sep-expected"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-designated-foreign-15-year-in-japan-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-designated-foreign-15-year-in-japan-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-designated-foreign-15-year-in-japan-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-designated-foreign-15-year-in-japan-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-foreign-15-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-foreign-15-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-foreign-15-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-foreign-15-year-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-university-three-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-university-three-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-review-process-university-three-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-review-process-university-three-year-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-designated-foreign-15-year-in-japan-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-foreign-15-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-foreign-15-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-foreign-15-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-foreign-15-year-sep"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-university-three-year-apr",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-university-three-year-apr"
+      },
+      {
+        "rule_id": "isct-master-path-9-school-recognition-university-three-year-sep",
+        "subject_key": "eligibility.reviewed.isct-master-path-9-school-recognition-university-three-year-sep"
       }
     ],
     "override_edges": []
   },
   "interaction_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-interactions-v3",
+    "policy_id": "isct-master-reviewed-interactions-v4",
     "interactions": []
   },
   "covered_categories": [
     "eligibility"
   ],
   "coverage_status": "partial_reviewed_rules",
-  "reviewed_coverage_statement": "Covers reviewed atomic conditions for direct education paths (1)-(8), including only the completion cutoffs and contact actions explicitly supported by the fixed official PDF, plus the existing named age criterion.",
-  "limitation_statement": "Uses exactly one academic credential; official recognition or designation must be supplied as confirmed evidence. It does not cover individual review paths (9)-(11) as a whole, school final verification, overall eligibility, admission, or recommendations."
+  "reviewed_coverage_statement": "Covers reviewed atomic conditions for education paths (1)-(9), including path (9) candidate bases, school recognition, Science Tokyo early-entry requirements, and the shared individual-review procedure supported by the fixed official PDF.",
+  "limitation_statement": "Uses exactly one academic credential and never treats applicant claims as school approval. External-university equivalence and final individual review remain official decisions. It does not cover paths (10)-(11), general application dates, language scores, complete materials, program scope, overall eligibility, admission, or recommendations."
 }
