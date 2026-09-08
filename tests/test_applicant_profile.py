@@ -59,6 +59,7 @@ def _profile_payload() -> dict[str, object]:
                 "program_duration_years": 4,
                 "institution_recognition_status": "officially_confirmed",
                 "program_designation_status": None,
+                "completion_timing_verification_status": "applicant_claimed",
                 "person_designation_status": None,
             }
         ],
@@ -129,6 +130,10 @@ def test_full_known_profile_round_trips_as_canonical_json() -> None:
     assert (
         profile.academic_credentials[0].institution_recognition_status
         is OfficialVerificationStatus.OFFICIALLY_CONFIRMED
+    )
+    assert (
+        profile.academic_credentials[0].completion_timing_verification_status
+        is OfficialVerificationStatus.APPLICANT_CLAIMED
     )
 
 

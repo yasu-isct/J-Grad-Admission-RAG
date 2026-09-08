@@ -87,6 +87,7 @@ def _special_credential(
     duration: int | None = None,
     institution_status: str | None = None,
     program_status: str | None = None,
+    completion_timing_status: str | None = None,
     person_status: str | None = None,
 ) -> dict[str, Any]:
     credential = _credential(
@@ -102,6 +103,7 @@ def _special_credential(
         program_duration_years=duration,
         institution_recognition_status=institution_status,
         program_designation_status=program_status,
+        completion_timing_verification_status=completion_timing_status,
         person_designation_status=person_status,
     )
     return credential
@@ -231,6 +233,7 @@ def test_path7_has_no_invented_date_predicate(rule01b_client) -> None:
         completion_date=None,
         duration=4,
         program_status=None,
+        completion_timing_status="officially_confirmed",
     )
     missing = _report(client, document_id, _profile(credential), "rule01b-path7-missing")
     assert _statuses(missing)[rule_id] == "needs_information"
@@ -240,6 +243,33 @@ def test_path7_has_no_invented_date_predicate(rule01b_client) -> None:
     rule = next(item for item in confirmed["source_plan"]["rules"] if item["rule_id"] == rule_id)
     assert all("date" not in item["field_path"] for item in rule["predicates"])
     assert "3月31日" in rule["annotation_note"]
+
+
+def test_path7_requires_official_completion_timing_verification(rule01b_client) -> None:
+    client, document_id = rule01b_client
+    rule_id = "isct-master-direct-path-7-designated_vocational-apr-expected"
+    credential = _special_credential(
+        "designated_specialized_training_college",
+        country="JP",
+        state="expected",
+        completion_date=None,
+        duration=4,
+        program_status="officially_confirmed",
+        completion_timing_status=None,
+    )
+    missing = _report(client, document_id, _profile(credential), "rule01b-path7-timing-missing")
+    assert _statuses(missing)[rule_id] == "needs_information"
+    assert _missing(missing, rule_id) == {
+        "academic_credentials.first.completion_timing_verification_status"
+    }
+
+    credential["completion_timing_verification_status"] = "applicant_claimed"
+    claimed = _report(client, document_id, _profile(credential), "rule01b-path7-timing-claimed")
+    assert _statuses(claimed)[rule_id] == "not_applicable"
+
+    credential["completion_timing_verification_status"] = "officially_confirmed"
+    confirmed = _report(client, document_id, _profile(credential), "rule01b-path7-timing-confirmed")
+    assert _statuses(confirmed)[rule_id] == "confirmed"
 
 
 def test_path8_requires_official_person_designation_only(rule01b_client) -> None:

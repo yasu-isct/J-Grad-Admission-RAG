@@ -2829,6 +2829,11 @@
           "expected_value": "officially_confirmed"
         },
         {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
           "field_path": "academic_credentials.first.completion_state",
           "operator": "equals",
           "expected_value": "completed"
@@ -2871,7 +2876,7 @@
           "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
         }
       ],
-      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程に関する審査済み原子条件だけを示します。募集要項本文にこの経路固有の3月31日又は9月27日の条件はないため、日付判定は行いません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
     },
     {
       "schema_version": "1.0",
@@ -2909,6 +2914,11 @@
           "expected_value": "officially_confirmed"
         },
         {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
           "field_path": "academic_credentials.first.completion_state",
           "operator": "equals",
           "expected_value": "expected"
@@ -2951,7 +2961,7 @@
           "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
         }
       ],
-      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程に関する審査済み原子条件だけを示します。募集要項本文にこの経路固有の3月31日又は9月27日の条件はないため、日付判定は行いません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
     },
     {
       "schema_version": "1.0",
@@ -2985,6 +2995,11 @@
         },
         {
           "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
           "operator": "equals",
           "expected_value": "officially_confirmed"
         },
@@ -3031,7 +3046,7 @@
           "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
         }
       ],
-      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程に関する審査済み原子条件だけを示します。募集要項本文にこの経路固有の3月31日又は9月27日の条件はないため、日付判定は行いません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
     },
     {
       "schema_version": "1.0",
@@ -3065,6 +3080,11 @@
         },
         {
           "field_path": "academic_credentials.first.program_designation_status",
+          "operator": "equals",
+          "expected_value": "officially_confirmed"
+        },
+        {
+          "field_path": "academic_credentials.first.completion_timing_verification_status",
           "operator": "equals",
           "expected_value": "officially_confirmed"
         },
@@ -3111,7 +3131,7 @@
           "authoritative_fact_text_sha256": "acd6ba3c95bd3c09ba777bbe8c630295b7be0e191d169d512622d343f45d016e"
         }
       ],
-      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程に関する審査済み原子条件だけを示します。募集要項本文にこの経路固有の3月31日又は9月27日の条件はないため、日付判定は行いません。学校による最終確認、総合的な出願資格又は合否は示しません。"
+      "annotation_note": "この判定は、出願資格（7）の4年以上の指定専修学校専門課程について、課程指定と修了時点が文部科学大臣の定める基準に照らして公的資料で確認済みである場合の審査済み原子条件だけを示します。募集要項本文だけから具体的な基準日を設定せず、3月31日又は9月27日の条件も適用しません。学校による最終確認、総合的な出願資格又は合否は示しません。"
     },
     {
       "schema_version": "1.0",

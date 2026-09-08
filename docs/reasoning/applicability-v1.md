@@ -126,8 +126,9 @@ RULE-01B extends the reviewed direct-path set through (8). Paths (4)-(8) use exp
 bases and, where the guideline requires them, Japan-coursework, minimum-duration, or official
 recognition/designation predicates. Path (6) retains the pre-application email action. The special
 September 28-30 notice applies only to paths (1)-(6); paths (7) and (8) do not inherit it. Path (7)
-does not invent a completion cutoff, and path (8) confirms only from official person-designation
-evidence. Unknown verification produces `needs_information`.
+does not invent a completion cutoff: it separately requires official confirmation that the
+completion timing satisfies the ministerial effective-date condition. Path (8) confirms only from
+official person-designation evidence. Unknown verification produces `needs_information`.
 
 ## Deliberate Limits
 

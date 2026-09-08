@@ -190,6 +190,10 @@ _FIELD_SPECS = {
     "academic_credentials.first.program_designation_status": _FieldSpec(
         "string", ("academic_credentials", "first", "program_designation_status")
     ),
+    "academic_credentials.first.completion_timing_verification_status": _FieldSpec(
+        "string",
+        ("academic_credentials", "first", "completion_timing_verification_status"),
+    ),
     "academic_credentials.first.person_designation_status": _FieldSpec(
         "string", ("academic_credentials", "first", "person_designation_status")
     ),

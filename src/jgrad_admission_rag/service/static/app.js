@@ -306,6 +306,9 @@ function academicCredentials() {
     program_duration_years: nullableInteger("program-duration-years"),
     institution_recognition_status: nullableText("institution-recognition-status"),
     program_designation_status: nullableText("program-designation-status"),
+    completion_timing_verification_status: nullableText(
+      "completion-timing-verification-status"
+    ),
     person_designation_status: nullableText("person-designation-status")
   };
   return Object.values(credential).every((value) => value === null) ? null : [credential];

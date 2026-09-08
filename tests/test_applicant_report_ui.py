@@ -34,6 +34,7 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "program-duration-years",
         "institution-recognition-status",
         "program-designation-status",
+        "completion-timing-verification-status",
         "person-designation-status",
         "age-at-enrollment",
         "professional-months",
@@ -65,6 +66,8 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
         'institution_recognition_status: nullableText("institution-recognition-status")'
         in javascript
     )
+    assert "completion_timing_verification_status: nullableText(" in javascript
+    assert '"completion-timing-verification-status"' in javascript
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

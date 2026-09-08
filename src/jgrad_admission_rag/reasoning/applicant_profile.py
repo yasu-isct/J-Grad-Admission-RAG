@@ -181,6 +181,7 @@ class AcademicCredential(ApplicantProfileModel):
     program_duration_years: StrictInt | None = None
     institution_recognition_status: OfficialVerificationStatus | None = None
     program_designation_status: OfficialVerificationStatus | None = None
+    completion_timing_verification_status: OfficialVerificationStatus | None = None
     person_designation_status: OfficialVerificationStatus | None = None
 
     @field_validator("institution_country_code")

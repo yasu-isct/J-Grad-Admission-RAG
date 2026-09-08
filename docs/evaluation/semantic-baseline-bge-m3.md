@@ -150,7 +150,7 @@ set. No Python source file changed in RET-08, so changed-file formatting had no 
 | Check | Result |
 | --- | --- |
 | BGE-M3 index build plus three offline evaluations | 316 vectors; all three reports byte-identical |
-| `pytest -m "not model_integration" -q` | 1,179 passed, 16 skipped, 1 deselected |
+| `pytest -m "not model_integration" -q` | 1,180 passed, 16 skipped, 1 deselected |
 | Semantic gate and CLI focused tests | 36 passed, 1 skipped |
 | Chromium scenarios 1, 3, 4, 5, and 6 | passed at 1,440 px and 390 px; no horizontal overflow |
 | `ruff check . --no-cache` | passed |

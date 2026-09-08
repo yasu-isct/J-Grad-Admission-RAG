@@ -44,9 +44,11 @@ evaluate exactly one supplied credential. If a profile contains multiple credent
 return `needs_information` with `multiple_academic_credentials` instead of selecting one silently.
 
 RULE-01B adds nullable `coursework_in_japan`, `program_duration_years`, and separate institution,
-program, and person designation statuses. Each status is tri-state: applicant-claimed,
-officially-confirmed, or not-confirmed. Missing official confirmation remains unknown; an applicant
-claim is never promoted to official evidence.
+program, completion-timing, and person designation statuses. Each status is tri-state:
+applicant-claimed, officially-confirmed, or not-confirmed. The completion-timing status records
+whether a path-(7) completion point has been checked against the ministerial effective-date rule;
+it does not store or infer that date. Missing official confirmation remains unknown, and an
+applicant claim is never promoted to official evidence.
 
 ## Safe Serialization
 

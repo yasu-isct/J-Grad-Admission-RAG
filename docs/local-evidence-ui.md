@@ -34,9 +34,12 @@ rules, rebuild traces, or create citations. The UI does not alter selection, ran
 lifecycle, or corpus state.
 
 For reviewed paths (4)-(8), the same credential row also exposes Japan-coursework, program duration,
-and institution/program/person verification controls. Their Japanese options preserve the API's
-three states: applicant claim, official confirmation, and explicit non-confirmation. Leaving a
-control at `不明` sends `null`, so the server can return an exact missing-information request.
+and institution/program/completion-timing/person verification controls. The completion-timing
+control means that path (7)'s completion point has been checked against the ministerial effective-
+date condition; it does not ask the browser to calculate a date. Their Japanese options preserve
+the API's three states: applicant claim, official confirmation, and explicit non-confirmation.
+Leaving a control at `不明` sends `null`, so the server can return an exact missing-information
+request.
 
 ## Configuration
 
