@@ -507,6 +507,23 @@ def test_global_preapplication_sections_override_incidental_department_text(
     assert infer_scope(item) == ("global", [], None, 0.7)
 
 
+def test_application_procedure_parent_does_not_override_department_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=105,
+        pdf_name="sample.pdf",
+        pages=[11],
+        title="（３）出願書類",
+        text="数学系は英語の筆答試験を行う",
+        section_path=["４．出願手続", "（３）出願書類"],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="数学系は英語の筆答試験を行う",
+    )
+
+    assert infer_scope(item) == ("department", ["数学系"], "理学院", 0.75)
+
+
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:
     chunk = chunk_pages(
         [SourcePage(page_number=7, text="3. Eligibility\nrule")],

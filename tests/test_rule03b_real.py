@@ -114,10 +114,6 @@ def test_real_preapplication_facts_are_global_without_boundary_changes() -> None
         "fact:00029": 4,
         "fact:00030": 4,
         "fact:00031": 4,
-        "fact:00100": 9,
-        "fact:00102": 9,
-        "fact:00103": 10,
-        "fact:00104": 10,
         "fact:00106": 11,
     }
     assert len(facts) == 318
@@ -127,6 +123,8 @@ def test_real_preapplication_facts_are_global_without_boundary_changes() -> None
         assert facts[fact_id].scope_targets == []
     assert "数学系" in facts["fact:00106"].text
     assert facts["fact:00106"].section_path[-1] == "【外国籍の志願者のみ提出する書類】"
+    assert facts["fact:00105"].scope_type == "department"
+    assert facts["fact:00105"].scope_targets == ["数学系"]
 
 
 def test_special_accommodation_has_purpose_specific_missing_contact(rule03b_client) -> None:
@@ -196,6 +194,54 @@ def test_foreign_conditions_are_independent_and_september_only(rule03b_client) -
     assert _statuses(april)["isct-master-foreign-sep-resides-in-japan"] == "not_applicable"
 
 
+def test_foreign_september_unknown_expiry_is_precise(rule03b_client) -> None:
+    client, document_id = rule03b_client
+    report = _report(
+        client,
+        document_id,
+        _pre(
+            year=2026,
+            month=9,
+            residence="JP",
+            foreign_national_rule_applies=True,
+            residence_status_allows_long_term_stay=True,
+        ),
+        "foreign-unknown-expiry",
+    )
+    rule_id = "isct-master-foreign-sep-residence-valid-through-boundary"
+    assert _statuses(report)[rule_id] == "needs_information"
+    assert _missing(report, rule_id) == {"preapplication_actions.residence_status_valid_until"}
+
+
+def test_non_foreign_applicant_does_not_trigger_september_residence_rules(
+    rule03b_client,
+) -> None:
+    client, document_id = rule03b_client
+    report = _report(
+        client,
+        document_id,
+        _pre(
+            year=2026,
+            month=9,
+            residence="JP",
+            foreign_national_rule_applies=False,
+            residence_status_valid_until="2026-09-28",
+            residence_status_allows_long_term_stay=True,
+            residence_status_contacted_admissions=True,
+        ),
+        "not-foreign",
+    )
+    statuses = _statuses(report)
+    for rule_id in (
+        "isct-master-foreign-sep-resides-in-japan",
+        "isct-master-foreign-sep-long-term-residence-status",
+        "isct-master-foreign-sep-residence-valid-through-boundary",
+        "isct-master-foreign-sep-residence-contact-window",
+        "isct-master-foreign-sep-residence-contact-completed",
+    ):
+        assert statuses[rule_id] == "not_applicable"
+
+
 def test_contact_purposes_do_not_substitute(rule03b_client) -> None:
     client, document_id = rule03b_client
     report = _report(
@@ -220,6 +266,37 @@ def test_contact_purposes_do_not_substitute(rule03b_client) -> None:
     assert _missing(report, disaster) == {
         "preapplication_actions.disaster_fee_consulted_admissions"
     }
+
+
+def test_needed_visa_with_unknown_consultation_is_precise(rule03b_client) -> None:
+    client, document_id = rule03b_client
+    report = _report(
+        client,
+        document_id,
+        _pre(visa_arrangements_needed=True),
+        "visa-consultation-unknown",
+    )
+    rule_id = "isct-master-visa-timing-consultation-apr"
+    assert _statuses(report)[rule_id] == "needs_information"
+    assert _missing(report, rule_id) == {"preapplication_actions.visa_timing_consulted_advisor"}
+
+
+@pytest.mark.parametrize("reason", ["retention_expired", "institution_closed", "disaster"])
+def test_each_reviewed_transcript_reason_triggers_its_own_rule(rule03b_client, reason) -> None:
+    client, document_id = rule03b_client
+    report = _report(
+        client,
+        document_id,
+        _pre(
+            transcript_unavailable_reason=reason,
+            transcript_unavailability_consulted_admissions=True,
+        ),
+        f"transcript-{reason}",
+    )
+    statuses = _statuses(report)
+    assert statuses[f"isct-master-transcript-unavailable-{reason}-apr"] == "confirmed"
+    for other in {"retention_expired", "institution_closed", "disaster"} - {reason}:
+        assert statuses[f"isct-master-transcript-unavailable-{other}-apr"] == "not_applicable"
 
 
 @pytest.mark.parametrize("scholarship", ["mext", "japan_korea_joint", "foreign_government"])
@@ -259,6 +336,32 @@ def test_scholarship_may_28_is_late_and_unknown_date_is_missing(rule03b_client) 
     unknown = _report(client, document_id, _pre(scholarship_status="mext"), "scholarship-unknown")
     assert _statuses(unknown)[rule_id] == "needs_information"
     assert _missing(unknown, rule_id) == {"preapplication_actions.scholarship_copy_emailed_date"}
+
+
+@pytest.mark.parametrize("scholarship", ["none", None])
+def test_no_or_unknown_scholarship_never_confirms_special_procedure(
+    rule03b_client, scholarship
+) -> None:
+    client, document_id = rule03b_client
+    facts = {} if scholarship is None else {"scholarship_status": scholarship}
+    report = _report(client, document_id, _pre(**facts), f"scholarship-safe-{scholarship}")
+    statuses = _statuses(report)
+    relevant = {
+        rule_id: status
+        for rule_id, status in statuses.items()
+        if "scholarship-copy-deadline" in rule_id or "scholarship-method-received" in rule_id
+    }
+    assert relevant
+    assert "confirmed" not in relevant.values()
+    if scholarship == "none":
+        assert set(relevant.values()) == {"not_applicable"}
+    else:
+        assert {status for rule_id, status in relevant.items() if rule_id.endswith("-apr")} == {
+            "needs_information"
+        }
+        assert {status for rule_id, status in relevant.items() if rule_id.endswith("-sep")} == {
+            "not_applicable"
+        }
 
 
 def test_conflicting_plural_scholarship_dates_are_rejected(rule03b_client) -> None:

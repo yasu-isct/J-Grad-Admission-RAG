@@ -196,7 +196,7 @@ def test_gate_modules_do_not_import_embedding_runtime() -> None:
         ("recall_at_3", 0.7719187675070027),
         ("recall_at_5", 0.878781512605042),
         ("recall_at_10", 0.9395658263305322),
-        ("mrr", 0.965686274509804),
+        ("mrr", 0.9607843137254901),
     ),
 )
 def test_global_floors_use_unrounded_exact_comparisons(field: str, observed: float) -> None:
