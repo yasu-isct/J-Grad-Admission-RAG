@@ -89,6 +89,8 @@ def _missing(report: dict[str, Any], rule_id: str) -> set[str]:
 
 
 def test_real_application_facts_are_global_complete_and_on_page_9() -> None:
+    if not PDF.is_file():
+        pytest.skip("real PDF fixture unavailable")
     kb = build_document_kb(PDF, load_document_identity(IDENTITY))
     facts = {fact.fact_id: fact for fact in kb.facts}
     for fact_id in ("fact:00099", "fact:00100", "fact:00101", "fact:00102"):

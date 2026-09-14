@@ -41,7 +41,7 @@ def _sha256(raw_bytes: bytes) -> str:
 
 
 def _report_bytes() -> bytes:
-    return REPORT_PATH.read_bytes()
+    return REPORT_PATH.read_bytes().replace(b"\r\n", b"\n")
 
 
 def _policy():

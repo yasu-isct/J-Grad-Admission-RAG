@@ -32,7 +32,7 @@ def _manifest() -> bytes:
     return canonical_semantic_gate_manifest_bytes(
         SemanticGateManifest(
             policy_sha256=hashlib.sha256(POLICY.read_bytes()).hexdigest(),
-            report_sha256=hashlib.sha256(REPORT.read_bytes()).hexdigest(),
+            report_sha256=hashlib.sha256(REPORT.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
             implementation_globs=GLOBS,
             implementation_paths=paths,
             implementation_sha256=implementation_sha256,
@@ -59,6 +59,21 @@ def test_cli_emits_a_canonical_passing_result(tmp_path: Path, capsys) -> None:
 
     with pytest.raises(SystemExit) as captured_exit:
         cli.main(_args(manifest))
+
+    assert captured_exit.value.code == 0
+    assert capsys.readouterr().err == ""
+
+
+def test_cli_treats_crlf_and_lf_report_bytes_as_the_same_baseline(tmp_path: Path, capsys) -> None:
+    manifest = tmp_path / "manifest.json"
+    report = tmp_path / "report.json"
+    manifest.write_bytes(_manifest())
+    report.write_bytes(REPORT.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))
+    args = _args(manifest)
+    args[args.index(str(REPORT))] = str(report)
+
+    with pytest.raises(SystemExit) as captured_exit:
+        cli.main(args)
 
     assert captured_exit.value.code == 0
     assert capsys.readouterr().err == ""

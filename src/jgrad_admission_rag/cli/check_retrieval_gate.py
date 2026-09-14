@@ -91,7 +91,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             policy,
             manifest,
             root,
-            report_sha256=_sha256(report_bytes),
+            report_sha256=_portable_text_sha256(report_bytes),
             policy_sha256=_sha256(policy_bytes),
             benchmark_sha256=_sha256(benchmark_bytes),
         )
@@ -107,6 +107,10 @@ def _sha256(raw_bytes: bytes) -> str:
     import hashlib
 
     return hashlib.sha256(raw_bytes).hexdigest()
+
+
+def _portable_text_sha256(raw_bytes: bytes) -> str:
+    return _sha256(raw_bytes.replace(b"\r\n", b"\n"))
 
 
 if __name__ == "__main__":
