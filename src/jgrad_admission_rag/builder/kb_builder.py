@@ -107,6 +107,17 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
         return "global", [], None, 0.7
 
+    if item.section_path and item.section_path[-1].startswith(
+        (
+            "（３）受験上の特別な配慮が必要な場合の対応",
+            "（６）外国籍および海外在住の志願者への注意",
+            "（１）出願時に日本に在住していること",
+            "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること",
+            "【外国籍の志願者のみ提出する書類】",
+        )
+    ):
+        return "global", [], None, 0.7
+
     matched_departments = [
         department
         for departments in COLLEGE_DEPARTMENTS.values()

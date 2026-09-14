@@ -362,7 +362,7 @@ function applicantProfile() {
     },
     citizenship_and_residence: {
       citizenship_country_codes: null,
-      current_residence_country_code: null,
+      current_residence_country_code: nullableText("current-residence-country"),
       residence_status_category: null
     },
     academic_credentials: academicCredentials(),
@@ -379,6 +379,23 @@ function applicantProfile() {
       materials_arrival_date: nullableText("materials-arrival-date"),
       materials_dispatched_date: nullableText("materials-dispatched-date"),
       online_steps_completed: nullableBoolean("online-steps-completed")
+    },
+    preapplication_actions: {
+      special_accommodation_needed: nullableBoolean("special-accommodation-needed"),
+      special_accommodation_contacted_admissions: nullableBoolean("special-accommodation-contacted"),
+      foreign_national_rule_applies: nullableBoolean("foreign-national-rule-applies"),
+      residence_status_valid_until: nullableText("residence-status-valid-until"),
+      residence_status_allows_long_term_stay: nullableBoolean("long-term-stay-allowed"),
+      residence_status_contacted_admissions: nullableBoolean("residence-status-contacted"),
+      visa_arrangements_needed: nullableBoolean("visa-arrangements-needed"),
+      visa_timing_consulted_advisor: nullableBoolean("visa-advisor-consulted"),
+      transcript_unavailable_reason: nullableText("transcript-unavailable-reason"),
+      transcript_unavailability_consulted_admissions: nullableBoolean("transcript-contacted"),
+      disaster_fee_consultation_needed: nullableBoolean("disaster-fee-consultation-needed"),
+      disaster_fee_consulted_admissions: nullableBoolean("disaster-fee-contacted"),
+      scholarship_status: nullableText("scholarship-status"),
+      scholarship_copy_emailed_date: nullableText("scholarship-copy-emailed-date"),
+      scholarship_application_method_received: nullableBoolean("scholarship-method-received")
     },
     language_test_results: null
   };

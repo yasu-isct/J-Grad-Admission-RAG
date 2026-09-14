@@ -159,6 +159,29 @@
                 </div>
               </fieldset>
 
+              <fieldset>
+                <legend>条件に応じた出願前の確認</legend>
+                <p class="field-detail">連絡先ごとに目的を区別します。ある目的で連絡済みでも、別の目的の連絡済みとは扱いません。</p>
+                <div class="form-grid">
+                  <div><label for="special-accommodation-needed">受験上の特別な配慮が必要か</label><select id="special-accommodation-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="special-accommodation-contacted">特別配慮について入試課へ連絡したか</label><select id="special-accommodation-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="foreign-national-rule-applies">外国籍志願者の注意事項の対象か</label><select id="foreign-national-rule-applies"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="current-residence-country">出願時の居住国コード</label><input id="current-residence-country" maxlength="2" placeholder="JP" autocomplete="country"></div>
+                  <div><label for="residence-status-valid-until">在留資格の有効期限</label><input id="residence-status-valid-until" type="date"></div>
+                  <div><label for="long-term-stay-allowed">長期滞在が可能な在留資格か</label><select id="long-term-stay-allowed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="residence-status-contacted">在留資格について入試課へ連絡したか</label><select id="residence-status-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="visa-arrangements-needed">COE・ビザの準備が必要か</label><select id="visa-arrangements-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="visa-advisor-consulted">ビザ所要時間を志望指導教員へ相談したか</label><select id="visa-advisor-consulted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="transcript-unavailable-reason">成績証明書を発行できない理由</label><select id="transcript-unavailable-reason"><option value="">不明</option><option value="none">発行できる</option><option value="retention_expired">保存期間経過</option><option value="institution_closed">学校閉鎖</option><option value="disaster">被災</option><option value="other">その他</option></select></div>
+                  <div><label for="transcript-contacted">証明書について入試課へ相談したか</label><select id="transcript-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="disaster-fee-consultation-needed">被災による検定料相談が必要か</label><select id="disaster-fee-consultation-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="disaster-fee-contacted">被災検定料について入試課へ相談したか</label><select id="disaster-fee-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="scholarship-status">奨学金の区分</label><select id="scholarship-status"><option value="">不明</option><option value="none">いずれでもない</option><option value="mext">文部科学省国費</option><option value="japan_korea_joint">日韓共同理工系</option><option value="foreign_government">外国政府奨学金</option></select></div>
+                  <div><label for="scholarship-copy-emailed-date">証明書の写しをメール提出した日</label><input id="scholarship-copy-emailed-date" type="date"></div>
+                  <div><label for="scholarship-method-received">入試課から出願方法の案内を受けたか</label><select id="scholarship-method-received"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                </div>
+              </fieldset>
+
               <div class="actions">
                 <button id="report-submit" type="submit" disabled>レポートを作成</button>
                 <button id="report-retry" class="secondary" type="button" hidden>再試行</button>

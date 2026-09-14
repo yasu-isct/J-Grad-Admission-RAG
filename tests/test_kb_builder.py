@@ -472,6 +472,58 @@ def test_common_application_procedure_section_infers_global_scope() -> None:
     assert infer_scope(item) == ("global", [], None, 0.7)
 
 
+@pytest.mark.parametrize(
+    "section_path,text",
+    [
+        (["stale heading", "（３）受験上の特別な配慮が必要な場合の対応"], "数学系"),
+        (["stale heading", "（６）外国籍および海外在住の志願者への注意"], "数学系"),
+        (["stale heading", "（１）出願時に日本に在住していること"], "数学系"),
+        (
+            [
+                "stale heading",
+                "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること",
+            ],
+            "数学系",
+        ),
+        (["４．出願手続", "【外国籍の志願者のみ提出する書類】"], "数学系"),
+    ],
+)
+def test_global_preapplication_sections_override_incidental_department_text(
+    section_path, text
+) -> None:
+    item = IndexedChunk(
+        chunk_id=106,
+        pdf_name="sample.pdf",
+        pages=[11],
+        title=section_path[-1],
+        text=text,
+        section_path=section_path,
+        category="general",
+        anchors=[],
+        references=[],
+        text_preview=text,
+    )
+
+    assert infer_scope(item) == ("global", [], None, 0.7)
+
+
+def test_application_procedure_parent_does_not_override_department_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=105,
+        pdf_name="sample.pdf",
+        pages=[11],
+        title="（３）出願書類",
+        text="数学系は英語の筆答試験を行う",
+        section_path=["４．出願手続", "（３）出願書類"],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="数学系は英語の筆答試験を行う",
+    )
+
+    assert infer_scope(item) == ("department", ["数学系"], "理学院", 0.75)
+
+
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:
     chunk = chunk_pages(
         [SourcePage(page_number=7, text="3. Eligibility\nrule")],

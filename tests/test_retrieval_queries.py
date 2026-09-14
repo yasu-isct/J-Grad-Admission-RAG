@@ -45,7 +45,7 @@ def test_v1_fixture_loads_with_frozen_coverage() -> None:
             "selection_exams": 6,
         },
         "by_style": {"exact_term": 7, "identifier": 6, "paraphrase": 21},
-        "by_scope": {"department": 25, "global": 24, "unknown": 56},
+        "by_scope": {"department": 24, "global": 31, "unknown": 50},
         "single_fact_queries": 5,
         "multi_fact_queries": 29,
         "single_clause_queries": 27,

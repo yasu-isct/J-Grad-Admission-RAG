@@ -579,6 +579,24 @@ def test_unknown_profile_fact_produces_needs_information_without_leaking_value()
     assert "24" not in canonical_applicability_decision_bytes(decision).decode()
 
 
+def test_missing_optional_nested_profile_section_is_reported_as_missing_information() -> None:
+    decision = evaluate_applicability(
+        _profile(),
+        _intent(),
+        _pack(),
+        _rule(
+            _predicate(
+                "application_submission.materials_arrival_date",
+                PredicateOperator.ON_OR_BEFORE,
+                "2026-06-10",
+            )
+        ),
+    )
+
+    assert decision.status is ApplicabilityStatus.NEEDS_INFORMATION
+    assert decision.missing_profile_fields == ("application_submission.materials_arrival_date",)
+
+
 def test_unicode_string_comparison_is_exact() -> None:
     predicate = _predicate(
         "target_application.application_route",

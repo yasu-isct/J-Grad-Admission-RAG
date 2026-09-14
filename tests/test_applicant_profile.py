@@ -25,8 +25,11 @@ from jgrad_admission_rag.reasoning import (
     LanguageResultStatus,
     LanguageTestResult,
     OfficialVerificationStatus,
+    PreapplicationActions,
     PriorEducationCategory,
+    ScholarshipStatus,
     TargetApplication,
+    TranscriptUnavailableReason,
     canonical_applicant_profile_bytes,
     load_applicant_profile,
     load_applicant_profile_bytes,
@@ -114,6 +117,7 @@ def _unknown_profile_payload() -> dict[str, object]:
         },
         "language_test_results": None,
         "application_submission": None,
+        "preapplication_actions": None,
     }
 
 
@@ -146,6 +150,54 @@ def test_all_unknown_fields_are_explicitly_null() -> None:
     profile = ApplicantProfile.model_validate(_unknown_profile_payload())
 
     assert profile.model_dump(mode="json") == _unknown_profile_payload()
+
+
+def test_preapplication_actions_are_typed_purpose_specific_and_optional() -> None:
+    payload = _unknown_profile_payload()
+    payload["preapplication_actions"] = {
+        "special_accommodation_needed": True,
+        "special_accommodation_contacted_admissions": None,
+        "foreign_national_rule_applies": True,
+        "residence_status_valid_until": "2026-09-28",
+        "residence_status_allows_long_term_stay": True,
+        "residence_status_contacted_admissions": None,
+        "visa_arrangements_needed": True,
+        "visa_timing_consulted_advisor": False,
+        "transcript_unavailable_reason": "institution_closed",
+        "transcript_unavailability_consulted_admissions": True,
+        "disaster_fee_consultation_needed": False,
+        "disaster_fee_consulted_admissions": None,
+        "scholarship_status": "mext",
+        "scholarship_copy_emailed_date": "2026-05-27",
+        "scholarship_application_method_received": False,
+    }
+
+    profile = ApplicantProfile.model_validate(payload)
+
+    assert isinstance(profile.preapplication_actions, PreapplicationActions)
+    assert profile.preapplication_actions.residence_status_valid_until == date(2026, 9, 28)
+    assert (
+        profile.preapplication_actions.transcript_unavailable_reason
+        is TranscriptUnavailableReason.INSTITUTION_CLOSED
+    )
+    assert profile.preapplication_actions.scholarship_status is ScholarshipStatus.MEXT
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("special_accommodation_needed", 1),
+        ("foreign_national_rule_applies", "true"),
+        ("scholarship_status", "unknown"),
+        ("transcript_unavailable_reason", "missing"),
+    ],
+)
+def test_preapplication_actions_reject_ambiguous_or_non_strict_values(field, value) -> None:
+    payload = _unknown_profile_payload()
+    payload["preapplication_actions"] = {field: value}
+
+    with pytest.raises(ValidationError):
+        ApplicantProfile.model_validate(payload)
 
 
 def test_rule02b_profile_fields_are_strict_and_typed() -> None:

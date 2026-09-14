@@ -1565,10 +1565,10 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
     assert loaded.vectors.shape == (318, 8)
     assert loaded.manifest.payloads_sha256 == (
-        "8c1f505c98ac67debf2916c602d2d668cbafdeda890048a722e964e112d74512"
+        "dbed4851deba4bf919831b6db62107f5f40dcc8e7eff9a8b84e768d75e6b1903"
     )
     assert loaded.manifest.vectors_sha256 == (
-        "19bcc1739fb48d0da51f5b5284733c240b5f7fa6e31088d7666baf87aaab07fe"
+        "74eb806f4e5205a269085c5e3f08a2da67fc0a5df7b01058753995fa25c18cb7"
     )
 
 
@@ -1629,14 +1629,14 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
         rel=0.0,
         abs=1e-7,
     )
-    assert [hit.row_index for hit in result.hits] == [228, 317, 55, 273, 18]
+    assert [hit.row_index for hit in result.hits] == [228, 317, 55, 273, 227]
     assert [hit.score for hit in result.hits] == pytest.approx(
         [
             0.9264391660690308,
             0.8517074584960938,
             0.8401667475700378,
             0.7611429691314697,
-            0.7224465608596802,
+            0.7182755470275879,
         ],
         rel=0.0,
         abs=1e-7,
@@ -1646,9 +1646,9 @@ def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
         "unknown",
         "department",
         "unknown",
-        "unknown",
+        "department",
     ]
-    assert [hit.source_pages for hit in result.hits] == [(44,), (85,), (6,), (76,), (3,)]
+    assert [hit.source_pages for hit in result.hits] == [(44,), (85,), (6,), (76,), (43,)]
     assert all(
         hit.unit_id == payload.unit_id
         and hit.fact_id == payload.fact_id
@@ -1921,9 +1921,9 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
         json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert characterization_sha256 == (
-        "fc6203fe7a8c6be613c77e9e972a2eb1ed8b0c6fff9cf49dfcf6aec8149526be"
+        "c167f1a910635c74bc9ede6d0f89ec2e4c9a4b4909780ea1c8fb4fe845268a57"
     )
-    assert aggregate_sha256 == ("7c2829ce8fb7fbd2f130c3c3a18beb4caeadc45e6645c4263d068dea3a59cd22")
+    assert aggregate_sha256 == ("6b5d080df3e9cbcbf387e6f7e88ad6a7feb1270a5542e0cfb82fbe19c8dbd105")
 
     first_query = benchmark.queries[0]
     search_cli.main(
@@ -1983,7 +1983,12 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "methods": 7,
         "periods": 9,
     }
-    assert scope_type_counts == {"college": 2, "department": 124, "global": 42, "unknown": 150}
+    assert scope_type_counts == {
+        "college": 2,
+        "department": 123,
+        "global": 51,
+        "unknown": 142,
+    }
     assert target_counts == {
         "システム制御系": 18,
         "化学系": 22,
@@ -1994,7 +1999,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "情報工学系": 14,
         "情報通信系": 10,
         "技術経営専門職学位課程": 13,
-        "数学系": 19,
+        "数学系": 18,
         "数理・計算科学系": 13,
         "材料系": 26,
         "機械系": 18,
@@ -2012,18 +2017,18 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "環境・社会理工学院": 2,
     }
     assert college_counts == {
-        "<none>": 194,
+        "<none>": 195,
         "工学院": 33,
         "情報理工学院": 6,
         "物質理工学院": 13,
-        "理学院": 41,
+        "理学院": 40,
         "環境・社会理工学院": 21,
         "生命理工学院": 10,
     }
 
     examples = (
         (MetadataFilter(fact_types=("english",)), 28),
-        (MetadataFilter(scope_types=("department",)), 124),
+        (MetadataFilter(scope_types=("department",)), 123),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
         (
@@ -2080,7 +2085,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
 
     hard_filter_examples = (
         (MetadataFilter(fact_types=("english",)), 28),
-        (MetadataFilter(scope_types=("department",)), 124),
+        (MetadataFilter(scope_types=("department",)), 123),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 6),
         (
@@ -2225,7 +2230,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("3a5e96a14f6d71700048051031a795956d1a5dd340c17dc6540921bb65735fdf")
+    assert outcome_sha256 == ("9228e3a807d418ce77f5a6187f58a299480f8085b5236bfdef3bcda735446fc9")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
@@ -2409,7 +2414,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "b733561431bbb33877865803cad317e425ccb9f09bab958888520f1fde6a8837"
+    assert aggregate_sha256 == "52e00a90163371d46212b9105b6329ded1f49f52342c7ee2baac1520bb042c75"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -2489,7 +2494,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "3dc4f23eba56a311327ed2a6754d1ee4000ea44d3ee5611b2e294953068485d8"
+        "1ffbaa62f83c9dfd1e41f546b02cad8ed319f0ec5942324b81bf0f608f312f64"
     )
 
     class RecordingProvider:

@@ -52,7 +52,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
