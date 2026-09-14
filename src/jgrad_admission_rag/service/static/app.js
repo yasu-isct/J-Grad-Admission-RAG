@@ -375,6 +375,11 @@ function applicantProfile() {
       individual_review_completed: nullableBoolean("review-completed"),
       age_at_eligibility_cutoff: nullableInteger("age-at-eligibility-cutoff")
     },
+    application_submission: {
+      materials_arrival_date: nullableText("materials-arrival-date"),
+      materials_dispatched_date: nullableText("materials-dispatched-date"),
+      online_steps_completed: nullableBoolean("online-steps-completed")
+    },
     language_test_results: null
   };
 }

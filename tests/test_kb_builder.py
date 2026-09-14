@@ -455,6 +455,23 @@ def test_path10_whole_rule_is_global_despite_mot_subclause() -> None:
     assert infer_scope(item) == ("global", [], None, 0.7)
 
 
+def test_common_application_procedure_section_infers_global_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=99,
+        pdf_name="sample.pdf",
+        pages=[9],
+        title="（１）出願期間",
+        text="2026年6月4日～6月10日（必着）",
+        section_path=["４．出願手続", "（１）出願期間"],
+        category="periods",
+        anchors=[],
+        references=[],
+        text_preview="2026年6月4日～6月10日（必着）",
+    )
+
+    assert infer_scope(item) == ("global", [], None, 0.7)
+
+
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:
     chunk = chunk_pages(
         [SourcePage(page_number=7, text="3. Eligibility\nrule")],

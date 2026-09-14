@@ -123,6 +123,15 @@ class _FieldSpec:
 
 
 _FIELD_SPECS = {
+    "application_submission.materials_arrival_date": _FieldSpec(
+        "date", ("application_submission", "materials_arrival_date")
+    ),
+    "application_submission.materials_dispatched_date": _FieldSpec(
+        "date", ("application_submission", "materials_dispatched_date")
+    ),
+    "application_submission.online_steps_completed": _FieldSpec(
+        "boolean", ("application_submission", "online_steps_completed")
+    ),
     "target_application.graduate_school_or_college": _FieldSpec(
         "string", ("target_application", "graduate_school_or_college")
     ),

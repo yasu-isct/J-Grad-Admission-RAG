@@ -5,7 +5,7 @@
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "expected_kb_schema_version": "0.6",
   "fact_content_sha256": "f62ee5e317b491385b221946e6a593cbc7e6e5089b1bd57dd13cdeab8cecc42b",
-  "fact_structure_sha256": "5dd62030775169980f01425e0bd412322905b5ced9045a020255db08fd58ef2e",
+  "fact_structure_sha256": "028183b1f2828b98d3c137cb5c026402f9bbcf0d8b46984da48658e02b95088e",
   "language": "ja",
   "annotation_policy_version": "1.0",
   "queries": [
@@ -44,7 +44,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -52,7 +52,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -60,7 +60,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -68,7 +68,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         }
       ],
@@ -92,7 +92,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -100,7 +100,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         }
       ],
@@ -124,7 +124,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -132,7 +132,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         }
       ],
@@ -635,7 +635,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -643,7 +643,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         }
       ],
@@ -667,7 +667,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -675,7 +675,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         }
       ],
@@ -1513,7 +1513,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -1521,7 +1521,7 @@
           "source_pages": [
             9
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {

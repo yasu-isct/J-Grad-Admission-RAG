@@ -1565,10 +1565,10 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
     assert loaded.vectors.shape == (318, 8)
     assert loaded.manifest.payloads_sha256 == (
-        "bce5182146e8f4b6e60a2452811fcd81b77ed10ea9f9e318e104a2956a4a016e"
+        "8c1f505c98ac67debf2916c602d2d668cbafdeda890048a722e964e112d74512"
     )
     assert loaded.manifest.vectors_sha256 == (
-        "5bba3a4b04986c81fa2a04eda51667132bd4afa2fcea0984ad341e5fa4da47bd"
+        "19bcc1739fb48d0da51f5b5284733c240b5f7fa6e31088d7666baf87aaab07fe"
     )
 
 
@@ -1921,9 +1921,9 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
         json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert characterization_sha256 == (
-        "69044cc007c5a26116d4ed32bfd103ea490bfc890cf3864519b611c9d3aa968a"
+        "fc6203fe7a8c6be613c77e9e972a2eb1ed8b0c6fff9cf49dfcf6aec8149526be"
     )
-    assert aggregate_sha256 == ("b55c34aadfb17597a9b6c86d8be7761a0e1e1d466858a1161004c8268197c387")
+    assert aggregate_sha256 == ("7c2829ce8fb7fbd2f130c3c3a18beb4caeadc45e6645c4263d068dea3a59cd22")
 
     first_query = benchmark.queries[0]
     search_cli.main(
@@ -1983,7 +1983,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "methods": 7,
         "periods": 9,
     }
-    assert scope_type_counts == {"college": 2, "department": 124, "global": 38, "unknown": 154}
+    assert scope_type_counts == {"college": 2, "department": 124, "global": 42, "unknown": 150}
     assert target_counts == {
         "システム制御系": 18,
         "化学系": 22,
@@ -2225,7 +2225,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("1d402fd38aba33b599eb602864f6d39a38368f27e4c6f3d80ed1d24504bc4c35")
+    assert outcome_sha256 == ("3a5e96a14f6d71700048051031a795956d1a5dd340c17dc6540921bb65735fdf")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
@@ -2409,7 +2409,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "80d9c606be4f34edfb4f1775123a2d23e99a8a3d1f6cbcae75cd8f01e181418d"
+    assert aggregate_sha256 == "b733561431bbb33877865803cad317e425ccb9f09bab958888520f1fde6a8837"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -2489,7 +2489,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "c56add9500706e22a43bdc2ac48705aeb5abd4e3cbc7e63fbb09040fb36bdfdb"
+        "3dc4f23eba56a311327ed2a6754d1ee4000ea44d3ee5611b2e294953068485d8"
     )
 
     class RecordingProvider:
