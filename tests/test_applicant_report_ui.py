@@ -60,6 +60,9 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "review-requested",
         "review-completed",
         "age-at-eligibility-cutoff",
+        "materials-arrival-date",
+        "materials-dispatched-date",
+        "online-steps-completed",
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
@@ -106,6 +109,9 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert '"post-university-research-months-at-eligibility-cutoff"' in javascript
     assert "graduate_equivalent_recognition_status: nullableText(" in javascript
     assert 'age_at_eligibility_cutoff: nullableInteger("age-at-eligibility-cutoff")' in javascript
+    assert 'materials_arrival_date: nullableText("materials-arrival-date")' in javascript
+    assert 'materials_dispatched_date: nullableText("materials-dispatched-date")' in javascript
+    assert 'online_steps_completed: nullableBoolean("online-steps-completed")' in javascript
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

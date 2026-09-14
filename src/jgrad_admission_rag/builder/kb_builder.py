@@ -125,7 +125,9 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     if matched_colleges:
         return "college", matched_colleges, None, 0.7
 
-    if item.section_path and item.section_path[0].startswith(("２．入学時期", "３．出願資格")):
+    if item.section_path and item.section_path[0].startswith(
+        ("２．入学時期", "３．出願資格", "４．出願手続")
+    ):
         return "global", [], None, 0.7
 
     if item.pages == [8] and PATH9_UNIVERSITY_REQUIREMENT_RE.match(item.text):

@@ -28,6 +28,7 @@ __all__ = [
     "APPLICANT_PROFILE_SCHEMA_VERSION",
     "SUPPORTED_APPLICANT_PROFILE_SCHEMA_VERSIONS",
     "AcademicCredential",
+    "ApplicationSubmission",
     "ApplicantProfile",
     "ApplicantProfileError",
     "CitizenshipAndResidence",
@@ -308,6 +309,14 @@ class EligibilityFacts(ApplicantProfileModel):
         return self
 
 
+class ApplicationSubmission(ApplicantProfileModel):
+    """Applicant-supplied progress facts; dispatch never implies arrival."""
+
+    materials_arrival_date: date | None = None
+    materials_dispatched_date: date | None = None
+    online_steps_completed: StrictBool | None = None
+
+
 class LanguageTestResult(ApplicantProfileModel):
     test_kind: str | None
     score: StrictInt | StrictFloat | str | None
@@ -357,6 +366,7 @@ class ApplicantProfile(ApplicantProfileModel):
     academic_credentials: tuple[AcademicCredential, ...] | None
     eligibility_facts: EligibilityFacts
     language_test_results: tuple[LanguageTestResult, ...] | None
+    application_submission: ApplicationSubmission | None = None
 
     @field_validator("schema_version")
     @classmethod

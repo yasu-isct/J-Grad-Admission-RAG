@@ -193,8 +193,8 @@ def test_gate_modules_do_not_import_embedding_runtime() -> None:
     ("field", "observed"),
     (
         ("recall_at_1", 0.4198879551820728),
-        ("recall_at_3", 0.7621148459383753),
-        ("recall_at_5", 0.8640756302521009),
+        ("recall_at_3", 0.7719187675070027),
+        ("recall_at_5", 0.878781512605042),
         ("recall_at_10", 0.9395658263305322),
         ("mrr", 0.9607843137254901),
     ),

@@ -5,6 +5,7 @@ import inspect
 import json
 import math
 import os
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -13,6 +14,7 @@ from pydantic import ValidationError
 from jgrad_admission_rag.reasoning import (
     APPLICANT_PROFILE_SCHEMA_VERSION,
     AcademicCredential,
+    ApplicationSubmission,
     ApplicantProfile,
     ApplicantProfileError,
     CredentialBasis,
@@ -111,6 +113,7 @@ def _unknown_profile_payload() -> dict[str, object]:
             "age_at_eligibility_cutoff": None,
         },
         "language_test_results": None,
+        "application_submission": None,
     }
 
 
@@ -165,6 +168,23 @@ def test_rule02b_profile_fields_are_strict_and_typed() -> None:
         is PriorEducationCategory.UNIVERSITY_WITHDRAWAL
     )
     assert profile.eligibility_facts.age_at_eligibility_cutoff == 22
+
+
+def test_application_submission_keeps_arrival_dispatch_and_online_steps_distinct() -> None:
+    payload = _profile_payload()
+    payload["application_submission"] = {
+        "materials_arrival_date": "2026-06-10",
+        "materials_dispatched_date": "2026-06-09",
+        "online_steps_completed": True,
+    }
+
+    profile = ApplicantProfile.model_validate(payload)
+
+    assert profile.application_submission == ApplicationSubmission(
+        materials_arrival_date=date(2026, 6, 10),
+        materials_dispatched_date=date(2026, 6, 9),
+        online_steps_completed=True,
+    )
 
 
 @pytest.mark.parametrize(

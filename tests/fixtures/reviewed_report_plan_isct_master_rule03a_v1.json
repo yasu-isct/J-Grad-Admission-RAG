@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "plan_id": "isct-master-reviewed-report-plan-v5",
+  "plan_id": "isct-master-reviewed-report-plan-v6",
   "document_identity": {
     "schema_version": "1.0",
     "document_id": "isct_2027_4_2026_9_master",
@@ -28,6 +28,106 @@
     "revision_date": null
   },
   "rules": [
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-application-window-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00099",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "5dbedff721e3b15fd729de9da78649db9b3e2db83a2c9b68f35d6fd6071dbe0a"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "出願情報登録は2026-06-01 09:00（日本時間）から可能です。出願期間は2026-06-04から06-10（必着）で、できるだけ06-04到着が推奨されています。登録の終了時刻は原文から推定しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-application-window-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00099",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "5dbedff721e3b15fd729de9da78649db9b3e2db83a2c9b68f35d6fd6071dbe0a"
+        },
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "出願情報登録は2026-06-01 09:00（日本時間）から可能です。出願期間は2026-06-04から06-10（必着）で、できるだけ06-04到着が推奨されています。登録の終了時刻は原文から推定しません。"
+    },
     {
       "schema_version": "1.0",
       "rule_id": "isct-master-direct-path-1-university-apr-completed",
@@ -3307,6 +3407,196 @@
         }
       ],
       "annotation_note": "Human-reviewed necessary-but-not-sufficient age criterion for applicants using the named individual eligibility review route. Confirmed means only that this atomic age criterion applies; it does not establish review approval or route eligibility."
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-materials-arrival-window-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "application_submission.materials_arrival_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-06-04"
+        },
+        {
+          "field_path": "application_submission.materials_arrival_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-06-10"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "出願書類の実際の到着日が主出願期間内かだけを確認します。発送日、学校による受理、出願完了、資格又は合否は確認しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-materials-arrival-window-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "application_submission.materials_arrival_date",
+          "operator": "on_or_after",
+          "expected_value": "2026-06-04"
+        },
+        {
+          "field_path": "application_submission.materials_arrival_date",
+          "operator": "on_or_before",
+          "expected_value": "2026-06-10"
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "出願書類の実際の到着日が主出願期間内かだけを確認します。発送日、学校による受理、出願完了、資格又は合否は確認しません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-online-steps-not-completion-apr",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2027
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 4
+        },
+        {
+          "field_path": "application_submission.online_steps_completed",
+          "operator": "equals",
+          "expected_value": true
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "オンライン登録・写真・検定料の手続完了だけでは出願完了ではありません。書類一式が期間内に到着しなければ受理されません。"
+    },
+    {
+      "schema_version": "1.0",
+      "rule_id": "isct-master-online-steps-not-completion-sep",
+      "mode": "all",
+      "predicates": [
+        {
+          "field_path": "target_application.requested_degree_level",
+          "operator": "equals",
+          "expected_value": "master"
+        },
+        {
+          "field_path": "target_application.intake_year",
+          "operator": "equals",
+          "expected_value": 2026
+        },
+        {
+          "field_path": "target_application.intake_month",
+          "operator": "equals",
+          "expected_value": 9
+        },
+        {
+          "field_path": "application_submission.online_steps_completed",
+          "operator": "equals",
+          "expected_value": true
+        }
+      ],
+      "scope": {
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      "evidence_bindings": [
+        {
+          "document_id": "isct_2027_4_2026_9_master",
+          "source_kb_sha256": "91089702b0071fc644aed46443006f09b63a5214fdf9d02cc7c95453f4fbb1f3",
+          "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+          "fact_id": "fact:00100",
+          "source_pages": [
+            9
+          ],
+          "authoritative_fact_text_sha256": "4b0d5dd579e94476210d044cb0e62d6b91e8ec7a067f5a9ad0d645eaaa7f2389"
+        }
+      ],
+      "annotation_note": "オンライン登録・写真・検定料の手続完了だけでは出願完了ではありません。書類一式が期間内に到着しなければ受理されません。"
     },
     {
       "schema_version": "1.0",
@@ -8161,8 +8451,16 @@
   ],
   "precedence_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-precedence-v5",
+    "policy_id": "isct-master-reviewed-precedence-v6",
     "subjects": [
+      {
+        "rule_id": "isct-master-application-window-apr",
+        "subject_key": "application_dates.reviewed.isct-master-application-window-apr"
+      },
+      {
+        "rule_id": "isct-master-application-window-sep",
+        "subject_key": "application_dates.reviewed.isct-master-application-window-sep"
+      },
       {
         "rule_id": "isct-master-direct-path-1-university-apr-completed",
         "subject_key": "eligibility.reviewed.isct-master-direct-path-1-university-apr-completed"
@@ -8310,6 +8608,22 @@
       {
         "rule_id": "isct-master-individual-review-age-22-criterion",
         "subject_key": "eligibility.reviewed.isct-master-individual-review-age-22-criterion"
+      },
+      {
+        "rule_id": "isct-master-materials-arrival-window-apr",
+        "subject_key": "application_dates.reviewed.isct-master-materials-arrival-window-apr"
+      },
+      {
+        "rule_id": "isct-master-materials-arrival-window-sep",
+        "subject_key": "application_dates.reviewed.isct-master-materials-arrival-window-sep"
+      },
+      {
+        "rule_id": "isct-master-online-steps-not-completion-apr",
+        "subject_key": "application_dates.reviewed.isct-master-online-steps-not-completion-apr"
+      },
+      {
+        "rule_id": "isct-master-online-steps-not-completion-sep",
+        "subject_key": "application_dates.reviewed.isct-master-online-steps-not-completion-sep"
       },
       {
         "rule_id": "isct-master-path-10-age-four_year_specialized_course-apr",
@@ -8652,13 +8966,14 @@
   },
   "interaction_policy": {
     "schema_version": "1.0",
-    "policy_id": "isct-master-reviewed-interactions-v5",
+    "policy_id": "isct-master-reviewed-interactions-v6",
     "interactions": []
   },
   "covered_categories": [
+    "application_dates",
     "eligibility"
   ],
   "coverage_status": "partial_reviewed_rules",
-  "reviewed_coverage_statement": "この計画は、固定した東京科学大学修士課程募集要項について、出願資格（1）から（11）の学歴・個別資格審査に関する原子条件と、出願資格（9）から（11）の共通審査手続を人工確認した範囲だけを扱います。",
-  "limitation_statement": "confirmedは入力値が人工確認済みの原子条件と一致したことだけを示し、学校による個別資格審査の承認、総合的な出願資格、合否又は合格可能性を示しません。審査の申請済み・完了だけから有利な正式認定を推定しません。通用の出願日程、語学、完全な提出書類・プログラム条件は未確認です。"
+  "reviewed_coverage_statement": "固定した募集要項の出願資格（1）から（11）と、2026-06-04から06-10までの全体共通主出願期間、登録開始及び書類必着条件を人工確認した範囲だけを扱います。",
+  "limitation_statement": "confirmedは人工確認済みの原子条件と入力値の一致だけを示し、学校による受理、出願全体の完了、出願資格、合否又は合格可能性を示しません。発送日は到着日として扱いません。条件性事前手続、語学、完全な提出書類とプログラム条件は未確認です。"
 }

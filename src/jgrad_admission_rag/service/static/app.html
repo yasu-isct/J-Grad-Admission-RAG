@@ -149,6 +149,16 @@
                 </div>
               </fieldset>
 
+              <fieldset>
+                <legend>出願手続の進捗</legend>
+                <p class="field-detail">発送日は到着日ではありません。不明な項目は空欄のままにしてください。</p>
+                <div class="form-grid">
+                  <div><label for="materials-arrival-date">出願書類が大学へ実際に到着した日</label><input id="materials-arrival-date" type="date"></div>
+                  <div><label for="materials-dispatched-date">出願書類を発送した日</label><input id="materials-dispatched-date" type="date"></div>
+                  <div><label for="online-steps-completed">出願情報・写真・検定料のオンライン手続</label><select id="online-steps-completed"><option value="">不明</option><option value="true">完了</option><option value="false">未完了</option></select></div>
+                </div>
+              </fieldset>
+
               <div class="actions">
                 <button id="report-submit" type="submit" disabled>レポートを作成</button>
                 <button id="report-retry" class="secondary" type="button" hidden>再試行</button>
