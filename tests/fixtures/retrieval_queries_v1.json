@@ -5,7 +5,7 @@
   "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
   "expected_kb_schema_version": "0.6",
   "fact_content_sha256": "f62ee5e317b491385b221946e6a593cbc7e6e5089b1bd57dd13cdeab8cecc42b",
-  "fact_structure_sha256": "028183b1f2828b98d3c137cb5c026402f9bbcf0d8b46984da48658e02b95088e",
+  "fact_structure_sha256": "a7b3a251310fc4538c1650bb567399177ce101f883bfdf7038a7c39620cc721b",
   "language": "ja",
   "annotation_policy_version": "1.0",
   "queries": [
@@ -262,7 +262,7 @@
           "source_pages": [
             3
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -270,7 +270,7 @@
           "source_pages": [
             3
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -305,7 +305,7 @@
           "source_pages": [
             4
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -313,7 +313,7 @@
           "source_pages": [
             4
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -321,7 +321,7 @@
           "source_pages": [
             4
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -329,7 +329,7 @@
           "source_pages": [
             4
           ],
-          "scope_type": "unknown",
+          "scope_type": "global",
           "scope_targets": []
         },
         {
@@ -401,28 +401,8 @@
           "source_pages": [
             6
           ],
-          "scope_type": "department",
-          "scope_targets": [
-            "数学系",
-            "物理学系",
-            "化学系",
-            "地球惑星科学系",
-            "機械系",
-            "システム制御系",
-            "電気電子系",
-            "情報通信系",
-            "経営工学系",
-            "材料系",
-            "応用化学系",
-            "数理・計算科学系",
-            "情報工学系",
-            "生命理工学系",
-            "建築学系",
-            "土木・環境工学系",
-            "融合理工学系",
-            "社会・人間科学系",
-            "技術経営専門職学位課程"
-          ]
+          "scope_type": "global",
+          "scope_targets": []
         }
       ],
       "annotation_note": "二つの入学時期選択肢と決定方法を示す同一条項の全抽出表現。",
@@ -703,20 +683,16 @@
           "source_pages": [
             11
           ],
-          "scope_type": "department",
-          "scope_targets": [
-            "数学系"
-          ]
+          "scope_type": "global",
+          "scope_targets": []
         },
         {
           "fact_id": "fact:00106",
           "source_pages": [
             11
           ],
-          "scope_type": "department",
-          "scope_targets": [
-            "数学系"
-          ]
+          "scope_type": "global",
+          "scope_targets": []
         },
         {
           "fact_id": "fact:00108",

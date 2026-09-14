@@ -63,6 +63,22 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "materials-arrival-date",
         "materials-dispatched-date",
         "online-steps-completed",
+        "current-residence-country",
+        "special-accommodation-needed",
+        "special-accommodation-contacted",
+        "foreign-national-rule-applies",
+        "residence-status-valid-until",
+        "long-term-stay-allowed",
+        "residence-status-contacted",
+        "visa-arrangements-needed",
+        "visa-advisor-consulted",
+        "transcript-unavailable-reason",
+        "transcript-contacted",
+        "disaster-fee-consultation-needed",
+        "disaster-fee-contacted",
+        "scholarship-status",
+        "scholarship-copy-emailed-date",
+        "scholarship-method-received",
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
@@ -112,6 +128,33 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert 'materials_arrival_date: nullableText("materials-arrival-date")' in javascript
     assert 'materials_dispatched_date: nullableText("materials-dispatched-date")' in javascript
     assert 'online_steps_completed: nullableBoolean("online-steps-completed")' in javascript
+    assert 'current_residence_country_code: nullableText("current-residence-country")' in javascript
+    assert "preapplication_actions: {" in javascript
+    assert (
+        'special_accommodation_needed: nullableBoolean("special-accommodation-needed")'
+        in javascript
+    )
+    assert (
+        'foreign_national_rule_applies: nullableBoolean("foreign-national-rule-applies")'
+        in javascript
+    )
+    assert (
+        'residence_status_valid_until: nullableText("residence-status-valid-until")' in javascript
+    )
+    assert (
+        'residence_status_allows_long_term_stay: nullableBoolean("long-term-stay-allowed")'
+        in javascript
+    )
+    assert 'visa_timing_consulted_advisor: nullableBoolean("visa-advisor-consulted")' in javascript
+    assert (
+        'transcript_unavailable_reason: nullableText("transcript-unavailable-reason")' in javascript
+    )
+    assert (
+        'disaster_fee_consulted_admissions: nullableBoolean("disaster-fee-contacted")' in javascript
+    )
+    assert (
+        'scholarship_copy_emailed_date: nullableText("scholarship-copy-emailed-date")' in javascript
+    )
     assert "language_test_results: null" in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

@@ -107,6 +107,19 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
         return "global", [], None, 0.7
 
+    if item.section_path and (
+        item.section_path[0].startswith(("２．入学時期", "３．出願資格", "４．出願手続"))
+        or item.section_path[-1].startswith(
+            (
+                "（３）受験上の特別な配慮が必要な場合の対応",
+                "（６）外国籍および海外在住の志願者への注意",
+                "（１）出願時に日本に在住していること",
+                "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること",
+            )
+        )
+    ):
+        return "global", [], None, 0.7
+
     matched_departments = [
         department
         for departments in COLLEGE_DEPARTMENTS.values()
@@ -124,11 +137,6 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     matched_colleges = [college for college in COLLEGE_DEPARTMENTS if college in haystack]
     if matched_colleges:
         return "college", matched_colleges, None, 0.7
-
-    if item.section_path and item.section_path[0].startswith(
-        ("２．入学時期", "３．出願資格", "４．出願手続")
-    ):
-        return "global", [], None, 0.7
 
     if item.pages == [8] and PATH9_UNIVERSITY_REQUIREMENT_RE.match(item.text):
         return "global", [], None, 0.7

@@ -123,6 +123,51 @@ class _FieldSpec:
 
 
 _FIELD_SPECS = {
+    "preapplication_actions.special_accommodation_needed": _FieldSpec(
+        "boolean", ("preapplication_actions", "special_accommodation_needed")
+    ),
+    "preapplication_actions.special_accommodation_contacted_admissions": _FieldSpec(
+        "boolean", ("preapplication_actions", "special_accommodation_contacted_admissions")
+    ),
+    "preapplication_actions.foreign_national_rule_applies": _FieldSpec(
+        "boolean", ("preapplication_actions", "foreign_national_rule_applies")
+    ),
+    "preapplication_actions.residence_status_valid_until": _FieldSpec(
+        "date", ("preapplication_actions", "residence_status_valid_until")
+    ),
+    "preapplication_actions.residence_status_allows_long_term_stay": _FieldSpec(
+        "boolean", ("preapplication_actions", "residence_status_allows_long_term_stay")
+    ),
+    "preapplication_actions.residence_status_contacted_admissions": _FieldSpec(
+        "boolean", ("preapplication_actions", "residence_status_contacted_admissions")
+    ),
+    "preapplication_actions.visa_arrangements_needed": _FieldSpec(
+        "boolean", ("preapplication_actions", "visa_arrangements_needed")
+    ),
+    "preapplication_actions.visa_timing_consulted_advisor": _FieldSpec(
+        "boolean", ("preapplication_actions", "visa_timing_consulted_advisor")
+    ),
+    "preapplication_actions.transcript_unavailable_reason": _FieldSpec(
+        "string", ("preapplication_actions", "transcript_unavailable_reason")
+    ),
+    "preapplication_actions.transcript_unavailability_consulted_admissions": _FieldSpec(
+        "boolean", ("preapplication_actions", "transcript_unavailability_consulted_admissions")
+    ),
+    "preapplication_actions.disaster_fee_consultation_needed": _FieldSpec(
+        "boolean", ("preapplication_actions", "disaster_fee_consultation_needed")
+    ),
+    "preapplication_actions.disaster_fee_consulted_admissions": _FieldSpec(
+        "boolean", ("preapplication_actions", "disaster_fee_consulted_admissions")
+    ),
+    "preapplication_actions.scholarship_status": _FieldSpec(
+        "string", ("preapplication_actions", "scholarship_status")
+    ),
+    "preapplication_actions.scholarship_copy_emailed_date": _FieldSpec(
+        "date", ("preapplication_actions", "scholarship_copy_emailed_date")
+    ),
+    "preapplication_actions.scholarship_application_method_received": _FieldSpec(
+        "boolean", ("preapplication_actions", "scholarship_application_method_received")
+    ),
     "application_submission.materials_arrival_date": _FieldSpec(
         "date", ("application_submission", "materials_arrival_date")
     ),
@@ -829,8 +874,10 @@ def _evaluate_predicates(
 def _profile_value(profile: ApplicantProfile, path: str) -> Any:
     value: Any = profile
     for segment in _FIELD_SPECS[path].getter:
+        if value is None:
+            return None
         if segment == "first":
-            if value is None or not value:
+            if not value:
                 return None
             value = value[0]
         else:

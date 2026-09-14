@@ -41,8 +41,11 @@ __all__ = [
     "LanguageResultStatus",
     "LanguageTestResult",
     "OfficialVerificationStatus",
+    "PreapplicationActions",
     "PriorEducationCategory",
+    "ScholarshipStatus",
     "TargetApplication",
+    "TranscriptUnavailableReason",
     "canonical_applicant_profile_bytes",
     "load_applicant_profile",
     "load_applicant_profile_bytes",
@@ -135,6 +138,21 @@ class LanguageResultStatus(str, Enum):
     VALID = "valid"
     EXPIRED = "expired"
     NOT_AVAILABLE = "not_available"
+
+
+class TranscriptUnavailableReason(str, Enum):
+    NONE = "none"
+    RETENTION_EXPIRED = "retention_expired"
+    INSTITUTION_CLOSED = "institution_closed"
+    DISASTER = "disaster"
+    OTHER = "other"
+
+
+class ScholarshipStatus(str, Enum):
+    NONE = "none"
+    MEXT = "mext"
+    JAPAN_KOREA_JOINT = "japan_korea_joint"
+    FOREIGN_GOVERNMENT = "foreign_government"
 
 
 class TargetApplication(ApplicantProfileModel):
@@ -317,6 +335,26 @@ class ApplicationSubmission(ApplicantProfileModel):
     online_steps_completed: StrictBool | None = None
 
 
+class PreapplicationActions(ApplicantProfileModel):
+    """Purpose-specific facts for conditional actions before application."""
+
+    special_accommodation_needed: StrictBool | None = None
+    special_accommodation_contacted_admissions: StrictBool | None = None
+    foreign_national_rule_applies: StrictBool | None = None
+    residence_status_valid_until: date | None = None
+    residence_status_allows_long_term_stay: StrictBool | None = None
+    residence_status_contacted_admissions: StrictBool | None = None
+    visa_arrangements_needed: StrictBool | None = None
+    visa_timing_consulted_advisor: StrictBool | None = None
+    transcript_unavailable_reason: TranscriptUnavailableReason | None = None
+    transcript_unavailability_consulted_admissions: StrictBool | None = None
+    disaster_fee_consultation_needed: StrictBool | None = None
+    disaster_fee_consulted_admissions: StrictBool | None = None
+    scholarship_status: ScholarshipStatus | None = None
+    scholarship_copy_emailed_date: date | None = None
+    scholarship_application_method_received: StrictBool | None = None
+
+
 class LanguageTestResult(ApplicantProfileModel):
     test_kind: str | None
     score: StrictInt | StrictFloat | str | None
@@ -367,6 +405,7 @@ class ApplicantProfile(ApplicantProfileModel):
     eligibility_facts: EligibilityFacts
     language_test_results: tuple[LanguageTestResult, ...] | None
     application_submission: ApplicationSubmission | None = None
+    preapplication_actions: PreapplicationActions | None = None
 
     @field_validator("schema_version")
     @classmethod

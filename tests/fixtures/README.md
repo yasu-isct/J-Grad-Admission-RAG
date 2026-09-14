@@ -9,7 +9,7 @@ real `fact:00063` page 7 rule findings plus synthetic override, interaction, inc
 missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
 official prose, model output, or final eligibility verdict.
 
-`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, and `rule03a`
+`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, `rule03a`, and `rule03b`
 extensions are server-owned reviewed plans for the same exact document. The RULE-02 plans add
 eligibility paths 9 through 11 and the shared individual-review process while preserving the
 earlier plan coverage. RULE-03A adds the shared main application window, registration start, and
