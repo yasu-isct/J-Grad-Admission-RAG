@@ -10,14 +10,23 @@ from typing import Sequence
 from ..utils import INTERMEDIATE_DIR
 
 TITLE_RE = re.compile(
-    r"^(?:[【\[［][^】\]］]+[】\]］]|[0-9０-９]+[\.．、]\s*.+|[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+)$",
+    r"^(?:[【\[［][^】\]］]+[】\]］](?:※[^\n]*)?|"
+    r"[0-9０-９]+[\.．、]\s*.+|"
+    r"[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+|"
+    r"◆(?:英語外部試験の種類と受験時期について|スコアシートの要件)|"
+    r"※[^\n]+の場合：|・[^\n]{1,40}系は、[^\n]*)$",
     re.MULTILINE,
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
 MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
-BRACKETED_TITLE_RE = re.compile(r"^(?:【.*】|\[.*\]|［.*］)$")
+BRACKETED_TITLE_RE = re.compile(r"^(?:【[^】]+】|\[[^\]]+\]|［[^］]+］)(?:※.*)?$")
 PARENTHESIZED_TITLE_RE = re.compile(r"^[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)]")
+STRUCTURAL_SUBHEADING_RE = re.compile(
+    r"^(?:◆(?:英語外部試験の種類と受験時期について|スコアシートの要件)|"
+    r"※[^\n]+の場合：|・[^\n]{1,40}系は、)"
+)
 TABLE_DELIMITER_RE = re.compile(r"(?m)^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$")
+TABLE_SEMANTIC_MARKER_RE = re.compile(r"(?:◆英語外部試験|◆スコアシート|※TOEIC|※TOEFL)")
 NUMBERED_REQUIREMENT_END_RE = re.compile(r"こと。$")
 
 
@@ -59,6 +68,7 @@ class _HeadingStack:
     major: str | None = None
     bracketed: str | None = None
     parenthesized: str | None = None
+    structural: str | None = None
 
     def update(self, title: str) -> list[str]:
         title = title.strip()
@@ -66,15 +76,24 @@ class _HeadingStack:
             self.major = title
             self.bracketed = None
             self.parenthesized = None
+            self.structural = None
         elif BRACKETED_TITLE_RE.match(title):
             self.bracketed = title
             self.parenthesized = None
+            self.structural = None
         elif PARENTHESIZED_TITLE_RE.match(title):
             self.parenthesized = title
+            self.structural = None
+        elif STRUCTURAL_SUBHEADING_RE.match(title):
+            self.structural = title
         else:
             return [title] if title else []
 
-        path = [heading for heading in (self.major, self.bracketed, self.parenthesized) if heading]
+        path = [
+            heading
+            for heading in (self.major, self.bracketed, self.parenthesized, self.structural)
+            if heading
+        ]
         return [
             heading
             for index, heading in enumerate(path)
@@ -194,6 +213,19 @@ def _split_without_cutting_tables(text_slice: _TextSlice, max_chars: int) -> lis
     for paragraph, is_table in paragraphs:
         paragraph_start = paragraph.start - text_slice.start
         paragraph_end = paragraph.end - text_slice.start
+        if is_table and TABLE_SEMANTIC_MARKER_RE.search(paragraph.text):
+            if current_start is not None:
+                _append_slice(chunks, text, current_start, current_end, text_slice.start)
+                current_start = None
+            _append_slice(
+                chunks,
+                text,
+                paragraph_start,
+                paragraph_end,
+                text_slice.start,
+                oversize_reason=("indivisible_table" if len(paragraph.text) > max_chars else None),
+            )
+            continue
         combined_size = (
             paragraph_end - current_start if current_start is not None else len(paragraph.text)
         )

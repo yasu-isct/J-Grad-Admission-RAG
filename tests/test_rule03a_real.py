@@ -97,7 +97,7 @@ def test_real_application_facts_are_global_complete_and_on_page_9() -> None:
         assert facts[fact_id].source_pages == [9]
         assert facts[fact_id].scope_type == "global"
         assert facts[fact_id].section_path[0] == "４．出願手続"
-    assert len(facts) == 318
+    assert len(facts) == 334
     assert "6月1日（月）午前9時" in facts["fact:00099"].text
     assert "出願書類一式が出願期間内に本学へ到着しない場合" in facts["fact:00100"].text
 

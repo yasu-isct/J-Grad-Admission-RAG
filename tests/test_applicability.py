@@ -435,6 +435,48 @@ def test_first_credential_rule_fails_safe_for_multiple_credentials() -> None:
     assert decision.diagnostics == (ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS,)
 
 
+def test_language_rules_require_an_unambiguous_submission_result() -> None:
+    predicate = _predicate(
+        "language_test_results.selected.test_kind",
+        PredicateOperator.EQUALS,
+        "toeic_lr",
+    )
+    payload = _profile().model_dump(mode="json")
+    payload["language_test_results"] = [
+        {
+            "test_kind": "toeic_lr",
+            "score": None,
+            "test_date": "2024-06-11",
+            "validity_status": None,
+            "official_report_available": None,
+        },
+        {
+            "test_kind": "toefl_ibt",
+            "score": None,
+            "test_date": "2024-06-11",
+            "validity_status": None,
+            "official_report_available": None,
+        },
+    ]
+
+    ambiguous = evaluate_applicability(
+        ApplicantProfile.model_validate(payload), _intent(), _pack(), _rule(predicate)
+    )
+    assert ambiguous.status is ApplicabilityStatus.NEEDS_INFORMATION
+    assert ambiguous.missing_profile_fields == ("language_test_results.selected.test_kind",)
+    assert ambiguous.diagnostics == (
+        ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION,
+        ApplicabilityDiagnostic.MISSING_PROFILE_FACT,
+    )
+
+    payload["language_test_results"][0]["selected_for_submission"] = True
+    selected = evaluate_applicability(
+        ApplicantProfile.model_validate(payload), _intent(), _pack(), _rule(predicate)
+    )
+    assert selected.status is ApplicabilityStatus.CONFIRMED
+    assert selected.diagnostics == ()
+
+
 def test_versioned_synthetic_fixture_freezes_atomic_and_aggregate_contract() -> None:
     fixture = json.loads(CONTRACT_FIXTURE_PATH.read_text(encoding="utf-8"))[
         "synthetic_contract_cases"

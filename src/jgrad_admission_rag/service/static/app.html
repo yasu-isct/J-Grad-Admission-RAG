@@ -182,6 +182,24 @@
                 </div>
               </fieldset>
 
+              <fieldset>
+                <legend>提出する英語外部試験</legend>
+                <p class="field-detail">複数の成績がある場合は、今回提出する一つを選んで入力してください。点数だけでは提出可否を判定しません。</p>
+                <div class="form-grid">
+                  <div><label for="language-test-kind">試験種別</label><select id="language-test-kind"><option value="">不明</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="toefl_itp">TOEFL-ITP</option><option value="toeic_ip">TOEIC-IP</option><option value="other">その他・未確認</option></select></div>
+                  <div><label for="language-test-date">受験日</label><input id="language-test-date" type="date"></div>
+                  <div><label for="language-test-score">スコア</label><input id="language-test-score" type="number" min="0" step="0.01" inputmode="decimal"></div>
+                  <div><label for="language-test-selected">この結果を提出用に選択</label><select id="language-test-selected"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-online-pdf">オンラインで取得した PDF</label><select id="language-online-pdf"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="toeic-qr-present">TOEIC 確認用 QR コード</label><select id="toeic-qr-present"><option value="">不明</option><option value="true">あり</option><option value="false">なし</option></select></div>
+                  <div><label for="toeic-digital-certificate">Digital Official Score Certificate</label><select id="toeic-digital-certificate"><option value="">不明</option><option value="true">該当</option><option value="false">非該当</option></select></div>
+                  <div><label for="toefl-score-report">TOEFL Test Taker Score Report PDF</label><select id="toefl-score-report"><option value="">不明</option><option value="true">あり</option><option value="false">なし</option></select></div>
+                  <div><label for="toefl-g179">TOEFL DI code G179</label><select id="toefl-g179"><option value="">不明</option><option value="true">登録済み</option><option value="false">未登録</option></select></div>
+                  <div><label for="ets-paper-applicant">ETS から本人へ紙で送付</label><select id="ets-paper-applicant"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="ets-paper-institution">ETS から大学へ直接送付</label><select id="ets-paper-institution"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                </div>
+              </fieldset>
+
               <div class="actions">
                 <button id="report-submit" type="submit" disabled>レポートを作成</button>
                 <button id="report-retry" class="secondary" type="button" hidden>再試行</button>

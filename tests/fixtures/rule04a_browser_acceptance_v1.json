@@ -1,0 +1,534 @@
+[
+  {
+    "viewport": "desktop",
+    "scenario": "toeic-valid-boundary",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toeic-qr-present": "true",
+      "toeic-digital-certificate": "true",
+      "ets-paper-applicant": "false",
+      "ets-paper-institution": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-approved-kind-toeic_lr-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "数学系以外で本切片が確認する外部試験種別は TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition です。各規則は該当種別を明記した公式根拠に個別に結び付き、confirmed は種別一致だけで、最低点や受理を示しません。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toeic-qr-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEIC L&R のオンライン PDF には真偽確認用 QR コードが必要です。QR のない紙の Official Score Certificate は受理されません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "scenario": "date-before-boundary",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-10",
+      "language-test-selected": "true"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "not_applicable",
+        "disposition": "not_applicable",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "scenario": "toefl-ibt-valid",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toefl_ibt",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toefl-score-report": "true",
+      "toefl-g179": "true",
+      "ets-paper-applicant": "false",
+      "ets-paper-institution": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-approved-kind-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "数学系以外で本切片が確認する外部試験種別は TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition です。各規則は該当種別を明記した公式根拠に個別に結び付き、confirmed は種別一致だけで、最低点や受理を示しません。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toefl-report-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEFL iBT（Home Edition を含む）は Test Taker Score Report PDF の印刷物を提出します。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toefl-g179-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "出願に用いる TOEFL スコアには DI code G179 を設定します。既受験スコアでも省略できません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "scenario": "toeic-missing-qr",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toeic-qr-present": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-toeic-qr-apr",
+        "status": "not_applicable",
+        "disposition": "not_applicable",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEIC L&R のオンライン PDF には真偽確認用 QR コードが必要です。QR のない紙の Official Score Certificate は受理されません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "scenario": "math-written-exam",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "理学院",
+      "department-program": "数学系"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-math-written-exam-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00123",
+            "source_pages": [
+              12
+            ]
+          }
+        ],
+        "action_text": "数学系は本学の英語筆答試験を受けるため、英語外部試験スコアシートは不要です。confirmed はこの例外の対象一致だけを示し、筆答試験の成績や合格を示しません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "scenario": "language-result-unknown",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "needs_information",
+        "disposition": "pending",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": [
+          "language_test_results.selected.test_date"
+        ]
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "toeic-valid-boundary",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toeic-qr-present": "true",
+      "toeic-digital-certificate": "true",
+      "ets-paper-applicant": "false",
+      "ets-paper-institution": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-approved-kind-toeic_lr-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "数学系以外で本切片が確認する外部試験種別は TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition です。各規則は該当種別を明記した公式根拠に個別に結び付き、confirmed は種別一致だけで、最低点や受理を示しません。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toeic-qr-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEIC L&R のオンライン PDF には真偽確認用 QR コードが必要です。QR のない紙の Official Score Certificate は受理されません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "date-before-boundary",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-10",
+      "language-test-selected": "true"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "not_applicable",
+        "disposition": "not_applicable",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "toefl-ibt-valid",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toefl_ibt",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toefl-score-report": "true",
+      "toefl-g179": "true",
+      "ets-paper-applicant": "false",
+      "ets-paper-institution": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-approved-kind-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "数学系以外で本切片が確認する外部試験種別は TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition です。各規則は該当種別を明記した公式根拠に個別に結び付き、confirmed は種別一致だけで、最低点や受理を示しません。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toefl-report-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEFL iBT（Home Edition を含む）は Test Taker Score Report PDF の印刷物を提出します。",
+        "missing_items": []
+      },
+      {
+        "rule_id": "isct-master-english-toefl-g179-toefl_ibt-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00111",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "出願に用いる TOEFL スコアには DI code G179 を設定します。既受験スコアでも省略できません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "toeic-missing-qr",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系",
+      "language-test-kind": "toeic_lr",
+      "language-test-date": "2024-06-11",
+      "language-test-selected": "true",
+      "language-online-pdf": "true",
+      "toeic-qr-present": "false"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-toeic-qr-apr",
+        "status": "not_applicable",
+        "disposition": "not_applicable",
+        "evidence": [
+          {
+            "fact_id": "fact:00110",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "TOEIC L&R のオンライン PDF には真偽確認用 QR コードが必要です。QR のない紙の Official Score Certificate は受理されません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "math-written-exam",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "理学院",
+      "department-program": "数学系"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-math-written-exam-apr",
+        "status": "confirmed",
+        "disposition": "active",
+        "evidence": [
+          {
+            "fact_id": "fact:00123",
+            "source_pages": [
+              12
+            ]
+          }
+        ],
+        "action_text": "数学系は本学の英語筆答試験を受けるため、英語外部試験スコアシートは不要です。confirmed はこの例外の対象一致だけを示し、筆答試験の成績や合格を示しません。",
+        "missing_items": []
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "scenario": "language-result-unknown",
+    "inputs": {
+      "intake_year": 2027,
+      "intake_month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "情報通信系"
+    },
+    "rules": [
+      {
+        "rule_id": "isct-master-english-test-date-apr",
+        "status": "needs_information",
+        "disposition": "pending",
+        "evidence": [
+          {
+            "fact_id": "fact:00114",
+            "source_pages": [
+              11
+            ]
+          }
+        ],
+        "action_text": "試験日は 2024-06-11 以降（当日を含む）である必要があります。confirmed は日付条件だけです。",
+        "missing_items": [
+          "language_test_results.selected.test_date"
+        ]
+      }
+    ],
+    "limitation": "confirmed は人工確認済み原子条件と入力値の一致だけを示し、ETS 又は学校による真正性確認、最低点到達、受験資格、出願受理、合否を示しません。各系の提出方法・補交日、換算・配点、完全な材料・プログラム条件は未確認です。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  }
+]

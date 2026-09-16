@@ -263,6 +263,33 @@ def test_semantic_marker_does_not_turn_number_ranges_into_titles() -> None:
     assert chunks[0].text == markdown
 
 
+def test_layout_subheadings_and_department_clauses_create_atomic_sections() -> None:
+    markdown = (
+        "４．出願手続\n"
+        "（３）出願書類\n"
+        "◆スコアシートの要件\n共通の提出方法。\n"
+        "・数学系は、英語の筆答試験を行うため、外部スコアは不要です。\n詳細を確認する。\n"
+        "◆英語外部試験の種類と受験時期について\nTOEFL iBT。\n"
+        "※TOEIC L&Rの場合：\nQRコードを確認する。"
+    )
+
+    chunks = chunk_pages([SourcePage(page_number=11, text=markdown)], "admission.pdf")
+
+    assert [chunk.title for chunk in chunks] == [
+        "（３）出願書類",
+        "◆スコアシートの要件",
+        "・数学系は、英語の筆答試験を行うため、外部スコアは不要です。",
+        "◆英語外部試験の種類と受験時期について",
+        "※TOEIC L&Rの場合：",
+    ]
+    assert chunks[2].section_path == [
+        "４．出願手続",
+        "（３）出願書類",
+        "・数学系は、英語の筆答試験を行うため、外部スコアは不要です。",
+    ]
+    assert chunks[4].section_path[-1] == "※TOEIC L&Rの場合："
+
+
 def test_fullwidth_bracketed_notice_starts_a_new_section() -> None:
     markdown = (
         "★（11）個別審査の対象者\n［2026年9月入学希望者への注意］\n事前に入試課へ知らせてください。"
@@ -368,6 +395,19 @@ def test_chunk_pages_isolates_table_and_marks_only_indivisible_exception() -> No
     assert exception[0].text == oversized_table
     assert exception[0].oversize_reason == "indivisible_table"
     assert exception[0].page_numbers == [4]
+
+
+def test_chunk_pages_isolates_tables_with_semantic_subheadings() -> None:
+    table = "### Table 1\n| h |\n| --- |\n| ◆英語外部試験の種類\n本文 |"
+
+    chunks = chunk_pages(
+        [SourcePage(page_number=3, text=f"preceding text\n\n{table}")],
+        "sample.pdf",
+        max_chars=6000,
+    )
+
+    assert [chunk.text for chunk in chunks] == ["preceding text", table]
+    assert all(chunk.oversize_reason is None for chunk in chunks)
 
 
 def test_chunk_splitting_conserves_canonical_content() -> None:
@@ -485,7 +525,11 @@ def test_common_application_procedure_section_infers_global_scope() -> None:
             ],
             "数学系",
         ),
-        (["４．出願手続", "【外国籍の志願者のみ提出する書類】"], "数学系"),
+        (
+            ["４．出願手続", "【外国籍の志願者のみ提出する書類】"],
+            "【外国籍の志願者のみ提出する書類】\n数学系",
+        ),
+        (["５．選抜試験", "（１）英語試験（Ａ日程及びＢ日程どちらも必須）"], "数学系以外"),
     ],
 )
 def test_global_preapplication_sections_override_incidental_department_text(
@@ -522,6 +566,23 @@ def test_application_procedure_parent_does_not_override_department_scope() -> No
     )
 
     assert infer_scope(item) == ("department", ["数学系"], "理学院", 0.75)
+
+
+def test_department_exclusion_is_not_a_positive_department_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=105,
+        pdf_name="sample.pdf",
+        pages=[12],
+        title="（１）英語試験",
+        text="数学系以外は指定された英語外部試験のスコアシートを提出する。",
+        section_path=["５．選抜試験", "（１）英語試験"],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="数学系以外は指定された英語外部試験のスコアシートを提出する。",
+    )
+
+    assert infer_scope(item) == ("unknown", [], None, 0.45)
 
 
 def test_document_index_roundtrip_preserves_section_path(tmp_path: Path) -> None:

@@ -1,9 +1,45 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 
 STATIC_ROOT = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "service" / "static"
+FIXTURE_ROOT = Path(__file__).parent / "fixtures"
+
+
+def test_rule04a_browser_acceptance_record_covers_scenarios_and_viewports() -> None:
+    records = json.loads(
+        (FIXTURE_ROOT / "rule04a_browser_acceptance_v1.json").read_text(encoding="utf-8")
+    )
+    scenarios = {
+        "toeic-valid-boundary",
+        "date-before-boundary",
+        "toefl-ibt-valid",
+        "toeic-missing-qr",
+        "math-written-exam",
+        "language-result-unknown",
+    }
+    assert len(records) == 12
+    assert {(item["viewport"], item["scenario"]) for item in records} == {
+        (viewport, scenario) for viewport in ("desktop", "mobile") for scenario in scenarios
+    }
+    assert all(item["horizontal_overflow"] is False for item in records)
+    assert all(item["limitation"] for item in records)
+    assert all(item["rules"] for item in records)
+    assert all(
+        evidence["source_pages"]
+        for item in records
+        for rule in item["rules"]
+        for evidence in rule["evidence"]
+    )
+
+    toeic_records = [item for item in records if item["scenario"] == "toeic-valid-boundary"]
+    for item in toeic_records:
+        approved = next(
+            rule for rule in item["rules"] if "approved-kind-toeic_lr" in rule["rule_id"]
+        )
+        assert approved["evidence"] == [{"fact_id": "fact:00110", "source_pages": [11]}]
 
 
 def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> None:
@@ -79,6 +115,17 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "scholarship-status",
         "scholarship-copy-emailed-date",
         "scholarship-method-received",
+        "language-test-kind",
+        "language-test-date",
+        "language-test-score",
+        "language-test-selected",
+        "language-online-pdf",
+        "toeic-qr-present",
+        "toeic-digital-certificate",
+        "toefl-score-report",
+        "toefl-g179",
+        "ets-paper-applicant",
+        "ets-paper-institution",
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
@@ -155,7 +202,10 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert (
         'scholarship_copy_emailed_date: nullableText("scholarship-copy-emailed-date")' in javascript
     )
-    assert "language_test_results: null" in javascript
+    assert "language_test_results: languageTestResults()" in javascript
+    assert 'test_kind: nullableText("language-test-kind")' in javascript
+    assert 'selected_for_submission: nullableBoolean("language-test-selected")' in javascript
+    assert 'toefl_di_code_g179_set: nullableBoolean("toefl-g179")' in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript
     assert "reportRequest(item, profile, intentPayload)" in javascript

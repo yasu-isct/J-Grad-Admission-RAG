@@ -100,7 +100,7 @@ def _missing(report: dict[str, Any], rule_id: str) -> set[str]:
     }
 
 
-def test_real_preapplication_facts_are_global_without_boundary_changes() -> None:
+def test_real_preapplication_facts_remain_global_after_english_atomization() -> None:
     if not PDF.is_file():
         pytest.skip("real PDF fixture unavailable")
     kb = build_document_kb(PDF, load_document_identity(IDENTITY))
@@ -114,17 +114,17 @@ def test_real_preapplication_facts_are_global_without_boundary_changes() -> None
         "fact:00029": 4,
         "fact:00030": 4,
         "fact:00031": 4,
-        "fact:00106": 11,
+        "fact:00112": 11,
     }
-    assert len(facts) == 318
+    assert len(facts) == 334
     for fact_id, page in expected.items():
         assert facts[fact_id].source_pages == [page]
         assert facts[fact_id].scope_type == "global"
         assert facts[fact_id].scope_targets == []
-    assert "数学系" in facts["fact:00106"].text
-    assert facts["fact:00106"].section_path[-1] == "【外国籍の志願者のみ提出する書類】"
-    assert facts["fact:00105"].scope_type == "department"
-    assert facts["fact:00105"].scope_targets == ["数学系"]
+    assert "数学系" not in facts["fact:00112"].text
+    assert facts["fact:00112"].section_path[-1] == "【外国籍の志願者のみ提出する書類】"
+    assert facts["fact:00108"].scope_type == "department"
+    assert facts["fact:00108"].scope_targets == ["数学系"]
 
 
 def test_special_accommodation_has_purpose_specific_missing_contact(rule03b_client) -> None:
