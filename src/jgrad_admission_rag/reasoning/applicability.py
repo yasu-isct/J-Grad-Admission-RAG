@@ -178,6 +178,10 @@ _FIELD_SPECS = {
     "application_submission.online_steps_completed": _FieldSpec(
         "boolean", ("application_submission", "online_steps_completed")
     ),
+    "application_submission.a_schedule_oral_exam_participation_planned": _FieldSpec(
+        "boolean",
+        ("application_submission", "a_schedule_oral_exam_participation_planned"),
+    ),
     "target_application.graduate_school_or_college": _FieldSpec(
         "string", ("target_application", "graduate_school_or_college")
     ),
@@ -324,6 +328,25 @@ _FIELD_SPECS = {
     ),
     "language_test_results.selected.test_date": _FieldSpec(
         "date", ("language_test_results", "selected", "test_date")
+    ),
+    "language_test_results.selected.score_sheet_submission_method": _FieldSpec(
+        "string", ("language_test_results", "selected", "score_sheet_submission_method")
+    ),
+    "language_test_results.selected.score_sheet_expected_arrival_date": _FieldSpec(
+        "date",
+        ("language_test_results", "selected", "score_sheet_expected_arrival_date"),
+    ),
+    "language_test_results.selected.score_sheet_registered_mail_planned": _FieldSpec(
+        "boolean",
+        ("language_test_results", "selected", "score_sheet_registered_mail_planned"),
+    ),
+    "language_test_results.selected.score_sheet_replacement_after_deadline_planned": _FieldSpec(
+        "boolean",
+        (
+            "language_test_results",
+            "selected",
+            "score_sheet_replacement_after_deadline_planned",
+        ),
     ),
     "language_test_results.selected.downloaded_online_pdf": _FieldSpec(
         "boolean", ("language_test_results", "selected", "downloaded_online_pdf")
@@ -1005,25 +1028,41 @@ def _evaluate_scope(
     query_targets = set(intent.requested_scope.department_or_program_targets)
     profile_colleges = _optional_set(profile.target_application.graduate_school_or_college)
     query_colleges = set(intent.requested_scope.parent_college_values)
-    if _known_disjoint(profile_targets, query_targets) or _known_disjoint(
-        profile_colleges, query_colleges
+    if (
+        profile_targets
+        and query_targets
+        and profile_targets != query_targets
+        or profile_colleges
+        and query_colleges
+        and profile_colleges != query_colleges
     ):
         return (
             ApplicabilityStatus.NEEDS_INFORMATION,
             (ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT,),
         )
 
-    supplied_targets = profile_targets | query_targets
-    supplied_colleges = profile_colleges | query_colleges
+    supplied_targets = profile_targets or query_targets
+    supplied_colleges = profile_colleges or query_colleges
     expected_targets = set(scope.scope_targets)
     if scope.scope_type == "college":
         expected_colleges = expected_targets | _optional_set(scope.parent_college)
         return _match_scope(expected_colleges, supplied_colleges)
 
     components = []
+    if (
+        profile_targets
+        and profile_colleges
+        and expected_targets & profile_targets
+        and scope.parent_college
+        and scope.parent_college not in profile_colleges
+    ):
+        return (
+            ApplicabilityStatus.NEEDS_INFORMATION,
+            (ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT,),
+        )
     if expected_targets:
         components.append(_match_scope(expected_targets, supplied_targets)[0])
-    if scope.parent_college:
+    if scope.parent_college and supplied_colleges:
         components.append(_match_scope({scope.parent_college}, supplied_colleges)[0])
     return _combine_scope_components(tuple(components))
 

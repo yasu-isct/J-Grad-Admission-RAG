@@ -29,7 +29,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04a_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
 BATCHES = ((2027, 4, "apr"), (2026, 9, "sep"))
 
 
@@ -133,7 +133,7 @@ def test_real_english_facts_are_atomic_and_scoped() -> None:
     if not PDF.is_file():
         pytest.skip("real PDF fixture unavailable")
     kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    assert len(kb.facts) == 334
+    assert len(kb.facts) == 391
     facts = {fact.fact_id: fact for fact in kb.facts}
     for fact_id in ("fact:00110", "fact:00111", "fact:00114", "fact:00115", "fact:00122"):
         assert facts[fact_id].scope_type == "global"

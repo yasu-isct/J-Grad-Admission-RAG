@@ -23,6 +23,7 @@ from jgrad_admission_rag.reasoning import (
     IndividualReviewStatus,
     IntakeMonth,
     LanguageResultStatus,
+    LanguageScoreSubmissionMethod,
     LanguageTestKind,
     LanguageTestResult,
     OfficialVerificationStatus,
@@ -341,6 +342,61 @@ def test_language_result_uses_closed_kind_and_preserves_submission_facts() -> No
     payload["language_test_results"][0]["test_kind"] = "TOEFL iBT"  # type: ignore[index]
     migrated = ApplicantProfile.model_validate(payload)
     assert migrated.language_test_results[0].test_kind is LanguageTestKind.TOEFL_IBT  # type: ignore[index]
+
+
+def test_rule04b_submission_plan_fields_are_typed_and_optional() -> None:
+    payload = _profile_payload()
+    result_payload = payload["language_test_results"][0]  # type: ignore[index]
+    result_payload.update(
+        {
+            "selected_for_submission": True,
+            "score_sheet_submission_method": "department_later_by_mail",
+            "score_sheet_expected_arrival_date": "2026-07-29",
+            "score_sheet_registered_mail_planned": True,
+            "score_sheet_replacement_after_deadline_planned": False,
+        }
+    )
+    payload["application_submission"] = {
+        "a_schedule_oral_exam_participation_planned": False,
+    }
+
+    profile = ApplicantProfile.model_validate(payload)
+    result = profile.language_test_results[0]  # type: ignore[index]
+
+    assert (
+        result.score_sheet_submission_method
+        is LanguageScoreSubmissionMethod.DEPARTMENT_LATER_BY_MAIL
+    )
+    assert result.score_sheet_expected_arrival_date == date(2026, 7, 29)
+    assert result.score_sheet_registered_mail_planned is True
+    assert result.score_sheet_replacement_after_deadline_planned is False
+    assert profile.application_submission is not None
+    assert profile.application_submission.a_schedule_oral_exam_participation_planned is False
+
+
+def test_rule04b_fields_preserve_legacy_profile_compatibility() -> None:
+    profile = ApplicantProfile.model_validate(_profile_payload())
+    result = profile.language_test_results[0]  # type: ignore[index]
+
+    assert result.score_sheet_submission_method is None
+    assert result.score_sheet_expected_arrival_date is None
+    assert result.score_sheet_registered_mail_planned is None
+    assert result.score_sheet_replacement_after_deadline_planned is None
+
+
+def test_rule04b_sent_date_cannot_masquerade_as_required_arrival_date() -> None:
+    payload = _profile_payload()
+    result_payload = payload["language_test_results"][0]  # type: ignore[index]
+    result_payload.update(
+        {
+            "selected_for_submission": True,
+            "score_sheet_submission_method": "department_later_by_mail",
+            "score_sheet_sent_date": "2026-07-28",
+        }
+    )
+
+    with pytest.raises(ValidationError):
+        ApplicantProfile.model_validate(payload)
 
 
 @pytest.mark.parametrize(

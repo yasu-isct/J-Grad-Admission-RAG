@@ -92,6 +92,16 @@ def test_alias_unicode_longest_match_repeated_mentions_and_stable_canonical_byte
     )
 
 
+def test_mathematics_and_mathematical_computing_departments_remain_distinct() -> None:
+    catalog = _catalog()
+
+    mathematics = parse_query_intent("数学系の英語スコア", catalog)
+    computing = parse_query_intent("数理・計算科学系の英語スコア", catalog)
+
+    assert mathematics.requested_scope.department_or_program_targets == ("数学系",)
+    assert computing.requested_scope.department_or_program_targets == ("数理・計算科学系",)
+
+
 def test_composed_catalog_term_preserves_the_full_decomposed_source_span() -> None:
     catalog = QueryIntentCatalog(
         schema_version="1.0",

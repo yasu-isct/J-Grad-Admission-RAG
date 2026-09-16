@@ -99,6 +99,7 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "materials-arrival-date",
         "materials-dispatched-date",
         "online-steps-completed",
+        "a-schedule-oral-participation",
         "current-residence-country",
         "special-accommodation-needed",
         "special-accommodation-contacted",
@@ -119,6 +120,10 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "language-test-date",
         "language-test-score",
         "language-test-selected",
+        "language-score-submission-method",
+        "language-score-expected-arrival-date",
+        "language-score-registered-mail",
+        "language-score-replacement-after-deadline",
         "language-online-pdf",
         "toeic-qr-present",
         "toeic-digital-certificate",
@@ -129,6 +134,14 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
+    for submission_method in (
+        "with_application",
+        "department_later_by_mail",
+        "written_exam_day_carry",
+        "no_external_submission",
+        "other",
+    ):
+        assert f'<option value="{submission_method}">' in html
 
 
 def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
@@ -175,6 +188,8 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert 'materials_arrival_date: nullableText("materials-arrival-date")' in javascript
     assert 'materials_dispatched_date: nullableText("materials-dispatched-date")' in javascript
     assert 'online_steps_completed: nullableBoolean("online-steps-completed")' in javascript
+    assert "a_schedule_oral_exam_participation_planned: nullableBoolean(" in javascript
+    assert '"a-schedule-oral-participation"' in javascript
     assert 'current_residence_country_code: nullableText("current-residence-country")' in javascript
     assert "preapplication_actions: {" in javascript
     assert (
@@ -205,6 +220,20 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert "language_test_results: languageTestResults()" in javascript
     assert 'test_kind: nullableText("language-test-kind")' in javascript
     assert 'selected_for_submission: nullableBoolean("language-test-selected")' in javascript
+    assert (
+        'score_sheet_submission_method: nullableText("language-score-submission-method")'
+        in javascript
+    )
+    assert (
+        "score_sheet_expected_arrival_date: nullableText("
+        '"language-score-expected-arrival-date")' in javascript
+    )
+    assert (
+        "score_sheet_registered_mail_planned: nullableBoolean("
+        '"language-score-registered-mail")' in javascript
+    )
+    assert "score_sheet_replacement_after_deadline_planned: nullableBoolean(" in javascript
+    assert '"language-score-replacement-after-deadline"' in javascript
     assert 'toefl_di_code_g179_set: nullableBoolean("toefl-g179")' in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript

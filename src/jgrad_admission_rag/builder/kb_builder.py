@@ -41,6 +41,8 @@ COLLEGE_DEPARTMENTS = {
         "技術経営専門職学位課程",
     ],
 }
+PROGRAMS = {"技術経営専門職学位課程"}
+DEPARTMENT_CONTEXT_RE = re.compile(r"^(?P<college>\S+学院)\s+(?P<unit>.+(?:系|専門職学位課程))$")
 
 PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
     r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
@@ -90,11 +92,12 @@ def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
             )
         )
         for department in departments:
+            entity_type = "program" if department in PROGRAMS else "department"
             entities.append(
                 KnowledgeEntity(
-                    entity_id=f"department:{department}",
+                    entity_id=f"{entity_type}:{department}",
                     name=department,
-                    entity_type="department",
+                    entity_type=entity_type,
                     parent_id=college_id,
                     source_pages=sorted(page_map[department]),
                 )
@@ -126,19 +129,48 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     ):
         return "global", [], None, 0.7
 
-    matched_departments = [
-        department
-        for departments in COLLEGE_DEPARTMENTS.values()
-        for department in departments
-        if haystack.count(department) > haystack.count(f"{department}以外")
-    ]
+    for heading in item.section_path:
+        context = DEPARTMENT_CONTEXT_RE.fullmatch(heading.strip())
+        if context is None:
+            continue
+        college = context.group("college")
+        unit = context.group("unit")
+        if unit in COLLEGE_DEPARTMENTS.get(college, []):
+            scope_type = "program" if unit in PROGRAMS else "department"
+            return scope_type, [unit], college, 0.9
+
+    matched_departments: list[str] = []
+    occupied_spans: list[tuple[int, int]] = []
+    departments = sorted(
+        (department for values in COLLEGE_DEPARTMENTS.values() for department in values),
+        key=len,
+        reverse=True,
+    )
+    for department in departments:
+        if haystack.count(department) <= haystack.count(f"{department}以外"):
+            continue
+        matches = list(re.finditer(re.escape(department), haystack))
+        unoccupied_matches = [
+            match
+            for match in matches
+            if all(match.end() <= start or end <= match.start() for start, end in occupied_spans)
+        ]
+        if not unoccupied_matches:
+            continue
+        matched_departments.append(department)
+        occupied_spans.extend(match.span() for match in unoccupied_matches)
     if matched_departments:
         parent = next(
             college
             for college, departments in COLLEGE_DEPARTMENTS.items()
             if matched_departments[0] in departments
         )
-        return "department", matched_departments, parent, 0.75
+        scope_type = (
+            "program"
+            if len(matched_departments) == 1 and matched_departments[0] in PROGRAMS
+            else "department"
+        )
+        return scope_type, matched_departments, parent, 0.75
 
     matched_colleges = [college for college in COLLEGE_DEPARTMENTS if college in haystack]
     if matched_colleges:

@@ -14,7 +14,8 @@ TITLE_RE = re.compile(
     r"[0-9０-９]+[\.．、]\s*.+|"
     r"[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+|"
     r"◆(?:英語外部試験の種類と受験時期について|スコアシートの要件)|"
-    r"※[^\n]+の場合：|・[^\n]{1,40}系は、[^\n]*)$",
+    r"※[^\n]+の場合：|・[^\n]{1,40}系は、[^\n]*|"
+    r"試験区分\s+試験日\s+試験内容等(?:\s+備考)?)$",
     re.MULTILINE,
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
@@ -28,6 +29,18 @@ STRUCTURAL_SUBHEADING_RE = re.compile(
 TABLE_DELIMITER_RE = re.compile(r"(?m)^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$")
 TABLE_SEMANTIC_MARKER_RE = re.compile(r"(?:◆英語外部試験|◆スコアシート|※TOEIC|※TOEFL)")
 NUMBERED_REQUIREMENT_END_RE = re.compile(r"こと。$")
+SCORE_HANDLING_TITLES = frozenset(
+    {
+        "【英語試験】",
+        "【英語外部試験のスコアシートの取扱い】",
+        "【外部英語試験のスコアシートの取扱い】",
+    }
+)
+DEPARTMENT_PAGE_BANNER_RE = re.compile(
+    r"^(?P<college>\S+学院)\s+"
+    r"(?P<unit>[^\n]+(?:系|専門職学位課程))$",
+    re.MULTILINE,
+)
 
 
 @dataclass
@@ -294,6 +307,24 @@ def _split_on_page_boundaries(text_slice: _TextSlice) -> list[_TextSlice]:
     return parts
 
 
+def _split_before_markdown_tables(text_slice: _TextSlice) -> list[_TextSlice]:
+    table_start = text_slice.text.find("\n\n### Table")
+    if table_start < 0:
+        return [text_slice]
+    parts = []
+    for start, end in ((0, table_start), (table_start, len(text_slice.text))):
+        part = _strip_slice(text_slice.text, start, end)
+        if part:
+            parts.append(
+                _TextSlice(
+                    part.text,
+                    text_slice.start + part.start,
+                    text_slice.start + part.end,
+                )
+            )
+    return parts
+
+
 def _chunk_markdown(
     markdown: str,
     pdf_name: str,
@@ -326,17 +357,23 @@ def _chunk_markdown(
                 and not NUMBERED_REQUIREMENT_END_RE.search(title)
             ):
                 continue
-            for part in _split_without_cutting_tables(page_part, max_chars):
-                chunks.append(
-                    TextChunk(
-                        pdf_name=pdf_name,
-                        page_numbers=_source_pages_for_slice(part.text_slice, page_spans),
-                        title=title,
-                        text=part.text_slice.text,
-                        section_path=list(section_path),
-                        oversize_reason=part.oversize_reason,
+            semantic_parts = (
+                _split_before_markdown_tables(page_part)
+                if title in SCORE_HANDLING_TITLES
+                else [page_part]
+            )
+            for semantic_part in semantic_parts:
+                for part in _split_without_cutting_tables(semantic_part, max_chars):
+                    chunks.append(
+                        TextChunk(
+                            pdf_name=pdf_name,
+                            page_numbers=_source_pages_for_slice(part.text_slice, page_spans),
+                            title=title,
+                            text=part.text_slice.text,
+                            section_path=list(section_path),
+                            oversize_reason=part.oversize_reason,
+                        )
                     )
-                )
     return chunks
 
 
@@ -348,6 +385,50 @@ def chunk_pages(
     pages: Sequence[SourcePage],
     pdf_name: str,
     max_chars: int = 6000,
+) -> list[TextChunk]:
+    contextual_pages: dict[int, list[TextChunk]] = {}
+    for page in pages:
+        banner_match = next(
+            (
+                match
+                for match in DEPARTMENT_PAGE_BANNER_RE.finditer(page.text)
+                if page.text.count("\n", 0, match.start()) <= 10
+            ),
+            None,
+        )
+        if banner_match is None:
+            continue
+        banner = banner_match.group(0).strip()
+        contextual_pages[page.page_number] = _chunk_source_pages([page], pdf_name, max_chars)
+        for chunk in contextual_pages[page.page_number]:
+            path = [banner, *chunk.section_path]
+            chunk.section_path = [
+                heading
+                for index, heading in enumerate(path)
+                if index == 0 or heading != path[index - 1]
+            ]
+
+    if not contextual_pages:
+        return _chunk_source_pages(pages, pdf_name, max_chars)
+
+    chunks: list[TextChunk] = []
+    emitted_contextual_pages: set[int] = set()
+    for chunk in _chunk_source_pages(pages, pdf_name, max_chars):
+        contextual_page = next(
+            (page for page in chunk.page_numbers if page in contextual_pages), None
+        )
+        if contextual_page is None:
+            chunks.append(chunk)
+        elif contextual_page not in emitted_contextual_pages:
+            chunks.extend(contextual_pages[contextual_page])
+            emitted_contextual_pages.add(contextual_page)
+    return chunks
+
+
+def _chunk_source_pages(
+    pages: Sequence[SourcePage],
+    pdf_name: str,
+    max_chars: int,
 ) -> list[TextChunk]:
     parts: list[str] = []
     page_spans: list[tuple[int, int, int]] = []

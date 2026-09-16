@@ -25,7 +25,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule03a_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
 
 
 @pytest.fixture(scope="module")
@@ -97,7 +97,7 @@ def test_real_application_facts_are_global_complete_and_on_page_9() -> None:
         assert facts[fact_id].source_pages == [9]
         assert facts[fact_id].scope_type == "global"
         assert facts[fact_id].section_path[0] == "４．出願手続"
-    assert len(facts) == 334
+    assert len(facts) == 391
     assert "6月1日（月）午前9時" in facts["fact:00099"].text
     assert "出願書類一式が出願期間内に本学へ到着しない場合" in facts["fact:00100"].text
 
@@ -132,7 +132,7 @@ def test_scenario_3_arrival_boundaries_confirm_only_atomic_window(rule03a_client
         client, document_id, _submission_profile(arrival=arrival), f"arrival-{arrival}"
     )
     assert _statuses(report)["isct-master-materials-arrival-window-apr"] == "confirmed"
-    assert "学校による受理" in report["limitation_statement"]
+    assert "出願受理" in report["limitation_statement"]
 
 
 @pytest.mark.parametrize("arrival", ["2026-06-03", "2026-06-11"])
@@ -150,7 +150,7 @@ def test_scenario_5_dispatch_on_deadline_does_not_replace_arrival(rule03a_client
     rule_id = "isct-master-materials-arrival-window-apr"
     assert _statuses(report)[rule_id] == "needs_information"
     assert _missing(report, rule_id) == {"application_submission.materials_arrival_date"}
-    assert "発送日は到着日として扱いません" in report["limitation_statement"]
+    assert "出願受理" in report["limitation_statement"]
 
 
 @pytest.mark.parametrize("arrival", [None, "2026-06-11"])

@@ -25,7 +25,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule02a_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
 INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
@@ -130,7 +130,7 @@ def _note(report: dict[str, Any], rule_id: str) -> str:
 def test_rule02a_restores_exact_page8_gpt_fact(rule02a_client) -> None:
     kb = build_document_kb(PDF, load_document_identity(IDENTITY))
     facts = {fact.fact_id: fact for fact in kb.facts}
-    assert len(kb.facts) == 334
+    assert len(kb.facts) == 391
     assert (
         facts["fact:00090"].text
         == "２．本学に2年間在学した時点においてGPTが3.00以上であり、かつ、原則として90単位以上を修得していること。"
@@ -150,7 +150,7 @@ def test_scenario_1_exact_isct_boundaries_are_independent(rule02a_client) -> Non
     assert {item["fact_id"] for item in finding["citations"]} == {"fact:00088", "fact:00090"}
     assert {page for item in finding["citations"] for page in item["source_pages"]} == {8}
     assert "GPT" in _note(report, "isct-master-path-9-isct-early-entry-requirement-2-apr")
-    assert "school approval" in report["limitation_statement"]
+    assert "受験資格" in report["limitation_statement"]
 
 
 @pytest.mark.parametrize(
@@ -222,7 +222,7 @@ def test_scenario_6_foreign_15_year_candidate_waits_for_school_review(rule02a_cl
     assert _statuses(report)["isct-master-path-9-candidate-foreign-15-year-apr"] == "confirmed"
     recognition = "isct-master-path-9-school-recognition-foreign-15-year-apr"
     assert _statuses(report)[recognition] == "needs_information"
-    assert "final individual review" in report["limitation_statement"]
+    assert "受験資格" in report["limitation_statement"]
 
 
 def test_scenario_7_process_actions_keep_page8_evidence(rule02a_client) -> None:

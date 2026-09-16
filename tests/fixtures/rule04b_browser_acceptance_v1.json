@@ -1,0 +1,430 @@
+[
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "normal-department-with-application",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "化学系",
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "スコアシートは出願時に提出し、受付締切後の提出や提出後の差し替えはできません。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は入力した提出計画と人工確認済み条件の一致だけを示し、学校による受領、真正性確認、出願受理又は合否を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "physics-exam-day-carry",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "物理学系",
+      "language-score-submission-method": "written_exam_day_carry",
+      "language-online-pdf": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-physics-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00181", "source_pages": [21]}],
+      "action_text": "オンライン版スコアシートの印刷物を筆答試験当日に持参します。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は入力した提出計画と人工確認済み条件の一致だけを示し、当日の受領や出願受理を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "physics-missing-exam-day-submission",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "物理学系",
+      "language-score-submission-method": "no_external_submission"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-missing-exam-day-risk-physics-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00181", "source_pages": [21]}],
+      "action_text": "筆答試験当日に提出しない計画には重大なリスクがあります。システムは最終的な不合格判定を行いません。",
+      "missing_items": []
+    }],
+    "limitation": "この表示は公式条文に基づく計画リスクであり、学校による最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "civil-later-registered-mail",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "false",
+      "language-score-submission-method": "department_later_by_mail",
+      "language-score-expected-arrival-date": "2026-07-29",
+      "language-score-registered-mail": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-civil-later-mail-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "A日程口述試験を希望しない場合は、2026-07-29 必着の簡易書留郵便による後日提出計画が一致します。",
+      "missing_items": []
+    }],
+    "limitation": "到着予定日と郵送方法の計画一致だけを示し、実際の到着又は受領を保証しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "civil-a-schedule-conflict",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "true",
+      "language-score-submission-method": "department_later_by_mail"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-civil-a-schedule-conflict-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "A日程口述試験への参加計画と後日郵送の例外は両立しません。",
+      "missing_items": []
+    }],
+    "limitation": "この表示は入力間の規則上の衝突を示し、学校による出願可否の最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-written-exam-exception",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "数学系",
+      "language-score-submission-method": "no_external_submission"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-math-written-exam-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00123", "source_pages": [12]}],
+      "action_text": "数学系は本学の英語筆答試験を受けるため、英語外部試験スコアシートは不要です。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は数学系の例外対象との一致だけを示し、筆答試験の成績又は合否を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "scope-unknown",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "needs_information",
+      "disposition": "pending",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "対象の学院・系が不明なため、この提出規則が適用されるか確認できません。",
+      "missing_items": ["target_application.department_or_program"]
+    }],
+    "limitation": "対象範囲が不明な状態では、特定の系の提出条件を適用済みとして扱いません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "scope-parent-conflict",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "化学系",
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "needs_information",
+      "disposition": "pending",
+      "diagnostic_code": "scope_input_conflict",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "入力された学院と系の組み合わせが規則の対象範囲と矛盾しています。",
+      "missing_items": []
+    }],
+    "limitation": "範囲入力が矛盾する状態では、提出条件を適用済みとして扱いません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "normal-department-with-application",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "化学系",
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "スコアシートは出願時に提出し、受付締切後の提出や提出後の差し替えはできません。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は入力した提出計画と人工確認済み条件の一致だけを示し、学校による受領、真正性確認、出願受理又は合否を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "physics-exam-day-carry",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "物理学系",
+      "language-score-submission-method": "written_exam_day_carry",
+      "language-online-pdf": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-physics-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00181", "source_pages": [21]}],
+      "action_text": "オンライン版スコアシートの印刷物を筆答試験当日に持参します。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は入力した提出計画と人工確認済み条件の一致だけを示し、当日の受領や出願受理を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "physics-missing-exam-day-submission",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "物理学系",
+      "language-score-submission-method": "no_external_submission"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-missing-exam-day-risk-physics-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00181", "source_pages": [21]}],
+      "action_text": "筆答試験当日に提出しない計画には重大なリスクがあります。システムは最終的な不合格判定を行いません。",
+      "missing_items": []
+    }],
+    "limitation": "この表示は公式条文に基づく計画リスクであり、学校による最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "civil-later-registered-mail",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "false",
+      "language-score-submission-method": "department_later_by_mail",
+      "language-score-expected-arrival-date": "2026-07-29",
+      "language-score-registered-mail": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-civil-later-mail-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "A日程口述試験を希望しない場合は、2026-07-29 必着の簡易書留郵便による後日提出計画が一致します。",
+      "missing_items": []
+    }],
+    "limitation": "到着予定日と郵送方法の計画一致だけを示し、実際の到着又は受領を保証しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "civil-a-schedule-conflict",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "true",
+      "language-score-submission-method": "department_later_by_mail"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-civil-a-schedule-conflict-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "A日程口述試験への参加計画と後日郵送の例外は両立しません。",
+      "missing_items": []
+    }],
+    "limitation": "この表示は入力間の規則上の衝突を示し、学校による出願可否の最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-written-exam-exception",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "理学院",
+      "department-program": "数学系",
+      "language-score-submission-method": "no_external_submission"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-math-written-exam-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00123", "source_pages": [12]}],
+      "action_text": "数学系は本学の英語筆答試験を受けるため、英語外部試験スコアシートは不要です。",
+      "missing_items": []
+    }],
+    "limitation": "confirmed は数学系の例外対象との一致だけを示し、筆答試験の成績又は合否を示しません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "scope-unknown",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "needs_information",
+      "disposition": "pending",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "対象の学院・系が不明なため、この提出規則が適用されるか確認できません。",
+      "missing_items": ["target_application.department_or_program"]
+    }],
+    "limitation": "対象範囲が不明な状態では、特定の系の提出条件を適用済みとして扱いません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "scope-parent-conflict",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "情報理工学院",
+      "department-program": "化学系",
+      "language-score-submission-method": "with_application"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-submission-chemistry-apr",
+      "status": "needs_information",
+      "disposition": "pending",
+      "diagnostic_code": "scope_input_conflict",
+      "evidence": [{"fact_id": "fact:00189", "source_pages": [23]}],
+      "action_text": "入力された学院と系の組み合わせが規則の対象範囲と矛盾しています。",
+      "missing_items": []
+    }],
+    "limitation": "範囲入力が矛盾する状態では、提出条件を適用済みとして扱いません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "civil-late-arrival",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "false",
+      "language-score-submission-method": "department_later_by_mail",
+      "language-score-expected-arrival-date": "2026-07-30",
+      "language-score-registered-mail": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-civil-late-arrival-risk-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "2026-07-30 の到着予定は 7 月 29 日必着条件を超える計画リスクです。",
+      "missing_items": []
+    }],
+    "limitation": "到着予定日に基づく計画リスクであり、学校による最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "civil-late-arrival",
+    "inputs": {
+      "intake-year": 2027,
+      "intake-month": 4,
+      "graduate-school": "環境・社会理工学院",
+      "department-program": "土木・環境工学系",
+      "a-schedule-oral-participation": "false",
+      "language-score-submission-method": "department_later_by_mail",
+      "language-score-expected-arrival-date": "2026-07-30",
+      "language-score-registered-mail": "true"
+    },
+    "rules": [{
+      "rule_id": "isct-master-english-civil-late-arrival-risk-apr",
+      "status": "confirmed",
+      "disposition": "active",
+      "evidence": [{"fact_id": "fact:00314", "source_pages": [63]}],
+      "action_text": "2026-07-30 の到着予定は 7 月 29 日必着条件を超える計画リスクです。",
+      "missing_items": []
+    }],
+    "limitation": "到着予定日に基づく計画リスクであり、学校による最終判定ではありません。",
+    "report_status": "needs_information",
+    "horizontal_overflow": false
+  }
+]
