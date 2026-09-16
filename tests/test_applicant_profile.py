@@ -335,8 +335,12 @@ def test_language_result_uses_closed_kind_and_preserves_submission_facts() -> No
     assert result.toeic_verification_qr_present is True
 
     payload["language_test_results"][0]["test_kind"] = "IELTS"  # type: ignore[index]
-    with pytest.raises(ValidationError):
-        ApplicantProfile.model_validate(payload)
+    migrated = ApplicantProfile.model_validate(payload)
+    assert migrated.language_test_results[0].test_kind is LanguageTestKind.OTHER  # type: ignore[index]
+
+    payload["language_test_results"][0]["test_kind"] = "TOEFL iBT"  # type: ignore[index]
+    migrated = ApplicantProfile.model_validate(payload)
+    assert migrated.language_test_results[0].test_kind is LanguageTestKind.TOEFL_IBT  # type: ignore[index]
 
 
 @pytest.mark.parametrize(
@@ -397,6 +401,21 @@ def test_contradictory_review_and_language_result_states_fail() -> None:
     payload = _unknown_profile_payload()
     payload["eligibility_facts"]["individual_review_status"] = "completed"  # type: ignore[index]
     payload["eligibility_facts"]["individual_review_completed"] = False  # type: ignore[index]
+    with pytest.raises(ValidationError):
+        ApplicantProfile.model_validate(payload)
+
+    payload = _unknown_profile_payload()
+    payload["language_test_results"] = [
+        {
+            "test_kind": "toeic_lr",
+            "score": None,
+            "test_date": None,
+            "validity_status": "not_available",
+            "official_report_available": None,
+            "selected_for_submission": True,
+            "downloaded_online_pdf": True,
+        }
+    ]
     with pytest.raises(ValidationError):
         ApplicantProfile.model_validate(payload)
 

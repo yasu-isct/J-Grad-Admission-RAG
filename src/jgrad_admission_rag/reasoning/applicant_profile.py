@@ -380,6 +380,30 @@ class LanguageTestResult(ApplicantProfileModel):
     ets_paper_sent_to_applicant: StrictBool | None = None
     ets_paper_sent_to_institution: StrictBool | None = None
 
+    @field_validator("test_kind", mode="before")
+    @classmethod
+    def migrate_legacy_test_kind(cls, value: object) -> object:
+        if value is None or isinstance(value, LanguageTestKind):
+            return value
+        if not isinstance(value, str):
+            raise ValueError("test_kind must be an explicit string")
+        _validate_explicit_string(value, "test_kind")
+        aliases = {
+            "TOEIC L&R": LanguageTestKind.TOEIC_LR,
+            "TOEFL iBT": LanguageTestKind.TOEFL_IBT,
+            "TOEFL iBT Home Edition": LanguageTestKind.TOEFL_IBT_HOME_EDITION,
+            "TOEFL-ITP": LanguageTestKind.TOEFL_ITP,
+            "TOEIC-IP": LanguageTestKind.TOEIC_IP,
+        }
+        if value in aliases:
+            return aliases[value]
+        try:
+            return LanguageTestKind(value)
+        except ValueError:
+            # Schema 1.0 accepted explicit free-text kinds. Normalize them to an
+            # unreviewed enum value so they cannot activate an approved-kind rule.
+            return LanguageTestKind.OTHER
+
     @field_validator("score")
     @classmethod
     def score_must_be_finite_or_explicit(
@@ -401,6 +425,14 @@ class LanguageTestResult(ApplicantProfileModel):
             self.score is not None
             or self.test_date is not None
             or self.official_report_available is True
+            or self.selected_for_submission is True
+            or self.downloaded_online_pdf is True
+            or self.toeic_verification_qr_present is True
+            or self.toeic_digital_official_score_certificate is True
+            or self.toefl_test_taker_score_report_pdf is True
+            or self.toefl_di_code_g179_set is True
+            or self.ets_paper_sent_to_applicant is True
+            or self.ets_paper_sent_to_institution is True
         ):
             raise ValueError("not_available language results cannot have supplied result facts")
         return self

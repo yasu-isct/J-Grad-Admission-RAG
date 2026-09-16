@@ -160,6 +160,7 @@ def test_toeic_submission_requirements(rule04a_client, year, month, suffix) -> N
     )
     statuses = _statuses(report)
     for name in (
+        "external-score-required",
         "approved-kind-toeic_lr",
         "test-date",
         "online-pdf",
@@ -169,13 +170,18 @@ def test_toeic_submission_requirements(rule04a_client, year, month, suffix) -> N
         "no-paper-to-university",
     ):
         assert statuses[f"isct-master-english-{name}-{suffix}"] == "confirmed"
+    approved = _finding(report, f"isct-master-english-approved-kind-toeic_lr-{suffix}")
+    assert {item["fact_id"] for item in approved["citations"]} == {"fact:00110"}
+    common = _finding(report, f"isct-master-english-external-score-required-{suffix}")
+    assert {item["fact_id"] for item in common["citations"]} == {"fact:00122"}
 
 
+@pytest.mark.parametrize("test_kind", ("toefl_ibt", "toefl_ibt_home_edition"))
 @pytest.mark.parametrize(("year", "month", "suffix"), BATCHES)
-def test_toefl_submission_requirements(rule04a_client, year, month, suffix) -> None:
+def test_toefl_submission_requirements(rule04a_client, year, month, suffix, test_kind) -> None:
     client, document_id = rule04a_client
     result = _language_result(
-        "toefl_ibt_home_edition",
+        test_kind,
         toefl_test_taker_score_report_pdf=True,
         toefl_di_code_g179_set=True,
     )
@@ -187,15 +193,17 @@ def test_toefl_submission_requirements(rule04a_client, year, month, suffix) -> N
     )
     statuses = _statuses(report)
     for name in (
-        "approved-kind-toefl_ibt_home_edition",
+        f"approved-kind-{test_kind}",
         "test-date",
         "online-pdf",
-        "toefl-report-toefl_ibt_home_edition",
-        "toefl-g179-toefl_ibt_home_edition",
+        f"toefl-report-{test_kind}",
+        f"toefl-g179-{test_kind}",
         "no-paper-to-applicant",
         "no-paper-to-university",
     ):
         assert statuses[f"isct-master-english-{name}-{suffix}"] == "confirmed"
+    approved = _finding(report, f"isct-master-english-approved-kind-{test_kind}-{suffix}")
+    assert {item["fact_id"] for item in approved["citations"]} == {"fact:00111"}
 
 
 @pytest.mark.parametrize(("year", "month", "suffix"), BATCHES)
@@ -350,8 +358,16 @@ def test_multiple_results_require_explicit_selection(rule04a_client, year, month
     finding = _finding(report, f"isct-master-english-test-date-{suffix}")
     assert finding["original_status"] == "needs_information"
     assert any(
-        item["field_path"] == "language_test_results.selected.test_date"
+        item["field_path"] == "language_test_results.selected_for_submission"
         for item in report["cited_answer"]["missing_information"]
+    )
+    assert all(
+        not item["field_path"].startswith("language_test_results.selected.")
+        for item in report["cited_answer"]["missing_information"]
+    )
+    assert any(
+        item["kind"] == "ambiguous_language_result_selection"
+        for item in report["cited_answer"]["process_notices"]
     )
 
 

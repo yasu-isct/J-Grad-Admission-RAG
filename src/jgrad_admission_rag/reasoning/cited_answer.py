@@ -81,6 +81,7 @@ class ProcessNoticeKind(str, Enum):
     SCOPE_INPUT_CONFLICT = "scope_input_conflict"
     INTERACTION_ANALYSIS_INCOMPLETE = "interaction_analysis_incomplete"
     MULTIPLE_ACADEMIC_CREDENTIALS = "multiple_academic_credentials"
+    AMBIGUOUS_LANGUAGE_RESULT_SELECTION = "ambiguous_language_result_selection"
 
 
 _REVIEW_NOTICE_KINDS = frozenset(
@@ -355,7 +356,17 @@ def build_cited_answer(answer_id: str, trace: ReasoningTrace) -> CitedAnswer:
         for resolution in validated_trace.resolution_steps:
             applicability = applicability_by_rule[resolution.rule_id]
             if resolution.disposition is ResolutionDisposition.PENDING:
-                for field_path in applicability.missing_profile_fields:
+                missing_fields = applicability.missing_profile_fields
+                if (
+                    ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION
+                    in applicability.diagnostics
+                ):
+                    missing_fields = tuple(
+                        field_path
+                        for field_path in missing_fields
+                        if not field_path.startswith("language_test_results.selected.")
+                    ) + ("language_test_results.selected_for_submission",)
+                for field_path in missing_fields:
                     missing.append(
                         MissingInformationEntry(
                             rule_id=resolution.rule_id,
@@ -620,6 +631,9 @@ def _diagnostic_notices(
         ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS: (
             ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS
         ),
+        ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION: (
+            ProcessNoticeKind.AMBIGUOUS_LANGUAGE_RESULT_SELECTION
+        ),
     }
     return tuple(
         ProcessNotice(
@@ -784,6 +798,7 @@ def _validate_notice_sources(
         ProcessNoticeKind.MISSING_SCOPE,
         ProcessNoticeKind.SCOPE_INPUT_CONFLICT,
         ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS,
+        ProcessNoticeKind.AMBIGUOUS_LANGUAGE_RESULT_SELECTION,
     }
     if notice.kind in single_rule_kinds:
         if len(notice.rule_ids) != 1:
@@ -888,6 +903,7 @@ def _render_notice(notice: ProcessNotice) -> str:
         ProcessNoticeKind.SCOPE_INPUT_CONFLICT: "対象範囲の入力が整合していないため、確認が必要です。",
         ProcessNoticeKind.INTERACTION_ANALYSIS_INCOMPLETE: "規則間関係の確認が完了していません。",
         ProcessNoticeKind.MULTIPLE_ACADEMIC_CREDENTIALS: "複数の学歴から安全に一件を選べないため、確認が必要です。",
+        ProcessNoticeKind.AMBIGUOUS_LANGUAGE_RESULT_SELECTION: "複数の英語試験結果から提出対象を一件に特定できないため、選択が必要です。",
     }
     rules = ""
     if notice.rule_ids:
