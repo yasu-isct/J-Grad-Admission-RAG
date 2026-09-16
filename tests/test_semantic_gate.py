@@ -192,10 +192,10 @@ def test_gate_modules_do_not_import_embedding_runtime() -> None:
 @pytest.mark.parametrize(
     ("field", "observed"),
     (
-        ("recall_at_1", 0.4198879551820728),
-        ("recall_at_3", 0.7719187675070027),
-        ("recall_at_5", 0.878781512605042),
-        ("recall_at_10", 0.9395658263305322),
+        ("recall_at_1", 0.4125350140056022),
+        ("recall_at_3", 0.7464285714285714),
+        ("recall_at_5", 0.8532913165266107),
+        ("recall_at_10", 0.940546218487395),
         ("mrr", 0.9607843137254901),
     ),
 )
@@ -258,8 +258,8 @@ def test_zero_hit_cap_fails_when_a_zero_hit_is_introduced() -> None:
 @pytest.mark.parametrize(
     ("dimension", "group", "observed"),
     (
-        ("category", "eligibility", 0.7666666666666666),
-        ("multiple_clause", "true", 0.7642857142857142),
+        ("category", "eligibility", 0.8333333333333334),
+        ("multiple_clause", "true", 0.7588435374149659),
         ("query_style", "exact_term", 0.8452380952380952),
     ),
 )

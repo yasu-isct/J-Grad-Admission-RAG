@@ -130,7 +130,7 @@ def _note(report: dict[str, Any], rule_id: str) -> str:
 def test_rule02a_restores_exact_page8_gpt_fact(rule02a_client) -> None:
     kb = build_document_kb(PDF, load_document_identity(IDENTITY))
     facts = {fact.fact_id: fact for fact in kb.facts}
-    assert len(kb.facts) == 318
+    assert len(kb.facts) == 334
     assert (
         facts["fact:00090"].text
         == "２．本学に2年間在学した時点においてGPTが3.00以上であり、かつ、原則として90単位以上を修得していること。"

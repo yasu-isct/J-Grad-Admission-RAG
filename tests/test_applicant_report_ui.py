@@ -79,6 +79,17 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         "scholarship-status",
         "scholarship-copy-emailed-date",
         "scholarship-method-received",
+        "language-test-kind",
+        "language-test-date",
+        "language-test-score",
+        "language-test-selected",
+        "language-online-pdf",
+        "toeic-qr-present",
+        "toeic-digital-certificate",
+        "toefl-score-report",
+        "toefl-g179",
+        "ets-paper-applicant",
+        "ets-paper-institution",
     ):
         assert f'for="{field_id}"' in html
         assert f'id="{field_id}"' in html
@@ -155,7 +166,10 @@ def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     assert (
         'scholarship_copy_emailed_date: nullableText("scholarship-copy-emailed-date")' in javascript
     )
-    assert "language_test_results: null" in javascript
+    assert "language_test_results: languageTestResults()" in javascript
+    assert 'test_kind: nullableText("language-test-kind")' in javascript
+    assert 'selected_for_submission: nullableBoolean("language-test-selected")' in javascript
+    assert 'toefl_di_code_g179_set: nullableBoolean("toefl-g179")' in javascript
     assert 'return value === "" ? null : value === "true"' in javascript
     assert 'if (raw === "") return null' in javascript
     assert "reportRequest(item, profile, intentPayload)" in javascript

@@ -113,8 +113,16 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
             "（６）外国籍および海外在住の志願者への注意",
             "（１）出願時に日本に在住していること",
             "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること",
-            "【外国籍の志願者のみ提出する書類】",
+            "（１）英語試験（Ａ日程及びＢ日程どちらも必須）",
         )
+    ):
+        return "global", [], None, 0.7
+
+    if (
+        item.section_path
+        and item.section_path[-1].startswith("【外国籍の志願者のみ提出する書類】")
+        and item.title
+        and item.text.lstrip().startswith(item.title)
     ):
         return "global", [], None, 0.7
 
@@ -122,7 +130,7 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
         department
         for departments in COLLEGE_DEPARTMENTS.values()
         for department in departments
-        if department in haystack
+        if haystack.count(department) > haystack.count(f"{department}以外")
     ]
     if matched_departments:
         parent = next(

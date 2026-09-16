@@ -39,6 +39,7 @@ __all__ = [
     "IndividualReviewStatus",
     "IntakeMonth",
     "LanguageResultStatus",
+    "LanguageTestKind",
     "LanguageTestResult",
     "OfficialVerificationStatus",
     "PreapplicationActions",
@@ -138,6 +139,15 @@ class LanguageResultStatus(str, Enum):
     VALID = "valid"
     EXPIRED = "expired"
     NOT_AVAILABLE = "not_available"
+
+
+class LanguageTestKind(str, Enum):
+    TOEIC_LR = "toeic_lr"
+    TOEFL_IBT = "toefl_ibt"
+    TOEFL_IBT_HOME_EDITION = "toefl_ibt_home_edition"
+    TOEFL_ITP = "toefl_itp"
+    TOEIC_IP = "toeic_ip"
+    OTHER = "other"
 
 
 class TranscriptUnavailableReason(str, Enum):
@@ -356,18 +366,19 @@ class PreapplicationActions(ApplicantProfileModel):
 
 
 class LanguageTestResult(ApplicantProfileModel):
-    test_kind: str | None
+    test_kind: LanguageTestKind | None
     score: StrictInt | StrictFloat | str | None
     test_date: date | None
     validity_status: LanguageResultStatus | None
     official_report_available: StrictBool | None
-
-    @field_validator("test_kind")
-    @classmethod
-    def test_kind_must_be_explicit(cls, value: str | None) -> str | None:
-        if value is not None:
-            _validate_explicit_string(value, "test_kind")
-        return value
+    selected_for_submission: StrictBool | None = None
+    downloaded_online_pdf: StrictBool | None = None
+    toeic_verification_qr_present: StrictBool | None = None
+    toeic_digital_official_score_certificate: StrictBool | None = None
+    toefl_test_taker_score_report_pdf: StrictBool | None = None
+    toefl_di_code_g179_set: StrictBool | None = None
+    ets_paper_sent_to_applicant: StrictBool | None = None
+    ets_paper_sent_to_institution: StrictBool | None = None
 
     @field_validator("score")
     @classmethod

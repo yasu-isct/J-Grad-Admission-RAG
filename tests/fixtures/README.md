@@ -9,14 +9,16 @@ real `fact:00063` page 7 rule findings plus synthetic override, interaction, inc
 missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
 official prose, model output, or final eligibility verdict.
 
-`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, `rule03a`, and `rule03b`
+`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, `rule03a`, `rule03b`, and `rule04a`
 extensions are server-owned reviewed plans for the same exact document. The RULE-02 plans add
 eligibility paths 9 through 11 and the shared individual-review process while preserving the
 earlier plan coverage. RULE-03A adds the shared main application window, registration start, and
 paper-material arrival deadline without treating dispatch or online steps as application completion.
+RULE-04A adds the reviewed common English-test types, date and score-report requirements, plus the
+department-scoped mathematics written-exam exception.
 They contain reviewed configuration and hashes, but no applicant data, query, retrieval score,
 generated report, or overall eligibility state. The current plans are explicitly bound to the
-canonical schema-0.6 318-Fact KB; historical M4/RET-09 schema-0.5 fixtures remain unchanged.
+canonical schema-0.6 334-Fact KB; historical M4/RET-09 schema-0.5 fixtures remain unchanged.
 
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.

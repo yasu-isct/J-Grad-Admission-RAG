@@ -82,7 +82,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -92,7 +92,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -102,7 +102,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -167,7 +167,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -177,7 +177,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -187,7 +187,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -252,7 +252,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -262,7 +262,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -272,7 +272,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -337,7 +337,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -347,7 +347,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -357,7 +357,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -427,7 +427,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -437,7 +437,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -447,7 +447,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -457,7 +457,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -522,7 +522,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -532,7 +532,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -542,7 +542,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00061",
           "source_pages": [
@@ -607,7 +607,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -617,7 +617,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -627,7 +627,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00061",
           "source_pages": [
@@ -692,7 +692,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -702,7 +702,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -712,7 +712,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00061",
           "source_pages": [
@@ -777,7 +777,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -787,7 +787,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -797,7 +797,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00061",
           "source_pages": [
@@ -867,7 +867,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -877,7 +877,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -887,7 +887,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00061",
           "source_pages": [
@@ -897,7 +897,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -967,7 +967,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -977,7 +977,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -987,7 +987,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00062",
           "source_pages": [
@@ -1057,7 +1057,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1067,7 +1067,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1077,7 +1077,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00062",
           "source_pages": [
@@ -1147,7 +1147,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1157,7 +1157,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1167,7 +1167,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00062",
           "source_pages": [
@@ -1237,7 +1237,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1247,7 +1247,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1257,7 +1257,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00062",
           "source_pages": [
@@ -1332,7 +1332,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1342,7 +1342,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1352,7 +1352,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00062",
           "source_pages": [
@@ -1362,7 +1362,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -1432,7 +1432,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1442,7 +1442,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1452,7 +1452,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00063",
           "source_pages": [
@@ -1522,7 +1522,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1532,7 +1532,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1542,7 +1542,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00063",
           "source_pages": [
@@ -1612,7 +1612,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1622,7 +1622,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1632,7 +1632,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00063",
           "source_pages": [
@@ -1702,7 +1702,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1712,7 +1712,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1722,7 +1722,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00063",
           "source_pages": [
@@ -1797,7 +1797,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1807,7 +1807,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1817,7 +1817,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00063",
           "source_pages": [
@@ -1827,7 +1827,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -1897,7 +1897,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1907,7 +1907,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -1917,7 +1917,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00064",
           "source_pages": [
@@ -1987,7 +1987,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -1997,7 +1997,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2007,7 +2007,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00064",
           "source_pages": [
@@ -2077,7 +2077,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2087,7 +2087,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2097,7 +2097,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00064",
           "source_pages": [
@@ -2167,7 +2167,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2177,7 +2177,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2187,7 +2187,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00064",
           "source_pages": [
@@ -2262,7 +2262,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2272,7 +2272,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2282,7 +2282,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00064",
           "source_pages": [
@@ -2292,7 +2292,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -2367,7 +2367,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2377,7 +2377,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2387,7 +2387,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00065",
           "source_pages": [
@@ -2462,7 +2462,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2472,7 +2472,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2482,7 +2482,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00065",
           "source_pages": [
@@ -2557,7 +2557,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2567,7 +2567,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2577,7 +2577,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00065",
           "source_pages": [
@@ -2652,7 +2652,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2662,7 +2662,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2672,7 +2672,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00065",
           "source_pages": [
@@ -2752,7 +2752,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2762,7 +2762,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2772,7 +2772,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00065",
           "source_pages": [
@@ -2782,7 +2782,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00085",
           "source_pages": [
@@ -2847,7 +2847,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2857,7 +2857,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2867,7 +2867,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00066",
           "source_pages": [
@@ -2932,7 +2932,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -2942,7 +2942,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -2952,7 +2952,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00066",
           "source_pages": [
@@ -3017,7 +3017,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -3027,7 +3027,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -3037,7 +3037,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00066",
           "source_pages": [
@@ -3102,7 +3102,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -3112,7 +3112,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -3122,7 +3122,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00066",
           "source_pages": [
@@ -3172,7 +3172,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -3182,7 +3182,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -3192,7 +3192,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00067",
           "source_pages": [
@@ -3242,7 +3242,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00056",
           "source_pages": [
@@ -3252,7 +3252,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -3262,7 +3262,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00067",
           "source_pages": [
@@ -3297,7 +3297,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3347,7 +3347,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3397,7 +3397,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3447,7 +3447,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3497,7 +3497,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3547,7 +3547,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3597,7 +3597,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3662,7 +3662,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3727,7 +3727,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3792,7 +3792,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3857,7 +3857,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3922,7 +3922,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -3987,7 +3987,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4052,7 +4052,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4117,7 +4117,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4182,7 +4182,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4247,7 +4247,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4312,7 +4312,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4377,7 +4377,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4442,7 +4442,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4507,7 +4507,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4572,7 +4572,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4637,7 +4637,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4702,7 +4702,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4767,7 +4767,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4837,7 +4837,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4907,7 +4907,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -4977,7 +4977,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5047,7 +5047,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5117,7 +5117,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5187,7 +5187,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5262,7 +5262,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5337,7 +5337,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5382,7 +5382,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5427,7 +5427,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5472,7 +5472,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5517,7 +5517,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5562,7 +5562,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5607,7 +5607,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -5657,7 +5657,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5707,7 +5707,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5757,7 +5757,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5807,7 +5807,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5857,7 +5857,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5907,7 +5907,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00069",
           "source_pages": [
@@ -5957,7 +5957,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6007,7 +6007,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6057,7 +6057,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6107,7 +6107,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6157,7 +6157,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6207,7 +6207,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6252,7 +6252,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -6297,7 +6297,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -6347,7 +6347,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6397,7 +6397,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6447,7 +6447,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6497,7 +6497,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00070",
           "source_pages": [
@@ -6562,7 +6562,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6627,7 +6627,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6682,7 +6682,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6737,7 +6737,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6792,7 +6792,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6847,7 +6847,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -6907,7 +6907,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -6917,7 +6917,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -6977,7 +6977,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -6987,7 +6987,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -7047,7 +7047,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -7057,7 +7057,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00090",
           "source_pages": [
@@ -7117,7 +7117,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -7127,7 +7127,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00090",
           "source_pages": [
@@ -7192,7 +7192,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -7202,7 +7202,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00091",
           "source_pages": [
@@ -7267,7 +7267,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00088",
           "source_pages": [
@@ -7277,7 +7277,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00091",
           "source_pages": [
@@ -7332,7 +7332,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -7342,7 +7342,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -7352,7 +7352,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -7407,7 +7407,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -7417,7 +7417,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -7427,7 +7427,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -7482,7 +7482,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -7492,7 +7492,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -7502,7 +7502,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -7557,7 +7557,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00059",
           "source_pages": [
@@ -7567,7 +7567,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00060",
           "source_pages": [
@@ -7577,7 +7577,7 @@
         },
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00089",
           "source_pages": [
@@ -7622,7 +7622,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7667,7 +7667,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7712,7 +7712,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7757,7 +7757,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7802,7 +7802,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7847,7 +7847,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00086",
           "source_pages": [
@@ -7897,7 +7897,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -7947,7 +7947,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -7997,7 +7997,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -8047,7 +8047,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -8097,7 +8097,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [
@@ -8147,7 +8147,7 @@
       "evidence_bindings": [
         {
           "document_id": "isct_2027_4_2026_9_master",
-          "source_kb_sha256": "5f93d730a11811342ecbd887be7f66afb4b6c0a1457effb8fcbbd09c468f0187",
+          "source_kb_sha256": "b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6",
           "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
           "fact_id": "fact:00068",
           "source_pages": [

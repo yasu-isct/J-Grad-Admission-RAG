@@ -23,6 +23,7 @@ from jgrad_admission_rag.reasoning import (
     IndividualReviewStatus,
     IntakeMonth,
     LanguageResultStatus,
+    LanguageTestKind,
     LanguageTestResult,
     OfficialVerificationStatus,
     PreapplicationActions,
@@ -79,7 +80,7 @@ def _profile_payload() -> dict[str, object]:
         },
         "language_test_results": [
             {
-                "test_kind": "TOEFL iBT",
+                "test_kind": "toefl_ibt",
                 "score": 100,
                 "test_date": "2026-07-01",
                 "validity_status": "valid",
@@ -285,7 +286,7 @@ def test_academic_and_language_order_is_preserved() -> None:
     )
     payload["language_test_results"].append(  # type: ignore[union-attr]
         {
-            "test_kind": "IELTS",
+            "test_kind": "other",
             "score": "7.5",
             "test_date": "2026-05-01",
             "validity_status": "valid",
@@ -301,10 +302,41 @@ def test_academic_and_language_order_is_preserved() -> None:
         "US",
         "JP",
     ]
-    assert [result.test_kind for result in profile.language_test_results or ()] == [
-        "TOEFL iBT",
-        "IELTS",
+    assert [result.test_kind.value for result in profile.language_test_results or ()] == [
+        "toefl_ibt",
+        "other",
     ]
+
+
+def test_language_result_uses_closed_kind_and_preserves_submission_facts() -> None:
+    payload = _unknown_profile_payload()
+    payload["language_test_results"] = [
+        {
+            "test_kind": "toeic_lr",
+            "score": None,
+            "test_date": "2024-06-11",
+            "validity_status": None,
+            "official_report_available": None,
+            "selected_for_submission": True,
+            "downloaded_online_pdf": True,
+            "toeic_verification_qr_present": True,
+            "toeic_digital_official_score_certificate": True,
+            "toefl_test_taker_score_report_pdf": None,
+            "toefl_di_code_g179_set": None,
+            "ets_paper_sent_to_applicant": False,
+            "ets_paper_sent_to_institution": False,
+        }
+    ]
+
+    profile = ApplicantProfile.model_validate(payload)
+    result = profile.language_test_results[0]  # type: ignore[index]
+    assert result.test_kind is LanguageTestKind.TOEIC_LR
+    assert result.selected_for_submission is True
+    assert result.toeic_verification_qr_present is True
+
+    payload["language_test_results"][0]["test_kind"] = "IELTS"  # type: ignore[index]
+    with pytest.raises(ValidationError):
+        ApplicantProfile.model_validate(payload)
 
 
 @pytest.mark.parametrize(
@@ -371,7 +403,7 @@ def test_contradictory_review_and_language_result_states_fail() -> None:
     payload = _unknown_profile_payload()
     payload["language_test_results"] = [
         {
-            "test_kind": "TOEFL iBT",
+            "test_kind": "toefl_ibt",
             "score": 100,
             "test_date": None,
             "validity_status": "not_available",
@@ -487,3 +519,4 @@ def test_public_schema_import_has_no_retrieval_model_or_network_dependency() -> 
     assert (
         LanguageTestResult.model_fields["validity_status"].annotation == LanguageResultStatus | None
     )
+    assert LanguageTestResult.model_fields["test_kind"].annotation == LanguageTestKind | None

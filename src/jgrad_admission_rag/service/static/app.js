@@ -349,6 +349,25 @@ function academicCredentials() {
   return Object.values(credential).every((value) => value === null) ? null : [credential];
 }
 
+function languageTestResults() {
+  const result = {
+    test_kind: nullableText("language-test-kind"),
+    test_date: nullableText("language-test-date"),
+    score: nullableNumber("language-test-score"),
+    validity_status: null,
+    official_report_available: null,
+    selected_for_submission: nullableBoolean("language-test-selected"),
+    downloaded_online_pdf: nullableBoolean("language-online-pdf"),
+    toeic_verification_qr_present: nullableBoolean("toeic-qr-present"),
+    toeic_digital_official_score_certificate: nullableBoolean("toeic-digital-certificate"),
+    toefl_test_taker_score_report_pdf: nullableBoolean("toefl-score-report"),
+    toefl_di_code_g179_set: nullableBoolean("toefl-g179"),
+    ets_paper_sent_to_applicant: nullableBoolean("ets-paper-applicant"),
+    ets_paper_sent_to_institution: nullableBoolean("ets-paper-institution")
+  };
+  return Object.values(result).every((value) => value === null) ? null : [result];
+}
+
 function applicantProfile() {
   return {
     schema_version: "1.0",
@@ -397,7 +416,7 @@ function applicantProfile() {
       scholarship_copy_emailed_date: nullableText("scholarship-copy-emailed-date"),
       scholarship_application_method_received: nullableBoolean("scholarship-method-received")
     },
-    language_test_results: null
+    language_test_results: languageTestResults()
   };
 }
 

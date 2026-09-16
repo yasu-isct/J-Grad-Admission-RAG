@@ -106,6 +106,7 @@ class ApplicabilityDiagnostic(str, Enum):
     MISSING_SCOPE = "missing_scope"
     SCOPE_INPUT_CONFLICT = "scope_input_conflict"
     MULTIPLE_ACADEMIC_CREDENTIALS = "multiple_academic_credentials"
+    AMBIGUOUS_LANGUAGE_RESULT_SELECTION = "ambiguous_language_result_selection"
 
 
 class EvidenceRole(str, Enum):
@@ -317,6 +318,38 @@ _FIELD_SPECS = {
     ),
     "academic_credentials.first.graduate_equivalent_recognition_status": _FieldSpec(
         "string", ("academic_credentials", "first", "graduate_equivalent_recognition_status")
+    ),
+    "language_test_results.selected.test_kind": _FieldSpec(
+        "string", ("language_test_results", "selected", "test_kind")
+    ),
+    "language_test_results.selected.test_date": _FieldSpec(
+        "date", ("language_test_results", "selected", "test_date")
+    ),
+    "language_test_results.selected.downloaded_online_pdf": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "downloaded_online_pdf")
+    ),
+    "language_test_results.selected.toeic_verification_qr_present": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "toeic_verification_qr_present")
+    ),
+    "language_test_results.selected.toeic_digital_official_score_certificate": _FieldSpec(
+        "boolean",
+        (
+            "language_test_results",
+            "selected",
+            "toeic_digital_official_score_certificate",
+        ),
+    ),
+    "language_test_results.selected.toefl_test_taker_score_report_pdf": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "toefl_test_taker_score_report_pdf")
+    ),
+    "language_test_results.selected.toefl_di_code_g179_set": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "toefl_di_code_g179_set")
+    ),
+    "language_test_results.selected.ets_paper_sent_to_applicant": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "ets_paper_sent_to_applicant")
+    ),
+    "language_test_results.selected.ets_paper_sent_to_institution": _FieldSpec(
+        "boolean", ("language_test_results", "selected", "ets_paper_sent_to_institution")
     ),
     "language_test_results.first.test_date": _FieldSpec(
         "date", ("language_test_results", "first", "test_date")
@@ -676,12 +709,19 @@ def _evaluate_applicability_core(
     )
     if multiple_credentials:
         diagnostics.append(ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS)
+    ambiguous_language_selection = _uses_selected_language_result(rule) and (
+        _selected_language_result(profile) is None and bool(profile.language_test_results)
+    )
+    if ambiguous_language_selection:
+        diagnostics.append(ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION)
 
     predicate_status = _combine_predicates(rule.mode, outcomes)
     status = _combine_with_scope(predicate_status, scope_status)
     if evidence_missing:
         status = ApplicabilityStatus.NEEDS_INFORMATION
     if multiple_credentials:
+        status = ApplicabilityStatus.NEEDS_INFORMATION
+    if ambiguous_language_selection:
         status = ApplicabilityStatus.NEEDS_INFORMATION
 
     return ApplicabilityDecision(
@@ -880,6 +920,8 @@ def _profile_value(profile: ApplicantProfile, path: str) -> Any:
             if not value:
                 return None
             value = value[0]
+        elif segment == "selected":
+            value = _selected_language_result(profile)
         else:
             value = getattr(value, segment)
     if isinstance(value, Enum):
@@ -892,6 +934,27 @@ def _uses_first_credential(rule: ApplicabilityRule) -> bool:
         predicate.field_path.startswith("academic_credentials.first.")
         for predicate in rule.predicates
     )
+
+
+def _uses_selected_language_result(rule: ApplicabilityRule) -> bool:
+    return any(
+        predicate.field_path.startswith("language_test_results.selected.")
+        for predicate in rule.predicates
+    )
+
+
+def _selected_language_result(profile: ApplicantProfile) -> Any:
+    results = profile.language_test_results
+    if not results:
+        return None
+    explicitly_selected = tuple(
+        result for result in results if result.selected_for_submission is True
+    )
+    if len(explicitly_selected) == 1:
+        return explicitly_selected[0]
+    if len(results) == 1 and results[0].selected_for_submission is not False:
+        return results[0]
+    return None
 
 
 def _predicate_status(value: Any, predicate: ApplicabilityPredicate) -> ApplicabilityStatus:
@@ -1092,6 +1155,8 @@ def _validate_decision_consistency(decision: ApplicabilityDecision) -> None:
     if missing_evidence:
         expected_status = ApplicabilityStatus.NEEDS_INFORMATION
     if ApplicabilityDiagnostic.MULTIPLE_ACADEMIC_CREDENTIALS in diagnostics:
+        expected_status = ApplicabilityStatus.NEEDS_INFORMATION
+    if ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION in diagnostics:
         expected_status = ApplicabilityStatus.NEEDS_INFORMATION
     if decision.status is not expected_status:
         raise ValueError("decision status does not reconcile")
