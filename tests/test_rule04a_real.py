@@ -6,7 +6,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.corpus_selection import select_corpus_documents
 from jgrad_admission_rag.reasoning.reviewed_report_evidence import prepare_reviewed_report_evidence
@@ -20,7 +19,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _profile, _report, _statuses
@@ -34,11 +32,9 @@ BATCHES = ((2027, 4, "apr"), (2026, 9, "sep"))
 
 
 @pytest.fixture(scope="module")
-def rule04a_client(tmp_path_factory: pytest.TempPathFactory):
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
+def rule04a_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
     root = tmp_path_factory.mktemp("rule04a")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
+    kb = real_document_kb
     kb_path = root / "documents/isct/document_kb.json"
     kb_path.parent.mkdir(parents=True)
     kb_path.write_bytes(canonical_document_kb_bytes(kb))
@@ -129,12 +125,9 @@ def _finding(report: dict[str, Any], rule_id: str) -> dict[str, Any]:
     )
 
 
-def test_real_english_facts_are_atomic_and_scoped() -> None:
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    assert len(kb.facts) == 391
-    facts = {fact.fact_id: fact for fact in kb.facts}
+def test_real_english_facts_are_atomic_and_scoped(real_document_kb) -> None:
+    assert len(real_document_kb.facts) == 391
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
     for fact_id in ("fact:00110", "fact:00111", "fact:00114", "fact:00115", "fact:00122"):
         assert facts[fact_id].scope_type == "global"
         assert facts[fact_id].scope_targets == []

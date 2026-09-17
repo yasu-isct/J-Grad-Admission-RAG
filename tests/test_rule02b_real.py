@@ -6,7 +6,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.retrieval.embedding import DeterministicFakeEmbeddingProvider
 from jgrad_admission_rag.retrieval.local_index import build_local_index
@@ -16,7 +15,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _credential, _profile, _report, _statuses
@@ -30,11 +28,9 @@ INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
 @pytest.fixture(scope="module")
-def rule02b_client(tmp_path_factory: pytest.TempPathFactory):
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
+def rule02b_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
     root = tmp_path_factory.mktemp("rule02b")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
+    kb = real_document_kb
     kb_relative = "documents/isct/document_kb.json"
     kb_path = root / Path(*kb_relative.split("/"))
     kb_path.parent.mkdir(parents=True)
@@ -122,9 +118,8 @@ def _missing(report: dict[str, Any], rule_id: str) -> set[str]:
     }
 
 
-def test_path10_and_path11_real_facts_are_complete(rule02b_client) -> None:
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    facts = {fact.fact_id: fact for fact in kb.facts}
+def test_path10_and_path11_real_facts_are_complete(rule02b_client, real_document_kb) -> None:
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
     assert "入学する日の前日までに22歳" in facts["fact:00069"].text
     assert "合計2年以上の職務経験" in facts["fact:00069"].text
     assert "1年以上研究に従事" in facts["fact:00070"].text
