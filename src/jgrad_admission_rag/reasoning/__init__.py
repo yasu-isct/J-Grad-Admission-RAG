@@ -177,6 +177,13 @@ from .language_score_allocation import (
     LanguageScoreAllocationStatus,
     resolve_language_score_allocation,
 )
+from .language_evaluation import (
+    DepartmentLanguageEvaluation,
+    LanguageEvaluationPolicy,
+    LanguageEvaluationResult,
+    LanguageEvaluationStatus,
+    resolve_language_evaluation,
+)
 from .reviewed_report_plan import (
     REVIEWED_REPORT_PLAN_SCHEMA_VERSION,
     SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS,
@@ -213,6 +220,11 @@ from .applicant_report import (
 )
 
 __all__ = [
+    "DepartmentLanguageEvaluation",
+    "LanguageEvaluationPolicy",
+    "LanguageEvaluationResult",
+    "LanguageEvaluationStatus",
+    "resolve_language_evaluation",
     "DepartmentLanguageScoreAllocation",
     "LanguageScoreAllocationPolicy",
     "LanguageScoreAllocationResult",

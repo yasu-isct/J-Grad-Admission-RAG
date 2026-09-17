@@ -1,0 +1,112 @@
+[
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-confirmed",
+    "target": "数学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "assessment_source": "written_exam",
+    "result_scale": "pass_fail",
+    "required_for_all": true,
+    "external_score_exemption": false,
+    "selection_role": "necessary_condition",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00149",
+      "source_pages": [
+        19
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "physics-not-covered",
+    "target": "物理学系",
+    "parent_college": "理学院",
+    "status": "not_covered",
+    "assessment_source": null,
+    "result_scale": null,
+    "required_for_all": null,
+    "external_score_exemption": null,
+    "selection_role": null,
+    "evidence": null,
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-wrong-parent",
+    "target": "数学系",
+    "parent_college": "工学院",
+    "status": "not_covered",
+    "assessment_source": null,
+    "result_scale": null,
+    "required_for_all": null,
+    "external_score_exemption": null,
+    "selection_role": null,
+    "evidence": null,
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-confirmed",
+    "target": "数学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "assessment_source": "written_exam",
+    "result_scale": "pass_fail",
+    "required_for_all": true,
+    "external_score_exemption": false,
+    "selection_role": "necessary_condition",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00149",
+      "source_pages": [
+        19
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "physics-not-covered",
+    "target": "物理学系",
+    "parent_college": "理学院",
+    "status": "not_covered",
+    "assessment_source": null,
+    "result_scale": null,
+    "required_for_all": null,
+    "external_score_exemption": null,
+    "selection_role": null,
+    "evidence": null,
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-wrong-parent",
+    "target": "数学系",
+    "parent_college": "工学院",
+    "status": "not_covered",
+    "assessment_source": null,
+    "result_scale": null,
+    "required_for_all": null,
+    "external_score_exemption": null,
+    "selection_role": null,
+    "evidence": null,
+    "limitation_statement": "公式文書上の評価方式と必要条件だけを示します。受験者が英語試験に合格したか、または本選抜に合格するかは判定しません。",
+    "horizontal_overflow": false
+  }
+]
