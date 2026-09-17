@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import pytest
 
+from jgrad_admission_rag.reasoning.applicant_report import (
+    ApplicantReport,
+    render_applicant_report_markdown,
+)
 from tests.test_rule01a_real import _report
 from tests.test_rule04b_real import _submission_profile
 
@@ -37,6 +41,19 @@ def test_math_evaluation_metadata_is_stable_for_both_intakes(rule04b_client, yea
     assert result["selection_role"] == "necessary_condition"
     assert result["evidence"]["fact_id"] == "fact:00149"
     assert result["evidence"]["source_pages"] == [19]
+    assert "数学筆答試験と口頭試問" in result["limitation_statement"]
+    assert "最終合格者を決定" in result["limitation_statement"]
+    evidence = next(
+        item
+        for item in report["evidence_bundle"]["evidence_records"]
+        if item["fact_id"] == "fact:00149"
+    )
+    assert "合格か不合格" in evidence["text"]
+    assert "必要条件" in evidence["text"]
+    markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
+    assert "数学筆答試験と口頭試問" in markdown
+    assert "fact:00149" in markdown
+    assert "p.19" in markdown
     assert "maximum_points" not in result
     assert "applicant_result" not in result
     assert report["language_score_allocation"]["status"] == "not_covered"
