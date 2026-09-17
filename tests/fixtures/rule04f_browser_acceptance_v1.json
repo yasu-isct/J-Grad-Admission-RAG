@@ -1,0 +1,150 @@
+[
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "information-b-confirmed",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": "b_schedule",
+    "status": "confirmed",
+    "assessment_source": "external_score",
+    "no_internal_written_exam": true,
+    "evaluation_uses": [
+      "oral_exam_candidate_selection",
+      "final_holistic_evaluation"
+    ],
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00288",
+      "source_pages": [
+        52
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "B 日程では指定英語外部試験の成績を、筆答専門試験成績とともに口頭試問対象者の選定に用い、筆答専門試験・英語成績・口頭試問結果を最終総合評価に用います。成績上位者の人数や閾値は公表されておらず、本システムは順位、口頭試問資格、受験者の結果または最終合否を判定しません。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "information-missing-route",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": null,
+    "status": "needs_information",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "information-a-not-covered",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": "a_schedule",
+    "status": "not_covered",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "information-wrong-parent",
+    "target": "情報工学系",
+    "parent_college": "工学院",
+    "application_route": "b_schedule",
+    "status": "not_covered",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "information-b-confirmed",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": "b_schedule",
+    "status": "confirmed",
+    "assessment_source": "external_score",
+    "no_internal_written_exam": true,
+    "evaluation_uses": [
+      "oral_exam_candidate_selection",
+      "final_holistic_evaluation"
+    ],
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00288",
+      "source_pages": [
+        52
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "B 日程では指定英語外部試験の成績を、筆答専門試験成績とともに口頭試問対象者の選定に用い、筆答専門試験・英語成績・口頭試問結果を最終総合評価に用います。成績上位者の人数や閾値は公表されておらず、本システムは順位、口頭試問資格、受験者の結果または最終合否を判定しません。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "information-missing-route",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": null,
+    "status": "needs_information",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "information-a-not-covered",
+    "target": "情報工学系",
+    "parent_college": "情報理工学院",
+    "application_route": "a_schedule",
+    "status": "not_covered",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "information-wrong-parent",
+    "target": "情報工学系",
+    "parent_college": "工学院",
+    "application_route": "b_schedule",
+    "status": "not_covered",
+    "assessment_source": null,
+    "no_internal_written_exam": null,
+    "evaluation_uses": null,
+    "evidence": null,
+    "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
+    "horizontal_overflow": false,
+    "audited_app_js_sha256": "aa1fcf6b90e09a60e841e91a96330b2f5824a98407e97738d95d5b4ce058663c"
+  }
+]

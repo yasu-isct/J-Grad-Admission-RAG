@@ -182,6 +182,7 @@ from .language_evaluation import (
     LanguageEvaluationPolicy,
     LanguageEvaluationResult,
     LanguageEvaluationStatus,
+    LanguageEvaluationUsage,
     resolve_language_evaluation,
 )
 from .reviewed_report_plan import (
@@ -224,6 +225,7 @@ __all__ = [
     "LanguageEvaluationPolicy",
     "LanguageEvaluationResult",
     "LanguageEvaluationStatus",
+    "LanguageEvaluationUsage",
     "resolve_language_evaluation",
     "DepartmentLanguageScoreAllocation",
     "LanguageScoreAllocationPolicy",

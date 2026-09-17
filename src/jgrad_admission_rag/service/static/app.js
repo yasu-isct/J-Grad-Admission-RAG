@@ -625,10 +625,21 @@ function renderReport(payload) {
     addMetadata(evaluationDetails, "対象", evaluationResult.target || "未指定");
     addMetadata(evaluationDetails, "状態", evaluationResult.status);
     if (evaluationResult.evidence) {
-      addMetadata(evaluationDetails, "評価方式", "校内英語筆答試験 / 合格・不合格");
-      addMetadata(evaluationDetails, "受験対象", "全員");
-      addMetadata(evaluationDetails, "外部試験による免除", "なし");
-      addMetadata(evaluationDetails, "選抜上の位置づけ", "本選抜合格の必要条件");
+      if (evaluationResult.assessment_source === "written_exam") {
+        addMetadata(evaluationDetails, "評価方式", "校内英語筆答試験 / 合格・不合格");
+        addMetadata(evaluationDetails, "受験対象", "全員");
+        addMetadata(evaluationDetails, "外部試験による免除", "なし");
+        addMetadata(evaluationDetails, "選抜上の位置づけ", "本選抜合格の必要条件");
+      } else {
+        addMetadata(evaluationDetails, "出願日程", evaluationResult.application_route);
+        addMetadata(evaluationDetails, "評価方式", "指定英語外部試験のスコア");
+        addMetadata(evaluationDetails, "校内英語筆答試験", "実施なし");
+        addMetadata(
+          evaluationDetails,
+          "評価用途",
+          "口頭試問対象者の選定 / 最終総合評価"
+        );
+      }
       addMetadata(evaluationDetails, "根拠", `${evaluationResult.evidence.fact_id} | p.${evaluationResult.evidence.source_pages.join(",")}`);
     } else {
       addMetadata(evaluationDetails, "評価方式", "審査済み非数値評価の対象外または未確認");

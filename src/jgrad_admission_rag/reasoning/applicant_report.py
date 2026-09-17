@@ -627,21 +627,26 @@ def _validate_report_contract(report: ApplicantReport) -> None:
     if (evaluation_policy is None) != (evaluation is None):
         raise ValueError
     if evaluation_policy is not None and evaluation is not None:
-        expected_limitation = (
-            evaluation_policy.limitation_statement
-            if evaluation.status.value == "confirmed"
-            else evaluation_policy.out_of_scope_statement
-        )
+        if evaluation.policy_id != evaluation_policy.policy_id:
+            raise ValueError
         if (
-            evaluation.policy_id != evaluation_policy.policy_id
-            or evaluation.limitation_statement != expected_limitation
+            evaluation.status.value != "confirmed"
+            and evaluation.limitation_statement != evaluation_policy.out_of_scope_statement
         ):
             raise ValueError
-        matching = [
+        scope_matching = [
             entry
             for entry in evaluation_policy.entries
             if entry.target == evaluation.target
             and entry.parent_college == evaluation.parent_college
+        ]
+        matching = [
+            entry
+            for entry in scope_matching
+            if (
+                entry.application_route is None
+                or entry.application_route == evaluation.application_route
+            )
         ]
         if evaluation.status.value == "confirmed":
             if len(matching) != 1:
@@ -659,11 +664,26 @@ def _validate_report_contract(report: ApplicantReport) -> None:
                 or evaluation.required_for_all != entry.required_for_all
                 or evaluation.external_score_exemption != entry.external_score_exemption
                 or evaluation.selection_role != entry.selection_role
+                or evaluation.no_internal_written_exam != entry.no_internal_written_exam
+                or evaluation.evaluation_uses != entry.evaluation_uses
                 or evaluation.evidence != expected_evidence
+                or evaluation.limitation_statement
+                != (entry.limitation_statement or evaluation_policy.limitation_statement)
             ):
                 raise ValueError
-        elif matching:
-            raise ValueError
+        else:
+            expected_status = (
+                "needs_information"
+                if evaluation.target is None
+                or evaluation.parent_college is None
+                or (
+                    evaluation.application_route is None
+                    and any(entry.application_route is not None for entry in scope_matching)
+                )
+                else "not_covered"
+            )
+            if matching or evaluation.status.value != expected_status:
+                raise ValueError
     trace = report.reasoning_trace
     if trace.trace_id != f"trace:{report.report_id}":
         raise ValueError
@@ -795,14 +815,26 @@ def _render_language_evaluation(result: LanguageEvaluationResult) -> tuple[str, 
         f"- **状態:** `{result.status.value}`",
     ]
     if result.evidence is not None:
-        lines.extend(
-            (
-                f"- **評価方式:** `{result.assessment_source} / {result.result_scale}`",
-                f"- **受験対象:** `{'全員' if result.required_for_all else '未確認'}`",
-                f"- **外部試験による免除:** `{'なし' if result.external_score_exemption is False else '未確認'}`",
-                f"- **選抜上の位置づけ:** `{'本選抜合格の必要条件' if result.selection_role == 'necessary_condition' else '未確認'}`",
-                f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
+        if result.assessment_source == "written_exam":
+            lines.extend(
+                (
+                    f"- **評価方式:** `{result.assessment_source} / {result.result_scale}`",
+                    f"- **受験対象:** `{'全員' if result.required_for_all else '未確認'}`",
+                    f"- **外部試験による免除:** `{'なし' if result.external_score_exemption is False else '未確認'}`",
+                    f"- **選抜上の位置づけ:** `{'本選抜合格の必要条件' if result.selection_role == 'necessary_condition' else '未確認'}`",
+                )
             )
+        else:
+            lines.extend(
+                (
+                    f"- **出願日程:** `{result.application_route}`",
+                    "- **評価方式:** `external_score`",
+                    f"- **校内英語筆答試験:** `{'実施なし' if result.no_internal_written_exam else '未確認'}`",
+                    "- **評価用途:** `oral_exam_candidate_selection, final_holistic_evaluation`",
+                )
+            )
+        lines.append(
+            f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}"
         )
     lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
     return tuple(lines)
