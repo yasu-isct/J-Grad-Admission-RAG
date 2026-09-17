@@ -15,7 +15,12 @@ def _records() -> list[dict[str, object]]:
 
 def test_rule04e_browser_acceptance_covers_scenarios_and_viewports() -> None:
     records = _records()
-    scenarios = {"math-confirmed", "physics-not-covered", "math-wrong-parent"}
+    scenarios = {
+        "math-confirmed",
+        "physics-not-covered",
+        "math-wrong-parent",
+        "missing-scope",
+    }
     viewports = {"desktop": 1440, "mobile": 390}
 
     assert len(records) == len(scenarios) * len(viewports)
@@ -49,3 +54,8 @@ def test_rule04e_browser_acceptance_preserves_method_and_fail_closed_paths() -> 
         assert desktop[scenario]["evidence"] is None
         assert "数学筆答試験と口頭試問" not in desktop[scenario]["limitation_statement"]
         assert "対象系の公式規則は別途確認" in desktop[scenario]["limitation_statement"]
+    missing = desktop["missing-scope"]
+    assert missing["status"] == "needs_information"
+    assert missing["assessment_source"] is None
+    assert missing["evidence"] is None
+    assert "数学筆答試験と口頭試問" not in missing["limitation_statement"]

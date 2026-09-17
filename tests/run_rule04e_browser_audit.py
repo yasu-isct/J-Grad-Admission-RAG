@@ -34,6 +34,7 @@ SCENARIOS = {
     "math-confirmed": ("理学院", "数学系"),
     "physics-not-covered": ("理学院", "物理学系"),
     "math-wrong-parent": ("工学院", "数学系"),
+    "missing-scope": ("", ""),
 }
 REAL_KB = build_document_kb(PDF, load_document_identity(IDENTITY))
 FACT_TEXT = next(fact.text for fact in REAL_KB.facts if fact.fact_id == "fact:00149")
@@ -45,8 +46,8 @@ def evaluation_results():
     results = {}
     for name, (college, target) in SCENARIOS.items():
         payload = _profile(None)
-        payload["target_application"]["graduate_school_or_college"] = college
-        payload["target_application"]["department_or_program"] = target
+        payload["target_application"]["graduate_school_or_college"] = college or None
+        payload["target_application"]["department_or_program"] = target or None
         profile = ApplicantProfile.model_validate(payload)
         results[name] = resolve_language_evaluation(profile, policy)
     return results

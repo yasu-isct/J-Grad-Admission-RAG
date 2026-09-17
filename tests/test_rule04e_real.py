@@ -85,3 +85,20 @@ def test_wrong_parent_college_cannot_receive_math_evaluation(rule04b_client) -> 
     assert result["status"] == "not_covered"
     assert result["evidence"] is None
     assert "数学筆答試験と口頭試問" not in result["limitation_statement"]
+
+
+def test_missing_scope_needs_information_without_math_rule_leak(rule04b_client) -> None:
+    client, document_id = rule04b_client
+    profile = _submission_profile("数学系", 2027, 4, method="no_external_submission")
+    profile["target_application"]["department_or_program"] = None
+    profile["target_application"]["graduate_school_or_college"] = None
+    report = _report(client, document_id, profile, "math-evaluation-missing-scope")
+    result = report["language_evaluation"]
+
+    assert result["status"] == "needs_information"
+    assert result["assessment_source"] is None
+    assert result["evidence"] is None
+    assert "数学筆答試験と口頭試問" not in result["limitation_statement"]
+    assert "対象系の公式規則は別途確認" in result["limitation_statement"]
+    markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
+    assert "数学筆答試験と口頭試問" not in markdown

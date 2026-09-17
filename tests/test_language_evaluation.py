@@ -74,3 +74,4 @@ def test_missing_scope_needs_information_without_method() -> None:
     assert result.status is LanguageEvaluationStatus.NEEDS_INFORMATION
     assert result.assessment_source is None
     assert result.evidence is None
+    assert result.limitation_statement == "この対象には審査済み評価規則がありません。"
