@@ -627,9 +627,14 @@ def _validate_report_contract(report: ApplicantReport) -> None:
     if (evaluation_policy is None) != (evaluation is None):
         raise ValueError
     if evaluation_policy is not None and evaluation is not None:
+        expected_limitation = (
+            evaluation_policy.limitation_statement
+            if evaluation.status.value == "confirmed"
+            else evaluation_policy.out_of_scope_statement
+        )
         if (
             evaluation.policy_id != evaluation_policy.policy_id
-            or evaluation.limitation_statement != evaluation_policy.limitation_statement
+            or evaluation.limitation_statement != expected_limitation
         ):
             raise ValueError
         matching = [

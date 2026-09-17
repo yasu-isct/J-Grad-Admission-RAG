@@ -37,8 +37,9 @@ class LanguageEvaluationPolicy(LanguageEvaluationModel):
     policy_id: str
     entries: tuple[DepartmentLanguageEvaluation, ...] = Field(min_length=1)
     limitation_statement: str
+    out_of_scope_statement: str
 
-    @field_validator("policy_id", "limitation_statement")
+    @field_validator("policy_id", "limitation_statement", "out_of_scope_statement")
     @classmethod
     def text_must_be_explicit(cls, value: str) -> str:
         if not isinstance(value, str) or not value or value != value.strip():
@@ -157,7 +158,7 @@ def _empty_result(
         external_score_exemption=None,
         selection_role=None,
         evidence=None,
-        limitation_statement=policy.limitation_statement,
+        limitation_statement=policy.out_of_scope_statement,
     )
 
 

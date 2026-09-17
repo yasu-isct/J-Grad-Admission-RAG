@@ -71,6 +71,8 @@ def test_other_departments_do_not_receive_math_evaluation(rule04b_client, target
     assert result["assessment_source"] is None
     assert result["selection_role"] is None
     assert result["evidence"] is None
+    assert "数学筆答試験と口頭試問" not in result["limitation_statement"]
+    assert "対象系の公式規則は別途確認" in result["limitation_statement"]
 
 
 def test_wrong_parent_college_cannot_receive_math_evaluation(rule04b_client) -> None:
@@ -82,3 +84,4 @@ def test_wrong_parent_college_cannot_receive_math_evaluation(rule04b_client) -> 
 
     assert result["status"] == "not_covered"
     assert result["evidence"] is None
+    assert "数学筆答試験と口頭試問" not in result["limitation_statement"]

@@ -29,6 +29,7 @@ def _policy() -> LanguageEvaluationPolicy:
             ),
         ),
         limitation_statement="必要条件だけを示し、受験者の結果や最終合否を判定しません。",
+        out_of_scope_statement="この対象には審査済み評価規則がありません。",
     )
 
 
@@ -64,6 +65,7 @@ def test_uncovered_and_conflicting_scope_expose_no_method_or_evidence() -> None:
         assert result.assessment_source is None
         assert result.selection_role is None
         assert result.evidence is None
+        assert result.limitation_statement == "この対象には審査済み評価規則がありません。"
 
 
 def test_missing_scope_needs_information_without_method() -> None:
