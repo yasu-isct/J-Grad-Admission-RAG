@@ -552,6 +552,47 @@ function renderReport(payload) {
   }
   diagnostics.append(diagnosticList);
 
+  const conversion = document.createElement("section");
+  conversion.className = "report-section";
+  conversion.append(heading(3, "英語外部試験の換算"));
+  const conversionResult = report.language_score_conversion;
+  if (conversionResult) {
+    const details = document.createElement("dl");
+    details.className = "evidence-meta";
+    addMetadata(details, "入力試験", conversionResult.input_test_kind || "未指定");
+    addMetadata(details, "入力得点", conversionResult.input_score || "未指定");
+    addMetadata(details, "状態", conversionResult.status);
+    addMetadata(details, "結果形態", conversionResult.result_shape);
+    addMetadata(details, "根拠", `${conversionResult.evidence_binding.fact_id} | p.${conversionResult.evidence_binding.source_pages.join(",")}`);
+    conversion.append(details);
+    if (conversionResult.conversion_chain.length) {
+      const chain = document.createElement("ol");
+      chain.className = "diagnostic-list";
+      for (const step of conversionResult.conversion_chain) {
+        const item = document.createElement("li");
+        item.textContent = `${step.operation}: ${step.expression}`;
+        chain.append(item);
+      }
+      conversion.append(chain);
+    }
+    appendConversionCandidates(conversion, "PBT", conversionResult.pbt_candidates);
+    appendConversionCandidates(conversion, "TOEIC L&R", conversionResult.toeic_candidates);
+    for (const field of conversionResult.missing_fields) {
+      const item = document.createElement("p");
+      item.textContent = `不足情報: ${field}`;
+      conversion.append(item);
+    }
+    for (const limitation of conversionResult.limitations) {
+      const item = document.createElement("p");
+      item.textContent = `制限: ${limitation}`;
+      conversion.append(item);
+    }
+  } else {
+    const unavailable = document.createElement("p");
+    unavailable.textContent = "この審査済み計画には換算基準がありません。";
+    conversion.append(unavailable);
+  }
+
   const evidence = document.createElement("section");
   evidence.className = "report-section";
   evidence.append(heading(3, "公式根拠（原文）"));
@@ -571,8 +612,30 @@ function renderReport(payload) {
   const finalNotice = document.createElement("p");
   finalNotice.className = "final-notice";
   finalNotice.textContent = "この結果は、総合的な出願資格、合否、合格可能性、または推奨を示すものではありません。";
-  reportOutput.append(coverage, readiness, findings, diagnostics, evidence, finalNotice);
+  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, evidence, finalNotice);
   setMessage(reportStatus, report.report_status, `レポート準備状態: ${statusLabel(report.report_status)} (${report.report_status})`, true);
+}
+
+function appendConversionCandidates(container, label, candidates) {
+  if (!candidates.length) return;
+  const list = document.createElement("ol");
+  list.className = "diagnostic-list";
+  for (const candidate of candidates) {
+    const item = document.createElement("li");
+    item.textContent = `${label}: ${formatExactInterval(candidate)}`;
+    list.append(item);
+  }
+  container.append(list);
+}
+
+function formatExactInterval(candidate) {
+  const lower = formatExactScore(candidate.lower);
+  const upper = formatExactScore(candidate.upper);
+  return lower === upper ? lower : `${lower} .. ${upper}`;
+}
+
+function formatExactScore(value) {
+  return value.decimal === null ? `${value.numerator}/${value.denominator}` : value.decimal;
 }
 
 async function submitReport() {

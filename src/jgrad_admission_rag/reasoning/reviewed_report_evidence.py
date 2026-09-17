@@ -309,6 +309,21 @@ def prepare_reviewed_report_evidence(
             if not _evidence_scope_matches_rule(fact, rule.scope):
                 _fail(ReviewedReportEvidenceFailure.FACT_SCOPE_MISMATCH)
             rule_ids_by_fact.setdefault(binding.fact_id, set()).add(rule.rule_id)
+    if plan.language_score_conversion is not None:
+        policy = plan.language_score_conversion
+        binding = policy.evidence_binding
+        fact = fact_by_id.get(binding.fact_id)
+        if fact is None:
+            _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
+        if tuple(fact.source_pages) != binding.source_pages:
+            _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+        if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
+            binding.authoritative_fact_text_sha256
+        ):
+            _fail(ReviewedReportEvidenceFailure.FACT_TEXT_MISMATCH)
+        if fact.scope_type != "global" or fact.scope_targets or fact.parent_college:
+            _fail(ReviewedReportEvidenceFailure.FACT_SCOPE_MISMATCH)
+        rule_ids_by_fact.setdefault(binding.fact_id, set()).add(f"policy:{policy.policy_id}")
 
     records = tuple(
         _record_from_fact(

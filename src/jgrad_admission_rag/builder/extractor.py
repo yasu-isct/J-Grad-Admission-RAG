@@ -22,6 +22,10 @@ DEPARTMENT_PAGE_BANNER_RE = re.compile(
     r"^(?:\S+学院)\s+[^\n]+(?:系|専門職学位課程)$",
     re.MULTILINE,
 )
+APPENDIX_HEADING_RE = re.compile(
+    r"^附録[0-9０-９一二三四五六七八九十]+[\.．、]\s*[^\n]*英語外部試験[^\n]*換算基準$",
+    re.MULTILINE,
+)
 
 
 @dataclass
@@ -47,6 +51,47 @@ def table_to_markdown(table: list[list[str | None]]) -> str:
         return "| " + " | ".join(row) + " |"
 
     return "\n".join([fmt(header), fmt(separator), *[fmt(row) for row in body]])
+
+
+def _clean_appendix_table_duplicates(markdown: str) -> str:
+    """Keep one prose copy and the structured tables for appendix table pages."""
+
+    table_start = markdown.find("\n\n### Table 1\n")
+    if table_start < 0 or APPENDIX_HEADING_RE.search(markdown[:table_start]) is None:
+        return markdown
+
+    prose = markdown[:table_start]
+    table_block = markdown[table_start + 2 :]
+    table_cells = {
+        cell.strip()
+        for line in table_block.splitlines()
+        if line.startswith("|") and "---" not in line
+        for cell in line.strip("|").split("|")
+        if cell.strip()
+    }
+    page_marker = re.match(r"## Page (?P<number>[0-9]+)", prose)
+    page_number = page_marker.group("number") if page_marker is not None else None
+    retained: list[str] = []
+    seen_lines: set[str] = set()
+    for raw_line in prose.splitlines():
+        line = " ".join(raw_line.split()).strip()
+        if not line:
+            if retained and retained[-1]:
+                retained.append("")
+            continue
+        tokens = line.split()
+        if page_number is not None and line == page_number:
+            continue
+        if tokens and all(token in table_cells for token in tokens):
+            continue
+        if line in seen_lines:
+            continue
+        seen_lines.add(line)
+        retained.append(line)
+    while retained and not retained[-1]:
+        retained.pop()
+    retained_text = "\n".join(retained)
+    return f"{retained_text}\n\n{table_block}"
 
 
 def detect_repeated_lines(page_texts: list[str], min_count: int = 2) -> set[str]:
@@ -156,6 +201,7 @@ def extract_pdf(pdf_path: str | Path, pages: list[int] | None = None) -> list[Ex
             markdown = f"## Page {page_no}\n\n{text}".strip()
             if table_block:
                 markdown += "\n\n" + table_block
+                markdown = _clean_appendix_table_duplicates(markdown)
             char_count = len(text.strip())
             scanned = char_count < 50 and not tables and len(fitz_page.get_images(full=True)) > 0
             extracted.append(ExtractedPage(page_no, markdown, char_count, len(tables), scanned))

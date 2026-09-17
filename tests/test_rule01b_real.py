@@ -25,7 +25,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04c_v1.json"
 INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 

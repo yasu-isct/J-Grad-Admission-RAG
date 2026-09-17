@@ -1,11 +1,51 @@
 from __future__ import annotations
 
 from jgrad_admission_rag.builder.extractor import (
+    _clean_appendix_table_duplicates,
     _page_text_source,
     _protected_structural_lines,
     clean_text,
     detect_repeated_lines,
 )
+
+
+def test_appendix_table_cleanup_keeps_prose_and_one_structured_table() -> None:
+    markdown = """## Page 16
+
+附録３．英語外部試験の換算基準
+換算式
+120 677
+附録３．英語外部試験の換算基準
+換算式
+120
+677
+
+### Table 1
+| iBT | PBT |
+| --- | --- |
+| 120 | 677 |"""
+
+    cleaned = _clean_appendix_table_duplicates(markdown)
+
+    assert cleaned.count("附録３．英語外部試験の換算基準") == 1
+    assert cleaned.count("換算式") == 1
+    assert "120 677" not in cleaned
+    assert "\n120\n" not in cleaned
+    assert "| 120 | 677 |" in cleaned
+
+
+def test_table_cleanup_does_not_rewrite_non_appendix_pages() -> None:
+    markdown = """## Page 3
+
+３．出願資格
+120 677
+
+### Table 1
+| iBT | PBT |
+| --- | --- |
+| 120 | 677 |"""
+
+    assert _clean_appendix_table_duplicates(markdown) == markdown
 
 
 def test_repeated_body_rules_are_not_misclassified_as_page_furniture() -> None:

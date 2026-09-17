@@ -1,5 +1,6 @@
 import json
 import re
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -195,6 +196,20 @@ def test_chunk_pages_builds_deterministic_heading_stack() -> None:
         ["3. Eligibility", "[Documents]"],
         ["4. Examination"],
     ]
+
+
+def test_chunk_pages_starts_a_new_root_for_appendix_headings() -> None:
+    chunks = chunk_pages(
+        [
+            SourcePage(page_number=15, text="７．合格後の手続きについて\n本文"),
+            SourcePage(page_number=16, text="附録３．英語外部試験の換算基準\n換算式"),
+        ],
+        "sample.pdf",
+    )
+
+    appendix = next(chunk for chunk in chunks if chunk.page_numbers == [16])
+    assert appendix.title == "附録３．英語外部試験の換算基準"
+    assert appendix.section_path == ["附録３．英語外部試験の換算基準"]
 
 
 def test_department_page_context_resets_heading_stack_and_scopes_atomic_rule() -> None:
@@ -482,6 +497,26 @@ def test_common_eligibility_section_infers_global_scope_without_target() -> None
     )
 
     assert infer_scope(item) == ("global", [], None, 0.7)
+
+
+def test_appendix_conversion_scope_does_not_leak_to_following_page_content() -> None:
+    heading = "附録３．本学が定める英語外部試験の換算基準"
+    appendix = IndexedChunk(
+        chunk_id=0,
+        pdf_name="sample.pdf",
+        pages=[16],
+        title=heading,
+        text=f"{heading}\n換算式",
+        section_path=[heading],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="換算式",
+    )
+    inherited = replace(appendix, chunk_id=1, pages=[17], text="附録４．別の基準")
+
+    assert infer_scope(appendix) == ("global", [], None, 0.7)
+    assert infer_scope(inherited) == ("unknown", [], None, 0.45)
 
 
 def test_path9_numbered_university_requirement_infers_global_scope() -> None:

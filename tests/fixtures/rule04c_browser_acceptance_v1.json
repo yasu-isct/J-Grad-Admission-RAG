@@ -1,0 +1,524 @@
+[
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "toeic-300",
+    "input_test_kind": "toeic_lr",
+    "input_score": "300",
+    "status": "not_applicable",
+    "result_shape": "none",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toeic_lr=300"
+      }
+    ],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "toeic-301",
+    "input_test_kind": "toeic_lr",
+    "input_score": "301",
+    "status": "converted",
+    "result_shape": "single",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toeic_lr=301"
+      },
+      {
+        "operation": "toeic_to_pbt_formula",
+        "expression": "PBT=301*0.348+296=400.748"
+      }
+    ],
+    "pbt_candidates": [
+      {
+        "lower": {
+          "numerator": 100187,
+          "denominator": 250,
+          "decimal": "400.748"
+        },
+        "upper": {
+          "numerator": 100187,
+          "denominator": 250,
+          "decimal": "400.748"
+        },
+        "source_row_ids": [],
+        "raw_source_cells": []
+      }
+    ],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "ibt-120-candidates",
+    "input_test_kind": "toefl_ibt",
+    "input_score": "120",
+    "status": "converted",
+    "result_shape": "candidates",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toefl_ibt=120"
+      },
+      {
+        "operation": "ibt_table_lookup",
+        "expression": "iBT=120"
+      },
+      {
+        "operation": "pbt_to_toeic_formula",
+        "expression": "TOEIC=(PBT-296)/0.348"
+      }
+    ],
+    "pbt_candidates": [
+      {
+        "lower": {
+          "numerator": 673,
+          "denominator": 1,
+          "decimal": "673"
+        },
+        "upper": {
+          "numerator": 673,
+          "denominator": 1,
+          "decimal": "673"
+        },
+        "source_row_ids": [
+          "g1-r02"
+        ],
+        "raw_source_cells": [
+          "673"
+        ]
+      },
+      {
+        "lower": {
+          "numerator": 677,
+          "denominator": 1,
+          "decimal": "677"
+        },
+        "upper": {
+          "numerator": 677,
+          "denominator": 1,
+          "decimal": "677"
+        },
+        "source_row_ids": [
+          "g1-r01"
+        ],
+        "raw_source_cells": [
+          "677"
+        ]
+      }
+    ],
+    "toeic_candidates": [
+      {
+        "lower": {
+          "numerator": 3250,
+          "denominator": 3,
+          "decimal": null
+        },
+        "upper": {
+          "numerator": 3250,
+          "denominator": 3,
+          "decimal": null
+        },
+        "source_row_ids": [
+          "g1-r02"
+        ],
+        "raw_source_cells": [
+          "673"
+        ]
+      },
+      {
+        "lower": {
+          "numerator": 31750,
+          "denominator": 29,
+          "decimal": null
+        },
+        "upper": {
+          "numerator": 31750,
+          "denominator": 29,
+          "decimal": null
+        },
+        "source_row_ids": [
+          "g1-r01"
+        ],
+        "raw_source_cells": [
+          "677"
+        ]
+      }
+    ],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "ibt-out-of-table",
+    "input_test_kind": "toefl_ibt",
+    "input_score": "16",
+    "status": "out_of_table",
+    "result_shape": "none",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toefl_ibt=16"
+      }
+    ],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "multiple-results-unselected",
+    "input_test_kind": null,
+    "input_score": null,
+    "status": "missing_selection",
+    "result_shape": "none",
+    "conversion_chain": [],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [
+      "language_test_results.selected_for_submission"
+    ],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-written-exam-exception",
+    "input_test_kind": null,
+    "input_score": null,
+    "status": "not_required",
+    "result_shape": "none",
+    "conversion_chain": [],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "toeic-300",
+    "input_test_kind": "toeic_lr",
+    "input_score": "300",
+    "status": "not_applicable",
+    "result_shape": "none",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toeic_lr=300"
+      }
+    ],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "toeic-301",
+    "input_test_kind": "toeic_lr",
+    "input_score": "301",
+    "status": "converted",
+    "result_shape": "single",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toeic_lr=301"
+      },
+      {
+        "operation": "toeic_to_pbt_formula",
+        "expression": "PBT=301*0.348+296=400.748"
+      }
+    ],
+    "pbt_candidates": [
+      {
+        "lower": {
+          "numerator": 100187,
+          "denominator": 250,
+          "decimal": "400.748"
+        },
+        "upper": {
+          "numerator": 100187,
+          "denominator": 250,
+          "decimal": "400.748"
+        },
+        "source_row_ids": [],
+        "raw_source_cells": []
+      }
+    ],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "ibt-120-candidates",
+    "input_test_kind": "toefl_ibt",
+    "input_score": "120",
+    "status": "converted",
+    "result_shape": "candidates",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toefl_ibt=120"
+      },
+      {
+        "operation": "ibt_table_lookup",
+        "expression": "iBT=120"
+      },
+      {
+        "operation": "pbt_to_toeic_formula",
+        "expression": "TOEIC=(PBT-296)/0.348"
+      }
+    ],
+    "pbt_candidates": [
+      {
+        "lower": {
+          "numerator": 673,
+          "denominator": 1,
+          "decimal": "673"
+        },
+        "upper": {
+          "numerator": 673,
+          "denominator": 1,
+          "decimal": "673"
+        },
+        "source_row_ids": [
+          "g1-r02"
+        ],
+        "raw_source_cells": [
+          "673"
+        ]
+      },
+      {
+        "lower": {
+          "numerator": 677,
+          "denominator": 1,
+          "decimal": "677"
+        },
+        "upper": {
+          "numerator": 677,
+          "denominator": 1,
+          "decimal": "677"
+        },
+        "source_row_ids": [
+          "g1-r01"
+        ],
+        "raw_source_cells": [
+          "677"
+        ]
+      }
+    ],
+    "toeic_candidates": [
+      {
+        "lower": {
+          "numerator": 3250,
+          "denominator": 3,
+          "decimal": null
+        },
+        "upper": {
+          "numerator": 3250,
+          "denominator": 3,
+          "decimal": null
+        },
+        "source_row_ids": [
+          "g1-r02"
+        ],
+        "raw_source_cells": [
+          "673"
+        ]
+      },
+      {
+        "lower": {
+          "numerator": 31750,
+          "denominator": 29,
+          "decimal": null
+        },
+        "upper": {
+          "numerator": 31750,
+          "denominator": 29,
+          "decimal": null
+        },
+        "source_row_ids": [
+          "g1-r01"
+        ],
+        "raw_source_cells": [
+          "677"
+        ]
+      }
+    ],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "ibt-out-of-table",
+    "input_test_kind": "toefl_ibt",
+    "input_score": "16",
+    "status": "out_of_table",
+    "result_shape": "none",
+    "conversion_chain": [
+      {
+        "operation": "selected_input",
+        "expression": "toefl_ibt=16"
+      }
+    ],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "multiple-results-unselected",
+    "input_test_kind": null,
+    "input_score": null,
+    "status": "missing_selection",
+    "result_shape": "none",
+    "conversion_chain": [],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [
+      "language_test_results.selected_for_submission"
+    ],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-written-exam-exception",
+    "input_test_kind": null,
+    "input_score": null,
+    "status": "not_required",
+    "result_shape": "none",
+    "conversion_chain": [],
+    "pbt_candidates": [],
+    "toeic_candidates": [],
+    "evidence": {
+      "fact_id": "fact:00139",
+      "source_pages": [
+        16
+      ]
+    },
+    "missing_fields": [],
+    "limitations": [
+      "附録3の換算値・範囲・候補集合だけを示し、最低点、最終英語得点、各系の配点、受験資格、受理または合否を示しません。"
+    ],
+    "horizontal_overflow": false
+  }
+]
