@@ -6,7 +6,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.corpus_selection import select_corpus_documents
 from jgrad_admission_rag.reasoning.reviewed_report_evidence import prepare_reviewed_report_evidence
@@ -20,7 +19,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     canonical_corpus_version_policy_bytes,
 )
 from jgrad_admission_rag.schemas.corpus_version import CorpusSelectionRequest
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _profile, _report, _statuses
@@ -33,11 +31,9 @@ PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04c_v1.json"
 
 
 @pytest.fixture(scope="module")
-def rule03b_client(tmp_path_factory: pytest.TempPathFactory):
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
+def rule03b_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
     root = tmp_path_factory.mktemp("rule03b")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
+    kb = real_document_kb
     kb_path = root / "documents/isct/document_kb.json"
     kb_path.parent.mkdir(parents=True)
     kb_path.write_bytes(canonical_document_kb_bytes(kb))
@@ -100,11 +96,10 @@ def _missing(report: dict[str, Any], rule_id: str) -> set[str]:
     }
 
 
-def test_real_preapplication_facts_remain_global_after_english_atomization() -> None:
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    facts = {fact.fact_id: fact for fact in kb.facts}
+def test_real_preapplication_facts_remain_global_after_english_atomization(
+    real_document_kb,
+) -> None:
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
     expected = {
         "fact:00010": 3,
         "fact:00018": 3,

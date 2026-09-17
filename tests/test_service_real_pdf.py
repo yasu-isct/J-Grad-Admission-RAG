@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import json
-import os
 import time
 from pathlib import Path
 
@@ -18,40 +16,25 @@ from jgrad_admission_rag.schemas.corpus_version import (
     canonical_corpus_version_policy_bytes,
 )
 from jgrad_admission_rag.schemas.document_identity import (
+    DocumentIdentity,
     canonical_document_identity_bytes,
-    load_document_identity,
 )
 from jgrad_admission_rag.schemas.document_kb import (
     DocumentKnowledgeBase,
     canonical_document_kb_bytes,
 )
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
-from jgrad_admission_rag.utils import sha256_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-FIXTURES = REPO_ROOT / "tests" / "fixtures"
-REAL_MANIFEST = FIXTURES / "real_pdf_manifest.json"
-
 pytestmark = pytest.mark.real_pdf
 
 
-def _real_inputs() -> tuple[Path, object]:
-    metadata = json.loads(REAL_MANIFEST.read_text(encoding="utf-8"))
-    configured = os.getenv("JGRAD_REAL_PDF")
-    candidates = [
-        Path(configured).expanduser() if configured else None,
-        FIXTURES / "private" / metadata["filename"],
-        REPO_ROOT / "outputs" / "real_pdf" / metadata["filename"],
-    ]
-    pdf = next((path for path in candidates if path is not None and path.is_file()), None)
-    if pdf is None:
-        pytest.skip("real PDF fixture unavailable; set JGRAD_REAL_PDF")
-    assert sha256_file(pdf) == metadata["sha256"]
-    return pdf, load_document_identity(FIXTURES / metadata["identity_file"])
-
-
-def test_real_pdf_build_and_query_preserve_http_identity_and_pages(tmp_path: Path) -> None:
-    pdf_path, identity = _real_inputs()
+def test_real_pdf_build_and_query_preserve_http_identity_and_pages(
+    tmp_path: Path,
+    real_pdf_path: Path,
+    real_document_identity: DocumentIdentity,
+) -> None:
+    pdf_path, identity = real_pdf_path, real_document_identity
     with TestClient(create_app()) as client:
         built = client.post(
             "/v1/knowledge-bases/build",
@@ -123,8 +106,12 @@ def test_real_pdf_build_and_query_preserve_http_identity_and_pages(tmp_path: Pat
     assert all(hit["key"]["document_id"] == identity.document_id for hit in result.json()["hits"])
 
 
-def test_real_pdf_durable_http_job_survives_restart_and_deletes_exactly(tmp_path: Path) -> None:
-    pdf_path, identity = _real_inputs()
+def test_real_pdf_durable_http_job_survives_restart_and_deletes_exactly(
+    tmp_path: Path,
+    real_pdf_path: Path,
+    real_document_identity: DocumentIdentity,
+) -> None:
+    pdf_path, identity = real_pdf_path, real_document_identity
     settings = ServiceSettings(job_root=(tmp_path / "durable-jobs").resolve())
     files = {
         "pdf": ("untrusted.pdf", pdf_path.read_bytes(), "application/pdf"),

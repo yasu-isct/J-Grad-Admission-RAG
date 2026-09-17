@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-import os
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -24,7 +23,7 @@ from jgrad_admission_rag.corpus_selection import select_corpus_documents
 from jgrad_admission_rag.corpus_search import prepare_corpus_search_context, search_corpus
 from jgrad_admission_rag.builder.chunk_filter import classify_chunk
 from jgrad_admission_rag.builder.chunker import chunk_pages
-from jgrad_admission_rag.builder.extractor import ExtractedPage, extract_pdf
+from jgrad_admission_rag.builder.extractor import ExtractedPage
 from jgrad_admission_rag.builder.kb_builder import build_document_kb, pages_to_source_pages
 from jgrad_admission_rag.evaluation.retrieval_queries import load_retrieval_benchmark
 from jgrad_admission_rag.evaluation.retrieval_evaluation import (
@@ -85,7 +84,7 @@ from jgrad_admission_rag.schemas.document_kb import (
     canonical_document_kb_bytes,
     migrate_document_kb_v05_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import DocumentIdentity, load_document_identity
+from jgrad_admission_rag.schemas.document_identity import DocumentIdentity
 from jgrad_admission_rag.schemas.corpus_manifest import (
     canonical_corpus_manifest_bytes,
     load_corpus_manifest,
@@ -108,11 +107,9 @@ from jgrad_admission_rag.schemas.evidence_pack import (
     load_evidence_pack_bytes,
 )
 from jgrad_admission_rag.schemas.index import derive_index_payloads
-from jgrad_admission_rag.utils import sha256_file
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
 RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_rule04c_v1.json"
 APPLICABILITY_FIXTURE_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "applicability_real_scenarios_v1.json"
@@ -121,56 +118,7 @@ REVIEWED_REPORT_PLAN_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "reviewed_report_plan_isct_master_v1.json"
 )
 QUERY_INTENT_CATALOG_PATH = REPO_ROOT / "config" / "query_intent_catalog_v1.json"
-REAL_PDF_ENV = "JGRAD_REAL_PDF"
-
 pytestmark = pytest.mark.real_pdf
-
-
-@pytest.fixture(scope="module")
-def real_pdf_manifest() -> dict[str, Any]:
-    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-
-
-@pytest.fixture(scope="module")
-def real_pdf_path(real_pdf_manifest: dict[str, Any]) -> Path:
-    filename = real_pdf_manifest["filename"]
-    configured = os.getenv(REAL_PDF_ENV)
-    configured_path = Path(configured).expanduser() if configured else None
-    if configured_path and not configured_path.is_absolute():
-        configured_path = REPO_ROOT / configured_path
-    candidates = [
-        configured_path,
-        REPO_ROOT / "tests" / "fixtures" / "private" / filename,
-        REPO_ROOT / "outputs" / "real_pdf" / filename,
-    ]
-    path = next((candidate for candidate in candidates if candidate and candidate.is_file()), None)
-    if path is None:
-        pytest.skip(
-            f"real PDF fixture unavailable; set {REAL_PDF_ENV} or follow tests/fixtures/README.md"
-        )
-
-    actual_hash = sha256_file(path)
-    assert actual_hash == real_pdf_manifest["sha256"], (
-        f"real PDF fixture hash mismatch: expected {real_pdf_manifest['sha256']}, got {actual_hash}"
-    )
-    return path
-
-
-@pytest.fixture(scope="module")
-def extracted_pages(real_pdf_path: Path) -> list[ExtractedPage]:
-    return extract_pdf(real_pdf_path)
-
-
-@pytest.fixture(scope="module")
-def real_document_identity(real_pdf_manifest: dict[str, Any]) -> DocumentIdentity:
-    return load_document_identity(MANIFEST_PATH.parent / real_pdf_manifest["identity_file"])
-
-
-@pytest.fixture(scope="module")
-def real_document_kb(
-    real_pdf_path: Path, real_document_identity: DocumentIdentity
-) -> DocumentKnowledgeBase:
-    return build_document_kb(real_pdf_path, real_document_identity)
 
 
 def test_real_pdf_extraction_matches_baseline(

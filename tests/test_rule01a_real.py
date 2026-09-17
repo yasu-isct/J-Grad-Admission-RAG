@@ -6,7 +6,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.retrieval.embedding import DeterministicFakeEmbeddingProvider
 from jgrad_admission_rag.retrieval.local_index import build_local_index
@@ -16,7 +15,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 
@@ -30,11 +28,9 @@ INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
 @pytest.fixture(scope="module")
-def rule01a_client(tmp_path_factory: pytest.TempPathFactory):
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
+def rule01a_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
     root = tmp_path_factory.mktemp("rule01a")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
+    kb = real_document_kb
     kb_relative = "documents/isct/document_kb.json"
     kb_path = root / Path(*kb_relative.split("/"))
     kb_path.parent.mkdir(parents=True)
@@ -351,10 +347,9 @@ def test_rule01a_multiple_credentials_and_wrong_degree_fail_safe(rule01a_client)
     )
 
 
-def test_rule01a_real_fact_boundaries_are_exact(rule01a_client) -> None:
+def test_rule01a_real_fact_boundaries_are_exact(rule01a_client, real_document_kb) -> None:
     _, _ = rule01a_client
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    facts = {fact.fact_id: fact for fact in kb.facts}
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
 
     assert facts["fact:00060"].text == (
         "（１）我が国において、大学を卒業した者及び2027年3月31日までに卒業見込みの者"

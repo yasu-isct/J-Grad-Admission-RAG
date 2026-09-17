@@ -7,7 +7,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.corpus_selection import select_corpus_documents
 from jgrad_admission_rag.reasoning.reviewed_report_evidence import (
@@ -23,7 +22,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _profile, _report, _statuses
@@ -103,10 +101,8 @@ TARGET_COLLEGES = {
 
 
 @pytest.fixture(scope="module")
-def rule04b_kb():
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
-    return build_document_kb(PDF, load_document_identity(IDENTITY))
+def rule04b_kb(real_document_kb):
+    return real_document_kb
 
 
 @pytest.fixture(scope="module")

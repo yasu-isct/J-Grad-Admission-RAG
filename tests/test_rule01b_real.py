@@ -6,7 +6,6 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from jgrad_admission_rag.builder.kb_builder import build_document_kb
 from jgrad_admission_rag.corpus import CorpusRegistration, build_corpus_manifest
 from jgrad_admission_rag.retrieval.embedding import DeterministicFakeEmbeddingProvider
 from jgrad_admission_rag.retrieval.local_index import build_local_index
@@ -16,7 +15,6 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
-from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _credential, _profile, _report, _statuses
@@ -30,11 +28,9 @@ INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
 @pytest.fixture(scope="module")
-def rule01b_client(tmp_path_factory: pytest.TempPathFactory):
-    if not PDF.is_file():
-        pytest.skip("real PDF fixture unavailable")
+def rule01b_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
     root = tmp_path_factory.mktemp("rule01b")
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
+    kb = real_document_kb
     kb_relative = "documents/isct/document_kb.json"
     kb_path = root / Path(*kb_relative.split("/"))
     kb_path.parent.mkdir(parents=True)
@@ -123,9 +119,10 @@ def _missing(report: dict[str, Any], rule_id: str) -> set[str]:
     }
 
 
-def test_rule01b_real_fact_boundaries_are_complete_and_independent(rule01b_client) -> None:
-    kb = build_document_kb(PDF, load_document_identity(IDENTITY))
-    facts = {fact.fact_id: fact for fact in kb.facts}
+def test_rule01b_real_fact_boundaries_are_complete_and_independent(
+    rule01b_client, real_document_kb
+) -> None:
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
     expected_prefixes = {
         "fact:00063": "（４）外国の学校が行う通信教育",
         "fact:00064": "（５）我が国において、外国の大学の課程",
@@ -134,7 +131,7 @@ def test_rule01b_real_fact_boundaries_are_complete_and_independent(rule01b_clien
         "fact:00067": "（８）文部科学大臣の指定した者",
     }
 
-    assert len(kb.facts) == 391
+    assert len(real_document_kb.facts) == 391
     for fact_id, prefix in expected_prefixes.items():
         assert facts[fact_id].text.startswith(prefix)
         assert facts[fact_id].source_pages == [7]
