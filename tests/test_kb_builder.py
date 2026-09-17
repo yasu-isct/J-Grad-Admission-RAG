@@ -21,6 +21,7 @@ from jgrad_admission_rag.builder.kb_builder import (
     fact_to_retrieval_unit,
     infer_scope,
     indexed_chunk_to_fact,
+    propagate_department_context,
     summarize_chunk_sizes,
 )
 from tests.identity_helpers import make_document_identity
@@ -237,6 +238,36 @@ def test_department_page_context_resets_heading_stack_and_scopes_atomic_rule() -
         "【英語外部試験のスコアシートの取扱い】",
     ]
     assert "前の系の質問" not in rule.section_path
+
+
+def test_department_context_propagates_until_explicit_boundary_without_body_trigger() -> None:
+    index = build_document_index(
+        [
+            _text_chunk(
+                "工学院 電気電子系\n出願上の注意",
+                page=33,
+                section_path=["工学院 電気電子系"],
+            ),
+            _text_chunk(
+                "任意の続き本文\n英語（英語外部試験）150点",
+                title="任意の続き見出し",
+                page=34,
+            ),
+            _text_chunk("口頭試問受験資格者", page=34),
+            _text_chunk("研究分野一覧\n教員情報", page=35),
+            _text_chunk("## Page 36\nⅢ 清華大学との合同プログラム\n共通本文", page=36),
+            _text_chunk("境界後の本文", page=37),
+        ]
+    )
+
+    propagate_department_context(index)
+
+    assert [item.chunk_id for item in index] == [0, 1, 2, 3, 4, 5]
+    assert index[1].section_path[0] == "工学院 電気電子系"
+    assert index[2].section_path[0] == "工学院 電気電子系"
+    assert index[3].section_path[0] == "工学院 電気電子系"
+    assert "工学院 電気電子系" not in index[4].section_path
+    assert "工学院 電気電子系" not in index[5].section_path
 
 
 def test_chunk_pages_keeps_single_line_numbered_clause() -> None:

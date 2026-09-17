@@ -42,6 +42,10 @@ from .language_score_conversion import (
     ScoreConversionCandidate,
     convert_selected_language_score,
 )
+from .language_score_allocation import (
+    LanguageScoreAllocationResult,
+    resolve_language_score_allocation,
+)
 from .query_intent import QueryIntent
 from .reasoning_trace import ReasoningTrace, ReasoningTraceError, build_reasoning_trace
 from .reviewed_report_evidence import ReviewedReportEvidenceBundle
@@ -104,6 +108,7 @@ class ApplicantReport(ApplicantReportModel):
     reasoning_trace: ReasoningTrace
     cited_answer: CitedAnswer
     language_score_conversion: LanguageScoreConversionResult | None = None
+    language_score_allocation: LanguageScoreAllocationResult | None = None
     counts: ApplicantReportCounts
     report_status: ReportStatus
 
@@ -120,6 +125,7 @@ class ApplicantReport(ApplicantReportModel):
             "reasoning_trace": ReasoningTrace,
             "cited_answer": CitedAnswer,
             "language_score_conversion": LanguageScoreConversionResult,
+            "language_score_allocation": LanguageScoreAllocationResult,
             "counts": ApplicantReportCounts,
         }
         for field_name, model_type in nested_types.items():
@@ -257,6 +263,11 @@ def build_applicant_report(
         if plan.language_score_conversion is not None
         else None
     )
+    allocation = (
+        resolve_language_score_allocation(profile, plan.language_score_allocation)
+        if plan.language_score_allocation is not None
+        else None
+    )
 
     counts = ApplicantReportCounts(
         rule_count=len(plan.rules),
@@ -280,6 +291,7 @@ def build_applicant_report(
             reasoning_trace=trace,
             cited_answer=answer,
             language_score_conversion=conversion,
+            language_score_allocation=allocation,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -404,6 +416,8 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
         lines.extend(f"- {_escape_markdown_inline(note)}" for note in reviewed_notes)
     if validated.language_score_conversion is not None:
         lines.extend(_render_language_score_conversion(validated.language_score_conversion))
+    if validated.language_score_allocation is not None:
+        lines.extend(_render_language_score_allocation(validated.language_score_allocation))
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:
         lines.extend(
@@ -488,6 +502,24 @@ def _validate_plan_evidence(
             or record.parent_college is not None
         ):
             raise ValueError
+    if plan.language_score_allocation is not None:
+        policy = plan.language_score_allocation
+        for entry in policy.entries:
+            binding = entry.evidence_binding
+            expected_rule_ids.setdefault(binding.fact_id, set()).add(
+                f"policy:{policy.policy_id}:{entry.target}"
+            )
+            record = records.get(binding.fact_id)
+            if record is None or (
+                record.document_id != binding.document_id
+                or record.source_pages != binding.source_pages
+                or hashlib.sha256(record.text.encode("utf-8")).hexdigest()
+                != binding.authoritative_fact_text_sha256
+                or record.scope_type != "department"
+                or record.scope_targets != (entry.target,)
+                or record.parent_college != entry.parent_college
+            ):
+                raise ValueError
     if set(records) != set(expected_rule_ids):
         raise ValueError
     for fact_id, rule_ids in expected_rule_ids.items():
@@ -527,6 +559,39 @@ def _validate_report_contract(report: ApplicantReport) -> None:
             or record is None
             or record.source_pages != conversion.evidence_binding.source_pages
         ):
+            raise ValueError
+    allocation_policy = plan.language_score_allocation
+    allocation = report.language_score_allocation
+    if (allocation_policy is None) != (allocation is None):
+        raise ValueError
+    if allocation_policy is not None and allocation is not None:
+        if (
+            allocation.policy_id != allocation_policy.policy_id
+            or allocation.limitation_statement != allocation_policy.limitation_statement
+        ):
+            raise ValueError
+        matching = [
+            entry
+            for entry in allocation_policy.entries
+            if entry.target == allocation.target
+            and entry.parent_college == allocation.parent_college
+        ]
+        if allocation.status.value == "confirmed":
+            if len(matching) != 1:
+                raise ValueError
+            entry = matching[0]
+            expected_evidence = OfficialEvidenceReference(
+                document_id=entry.evidence_binding.document_id,
+                fact_id=entry.evidence_binding.fact_id,
+                source_pages=entry.evidence_binding.source_pages,
+                role=EvidenceRole.PRIMARY,
+            )
+            if (
+                allocation.maximum_points != entry.maximum_points
+                or allocation.evidence != expected_evidence
+            ):
+                raise ValueError
+        elif matching:
             raise ValueError
     trace = report.reasoning_trace
     if trace.trace_id != f"trace:{report.report_id}":
@@ -626,6 +691,27 @@ def _render_language_score_conversion(
     lines.extend(
         f"- **制限:** {_escape_markdown_inline(limitation)}" for limitation in result.limitations
     )
+    return tuple(lines)
+
+
+def _render_language_score_allocation(
+    result: LanguageScoreAllocationResult,
+) -> tuple[str, ...]:
+    lines = [
+        "",
+        "## 志望系の英語公式配点",
+        "",
+        f"- **対象:** `{result.target or '未指定'}`",
+        f"- **状態:** `{result.status.value}`",
+    ]
+    if result.maximum_points is not None and result.evidence is not None:
+        lines.extend(
+            (
+                f"- **公式配点（満点）:** `{result.maximum_points} points`",
+                f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
+            )
+        )
+    lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
     return tuple(lines)
 
 

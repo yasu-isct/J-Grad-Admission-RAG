@@ -170,6 +170,13 @@ from .language_score_conversion import (
     ScoreConversionTableRow,
     convert_selected_language_score,
 )
+from .language_score_allocation import (
+    DepartmentLanguageScoreAllocation,
+    LanguageScoreAllocationPolicy,
+    LanguageScoreAllocationResult,
+    LanguageScoreAllocationStatus,
+    resolve_language_score_allocation,
+)
 from .reviewed_report_plan import (
     REVIEWED_REPORT_PLAN_SCHEMA_VERSION,
     SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS,
@@ -206,6 +213,11 @@ from .applicant_report import (
 )
 
 __all__ = [
+    "DepartmentLanguageScoreAllocation",
+    "LanguageScoreAllocationPolicy",
+    "LanguageScoreAllocationResult",
+    "LanguageScoreAllocationStatus",
+    "resolve_language_score_allocation",
     "APPLICANT_PROFILE_SCHEMA_VERSION",
     "SUPPORTED_APPLICANT_PROFILE_SCHEMA_VERSIONS",
     "AcademicCredential",

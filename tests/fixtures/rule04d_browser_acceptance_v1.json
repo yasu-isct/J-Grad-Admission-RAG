@@ -1,0 +1,240 @@
+[
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "physics-60",
+    "target": "物理学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "maximum_points": 60,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00182",
+      "source_pages": [
+        21
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-computing-20",
+    "target": "数理・計算科学系",
+    "parent_college": "情報理工学院",
+    "status": "confirmed",
+    "maximum_points": 20,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00280",
+      "source_pages": [
+        50
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "chemistry-200",
+    "target": "化学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "maximum_points": 200,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00190",
+      "source_pages": [
+        23
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "electrical-150",
+    "target": "電気電子系",
+    "parent_college": "工学院",
+    "status": "confirmed",
+    "maximum_points": 150,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00230",
+      "source_pages": [
+        34
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "math-non-numeric",
+    "target": "数学系",
+    "parent_college": "理学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "architecture-unpublished",
+    "target": "建築学系",
+    "parent_college": "環境・社会理工学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "scenario": "wrong-parent",
+    "target": "物理学系",
+    "parent_college": "工学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "physics-60",
+    "target": "物理学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "maximum_points": 60,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00182",
+      "source_pages": [
+        21
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-computing-20",
+    "target": "数理・計算科学系",
+    "parent_college": "情報理工学院",
+    "status": "confirmed",
+    "maximum_points": 20,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00280",
+      "source_pages": [
+        50
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "chemistry-200",
+    "target": "化学系",
+    "parent_college": "理学院",
+    "status": "confirmed",
+    "maximum_points": 200,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00190",
+      "source_pages": [
+        23
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "electrical-150",
+    "target": "電気電子系",
+    "parent_college": "工学院",
+    "status": "confirmed",
+    "maximum_points": 150,
+    "unit": "points",
+    "evidence": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "fact_id": "fact:00230",
+      "source_pages": [
+        34
+      ],
+      "role": "primary"
+    },
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "math-non-numeric",
+    "target": "数学系",
+    "parent_college": "理学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "architecture-unpublished",
+    "target": "建築学系",
+    "parent_college": "環境・社会理工学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "scenario": "wrong-parent",
+    "target": "物理学系",
+    "parent_college": "工学院",
+    "status": "not_covered",
+    "maximum_points": null,
+    "unit": null,
+    "evidence": null,
+    "limitation_statement": "募集要項に明記された英語の公式配点（満点）だけを示します。受験者の実得点、最低点、合格線、受験資格または合否は計算しません。",
+    "horizontal_overflow": false
+  }
+]

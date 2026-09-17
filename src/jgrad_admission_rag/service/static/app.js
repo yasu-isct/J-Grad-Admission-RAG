@@ -593,6 +593,28 @@ function renderReport(payload) {
     conversion.append(unavailable);
   }
 
+  const allocation = document.createElement("section");
+  allocation.className = "report-section";
+  allocation.append(heading(3, "志望系の英語公式配点"));
+  const allocationResult = report.language_score_allocation;
+  const allocationDetails = document.createElement("dl");
+  allocationDetails.className = "evidence-meta";
+  if (allocationResult) {
+    addMetadata(allocationDetails, "対象", allocationResult.target || "未指定");
+    addMetadata(allocationDetails, "状態", allocationResult.status);
+    const points = allocationResult.maximum_points === null
+      ? "審査済み数値配点の対象外または未確認"
+      : `${allocationResult.maximum_points} points（公式配点・満点）`;
+    addMetadata(allocationDetails, "配点", points);
+    if (allocationResult.evidence) {
+      addMetadata(allocationDetails, "根拠", `${allocationResult.evidence.fact_id} | p.${allocationResult.evidence.source_pages.join(",")}`);
+    }
+    addMetadata(allocationDetails, "制限", allocationResult.limitation_statement);
+  } else {
+    addMetadata(allocationDetails, "状態", "この審査済み計画には系別配点データがありません。");
+  }
+  allocation.append(allocationDetails);
+
   const evidence = document.createElement("section");
   evidence.className = "report-section";
   evidence.append(heading(3, "公式根拠（原文）"));
@@ -612,7 +634,7 @@ function renderReport(payload) {
   const finalNotice = document.createElement("p");
   finalNotice.className = "final-notice";
   finalNotice.textContent = "この結果は、総合的な出願資格、合否、合格可能性、または推奨を示すものではありません。";
-  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, evidence, finalNotice);
+  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evidence, finalNotice);
   setMessage(reportStatus, report.report_status, `レポート準備状態: ${statusLabel(report.report_status)} (${report.report_status})`, true);
 }
 
