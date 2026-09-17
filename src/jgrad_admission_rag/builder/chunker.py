@@ -11,6 +11,7 @@ from ..utils import INTERMEDIATE_DIR
 
 TITLE_RE = re.compile(
     r"^(?:[【\[［][^】\]］]+[】\]］](?:※[^\n]*)?|"
+    r"附録[0-9０-９一二三四五六七八九十]+[\.．、]\s*[^\n]*英語外部試験[^\n]*換算基準|"
     r"[0-9０-９]+[\.．、]\s*.+|"
     r"[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)](?![～〜~-])\s*.+|"
     r"◆(?:英語外部試験の種類と受験時期について|スコアシートの要件)|"
@@ -20,6 +21,9 @@ TITLE_RE = re.compile(
 )
 PAGE_RE = re.compile(r"^## Page (\d+)", re.MULTILINE)
 MAJOR_TITLE_RE = re.compile(r"^[0-9０-９]+[\.．、]")
+APPENDIX_TITLE_RE = re.compile(
+    r"^附録[0-9０-９一二三四五六七八九十]+[\.．、][^\n]*英語外部試験[^\n]*換算基準"
+)
 BRACKETED_TITLE_RE = re.compile(r"^(?:【[^】]+】|\[[^\]]+\]|［[^］]+］)(?:※.*)?$")
 PARENTHESIZED_TITLE_RE = re.compile(r"^[◆★]?[（(][0-9０-９一二三四五六七八九十]+[）)]")
 STRUCTURAL_SUBHEADING_RE = re.compile(
@@ -85,7 +89,7 @@ class _HeadingStack:
 
     def update(self, title: str) -> list[str]:
         title = title.strip()
-        if MAJOR_TITLE_RE.match(title):
+        if MAJOR_TITLE_RE.match(title) or APPENDIX_TITLE_RE.match(title):
             self.major = title
             self.bracketed = None
             self.parenthesized = None

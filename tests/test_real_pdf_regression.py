@@ -113,7 +113,7 @@ from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, cr
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
-RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_rule04b_v1.json"
+RETRIEVAL_BENCHMARK_PATH = REPO_ROOT / "tests" / "fixtures" / "retrieval_queries_rule04c_v1.json"
 APPLICABILITY_FIXTURE_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "applicability_real_scenarios_v1.json"
 )
@@ -1564,12 +1564,8 @@ def test_real_pdf_build_index_cli_reports_frozen_fake_artifacts(
     assert summary["payloads_sha256"] == expected["index_payloads_sha256"]
     assert summary["vectors_sha256"] == expected["index_fake_vectors_npy_sha256"]
     assert loaded.vectors.shape == (391, 8)
-    assert loaded.manifest.payloads_sha256 == (
-        "f0d902a0ba5864e5d3158549bbf4cfabea8bf0614fd363c70e1778c325931e7b"
-    )
-    assert loaded.manifest.vectors_sha256 == (
-        "e4aa374b7e0b81584550777b80ef892ff13234189587a0d26e2851028bd874ac"
-    )
+    assert loaded.manifest.payloads_sha256 == expected["index_payloads_sha256"]
+    assert loaded.manifest.vectors_sha256 == expected["index_fake_vectors_npy_sha256"]
 
 
 def test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli(
@@ -1921,9 +1917,9 @@ def test_real_pdf_fake_hybrid_plumbing_is_stable_and_cli_equivalent(
         json.dumps(aggregate, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
     assert characterization_sha256 == (
-        "eee9224a575a0ca8c4e0d1d836261e031185a3cd8f22bda4be4339669e06a73c"
+        "3c41abe2d3a5aebea94f8568f2fe205a2b9bf0eaa877f459b6793ad835c6750b"
     )
-    assert aggregate_sha256 == ("5e58b6cff696d2638d04b717eabf6f3979b7251462dc196b14c99fd4a2dc35b8")
+    assert aggregate_sha256 == ("07ef63d21d7e09a2432e76b4d26416ad64c952fee3cd7eb785170aaefef35e2d")
 
     first_query = benchmark.queries[0]
     search_cli.main(
@@ -1976,19 +1972,19 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
     assert len(payloads) == 391
     assert fact_type_counts == {
         "documents": 24,
-        "english": 50,
+        "english": 51,
         "exams": 121,
         "fees": 14,
         "general": 164,
-        "methods": 9,
+        "methods": 8,
         "periods": 9,
     }
     assert scope_type_counts == {
         "college": 2,
         "department": 195,
-        "global": 64,
+        "global": 65,
         "program": 9,
-        "unknown": 121,
+        "unknown": 120,
     }
     assert target_counts == {
         "システム制御系": 20,
@@ -2028,7 +2024,7 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
     }
 
     examples = (
-        (MetadataFilter(fact_types=("english",)), 50),
+        (MetadataFilter(fact_types=("english",)), 51),
         (MetadataFilter(scope_types=("department",)), 195),
         (MetadataFilter(scope_targets=("情報工学系",)), 19),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 21),
@@ -2085,7 +2081,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     scope_outcomes: list[dict[str, object]] = []
 
     hard_filter_examples = (
-        (MetadataFilter(fact_types=("english",)), 50),
+        (MetadataFilter(fact_types=("english",)), 51),
         (MetadataFilter(scope_types=("department",)), 195),
         (MetadataFilter(scope_targets=("情報工学系",)), 19),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 21),
@@ -2231,7 +2227,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("5dff36ec7951989dfaa5a541db253166d768bf970a0f31005992799159e4f12a")
+    assert outcome_sha256 == ("7b34337faa97c48131dec47e3aebeeca85bfad83d53688750ce291da9966531c")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
@@ -2264,19 +2260,19 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
     ).hits
     all_expansion = expand_references(index, context, all_hits)
 
-    assert all_expansion.authoritative_claim_count == 129
+    assert all_expansion.authoritative_claim_count == 130
     assert all_expansion.authoritative_status_counts == {
         "resolved": 10,
         "ambiguous": 5,
-        "unresolved": 114,
+        "unresolved": 115,
     }
-    assert all_expansion.expanded_claim_count == 129
+    assert all_expansion.expanded_claim_count == 130
     assert all_expansion.expanded_status_counts == all_expansion.authoritative_status_counts
     assert all_expansion.disposition_counts == {
         "attached_target": 0,
         "already_primary": 10,
         "ambiguous": 5,
-        "unresolved": 114,
+        "unresolved": 115,
     }
     assert all_expansion.resolved_relation_count == 10
     assert all_expansion.unique_expanded_target_count == 0
@@ -2284,7 +2280,7 @@ def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
     visible_claims = [
         claim for candidate in all_expansion.candidate_expansions for claim in candidate.claims
     ]
-    assert len(visible_claims) == 129
+    assert len(visible_claims) == 130
     assert all(
         claim.target_row_index is None and claim.already_primary_rank is None
         for claim in visible_claims
@@ -2415,7 +2411,7 @@ def test_real_pdf_builds_34_canonical_evidence_packs_with_official_evidence(
 
     assert len(ordered_bytes) == 34
     aggregate_sha256 = hashlib.sha256(b"".join(ordered_bytes)).hexdigest()
-    assert aggregate_sha256 == "99adf3d1e570184aa6be91d2eca4f131275aaed8f2780f0e1405e4381e4872b8"
+    assert aggregate_sha256 == "c7009b6258d660e6a73c3b72e04de62618cdde11b338aa0622a31f0b67f8f496"
     assert real_document_kb.model_dump(mode="json") == kb_before
     assert RETRIEVAL_BENCHMARK_PATH.read_bytes() == benchmark_before
     assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == index_before
@@ -2495,7 +2491,7 @@ def test_real_pdf_fake_retrieval_evaluation_is_deterministic_and_independently_s
             assert actual == len(gold.intersection(ranked[:depth])) / len(gold)
 
     assert hashlib.sha256(canonical).hexdigest() == (
-        "c0feaa95fb9853b5a768060d5c6e182dc8df26bdd062d7645230b72390a8b149"
+        "1b7201362fdac6f1bf42f8d21a4c07c5b7adca26ae5ba81f5d403e1e07426f79"
     )
 
     class RecordingProvider:

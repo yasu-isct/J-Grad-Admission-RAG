@@ -290,3 +290,19 @@ def test_report_ui_has_responsive_report_layout_and_visible_focus() -> None:
     assert '.tab-button[aria-selected="true"]' in css
     assert "input:focus-visible" in css
     assert "@media (max-width: 760px)" in css
+
+
+def test_report_ui_renders_exact_language_score_conversion() -> None:
+    javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
+
+    assert "英語外部試験の換算" in javascript
+    assert 'addMetadata(details, "入力試験", conversionResult.input_test_kind' in javascript
+    assert 'addMetadata(details, "入力得点", conversionResult.input_score' in javascript
+    assert 'addMetadata(details, "状態", conversionResult.status)' in javascript
+    assert 'addMetadata(details, "結果形態", conversionResult.result_shape)' in javascript
+    assert "conversionResult.evidence_binding.fact_id" in javascript
+    assert "conversionResult.evidence_binding.source_pages.join" in javascript
+    assert 'appendConversionCandidates(conversion, "PBT"' in javascript
+    assert 'appendConversionCandidates(conversion, "TOEIC L&R"' in javascript
+    assert "formatExactInterval(candidate)" in javascript
+    assert "value.numerator}/${value.denominator}" in javascript

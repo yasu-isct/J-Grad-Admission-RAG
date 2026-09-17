@@ -36,6 +36,12 @@ from .cited_answer import (
     build_cited_answer,
     render_cited_answer_markdown,
 )
+from .language_score_conversion import (
+    ExactScoreValue,
+    LanguageScoreConversionResult,
+    ScoreConversionCandidate,
+    convert_selected_language_score,
+)
 from .query_intent import QueryIntent
 from .reasoning_trace import ReasoningTrace, ReasoningTraceError, build_reasoning_trace
 from .reviewed_report_evidence import ReviewedReportEvidenceBundle
@@ -97,6 +103,7 @@ class ApplicantReport(ApplicantReportModel):
     evidence_bundle: ReviewedReportEvidenceBundle
     reasoning_trace: ReasoningTrace
     cited_answer: CitedAnswer
+    language_score_conversion: LanguageScoreConversionResult | None = None
     counts: ApplicantReportCounts
     report_status: ReportStatus
 
@@ -112,6 +119,7 @@ class ApplicantReport(ApplicantReportModel):
             "evidence_bundle": ReviewedReportEvidenceBundle,
             "reasoning_trace": ReasoningTrace,
             "cited_answer": CitedAnswer,
+            "language_score_conversion": LanguageScoreConversionResult,
             "counts": ApplicantReportCounts,
         }
         for field_name, model_type in nested_types.items():
@@ -244,6 +252,12 @@ def build_applicant_report(
     except CitedAnswerError:
         _fail(ApplicantReportFailure.ANSWER_FAILED)
 
+    conversion = (
+        convert_selected_language_score(profile, plan.language_score_conversion)
+        if plan.language_score_conversion is not None
+        else None
+    )
+
     counts = ApplicantReportCounts(
         rule_count=len(plan.rules),
         finding_count=len(answer.rule_findings),
@@ -265,6 +279,7 @@ def build_applicant_report(
             evidence_bundle=evidence_bundle,
             reasoning_trace=trace,
             cited_answer=answer,
+            language_score_conversion=conversion,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -387,6 +402,8 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
     if reviewed_notes:
         lines.extend(("", "## 適用規則の審査済み説明", ""))
         lines.extend(f"- {_escape_markdown_inline(note)}" for note in reviewed_notes)
+    if validated.language_score_conversion is not None:
+        lines.extend(_render_language_score_conversion(validated.language_score_conversion))
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:
         lines.extend(
@@ -456,6 +473,21 @@ def _validate_plan_evidence(
                 or not _evidence_scope_matches_rule(record, rule.scope)
             ):
                 raise ValueError
+    if plan.language_score_conversion is not None:
+        policy = plan.language_score_conversion
+        binding = policy.evidence_binding
+        expected_rule_ids.setdefault(binding.fact_id, set()).add(f"policy:{policy.policy_id}")
+        record = records.get(binding.fact_id)
+        if record is None or (
+            record.document_id != binding.document_id
+            or record.source_pages != binding.source_pages
+            or hashlib.sha256(record.text.encode("utf-8")).hexdigest()
+            != binding.authoritative_fact_text_sha256
+            or record.scope_type != "global"
+            or record.scope_targets
+            or record.parent_college is not None
+        ):
+            raise ValueError
     if set(records) != set(expected_rule_ids):
         raise ValueError
     for fact_id, rule_ids in expected_rule_ids.items():
@@ -476,6 +508,26 @@ def _validate_report_contract(report: ApplicantReport) -> None:
     ):
         raise ValueError
     _validate_plan_evidence(plan, evidence)
+    conversion_policy = plan.language_score_conversion
+    conversion = report.language_score_conversion
+    if (conversion_policy is None) != (conversion is None):
+        raise ValueError
+    if conversion_policy is not None and conversion is not None:
+        record = next(
+            (
+                item
+                for item in evidence.evidence_records
+                if item.fact_id == conversion_policy.evidence_binding.fact_id
+            ),
+            None,
+        )
+        if (
+            conversion.policy_id != conversion_policy.policy_id
+            or conversion.evidence_binding != conversion_policy.evidence_binding
+            or record is None
+            or record.source_pages != conversion.evidence_binding.source_pages
+        ):
+            raise ValueError
     trace = report.reasoning_trace
     if trace.trace_id != f"trace:{report.report_id}":
         raise ValueError
@@ -545,6 +597,58 @@ def _validate_decision_and_citation_evidence(report: ApplicantReport) -> None:
 def _evidence_marker(fact_id: str, pages: tuple[int, ...]) -> str:
     page_label = f"p.{pages[0]}" if len(pages) == 1 else "pp." + ",".join(map(str, pages))
     return f"[{fact_id}, {page_label}]"
+
+
+def _render_language_score_conversion(
+    result: LanguageScoreConversionResult,
+) -> tuple[str, ...]:
+    lines = ["", "## 英語外部試験の換算", ""]
+    input_kind = result.input_test_kind.value if result.input_test_kind is not None else "未指定"
+    input_score = result.input_score if result.input_score is not None else "未指定"
+    lines.extend(
+        (
+            f"- **入力:** `{input_kind}` / `{input_score}`",
+            f"- **状態:** `{result.status.value}`",
+            f"- **結果形態:** `{result.result_shape.value}`",
+            f"- **根拠:** {_evidence_marker(result.evidence_binding.fact_id, result.evidence_binding.source_pages)}",
+        )
+    )
+    if result.conversion_chain:
+        lines.append("- **換算チェーン:**")
+        lines.extend(
+            f"  - `{step.operation}`: `{_escape_markdown_inline(step.expression)}`"
+            for step in result.conversion_chain
+        )
+    lines.extend(_render_score_candidates("PBT", result.pbt_candidates))
+    lines.extend(_render_score_candidates("TOEIC L&R", result.toeic_candidates))
+    for field in result.missing_fields:
+        lines.append(f"- **不足情報:** `{field}`")
+    lines.extend(
+        f"- **制限:** {_escape_markdown_inline(limitation)}" for limitation in result.limitations
+    )
+    return tuple(lines)
+
+
+def _render_score_candidates(
+    label: str,
+    candidates: tuple[ScoreConversionCandidate, ...],
+) -> tuple[str, ...]:
+    return tuple(
+        f"- **{label} 候補 {index}:** `{_format_exact_interval(candidate)}`"
+        for index, candidate in enumerate(candidates, start=1)
+    )
+
+
+def _format_exact_interval(candidate: ScoreConversionCandidate) -> str:
+    lower = _format_exact_score(candidate.lower)
+    upper = _format_exact_score(candidate.upper)
+    return lower if candidate.lower == candidate.upper else f"{lower}..{upper}"
+
+
+def _format_exact_score(value: ExactScoreValue) -> str:
+    if value.decimal is not None:
+        return value.decimal
+    return f"{value.numerator}/{value.denominator}"
 
 
 def _literal_fenced_block(text: str) -> str:

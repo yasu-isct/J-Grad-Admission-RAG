@@ -43,6 +43,9 @@ COLLEGE_DEPARTMENTS = {
 }
 PROGRAMS = {"技術経営専門職学位課程"}
 DEPARTMENT_CONTEXT_RE = re.compile(r"^(?P<college>\S+学院)\s+(?P<unit>.+(?:系|専門職学位課程))$")
+APPENDIX_CONVERSION_HEADING_RE = re.compile(
+    r"^附録[0-9０-９一二三四五六七八九十]+[\.．、][^\n]*英語外部試験[^\n]*換算基準"
+)
 
 PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
     r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
@@ -107,6 +110,12 @@ def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
 
 def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
     haystack = f"{item.title}\n{item.text}"
+    if (
+        item.section_path
+        and APPENDIX_CONVERSION_HEADING_RE.match(item.section_path[0])
+        and item.text.lstrip().startswith(item.section_path[0])
+    ):
+        return "global", [], None, 0.7
     if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
         return "global", [], None, 0.7
 

@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 from ..schemas.document_identity import DocumentIdentity
 from .applicability import ApplicabilityRule
+from .language_score_conversion import LanguageScoreConversionPolicy
 from .query_intent import IntentCategory
 from .rule_interaction import RuleInteractionPolicy
 from .rule_resolution import RulePrecedencePolicy, _is_proven_narrower
@@ -62,6 +63,7 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
     coverage_status: Literal["partial_reviewed_rules"] = "partial_reviewed_rules"
     reviewed_coverage_statement: str = Field(min_length=1, max_length=500)
     limitation_statement: str = Field(min_length=1, max_length=500)
+    language_score_conversion: LanguageScoreConversionPolicy | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -84,6 +86,9 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
         interaction = detached.get("interaction_policy")
         if isinstance(interaction, RuleInteractionPolicy):
             detached["interaction_policy"] = interaction.model_dump(mode="json")
+        conversion = detached.get("language_score_conversion")
+        if isinstance(conversion, LanguageScoreConversionPolicy):
+            detached["language_score_conversion"] = conversion.model_dump(mode="json")
         return detached
 
     @field_validator(
@@ -218,6 +223,14 @@ def _validate_cross_object_invariants(plan: ReviewedReportPlan) -> None:
             ):
                 raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
             source_kb_hashes.add(binding.source_kb_sha256)
+    if plan.language_score_conversion is not None:
+        binding = plan.language_score_conversion.evidence_binding
+        if (
+            binding.document_id != expected_document
+            or binding.source_pdf_sha256 != expected_pdf
+            or binding.source_kb_sha256 not in source_kb_hashes
+        ):
+            raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
     if len(source_kb_hashes) != 1:
         raise _PlanInvariantError(PlanValidationFailure.SOURCE_KB)
 
