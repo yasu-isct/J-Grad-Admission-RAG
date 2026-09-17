@@ -109,7 +109,7 @@
     "oversized_chunk_reasons": {},
     "short_fact_threshold": 100,
     "short_fact_count": 109,
-    "unknown_scope_fact_count": 120,
+    "unknown_scope_fact_count": 117,
     "raw_reference_occurrence_count": 185,
     "reference_claim_count": 130,
     "reference_status_counts": {
@@ -117,13 +117,13 @@
       "ambiguous": 5,
       "unresolved": 115
     },
-    "fact_content_sha256": "cec84689b8c7a3b7771f77b9fb9d0a9a6ffc87dd93d47ea392ae388d647bcb43",
-    "fact_structure_sha256": "e9131970579f4fec05a494bd2a110b27801ea4efc22d12ef372cd9d130b93403",
-    "diagnostics_sha256": "b64da0de3a84a1a526e659e49d4cc55895f5af3967552cbefc458b5cf8c1dc75",
-    "embedding_text_v1_sha256": "f5a1a0bc9519822840e324a32355c636e2653415a35386f284b76c8773aae8fd",
-    "embedding_text_v1_fake_vector_sha256": "6d5f1dfa135d122707e461a7994d6b267da9f6ab6bc91e803d2bc6db716b129f",
-    "index_payloads_sha256": "87d3a0b9ad1ef87810be9c246fb3e30349b40ae80824f79d59b1a5237c3639a8",
-    "index_fake_vectors_npy_sha256": "832d9e51267b6bd3dc601d424b92f0ac168fb41174acbcbfcdaf9e4474c36fcf",
+    "fact_content_sha256": "cba442c28d9399b2146600300c065b73505b708a25c9a58a6db7fdda4cd8713c",
+    "fact_structure_sha256": "06f11353e8f1fc37227a070bcb83c11b8891174bafd42e4a9984f127a90ae473",
+    "diagnostics_sha256": "161d9875bf74f52e89a04e817cabcedbee7a4ea4fd4887d64ccfdec52ae734c4",
+    "embedding_text_v1_sha256": "90ca965cef74ffac6c7ddbc4f92adb30c35645954b21883994d5fb560e53b9e6",
+    "embedding_text_v1_fake_vector_sha256": "446e6f841510d2ac693960a932affe49f42b2798874bb19aad731fff23240043",
+    "index_payloads_sha256": "498cf4d327231389f63575300575a6274e5604035216d9549f442a88cf67a20c",
+    "index_fake_vectors_npy_sha256": "a8f45e40dcf93aefa66139f8df290e08cef713024b59470c5c2cddb520c09865",
     "resolved_reference_claims": [
       [
         "fact:00014",

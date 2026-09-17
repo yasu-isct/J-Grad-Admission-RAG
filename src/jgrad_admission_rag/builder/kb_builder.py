@@ -51,6 +51,10 @@ PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
     r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
 )
 PATH10_ELIGIBILITY_RE = re.compile(r"^★（10）本学大学院において、個別の出願資格審査により、")
+DEPARTMENT_CONTEXT_END_RE = re.compile(
+    r"^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\s+|附録|入学者受入れの方針|"
+    r"東京科学大学「教育理念」|■\s*東京科学大学)"
+)
 
 
 class DocumentBuildError(Exception):
@@ -197,6 +201,40 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
         return "global", [], None, 0.65
 
     return "unknown", [], None, 0.45
+
+
+def propagate_department_context(index: list[IndexedChunk]) -> None:
+    """Scope an exam-schedule continuation page to its preceding department banner."""
+
+    active_context: str | None = None
+    continuation_pages: dict[int, str] = {}
+    for item in index:
+        first_line = item.text.lstrip().splitlines()[0] if item.text.strip() else ""
+        if DEPARTMENT_CONTEXT_END_RE.match(first_line):
+            active_context = None
+        explicit_context = next(
+            (
+                heading
+                for heading in item.section_path
+                if DEPARTMENT_CONTEXT_RE.fullmatch(heading.strip())
+            ),
+            None,
+        )
+        if explicit_context is not None:
+            active_context = explicit_context
+        elif active_context is not None and " ".join(item.text.split()).startswith(
+            "試験区分 試験日 試験内容等"
+        ):
+            for page in item.pages:
+                continuation_pages[page] = active_context
+
+    for item in index:
+        context = next(
+            (continuation_pages[page] for page in item.pages if page in continuation_pages),
+            None,
+        )
+        if context is not None and context not in item.section_path:
+            item.section_path = [context, *item.section_path]
 
 
 def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
@@ -454,6 +492,7 @@ def build_document_kb(
     )
     chunks, filter_summary = filter_chunks(input_chunks)
     index = build_document_index(chunks)
+    propagate_department_context(index)
     reference_resolution = classify_reference_claims(index, reference_ambiguity_margin)
     facts = [indexed_chunk_to_fact(item) for item in index]
     max_chunk_chars, oversized_chunk_count, oversized_reasons = summarize_chunk_sizes(
