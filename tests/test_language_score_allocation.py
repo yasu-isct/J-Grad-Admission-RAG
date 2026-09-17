@@ -49,13 +49,13 @@ def test_exact_reviewed_scope_returns_only_official_maximum_points() -> None:
     assert result.evidence.fact_id == "fact:00182"
 
 
-def test_unpublished_or_conflicting_scope_never_fabricates_zero() -> None:
-    unpublished = resolve_language_score_allocation(_applicant("数学系", "理学院"), _policy())
+def test_uncovered_or_conflicting_scope_never_fabricates_zero() -> None:
+    uncovered = resolve_language_score_allocation(_applicant("数学系", "理学院"), _policy())
     conflict = resolve_language_score_allocation(_applicant("物理学系", "工学院"), _policy())
 
-    assert unpublished.status is LanguageScoreAllocationStatus.NOT_PUBLISHED
-    assert conflict.status is LanguageScoreAllocationStatus.NOT_PUBLISHED
-    assert unpublished.maximum_points is None
+    assert uncovered.status is LanguageScoreAllocationStatus.NOT_COVERED
+    assert conflict.status is LanguageScoreAllocationStatus.NOT_COVERED
+    assert uncovered.maximum_points is None
     assert conflict.maximum_points is None
 
 

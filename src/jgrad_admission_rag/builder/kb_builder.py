@@ -55,6 +55,7 @@ DEPARTMENT_CONTEXT_END_RE = re.compile(
     r"^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\s+|附録|入学者受入れの方針|"
     r"東京科学大学「教育理念」|■\s*東京科学大学)"
 )
+PAGE_MARKER_RE = re.compile(r"^## Page \d+$")
 
 
 class DocumentBuildError(Exception):
@@ -204,12 +205,14 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
 
 
 def propagate_department_context(index: list[IndexedChunk]) -> None:
-    """Scope an exam-schedule continuation page to its preceding department banner."""
+    """Carry an explicit department banner until the next explicit top-level boundary."""
 
     active_context: str | None = None
-    continuation_pages: dict[int, str] = {}
     for item in index:
-        first_line = item.text.lstrip().splitlines()[0] if item.text.strip() else ""
+        lines = (line.strip() for line in item.text.splitlines())
+        first_line = next(
+            (line for line in lines if line and not PAGE_MARKER_RE.fullmatch(line)), ""
+        )
         if DEPARTMENT_CONTEXT_END_RE.match(first_line):
             active_context = None
         explicit_context = next(
@@ -222,19 +225,9 @@ def propagate_department_context(index: list[IndexedChunk]) -> None:
         )
         if explicit_context is not None:
             active_context = explicit_context
-        elif active_context is not None and " ".join(item.text.split()).startswith(
-            "試験区分 試験日 試験内容等"
-        ):
-            for page in item.pages:
-                continuation_pages[page] = active_context
-
-    for item in index:
-        context = next(
-            (continuation_pages[page] for page in item.pages if page in continuation_pages),
-            None,
-        )
-        if context is not None and context not in item.section_path:
-            item.section_path = [context, *item.section_path]
+        elif active_context is not None and not DEPARTMENT_CONTEXT_END_RE.match(first_line):
+            if active_context not in item.section_path:
+                item.section_path = [active_context, *item.section_path]
 
 
 def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:

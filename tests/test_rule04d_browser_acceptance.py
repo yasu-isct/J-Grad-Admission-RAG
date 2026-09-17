@@ -41,6 +41,6 @@ def test_rule04d_browser_acceptance_preserves_points_and_non_published_paths() -
     assert desktop["chemistry-200"]["maximum_points"] == 200
     assert desktop["electrical-150"]["evidence"]["source_pages"] == [34]
     for scenario in ("math-non-numeric", "architecture-unpublished", "wrong-parent"):
-        assert desktop[scenario]["status"] == "not_published"
+        assert desktop[scenario]["status"] == "not_covered"
         assert desktop[scenario]["maximum_points"] is None
         assert desktop[scenario]["evidence"] is None

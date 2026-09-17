@@ -240,7 +240,7 @@ def test_department_page_context_resets_heading_stack_and_scopes_atomic_rule() -
     assert "前の系の質問" not in rule.section_path
 
 
-def test_department_context_propagates_on_index_without_changing_chunk_identity() -> None:
+def test_department_context_propagates_until_explicit_boundary_without_body_trigger() -> None:
     index = build_document_index(
         [
             _text_chunk(
@@ -249,23 +249,25 @@ def test_department_context_propagates_on_index_without_changing_chunk_identity(
                 section_path=["工学院 電気電子系"],
             ),
             _text_chunk(
-                "試験区分 試験日 試験内容等\n英語（英語外部試験）150点",
-                title="試験区分 試験日 試験内容等",
+                "任意の続き本文\n英語（英語外部試験）150点",
+                title="任意の続き見出し",
                 page=34,
             ),
             _text_chunk("口頭試問受験資格者", page=34),
             _text_chunk("研究分野一覧\n教員情報", page=35),
-            _text_chunk("Ⅲ 清華大学との合同プログラム\n共通本文", page=36),
+            _text_chunk("## Page 36\nⅢ 清華大学との合同プログラム\n共通本文", page=36),
+            _text_chunk("境界後の本文", page=37),
         ]
     )
 
     propagate_department_context(index)
 
-    assert [item.chunk_id for item in index] == [0, 1, 2, 3, 4]
+    assert [item.chunk_id for item in index] == [0, 1, 2, 3, 4, 5]
     assert index[1].section_path[0] == "工学院 電気電子系"
     assert index[2].section_path[0] == "工学院 電気電子系"
-    assert "工学院 電気電子系" not in index[3].section_path
+    assert index[3].section_path[0] == "工学院 電気電子系"
     assert "工学院 電気電子系" not in index[4].section_path
+    assert "工学院 電気電子系" not in index[5].section_path
 
 
 def test_chunk_pages_keeps_single_line_numbered_clause() -> None:

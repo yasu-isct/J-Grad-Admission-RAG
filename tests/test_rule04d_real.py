@@ -77,7 +77,7 @@ def test_non_numeric_or_unpublished_targets_never_receive_zero(rule04b_client, t
     report = _report(client, document_id, profile, f"allocation-unpublished-{len(target)}")
     result = report["language_score_allocation"]
 
-    assert result["status"] == "not_published"
+    assert result["status"] == "not_covered"
     assert result["maximum_points"] is None
     assert result["unit"] is None
     assert result["evidence"] is None
@@ -90,5 +90,5 @@ def test_wrong_parent_college_cannot_match_another_department(rule04b_client) ->
     report = _report(client, document_id, profile, "allocation-parent-conflict")
     result = report["language_score_allocation"]
 
-    assert result["status"] == "not_published"
+    assert result["status"] == "not_covered"
     assert result["maximum_points"] is None

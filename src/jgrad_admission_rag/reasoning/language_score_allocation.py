@@ -56,7 +56,7 @@ class LanguageScoreAllocationPolicy(LanguageScoreAllocationModel):
 class LanguageScoreAllocationStatus(str, Enum):
     CONFIRMED = "confirmed"
     NEEDS_INFORMATION = "needs_information"
-    NOT_PUBLISHED = "not_published"
+    NOT_COVERED = "not_covered"
 
 
 class LanguageScoreAllocationResult(LanguageScoreAllocationModel):
@@ -107,7 +107,7 @@ def resolve_language_score_allocation(
         None,
     )
     if entry is None:
-        return _empty_result(policy, LanguageScoreAllocationStatus.NOT_PUBLISHED, target, parent)
+        return _empty_result(policy, LanguageScoreAllocationStatus.NOT_COVERED, target, parent)
     binding = entry.evidence_binding
     return LanguageScoreAllocationResult(
         policy_id=policy.policy_id,

@@ -603,7 +603,7 @@ function renderReport(payload) {
     addMetadata(allocationDetails, "対象", allocationResult.target || "未指定");
     addMetadata(allocationDetails, "状態", allocationResult.status);
     const points = allocationResult.maximum_points === null
-      ? "数値配点は審査済み範囲で未公表"
+      ? "審査済み数値配点の対象外または未確認"
       : `${allocationResult.maximum_points} points（公式配点・満点）`;
     addMetadata(allocationDetails, "配点", points);
     if (allocationResult.evidence) {
