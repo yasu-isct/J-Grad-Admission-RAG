@@ -29,7 +29,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule03b_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
 
 
 @pytest.fixture(scope="module")
@@ -116,7 +116,7 @@ def test_real_preapplication_facts_remain_global_after_english_atomization() -> 
         "fact:00031": 4,
         "fact:00112": 11,
     }
-    assert len(facts) == 334
+    assert len(facts) == 391
     for fact_id, page in expected.items():
         assert facts[fact_id].source_pages == [page]
         assert facts[fact_id].scope_type == "global"

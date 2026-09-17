@@ -477,6 +477,71 @@ def test_language_rules_require_an_unambiguous_submission_result() -> None:
     assert selected.diagnostics == ()
 
 
+@pytest.mark.parametrize(
+    ("path", "operator", "expected_value"),
+    [
+        (
+            "language_test_results.selected.score_sheet_submission_method",
+            PredicateOperator.EQUALS,
+            "department_later_by_mail",
+        ),
+        (
+            "language_test_results.selected.score_sheet_expected_arrival_date",
+            PredicateOperator.ON_OR_BEFORE,
+            "2026-07-29",
+        ),
+        (
+            "language_test_results.selected.score_sheet_registered_mail_planned",
+            PredicateOperator.EQUALS,
+            True,
+        ),
+        (
+            "language_test_results.selected.score_sheet_replacement_after_deadline_planned",
+            PredicateOperator.EQUALS,
+            False,
+        ),
+        (
+            "application_submission.a_schedule_oral_exam_participation_planned",
+            PredicateOperator.EQUALS,
+            False,
+        ),
+    ],
+)
+def test_rule04b_profile_paths_are_allowlisted_and_evaluable(
+    path: str,
+    operator: PredicateOperator,
+    expected_value: object,
+) -> None:
+    payload = _profile().model_dump(mode="json")
+    payload["language_test_results"] = [
+        {
+            "test_kind": "toeic_lr",
+            "score": 800,
+            "test_date": "2025-01-01",
+            "validity_status": "valid",
+            "official_report_available": True,
+            "selected_for_submission": True,
+            "score_sheet_submission_method": "department_later_by_mail",
+            "score_sheet_expected_arrival_date": "2026-07-29",
+            "score_sheet_registered_mail_planned": True,
+            "score_sheet_replacement_after_deadline_planned": False,
+        }
+    ]
+    payload["application_submission"] = {
+        "a_schedule_oral_exam_participation_planned": False,
+    }
+
+    decision = evaluate_applicability(
+        ApplicantProfile.model_validate(payload),
+        _intent(),
+        _pack(),
+        _rule(_predicate(path, operator, expected_value)),
+    )
+
+    assert decision.status is ApplicabilityStatus.CONFIRMED
+    assert decision.diagnostics == ()
+
+
 def test_versioned_synthetic_fixture_freezes_atomic_and_aggregate_contract() -> None:
     fixture = json.loads(CONTRACT_FIXTURE_PATH.read_text(encoding="utf-8"))[
         "synthetic_contract_cases"
@@ -858,6 +923,74 @@ def test_scope_matching_and_conflict_are_three_state(
     assert decision.status.value == expected
     if diagnostic is not None:
         assert diagnostic in decision.diagnostics
+
+
+def test_profile_target_cannot_be_broadened_by_multiple_query_targets() -> None:
+    profile = _profile(target_application__department_or_program="情報工学系")
+    query = "情報工学系と機械系"
+    intent = QueryIntent(
+        schema_version="1.0",
+        parser_version="lexical-ja-v1",
+        catalog_version="test-v1",
+        query=query,
+        requested_categories=(),
+        requested_scope=RequestedScope(
+            department_or_program_targets=tuple(sorted(("情報工学系", "機械系"))),
+            parent_college_values=(),
+            target_degree_level=None,
+            intake_year=None,
+            intake_month=None,
+        ),
+        matched_mentions=(
+            IntentMention(
+                canonical_value="情報工学系",
+                mention_kind=MentionKind.SCOPE_TARGET,
+                start_offset=0,
+                end_offset=5,
+                surface="情報工学系",
+            ),
+            IntentMention(
+                canonical_value="機械系",
+                mention_kind=MentionKind.SCOPE_TARGET,
+                start_offset=6,
+                end_offset=9,
+                surface="機械系",
+            ),
+        ),
+        diagnostics=(),
+    )
+    scope = RuleScope(scope_type="department", scope_targets=("機械系",))
+    pack = _pack(scope_type="department", scope_targets=("機械系",))
+    pack = pack.model_copy(
+        update={"request": pack.request.model_copy(update={"query": intent.query})}
+    )
+
+    decision = evaluate_applicability(profile, intent, pack, _rule(scope=scope))
+
+    assert decision.status is ApplicabilityStatus.NEEDS_INFORMATION
+    assert ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT in decision.diagnostics
+
+
+def test_matching_department_with_conflicting_parent_college_is_scope_conflict() -> None:
+    profile = _profile(
+        target_application__department_or_program="情報工学系",
+        target_application__graduate_school_or_college="工学院",
+    )
+    scope = RuleScope(
+        scope_type="department",
+        scope_targets=("情報工学系",),
+        parent_college="情報理工学院",
+    )
+    pack = _pack(
+        scope_type="department",
+        scope_targets=("情報工学系",),
+        parent_college="情報理工学院",
+    )
+
+    decision = evaluate_applicability(profile, _intent(), pack, _rule(scope=scope))
+
+    assert decision.status is ApplicabilityStatus.NEEDS_INFORMATION
+    assert ApplicabilityDiagnostic.SCOPE_INPUT_CONFLICT in decision.diagnostics
 
 
 @pytest.mark.parametrize(

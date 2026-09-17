@@ -357,6 +357,8 @@ def build_cited_answer(answer_id: str, trace: ReasoningTrace) -> CitedAnswer:
             applicability = applicability_by_rule[resolution.rule_id]
             if resolution.disposition is ResolutionDisposition.PENDING:
                 missing_fields = applicability.missing_profile_fields
+                if ApplicabilityDiagnostic.MISSING_SCOPE in applicability.diagnostics:
+                    missing_fields += (_scope_profile_field(applicability.scope),)
                 if (
                     ApplicabilityDiagnostic.AMBIGUOUS_LANGUAGE_RESULT_SELECTION
                     in applicability.diagnostics
@@ -644,6 +646,14 @@ def _diagnostic_notices(
         for diagnostic in applicability.diagnostics
         if diagnostic in mapping
     )
+
+
+def _scope_profile_field(scope: RuleScope) -> str:
+    if scope.scope_type == "college":
+        return "target_application.graduate_school_or_college"
+    if scope.scope_type in {"department", "program"}:
+        return "target_application.department_or_program"
+    raise ValueError("global scope cannot be missing")
 
 
 def _citations(

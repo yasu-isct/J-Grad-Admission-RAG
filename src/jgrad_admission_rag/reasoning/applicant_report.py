@@ -374,19 +374,18 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
         "",
         result_heading + after_heading,
     ]
-    active_direct_ids = {
+    active_rule_ids = {
         finding.rule_id
         for finding in validated.cited_answer.rule_findings
         if finding.disposition.value == "active"
-        and finding.rule_id.startswith("isct-master-direct-path-")
     }
     reviewed_notes = [
         rule.annotation_note
         for rule in validated.source_plan.rules
-        if rule.rule_id in active_direct_ids
+        if rule.rule_id in active_rule_ids
     ]
     if reviewed_notes:
-        lines.extend(("", "## 直接経路の審査済み説明", ""))
+        lines.extend(("", "## 適用規則の審査済み説明", ""))
         lines.extend(f"- {_escape_markdown_inline(note)}" for note in reviewed_notes)
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:

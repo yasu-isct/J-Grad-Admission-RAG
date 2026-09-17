@@ -197,6 +197,33 @@ def test_chunk_pages_builds_deterministic_heading_stack() -> None:
     ]
 
 
+def test_department_page_context_resets_heading_stack_and_scopes_atomic_rule() -> None:
+    chunks = chunk_pages(
+        [
+            SourcePage(page_number=18, text="10．前の系の質問\n本文"),
+            SourcePage(
+                page_number=19,
+                text=(
+                    "物質理工学院 応用化学系\n"
+                    "【英語外部試験のスコアシートの取扱い】\n"
+                    "スコアシートは出願時に提出してください。\n"
+                    "試験区分 試験日 試験内容等 備考\n"
+                    "口述試験 7月10日"
+                ),
+            ),
+        ],
+        "admission.pdf",
+    )
+
+    rule = next(chunk for chunk in chunks if chunk.title.startswith("【英語外部試験"))
+    assert rule.text.endswith("スコアシートは出願時に提出してください。")
+    assert rule.section_path == [
+        "物質理工学院 応用化学系",
+        "【英語外部試験のスコアシートの取扱い】",
+    ]
+    assert "前の系の質問" not in rule.section_path
+
+
 def test_chunk_pages_keeps_single_line_numbered_clause() -> None:
     chunks = chunk_pages(
         [
@@ -566,6 +593,68 @@ def test_application_procedure_parent_does_not_override_department_scope() -> No
     )
 
     assert infer_scope(item) == ("department", ["数学系"], "理学院", 0.75)
+
+
+def test_department_page_context_is_authoritative_for_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=106,
+        pdf_name="sample.pdf",
+        pages=[46],
+        title="【英語外部試験のスコアシートの取扱い】",
+        text="スコアシートは出願時に提出する。",
+        section_path=[
+            "物質理工学院 応用化学系",
+            "【英語外部試験のスコアシートの取扱い】",
+        ],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="スコアシートは出願時に提出する。",
+    )
+
+    assert infer_scope(item) == ("department", ["応用化学系"], "物質理工学院", 0.9)
+
+
+def test_longer_department_name_does_not_also_match_embedded_short_name() -> None:
+    item = IndexedChunk(
+        chunk_id=107,
+        pdf_name="sample.pdf",
+        pages=[46],
+        title="英語外部試験",
+        text="応用化学系の志願者はスコアシートを提出する。",
+        section_path=["英語外部試験"],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="応用化学系の志願者",
+    )
+
+    assert infer_scope(item) == ("department", ["応用化学系"], "物質理工学院", 0.75)
+
+
+def test_professional_degree_page_context_uses_program_scope() -> None:
+    item = IndexedChunk(
+        chunk_id=108,
+        pdf_name="sample.pdf",
+        pages=[73],
+        title="【英語外部試験のスコアシートの取扱い】",
+        text="スコアシートは出願時に提出する。",
+        section_path=[
+            "環境・社会理工学院 技術経営専門職学位課程",
+            "【英語外部試験のスコアシートの取扱い】",
+        ],
+        category="english",
+        anchors=[],
+        references=[],
+        text_preview="スコアシートは出願時に提出する。",
+    )
+
+    assert infer_scope(item) == (
+        "program",
+        ["技術経営専門職学位課程"],
+        "環境・社会理工学院",
+        0.9,
+    )
 
 
 def test_department_exclusion_is_not_a_positive_department_scope() -> None:

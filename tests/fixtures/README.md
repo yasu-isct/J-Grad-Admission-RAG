@@ -16,9 +16,16 @@ earlier plan coverage. RULE-03A adds the shared main application window, registr
 paper-material arrival deadline without treating dispatch or online steps as application completion.
 RULE-04A adds the reviewed common English-test types, date and score-report requirements, plus the
 department-scoped mathematics written-exam exception.
+`rule04b_browser_acceptance_v1.json` records the RULE-04B browser acceptance matrix at 1440 px and
+390 px. It covers an ordinary department, the physics exam-day path, the civil-engineering mail and
+A-schedule paths, the mathematics exception, and unknown or conflicting scope input. Each record
+keeps the displayed rule status, official fact/page citation, limitation, and overflow observation;
+it contains no applicant identity data.
 They contain reviewed configuration and hashes, but no applicant data, query, retrieval score,
 generated report, or overall eligibility state. The current plans are explicitly bound to the
-canonical schema-0.6 334-Fact KB; historical M4/RET-09 schema-0.5 fixtures remain unchanged.
+canonical schema-0.6 391-Fact KB; historical M4/RET-09 schema-0.5 fixtures remain unchanged.
+`retrieval_queries_rule04b_v1.json` binds the current 391-Fact KB while the signed
+`retrieval_queries_v1.json` remains the frozen RET-08 semantic-gate baseline.
 
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.

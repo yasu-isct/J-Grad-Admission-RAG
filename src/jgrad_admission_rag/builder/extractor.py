@@ -4,11 +4,24 @@ import argparse
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+import re
 
 import fitz
 import pdfplumber
 
 from ..utils import INTERMEDIATE_DIR
+
+REPEATABLE_BODY_SECTION_HEADINGS = frozenset(
+    {
+        "【英語外部試験のスコアシートの取扱い】",
+        "【外部英語試験のスコアシートの取扱い】",
+        "【英語試験】",
+    }
+)
+DEPARTMENT_PAGE_BANNER_RE = re.compile(
+    r"^(?:\S+学院)\s+[^\n]+(?:系|専門職学位課程)$",
+    re.MULTILINE,
+)
 
 
 @dataclass
@@ -44,14 +57,65 @@ def detect_repeated_lines(page_texts: list[str], min_count: int = 2) -> set[str]
     return {line for line, count in counts.items() if count >= min_count and len(line) <= 80}
 
 
-def clean_text(text: str, repeated_lines: set[str]) -> str:
+def _protected_structural_lines(blocks: list[tuple]) -> set[str]:
+    """Keep repeated body clauses when an explicit section heading owns them."""
+
+    protected: set[str] = set()
+    block_lines = [
+        [" ".join(line.split()).strip() for line in block[4].splitlines() if line.strip()]
+        for block in blocks
+    ]
+    for index, lines in enumerate(block_lines):
+        matching_heading = next(
+            (line for line in lines if line in REPEATABLE_BODY_SECTION_HEADINGS), None
+        )
+        if matching_heading is None:
+            continue
+        for owned_lines in block_lines[index:]:
+            protected.update(owned_lines)
+            if any(line.startswith("試験区分 試験日 試験内容等") for line in owned_lines):
+                break
+    return protected
+
+
+def clean_text(
+    text: str,
+    repeated_lines: set[str],
+    protected_lines: set[str] | None = None,
+) -> str:
+    protected = protected_lines or set()
+    retained_protected_repeats: set[str] = set()
     lines = []
     for raw in text.splitlines():
         line = " ".join(raw.split()).strip()
-        if not line or line in repeated_lines:
+        if not line:
+            continue
+        if line in protected:
+            if line in retained_protected_repeats:
+                continue
+            retained_protected_repeats.add(line)
+        elif line in repeated_lines:
             continue
         lines.append(line)
     return "\n".join(lines)
+
+
+def _page_text_source(plumber_text: str, fitz_text: str) -> str:
+    """Avoid duplicate department pages when both extractors found the same banner."""
+
+    plumber_banners = _top_page_banners(plumber_text)
+    fitz_banners = _top_page_banners(fitz_text)
+    if plumber_banners & fitz_banners:
+        return fitz_text
+    return f"{plumber_text}\n{fitz_text}"
+
+
+def _top_page_banners(text: str, max_line_index: int = 10) -> set[str]:
+    return {
+        match.group(0)
+        for match in DEPARTMENT_PAGE_BANNER_RE.finditer(text)
+        if text.count("\n", 0, match.start()) <= max_line_index
+    }
 
 
 def ocr_page(image_path: str | Path) -> str:
@@ -74,10 +138,13 @@ def extract_pdf(pdf_path: str | Path, pages: list[int] | None = None) -> list[Ex
             page_no = idx + 1
             plumber_page = plumber_pdf.pages[idx]
             plumber_text = plumber_page.extract_text(x_tolerance=1, y_tolerance=3) or ""
-            fitz_blocks = "\n".join(
-                block[4].strip() for block in fitz_page.get_text("blocks") if block[4].strip()
+            raw_blocks = fitz_page.get_text("blocks")
+            fitz_blocks = "\n".join(block[4].strip() for block in raw_blocks if block[4].strip())
+            text = clean_text(
+                _page_text_source(plumber_text, fitz_blocks),
+                repeated,
+                _protected_structural_lines(raw_blocks),
             )
-            text = clean_text(plumber_text + "\n" + fitz_blocks, repeated)
             tables = []
             for table in plumber_page.extract_tables() or []:
                 markdown = table_to_markdown(table)

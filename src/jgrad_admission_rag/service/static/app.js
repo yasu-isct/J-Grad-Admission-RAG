@@ -357,6 +357,12 @@ function languageTestResults() {
     validity_status: null,
     official_report_available: null,
     selected_for_submission: nullableBoolean("language-test-selected"),
+    score_sheet_submission_method: nullableText("language-score-submission-method"),
+    score_sheet_expected_arrival_date: nullableText("language-score-expected-arrival-date"),
+    score_sheet_registered_mail_planned: nullableBoolean("language-score-registered-mail"),
+    score_sheet_replacement_after_deadline_planned: nullableBoolean(
+      "language-score-replacement-after-deadline"
+    ),
     downloaded_online_pdf: nullableBoolean("language-online-pdf"),
     toeic_verification_qr_present: nullableBoolean("toeic-qr-present"),
     toeic_digital_official_score_certificate: nullableBoolean("toeic-digital-certificate"),
@@ -397,7 +403,10 @@ function applicantProfile() {
     application_submission: {
       materials_arrival_date: nullableText("materials-arrival-date"),
       materials_dispatched_date: nullableText("materials-dispatched-date"),
-      online_steps_completed: nullableBoolean("online-steps-completed")
+      online_steps_completed: nullableBoolean("online-steps-completed"),
+      a_schedule_oral_exam_participation_planned: nullableBoolean(
+        "a-schedule-oral-participation"
+      )
     },
     preapplication_actions: {
       special_accommodation_needed: nullableBoolean("special-accommodation-needed"),

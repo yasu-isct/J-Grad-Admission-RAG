@@ -25,7 +25,7 @@ pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule01b_v1.json"
+PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04b_v1.json"
 INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
@@ -134,7 +134,7 @@ def test_rule01b_real_fact_boundaries_are_complete_and_independent(rule01b_clien
         "fact:00067": "（８）文部科学大臣の指定した者",
     }
 
-    assert len(kb.facts) == 334
+    assert len(kb.facts) == 391
     for fact_id, prefix in expected_prefixes.items():
         assert facts[fact_id].text.startswith(prefix)
         assert facts[fact_id].source_pages == [7]
@@ -283,7 +283,7 @@ def test_path8_requires_official_person_designation_only(rule01b_client) -> None
     confirmed = _report(client, document_id, _profile(credential), "rule01b-path8")
     assert _statuses(confirmed)[rule_id] == "confirmed"
     assert any(c["fact_id"] == "fact:00067" for c in _finding(confirmed, rule_id)["citations"])
-    assert "overall eligibility" in confirmed["limitation_statement"]
+    assert "受験資格" in confirmed["limitation_statement"]
 
 
 def test_rule01b_multi_credential_and_unsupported_intake_fail_safe(rule01b_client) -> None:

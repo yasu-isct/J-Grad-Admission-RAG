@@ -661,6 +661,56 @@ def test_multi_rule_report_inherits_every_reviewed_and_unreviewed_interaction_pa
     assert report.report_status is status
 
 
+def test_markdown_renders_notes_for_every_active_reviewed_rule(tmp_path: Path) -> None:
+    context = _context(tmp_path)
+    identity = context.plan.document_identity
+    source_hash = context.plan.source_kb_sha256
+    rules = (
+        _synthetic_rule(
+            identity,
+            source_hash,
+            rule_id="rule04b-replacement-risk",
+            fact_id="fact:00022",
+        ),
+        _synthetic_rule(
+            identity,
+            source_hash,
+            rule_id="rule04b-submission-method",
+            fact_id="fact:00021",
+        ),
+    )
+    plan, evidence = _synthetic_plan_and_evidence(
+        context.plan,
+        rules,
+        (
+            ("rule04b-replacement-risk", "language_tests.submission_plan"),
+            ("rule04b-submission-method", "language_tests.submission_plan"),
+        ),
+        interactions=(
+            RuleInteraction(
+                subject_key="language_tests.submission_plan",
+                rule_ids=("rule04b-replacement-risk", "rule04b-submission-method"),
+                relationship=InteractionRelationship.COMPATIBLE,
+                rationale="Both reviewed submission-plan checks apply independently.",
+            ),
+        ),
+    )
+
+    report = build_applicant_report(
+        "rule04b-reviewed-notes-v1",
+        _profile(),
+        _intent(IntentCategory.ELIGIBILITY),
+        plan,
+        evidence,
+    )
+    markdown = render_applicant_report_markdown(report)
+
+    assert "## 適用規則の審査済み説明" in markdown
+    assert r"Reviewed annotation for rule04b\-submission\-method\." in markdown
+    assert r"Reviewed annotation for rule04b\-replacement\-risk\." in markdown
+    assert "直接経路の審査済み説明" not in markdown
+
+
 def test_shared_multi_page_evidence_is_deduplicated_and_rendered_once(tmp_path: Path) -> None:
     context = _context(tmp_path)
     identity = context.plan.document_identity

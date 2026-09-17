@@ -156,6 +156,7 @@
                   <div><label for="materials-arrival-date">出願書類が大学へ実際に到着した日</label><input id="materials-arrival-date" type="date"></div>
                   <div><label for="materials-dispatched-date">出願書類を発送した日</label><input id="materials-dispatched-date" type="date"></div>
                   <div><label for="online-steps-completed">出願情報・写真・検定料のオンライン手続</label><select id="online-steps-completed"><option value="">不明</option><option value="true">完了</option><option value="false">未完了</option></select></div>
+                  <div><label for="a-schedule-oral-participation">A日程口述試験への参加予定</label><select id="a-schedule-oral-participation"><option value="">不明</option><option value="true">参加する</option><option value="false">参加しない</option></select></div>
                 </div>
               </fieldset>
 
@@ -190,6 +191,10 @@
                   <div><label for="language-test-date">受験日</label><input id="language-test-date" type="date"></div>
                   <div><label for="language-test-score">スコア</label><input id="language-test-score" type="number" min="0" step="0.01" inputmode="decimal"></div>
                   <div><label for="language-test-selected">この結果を提出用に選択</label><select id="language-test-selected"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-score-submission-method">スコアシートの提出方法</label><select id="language-score-submission-method"><option value="">不明</option><option value="with_application">出願書類と同時に提出</option><option value="department_later_by_mail">系へ後日郵送</option><option value="written_exam_day_carry">筆答試験当日に持参</option><option value="no_external_submission">外部試験スコアを提出しない</option><option value="other">その他</option></select></div>
+                  <div><label for="language-score-expected-arrival-date">後日郵送するスコアシートの到着予定日</label><input id="language-score-expected-arrival-date" type="date"></div>
+                  <div><label for="language-score-registered-mail">書留郵便で送付する予定</label><select id="language-score-registered-mail"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-score-replacement-after-deadline">出願期限後にスコアを差し替える予定</label><select id="language-score-replacement-after-deadline"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
                   <div><label for="language-online-pdf">オンラインで取得した PDF</label><select id="language-online-pdf"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
                   <div><label for="toeic-qr-present">TOEIC 確認用 QR コード</label><select id="toeic-qr-present"><option value="">不明</option><option value="true">あり</option><option value="false">なし</option></select></div>
                   <div><label for="toeic-digital-certificate">Digital Official Score Certificate</label><select id="toeic-digital-certificate"><option value="">不明</option><option value="true">該当</option><option value="false">非該当</option></select></div>

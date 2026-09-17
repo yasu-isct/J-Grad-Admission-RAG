@@ -39,6 +39,7 @@ __all__ = [
     "IndividualReviewStatus",
     "IntakeMonth",
     "LanguageResultStatus",
+    "LanguageScoreSubmissionMethod",
     "LanguageTestKind",
     "LanguageTestResult",
     "OfficialVerificationStatus",
@@ -139,6 +140,14 @@ class LanguageResultStatus(str, Enum):
     VALID = "valid"
     EXPIRED = "expired"
     NOT_AVAILABLE = "not_available"
+
+
+class LanguageScoreSubmissionMethod(str, Enum):
+    WITH_APPLICATION = "with_application"
+    DEPARTMENT_LATER_BY_MAIL = "department_later_by_mail"
+    WRITTEN_EXAM_DAY_CARRY = "written_exam_day_carry"
+    NO_EXTERNAL_SUBMISSION = "no_external_submission"
+    OTHER = "other"
 
 
 class LanguageTestKind(str, Enum):
@@ -343,6 +352,7 @@ class ApplicationSubmission(ApplicantProfileModel):
     materials_arrival_date: date | None = None
     materials_dispatched_date: date | None = None
     online_steps_completed: StrictBool | None = None
+    a_schedule_oral_exam_participation_planned: StrictBool | None = None
 
 
 class PreapplicationActions(ApplicantProfileModel):
@@ -372,6 +382,10 @@ class LanguageTestResult(ApplicantProfileModel):
     validity_status: LanguageResultStatus | None
     official_report_available: StrictBool | None
     selected_for_submission: StrictBool | None = None
+    score_sheet_submission_method: LanguageScoreSubmissionMethod | None = None
+    score_sheet_expected_arrival_date: date | None = None
+    score_sheet_registered_mail_planned: StrictBool | None = None
+    score_sheet_replacement_after_deadline_planned: StrictBool | None = None
     downloaded_online_pdf: StrictBool | None = None
     toeic_verification_qr_present: StrictBool | None = None
     toeic_digital_official_score_certificate: StrictBool | None = None

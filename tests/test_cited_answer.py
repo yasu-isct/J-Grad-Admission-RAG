@@ -436,7 +436,7 @@ def test_scope_diagnostics_become_fixed_process_notices(
     expected_status: ReportStatus,
     notice_kind: ProcessNoticeKind,
 ) -> None:
-    rule = _rule("scope-rule")
+    rule = _rule("scope-rule", scope=_scope("department", "情報工学系"))
     base = _decision(rule)
     decision = ApplicabilityDecision(
         **{
@@ -452,6 +452,34 @@ def test_scope_diagnostics_become_fixed_process_notices(
     )
     assert answer.report_status is expected_status
     assert notice_kind in {item.kind for item in answer.process_notices}
+    if diagnostic is ApplicabilityDiagnostic.MISSING_SCOPE:
+        assert tuple(item.field_path for item in answer.missing_information) == (
+            "target_application.department_or_program",
+        )
+    else:
+        assert answer.missing_information == ()
+
+
+def test_missing_college_scope_requests_the_canonical_profile_field() -> None:
+    rule = _rule("college-scope-rule", scope=_scope("college", "工学院"))
+    base = _decision(rule)
+    decision = ApplicabilityDecision(
+        **{
+            **base.model_dump(mode="python"),
+            "status": ApplicabilityStatus.NEEDS_INFORMATION,
+            "scope_status": ApplicabilityStatus.NEEDS_INFORMATION,
+            "diagnostics": (ApplicabilityDiagnostic.MISSING_SCOPE,),
+        }
+    )
+
+    answer = build_cited_answer(
+        "answer:missing-college",
+        _trace((rule,), (decision,), _resolution(_entry(rule, decision))),
+    )
+
+    assert tuple(item.field_path for item in answer.missing_information) == (
+        "target_application.graduate_school_or_college",
+    )
 
 
 def test_compatible_pair_creates_no_warning_and_complete_report() -> None:
