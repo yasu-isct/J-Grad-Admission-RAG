@@ -615,6 +615,30 @@ function renderReport(payload) {
   }
   allocation.append(allocationDetails);
 
+  const evaluation = document.createElement("section");
+  evaluation.className = "report-section";
+  evaluation.append(heading(3, "志望系の英語評価方式"));
+  const evaluationResult = report.language_evaluation;
+  const evaluationDetails = document.createElement("dl");
+  evaluationDetails.className = "evidence-meta";
+  if (evaluationResult) {
+    addMetadata(evaluationDetails, "対象", evaluationResult.target || "未指定");
+    addMetadata(evaluationDetails, "状態", evaluationResult.status);
+    if (evaluationResult.evidence) {
+      addMetadata(evaluationDetails, "評価方式", "校内英語筆答試験 / 合格・不合格");
+      addMetadata(evaluationDetails, "受験対象", "全員");
+      addMetadata(evaluationDetails, "外部試験による免除", "なし");
+      addMetadata(evaluationDetails, "選抜上の位置づけ", "本選抜合格の必要条件");
+      addMetadata(evaluationDetails, "根拠", `${evaluationResult.evidence.fact_id} | p.${evaluationResult.evidence.source_pages.join(",")}`);
+    } else {
+      addMetadata(evaluationDetails, "評価方式", "審査済み非数値評価の対象外または未確認");
+    }
+    addMetadata(evaluationDetails, "制限", evaluationResult.limitation_statement);
+  } else {
+    addMetadata(evaluationDetails, "状態", "この審査済み計画には非数値評価データがありません。");
+  }
+  evaluation.append(evaluationDetails);
+
   const evidence = document.createElement("section");
   evidence.className = "report-section";
   evidence.append(heading(3, "公式根拠（原文）"));
@@ -634,7 +658,7 @@ function renderReport(payload) {
   const finalNotice = document.createElement("p");
   finalNotice.className = "final-notice";
   finalNotice.textContent = "この結果は、総合的な出願資格、合否、合格可能性、または推奨を示すものではありません。";
-  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evidence, finalNotice);
+  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evaluation, evidence, finalNotice);
   setMessage(reportStatus, report.report_status, `レポート準備状態: ${statusLabel(report.report_status)} (${report.report_status})`, true);
 }
 

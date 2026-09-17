@@ -46,6 +46,7 @@ from .language_score_allocation import (
     LanguageScoreAllocationResult,
     resolve_language_score_allocation,
 )
+from .language_evaluation import LanguageEvaluationResult, resolve_language_evaluation
 from .query_intent import QueryIntent
 from .reasoning_trace import ReasoningTrace, ReasoningTraceError, build_reasoning_trace
 from .reviewed_report_evidence import ReviewedReportEvidenceBundle
@@ -109,6 +110,7 @@ class ApplicantReport(ApplicantReportModel):
     cited_answer: CitedAnswer
     language_score_conversion: LanguageScoreConversionResult | None = None
     language_score_allocation: LanguageScoreAllocationResult | None = None
+    language_evaluation: LanguageEvaluationResult | None = None
     counts: ApplicantReportCounts
     report_status: ReportStatus
 
@@ -126,6 +128,7 @@ class ApplicantReport(ApplicantReportModel):
             "cited_answer": CitedAnswer,
             "language_score_conversion": LanguageScoreConversionResult,
             "language_score_allocation": LanguageScoreAllocationResult,
+            "language_evaluation": LanguageEvaluationResult,
             "counts": ApplicantReportCounts,
         }
         for field_name, model_type in nested_types.items():
@@ -268,6 +271,11 @@ def build_applicant_report(
         if plan.language_score_allocation is not None
         else None
     )
+    evaluation = (
+        resolve_language_evaluation(profile, plan.language_evaluation)
+        if plan.language_evaluation is not None
+        else None
+    )
 
     counts = ApplicantReportCounts(
         rule_count=len(plan.rules),
@@ -292,6 +300,7 @@ def build_applicant_report(
             cited_answer=answer,
             language_score_conversion=conversion,
             language_score_allocation=allocation,
+            language_evaluation=evaluation,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -418,6 +427,8 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
         lines.extend(_render_language_score_conversion(validated.language_score_conversion))
     if validated.language_score_allocation is not None:
         lines.extend(_render_language_score_allocation(validated.language_score_allocation))
+    if validated.language_evaluation is not None:
+        lines.extend(_render_language_evaluation(validated.language_evaluation))
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:
         lines.extend(
@@ -520,6 +531,24 @@ def _validate_plan_evidence(
                 or record.parent_college != entry.parent_college
             ):
                 raise ValueError
+    if plan.language_evaluation is not None:
+        policy = plan.language_evaluation
+        for entry in policy.entries:
+            binding = entry.evidence_binding
+            expected_rule_ids.setdefault(binding.fact_id, set()).add(
+                f"policy:{policy.policy_id}:{entry.target}"
+            )
+            record = records.get(binding.fact_id)
+            if record is None or (
+                record.document_id != binding.document_id
+                or record.source_pages != binding.source_pages
+                or hashlib.sha256(record.text.encode("utf-8")).hexdigest()
+                != binding.authoritative_fact_text_sha256
+                or record.scope_type != "department"
+                or record.scope_targets != (entry.target,)
+                or record.parent_college != entry.parent_college
+            ):
+                raise ValueError
     if set(records) != set(expected_rule_ids):
         raise ValueError
     for fact_id, rule_ids in expected_rule_ids.items():
@@ -589,6 +618,48 @@ def _validate_report_contract(report: ApplicantReport) -> None:
             if (
                 allocation.maximum_points != entry.maximum_points
                 or allocation.evidence != expected_evidence
+            ):
+                raise ValueError
+        elif matching:
+            raise ValueError
+    evaluation_policy = plan.language_evaluation
+    evaluation = report.language_evaluation
+    if (evaluation_policy is None) != (evaluation is None):
+        raise ValueError
+    if evaluation_policy is not None and evaluation is not None:
+        expected_limitation = (
+            evaluation_policy.limitation_statement
+            if evaluation.status.value == "confirmed"
+            else evaluation_policy.out_of_scope_statement
+        )
+        if (
+            evaluation.policy_id != evaluation_policy.policy_id
+            or evaluation.limitation_statement != expected_limitation
+        ):
+            raise ValueError
+        matching = [
+            entry
+            for entry in evaluation_policy.entries
+            if entry.target == evaluation.target
+            and entry.parent_college == evaluation.parent_college
+        ]
+        if evaluation.status.value == "confirmed":
+            if len(matching) != 1:
+                raise ValueError
+            entry = matching[0]
+            expected_evidence = OfficialEvidenceReference(
+                document_id=entry.evidence_binding.document_id,
+                fact_id=entry.evidence_binding.fact_id,
+                source_pages=entry.evidence_binding.source_pages,
+                role=EvidenceRole.PRIMARY,
+            )
+            if (
+                evaluation.assessment_source != entry.assessment_source
+                or evaluation.result_scale != entry.result_scale
+                or evaluation.required_for_all != entry.required_for_all
+                or evaluation.external_score_exemption != entry.external_score_exemption
+                or evaluation.selection_role != entry.selection_role
+                or evaluation.evidence != expected_evidence
             ):
                 raise ValueError
         elif matching:
@@ -708,6 +779,28 @@ def _render_language_score_allocation(
         lines.extend(
             (
                 f"- **公式配点（満点）:** `{result.maximum_points} points`",
+                f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
+            )
+        )
+    lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
+    return tuple(lines)
+
+
+def _render_language_evaluation(result: LanguageEvaluationResult) -> tuple[str, ...]:
+    lines = [
+        "",
+        "## 志望系の英語評価方式",
+        "",
+        f"- **対象:** `{result.target or '未指定'}`",
+        f"- **状態:** `{result.status.value}`",
+    ]
+    if result.evidence is not None:
+        lines.extend(
+            (
+                f"- **評価方式:** `{result.assessment_source} / {result.result_scale}`",
+                f"- **受験対象:** `{'全員' if result.required_for_all else '未確認'}`",
+                f"- **外部試験による免除:** `{'なし' if result.external_score_exemption is False else '未確認'}`",
+                f"- **選抜上の位置づけ:** `{'本選抜合格の必要条件' if result.selection_role == 'necessary_condition' else '未確認'}`",
                 f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
             )
         )
