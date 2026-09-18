@@ -107,6 +107,12 @@ def test_information_engineering_missing_route_needs_information(rule04b_client)
     assert result["evaluation_uses"] is None
     assert result["evidence"] is None
     assert "人数や閾値" not in result["limitation_statement"]
+    markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
+    evaluation_section = markdown.split("## 志望系の英語評価方式", 1)[1].split(
+        "## 公式根拠（原文）", 1
+    )[0]
+    assert "oral_exam_candidate_selection" not in evaluation_section
+    assert "fact:00288" not in evaluation_section
 
 
 @pytest.mark.parametrize(
@@ -145,3 +151,9 @@ def test_nonmatching_scope_does_not_receive_information_engineering_uses(
     assert result["evidence"] is None
     assert "人数や閾値" not in result["limitation_statement"]
     assert "数学筆答試験と口頭試問" not in result["limitation_statement"]
+    markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
+    evaluation_section = markdown.split("## 志望系の英語評価方式", 1)[1].split(
+        "## 公式根拠（原文）", 1
+    )[0]
+    assert "oral_exam_candidate_selection" not in evaluation_section
+    assert "fact:00288" not in evaluation_section

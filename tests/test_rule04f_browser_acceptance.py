@@ -47,6 +47,8 @@ def test_rule04f_browser_acceptance_preserves_uses_and_fail_closed_paths() -> No
     ]
     assert confirmed["evidence"]["fact_id"] == "fact:00288"
     assert confirmed["evidence"]["source_pages"] == [52]
+    assert confirmed["allocation_maximum_points"] == 100
+    assert confirmed["allocation_evidence"] == confirmed["evidence"]
     assert "人数や閾値は公表されておらず" in confirmed["limitation_statement"]
 
     missing = desktop["information-missing-route"]
@@ -54,10 +56,18 @@ def test_rule04f_browser_acceptance_preserves_uses_and_fail_closed_paths() -> No
     for scenario in (
         "information-missing-route",
         "information-a-not-covered",
-        "information-wrong-parent",
     ):
         item = desktop[scenario]
         assert item["assessment_source"] is None
         assert item["evaluation_uses"] is None
         assert item["evidence"] is None
+        assert item["allocation_maximum_points"] == 100
+        assert item["allocation_evidence"]["fact_id"] == "fact:00288"
         assert "人数や閾値" not in item["limitation_statement"]
+    wrong_parent = desktop["information-wrong-parent"]
+    assert wrong_parent["assessment_source"] is None
+    assert wrong_parent["evaluation_uses"] is None
+    assert wrong_parent["evidence"] is None
+    assert wrong_parent["allocation_maximum_points"] is None
+    assert wrong_parent["allocation_evidence"] is None
+    assert "人数や閾値" not in wrong_parent["limitation_statement"]

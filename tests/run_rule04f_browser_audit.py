@@ -17,6 +17,7 @@ from jgrad_admission_rag.reasoning import (  # noqa: E402
     ApplicantProfile,
     load_reviewed_report_plan,
     resolve_language_evaluation,
+    resolve_language_score_allocation,
 )
 from jgrad_admission_rag.schemas.document_identity import load_document_identity  # noqa: E402
 from tests.test_rule01a_real import _profile  # noqa: E402
@@ -40,29 +41,35 @@ REAL_KB = build_document_kb(PDF, load_document_identity(IDENTITY))
 FACT_TEXT = next(fact.text for fact in REAL_KB.facts if fact.fact_id == "fact:00288")
 
 
-def evaluation_results():
-    policy = load_reviewed_report_plan(PLAN).language_evaluation
-    assert policy is not None
+def scenario_results():
+    plan = load_reviewed_report_plan(PLAN)
+    evaluation_policy = plan.language_evaluation
+    allocation_policy = plan.language_score_allocation
+    assert evaluation_policy is not None
+    assert allocation_policy is not None
     results = {}
     for name, (college, target, route) in SCENARIOS.items():
         payload = _profile(None)
         payload["target_application"]["graduate_school_or_college"] = college
         payload["target_application"]["department_or_program"] = target
         payload["target_application"]["application_route"] = route
-        results[name] = resolve_language_evaluation(
-            ApplicantProfile.model_validate(payload), policy
+        profile = ApplicantProfile.model_validate(payload)
+        results[name] = (
+            resolve_language_evaluation(profile, evaluation_policy),
+            resolve_language_score_allocation(profile, allocation_policy),
         )
     return results
 
 
-def report_payload(result):
+def report_payload(result, allocation):
     records = []
-    if result.evidence is not None:
+    evidence = result.evidence or allocation.evidence
+    if evidence is not None:
         records.append(
             {
                 "document_id": DOCUMENT_ID,
-                "fact_id": result.evidence.fact_id,
-                "source_pages": list(result.evidence.source_pages),
+                "fact_id": evidence.fact_id,
+                "source_pages": list(evidence.source_pages),
                 "text": FACT_TEXT,
             }
         )
@@ -80,7 +87,7 @@ def report_payload(result):
                 "process_notices": [],
             },
             "language_score_conversion": None,
-            "language_score_allocation": None,
+            "language_score_allocation": allocation.model_dump(mode="json"),
             "language_evaluation": result.model_dump(mode="json"),
             "evidence_bundle": {"evidence_records": records},
         },
@@ -89,7 +96,7 @@ def report_payload(result):
 
 
 class Handler(SimpleHTTPRequestHandler):
-    results = evaluation_results()
+    results = scenario_results()
     current_scenario = "information-b-confirmed"
 
     def __init__(self, *args, **kwargs):
@@ -143,7 +150,7 @@ class Handler(SimpleHTTPRequestHandler):
             self._json({"schema_version": "1.0", "categories": ["language_tests"]})
             return
         if self.path == "/v1/applicant-reports":
-            self._json(report_payload(self.results[self.current_scenario]))
+            self._json(report_payload(*self.results[self.current_scenario]))
             return
         self.send_error(404)
 
@@ -161,7 +168,7 @@ def main():
                 headless=True,
             )
             for viewport, width in (("desktop", 1440), ("mobile", 390)):
-                for scenario, result in Handler.results.items():
+                for scenario, (result, allocation) in Handler.results.items():
                     college, target, route = SCENARIOS[scenario]
                     page = browser.new_page(viewport={"width": width, "height": 1000})
                     page.goto(f"http://127.0.0.1:{port}/app.html")
@@ -183,8 +190,20 @@ def main():
                     section.wait_for()
                     text = section.inner_text()
                     page_text = page.locator("#report-output").inner_text()
+                    allocation_text = (
+                        page.locator("#report-output .report-section")
+                        .filter(has=page.locator("h3", has_text="志望系の英語公式配点"))
+                        .inner_text()
+                    )
                     assert result.status.value in text
                     assert result.limitation_statement in text
+                    if allocation.maximum_points is not None:
+                        assert allocation.maximum_points == 100
+                        assert "100 points" in allocation_text
+                        assert "fact:00288" in allocation_text
+                        assert "p.52" in allocation_text
+                    else:
+                        assert "対象外または未確認" in allocation_text
                     if result.evidence is not None:
                         assert "指定英語外部試験のスコア" in text
                         assert "実施なし" in text
@@ -195,6 +214,8 @@ def main():
                         assert "上位者を口頭試" in page_text
                     else:
                         assert "対象外または未確認" in text
+                        assert "口頭試問対象者の選定" not in text
+                        assert "fact:00288" not in text
                     overflow = page.evaluate(
                         "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                     )
@@ -218,6 +239,12 @@ def main():
                             "evidence": (
                                 result.evidence.model_dump(mode="json")
                                 if result.evidence is not None
+                                else None
+                            ),
+                            "allocation_maximum_points": allocation.maximum_points,
+                            "allocation_evidence": (
+                                allocation.evidence.model_dump(mode="json")
+                                if allocation.evidence is not None
                                 else None
                             ),
                             "limitation_statement": result.limitation_statement,
