@@ -650,6 +650,29 @@ function renderReport(payload) {
   }
   evaluation.append(evaluationDetails);
 
+  const programLanguage = document.createElement("section");
+  programLanguage.className = "report-section";
+  programLanguage.append(heading(3, "プロジェクト固有の言語選考条件"));
+  const programLanguageResult = report.program_language_condition;
+  const programLanguageDetails = document.createElement("dl");
+  programLanguageDetails.className = "evidence-meta";
+  if (programLanguageResult) {
+    addMetadata(programLanguageDetails, "出願経路", programLanguageResult.application_route || "未指定");
+    addMetadata(programLanguageDetails, "状態", programLanguageResult.status);
+    if (programLanguageResult.evidence) {
+      addMetadata(programLanguageDetails, "プログラム", programLanguageResult.program);
+      addMetadata(programLanguageDetails, "言語", "中国語");
+      addMetadata(programLanguageDetails, "入学選考での扱い", "選考対象外");
+      addMetadata(programLanguageDetails, "根拠", `${programLanguageResult.evidence.fact_id} | p.${programLanguageResult.evidence.source_pages.join(",")}`);
+    } else {
+      addMetadata(programLanguageDetails, "選考条件", "審査範囲外または情報不足");
+    }
+    addMetadata(programLanguageDetails, "制限", programLanguageResult.limitation_statement);
+  } else {
+    addMetadata(programLanguageDetails, "状態", "この審査済み計画にはプロジェクト固有の言語条件がありません。");
+  }
+  programLanguage.append(programLanguageDetails);
+
   const evidence = document.createElement("section");
   evidence.className = "report-section";
   evidence.append(heading(3, "公式根拠（原文）"));
@@ -669,7 +692,7 @@ function renderReport(payload) {
   const finalNotice = document.createElement("p");
   finalNotice.className = "final-notice";
   finalNotice.textContent = "この結果は、総合的な出願資格、合否、合格可能性、または推奨を示すものではありません。";
-  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evaluation, evidence, finalNotice);
+  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evaluation, programLanguage, evidence, finalNotice);
   setMessage(reportStatus, report.report_status, `レポート準備状態: ${statusLabel(report.report_status)} (${report.report_status})`, true);
 }
 

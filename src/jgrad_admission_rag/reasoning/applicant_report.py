@@ -47,6 +47,10 @@ from .language_score_allocation import (
     resolve_language_score_allocation,
 )
 from .language_evaluation import LanguageEvaluationResult, resolve_language_evaluation
+from .program_language_condition import (
+    ProgramLanguageConditionResult,
+    resolve_program_language_condition,
+)
 from .query_intent import QueryIntent
 from .reasoning_trace import ReasoningTrace, ReasoningTraceError, build_reasoning_trace
 from .reviewed_report_evidence import ReviewedReportEvidenceBundle
@@ -111,6 +115,7 @@ class ApplicantReport(ApplicantReportModel):
     language_score_conversion: LanguageScoreConversionResult | None = None
     language_score_allocation: LanguageScoreAllocationResult | None = None
     language_evaluation: LanguageEvaluationResult | None = None
+    program_language_condition: ProgramLanguageConditionResult | None = None
     counts: ApplicantReportCounts
     report_status: ReportStatus
 
@@ -129,6 +134,7 @@ class ApplicantReport(ApplicantReportModel):
             "language_score_conversion": LanguageScoreConversionResult,
             "language_score_allocation": LanguageScoreAllocationResult,
             "language_evaluation": LanguageEvaluationResult,
+            "program_language_condition": ProgramLanguageConditionResult,
             "counts": ApplicantReportCounts,
         }
         for field_name, model_type in nested_types.items():
@@ -276,6 +282,11 @@ def build_applicant_report(
         if plan.language_evaluation is not None
         else None
     )
+    program_condition = (
+        resolve_program_language_condition(profile, plan.program_language_condition)
+        if plan.program_language_condition is not None
+        else None
+    )
 
     counts = ApplicantReportCounts(
         rule_count=len(plan.rules),
@@ -301,6 +312,7 @@ def build_applicant_report(
             language_score_conversion=conversion,
             language_score_allocation=allocation,
             language_evaluation=evaluation,
+            program_language_condition=program_condition,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -429,6 +441,8 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
         lines.extend(_render_language_score_allocation(validated.language_score_allocation))
     if validated.language_evaluation is not None:
         lines.extend(_render_language_evaluation(validated.language_evaluation))
+    if validated.program_language_condition is not None:
+        lines.extend(_render_program_language_condition(validated.program_language_condition))
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:
         lines.extend(
@@ -547,6 +561,24 @@ def _validate_plan_evidence(
                 or record.scope_type != "department"
                 or record.scope_targets != (entry.target,)
                 or record.parent_college != entry.parent_college
+            ):
+                raise ValueError
+    if plan.program_language_condition is not None:
+        policy = plan.program_language_condition
+        for entry in policy.entries:
+            binding = entry.evidence_binding
+            expected_rule_ids.setdefault(binding.fact_id, set()).add(
+                f"policy:{policy.policy_id}:{entry.application_route}"
+            )
+            record = records.get(binding.fact_id)
+            if record is None or (
+                record.document_id != binding.document_id
+                or record.source_pages != binding.source_pages
+                or hashlib.sha256(record.text.encode("utf-8")).hexdigest()
+                != binding.authoritative_fact_text_sha256
+                or record.scope_type != "program"
+                or record.scope_targets != (entry.program,)
+                or record.parent_college is not None
             ):
                 raise ValueError
     if set(records) != set(expected_rule_ids):
@@ -683,6 +715,59 @@ def _validate_report_contract(report: ApplicantReport) -> None:
                 else "not_covered"
             )
             if matching or evaluation.status.value != expected_status:
+                raise ValueError
+    program_policy = plan.program_language_condition
+    program_condition = report.program_language_condition
+    if (program_policy is None) != (program_condition is None):
+        raise ValueError
+    if program_policy is not None and program_condition is not None:
+        if program_condition.policy_id != program_policy.policy_id:
+            raise ValueError
+        matching = [
+            entry
+            for entry in program_policy.entries
+            if entry.application_route == program_condition.application_route
+            and entry.requested_degree_level == program_condition.requested_degree_level
+            and entry.intake_year == program_condition.intake_year
+            and entry.intake_month == program_condition.intake_month
+        ]
+        if program_condition.status.value == "confirmed":
+            if len(matching) != 1:
+                raise ValueError
+            entry = matching[0]
+            expected_evidence = OfficialEvidenceReference(
+                document_id=entry.evidence_binding.document_id,
+                fact_id=entry.evidence_binding.fact_id,
+                source_pages=entry.evidence_binding.source_pages,
+                role=EvidenceRole.PRIMARY,
+            )
+            if (
+                program_condition.program != entry.program
+                or program_condition.language != entry.language
+                or program_condition.admission_selection != entry.admission_selection
+                or program_condition.evidence != expected_evidence
+                or program_condition.limitation_statement != entry.limitation_statement
+            ):
+                raise ValueError
+        else:
+            expected_status = (
+                "needs_information"
+                if any(
+                    value is None
+                    for value in (
+                        program_condition.application_route,
+                        program_condition.requested_degree_level,
+                        program_condition.intake_year,
+                        program_condition.intake_month,
+                    )
+                )
+                else "not_covered"
+            )
+            if (
+                matching
+                or program_condition.status.value != expected_status
+                or program_condition.limitation_statement != program_policy.out_of_scope_statement
+            ):
                 raise ValueError
     trace = report.reasoning_trace
     if trace.trace_id != f"trace:{report.report_id}":
@@ -835,6 +920,29 @@ def _render_language_evaluation(result: LanguageEvaluationResult) -> tuple[str, 
             )
         lines.append(
             f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}"
+        )
+    lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
+    return tuple(lines)
+
+
+def _render_program_language_condition(
+    result: ProgramLanguageConditionResult,
+) -> tuple[str, ...]:
+    lines = [
+        "",
+        "## プロジェクト固有の言語選考条件",
+        "",
+        f"- **出願経路:** `{result.application_route or '未指定'}`",
+        f"- **状態:** `{result.status.value}`",
+    ]
+    if result.evidence is not None:
+        lines.extend(
+            (
+                f"- **プログラム:** `{result.program}`",
+                "- **言語:** `chinese`",
+                "- **入学選考での扱い:** `excluded`",
+                f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
+            )
         )
     lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
     return tuple(lines)

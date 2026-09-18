@@ -42,7 +42,11 @@ COLLEGE_DEPARTMENTS = {
     ],
 }
 PROGRAMS = {"技術経営専門職学位課程"}
+TSINGHUA_JOINT_PROGRAM = "東京科学大学・清華大学 大学院合同プログラム"
 DEPARTMENT_CONTEXT_RE = re.compile(r"^(?P<college>\S+学院)\s+(?P<unit>.+(?:系|専門職学位課程))$")
+TSINGHUA_PROGRAM_COVER_RE = re.compile(
+    r"Ⅲ\s+清華大学（中国）との大学院\s*合同プログラム入学試験案内"
+)
 APPENDIX_CONVERSION_HEADING_RE = re.compile(
     r"^附録[0-9０-９一二三四五六七八九十]+[\.．、][^\n]*英語外部試験[^\n]*換算基準"
 )
@@ -88,6 +92,15 @@ def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
             if name in haystack:
                 page_map[name].update(item.pages)
 
+    program_page_map = {
+        TSINGHUA_JOINT_PROGRAM: {
+            page
+            for item in index
+            if TSINGHUA_JOINT_PROGRAM in item.section_path
+            for page in item.pages
+        }
+    }
+
     entities: list[KnowledgeEntity] = []
     for college, departments in COLLEGE_DEPARTMENTS.items():
         college_id = f"college:{college}"
@@ -110,6 +123,17 @@ def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
                     source_pages=sorted(page_map[department]),
                 )
             )
+    for program, pages in program_page_map.items():
+        if not pages:
+            continue
+        entities.append(
+            KnowledgeEntity(
+                entity_id=f"program:{program}",
+                name=program,
+                entity_type="program",
+                source_pages=sorted(pages),
+            )
+        )
     return entities
 
 
@@ -121,6 +145,9 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
         and item.text.lstrip().startswith(item.section_path[0])
     ):
         return "global", [], None, 0.7
+
+    if TSINGHUA_JOINT_PROGRAM in item.section_path or _is_tsinghua_program_cover(item):
+        return "program", [TSINGHUA_JOINT_PROGRAM], None, 0.9
     if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
         return "global", [], None, 0.7
 
@@ -205,7 +232,7 @@ def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
 
 
 def propagate_department_context(index: list[IndexedChunk]) -> None:
-    """Carry an explicit department banner until the next explicit top-level boundary."""
+    """Carry reviewed department or program banners to an explicit top-level boundary."""
 
     active_context: str | None = None
     for item in index:
@@ -215,6 +242,7 @@ def propagate_department_context(index: list[IndexedChunk]) -> None:
         )
         if DEPARTMENT_CONTEXT_END_RE.match(first_line):
             active_context = None
+        explicit_program = TSINGHUA_JOINT_PROGRAM if _is_tsinghua_program_cover(item) else None
         explicit_context = next(
             (
                 heading
@@ -223,11 +251,21 @@ def propagate_department_context(index: list[IndexedChunk]) -> None:
             ),
             None,
         )
-        if explicit_context is not None:
+        if explicit_program is not None:
+            active_context = explicit_program
+            if explicit_program not in item.section_path:
+                item.section_path = [explicit_program, *item.section_path]
+        elif explicit_context is not None:
             active_context = explicit_context
         elif active_context is not None and not DEPARTMENT_CONTEXT_END_RE.match(first_line):
             if active_context not in item.section_path:
                 item.section_path = [active_context, *item.section_path]
+
+
+def _is_tsinghua_program_cover(item: IndexedChunk) -> bool:
+    """Recognize the reviewed cover without treating earlier contents mentions as a banner."""
+
+    return item.pages == [75] and TSINGHUA_PROGRAM_COVER_RE.search(item.text) is not None
 
 
 def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:

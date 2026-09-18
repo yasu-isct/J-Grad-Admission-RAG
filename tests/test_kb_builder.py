@@ -23,6 +23,7 @@ from jgrad_admission_rag.builder.kb_builder import (
     indexed_chunk_to_fact,
     propagate_department_context,
     summarize_chunk_sizes,
+    TSINGHUA_JOINT_PROGRAM,
 )
 from tests.identity_helpers import make_document_identity
 
@@ -721,6 +722,61 @@ def test_professional_degree_page_context_uses_program_scope() -> None:
         "環境・社会理工学院",
         0.9,
     )
+
+
+def test_tsinghua_cover_propagates_program_scope_until_admission_policy() -> None:
+    def indexed(chunk_id: int, page: int, title: str, text: str) -> IndexedChunk:
+        return IndexedChunk(
+            chunk_id=chunk_id,
+            pdf_name="sample.pdf",
+            pages=[page],
+            title=title,
+            text=text,
+            section_path=[title],
+            category="english",
+            anchors=[],
+            references=[],
+            text_preview=text,
+        )
+
+    cover = indexed(
+        1,
+        75,
+        "legacy heading",
+        "Ⅲ 清華大学（中国）との大学院\n合同プログラム入学試験案内\n2027年4月入学",
+    )
+    language = indexed(
+        2,
+        76,
+        "(１) プログラム概要",
+        "入学試験では、中国語の語学力は選考対象外です。",
+    )
+    listed_department = indexed(
+        3,
+        77,
+        "(３) 社会理工学コース",
+        "工学院 経営工学系を含むコースです。",
+    )
+    boundary = indexed(
+        4,
+        79,
+        "入学者受入れの方針",
+        "## Page 79\n\n入学者受入れの方針（アドミッション・ポリシー）",
+    )
+    index = [cover, language, listed_department, boundary]
+
+    propagate_department_context(index)
+
+    assert infer_scope(cover) == ("program", [TSINGHUA_JOINT_PROGRAM], None, 0.9)
+    assert infer_scope(language) == ("program", [TSINGHUA_JOINT_PROGRAM], None, 0.9)
+    assert infer_scope(listed_department) == (
+        "program",
+        [TSINGHUA_JOINT_PROGRAM],
+        None,
+        0.9,
+    )
+    assert TSINGHUA_JOINT_PROGRAM not in boundary.section_path
+    assert infer_scope(boundary) == ("unknown", [], None, 0.45)
 
 
 def test_department_exclusion_is_not_a_positive_department_scope() -> None:

@@ -15,6 +15,7 @@ from .applicability import ApplicabilityRule
 from .language_score_conversion import LanguageScoreConversionPolicy
 from .language_score_allocation import LanguageScoreAllocationPolicy
 from .language_evaluation import LanguageEvaluationPolicy
+from .program_language_condition import ProgramLanguageConditionPolicy
 from .query_intent import IntentCategory
 from .rule_interaction import RuleInteractionPolicy
 from .rule_resolution import RulePrecedencePolicy, _is_proven_narrower
@@ -68,6 +69,7 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
     language_score_conversion: LanguageScoreConversionPolicy | None = None
     language_score_allocation: LanguageScoreAllocationPolicy | None = None
     language_evaluation: LanguageEvaluationPolicy | None = None
+    program_language_condition: ProgramLanguageConditionPolicy | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -99,6 +101,9 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
         evaluation = detached.get("language_evaluation")
         if isinstance(evaluation, LanguageEvaluationPolicy):
             detached["language_evaluation"] = evaluation.model_dump(mode="json")
+        program_condition = detached.get("program_language_condition")
+        if isinstance(program_condition, ProgramLanguageConditionPolicy):
+            detached["program_language_condition"] = program_condition.model_dump(mode="json")
         return detached
 
     @field_validator(
@@ -252,6 +257,15 @@ def _validate_cross_object_invariants(plan: ReviewedReportPlan) -> None:
                 raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
     if plan.language_evaluation is not None:
         for entry in plan.language_evaluation.entries:
+            binding = entry.evidence_binding
+            if (
+                binding.document_id != expected_document
+                or binding.source_pdf_sha256 != expected_pdf
+                or binding.source_kb_sha256 not in source_kb_hashes
+            ):
+                raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
+    if plan.program_language_condition is not None:
+        for entry in plan.program_language_condition.entries:
             binding = entry.evidence_binding
             if (
                 binding.document_id != expected_document
