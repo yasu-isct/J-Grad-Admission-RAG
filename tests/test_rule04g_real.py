@@ -6,6 +6,9 @@ import pytest
 
 from jgrad_admission_rag.reasoning.applicant_report import (
     ApplicantReport,
+    ApplicantReportError,
+    canonical_applicant_report_bytes,
+    load_applicant_report_bytes,
     render_applicant_report_markdown,
 )
 from tests.test_rule01a_real import _report
@@ -151,3 +154,40 @@ def test_other_intakes_and_routes_are_not_covered(rule04b_client, year, month, r
     markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
     assert "fact:00347" not in markdown
     assert "入学試験では、中国語の語学力は選考対象外です" not in markdown
+
+
+def test_report_contract_rejects_reinjected_program_result_and_evidence(rule04b_client) -> None:
+    client, document_id = rule04b_client
+    missing = _report(
+        client,
+        document_id,
+        _program_profile(2027, 4, None),
+        "tsinghua-program-language-tamper-missing",
+    )
+    confirmed = _report(
+        client,
+        document_id,
+        _program_profile(2027, 4, "tsinghua_joint_program"),
+        "tsinghua-program-language-tamper-confirmed",
+    )
+    tampered = dict(missing)
+    for field in ("program_language_condition", "evidence_bundle", "counts"):
+        tampered[field] = confirmed[field]
+
+    with pytest.raises(ApplicantReportError):
+        load_applicant_report_bytes(
+            (json.dumps(tampered, ensure_ascii=False, separators=(",", ":")) + "\n").encode()
+        )
+
+    missing_model = ApplicantReport.model_validate(missing)
+    confirmed_model = ApplicantReport.model_validate(confirmed)
+    constructed = missing_model.model_copy(
+        update={
+            "program_language_condition": confirmed_model.program_language_condition,
+            "evidence_bundle": confirmed_model.evidence_bundle,
+            "counts": confirmed_model.counts,
+        }
+    )
+    for operation in (canonical_applicant_report_bytes, render_applicant_report_markdown):
+        with pytest.raises(ApplicantReportError):
+            operation(constructed)
