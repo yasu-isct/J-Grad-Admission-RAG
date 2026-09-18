@@ -673,6 +673,29 @@ function renderReport(payload) {
   }
   programLanguage.append(programLanguageDetails);
 
+  const materials = document.createElement("section");
+  materials.className = "report-section";
+  materials.append(heading(3, "一般志願者の共通出願書類"));
+  const materialsResult = report.application_materials;
+  const materialsDetails = document.createElement("dl");
+  materialsDetails.className = "evidence-meta";
+  if (materialsResult) {
+    const labels = {
+      required: "この共通一覧で提出が必要",
+      eligibility_review_path: "出願資格審査の提出書類として取り扱う（この共通一覧では不要）",
+      needs_information: "出願資格経路の確認が必要",
+      not_covered: "この募集要項の対象外",
+    };
+    for (const entry of materialsResult.entries) {
+      addMetadata(materialsDetails, `${entry.number}. ${entry.official_name}`, labels[entry.applicability]);
+    }
+    addMetadata(materialsDetails, "根拠", `${materialsResult.evidence.fact_id} | p.${materialsResult.evidence.source_pages.join(",")}`);
+    addMetadata(materialsDetails, "制限", materialsResult.limitation_statement);
+  } else {
+    addMetadata(materialsDetails, "状態", "この審査済み計画には共通提出材料データがありません。");
+  }
+  materials.append(materialsDetails);
+
   const evidence = document.createElement("section");
   evidence.className = "report-section";
   evidence.append(heading(3, "公式根拠（原文）"));
@@ -692,7 +715,7 @@ function renderReport(payload) {
   const finalNotice = document.createElement("p");
   finalNotice.className = "final-notice";
   finalNotice.textContent = "この結果は、総合的な出願資格、合否、合格可能性、または推奨を示すものではありません。";
-  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evaluation, programLanguage, evidence, finalNotice);
+  reportOutput.append(coverage, readiness, findings, diagnostics, conversion, allocation, evaluation, programLanguage, materials, evidence, finalNotice);
   setMessage(reportStatus, report.report_status, `レポート準備状態: ${statusLabel(report.report_status)} (${report.report_status})`, true);
 }
 

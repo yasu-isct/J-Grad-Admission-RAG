@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 from ..schemas.document_identity import DocumentIdentity
 from .applicability import ApplicabilityRule
+from .application_materials import ApplicationMaterialsPolicy
 from .language_score_conversion import LanguageScoreConversionPolicy
 from .language_score_allocation import LanguageScoreAllocationPolicy
 from .language_evaluation import LanguageEvaluationPolicy
@@ -70,6 +71,7 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
     language_score_allocation: LanguageScoreAllocationPolicy | None = None
     language_evaluation: LanguageEvaluationPolicy | None = None
     program_language_condition: ProgramLanguageConditionPolicy | None = None
+    application_materials: ApplicationMaterialsPolicy | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -104,6 +106,9 @@ class ReviewedReportPlan(ReviewedReportPlanModel):
         program_condition = detached.get("program_language_condition")
         if isinstance(program_condition, ProgramLanguageConditionPolicy):
             detached["program_language_condition"] = program_condition.model_dump(mode="json")
+        materials = detached.get("application_materials")
+        if isinstance(materials, ApplicationMaterialsPolicy):
+            detached["application_materials"] = materials.model_dump(mode="json")
         return detached
 
     @field_validator(
@@ -273,6 +278,14 @@ def _validate_cross_object_invariants(plan: ReviewedReportPlan) -> None:
                 or binding.source_kb_sha256 not in source_kb_hashes
             ):
                 raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
+    if plan.application_materials is not None:
+        binding = plan.application_materials.evidence_binding
+        if (
+            binding.document_id != expected_document
+            or binding.source_pdf_sha256 != expected_pdf
+            or binding.source_kb_sha256 not in source_kb_hashes
+        ):
+            raise _PlanInvariantError(PlanValidationFailure.SOURCE_IDENTITY)
     if len(source_kb_hashes) != 1:
         raise _PlanInvariantError(PlanValidationFailure.SOURCE_KB)
 

@@ -182,6 +182,11 @@ limitation statement. It never exposes source/KB hashes, filesystem paths, index
 configuration, rule predicates, evidence, or applicant data. Missing or stale configuration uses
 the privacy-safe `report_service_unavailable` envelope.
 
+When configured with RULE-05A, `report.application_materials` contains the five ordered p.10 items,
+their typed applicability (`required`, `eligibility_review_path`, `needs_information`, or
+`not_covered`), one official evidence reference, and an explicit non-receipt limitation. The field
+does not assert that any material was submitted, arrived, or was accepted.
+
 The local page at `/app` and fixed `/assets/app.css` and `/assets/app.js` resources are excluded from
 OpenAPI. They are installed as Python package data and make no external requests. See
 [Local Evidence Review UI](local-evidence-ui.md).

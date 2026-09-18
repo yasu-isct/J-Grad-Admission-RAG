@@ -29,6 +29,10 @@ from .applicability import (
     evaluate_applicability_with_direct_evidence,
 )
 from .applicant_profile import ApplicantProfile
+from .application_materials import (
+    ApplicationMaterialsResult,
+    resolve_application_materials,
+)
 from .cited_answer import (
     CitedAnswer,
     CitedAnswerError,
@@ -123,6 +127,7 @@ class ApplicantReport(ApplicantReportModel):
     language_score_allocation: LanguageScoreAllocationResult | None = None
     language_evaluation: LanguageEvaluationResult | None = None
     program_language_condition: ProgramLanguageConditionResult | None = None
+    application_materials: ApplicationMaterialsResult | None = None
     counts: ApplicantReportCounts
     report_status: ReportStatus
 
@@ -142,6 +147,7 @@ class ApplicantReport(ApplicantReportModel):
             "language_score_allocation": LanguageScoreAllocationResult,
             "language_evaluation": LanguageEvaluationResult,
             "program_language_condition": ProgramLanguageConditionResult,
+            "application_materials": ApplicationMaterialsResult,
             "counts": ApplicantReportCounts,
         }
         for field_name, model_type in nested_types.items():
@@ -294,6 +300,11 @@ def build_applicant_report(
         if plan.program_language_condition is not None
         else None
     )
+    materials = (
+        resolve_application_materials(profile, plan.application_materials)
+        if plan.application_materials is not None
+        else None
+    )
     visible_evidence = _filter_program_evidence_for_report(
         plan,
         evidence_bundle,
@@ -329,6 +340,7 @@ def build_applicant_report(
             language_score_allocation=allocation,
             language_evaluation=evaluation,
             program_language_condition=visible_program_condition,
+            application_materials=materials,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -459,6 +471,8 @@ def render_applicant_report_markdown(report: ApplicantReport) -> str:
         lines.extend(_render_language_evaluation(validated.language_evaluation))
     if validated.program_language_condition is not None:
         lines.extend(_render_program_language_condition(validated.program_language_condition))
+    if validated.application_materials is not None:
+        lines.extend(_render_application_materials(validated.application_materials))
     lines.extend(("", "## 公式根拠（原文）", ""))
     for record in validated.evidence_bundle.evidence_records:
         lines.extend(
@@ -648,6 +662,21 @@ def _validate_plan_evidence(
                 or record.parent_college is not None
             ):
                 raise ValueError
+    if plan.application_materials is not None:
+        policy = plan.application_materials
+        binding = policy.evidence_binding
+        expected_rule_ids.setdefault(binding.fact_id, set()).add(f"policy:{policy.policy_id}")
+        record = records.get(binding.fact_id)
+        if record is None or (
+            record.document_id != binding.document_id
+            or record.source_pages != binding.source_pages
+            or hashlib.sha256(record.text.encode("utf-8")).hexdigest()
+            != binding.authoritative_fact_text_sha256
+            or record.scope_type != "global"
+            or record.scope_targets
+            or record.parent_college is not None
+        ):
+            raise ValueError
     if set(records) != set(expected_rule_ids):
         raise ValueError
     for fact_id, rule_ids in expected_rule_ids.items():
@@ -843,6 +872,28 @@ def _validate_report_contract(report: ApplicantReport) -> None:
                 or program_condition.limitation_statement != program_policy.out_of_scope_statement
             ):
                 raise ValueError
+    materials_policy = plan.application_materials
+    materials = report.application_materials
+    if (materials_policy is None) != (materials is None):
+        raise ValueError
+    if materials_policy is not None and materials is not None:
+        if (
+            materials.policy_id != materials_policy.policy_id
+            or materials.limitation_statement != materials_policy.limitation_statement
+            or materials.evidence
+            != OfficialEvidenceReference(
+                document_id=materials_policy.evidence_binding.document_id,
+                fact_id=materials_policy.evidence_binding.fact_id,
+                source_pages=materials_policy.evidence_binding.source_pages,
+                role=EvidenceRole.PRIMARY,
+            )
+            or tuple((entry.number, entry.code, entry.official_name) for entry in materials.entries)
+            != tuple(
+                (entry.number, entry.code, entry.official_name)
+                for entry in materials_policy.entries
+            )
+        ):
+            raise ValueError
     trace = report.reasoning_trace
     if trace.trace_id != f"trace:{report.report_id}":
         raise ValueError
@@ -1019,6 +1070,28 @@ def _render_program_language_condition(
             )
         )
     lines.append(f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}")
+    return tuple(lines)
+
+
+def _render_application_materials(result: ApplicationMaterialsResult) -> tuple[str, ...]:
+    lines = ["", "## 一般志願者の共通出願書類", ""]
+    labels = {
+        "required": "この共通一覧で提出が必要",
+        "eligibility_review_path": "出願資格審査の提出書類として取り扱う（この共通一覧では不要）",
+        "needs_information": "出願資格経路の確認が必要",
+        "not_covered": "この募集要項の対象外",
+    }
+    for entry in result.entries:
+        lines.append(
+            f"- **{entry.number}. {_escape_markdown_inline(entry.official_name)}:** "
+            f"`{labels[entry.applicability.value]}`"
+        )
+    lines.extend(
+        (
+            f"- **根拠:** {_evidence_marker(result.evidence.fact_id, result.evidence.source_pages)}",
+            f"- **制限:** {_escape_markdown_inline(result.limitation_statement)}",
+        )
+    )
     return tuple(lines)
 
 
