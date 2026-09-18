@@ -20,10 +20,13 @@ from jgrad_admission_rag.reasoning.reviewed_report_evidence import (
 )
 from jgrad_admission_rag.schemas.corpus_manifest import canonical_corpus_manifest_bytes
 from jgrad_admission_rag.schemas.corpus_version import canonical_corpus_version_policy_bytes
+from jgrad_admission_rag.schemas.page_scope_manifest import (
+    canonical_page_scope_manifest_bytes,
+)
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_applicant_report import _intent, _profile
 from tests.test_corpus_search import ControlledProvider
-from tests.test_reviewed_report_evidence import _context
+from tests.test_reviewed_report_evidence import _context, _page_scope_manifest
 
 
 def _files(root: Path) -> dict[str, bytes]:
@@ -39,14 +42,19 @@ def _runtime(tmp_path: Path, *, configure_plan: bool = True):
     manifest_path = tmp_path / "corpus.json"
     policy_path = tmp_path / "policy.json"
     plan_path = tmp_path / "reviewed-plan.json"
+    page_scope_path = tmp_path / "page-scope.json"
     manifest_path.write_bytes(canonical_corpus_manifest_bytes(context.manifest))
     policy_path.write_bytes(canonical_corpus_version_policy_bytes(context.policy))
     plan_path.write_bytes(canonical_reviewed_report_plan_bytes(context.plan))
+    page_scope_path.write_bytes(
+        canonical_page_scope_manifest_bytes(_page_scope_manifest(context.plan.document_identity))
+    )
     settings = ServiceSettings(
         corpus_root=tmp_path.resolve(),
         manifest_path=manifest_path.resolve(),
         policy_path=policy_path.resolve(),
         report_plan_paths=(plan_path.resolve(),) if configure_plan else (),
+        page_scope_manifest_paths=(page_scope_path.resolve(),) if configure_plan else (),
     )
     dependencies = ServiceDependencies(provider_factory=ControlledProvider)
     return context, settings, dependencies, plan_path
@@ -151,9 +159,13 @@ def test_report_plan_initialization_failure_makes_service_not_ready(tmp_path: Pa
     )
 
 
-def test_missing_report_plan_makes_service_not_ready(tmp_path: Path) -> None:
+@pytest.mark.parametrize("missing_artifact", ("plan", "page_scope"))
+def test_missing_report_configuration_makes_service_not_ready(
+    tmp_path: Path, missing_artifact: str
+) -> None:
     context, settings, dependencies, plan_path = _runtime(tmp_path)
-    plan_path.unlink()
+    path = plan_path if missing_artifact == "plan" else settings.page_scope_manifest_paths[0]
+    path.unlink()
 
     with TestClient(create_app(settings, dependencies)) as client:
         ready = client.get("/v1/health/ready")
@@ -367,7 +379,11 @@ def test_report_route_offloads_lifespan_and_request_disk_work(
         response = client.post("/v1/applicant-reports", json=_payload(context))
 
     assert response.status_code == 200
-    assert offloaded == ["_load_report_plans", "_build_applicant_report_response"]
+    assert offloaded == [
+        "_load_report_plans",
+        "_load_page_scope_manifests",
+        "_build_applicant_report_response",
+    ]
 
 
 def test_renderer_failure_is_a_privacy_safe_generation_error(

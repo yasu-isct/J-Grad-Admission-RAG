@@ -551,6 +551,8 @@ def test_cli_accepts_repeatable_absolute_report_plans(
     monkeypatch.setattr(uvicorn, "run", lambda app, host, port: captured.append(app))
     plan_a = (tmp_path / "plan-a.json").resolve()
     plan_b = (tmp_path / "plan-b.json").resolve()
+    scope_a = (tmp_path / "scope-a.json").resolve()
+    scope_b = (tmp_path / "scope-b.json").resolve()
     service_cli.main(
         [
             "--corpus-root",
@@ -563,6 +565,10 @@ def test_cli_accepts_repeatable_absolute_report_plans(
             str(plan_a),
             "--report-plan",
             str(plan_b),
+            "--page-scope-manifest",
+            str(scope_a),
+            "--page-scope-manifest",
+            str(scope_b),
             "--provider",
             "deterministic-fake",
             "--dimension",
@@ -571,6 +577,10 @@ def test_cli_accepts_repeatable_absolute_report_plans(
     )
 
     assert captured[0].state.service_settings.report_plan_paths == (plan_a, plan_b)
+    assert captured[0].state.service_settings.page_scope_manifest_paths == (
+        scope_a,
+        scope_b,
+    )
 
 
 def test_cli_accepts_absolute_query_intent_catalog(

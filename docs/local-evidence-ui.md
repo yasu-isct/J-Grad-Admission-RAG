@@ -44,10 +44,11 @@ request.
 ## Configuration
 
 The document catalog is available only when reporting is configured with one or more repeatable
-absolute `--report-plan` paths. On every catalog request, the service reloads and audits the current
-manifest and reviewed version policy. It returns only ready documents with exactly one matching
-lifespan-loaded plan. Public catalog identities omit PDF/KB hashes, paths, index/provider/model
-configuration, predicates, and evidence text.
+absolute `--report-plan` paths and one identity-matched absolute `--page-scope-manifest` path per
+enabled document. On every catalog request, the service reloads and audits the current manifest and
+reviewed version policy. It returns only ready documents with exactly one matching lifespan-loaded
+plan and page-scope manifest. Public catalog identities omit PDF/KB hashes, paths,
+index/provider/model configuration, predicates, and evidence text.
 
 The UI limits a question to 1,000 characters as a conservative browser input bound and submits the
 existing strict query schema with `top_k=5`, `candidate_k=20`, empty filters/preferences, and

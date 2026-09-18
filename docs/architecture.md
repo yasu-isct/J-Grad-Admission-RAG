@@ -200,10 +200,20 @@ materialize exact Facts and run the existing M4 pipeline. See
 
 `ReviewedReportEvidenceBundle` v1 is APP-03B's in-memory materialization boundary. It first audits
 the current corpus and revalidates an exact one-document selection, matches one server-owned plan by
-complete identity, then resolves each reviewed binding directly to authoritative Fact text, pages,
-and scope. It never fabricates retrieval metadata or returns a partial bundle. Official text is not
-persisted by default and no applicant reasoning runs in this layer. See
+complete identity, validates the matching manually reviewed page-scope manifest, then resolves each
+reviewed binding directly to authoritative Fact text, pages, and scope. Ordinary bindings are
+restricted to `core_admission`; conditional-program bindings require their declared route. Faculty,
+general-reference, and appendix Facts stay in the unchanged KB for audit/retrieval but cannot enter
+rule evidence. It never fabricates retrieval metadata or returns a partial bundle. Official text is
+not persisted by default and no applicant reasoning runs in this layer. See
 [Reviewed Report Evidence v1](reasoning/reviewed-report-evidence-v1.md).
+
+Page categories describe each physical page's reviewed primary purpose; they do not split or
+sanitize a mixed Fact. In this fixed PDF, pages 34, 41, and 61 contain Facts that combine ordinary
+exam/result text with faculty-directory text, while page 28 places a low-frequency consultation
+condition before its faculty table. Their safety boundary therefore remains human selection of the
+exact Fact binding. This migration does not re-chunk the PDF, renumber Facts, or claim that page
+classification removes mixed content.
 
 `ApplicantReport` v1 is APP-03C's deterministic orchestration and self-audit boundary. Ranked
 `EvidencePack` inputs and exact `DirectOfficialEvidence` use separate typed adapters but share the
@@ -216,11 +226,13 @@ this layer. See [Applicant Report v1](reasoning/applicant-report-v1.md).
 
 APP-03D exposes that chain through `POST /v1/applicant-reports`. The transport accepts only a safe
 report ID plus existing profile, intent, and single-document selection contracts. During lifespan,
-the service strictly loads an explicit allowlist of absolute reviewed-plan paths and rejects
-duplicate IDs, duplicate document identities, or identities outside the audited corpus. Each
+the service strictly loads paired explicit allowlists of absolute reviewed-plan and
+page-scope-manifest paths and rejects duplicate IDs, duplicate document identities, identity-set
+mismatches, or plan identities outside the audited corpus. Each
 request delegates to COR-04, APP-03B, and APP-03C on the existing thread-offload boundary; it does
 not perform ranked retrieval, model activity, persistence, or duplicate reasoning. No configured
-plans preserves older readiness semantics, while configured invalid plans fail overall readiness.
+plans or scopes preserves query/build-only readiness semantics, while any configured invalid pair
+fails overall readiness. There is deliberately no fallback to the former unscoped report mode.
 
 APP-04A adds a read-only presentation boundary over this service. The reviewed-document catalog
 re-audits current corpus/policy state and projects only hash-free public identity and partial-plan

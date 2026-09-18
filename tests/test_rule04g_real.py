@@ -69,6 +69,9 @@ def test_exact_tsinghua_route_reports_only_chinese_selection_exclusion(rule04b_c
     assert evidence["scope_type"] == "program"
     assert evidence["scope_targets"] == [PROGRAM]
     assert "入学試験では、中国語の語学力は選考対象外です" in evidence["text"]
+    confirmed_json = json.dumps(report, ensure_ascii=False)
+    assert PROGRAM in confirmed_json
+    assert "奨学金" in confirmed_json
 
     markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
     section = markdown.split("## プロジェクト固有の言語選考条件", 1)[1].split(
@@ -107,16 +110,14 @@ def test_missing_route_or_intake_does_not_expose_program_evidence(
         _program_profile(year, month, route),
         f"tsinghua-program-language-missing-{year}-{month}-{route}",
     )
-    result = report["program_language_condition"]
-
-    assert result["status"] == "needs_information"
-    assert result["program"] is None
-    assert result["language"] is None
-    assert result["admission_selection"] is None
-    assert result["evidence"] is None
-    evidence_json = json.dumps(report["evidence_bundle"], ensure_ascii=False)
-    assert "fact:00347" not in evidence_json
-    assert "入学試験では、中国語の語学力は選考対象外です" not in evidence_json
+    assert report["program_language_condition"] is None
+    report_json = json.dumps(report, ensure_ascii=False)
+    assert "fact:00347" not in report_json
+    assert '"source_pages": [76]' not in report_json
+    assert "入学試験では、中国語の語学力は選考対象外です" not in report_json
+    assert report["source_plan"]["program_language_condition"] is None
+    for hidden in (PROGRAM, "清華", "奨学金", "プログラム出願資格"):
+        assert hidden not in report_json
     markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
     assert "fact:00347" not in markdown
     assert "入学試験では、中国語の語学力は選考対象外です" not in markdown
@@ -139,15 +140,14 @@ def test_other_intakes_and_routes_are_not_covered(rule04b_client, year, month, r
         _program_profile(year, month, route),
         f"tsinghua-program-language-uncovered-{year}-{month}-{len(route)}",
     )
-    result = report["program_language_condition"]
-
-    assert result["status"] == "not_covered"
-    assert result["program"] is None
-    assert result["evidence"] is None
-    assert "奨学金" not in result["limitation_statement"]
-    evidence_json = json.dumps(report["evidence_bundle"], ensure_ascii=False)
-    assert "fact:00347" not in evidence_json
-    assert "入学試験では、中国語の語学力は選考対象外です" not in evidence_json
+    assert report["program_language_condition"] is None
+    report_json = json.dumps(report, ensure_ascii=False)
+    assert "fact:00347" not in report_json
+    assert '"source_pages": [76]' not in report_json
+    assert "入学試験では、中国語の語学力は選考対象外です" not in report_json
+    assert report["source_plan"]["program_language_condition"] is None
+    for hidden in (PROGRAM, "清華", "奨学金", "プログラム出願資格"):
+        assert hidden not in report_json
     markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
     assert "fact:00347" not in markdown
     assert "入学試験では、中国語の語学力は選考対象外です" not in markdown

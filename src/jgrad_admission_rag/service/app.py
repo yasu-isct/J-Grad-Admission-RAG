@@ -19,7 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
-from ..corpus import audit_corpus_manifest
+from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
     CorpusSearchError,
     CorpusSearchInputError,
@@ -68,6 +68,12 @@ from ..schemas.document_identity import (
     DocumentIdentityError,
     canonical_document_identity_bytes,
     load_document_identity_bytes,
+)
+from ..schemas.document_kb import load_document_kb
+from ..schemas.page_scope_manifest import (
+    PageScopeManifest,
+    load_page_scope_manifest,
+    load_page_scope_manifest_bytes,
 )
 from .build_execution import build_response
 from .contracts import (
@@ -183,9 +189,17 @@ def create_app(
                 state.report_plans = await to_thread.run_sync(
                     partial(_load_report_plans, selected_settings)
                 )
+                state.page_scope_manifests = await to_thread.run_sync(
+                    partial(_load_page_scope_manifests, selected_settings)
+                )
+                if {plan.document_identity for plan in state.report_plans} != {
+                    manifest.document_identity for manifest in state.page_scope_manifests
+                }:
+                    raise ValueError
             except Exception:
                 state.report_initialization_failed = True
                 state.report_plans = ()
+                state.page_scope_manifests = ()
         if selected_settings.query_intent_catalog_path is not None:
             try:
                 state.query_intent_catalog = await to_thread.run_sync(
@@ -210,6 +224,7 @@ def create_app(
                     state.job_initialization_failed = True
             state.provider = None
             state.report_plans = ()
+            state.page_scope_manifests = ()
             state.query_intent_catalog = None
 
     app = FastAPI(
@@ -847,6 +862,45 @@ def _load_report_plans(settings: ServiceSettings) -> tuple[ReviewedReportPlan, .
     return plans
 
 
+def _load_page_scope_manifests(settings: ServiceSettings) -> tuple[PageScopeManifest, ...]:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or not settings.page_scope_manifest_paths
+    ):
+        raise ValueError
+    audited = audit_corpus_manifest(
+        load_corpus_manifest(settings.manifest_path),
+        settings.corpus_root,
+    )
+    entries = {entry.identity: entry for entry in audited.entries}
+    manifests = []
+    for path in settings.page_scope_manifest_paths:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError
+        candidate = load_page_scope_manifest_bytes(path.read_bytes())
+        entry = entries.get(candidate.document_identity)
+        if entry is None:
+            raise ValueError
+        kb_path = resolve_registered_corpus_kb_path(settings.corpus_root, entry.kb_path)
+        kb = load_document_kb(kb_path)
+        source_pages = {
+            page
+            for collection in (kb.entities, kb.facts, kb.retrieval_units)
+            for item in collection
+            for page in item.source_pages
+        }
+        if not source_pages:
+            raise ValueError
+        manifests.append(load_page_scope_manifest(path, expected_page_count=max(source_pages)))
+    manifests = tuple(manifests)
+    identities = tuple(manifest.document_identity for manifest in manifests)
+    manifest_ids = tuple(manifest.manifest_id for manifest in manifests)
+    if len(identities) != len(set(identities)) or len(manifest_ids) != len(set(manifest_ids)):
+        raise ValueError
+    return manifests
+
+
 def _build_reviewed_document_catalog(
     settings: ServiceSettings,
     state: ServiceState,
@@ -918,7 +972,11 @@ def _build_reviewed_document_catalog(
 
 
 def _report_service_ready(state: ServiceState) -> bool:
-    return bool(state.report_plans) and not state.report_initialization_failed
+    return (
+        bool(state.report_plans)
+        and bool(state.page_scope_manifests)
+        and not state.report_initialization_failed
+    )
 
 
 def _query_intent_service_ready(state: ServiceState) -> bool:
@@ -997,6 +1055,17 @@ def _build_applicant_report_response(
             "report_service_unavailable",
             "applicant report service is unavailable",
         )
+    matching_page_scopes = tuple(
+        manifest
+        for manifest in state.page_scope_manifests
+        if manifest.document_identity == selected_identity
+    )
+    if len(matching_page_scopes) != 1:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "applicant report service is unavailable",
+        )
     try:
         evidence = prepare_reviewed_report_evidence(
             settings.corpus_root,
@@ -1004,6 +1073,7 @@ def _build_applicant_report_response(
             policy,
             selection,
             state.report_plans,
+            matching_page_scopes[0],
         )
     except ReviewedReportEvidenceError as error:
         _raise_report_evidence_problem(error)

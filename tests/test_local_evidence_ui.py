@@ -16,6 +16,9 @@ from jgrad_admission_rag.schemas.corpus_version import (
     CorpusVersionPolicy,
     canonical_corpus_version_policy_bytes,
 )
+from jgrad_admission_rag.schemas.page_scope_manifest import (
+    canonical_page_scope_manifest_bytes,
+)
 from jgrad_admission_rag.service import (
     ReviewedDocumentPublicIdentity,
     ServiceDependencies,
@@ -24,7 +27,7 @@ from jgrad_admission_rag.service import (
 )
 from tests.test_applicant_report_api import _payload, _runtime
 from tests.test_corpus_search import ControlledProvider, _prepared_two_document_corpus
-from tests.test_reviewed_report_evidence import _context, _plan
+from tests.test_reviewed_report_evidence import _context, _page_scope_manifest, _plan
 
 
 SECURITY_HEADERS = {
@@ -94,7 +97,11 @@ def test_catalog_disk_validation_is_offloaded(
         response = client.get("/v1/reviewed-documents")
 
     assert response.status_code == 200
-    assert offloaded == ["_load_report_plans", "_build_reviewed_document_catalog"]
+    assert offloaded == [
+        "_load_report_plans",
+        "_load_page_scope_manifests",
+        "_build_reviewed_document_catalog",
+    ]
 
 
 def test_catalog_is_unavailable_without_report_configuration(tmp_path: Path) -> None:
@@ -139,10 +146,19 @@ def test_catalog_order_is_canonical_for_multiple_reviewed_documents(tmp_path: Pa
         for entry in reversed(manifest.entries)
     )
     plan_paths = []
+    page_scope_paths = []
     for plan in plans:
         path = (tmp_path / f"{plan.plan_id}.json").resolve()
         path.write_bytes(canonical_reviewed_report_plan_bytes(plan))
         plan_paths.append(path)
+        page_scope_path = (tmp_path / f"{plan.plan_id}-page-scope.json").resolve()
+        page_count = 12 if plan.document_identity.document_id == "alpha-2027" else 32
+        page_scope_path.write_bytes(
+            canonical_page_scope_manifest_bytes(
+                _page_scope_manifest(plan.document_identity, page_count=page_count)
+            )
+        )
+        page_scope_paths.append(page_scope_path)
     manifest_path = (tmp_path / "corpus.json").resolve()
     policy_path = (tmp_path / "policy.json").resolve()
     manifest_path.write_bytes(canonical_corpus_manifest_bytes(manifest))
@@ -152,6 +168,7 @@ def test_catalog_order_is_canonical_for_multiple_reviewed_documents(tmp_path: Pa
         manifest_path=manifest_path,
         policy_path=policy_path,
         report_plan_paths=tuple(plan_paths),
+        page_scope_manifest_paths=tuple(page_scope_paths),
     )
 
     with TestClient(
@@ -188,14 +205,19 @@ def test_catalog_can_be_valid_and_empty_when_reviewed_document_is_not_ready(
     manifest_path = (tmp_path / "empty-corpus.json").resolve()
     policy_path = (tmp_path / "empty-policy.json").resolve()
     plan_path = (tmp_path / "empty-plan.json").resolve()
+    page_scope_path = (tmp_path / "empty-page-scope.json").resolve()
     manifest_path.write_bytes(canonical_corpus_manifest_bytes(manifest))
     policy_path.write_bytes(canonical_corpus_version_policy_bytes(policy))
     plan_path.write_bytes(canonical_reviewed_report_plan_bytes(context.plan))
+    page_scope_path.write_bytes(
+        canonical_page_scope_manifest_bytes(_page_scope_manifest(context.plan.document_identity))
+    )
     settings = ServiceSettings(
         corpus_root=tmp_path.resolve(),
         manifest_path=manifest_path,
         policy_path=policy_path,
         report_plan_paths=(plan_path,),
+        page_scope_manifest_paths=(page_scope_path,),
     )
 
     with TestClient(

@@ -77,6 +77,7 @@ jgrad-serve `
   --manifest D:\corpus\corpus.json `
   --policy D:\corpus\policy.json `
   --report-plan D:\jgrad-plans\example-master-2027.json `
+  --page-scope-manifest D:\jgrad-scopes\example-master-2027.json `
   --query-intent-catalog D:\jgrad-config\query_intent_catalog_v1.json `
   --provider deterministic-fake `
   --dimension 8
@@ -87,9 +88,11 @@ OpenAPI is served at `http://127.0.0.1:8000/openapi.json`, with local interactiv
 `http://127.0.0.1:8000/app`. The two local tabs provide evidence search and a partial applicant
 report over reviewed rules. The API provides `/v1/health/live`, `/v1/health/ready`, synchronous
 multipart KB build, strict reviewed-corpus query, and cited applicant-report routes. Report plans
-are optional, server-owned, explicitly allowlisted with repeatable absolute `--report-plan` paths,
-and browser question parsing uses one explicit absolute `--query-intent-catalog` path. Both are
-loaded only during service lifespan; no directory discovery occurs. See
+are optional, server-owned, explicitly allowlisted with repeatable absolute `--report-plan` paths.
+Reporting additionally requires one identity-matched, manually reviewed `--page-scope-manifest` per
+enabled document; omitting or mismatching either side fails readiness closed. Browser question
+parsing uses one explicit absolute `--query-intent-catalog` path. These artifacts are loaded only
+during service lifespan; no directory discovery occurs. See
 [Service API v1](docs/service-api-v1.md).
 
 The packaged [Local Evidence Review UI](docs/local-evidence-ui.md) lists only audited, ready
@@ -123,8 +126,10 @@ text is materialized only by the later report workflow. See
 [Reviewed Report Plan v1](docs/reasoning/reviewed-report-plan-v1.md).
 
 `ReviewedReportEvidenceBundle` then materializes only the exact Facts named by that plan after corpus
-audit and one-document selection revalidation. This in-memory boundary preserves official text and
-pages without fabricating search ranks or running applicant reasoning. See
+audit, one-document selection revalidation, and page-scope enforcement. Ordinary rule bindings must
+come from `core_admission`; a conditional-program binding must match its declared route, and the
+final report removes it unless the Applicant Profile selects that exact route. All KB Facts and page
+provenance remain unchanged for audit. See
 [Reviewed Report Evidence v1](docs/reasoning/reviewed-report-evidence-v1.md).
 
 `ApplicantReport` combines that reviewed plan and exact evidence with one profile and covered intent,
