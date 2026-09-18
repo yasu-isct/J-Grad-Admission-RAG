@@ -160,7 +160,11 @@ def load_page_scope_manifest_bytes(raw_bytes: bytes) -> PageScopeManifest:
         raise PageScopeManifestError(_GENERIC_ERROR) from None
 
 
-def load_page_scope_manifest(path_value: str | Path) -> PageScopeManifest:
+def load_page_scope_manifest(
+    path_value: str | Path,
+    *,
+    expected_page_count: int,
+) -> PageScopeManifest:
     try:
         path = Path(path_value)
         if path.is_symlink() or not path.is_file():
@@ -168,7 +172,15 @@ def load_page_scope_manifest(path_value: str | Path) -> PageScopeManifest:
         raw_bytes = path.read_bytes()
     except (OSError, TypeError, ValueError):
         raise PageScopeManifestError("page scope manifest is unavailable or unsafe") from None
-    return load_page_scope_manifest_bytes(raw_bytes)
+    manifest = load_page_scope_manifest_bytes(raw_bytes)
+    if (
+        not isinstance(expected_page_count, int)
+        or isinstance(expected_page_count, bool)
+        or expected_page_count <= 0
+        or manifest.page_count != expected_page_count
+    ):
+        raise PageScopeManifestError(_GENERIC_ERROR)
+    return manifest
 
 
 def _validate_explicit(value: str) -> None:

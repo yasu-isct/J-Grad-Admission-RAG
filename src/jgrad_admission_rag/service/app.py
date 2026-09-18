@@ -19,7 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
-from ..corpus import audit_corpus_manifest
+from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
     CorpusSearchError,
     CorpusSearchInputError,
@@ -69,7 +69,12 @@ from ..schemas.document_identity import (
     canonical_document_identity_bytes,
     load_document_identity_bytes,
 )
-from ..schemas.page_scope_manifest import PageScopeManifest, load_page_scope_manifest
+from ..schemas.document_kb import load_document_kb
+from ..schemas.page_scope_manifest import (
+    PageScopeManifest,
+    load_page_scope_manifest,
+    load_page_scope_manifest_bytes,
+)
 from .build_execution import build_response
 from .contracts import (
     BUILD_ERROR_RESPONSES,
@@ -858,9 +863,37 @@ def _load_report_plans(settings: ServiceSettings) -> tuple[ReviewedReportPlan, .
 
 
 def _load_page_scope_manifests(settings: ServiceSettings) -> tuple[PageScopeManifest, ...]:
-    if not settings.page_scope_manifest_paths:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or not settings.page_scope_manifest_paths
+    ):
         raise ValueError
-    manifests = tuple(load_page_scope_manifest(path) for path in settings.page_scope_manifest_paths)
+    audited = audit_corpus_manifest(
+        load_corpus_manifest(settings.manifest_path),
+        settings.corpus_root,
+    )
+    entries = {entry.identity: entry for entry in audited.entries}
+    manifests = []
+    for path in settings.page_scope_manifest_paths:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError
+        candidate = load_page_scope_manifest_bytes(path.read_bytes())
+        entry = entries.get(candidate.document_identity)
+        if entry is None:
+            raise ValueError
+        kb_path = resolve_registered_corpus_kb_path(settings.corpus_root, entry.kb_path)
+        kb = load_document_kb(kb_path)
+        source_pages = {
+            page
+            for collection in (kb.entities, kb.facts, kb.retrieval_units)
+            for item in collection
+            for page in item.source_pages
+        }
+        if not source_pages:
+            raise ValueError
+        manifests.append(load_page_scope_manifest(path, expected_page_count=max(source_pages)))
+    manifests = tuple(manifests)
     identities = tuple(manifest.document_identity for manifest in manifests)
     manifest_ids = tuple(manifest.manifest_id for manifest in manifests)
     if len(identities) != len(set(identities)) or len(manifest_ids) != len(set(manifest_ids)):

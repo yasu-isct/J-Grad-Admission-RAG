@@ -69,14 +69,15 @@ def _page_scope_manifest(
     *,
     category: PageScopeCategory = PageScopeCategory.CORE_ADMISSION,
     route: str | None = None,
+    page_count: int = 1,
 ) -> PageScopeManifest:
     return PageScopeManifest(
         manifest_id=f"{identity.document_id}-page-scope-v1",
         document_identity=identity,
-        page_count=1,
+        page_count=page_count,
         entries=(
             PageScopeEntry(
-                pages=(1,),
+                pages=tuple(range(1, page_count + 1)),
                 category=category,
                 conditional_routes=(route,) if route is not None else (),
                 review_note="Reviewed synthetic page scope.",
@@ -267,6 +268,21 @@ def test_page_scope_manifest_identity_mismatch_fails_closed(tmp_path: Path) -> N
             context.selection,
             (context.plan,),
             _page_scope_manifest(other_identity),
+        )
+    assert exc_info.value.code is ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH
+
+
+def test_page_scope_manifest_page_extent_mismatch_fails_closed(tmp_path: Path) -> None:
+    context = _context(tmp_path)
+
+    with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+        prepare_reviewed_report_evidence(
+            context.root,
+            context.manifest,
+            context.policy,
+            context.selection,
+            (context.plan,),
+            _page_scope_manifest(context.plan.document_identity, page_count=2),
         )
     assert exc_info.value.code is ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH
 

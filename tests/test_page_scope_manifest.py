@@ -80,7 +80,7 @@ def test_manifest_rejects_overlap_missing_invalid_category_and_bad_gates(mutatio
 
 
 def test_real_manifest_covers_all_pages_with_reviewed_distribution() -> None:
-    manifest = load_page_scope_manifest(FIXTURE)
+    manifest = load_page_scope_manifest(FIXTURE, expected_page_count=85)
     counts = {
         category: sum(len(entry.pages) for entry in manifest.entries if entry.category is category)
         for category in PageScopeCategory
@@ -101,7 +101,7 @@ def test_real_manifest_covers_all_pages_with_reviewed_distribution() -> None:
 
 def test_loader_rejects_missing_or_symlinked_manifest(tmp_path: Path) -> None:
     with pytest.raises(PageScopeManifestError, match="unavailable or unsafe"):
-        load_page_scope_manifest(tmp_path / "missing.json")
+        load_page_scope_manifest(tmp_path / "missing.json", expected_page_count=5)
 
     target = tmp_path / "manifest.json"
     target.write_bytes(canonical_page_scope_manifest_bytes(_manifest()))
@@ -111,4 +111,17 @@ def test_loader_rejects_missing_or_symlinked_manifest(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation is unavailable")
     with pytest.raises(PageScopeManifestError, match="unavailable or unsafe"):
-        load_page_scope_manifest(link)
+        load_page_scope_manifest(link, expected_page_count=5)
+
+
+def test_loader_rejects_self_consistent_truncation_against_authoritative_page_count(
+    tmp_path: Path,
+) -> None:
+    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    payload["page_count"] = 84
+    payload["entries"][3]["pages"].remove(85)
+    path = tmp_path / "truncated-page-scope.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(PageScopeManifestError):
+        load_page_scope_manifest(path, expected_page_count=85)

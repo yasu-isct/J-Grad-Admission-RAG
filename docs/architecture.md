@@ -208,6 +208,13 @@ rule evidence. It never fabricates retrieval metadata or returns a partial bundl
 not persisted by default and no applicant reasoning runs in this layer. See
 [Reviewed Report Evidence v1](reasoning/reviewed-report-evidence-v1.md).
 
+Page categories describe each physical page's reviewed primary purpose; they do not split or
+sanitize a mixed Fact. In this fixed PDF, pages 34, 41, and 61 contain Facts that combine ordinary
+exam/result text with faculty-directory text, while page 28 places a low-frequency consultation
+condition before its faculty table. Their safety boundary therefore remains human selection of the
+exact Fact binding. This migration does not re-chunk the PDF, renumber Facts, or claim that page
+classification removes mixed content.
+
 `ApplicantReport` v1 is APP-03C's deterministic orchestration and self-audit boundary. Ranked
 `EvidencePack` inputs and exact `DirectOfficialEvidence` use separate typed adapters but share the
 single applicability core; the report then calls the existing precedence, interaction, trace, and

@@ -152,8 +152,11 @@ def test_catalog_order_is_canonical_for_multiple_reviewed_documents(tmp_path: Pa
         path.write_bytes(canonical_reviewed_report_plan_bytes(plan))
         plan_paths.append(path)
         page_scope_path = (tmp_path / f"{plan.plan_id}-page-scope.json").resolve()
+        page_count = 12 if plan.document_identity.document_id == "alpha-2027" else 32
         page_scope_path.write_bytes(
-            canonical_page_scope_manifest_bytes(_page_scope_manifest(plan.document_identity))
+            canonical_page_scope_manifest_bytes(
+                _page_scope_manifest(plan.document_identity, page_count=page_count)
+            )
         )
         page_scope_paths.append(page_scope_path)
     manifest_path = (tmp_path / "corpus.json").resolve()

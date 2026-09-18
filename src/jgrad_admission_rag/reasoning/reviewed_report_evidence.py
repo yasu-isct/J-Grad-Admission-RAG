@@ -295,6 +295,8 @@ def prepare_reviewed_report_evidence(
     del raw_bytes
     if kb.manifest.identity != selected.identity or kb.manifest.identity != plan.document_identity:
         _fail(ReviewedReportEvidenceFailure.KB_IDENTITY_MISMATCH)
+    if _document_page_extent(kb) != detached_page_scope.page_count:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
     if not kb.diagnostics.quality_gate.passed:
         _fail(ReviewedReportEvidenceFailure.KB_QUALITY_FAILED)
     if source_kb_sha256 != selected.source_kb_sha256 or source_kb_sha256 != plan.source_kb_sha256:
@@ -477,6 +479,18 @@ def _validate_binding_page_scope(
             _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
     elif route is not None or entry.conditional_routes:
         _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
+
+
+def _document_page_extent(kb: DocumentKnowledgeBase) -> int:
+    pages = {
+        page
+        for collection in (kb.entities, kb.facts, kb.retrieval_units)
+        for item in collection
+        for page in item.source_pages
+    }
+    if not pages or min(pages) <= 0:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
+    return max(pages)
 
 
 def canonical_reviewed_report_evidence_bundle_bytes(

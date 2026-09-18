@@ -148,8 +148,12 @@ def test_real_pdf_extraction_matches_baseline(
 
 def test_reviewed_page_scope_matches_real_fact_and_plan_distribution(
     real_document_kb: DocumentKnowledgeBase,
+    extracted_pages: list[ExtractedPage],
 ) -> None:
-    manifest = load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH)
+    manifest = load_page_scope_manifest(
+        PAGE_SCOPE_MANIFEST_PATH,
+        expected_page_count=len(extracted_pages),
+    )
     plan = load_reviewed_report_plan(CURRENT_REVIEWED_REPORT_PLAN_PATH)
     facts = {fact.fact_id: fact for fact in real_document_kb.facts}
     fact_counts = {category: 0 for category in PageScopeCategory}
@@ -187,6 +191,7 @@ def test_reviewed_page_scope_matches_real_fact_and_plan_distribution(
         PageScopeCategory.IRRELEVANT_OR_APPENDIX: 0,
     }
     assert facts["fact:00347"].source_pages == [76]
+    assert manifest.page_count == len(extracted_pages) == 85
 
 
 def test_real_pdf_knowledge_base_matches_baseline(
@@ -668,7 +673,7 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
         policy,
         selection,
         (plan,),
-        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
+        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH, expected_page_count=85),
     )
     record = bundle.evidence_records[0]
     fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00069")
@@ -699,7 +704,7 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
                 policy,
                 selection,
                 (stale_plan,),
-                load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
+                load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH, expected_page_count=85),
             )
         assert exc_info.value.code is expected
 
@@ -745,7 +750,7 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
         policy,
         selection,
         (plan,),
-        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
+        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH, expected_page_count=85),
     )
     record = evidence.evidence_records[0]
     matching_scope = plan.rules[0].scope

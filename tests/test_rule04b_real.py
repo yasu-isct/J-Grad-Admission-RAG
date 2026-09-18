@@ -145,7 +145,7 @@ def rule04b_client(tmp_path_factory: pytest.TempPathFactory, rule04b_kb):
         policy,
         selection,
         (reviewed_plan,),
-        load_page_scope_manifest(PAGE_SCOPE),
+        load_page_scope_manifest(PAGE_SCOPE, expected_page_count=85),
     )
     app = create_app(
         ServiceSettings(

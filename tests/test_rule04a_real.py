@@ -70,7 +70,7 @@ def rule04a_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
         policy,
         selection,
         (load_reviewed_report_plan(PLAN),),
-        load_page_scope_manifest(PAGE_SCOPE),
+        load_page_scope_manifest(PAGE_SCOPE, expected_page_count=85),
     )
     app = create_app(
         ServiceSettings(

@@ -30,12 +30,23 @@ reviewed version policy, saved selection result, and a finite tuple of injected 
 9. resolves every binding to an exact Fact and verifies pages, UTF-8 text hash, accepted M4 scope,
    and reviewed page category before constructing any evidence record.
 
+The path loader requires an independently supplied authoritative page count, and the report service
+derives that count from the already audited, PDF-hash-bound KB page extent. Evidence preparation
+repeats the extent comparison, so lowering `page_count` while deleting the same terminal manifest
+page cannot create a self-consistent but truncated scope.
+
 Ordinary rules and language policies may bind only `core_admission` pages. A program-language
 binding may bind only `conditional_program` pages whose declared route exactly matches the policy
 entry. `faculty_directory`, `general_reference`, and `irrelevant_or_appendix` are retained in the
 unchanged KB but are never accepted as report-rule evidence. The Applicant Report layer then removes
 conditional records unless the profile matches the exact route and intake, so an ordinary profile's
 returned `evidence_bundle` remains core-only.
+
+The manifest records a page's reviewed primary purpose, not a claim that every Fact on that page is
+semantically pure. Pages 34, 41, and 61 contain mixed core/faculty Facts, and page 28 starts with a
+low-frequency consultation condition before the faculty directory. The gate cannot split those
+Facts; safety still depends on human review of the exact Fact binding. This change intentionally
+does not re-chunk source text or renumber Facts.
 
 Zero or duplicate plan matches fail separately. Stale selection, unsafe paths, failed audit, KB
 drift, missing or duplicate Facts, and page/text/scope mismatch also fail closed. No partial bundle

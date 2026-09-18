@@ -292,6 +292,10 @@ def build_applicant_report(
         evidence_bundle,
         program_condition,
     )
+    visible_plan, visible_program_condition = _filter_program_plan_for_report(
+        plan,
+        program_condition,
+    )
 
     counts = ApplicantReportCounts(
         rule_count=len(plan.rules),
@@ -310,14 +314,14 @@ def build_applicant_report(
             coverage_status=plan.coverage_status,
             reviewed_coverage_statement=plan.reviewed_coverage_statement,
             limitation_statement=plan.limitation_statement,
-            source_plan=plan,
+            source_plan=visible_plan,
             evidence_bundle=visible_evidence,
             reasoning_trace=trace,
             cited_answer=answer,
             language_score_conversion=conversion,
             language_score_allocation=allocation,
             language_evaluation=evaluation,
-            program_language_condition=program_condition,
+            program_language_condition=visible_program_condition,
             counts=counts,
             report_status=answer.report_status,
         )
@@ -524,6 +528,20 @@ def _filter_program_evidence_for_report(
         ),
     }
     return ReviewedReportEvidenceBundle.model_validate(payload)
+
+
+def _filter_program_plan_for_report(
+    plan: ReviewedReportPlan,
+    result: ProgramLanguageConditionResult | None,
+) -> tuple[ReviewedReportPlan, ProgramLanguageConditionResult | None]:
+    if plan.program_language_condition is None or (
+        result is not None and result.evidence is not None
+    ):
+        return plan, result
+
+    payload = plan.model_dump(mode="json")
+    payload["program_language_condition"] = None
+    return ReviewedReportPlan.model_validate(payload), None
 
 
 def _validate_plan_evidence(
