@@ -9,7 +9,7 @@ real `fact:00063` page 7 rule findings plus synthetic override, interaction, inc
 missing-evidence, attached-role, and multi-page citation cases. It contains no applicant values,
 official prose, model output, or final eligibility verdict.
 
-`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, `rule03a`, `rule03b`, `rule04a`, `rule04b`, `rule04c`, `rule04d`, `rule04e`, and `rule04f`
+`reviewed_report_plan_isct_master_v1.json` and its `rule01a`, `rule01b`, `rule02a`, `rule02b`, `rule03a`, `rule03b`, `rule04a`, `rule04b`, `rule04c`, `rule04d`, `rule04e`, `rule04f`, `rule04g`, and `rule05a`
 extensions are server-owned reviewed plans for the same exact document. The RULE-02 plans add
 eligibility paths 9 through 11 and the shared individual-review process while preserving the
 earlier plan coverage. RULE-03A adds the shared main application window, registration start, and
@@ -22,6 +22,9 @@ department-level English allocations explicitly published by the guideline witho
 applicant's earned score. RULE-04E adds the reviewed mathematics pass/fail method. RULE-04F adds
 the two reviewed uses of the information-engineering B-schedule external English score without
 inferring a ranking threshold, oral-exam eligibility, or final result.
+RULE-04G adds the explicit Tsinghua conditional route, while RULE-05A adds only the p.10 common
+materials list and its eligibility-path (9)–(11) exception. RULE-05A does not model actual receipt,
+foreign-national additions, scholarships, department-specific materials, or conditional programs.
 `rule04b_browser_acceptance_v1.json` records the RULE-04B browser acceptance matrix at 1440 px and
 390 px. It covers an ordinary department, the physics exam-day path, the civil-engineering mail and
 A-schedule paths, the mathematics exception, and unknown or conflicting scope input. Each record
@@ -30,6 +33,9 @@ it contains no applicant identity data.
 `rule04c_browser_acceptance_v1.json` records the RULE-04C appendix-conversion browser audit for six
 fixed scenarios at 1440 px and 390 px, including exact result shape, p.16 evidence, limitations, and
 horizontal-overflow checks.
+`rule05a_browser_acceptance_v1.json` records only the three high-value common-material paths
+(direct, eligibility review, and missing path) at desktop and narrow widths, bound to the audited
+`app.js` bytes. It intentionally does not duplicate a browser scenario per material.
 `rule04d_browser_acceptance_v1.json` records seven department-allocation and non-published paths at
 the same two widths, including exact Fact/page evidence, maximum points, limitations, and overflow.
 `rule04e_browser_acceptance_v1.json` records the reviewed mathematics pass/fail method plus

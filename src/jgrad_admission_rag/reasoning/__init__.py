@@ -192,6 +192,15 @@ from .program_language_condition import (
     ProgramLanguageConditionStatus,
     resolve_program_language_condition,
 )
+from .application_materials import (
+    ApplicationMaterialApplicability,
+    ApplicationMaterialCode,
+    ApplicationMaterialResult,
+    ApplicationMaterialsPolicy,
+    ApplicationMaterialsResult,
+    ReviewedApplicationMaterial,
+    resolve_application_materials,
+)
 from .reviewed_report_plan import (
     REVIEWED_REPORT_PLAN_SCHEMA_VERSION,
     SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS,
@@ -228,6 +237,13 @@ from .applicant_report import (
 )
 
 __all__ = [
+    "ApplicationMaterialApplicability",
+    "ApplicationMaterialCode",
+    "ApplicationMaterialResult",
+    "ApplicationMaterialsPolicy",
+    "ApplicationMaterialsResult",
+    "ReviewedApplicationMaterial",
+    "resolve_application_materials",
     "DepartmentLanguageEvaluation",
     "LanguageEvaluationPolicy",
     "LanguageEvaluationResult",

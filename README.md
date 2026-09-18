@@ -138,6 +138,16 @@ The strict report and fixed Japanese Markdown remain visibly partial, include a 
 appendix, and never claim overall eligibility or admission. See
 [Applicant Report v1](docs/reasoning/applicant-report-v1.md).
 
+The current RULE-05A plan also projects the five p.10 common application materials from one
+authoritative Fact. Items 3–5 are handled by the separate eligibility-review material path for
+eligibility routes (9)–(11), and remain `needs_information` when the profile cannot identify the
+route. This is requirement applicability only, not proof of submission, receipt, or acceptance.
+
+The current RULE-05A plan also projects the five p.10 common application materials from one
+authoritative Fact. Items 3–5 are handled by the separate eligibility-review material path for
+eligibility routes (9)–(11), and remain `needs_information` when the profile cannot identify the
+route. This is requirement applicability only, not proof of submission, receipt, or acceptance.
+
 `POST /v1/applicant-reports` is the thin APP-03D transport over those accepted boundaries. It
 requires one exact corpus document and unique allowlisted plan, then returns the complete strict
 report and byte-for-byte deterministic Markdown without retrieval, model calls, persistence, or an

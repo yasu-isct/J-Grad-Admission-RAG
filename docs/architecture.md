@@ -224,6 +224,11 @@ prominent and renders exact official text inside inert dynamic fences. No profil
 retrieval metadata, model prose, overall eligibility conclusion, persistence, or HTTP route enters
 this layer. See [Applicant Report v1](reasoning/applicant-report-v1.md).
 
+RULE-05A keeps common-material applicability inside the same reviewed-plan/evidence/report chain.
+It reuses the profile's reviewed credential basis, binds one `core_admission` p.10 Fact, and emits
+five ordered typed results. It does not introduce upload state, infer actual receipt, or load
+foreign-national, department-specific, scholarship, or conditional-program materials.
+
 APP-03D exposes that chain through `POST /v1/applicant-reports`. The transport accepts only a safe
 report ID plus existing profile, intent, and single-document selection contracts. During lifespan,
 the service strictly loads paired explicit allowlists of absolute reviewed-plan and

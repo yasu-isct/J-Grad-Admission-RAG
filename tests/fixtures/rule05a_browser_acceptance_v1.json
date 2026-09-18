@@ -1,0 +1,116 @@
+[
+  {
+    "scenario": "materials-direct",
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "credential_basis": "university_graduation",
+    "applicability": [
+      "required",
+      "required",
+      "required",
+      "required",
+      "required"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  },
+  {
+    "scenario": "materials-review-path",
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "credential_basis": "foreign_15_year_education",
+    "applicability": [
+      "required",
+      "required",
+      "eligibility_review_path",
+      "eligibility_review_path",
+      "eligibility_review_path"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  },
+  {
+    "scenario": "materials-missing-path",
+    "viewport": "desktop",
+    "viewport_width": 1440,
+    "credential_basis": null,
+    "applicability": [
+      "required",
+      "required",
+      "needs_information",
+      "needs_information",
+      "needs_information"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  },
+  {
+    "scenario": "materials-direct",
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "credential_basis": "university_graduation",
+    "applicability": [
+      "required",
+      "required",
+      "required",
+      "required",
+      "required"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  },
+  {
+    "scenario": "materials-review-path",
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "credential_basis": "foreign_15_year_education",
+    "applicability": [
+      "required",
+      "required",
+      "eligibility_review_path",
+      "eligibility_review_path",
+      "eligibility_review_path"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  },
+  {
+    "scenario": "materials-missing-path",
+    "viewport": "mobile",
+    "viewport_width": 390,
+    "credential_basis": null,
+    "applicability": [
+      "required",
+      "required",
+      "needs_information",
+      "needs_information",
+      "needs_information"
+    ],
+    "fact_id": "fact:00104",
+    "source_pages": [
+      10
+    ],
+    "horizontal_overflow": false,
+    "app_js_sha256": "b455acedd1cc0b0d06dcbec4e1cebfc351fb491b3816578aca0270bb97cc13a8"
+  }
+]
