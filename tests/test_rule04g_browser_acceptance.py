@@ -44,10 +44,12 @@ def test_rule04g_browser_acceptance_is_fail_closed() -> None:
     assert confirmed["admission_selection"] == "excluded"
     assert confirmed["evidence"]["fact_id"] == "fact:00347"
     assert confirmed["evidence"]["source_pages"] == [76]
+    assert confirmed["visible_evidence_fact_ids"] == ["fact:00347"]
 
     missing = next(item for item in records if item["scenario"] == "tsinghua-missing-route")
     assert missing["status"] == "needs_information"
     assert missing["evidence"] is None
+    assert missing["visible_evidence_fact_ids"] == []
     for scenario in ("tsinghua-wrong-intake", "tsinghua-wrong-route"):
         item = next(record for record in records if record["scenario"] == scenario)
         assert item["status"] == "not_covered"
@@ -55,3 +57,4 @@ def test_rule04g_browser_acceptance_is_fail_closed() -> None:
         assert item["language"] is None
         assert item["admission_selection"] is None
         assert item["evidence"] is None
+        assert item["visible_evidence_fact_ids"] == []

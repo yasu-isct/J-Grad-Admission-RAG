@@ -114,12 +114,12 @@ def test_missing_route_or_intake_does_not_expose_program_evidence(
     assert result["language"] is None
     assert result["admission_selection"] is None
     assert result["evidence"] is None
+    evidence_json = json.dumps(report["evidence_bundle"], ensure_ascii=False)
+    assert "fact:00347" not in evidence_json
+    assert "入学試験では、中国語の語学力は選考対象外です" not in evidence_json
     markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
-    section = markdown.split("## プロジェクト固有の言語選考条件", 1)[1].split(
-        "## 公式根拠（原文）", 1
-    )[0]
-    assert "fact:00347" not in section
-    assert "excluded" not in section
+    assert "fact:00347" not in markdown
+    assert "入学試験では、中国語の語学力は選考対象外です" not in markdown
 
 
 @pytest.mark.parametrize(
@@ -145,3 +145,9 @@ def test_other_intakes_and_routes_are_not_covered(rule04b_client, year, month, r
     assert result["program"] is None
     assert result["evidence"] is None
     assert "奨学金" not in result["limitation_statement"]
+    evidence_json = json.dumps(report["evidence_bundle"], ensure_ascii=False)
+    assert "fact:00347" not in evidence_json
+    assert "入学試験では、中国語の語学力は選考対象外です" not in evidence_json
+    markdown = render_applicant_report_markdown(ApplicantReport.model_validate(report))
+    assert "fact:00347" not in markdown
+    assert "入学試験では、中国語の語学力は選考対象外です" not in markdown

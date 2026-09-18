@@ -55,6 +55,16 @@ def scenario_results():
 
 
 def report_payload(result):
+    evidence_records = []
+    if result.evidence is not None:
+        evidence_records.append(
+            {
+                "document_id": DOCUMENT_ID,
+                "fact_id": FACT.fact_id,
+                "source_pages": FACT.source_pages,
+                "text": FACT.text,
+            }
+        )
     return {
         "schema_version": "1.0",
         "report": {
@@ -72,16 +82,7 @@ def report_payload(result):
             "language_score_allocation": None,
             "language_evaluation": None,
             "program_language_condition": result.model_dump(mode="json"),
-            "evidence_bundle": {
-                "evidence_records": [
-                    {
-                        "document_id": DOCUMENT_ID,
-                        "fact_id": FACT.fact_id,
-                        "source_pages": FACT.source_pages,
-                        "text": FACT.text,
-                    }
-                ]
-            },
+            "evidence_bundle": {"evidence_records": evidence_records},
         },
         "markdown": "",
     }
@@ -189,6 +190,8 @@ def main():
                         assert "審査範囲外または情報不足" in text
                         assert "選考対象外" not in text
                         assert "fact:00347" not in text
+                        assert "fact:00347" not in page_text
+                        assert "入学試験では、中国語の語学力は選考対象外です" not in page_text
                     overflow = page.evaluate(
                         "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                     )
@@ -210,6 +213,12 @@ def main():
                                 if result.evidence is not None
                                 else None
                             ),
+                            "visible_evidence_fact_ids": [
+                                item["fact_id"]
+                                for item in report_payload(result)["report"]["evidence_bundle"][
+                                    "evidence_records"
+                                ]
+                            ],
                             "limitation_statement": result.limitation_statement,
                             "horizontal_overflow": overflow,
                             "audited_app_js_sha256": hashlib.sha256(
