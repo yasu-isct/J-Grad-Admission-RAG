@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
 PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04c_v1.json"
+PAGE_SCOPE = ROOT / "tests/fixtures/page_scope_manifest_isct_master_v1.json"
 INTENT_CATALOG = ROOT / "config/query_intent_catalog_v1.json"
 
 
@@ -61,6 +62,7 @@ def rule02a_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
             manifest_path=manifest_path,
             policy_path=policy_path,
             report_plan_paths=(PLAN.resolve(),),
+            page_scope_manifest_paths=(PAGE_SCOPE.resolve(),),
             query_intent_catalog_path=INTENT_CATALOG.resolve(),
         ),
         ServiceDependencies(provider_factory=lambda: DeterministicFakeEmbeddingProvider(8)),

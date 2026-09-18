@@ -107,6 +107,10 @@ from jgrad_admission_rag.schemas.evidence_pack import (
     load_evidence_pack_bytes,
 )
 from jgrad_admission_rag.schemas.index import derive_index_payloads
+from jgrad_admission_rag.schemas.page_scope_manifest import (
+    PageScopeCategory,
+    load_page_scope_manifest,
+)
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -116,6 +120,12 @@ APPLICABILITY_FIXTURE_PATH = (
 )
 REVIEWED_REPORT_PLAN_PATH = (
     REPO_ROOT / "tests" / "fixtures" / "reviewed_report_plan_isct_master_v1.json"
+)
+PAGE_SCOPE_MANIFEST_PATH = (
+    REPO_ROOT / "tests" / "fixtures" / "page_scope_manifest_isct_master_v1.json"
+)
+CURRENT_REVIEWED_REPORT_PLAN_PATH = (
+    REPO_ROOT / "tests" / "fixtures" / "reviewed_report_plan_isct_master_rule04g_v1.json"
 )
 QUERY_INTENT_CATALOG_PATH = REPO_ROOT / "config" / "query_intent_catalog_v1.json"
 pytestmark = pytest.mark.real_pdf
@@ -134,6 +144,49 @@ def test_real_pdf_extraction_matches_baseline(
     extracted_text = "\n".join(page.markdown for page in extracted_pages)
     for marker in real_pdf_manifest["text_markers"]:
         assert marker in extracted_text
+
+
+def test_reviewed_page_scope_matches_real_fact_and_plan_distribution(
+    real_document_kb: DocumentKnowledgeBase,
+) -> None:
+    manifest = load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH)
+    plan = load_reviewed_report_plan(CURRENT_REVIEWED_REPORT_PLAN_PATH)
+    facts = {fact.fact_id: fact for fact in real_document_kb.facts}
+    fact_counts = {category: 0 for category in PageScopeCategory}
+    for fact in real_document_kb.facts:
+        fact_counts[manifest.entry_for_pages(tuple(fact.source_pages)).category] += 1
+
+    bindings = [binding for rule in plan.rules for binding in rule.evidence_bindings]
+    if plan.language_score_conversion is not None:
+        bindings.append(plan.language_score_conversion.evidence_binding)
+    if plan.language_score_allocation is not None:
+        bindings.extend(entry.evidence_binding for entry in plan.language_score_allocation.entries)
+    if plan.language_evaluation is not None:
+        bindings.extend(entry.evidence_binding for entry in plan.language_evaluation.entries)
+    if plan.program_language_condition is not None:
+        bindings.extend(entry.evidence_binding for entry in plan.program_language_condition.entries)
+    reviewed_fact_ids = {binding.fact_id for binding in bindings}
+    reviewed_counts = {category: 0 for category in PageScopeCategory}
+    for fact_id in reviewed_fact_ids:
+        fact = facts[fact_id]
+        reviewed_counts[manifest.entry_for_pages(tuple(fact.source_pages)).category] += 1
+
+    assert fact_counts == {
+        PageScopeCategory.CORE_ADMISSION: 244,
+        PageScopeCategory.CONDITIONAL_PROGRAM: 35,
+        PageScopeCategory.FACULTY_DIRECTORY: 71,
+        PageScopeCategory.GENERAL_REFERENCE: 19,
+        PageScopeCategory.IRRELEVANT_OR_APPENDIX: 22,
+    }
+    assert len(reviewed_fact_ids) == 68
+    assert reviewed_counts == {
+        PageScopeCategory.CORE_ADMISSION: 67,
+        PageScopeCategory.CONDITIONAL_PROGRAM: 1,
+        PageScopeCategory.FACULTY_DIRECTORY: 0,
+        PageScopeCategory.GENERAL_REFERENCE: 0,
+        PageScopeCategory.IRRELEVANT_OR_APPENDIX: 0,
+    }
+    assert facts["fact:00347"].source_pages == [76]
 
 
 def test_real_pdf_knowledge_base_matches_baseline(
@@ -615,6 +668,7 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
         policy,
         selection,
         (plan,),
+        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
     )
     record = bundle.evidence_records[0]
     fact = next(item for item in real_document_kb.facts if item.fact_id == "fact:00069")
@@ -645,6 +699,7 @@ def test_real_pdf_reviewed_report_evidence_uses_audited_selection_and_rejects_st
                 policy,
                 selection,
                 (stale_plan,),
+                load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
             )
         assert exc_info.value.code is expected
 
@@ -690,6 +745,7 @@ def test_real_pdf_applicant_report_scenarios_use_exact_reviewed_evidence(
         policy,
         selection,
         (plan,),
+        load_page_scope_manifest(PAGE_SCOPE_MANIFEST_PATH),
     )
     record = evidence.evidence_records[0]
     matching_scope = plan.rules[0].scope
@@ -845,6 +901,7 @@ def test_real_pdf_applicant_report_http_scenarios(
         manifest_path=manifest_path,
         policy_path=policy_path,
         report_plan_paths=(REVIEWED_REPORT_PLAN_PATH.resolve(),),
+        page_scope_manifest_paths=(PAGE_SCOPE_MANIFEST_PATH.resolve(),),
         query_intent_catalog_path=QUERY_INTENT_CATALOG_PATH.resolve(),
     )
     app = create_app(
@@ -948,6 +1005,7 @@ def test_real_pdf_local_ui_catalog_and_query_payload(
         manifest_path=manifest_path,
         policy_path=policy_path,
         report_plan_paths=(REVIEWED_REPORT_PLAN_PATH.resolve(),),
+        page_scope_manifest_paths=(PAGE_SCOPE_MANIFEST_PATH.resolve(),),
     )
     app = create_app(
         settings,

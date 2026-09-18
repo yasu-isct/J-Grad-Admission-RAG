@@ -76,6 +76,17 @@ from .evidence_pack import (
     load_evidence_pack,
     load_evidence_pack_bytes,
 )
+from .page_scope_manifest import (
+    PAGE_SCOPE_MANIFEST_SCHEMA_VERSION,
+    SUPPORTED_PAGE_SCOPE_MANIFEST_SCHEMA_VERSIONS,
+    PageScopeCategory,
+    PageScopeEntry,
+    PageScopeManifest,
+    PageScopeManifestError,
+    canonical_page_scope_manifest_bytes,
+    load_page_scope_manifest,
+    load_page_scope_manifest_bytes,
+)
 
 __all__ = [
     "CORPUS_MANIFEST_SCHEMA_VERSION",
@@ -142,4 +153,13 @@ __all__ = [
     "canonical_evidence_pack_bytes",
     "load_evidence_pack",
     "load_evidence_pack_bytes",
+    "PAGE_SCOPE_MANIFEST_SCHEMA_VERSION",
+    "SUPPORTED_PAGE_SCOPE_MANIFEST_SCHEMA_VERSIONS",
+    "PageScopeCategory",
+    "PageScopeEntry",
+    "PageScopeManifest",
+    "PageScopeManifestError",
+    "canonical_page_scope_manifest_bytes",
+    "load_page_scope_manifest",
+    "load_page_scope_manifest_bytes",
 ]

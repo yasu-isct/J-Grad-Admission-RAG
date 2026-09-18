@@ -32,6 +32,11 @@ from ..schemas.document_kb import (
     DocumentKnowledgeBaseError,
     canonical_document_kb_bytes,
 )
+from ..schemas.page_scope_manifest import (
+    PageScopeCategory,
+    PageScopeManifest,
+    PageScopeManifestError,
+)
 from .applicability import _evidence_scope_matches_rule
 from .reviewed_report_plan import ReviewedReportPlan
 
@@ -64,6 +69,7 @@ class ReviewedReportEvidenceFailure(str, Enum):
     FACT_PAGES_MISMATCH = "fact_pages_mismatch"
     FACT_TEXT_MISMATCH = "fact_text_mismatch"
     FACT_SCOPE_MISMATCH = "fact_scope_mismatch"
+    PAGE_SCOPE_MISMATCH = "page_scope_mismatch"
 
 
 class ReviewedReportEvidenceError(Exception):
@@ -223,6 +229,7 @@ def prepare_reviewed_report_evidence(
     policy: CorpusVersionPolicy,
     selection: CorpusSelectionResult,
     plans: tuple[ReviewedReportPlan, ...],
+    page_scope_manifest: PageScopeManifest,
 ) -> ReviewedReportEvidenceBundle:
     """Materialize every exact reviewed binding for one audited selected document."""
 
@@ -246,6 +253,9 @@ def prepare_reviewed_report_evidence(
         detached_selection = CorpusSelectionResult.model_validate(selection.model_dump(mode="json"))
         detached_plans = tuple(
             ReviewedReportPlan.model_validate(plan.model_dump(mode="json")) for plan in plans
+        )
+        detached_page_scope = PageScopeManifest.model_validate(
+            page_scope_manifest.model_dump(mode="json")
         )
     except (AttributeError, TypeError, ValidationError, ValueError):
         _fail(ReviewedReportEvidenceFailure.INVALID_INPUT)
@@ -274,6 +284,8 @@ def prepare_reviewed_report_evidence(
     if len(matching_plans) != 1:
         _fail(ReviewedReportEvidenceFailure.PLAN_AMBIGUOUS)
     plan = matching_plans[0]
+    if detached_page_scope.document_identity != selected.identity:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
 
     try:
         kb_path = resolve_registered_corpus_kb_path(corpus_root, selected.kb_path)
@@ -302,6 +314,11 @@ def prepare_reviewed_report_evidence(
                 _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
             if tuple(fact.source_pages) != binding.source_pages:
                 _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+            _validate_binding_page_scope(
+                binding.source_pages,
+                detached_page_scope,
+                PageScopeCategory.CORE_ADMISSION,
+            )
             if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
                 binding.authoritative_fact_text_sha256
             ):
@@ -317,6 +334,11 @@ def prepare_reviewed_report_evidence(
             _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
         if tuple(fact.source_pages) != binding.source_pages:
             _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+        _validate_binding_page_scope(
+            binding.source_pages,
+            detached_page_scope,
+            PageScopeCategory.CORE_ADMISSION,
+        )
         if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
             binding.authoritative_fact_text_sha256
         ):
@@ -333,6 +355,11 @@ def prepare_reviewed_report_evidence(
                 _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
             if tuple(fact.source_pages) != binding.source_pages:
                 _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+            _validate_binding_page_scope(
+                binding.source_pages,
+                detached_page_scope,
+                PageScopeCategory.CORE_ADMISSION,
+            )
             if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
                 binding.authoritative_fact_text_sha256
             ):
@@ -355,6 +382,11 @@ def prepare_reviewed_report_evidence(
                 _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
             if tuple(fact.source_pages) != binding.source_pages:
                 _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+            _validate_binding_page_scope(
+                binding.source_pages,
+                detached_page_scope,
+                PageScopeCategory.CORE_ADMISSION,
+            )
             if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
                 binding.authoritative_fact_text_sha256
             ):
@@ -377,6 +409,12 @@ def prepare_reviewed_report_evidence(
                 _fail(ReviewedReportEvidenceFailure.FACT_NOT_FOUND)
             if tuple(fact.source_pages) != binding.source_pages:
                 _fail(ReviewedReportEvidenceFailure.FACT_PAGES_MISMATCH)
+            _validate_binding_page_scope(
+                binding.source_pages,
+                detached_page_scope,
+                PageScopeCategory.CONDITIONAL_PROGRAM,
+                route=entry.application_route,
+            )
             if hashlib.sha256(fact.text.encode("utf-8")).hexdigest() != (
                 binding.authoritative_fact_text_sha256
             ):
@@ -419,6 +457,26 @@ def prepare_reviewed_report_evidence(
         )
     except (ReviewedReportEvidenceError, ValidationError, ValueError):
         _fail(ReviewedReportEvidenceFailure.INVALID_BUNDLE)
+
+
+def _validate_binding_page_scope(
+    source_pages: tuple[int, ...],
+    manifest: PageScopeManifest,
+    expected_category: PageScopeCategory,
+    *,
+    route: str | None = None,
+) -> None:
+    try:
+        entry = manifest.entry_for_pages(source_pages)
+    except PageScopeManifestError:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
+    if entry.category is not expected_category:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
+    if expected_category is PageScopeCategory.CONDITIONAL_PROGRAM:
+        if route is None or route not in entry.conditional_routes:
+            _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
+    elif route is not None or entry.conditional_routes:
+        _fail(ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH)
 
 
 def canonical_reviewed_report_evidence_bundle_bytes(

@@ -240,10 +240,17 @@ jgrad-serve `
   --policy D:\corpus\policy.json `
   --report-plan D:\jgrad-plans\example-master-2027.json `
   --report-plan D:\jgrad-plans\example-doctoral-2027.json `
+  --page-scope-manifest D:\jgrad-scopes\example-master-2027.json `
+  --page-scope-manifest D:\jgrad-scopes\example-doctoral-2027.json `
   --query-intent-catalog D:\jgrad-config\query_intent_catalog_v1.json `
   --provider deterministic-fake `
   --dimension 8
 ```
+
+Report plans and page-scope manifests are a paired allowlist. Each enabled document identity must
+occur exactly once in both sets. A missing, duplicate, invalid, or identity/hash-mismatched manifest
+fails report initialization and readiness closed; there is no directory discovery or implicit
+fallback to an unscoped report. Omitting both sets preserves the query/build-only service mode.
 
 Enable durable jobs only at an explicit server-owned location:
 

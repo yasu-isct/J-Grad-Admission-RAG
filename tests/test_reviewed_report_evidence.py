@@ -46,6 +46,11 @@ from jgrad_admission_rag.schemas.corpus_version import (
 )
 from jgrad_admission_rag.schemas.document_identity import DocumentIdentity
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
+from jgrad_admission_rag.schemas.page_scope_manifest import (
+    PageScopeCategory,
+    PageScopeEntry,
+    PageScopeManifest,
+)
 from tests.test_corpus_manifest import _identity, _kb
 
 
@@ -57,6 +62,27 @@ class _Context:
     policy: CorpusVersionPolicy
     selection: CorpusSelectionResult
     plan: ReviewedReportPlan
+
+
+def _page_scope_manifest(
+    identity: DocumentIdentity,
+    *,
+    category: PageScopeCategory = PageScopeCategory.CORE_ADMISSION,
+    route: str | None = None,
+) -> PageScopeManifest:
+    return PageScopeManifest(
+        manifest_id=f"{identity.document_id}-page-scope-v1",
+        document_identity=identity,
+        page_count=1,
+        entries=(
+            PageScopeEntry(
+                pages=(1,),
+                category=category,
+                conditional_routes=(route,) if route is not None else (),
+                review_note="Reviewed synthetic page scope.",
+            ),
+        ),
+    )
 
 
 def _rule(
@@ -190,6 +216,7 @@ def _prepare(context: _Context, plans: tuple[ReviewedReportPlan, ...] | None = N
         context.policy,
         context.selection,
         (context.plan,) if plans is None else plans,
+        _page_scope_manifest(context.plan.document_identity),
     )
 
 
@@ -197,6 +224,51 @@ def _failure(context: _Context, plan: ReviewedReportPlan) -> ReviewedReportEvide
     with pytest.raises(ReviewedReportEvidenceError) as exc_info:
         _prepare(context, (plan,))
     return exc_info.value
+
+
+def test_page_scope_manifest_allows_core_and_rejects_non_rule_categories(
+    tmp_path: Path,
+) -> None:
+    context = _context(tmp_path)
+    assert _prepare(context).evidence_records[0].fact_id == "fact:00000"
+
+    for category in (
+        PageScopeCategory.FACULTY_DIRECTORY,
+        PageScopeCategory.GENERAL_REFERENCE,
+        PageScopeCategory.IRRELEVANT_OR_APPENDIX,
+        PageScopeCategory.CONDITIONAL_PROGRAM,
+    ):
+        route = "joint_program" if category is PageScopeCategory.CONDITIONAL_PROGRAM else None
+        with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+            prepare_reviewed_report_evidence(
+                context.root,
+                context.manifest,
+                context.policy,
+                context.selection,
+                (context.plan,),
+                _page_scope_manifest(
+                    context.plan.document_identity,
+                    category=category,
+                    route=route,
+                ),
+            )
+        assert exc_info.value.code is ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH
+
+
+def test_page_scope_manifest_identity_mismatch_fails_closed(tmp_path: Path) -> None:
+    context = _context(tmp_path)
+    other_identity = _identity("other-2027", family="sample", institution="sample-u")
+
+    with pytest.raises(ReviewedReportEvidenceError) as exc_info:
+        prepare_reviewed_report_evidence(
+            context.root,
+            context.manifest,
+            context.policy,
+            context.selection,
+            (context.plan,),
+            _page_scope_manifest(other_identity),
+        )
+    assert exc_info.value.code is ReviewedReportEvidenceFailure.PAGE_SCOPE_MISMATCH
 
 
 def _file_snapshot(root: Path) -> dict[str, bytes]:
@@ -354,6 +426,7 @@ def test_zero_and_multiple_selected_documents_fail_before_audit(tmp_path: Path) 
                 context.policy,
                 selection,
                 (context.plan,),
+                _page_scope_manifest(context.plan.document_identity),
             )
         assert exc_info.value.code is ReviewedReportEvidenceFailure.SELECTION_CARDINALITY
 
@@ -386,6 +459,7 @@ def test_stale_selection_policy_registration_and_unready_entry_fail_closed(
             context.policy,
             stale_selection,
             (context.plan,),
+            _page_scope_manifest(context.plan.document_identity),
         )
     assert exc_info.value.code is ReviewedReportEvidenceFailure.SELECTION_STALE
 
@@ -397,6 +471,7 @@ def test_stale_selection_policy_registration_and_unready_entry_fail_closed(
             stale_policy,
             context.selection,
             (context.plan,),
+            _page_scope_manifest(context.plan.document_identity),
         )
     assert exc_info.value.code is ReviewedReportEvidenceFailure.SELECTION_STALE
 
@@ -416,6 +491,7 @@ def test_stale_selection_policy_registration_and_unready_entry_fail_closed(
             context.policy,
             unready_selection,
             (context.plan,),
+            _page_scope_manifest(context.plan.document_identity),
         )
     assert exc_info.value.code is ReviewedReportEvidenceFailure.INVALID_INPUT
 
@@ -452,6 +528,7 @@ def test_traversal_and_symlinked_kb_fail_without_reading_outside_root(
             context.policy,
             unsafe_selection,
             (context.plan,),
+            _page_scope_manifest(context.plan.document_identity),
         )
     assert exc_info.value.code is ReviewedReportEvidenceFailure.INVALID_INPUT
     assert outside.read_text(encoding="utf-8") == "official-secret"

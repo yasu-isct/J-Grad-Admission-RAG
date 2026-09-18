@@ -20,6 +20,7 @@ from jgrad_admission_rag.schemas.corpus_version import (
 )
 from jgrad_admission_rag.schemas.corpus_version import CorpusSelectionRequest
 from jgrad_admission_rag.schemas.document_kb import canonical_document_kb_bytes
+from jgrad_admission_rag.schemas.page_scope_manifest import load_page_scope_manifest
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from tests.test_rule01a_real import _profile, _report, _statuses
 
@@ -28,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
 PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04c_v1.json"
+PAGE_SCOPE = ROOT / "tests/fixtures/page_scope_manifest_isct_master_v1.json"
 
 
 @pytest.fixture(scope="module")
@@ -66,6 +68,7 @@ def rule03b_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
         policy,
         selection,
         (load_reviewed_report_plan(PLAN),),
+        load_page_scope_manifest(PAGE_SCOPE),
     )
     app = create_app(
         ServiceSettings(
@@ -73,6 +76,7 @@ def rule03b_client(tmp_path_factory: pytest.TempPathFactory, real_document_kb):
             manifest_path=manifest_path,
             policy_path=policy_path,
             report_plan_paths=(PLAN.resolve(),),
+            page_scope_manifest_paths=(PAGE_SCOPE.resolve(),),
             query_intent_catalog_path=(ROOT / "config/query_intent_catalog_v1.json").resolve(),
         ),
         ServiceDependencies(provider_factory=lambda: DeterministicFakeEmbeddingProvider(8)),

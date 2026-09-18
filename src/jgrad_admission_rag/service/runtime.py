@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from ..retrieval.embedding import EmbeddingProvider
 from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
+from ..schemas.page_scope_manifest import PageScopeManifest
 
 
 class ServiceSettings(BaseModel):
@@ -22,6 +23,7 @@ class ServiceSettings(BaseModel):
     manifest_path: Path | None = None
     policy_path: Path | None = None
     report_plan_paths: tuple[Path, ...] = ()
+    page_scope_manifest_paths: tuple[Path, ...] = ()
     query_intent_catalog_path: Path | None = None
     max_pdf_bytes: int = Field(default=25 * 1024 * 1024, gt=0, strict=True)
     max_metadata_bytes: int = Field(default=256 * 1024, gt=0, strict=True)
@@ -39,6 +41,10 @@ class ServiceSettings(BaseModel):
             raise ValueError("query runtime paths must be absolute")
         if any(not path.is_absolute() for path in self.report_plan_paths):
             raise ValueError("reviewed report plan paths must be absolute")
+        if any(not path.is_absolute() for path in self.page_scope_manifest_paths):
+            raise ValueError("page scope manifest paths must be absolute")
+        if bool(self.report_plan_paths) != bool(self.page_scope_manifest_paths):
+            raise ValueError("report plans and page scope manifests must be configured together")
         if (
             self.query_intent_catalog_path is not None
             and not self.query_intent_catalog_path.is_absolute()
@@ -67,6 +73,7 @@ class ServiceState:
     job_worker: Any | None = None
     job_initialization_failed: bool = False
     report_plans: tuple[ReviewedReportPlan, ...] = ()
+    page_scope_manifests: tuple[PageScopeManifest, ...] = ()
     report_initialization_failed: bool = False
     query_intent_catalog: QueryIntentCatalog | None = None
     query_intent_initialization_failed: bool = False

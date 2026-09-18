@@ -34,6 +34,13 @@ def _parser() -> argparse.ArgumentParser:
         help="Reviewed report plan JSON path; repeat for each explicitly enabled document.",
     )
     parser.add_argument(
+        "--page-scope-manifest",
+        action="append",
+        default=[],
+        metavar="ABSOLUTE_PATH",
+        help="Reviewed page scope manifest JSON path; repeat for each enabled document.",
+    )
+    parser.add_argument(
         "--query-intent-catalog",
         metavar="ABSOLUTE_PATH",
         help="Server-owned query intent catalog JSON used by the local report UI.",
@@ -60,6 +67,9 @@ def main(argv: Sequence[str] | None = None) -> None:
         report_plan_paths = tuple(Path(path) for path in args.report_plan)
         if any(not path.is_absolute() for path in report_plan_paths):
             raise ValueError("reviewed report plan paths must be absolute")
+        page_scope_manifest_paths = tuple(Path(path) for path in args.page_scope_manifest)
+        if any(not path.is_absolute() for path in page_scope_manifest_paths):
+            raise ValueError("page scope manifest paths must be absolute")
         query_intent_catalog_path = (
             Path(args.query_intent_catalog) if args.query_intent_catalog else None
         )
@@ -70,6 +80,9 @@ def main(argv: Sequence[str] | None = None) -> None:
             manifest_path=Path(args.manifest).resolve(strict=False),
             policy_path=Path(args.policy).resolve(strict=False),
             report_plan_paths=tuple(path.resolve(strict=False) for path in report_plan_paths),
+            page_scope_manifest_paths=tuple(
+                path.resolve(strict=False) for path in page_scope_manifest_paths
+            ),
             query_intent_catalog_path=(
                 query_intent_catalog_path.resolve(strict=False)
                 if query_intent_catalog_path is not None
