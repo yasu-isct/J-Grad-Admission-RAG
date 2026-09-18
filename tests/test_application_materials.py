@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from jgrad_admission_rag.reasoning.applicability import OfficialEvidenceBinding
 from jgrad_admission_rag.reasoning.applicant_profile import ApplicantProfile
 from jgrad_admission_rag.reasoning.application_materials import (
+    ApplicationMaterialsResult,
     ApplicationMaterialsPolicy,
     ReviewedApplicationMaterial,
     resolve_application_materials,
@@ -79,3 +80,36 @@ def test_policy_rejects_a_false_official_exception() -> None:
     payload["entries"][0]["exempt_for_eligibility_review_paths"] = True
     with pytest.raises(ValidationError, match="official items 3 through 5"):
         ApplicationMaterialsPolicy.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    ("basis", "degree", "tampered_status"),
+    [
+        ("university_graduation", "master", "eligibility_review_path"),
+        ("foreign_15_year_education", "master", "required"),
+        (None, "master", "required"),
+        ("university_graduation", "doctorate", "required"),
+    ],
+)
+def test_result_rejects_applicability_inconsistent_with_normalized_input(
+    basis, degree, tampered_status
+) -> None:
+    profile = _profile(_credential(basis=basis))
+    profile["target_application"]["requested_degree_level"] = degree
+    result = resolve_application_materials(ApplicantProfile.model_validate(profile), _policy())
+    payload = result.model_dump(mode="json")
+    payload["entries"][2]["applicability"] = tampered_status
+
+    with pytest.raises(ValidationError, match="normalized input snapshot"):
+        ApplicationMaterialsResult.model_validate(payload)
+
+
+def test_result_rejects_selected_basis_inconsistent_with_normalized_input() -> None:
+    result = resolve_application_materials(
+        ApplicantProfile.model_validate(_profile(_credential())), _policy()
+    )
+    payload = result.model_dump(mode="json")
+    payload["credential_basis"] = "foreign_15_year_education"
+
+    with pytest.raises(ValidationError, match="credential basis"):
+        ApplicationMaterialsResult.model_validate(payload)

@@ -15,7 +15,7 @@ from pydantic import (
 )
 
 from .applicability import EvidenceRole, OfficialEvidenceBinding, OfficialEvidenceReference
-from .applicant_profile import ApplicantProfile, CredentialBasis, DegreeLevel
+from .applicant_profile import ApplicantProfile, CredentialBasis, DegreeLevel, IntakeMonth
 
 
 class ApplicationMaterialsModel(BaseModel):
@@ -87,9 +87,17 @@ class ApplicationMaterialResult(ApplicationMaterialsModel):
     applicability: ApplicationMaterialApplicability
 
 
+class ApplicationMaterialsInput(ApplicationMaterialsModel):
+    requested_degree_level: DegreeLevel | None
+    intake_year: StrictInt | None
+    intake_month: IntakeMonth | None
+    credential_bases: tuple[CredentialBasis | None, ...] | None
+
+
 class ApplicationMaterialsResult(ApplicationMaterialsModel):
     policy_id: str
     entries: tuple[ApplicationMaterialResult, ...] = Field(min_length=5, max_length=5)
+    input_snapshot: ApplicationMaterialsInput
     credential_basis: CredentialBasis | None
     evidence: OfficialEvidenceReference
     limitation_statement: str
@@ -100,6 +108,15 @@ class ApplicationMaterialsResult(ApplicationMaterialsModel):
             raise ValueError("material results must retain official order")
         if len({entry.code for entry in self.entries}) != 5:
             raise ValueError("material result codes must be unique")
+        selected_basis = _selected_credential_basis(self.input_snapshot)
+        if self.credential_basis != selected_basis:
+            raise ValueError("credential basis must match the normalized input snapshot")
+        expected = tuple(
+            _resolve_entry_applicability(entry.number, self.input_snapshot)
+            for entry in self.entries
+        )
+        if tuple(entry.applicability for entry in self.entries) != expected:
+            raise ValueError("material applicability must match the normalized input snapshot")
         return self
 
 
@@ -118,6 +135,40 @@ _DIRECT_BASES = frozenset(
 _REVIEW_BASES = frozenset(set(CredentialBasis) - set(_DIRECT_BASES))
 
 
+def _selected_credential_basis(snapshot: ApplicationMaterialsInput) -> CredentialBasis | None:
+    bases = snapshot.credential_bases
+    return bases[0] if bases is not None and len(bases) == 1 else None
+
+
+def _resolve_entry_applicability(
+    number: int, snapshot: ApplicationMaterialsInput
+) -> ApplicationMaterialApplicability:
+    target_missing = any(
+        value is None
+        for value in (
+            snapshot.requested_degree_level,
+            snapshot.intake_year,
+            snapshot.intake_month,
+        )
+    )
+    if target_missing:
+        return ApplicationMaterialApplicability.NEEDS_INFORMATION
+    supported = snapshot.requested_degree_level is DegreeLevel.MASTER and (
+        snapshot.intake_year,
+        snapshot.intake_month.value if snapshot.intake_month else None,
+    ) in {(2026, 9), (2027, 4)}
+    if not supported:
+        return ApplicationMaterialApplicability.NOT_COVERED
+    if number <= 2:
+        return ApplicationMaterialApplicability.REQUIRED
+    basis = _selected_credential_basis(snapshot)
+    if basis in _DIRECT_BASES:
+        return ApplicationMaterialApplicability.REQUIRED
+    if basis in _REVIEW_BASES:
+        return ApplicationMaterialApplicability.ELIGIBILITY_REVIEW_PATH
+    return ApplicationMaterialApplicability.NEEDS_INFORMATION
+
+
 def resolve_application_materials(
     profile: ApplicantProfile, policy: ApplicationMaterialsPolicy
 ) -> ApplicationMaterialsResult:
@@ -126,47 +177,33 @@ def resolve_application_materials(
     profile = ApplicantProfile.model_validate(profile.model_dump(mode="json"))
     policy = ApplicationMaterialsPolicy.model_validate(policy.model_dump(mode="json"))
     target = profile.target_application
-    supported = target.requested_degree_level is DegreeLevel.MASTER and (
-        (target.intake_year, target.intake_month.value if target.intake_month else None)
-        in {(2026, 9), (2027, 4)}
+    input_snapshot = ApplicationMaterialsInput(
+        requested_degree_level=target.requested_degree_level,
+        intake_year=target.intake_year,
+        intake_month=target.intake_month,
+        credential_bases=(
+            tuple(credential.credential_basis for credential in profile.academic_credentials)
+            if profile.academic_credentials is not None
+            else None
+        ),
     )
-    target_missing = any(
-        value is None
-        for value in (target.requested_degree_level, target.intake_year, target.intake_month)
-    )
-    credentials = profile.academic_credentials
-    basis = (
-        credentials[0].credential_basis
-        if credentials is not None and len(credentials) == 1
-        else None
-    )
+    basis = _selected_credential_basis(input_snapshot)
 
     results = []
     for entry in policy.entries:
-        if target_missing:
-            applicability = ApplicationMaterialApplicability.NEEDS_INFORMATION
-        elif not supported:
-            applicability = ApplicationMaterialApplicability.NOT_COVERED
-        elif not entry.exempt_for_eligibility_review_paths:
-            applicability = ApplicationMaterialApplicability.REQUIRED
-        elif basis in _DIRECT_BASES:
-            applicability = ApplicationMaterialApplicability.REQUIRED
-        elif basis in _REVIEW_BASES:
-            applicability = ApplicationMaterialApplicability.ELIGIBILITY_REVIEW_PATH
-        else:
-            applicability = ApplicationMaterialApplicability.NEEDS_INFORMATION
         results.append(
             ApplicationMaterialResult(
                 number=entry.number,
                 code=entry.code,
                 official_name=entry.official_name,
-                applicability=applicability,
+                applicability=_resolve_entry_applicability(entry.number, input_snapshot),
             )
         )
     binding = policy.evidence_binding
     return ApplicationMaterialsResult(
         policy_id=policy.policy_id,
         entries=tuple(results),
+        input_snapshot=input_snapshot,
         credential_basis=basis,
         evidence=OfficialEvidenceReference(
             document_id=binding.document_id,
@@ -182,6 +219,7 @@ __all__ = [
     "ApplicationMaterialApplicability",
     "ApplicationMaterialCode",
     "ApplicationMaterialResult",
+    "ApplicationMaterialsInput",
     "ApplicationMaterialsPolicy",
     "ApplicationMaterialsResult",
     "ReviewedApplicationMaterial",

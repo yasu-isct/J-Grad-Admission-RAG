@@ -6,6 +6,9 @@ import pytest
 
 from jgrad_admission_rag.reasoning.applicant_report import (
     ApplicantReport,
+    ApplicantReportError,
+    canonical_applicant_report_bytes,
+    load_applicant_report_bytes,
     render_applicant_report_markdown,
 )
 from tests.test_rule01a_real import _credential, _profile, _report
@@ -111,3 +114,31 @@ def test_markdown_and_ui_expose_one_compact_materials_section(rule04b_client) ->
     app_js = client.get("/assets/app.js")
     assert app_js.status_code == 200
     assert "一般志願者の共通出願書類" in app_js.text
+
+
+def test_report_loader_and_canonicalizer_reject_tampered_material_applicability(
+    rule04b_client,
+) -> None:
+    client, document_id = rule04b_client
+    report, _ = _materials(
+        client,
+        document_id,
+        _profile(_credential()),
+        "rule05a-tamper-rejection",
+    )
+    payload = json.loads(json.dumps(report, ensure_ascii=False))
+    payload["application_materials"]["entries"][2]["applicability"] = "eligibility_review_path"
+    with pytest.raises(ApplicantReportError):
+        load_applicant_report_bytes(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+
+    validated = ApplicantReport.model_validate(report)
+    materials = validated.application_materials
+    assert materials is not None
+    entries = list(materials.entries)
+    entries[2] = entries[2].model_copy(
+        update={"applicability": type(entries[2].applicability).ELIGIBILITY_REVIEW_PATH}
+    )
+    bypassed_materials = materials.model_copy(update={"entries": tuple(entries)})
+    bypassed_report = validated.model_copy(update={"application_materials": bypassed_materials})
+    with pytest.raises(ApplicantReportError):
+        canonical_applicant_report_bytes(bypassed_report)
