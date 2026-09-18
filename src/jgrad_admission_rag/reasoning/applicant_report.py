@@ -108,7 +108,6 @@ class ApplicantReport(ApplicantReportModel):
     coverage_status: Literal["partial_reviewed_rules"] = "partial_reviewed_rules"
     reviewed_coverage_statement: str
     limitation_statement: str
-    program_language_scope_sha256: str | None = None
     source_plan: ReviewedReportPlan
     evidence_bundle: ReviewedReportEvidenceBundle
     reasoning_trace: ReasoningTrace
@@ -167,13 +166,6 @@ class ApplicantReport(ApplicantReportModel):
     @classmethod
     def source_hash_must_be_sha256(cls, value: str) -> str:
         _validate_sha256(value)
-        return value
-
-    @field_validator("program_language_scope_sha256")
-    @classmethod
-    def program_scope_hash_must_be_sha256(cls, value: str | None) -> str | None:
-        if value is not None:
-            _validate_sha256(value)
         return value
 
     @model_validator(mode="after")
@@ -318,11 +310,6 @@ def build_applicant_report(
             coverage_status=plan.coverage_status,
             reviewed_coverage_statement=plan.reviewed_coverage_statement,
             limitation_statement=plan.limitation_statement,
-            program_language_scope_sha256=(
-                _program_language_scope_sha256(program_condition)
-                if program_condition is not None
-                else None
-            ),
             source_plan=plan,
             evidence_bundle=visible_evidence,
             reasoning_trace=trace,
@@ -537,23 +524,6 @@ def _filter_program_evidence_for_report(
         ),
     }
     return ReviewedReportEvidenceBundle.model_validate(payload)
-
-
-def _program_language_scope_sha256(result: ProgramLanguageConditionResult) -> str:
-    payload = {
-        "application_route": result.application_route,
-        "requested_degree_level": result.requested_degree_level,
-        "intake_year": result.intake_year,
-        "intake_month": result.intake_month,
-    }
-    canonical = json.dumps(
-        payload,
-        ensure_ascii=False,
-        allow_nan=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode("utf-8")
-    return hashlib.sha256(canonical).hexdigest()
 
 
 def _validate_plan_evidence(
@@ -797,14 +767,8 @@ def _validate_report_contract(report: ApplicantReport) -> None:
     program_condition = report.program_language_condition
     if (program_policy is None) != (program_condition is None):
         raise ValueError
-    if (program_condition is None) != (report.program_language_scope_sha256 is None):
-        raise ValueError
     if program_policy is not None and program_condition is not None:
         if program_condition.policy_id != program_policy.policy_id:
-            raise ValueError
-        if report.program_language_scope_sha256 != _program_language_scope_sha256(
-            program_condition
-        ):
             raise ValueError
         matching = [
             entry
