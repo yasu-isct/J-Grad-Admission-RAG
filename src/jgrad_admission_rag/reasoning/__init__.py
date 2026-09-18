@@ -185,6 +185,13 @@ from .language_evaluation import (
     LanguageEvaluationUsage,
     resolve_language_evaluation,
 )
+from .program_language_condition import (
+    ProgramLanguageConditionEntry,
+    ProgramLanguageConditionPolicy,
+    ProgramLanguageConditionResult,
+    ProgramLanguageConditionStatus,
+    resolve_program_language_condition,
+)
 from .reviewed_report_plan import (
     REVIEWED_REPORT_PLAN_SCHEMA_VERSION,
     SUPPORTED_REVIEWED_REPORT_PLAN_SCHEMA_VERSIONS,
@@ -227,6 +234,11 @@ __all__ = [
     "LanguageEvaluationStatus",
     "LanguageEvaluationUsage",
     "resolve_language_evaluation",
+    "ProgramLanguageConditionEntry",
+    "ProgramLanguageConditionPolicy",
+    "ProgramLanguageConditionResult",
+    "ProgramLanguageConditionStatus",
+    "resolve_program_language_condition",
     "DepartmentLanguageScoreAllocation",
     "LanguageScoreAllocationPolicy",
     "LanguageScoreAllocationResult",

@@ -99,7 +99,7 @@
       463,
       465
     ],
-    "entity_count": 25,
+    "entity_count": 26,
     "fact_count": 391,
     "retrieval_unit_count": 391,
     "reference_link_count": 10,
@@ -109,7 +109,7 @@
     "oversized_chunk_reasons": {},
     "short_fact_threshold": 100,
     "short_fact_count": 109,
-    "unknown_scope_fact_count": 92,
+    "unknown_scope_fact_count": 64,
     "raw_reference_occurrence_count": 185,
     "reference_claim_count": 130,
     "reference_status_counts": {
@@ -117,13 +117,13 @@
       "ambiguous": 5,
       "unresolved": 115
     },
-    "fact_content_sha256": "e0e8e8d7d6193d15ab2d508fe92cd1e51051b86f5f5916ba1f86acfcd29724de",
-    "fact_structure_sha256": "790928ca69874190b6c3432acab5147b5adc331cc66a01fa21d474eb19ee8622",
-    "diagnostics_sha256": "eeb2be1fce84b9e14c0002bccd746a58802bafec9f9a5cfad09b50ac57b0f8fd",
-    "embedding_text_v1_sha256": "7b68febe8b05c7b19e03e80e05bdb314aa45f4f48fff3953d9655bc1655e77d5",
-    "embedding_text_v1_fake_vector_sha256": "a3d0ecf4cd24de2d48af7968a5a7fbea08d48d60ed4dd18cfa83429d488475ae",
-    "index_payloads_sha256": "87ddbe934b4241749a043a6f645263626de08c22e8025d294c50cb2c69db01ec",
-    "index_fake_vectors_npy_sha256": "a6bdcebe65f82206e1a7f74258ff8b7f139aa99e52e26a89720471e81d589e03",
+    "fact_content_sha256": "35fbb9ad343a9728f25c386d8fda3732f15df4b13cbc22ae89ecc256bb625787",
+    "fact_structure_sha256": "1ae5797c30636bb53effeaafb72eeed7a38c6a7ff632de98ad40723e3cfa577b",
+    "diagnostics_sha256": "7b320ad7eb95408228f63fede0358eb7bc606341081de8d79536d642aadc0ee5",
+    "embedding_text_v1_sha256": "d2485d64ec1d21c846acc19aeca2cba921be12a813f504a896b8687b418cc77d",
+    "embedding_text_v1_fake_vector_sha256": "07d432ae0b6343da3df85938c9d2340ce489421bb5b0d0e510f9a5b8c80a94cd",
+    "index_payloads_sha256": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397",
+    "index_fake_vectors_npy_sha256": "910481542bc1d7304f1751a75dc760a0e4a2f276209a203997df35426d451b88",
     "resolved_reference_claims": [
       [
         "fact:00014",

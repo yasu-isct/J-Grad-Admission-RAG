@@ -1929,10 +1929,10 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
     }
     assert scope_type_counts == {
         "college": 2,
-        "department": 222,
+        "department": 215,
         "global": 65,
-        "program": 10,
-        "unknown": 92,
+        "program": 45,
+        "unknown": 64,
     }
     assert target_counts == {
         "システム制御系": 13,
@@ -1940,20 +1940,21 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "土木・環境工学系": 13,
         "地球惑星科学系": 16,
         "建築学系": 14,
-        "応用化学系": 20,
+        "応用化学系": 15,
         "情報工学系": 14,
         "情報通信系": 12,
         "技術経営専門職学位課程": 16,
+        "東京科学大学・清華大学 大学院合同プログラム": 35,
         "数学系": 46,
         "数理・計算科学系": 15,
-        "材料系": 27,
+        "材料系": 22,
         "機械系": 18,
         "物理学系": 16,
-        "生命理工学系": 23,
-        "社会・人間科学系": 17,
-        "経営工学系": 19,
+        "生命理工学系": 18,
+        "社会・人間科学系": 15,
+        "経営工学系": 16,
         "融合理工学系": 14,
-        "電気電子系": 23,
+        "電気電子系": 18,
         "理学院": 2,
         "工学院": 2,
         "物質理工学院": 2,
@@ -1962,18 +1963,18 @@ def test_real_pdf_metadata_inventory_and_hard_filter_examples(
         "環境・社会理工学院": 2,
     }
     assert college_counts == {
-        "<none>": 159,
-        "工学院": 52,
+        "<none>": 166,
+        "工学院": 50,
         "情報理工学院": 20,
         "物質理工学院": 27,
         "理学院": 66,
-        "環境・社会理工学院": 50,
-        "生命理工学院": 17,
+        "環境・社会理工学院": 48,
+        "生命理工学院": 14,
     }
 
     examples = (
         (MetadataFilter(fact_types=("english",)), 51),
-        (MetadataFilter(scope_types=("department",)), 222),
+        (MetadataFilter(scope_types=("department",)), 215),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 20),
         (
@@ -2030,7 +2031,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
 
     hard_filter_examples = (
         (MetadataFilter(fact_types=("english",)), 51),
-        (MetadataFilter(scope_types=("department",)), 222),
+        (MetadataFilter(scope_types=("department",)), 215),
         (MetadataFilter(scope_targets=("情報工学系",)), 14),
         (MetadataFilter(parent_colleges=("情報理工学院",)), 20),
         (
@@ -2175,7 +2176,7 @@ def test_real_pdf_metadata_no_filter_and_scope_sensitive_characterization(
     outcome_sha256 = hashlib.sha256(
         json.dumps(scope_outcomes, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
-    assert outcome_sha256 == ("5cada7b5568147b491bada844507cf1f59289be78c300d37dbf872d44b8e4c0c")
+    assert outcome_sha256 == ("8a4fc01b1c4505b1a48a4a742b2ccfdbbc15add30d11ea7b22b35aa342378088")
 
 
 def test_real_pdf_reference_expansion_preserves_authoritative_diagnostics(
