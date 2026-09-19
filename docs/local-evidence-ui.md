@@ -4,7 +4,8 @@ DEMO-01 makes a Simplified Chinese application-check wizard the primary local wo
 retaining APP-04A evidence search and APP-04B's detailed report as auxiliary tools. Open
 `http://127.0.0.1:8000/app` after starting `jgrad-serve` with at least one explicit reviewed report
 plan and page-scope manifest. The browser first loads the server-owned target hierarchy, then asks
-for base requirements only after the user completes and submits a target.
+for base requirements only after the user completes and submits a target. DEMO-02 then accepts a
+minimal, non-persistent applicant snapshot and asks the service for a conservative comparison.
 
 ```text
 audited manifest + reviewed policy + lifespan plans
@@ -12,6 +13,9 @@ audited manifest + reviewed policy + lifespan plans
   -> choose School / Degree / Intake / College / Department / optional Route
   -> POST /v1/base-requirements
   -> reviewed dates, p.10 materials, eligibility prompt, language rules + exact evidence
+  -> enter education / English / Japanese / material preparation
+  -> POST /v1/applicant-comparison
+  -> separate official applicability and applicant preparation states + exact evidence
 
 audited manifest + reviewed policy + lifespan plans
   -> GET /v1/reviewed-documents
@@ -26,12 +30,21 @@ profile + intent + one document -> POST /v1/applicant-reports
 
 ## Boundary
 
-The wizard is profile-free in DEMO-01. `required`, `conditional`, `needs_information`, and
+The base-requirements step remains profile-free. `required`, `conditional`, `needs_information`, and
 `not_covered` describe official requirement coverage, not the applicant's preparation or final
 eligibility. RULE-05A exposes only the five reviewed p.10 common materials. The three
 qualification-path-dependent items remain `needs_information`; p.11 mixed foreign-national and
 scholarship material is not projected. Conditional program evidence is absent unless a later
 reviewed catalog explicitly exposes its route.
+
+The personal comparison step keeps blanks as `null` or an explicit `unknown` material state.
+Changing any target or personal field cancels and invalidates the pending request and clears the
+old result. Academic status is limited to a possible path match or a need for individual review;
+English data is recorded for target-rule comparison; Japanese remains only “recorded” or “needs
+information” because current evidence does not support a satisfaction conclusion. Material
+official applicability and the user's preparation state are displayed independently. Refreshing
+the page clears every personal field, and neither browser storage nor server-side persistence is
+used.
 
 Every requirement with evidence opens a modal side drawer. It displays the official title,
 school/intake, exact pages, server-returned Japanese text, safety limitation, and source link.

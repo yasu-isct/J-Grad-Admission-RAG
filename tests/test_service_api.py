@@ -10,6 +10,7 @@ from pathlib import Path
 import fitz
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from jgrad_admission_rag.schemas.corpus_manifest import canonical_corpus_manifest_bytes
 from jgrad_admission_rag.schemas.corpus_version import canonical_corpus_version_policy_bytes
@@ -387,6 +388,13 @@ def test_query_returns_provider_unavailable_after_failed_lifespan(tmp_path: Path
             "unsupported_media_type",
         ),
         (
+            "/v1/applicant-comparison",
+            "post",
+            {"content": b"{}", "headers": {"content-type": "text/plain"}},
+            415,
+            "unsupported_media_type",
+        ),
+        (
             "/v1/corpus/query",
             "post",
             {"json": {"unexpected": "private value"}},
@@ -431,6 +439,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
         "postV1ApplicantReports",
+        "postV1ApplicantComparison",
         "postV1BaseRequirements",
         "postV1QueryIntentsParse",
     }
@@ -474,9 +483,19 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert set(report_response["required"]) == {"report", "markdown"}
     target_operation = schema["paths"]["/v1/target-catalog"]["get"]
     base_operation = schema["paths"]["/v1/base-requirements"]["post"]
+    comparison_operation = schema["paths"]["/v1/applicant-comparison"]["post"]
     demo_request = schema["components"]["schemas"]["DemoTargetRequest"]
     assert set(target_operation["responses"]) == {"200", "500", "503"}
     assert set(base_operation["responses"]) == {"200", "404", "409", "415", "422", "500", "503"}
+    assert set(comparison_operation["responses"]) == {
+        "200",
+        "404",
+        "409",
+        "415",
+        "422",
+        "500",
+        "503",
+    }
     assert demo_request["additionalProperties"] is False
     assert set(demo_request["required"]) == {
         "school_id",
@@ -514,6 +533,8 @@ def test_service_exports_applicant_report_contracts() -> None:
     from jgrad_admission_rag.service import (
         ApplicantReportRequest,
         ApplicantReportResponse,
+        DemoApplicantComparisonRequest,
+        DemoApplicantComparisonResponse,
         DemoBaseRequirementsResponse,
         DemoTargetCatalogResponse,
         DemoTargetRequest,
@@ -522,10 +543,21 @@ def test_service_exports_applicant_report_contracts() -> None:
 
     assert ApplicantReportRequest.model_fields["schema_version"].default == "1.0"
     assert ApplicantReportResponse.model_fields["schema_version"].default == "1.0"
+    assert DemoApplicantComparisonRequest.model_fields["schema_version"].default == "1.0"
+    assert DemoApplicantComparisonResponse.model_fields["schema_version"].default == "1.0"
     assert QueryIntentParseRequest.model_fields["schema_version"].default == "1.0"
     assert DemoTargetCatalogResponse.model_fields["schema_version"].default == "1.0"
     assert DemoTargetRequest.model_fields["schema_version"].default == "1.0"
     assert DemoBaseRequirementsResponse.model_fields["schema_version"].default == "1.0"
+
+
+def test_demo_applicant_input_rejects_non_finite_english_score() -> None:
+    from jgrad_admission_rag.service.demo_requirements import DemoApplicantInput
+
+    with pytest.raises(ValidationError):
+        DemoApplicantInput.model_validate(
+            {"english_test_kind": "toeic_lr", "english_score": float("inf")}
+        )
 
 
 def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:

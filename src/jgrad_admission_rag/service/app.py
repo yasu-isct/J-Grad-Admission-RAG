@@ -52,6 +52,7 @@ from ..reasoning.query_intent import (
     parse_query_intent,
 )
 from ..reasoning.reviewed_report_evidence import (
+    ReviewedReportEvidenceBundle,
     ReviewedReportEvidenceError,
     ReviewedReportEvidenceFailure,
     prepare_reviewed_report_evidence,
@@ -100,9 +101,12 @@ from .contracts import (
     ReviewedDocumentPublicIdentity,
 )
 from .demo_requirements import (
+    DemoApplicantComparisonRequest,
+    DemoApplicantComparisonResponse,
     DemoBaseRequirementsResponse,
     DemoTargetCatalogResponse,
     DemoTargetRequest,
+    build_demo_applicant_comparison,
     build_demo_base_requirements,
     build_demo_target_catalog,
 )
@@ -273,6 +277,7 @@ def create_app(
             "/v1/applicant-reports",
             "/v1/query-intents/parse",
             "/v1/base-requirements",
+            "/v1/applicant-comparison",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -380,6 +385,25 @@ def create_app(
             )
         return await to_thread.run_sync(
             partial(_build_demo_base_requirements_response, request, selected_settings, state)
+        )
+
+    @app.post(
+        "/v1/applicant-comparison",
+        response_model=DemoApplicantComparisonResponse,
+        responses=REPORT_ERROR_RESPONSES,
+        operation_id="postV1ApplicantComparison",
+    )
+    async def applicant_comparison(
+        request: DemoApplicantComparisonRequest,
+    ) -> DemoApplicantComparisonResponse:
+        if not _report_service_ready(state):
+            raise ApiProblem(
+                503,
+                "report_service_unavailable",
+                "applicant comparison service is unavailable",
+            )
+        return await to_thread.run_sync(
+            partial(_build_demo_applicant_comparison_response, request, selected_settings, state)
         )
 
     @app.post(
@@ -1028,6 +1052,30 @@ def _build_demo_base_requirements_response(
     settings: ServiceSettings,
     state: ServiceState,
 ) -> DemoBaseRequirementsResponse:
+    plan, evidence = _load_demo_context(request, settings, state)
+    try:
+        return build_demo_base_requirements(request, plan, evidence)
+    except (KeyError, ValueError):
+        raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
+
+
+def _build_demo_applicant_comparison_response(
+    request: DemoApplicantComparisonRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> DemoApplicantComparisonResponse:
+    plan, evidence = _load_demo_context(request.target, settings, state)
+    try:
+        return build_demo_applicant_comparison(request, plan, evidence)
+    except (KeyError, ValueError, ValidationError):
+        raise ApiProblem(422, "invalid_request", "applicant comparison is invalid") from None
+
+
+def _load_demo_context(
+    request: DemoTargetRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> tuple[ReviewedReportPlan, ReviewedReportEvidenceBundle]:
     if (
         settings.corpus_root is None
         or settings.manifest_path is None
@@ -1087,11 +1135,9 @@ def _build_demo_base_requirements_response(
             state.report_plans,
             matching_scopes[0],
         )
-        return build_demo_base_requirements(request, matching_plans[0], evidence)
+        return matching_plans[0], evidence
     except ReviewedReportEvidenceError as error:
         _raise_report_evidence_problem(error)
-    except (KeyError, ValueError):
-        raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
 
 
 def _report_service_ready(state: ServiceState) -> bool:

@@ -11,6 +11,8 @@ except ModuleNotFoundError as error:
 
 from .runtime import ServiceDependencies, ServiceSettings
 from .demo_requirements import (
+    DemoApplicantComparisonRequest,
+    DemoApplicantComparisonResponse,
     DemoBaseRequirementsResponse,
     DemoTargetCatalogResponse,
     DemoTargetRequest,
@@ -27,6 +29,8 @@ from .contracts import (
 __all__ = [
     "ApplicantReportRequest",
     "ApplicantReportResponse",
+    "DemoApplicantComparisonRequest",
+    "DemoApplicantComparisonResponse",
     "DemoBaseRequirementsResponse",
     "DemoTargetCatalogResponse",
     "DemoTargetRequest",
