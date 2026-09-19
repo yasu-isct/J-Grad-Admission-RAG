@@ -176,19 +176,25 @@ def test_demo_target_rejects_incomplete_or_unreviewed_selection(rule04b_client) 
 
 
 @pytest.mark.parametrize(
-    ("basis", "education_status", "material_tail"),
+    ("basis", "education_status", "material_tail", "education_fact_ids"),
     [
-        ("university_graduation", "possible_match", ["required"] * 3),
+        (
+            "university_graduation",
+            "possible_match",
+            ["required"] * 3,
+            {"fact:00056", "fact:00059", "fact:00060"},
+        ),
         (
             "foreign_15_year_education",
             "needs_review",
             ["eligibility_review_path"] * 3,
+            {"fact:00068", "fact:00086"},
         ),
-        (None, "needs_information", ["needs_information"] * 3),
+        (None, "needs_information", ["needs_information"] * 3, set()),
     ],
 )
 def test_demo_applicant_comparison_is_conservative_and_path_aware(
-    rule04b_client, basis, education_status, material_tail
+    rule04b_client, basis, education_status, material_tail, education_fact_ids
 ) -> None:
     client, document_id = rule04b_client
     response = client.post(
@@ -225,6 +231,7 @@ def test_demo_applicant_comparison_is_conservative_and_path_aware(
     items = response.json()["items"]
     education = next(item for item in items if item["item_id"] == "education:credential")
     assert education["comparison_status"] == education_status
+    assert {item["fact_id"] for item in education["evidence"]} == education_fact_ids
     assert "资格" not in response.json()["comparison_statement"]
     assert (
         next(item for item in items if item["item_id"] == "english:result")["comparison_status"]
@@ -271,9 +278,17 @@ def test_demo_applicant_comparison_rejects_ambiguous_language_or_material_input(
             },
         },
     )
+    score_out_of_range = client.post(
+        "/v1/applicant-comparison",
+        json={
+            "target": target,
+            "applicant": {"english_test_kind": "toeic_lr", "english_score": 10_001},
+        },
+    )
 
     assert score_without_kind.status_code == 422
     assert repeated_material.status_code == 422
+    assert score_out_of_range.status_code == 422
 
 
 def test_common_materials_do_not_expose_conditional_or_excluded_materials(rule04b_client) -> None:

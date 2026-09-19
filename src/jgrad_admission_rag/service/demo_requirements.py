@@ -166,7 +166,9 @@ class DemoApplicantInput(DemoModel):
     credential_basis: CredentialBasis | None = None
     completion_state: CompletionState | None = None
     english_test_kind: LanguageTestKind | None = None
-    english_score: StrictInt | StrictFloat | None = Field(default=None, ge=0)
+    english_score: StrictInt | StrictFloat | None = Field(
+        default=None, ge=0, le=10_000, allow_inf_nan=False
+    )
     english_test_date: date | None = None
     english_official_report_available: StrictBool | None = None
     japanese_background: DemoJapaneseBackground | None = None
@@ -511,7 +513,6 @@ def build_demo_applicant_comparison(
 
     base = build_demo_base_requirements(request.target, plan, evidence_bundle)
     applicant = request.applicant
-    eligibility_evidence = _category_evidence(base, "eligibility")
     language_evidence = _category_evidence(base, "language")
     items: list[DemoComparisonItem] = []
 
@@ -522,13 +523,17 @@ def build_demo_applicant_comparison(
             plan.application_materials,
         )
 
+    qualification_rules = _qualification_rules_for_input(plan, request.target, applicant)
+    eligibility_evidence = _rules_evidence(
+        plan, qualification_rules, evidence_bundle, request.target.intake
+    )
     if applicant.credential_basis is None:
         education_status = "needs_information"
         education_description = "尚未提供明确的学历资格路径；空值不会被解释为不满足或满足。"
-    elif material_result is not None and any(
-        entry.applicability is ApplicationMaterialApplicability.ELIGIBILITY_REVIEW_PATH
-        for entry in material_result.entries
-    ):
+    elif not qualification_rules:
+        education_status = "not_covered"
+        education_description = "当前审核规则没有与该学历输入匹配的资格路径，需要人工核对。"
+    elif not any("direct-path-" in rule.rule_id for rule in qualification_rules):
         education_status = "needs_review"
         education_description = (
             "已记录的学历路径属于个别资格审查范围，需要学校审核；这里不判断资格成立。"
@@ -701,6 +706,70 @@ def _category_evidence(
             if key not in seen:
                 collected.append(evidence)
                 seen.add(key)
+    return tuple(collected)
+
+
+def _qualification_rules_for_input(
+    plan: ReviewedReportPlan,
+    target: DemoTargetRequest,
+    applicant: DemoApplicantInput,
+) -> tuple[ApplicabilityRule, ...]:
+    basis = applicant.credential_basis
+    if basis is None:
+        return ()
+    matched = []
+    for rule in plan.rules:
+        if not _rule_matches_target(rule, target):
+            continue
+        basis_predicates = tuple(
+            predicate
+            for predicate in rule.predicates
+            if predicate.field_path == "academic_credentials.first.credential_basis"
+            and predicate.operator is PredicateOperator.EQUALS
+        )
+        if not basis_predicates or basis_predicates[0].expected_value != basis.value:
+            continue
+        completion_predicates = tuple(
+            predicate
+            for predicate in rule.predicates
+            if predicate.field_path == "academic_credentials.first.completion_state"
+            and predicate.operator is PredicateOperator.EQUALS
+        )
+        if (
+            applicant.completion_state is not None
+            and completion_predicates
+            and all(
+                predicate.expected_value != applicant.completion_state.value
+                for predicate in completion_predicates
+            )
+        ):
+            continue
+        matched.append(rule)
+    return tuple(matched)
+
+
+def _rules_evidence(
+    plan: ReviewedReportPlan,
+    rules: tuple[ApplicabilityRule, ...],
+    bundle: ReviewedReportEvidenceBundle,
+    intake: IntakeTerm,
+) -> tuple[DemoEvidence, ...]:
+    evidence_by_fact = {record.fact_id: record for record in bundle.evidence_records}
+    collected = []
+    seen: set[str] = set()
+    for rule in rules:
+        for binding in rule.evidence_bindings:
+            if binding.fact_id in seen:
+                continue
+            collected.append(
+                _demo_evidence(
+                    plan,
+                    evidence_by_fact[binding.fact_id],
+                    "仅支持当前学历路径的保守对照；不构成最终出愿资格认定。",
+                    intake,
+                )
+            )
+            seen.add(binding.fact_id)
     return tuple(collected)
 
 

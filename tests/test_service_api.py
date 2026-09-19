@@ -10,6 +10,7 @@ from pathlib import Path
 import fitz
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from jgrad_admission_rag.schemas.corpus_manifest import canonical_corpus_manifest_bytes
 from jgrad_admission_rag.schemas.corpus_version import canonical_corpus_version_policy_bytes
@@ -387,6 +388,13 @@ def test_query_returns_provider_unavailable_after_failed_lifespan(tmp_path: Path
             "unsupported_media_type",
         ),
         (
+            "/v1/applicant-comparison",
+            "post",
+            {"content": b"{}", "headers": {"content-type": "text/plain"}},
+            415,
+            "unsupported_media_type",
+        ),
+        (
             "/v1/corpus/query",
             "post",
             {"json": {"unexpected": "private value"}},
@@ -541,6 +549,15 @@ def test_service_exports_applicant_report_contracts() -> None:
     assert DemoTargetCatalogResponse.model_fields["schema_version"].default == "1.0"
     assert DemoTargetRequest.model_fields["schema_version"].default == "1.0"
     assert DemoBaseRequirementsResponse.model_fields["schema_version"].default == "1.0"
+
+
+def test_demo_applicant_input_rejects_non_finite_english_score() -> None:
+    from jgrad_admission_rag.service.demo_requirements import DemoApplicantInput
+
+    with pytest.raises(ValidationError):
+        DemoApplicantInput.model_validate(
+            {"english_test_kind": "toeic_lr", "english_score": float("inf")}
+        )
 
 
 def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:

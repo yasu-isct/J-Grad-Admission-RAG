@@ -277,6 +277,7 @@ def create_app(
             "/v1/applicant-reports",
             "/v1/query-intents/parse",
             "/v1/base-requirements",
+            "/v1/applicant-comparison",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
