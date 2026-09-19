@@ -65,6 +65,54 @@ every candidate remains qualified by document identity and official page provena
 merge index files or make eligibility decisions. See
 [Corpus Retrieval v1](docs/corpus-retrieval-v1.md).
 
+## 运行真实本地 Demo
+
+从东京科学大学[大学院募集要项页面](https://admissions.isct.ac.jp/ja/013/graduate/guideline)
+下载固定版 `2027 April / 2026 September Master's Program Admission Guidelines` PDF。仓库不重新
+分发该文件，也不会扫描下载目录或联网获取 PDF。然后在 Windows PowerShell 中运行：
+
+```powershell
+python -m pip install -e ".[service]"
+jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf
+```
+
+`--pdf` 必须是显式绝对路径。启动器会在解析前使用打包的唯一审核身份核对 SHA-256，并在成功时
+打印已核对值；也可先用 `Get-FileHash <path> -Algorithm SHA256` 查看本地值。匹配后，首次启动在
+`./outputs/demo/isct_2027_4_2026_9_master` 中生成 KB、离线兼容索引、corpus manifest 和 active
+policy，随后以正式 `jgrad-serve` 所用的 FastAPI 装配在 `http://127.0.0.1:8000/app` 提供页面。
+首次 PDF 解析和索引可能需要一些时间；看到 Uvicorn 的 application startup complete 后即可打开
+页面。按 `Ctrl+C` 停止。
+
+审核身份、最终 reviewed plan、page-scope 和 query-intent 配置随包位于
+`src/jgrad_admission_rag/demo_config`；启动路径不会读取 `tests/fixtures` 或 pytest 输出。
+
+重复启动会重新审计 PDF 身份、审核配置、KB/index、manifest、policy、reviewed plan 和 page-scope，
+仅复用完全匹配的 workspace。需要明确重建时运行：
+
+```powershell
+jgrad-demo `
+  --pdf D:\path\to\isct_2027_4_2026_9_master.pdf `
+  --workspace D:\jgrad-demo-workspace `
+  --port 8010 `
+  --rebuild
+```
+
+`--workspace` 必须是绝对可写目录。`--rebuild` 只替换该 workspace 内由 `jgrad-demo` 拥有的
+`runtime-v1`；也可以在服务停止后删除整个自选 workspace。默认索引使用
+`deterministic-fake`，只用于完全离线、可复现的本地装配，不代表真实语义检索质量，不需要付费 API
+或外网请求。服务固定绑定 `127.0.0.1`，不要将这个无认证 Demo 暴露到局域网或公网。
+
+常见失败及处理：
+
+- PDF 缺失或哈希不符：从上面的官方页面重新下载指定版本，不要改名推断或选择“最新文件”。
+- 端口占用：增加 `--port 8010` 等未占用 loopback 端口。
+- 缺少 FastAPI/Uvicorn：重新运行 `python -m pip install -e ".[service]"`。
+- workspace 过期、损坏或工件不兼容：核对目录后显式增加 `--rebuild`。
+- 目录无写权限：用 `--workspace` 指向一个明确、绝对且可写的窄目录。
+
+该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
+受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。
+
 ## Run The Local API
 
 The optional APP-01 service exposes the accepted build and corpus-query workflows without adding a

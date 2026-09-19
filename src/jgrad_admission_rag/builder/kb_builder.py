@@ -501,6 +501,7 @@ def build_document_kb(
     identity: DocumentIdentity,
     max_chars: int = 6000,
     *,
+    source_pdf_label: str | None = None,
     short_fact_threshold: int = 100,
     reference_ambiguity_margin: float = 0.1,
     quality_thresholds: BuildQualityThresholds | None = None,
@@ -510,6 +511,15 @@ def build_document_kb(
         validated_identity = DocumentIdentity.model_validate(identity.model_dump(mode="json"))
         actual_pdf_sha256 = sha256_file(pdf_path)
         if actual_pdf_sha256 != validated_identity.source_pdf_sha256:
+            raise ValueError
+        if source_pdf_label is not None and (
+            not source_pdf_label
+            or source_pdf_label != source_pdf_label.strip()
+            or Path(source_pdf_label).name != source_pdf_label
+            or "/" in source_pdf_label
+            or "\\" in source_pdf_label
+            or not source_pdf_label.lower().endswith(".pdf")
+        ):
             raise ValueError
     except (AttributeError, OSError, TypeError, ValidationError, ValueError):
         raise DocumentBuildError(
@@ -532,7 +542,7 @@ def build_document_kb(
 
     manifest = KnowledgeManifest(
         identity=validated_identity,
-        source_pdf=str(pdf_path),
+        source_pdf=source_pdf_label if source_pdf_label is not None else str(pdf_path),
         input_chunk_count=filter_summary.input_chunk_count,
         chunk_count=len(chunks),
         dropped_chunk_count=filter_summary.dropped_chunk_count,

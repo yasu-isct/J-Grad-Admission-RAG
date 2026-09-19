@@ -29,7 +29,7 @@ SCREENSHOTS = ROOT / "outputs/rule04e/browser"
 DOCUMENT_ID = "isct_2027_4_2026_9_master"
 APP_JS = STATIC_ROOT / "app.js"
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
-IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
+IDENTITY = ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 SCENARIOS = {
     "math-confirmed": ("理学院", "数学系"),
     "physics-not-covered": ("理学院", "物理学系"),

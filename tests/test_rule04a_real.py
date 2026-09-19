@@ -27,7 +27,7 @@ from tests.test_rule01a_real import _profile, _report, _statuses
 pytestmark = pytest.mark.real_pdf
 ROOT = Path(__file__).resolve().parents[1]
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
-IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
+IDENTITY = ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 PLAN = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule04c_v1.json"
 PAGE_SCOPE = ROOT / "tests/fixtures/page_scope_manifest_isct_master_v1.json"
 BATCHES = ((2027, 4, "apr"), (2026, 9, "sep"))

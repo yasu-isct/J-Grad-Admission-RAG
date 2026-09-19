@@ -28,7 +28,7 @@ SCREENSHOTS = ROOT / "outputs/rule04g/browser"
 DOCUMENT_ID = "isct_2027_4_2026_9_master"
 APP_JS = STATIC_ROOT / "app.js"
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
-IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
+IDENTITY = ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 SCENARIOS = {
     "tsinghua-confirmed": (2027, 4, "tsinghua_joint_program"),
     "tsinghua-missing-route": (2027, 4, None),

@@ -18,6 +18,7 @@ from jgrad_admission_rag.utils import sha256_file
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 REAL_MANIFEST = FIXTURES / "real_pdf_manifest.json"
+REAL_IDENTITY = REPO_ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 
 pytestmark = pytest.mark.real_pdf
 
@@ -36,7 +37,7 @@ def test_real_pdf_worker_publishes_reviewed_complete_result(tmp_path: Path) -> N
     pdf = next((path for path in candidates if path is not None and path.is_file()), None)
     if pdf is None:
         pytest.skip("real PDF fixture unavailable; set JGRAD_REAL_PDF")
-    identity = load_document_identity(FIXTURES / metadata["identity_file"])
+    identity = load_document_identity(REAL_IDENTITY)
     assert sha256_file(pdf) == identity.source_pdf_sha256
     root = (tmp_path / "durable-worker").resolve()
     creator = BuildJobRepository(
