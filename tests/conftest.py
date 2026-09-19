@@ -23,6 +23,9 @@ from jgrad_admission_rag.utils import sha256_file
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REAL_PDF_MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "real_pdf_manifest.json"
+REAL_IDENTITY_PATH = (
+    REPO_ROOT / "src" / "jgrad_admission_rag" / "demo_config" / "document_identity.json"
+)
 REAL_PDF_ENV = "JGRAD_REAL_PDF"
 
 
@@ -58,9 +61,9 @@ def real_pdf_path(real_pdf_manifest: dict[str, Any]) -> Path:
 
 @pytest.fixture(scope="session")
 def real_document_identity(real_pdf_manifest: dict[str, Any]) -> DocumentIdentity:
-    return load_document_identity(
-        REAL_PDF_MANIFEST_PATH.parent / real_pdf_manifest["identity_file"]
-    )
+    identity = load_document_identity(REAL_IDENTITY_PATH)
+    assert identity.source_pdf_sha256 == real_pdf_manifest["sha256"]
+    return identity
 
 
 @pytest.fixture(scope="session")

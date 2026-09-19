@@ -53,8 +53,9 @@ canonical schema-0.6 391-Fact KB; historical M4/RET-09 schema-0.5 fixtures remai
 
 The real-PDF regression test uses the public Institute of Science Tokyo master's admission
 guideline recorded in `real_pdf_manifest.json`.
-Its `identity_file` points to the reviewed `DocumentIdentity` fixture used by every real build; the
-identity hash must exactly match the manifest and local PDF.
+The authoritative reviewed `DocumentIdentity` used by real builds and `jgrad-demo` lives at
+`src/jgrad_admission_rag/demo_config/document_identity.json`; its hash must exactly match this
+regression manifest and the local PDF.
 
 The PDF itself is not committed because the university has not granted this repository an explicit
 redistribution license. The test never downloads files and therefore remains offline and

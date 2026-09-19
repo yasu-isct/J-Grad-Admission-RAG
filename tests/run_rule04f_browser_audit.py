@@ -30,7 +30,7 @@ SCREENSHOTS = ROOT / "outputs/rule04f/browser"
 DOCUMENT_ID = "isct_2027_4_2026_9_master"
 APP_JS = STATIC_ROOT / "app.js"
 PDF = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
-IDENTITY = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
+IDENTITY = ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 SCENARIOS = {
     "information-b-confirmed": ("情報理工学院", "情報工学系", "b_schedule"),
     "information-missing-route": ("情報理工学院", "情報工学系", None),

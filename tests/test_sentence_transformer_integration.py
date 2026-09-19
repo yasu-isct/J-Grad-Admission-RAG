@@ -39,7 +39,8 @@ def test_explicit_sentence_transformer_model_against_real_projection() -> None:
         )
     )
     identity = load_document_identity(
-        Path(__file__).parent / "fixtures" / "document_identity_isct_master_v1.json"
+        Path(__file__).resolve().parents[1]
+        / "src/jgrad_admission_rag/demo_config/document_identity.json"
     )
     kb = build_document_kb(Path(pdf_path), identity)
     texts = [unit.text for unit in kb.retrieval_units]

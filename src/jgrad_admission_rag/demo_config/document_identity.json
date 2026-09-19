@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "document_id": "isct_2027_4_2026_9_master",
+  "document_family_id": "isct-master-admission-guidelines",
+  "edition_id": "2027-april-2026-september",
+  "institution_id": "isct",
+  "institution_name": "Institute of Science Tokyo",
+  "degree_levels": ["master"],
+  "intake_terms": [
+    {"year": 2026, "month": 9},
+    {"year": 2027, "month": 4}
+  ],
+  "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+  "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+  "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "publication_date": null,
+  "revision_date": null
+}

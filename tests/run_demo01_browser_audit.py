@@ -32,7 +32,7 @@ from jgrad_admission_rag.service.demo_requirements import (  # noqa: E402
 STATIC_ROOT = ROOT / "src/jgrad_admission_rag/service/static"
 PLAN_PATH = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule05a_v1.json"
 PDF_PATH = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
-IDENTITY_PATH = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
+IDENTITY_PATH = ROOT / "src/jgrad_admission_rag/demo_config/document_identity.json"
 SCREENSHOTS = ROOT / "outputs/demo03/browser"
 OUTPUT = SCREENSHOTS / "audit.json"
 

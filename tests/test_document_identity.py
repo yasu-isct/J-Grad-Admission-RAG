@@ -15,10 +15,16 @@ from jgrad_admission_rag.schemas.document_identity import (
 from tests.identity_helpers import make_document_identity
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
+PRODUCT_IDENTITY = (
+    Path(__file__).resolve().parents[1]
+    / "src/jgrad_admission_rag/demo_config/document_identity.json"
+)
 
 
 def test_real_reviewed_identity_fixture_loads_exact_document_binding() -> None:
-    identity = load_document_identity(FIXTURE_DIR / "document_identity_isct_master_v1.json")
+    identity = load_document_identity(PRODUCT_IDENTITY)
+    legacy_fixture = load_document_identity(FIXTURE_DIR / "document_identity_isct_master_v1.json")
+    assert identity == legacy_fixture
     assert identity.document_id == "isct_2027_4_2026_9_master"
     assert identity.document_family_id == "isct-master-admission-guidelines"
     assert identity.edition_id == "2027-april-2026-september"
