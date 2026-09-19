@@ -32,7 +32,7 @@
     },
     "limitation_statement": "B 日程では指定英語外部試験の成績を、筆答専門試験成績とともに口頭試問対象者の選定に用い、筆答専門試験・英語成績・口頭試問結果を最終総合評価に用います。成績上位者の人数や閾値は公表されておらず、本システムは順位、口頭試問資格、受験者の結果または最終合否を判定しません。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "desktop",
@@ -57,7 +57,7 @@
     },
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "desktop",
@@ -82,7 +82,7 @@
     },
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "desktop",
@@ -100,7 +100,7 @@
     "allocation_evidence": null,
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "mobile",
@@ -135,7 +135,7 @@
     },
     "limitation_statement": "B 日程では指定英語外部試験の成績を、筆答専門試験成績とともに口頭試問対象者の選定に用い、筆答専門試験・英語成績・口頭試問結果を最終総合評価に用います。成績上位者の人数や閾値は公表されておらず、本システムは順位、口頭試問資格、受験者の結果または最終合否を判定しません。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "mobile",
@@ -160,7 +160,7 @@
     },
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "mobile",
@@ -185,7 +185,7 @@
     },
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   },
   {
     "viewport": "mobile",
@@ -203,6 +203,6 @@
     "allocation_evidence": null,
     "limitation_statement": "指定された系、学院及び出願日程の組合せには、この審査済み英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "6798892c3068fbf590bcb13d70095819a63130fdaf4335c9ee64f9900068d850"
+    "audited_app_js_sha256": "6cd6215f0cf3d0db87214745ae346450adf3781d0fd5508b0d8ac0aac15e7bdc"
   }
 ]

@@ -214,6 +214,12 @@ def test_demo02_ui_collects_minimal_profile_and_invalidates_stale_comparisons() 
     assert "requestSnapshot !== JSON.stringify(demoComparisonRequest())" in javascript
     assert 'applicantForm.addEventListener("input",' in javascript
     assert "baseRequirementsLoaded = false" in javascript
+    assert 'id="readiness-panel"' in html
+    assert html.count('name="readiness-filter"') == 4
+    assert "item.action_group" in javascript
+    assert "item.next_action" in javascript
+    assert "applyReadinessFilter" in javascript
+    assert "payload.counts.action_required" in javascript
     assert "localStorage" not in javascript
     assert "sessionStorage" not in javascript
 

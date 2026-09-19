@@ -16,6 +16,8 @@ audited manifest + reviewed policy + lifespan plans
   -> enter education / English / Japanese / material preparation
   -> POST /v1/applicant-comparison
   -> separate official applicability and applicant preparation states + exact evidence
+  -> server-derived counts, action groups, and bounded next actions
+  -> filter the partial preparation view without re-running rules in the browser
 
 audited manifest + reviewed policy + lifespan plans
   -> GET /v1/reviewed-documents
@@ -45,6 +47,12 @@ information” because current evidence does not support a satisfaction conclusi
 official applicability and the user's preparation state are displayed independently. Refreshing
 the page clears every personal field, and neither browser storage nor server-side persistence is
 used.
+
+STEP 4 displays the service-returned target summary, partial-checklist warning, reconciled counts,
+and next actions. Native radio controls filter the already classified `action_group` values for
+all items, items needing more input, recorded items, or review/uncovered items. Filtering changes
+only visibility; it does not calculate readiness, eligibility, material applicability, or counts.
+Changing any STEP 3 input hides the entire old STEP 4 view until an explicit new comparison succeeds.
 
 Every requirement with evidence opens a modal side drawer. It displays the official title,
 school/intake, exact pages, server-returned Japanese text, safety limitation, and source link.

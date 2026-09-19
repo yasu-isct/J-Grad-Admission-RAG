@@ -212,6 +212,12 @@ Japanese input is recorded conservatively and never upgraded into language satis
 reviewed evidence. The endpoint stores nothing and returns no overall eligibility, completeness,
 receipt, or admission conclusion.
 
+The same response includes a server-derived readiness presentation. Every item has an
+`action_group` (`recorded`, `action_required`, or `review_required`) and a bounded next action.
+`counts` is validated against the exact returned items, so a drifted summary fails response
+validation. This is explicitly a partial reviewed preparation view, not an official or complete
+school checklist. The browser may filter these returned groups but does not reclassify them.
+
 Each returned evidence object contains the official document title and source URL, intake, exact
 Fact ID, official pages and Japanese Fact text, scope, and a conclusion limitation. The endpoint
 does not fabricate page fragments; the UI tells users which page to inspect in the official file.

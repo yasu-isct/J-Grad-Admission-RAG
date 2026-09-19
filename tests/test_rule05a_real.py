@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from pydantic import ValidationError
 
 from jgrad_admission_rag.reasoning.applicant_report import (
     ApplicantReport,
@@ -229,6 +230,10 @@ def test_demo_applicant_comparison_is_conservative_and_path_aware(
 
     assert response.status_code == 200
     items = response.json()["items"]
+    counts = response.json()["counts"]
+    assert counts["total"] == len(items)
+    assert counts["recorded"] + counts["action_required"] + counts["review_required"] == len(items)
+    assert all(item["next_action"] and item["action_group"] for item in items)
     education = next(item for item in items if item["item_id"] == "education:credential")
     assert education["comparison_status"] == education_status
     assert {item["fact_id"] for item in education["evidence"]} == education_fact_ids
@@ -248,6 +253,20 @@ def test_demo_applicant_comparison_is_conservative_and_path_aware(
     all_evidence = [evidence for item in items for evidence in item["evidence"]]
     assert "fact:00347" not in {evidence["fact_id"] for evidence in all_evidence}
     assert all(evidence["scope_type"] != "conditional_program" for evidence in all_evidence)
+
+    from jgrad_admission_rag.service.demo_requirements import DemoApplicantComparisonResponse
+
+    invalid = response.json()
+    invalid["counts"]["total"] += 1
+    with pytest.raises(ValidationError):
+        DemoApplicantComparisonResponse.model_validate(invalid)
+    invalid_group = response.json()
+    current_group = invalid_group["items"][0]["action_group"]
+    invalid_group["items"][0]["action_group"] = (
+        "recorded" if current_group != "recorded" else "action_required"
+    )
+    with pytest.raises(ValidationError):
+        DemoApplicantComparisonResponse.model_validate(invalid_group)
 
 
 def test_demo_applicant_comparison_rejects_ambiguous_language_or_material_input(

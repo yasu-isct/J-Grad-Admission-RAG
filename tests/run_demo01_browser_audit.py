@@ -33,7 +33,7 @@ STATIC_ROOT = ROOT / "src/jgrad_admission_rag/service/static"
 PLAN_PATH = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule05a_v1.json"
 PDF_PATH = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY_PATH = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-SCREENSHOTS = ROOT / "outputs/demo01/browser"
+SCREENSHOTS = ROOT / "outputs/demo03/browser"
 OUTPUT = SCREENSHOTS / "audit.json"
 
 PLAN = load_reviewed_report_plan(PLAN_PATH)
@@ -180,7 +180,7 @@ def main() -> None:
                 assert "Fact ID" not in drawer_text
                 drawer_screenshot = None
                 if viewport == "mobile":
-                    drawer_screenshot = SCREENSHOTS / "demo01-mobile-evidence.png"
+                    drawer_screenshot = SCREENSHOTS / "demo03-mobile-evidence.png"
                     page.screenshot(path=drawer_screenshot)
                 page.keyboard.press("Escape")
                 assert trigger.evaluate("element => document.activeElement === element")
@@ -203,11 +203,19 @@ def main() -> None:
                 assert comparison_groups == ["学历", "英语", "日语", "已有材料与官方适用性"]
                 assert "可能匹配，仍需核对" in page.locator("#comparison-output").inner_text()
                 assert "个人准备状态：已有" in page.locator("#comparison-output").inner_text()
+                assert page.locator("#readiness-panel").is_visible()
+                action_count = int(page.locator("#count-action").inner_text())
+                page.locator('input[name="readiness-filter"][value="action_required"]').check()
+                assert page.locator(".comparison-card:visible").count() == action_count
+                page.locator('input[name="readiness-filter"][value="all"]').check()
+                assert page.locator(".comparison-card:visible").count() == int(
+                    page.locator("#count-total").inner_text()
+                )
                 overflow = page.evaluate(
                     "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                 )
                 assert overflow is False
-                screenshot = SCREENSHOTS / f"demo01-{viewport}.png"
+                screenshot = SCREENSHOTS / f"demo03-{viewport}.png"
                 page.screenshot(path=screenshot, full_page=True)
                 records.append(
                     {
@@ -219,6 +227,7 @@ def main() -> None:
                         "stale_request_suppressed": True,
                         "stale_comparison_suppressed": True,
                         "comparison_groups": comparison_groups,
+                        "readiness_filter_keyboard_flow": True,
                         "conditional_program_evidence_visible": False,
                         "horizontal_overflow": overflow,
                         "screenshot": screenshot.relative_to(ROOT).as_posix(),
