@@ -151,6 +151,8 @@ def main() -> None:
                     page.locator("#college-select").select_option("理学院")
                     page.wait_for_timeout(500)
                     assert page.locator(".requirement-card").count() == 0
+                    assert "正在核对" not in page.locator("#target-status").inner_text()
+                    assert page.locator("#requirements-retry").is_hidden()
                     page.locator("#college-select").select_option("工学院")
                     page.locator("#department-select").select_option("システム制御系")
                     page.locator("#requirements-submit").click()

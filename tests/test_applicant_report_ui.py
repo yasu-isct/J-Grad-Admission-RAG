@@ -173,6 +173,10 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert "new AbortController()" in javascript
     assert "requirementsRequestId" in javascript
     assert "requestSnapshot !== JSON.stringify(demoTargetRequest())" in javascript
+    assert (
+        'setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。")'
+        in javascript
+    )
     assert "请在文件中查看该页" in javascript
     assert "textContent" in javascript
     assert "innerHTML" not in javascript

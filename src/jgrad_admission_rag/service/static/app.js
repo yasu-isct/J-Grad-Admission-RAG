@@ -1157,6 +1157,8 @@ function cancelPendingRequirements() {
 function handleDemoTargetChange(next) {
   cancelPendingRequirements();
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
   next();
 }
 
