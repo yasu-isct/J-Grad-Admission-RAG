@@ -528,6 +528,20 @@ def test_service_exports_applicant_report_contracts() -> None:
     assert DemoBaseRequirementsResponse.model_fields["schema_version"].default == "1.0"
 
 
+def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:
+    source = (
+        Path(__file__).parents[1]
+        / "src"
+        / "jgrad_admission_rag"
+        / "service"
+        / "demo_requirements.py"
+    ).read_text(encoding="utf-8")
+
+    assert "2026年6月1日" not in source
+    assert "2026年6月4日" not in source
+    assert "reviewed_summary=rule.annotation_note" in source
+
+
 def test_cli_defaults_to_loopback_and_defers_provider_creation(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

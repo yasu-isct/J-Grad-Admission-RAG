@@ -92,6 +92,7 @@ class DemoRequirement(DemoModel):
     category: Literal["dates", "materials", "eligibility", "language"]
     title: str
     description: str
+    reviewed_summary: str | None = None
     official_status: Literal[
         "required",
         "conditional",
@@ -235,7 +236,12 @@ def build_demo_base_requirements(
                     else "仅显示已审核的官方期间；请以官方文件与学校最新通知为准。"
                 ),
                 request=request,
-                description=_date_description(rule, arrival),
+                description=(
+                    "请根据下方官方日文核对材料实际到达期间；寄出日期不等于到达日期。"
+                    if arrival
+                    else "请根据下方官方日文核对网上登记开始时间与出愿期间。"
+                ),
+                reviewed_summary=rule.annotation_note,
             )
         )
 
@@ -544,12 +550,6 @@ def _predicate_accepts(value: object, predicate: ApplicabilityPredicate) -> bool
     return True
 
 
-def _date_description(rule: ApplicabilityRule, arrival: bool) -> str:
-    if arrival:
-        return "官方材料到达期间为 2026年6月4日至6月10日（必着）；寄出日期不等于到达日期。"
-    return "网上登记自 2026年6月1日 09:00（日本时间）开始；出愿期间为 6月4日至6月10日（必着）。"
-
-
 def _has_profile_predicate(rule: ApplicabilityRule) -> bool:
     return any(predicate.field_path not in _TARGET_FIELDS for predicate in rule.predicates)
 
@@ -565,12 +565,14 @@ def _rule_requirement(
     limitation: str,
     request: DemoTargetRequest,
     description: str | None = None,
+    reviewed_summary: str | None = None,
 ) -> DemoRequirement:
     return DemoRequirement(
         requirement_id=f"rule:{rule.rule_id}",
         category=category,
         title=title,
         description=description or rule.annotation_note,
+        reviewed_summary=reviewed_summary,
         official_status=status,
         evidence=tuple(
             _demo_evidence(plan, evidence_by_fact[binding.fact_id], limitation, request.intake)

@@ -170,6 +170,9 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert "clearDemoResults" in javascript
     assert "evidenceDrawer.showModal()" in javascript
     assert "drawerTrigger.focus()" in javascript
+    assert "new AbortController()" in javascript
+    assert "requirementsRequestId" in javascript
+    assert "requestSnapshot !== JSON.stringify(demoTargetRequest())" in javascript
     assert "请在文件中查看该页" in javascript
     assert "textContent" in javascript
     assert "innerHTML" not in javascript

@@ -149,6 +149,8 @@ input {
 .requirement-card { padding: 15px; border: 1px solid #d5ddda; border-radius: 7px; background: #fbfcfc; }
 .requirement-card h4 { margin: 0; font-size: 15px; }
 .requirement-card p { margin: 8px 0 0; line-height: 1.6; }
+.requirement-card .reviewed-summary-label { margin-top: 12px; color: #596764; font-size: 12px; font-weight: 700; }
+.requirement-card .reviewed-summary { margin: 6px 0 0; padding-left: 12px; border-left: 3px solid #9cbdb7; white-space: pre-wrap; font-size: 13px; line-height: 1.65; }
 .requirement-card .actions { margin-top: 12px; }
 .requirement-status { display: inline-block; margin-top: 8px; padding: 3px 8px; border-radius: 999px; color: #35514b; background: #e3eeeb; font-size: 12px; font-weight: 700; }
 .requirement-status[data-status="needs_information"],

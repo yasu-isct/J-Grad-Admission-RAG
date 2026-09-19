@@ -56,6 +56,8 @@ let reportPending = false;
 let reportCanRetry = false;
 let demoCatalog = [];
 let requirementsPending = false;
+let requirementsController = null;
+let requirementsRequestId = 0;
 let drawerTrigger = null;
 
 function setMessage(element, state, message, focus = false) {
@@ -959,6 +961,7 @@ function populateDemoCatalog(schools) {
 }
 
 async function loadDemoCatalog() {
+  cancelPendingRequirements();
   demoCatalog = [];
   requirementsRetry.hidden = true;
   clearDemoResults();
@@ -1033,6 +1036,15 @@ function renderRequirements(payload) {
       const description = document.createElement("p");
       description.textContent = requirement.description;
       card.append(status, description);
+      if (requirement.reviewed_summary) {
+        const officialLabel = document.createElement("p");
+        officialLabel.className = "reviewed-summary-label";
+        officialLabel.textContent = "审核日期摘要（日文）";
+        const excerpt = document.createElement("blockquote");
+        excerpt.className = "reviewed-summary";
+        excerpt.textContent = requirement.reviewed_summary;
+        card.append(officialLabel, excerpt);
+      }
       if (requirement.evidence.length) {
         const actions = document.createElement("div");
         actions.className = "actions";
@@ -1102,29 +1114,48 @@ function openDemoEvidence(requirement, evidence, trigger) {
 
 async function submitBaseRequirements() {
   if (requirementsPending || !demoTargetComplete()) return;
+  const requestPayload = demoTargetRequest();
+  const requestSnapshot = JSON.stringify(requestPayload);
+  const requestId = ++requirementsRequestId;
+  requirementsController = new AbortController();
   clearDemoResults("正在从服务端加载基础要求。");
   requirementsPending = true;
   updateRequirementsSubmit();
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
   try {
-    const response = await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(demoTargetRequest()), cache: "no-store", credentials: "same-origin" });
+    const response = await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
     if (!response.ok) throw new Error();
     const payload = await response.json();
     if (!payload || !Array.isArray(payload.requirements)) throw new Error();
+    if (requestId !== requirementsRequestId || !demoTargetComplete() || requestSnapshot !== JSON.stringify(demoTargetRequest())) return;
     renderRequirements(payload);
     setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。", true);
-  } catch (_error) {
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    if (requestId !== requirementsRequestId) return;
     clearDemoResults("基础要求暂时无法加载。");
     requirementsRetry.hidden = false;
     setMessage(targetStatus, "error", "无法加载基础要求，请检查选择后重试。", true);
   } finally {
-    requirementsPending = false;
-    updateRequirementsSubmit();
+    if (requestId === requirementsRequestId) {
+      requirementsPending = false;
+      requirementsController = null;
+      updateRequirementsSubmit();
+    }
   }
 }
 
+function cancelPendingRequirements() {
+  requirementsRequestId += 1;
+  if (requirementsController) requirementsController.abort();
+  requirementsController = null;
+  requirementsPending = false;
+  updateRequirementsSubmit();
+}
+
 function handleDemoTargetChange(next) {
+  cancelPendingRequirements();
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
   next();
 }
@@ -1147,7 +1178,7 @@ demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populat
 intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));
 collegeSelect.addEventListener("change", () => handleDemoTargetChange(populateDepartmentSelect));
 departmentSelect.addEventListener("change", () => handleDemoTargetChange(populateRouteSelect));
-routeSelect.addEventListener("change", () => { clearDemoResults("申请目标已改变，请重新加载要求。"); updateRequirementsSubmit(); });
+routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequirementsSubmit));
 requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });

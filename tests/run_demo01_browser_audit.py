@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import sys
 import threading
+import time
 
 from playwright.sync_api import sync_playwright
 
@@ -56,6 +57,8 @@ CATALOG = build_demo_target_catalog((PLAN,)).model_dump(mode="json")
 
 
 class Handler(SimpleHTTPRequestHandler):
+    base_requirement_requests = 0
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC_ROOT), **kwargs)
 
@@ -68,7 +71,10 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (ConnectionError, OSError):
+            pass
 
     def do_GET(self):
         if self.path == "/v1/target-catalog":
@@ -106,6 +112,9 @@ class Handler(SimpleHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", "0"))
         payload = json.loads(self.rfile.read(length) or b"{}")
         if self.path == "/v1/base-requirements":
+            type(self).base_requirement_requests += 1
+            if type(self).base_requirement_requests == 1:
+                time.sleep(0.3)
             request = DemoTargetRequest.model_validate(payload)
             response = build_demo_base_requirements(request, PLAN, BUNDLE)
             self._json(response.model_dump(mode="json"))
@@ -138,6 +147,13 @@ def main() -> None:
                 page.locator("#department-select").select_option("システム制御系")
                 assert page.locator("#requirements-submit").is_enabled()
                 page.locator("#requirements-submit").click()
+                if viewport == "desktop":
+                    page.locator("#college-select").select_option("理学院")
+                    page.wait_for_timeout(500)
+                    assert page.locator(".requirement-card").count() == 0
+                    page.locator("#college-select").select_option("工学院")
+                    page.locator("#department-select").select_option("システム制御系")
+                    page.locator("#requirements-submit").click()
                 page.locator(".requirement-card").first.wait_for()
                 categories = page.locator(".requirement-group h3").all_text_contents()
                 assert categories == ["关键日期", "核心提交材料", "学历与资格", "语言要求"]
@@ -168,6 +184,7 @@ def main() -> None:
                         "target": "東京科学大学 / 2027年4月 / 工学院 / システム制御系",
                         "categories": categories,
                         "drawer_keyboard_close_and_focus_restore": True,
+                        "stale_request_suppressed": True,
                         "conditional_program_evidence_visible": False,
                         "horizontal_overflow": overflow,
                         "screenshot": screenshot.relative_to(ROOT).as_posix(),

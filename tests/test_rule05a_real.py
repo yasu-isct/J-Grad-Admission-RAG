@@ -140,6 +140,11 @@ def test_demo_target_catalog_and_base_requirements_are_server_owned(rule04b_clie
     }
     all_evidence = [evidence for item in payload["requirements"] for evidence in item["evidence"]]
     assert all(evidence["pages"] and evidence["official_text"] for evidence in all_evidence)
+    dates = [item for item in payload["requirements"] if item["category"] == "dates"]
+    assert all(item["reviewed_summary"] for item in dates)
+    assert all(
+        "2026" in item["reviewed_summary"] or "到着日" in item["reviewed_summary"] for item in dates
+    )
     assert "fact:00347" not in {evidence["fact_id"] for evidence in all_evidence}
     assert "tsinghua_joint_program" not in response.text
 
