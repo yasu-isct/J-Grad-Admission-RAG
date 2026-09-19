@@ -191,6 +191,33 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert "@media (max-width: 760px)" in css
 
 
+def test_demo02_ui_collects_minimal_profile_and_invalidates_stale_comparisons() -> None:
+    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
+
+    for field_id in (
+        "demo-credential-basis",
+        "demo-completion-state",
+        "demo-english-kind",
+        "demo-english-score",
+        "demo-english-date",
+        "demo-english-report",
+        "demo-japanese-background",
+    ):
+        assert f'for="{field_id}"' in html
+        assert f'id="{field_id}"' in html
+    assert html.count("data-material-code=") == 5
+    assert 'const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison"' in javascript
+    assert "demoApplicantInput" in javascript
+    assert "comparisonRequestId" in javascript
+    assert "comparisonController = new AbortController()" in javascript
+    assert "requestSnapshot !== JSON.stringify(demoComparisonRequest())" in javascript
+    assert 'applicantForm.addEventListener("input",' in javascript
+    assert "baseRequirementsLoaded = false" in javascript
+    assert "localStorage" not in javascript
+    assert "sessionStorage" not in javascript
+
+
 def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
     assert 'const INTENT_ENDPOINT = "/v1/query-intents/parse"' in javascript

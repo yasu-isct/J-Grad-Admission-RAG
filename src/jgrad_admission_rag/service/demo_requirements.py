@@ -2,11 +2,32 @@
 
 from __future__ import annotations
 
+from datetime import date
+from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StrictBool,
+    StrictFloat,
+    StrictInt,
+    model_validator,
+)
 
 from ..reasoning.applicability import ApplicabilityPredicate, ApplicabilityRule, PredicateOperator
+from ..reasoning.application_materials import (
+    ApplicationMaterialApplicability,
+    ApplicationMaterialCode,
+    resolve_application_materials,
+)
+from ..reasoning.applicant_profile import (
+    ApplicantProfile,
+    CompletionState,
+    CredentialBasis,
+    LanguageTestKind,
+)
 from ..reasoning.reviewed_report_evidence import (
     ReviewedReportEvidenceBundle,
     ReviewedReportEvidenceRecord,
@@ -122,6 +143,78 @@ class DemoBaseRequirementsResponse(DemoModel):
     coverage_statement: str
     limitation_statement: str
     requirements: tuple[DemoRequirement, ...]
+
+
+class DemoJapaneseBackground(str, Enum):
+    STUDIED = "studied"
+    CERTIFICATE_AVAILABLE = "certificate_available"
+    NOT_STUDIED = "not_studied"
+
+
+class DemoMaterialPreparation(str, Enum):
+    AVAILABLE = "available"
+    NOT_YET = "not_yet"
+    UNKNOWN = "unknown"
+
+
+class DemoMaterialInput(DemoModel):
+    code: ApplicationMaterialCode
+    preparation: DemoMaterialPreparation
+
+
+class DemoApplicantInput(DemoModel):
+    credential_basis: CredentialBasis | None = None
+    completion_state: CompletionState | None = None
+    english_test_kind: LanguageTestKind | None = None
+    english_score: StrictInt | StrictFloat | None = Field(default=None, ge=0)
+    english_test_date: date | None = None
+    english_official_report_available: StrictBool | None = None
+    japanese_background: DemoJapaneseBackground | None = None
+    materials: tuple[DemoMaterialInput, ...] = ()
+
+    @model_validator(mode="after")
+    def supplied_fields_must_reconcile(self) -> "DemoApplicantInput":
+        if (self.english_score is not None or self.english_test_date is not None) and (
+            self.english_test_kind is None
+        ):
+            raise ValueError("English score or date requires a test kind")
+        codes = tuple(item.code for item in self.materials)
+        if len(codes) != len(set(codes)):
+            raise ValueError("material codes must not repeat")
+        return self
+
+
+class DemoApplicantComparisonRequest(DemoModel):
+    schema_version: Literal["1.0"] = "1.0"
+    target: DemoTargetRequest
+    applicant: DemoApplicantInput
+
+
+class DemoComparisonItem(DemoModel):
+    item_id: str
+    category: Literal["education", "english", "japanese", "materials"]
+    title: str
+    comparison_status: Literal[
+        "recorded",
+        "possible_match",
+        "needs_information",
+        "needs_review",
+        "not_applicable",
+        "not_covered",
+    ]
+    description: str
+    official_status: str | None = None
+    preparation_status: DemoMaterialPreparation | None = None
+    evidence: tuple[DemoEvidence, ...] = ()
+    limitation: str
+
+
+class DemoApplicantComparisonResponse(DemoModel):
+    schema_version: Literal["1.0"] = "1.0"
+    target: DemoTargetSummary
+    comparison_statement: str
+    limitation_statement: str
+    items: tuple[DemoComparisonItem, ...]
 
 
 _DEGREE_NAMES = {
@@ -251,7 +344,7 @@ def build_demo_base_requirements(
         for entry in materials.entries:
             requirements.append(
                 DemoRequirement(
-                    requirement_id=f"material:{entry.code}",
+                    requirement_id=f"material:{entry.code.value}",
                     category="materials",
                     title=entry.official_name,
                     description=(
@@ -407,6 +500,225 @@ def build_demo_base_requirements(
         limitation_statement="本报告不判断最终出愿资格、材料受理、录取结果或成功概率。",
         requirements=tuple(requirements),
     )
+
+
+def build_demo_applicant_comparison(
+    request: DemoApplicantComparisonRequest,
+    plan: ReviewedReportPlan,
+    evidence_bundle: ReviewedReportEvidenceBundle,
+) -> DemoApplicantComparisonResponse:
+    """Compare minimal applicant assertions without producing an eligibility conclusion."""
+
+    base = build_demo_base_requirements(request.target, plan, evidence_bundle)
+    applicant = request.applicant
+    eligibility_evidence = _category_evidence(base, "eligibility")
+    language_evidence = _category_evidence(base, "language")
+    items: list[DemoComparisonItem] = []
+
+    material_result = None
+    if plan.application_materials is not None:
+        material_result = resolve_application_materials(
+            _demo_applicant_profile(request.target, applicant),
+            plan.application_materials,
+        )
+
+    if applicant.credential_basis is None:
+        education_status = "needs_information"
+        education_description = "尚未提供明确的学历资格路径；空值不会被解释为不满足或满足。"
+    elif material_result is not None and any(
+        entry.applicability is ApplicationMaterialApplicability.ELIGIBILITY_REVIEW_PATH
+        for entry in material_result.entries
+    ):
+        education_status = "needs_review"
+        education_description = (
+            "已记录的学历路径属于个别资格审查范围，需要学校审核；这里不判断资格成立。"
+        )
+    else:
+        education_status = "possible_match"
+        education_description = "已记录的学历路径可能对应普通资格路径，仍需核对毕业状态和官方证明。"
+    if applicant.completion_state is not None:
+        completion_labels = {
+            CompletionState.COMPLETED: "已毕业",
+            CompletionState.EXPECTED: "预计毕业",
+            CompletionState.NOT_COMPLETED: "尚未完成",
+        }
+        education_description += (
+            f" 毕业状态已记录为：{completion_labels[applicant.completion_state]}。"
+        )
+    items.append(
+        DemoComparisonItem(
+            item_id="education:credential",
+            category="education",
+            title="学历与资格路径",
+            comparison_status=education_status,
+            description=education_description,
+            evidence=eligibility_evidence,
+            limitation="这是申请人自报信息与已审核路径的保守对照，不是出愿资格认定。",
+        )
+    )
+
+    english_supplied = any(
+        value is not None
+        for value in (
+            applicant.english_test_kind,
+            applicant.english_score,
+            applicant.english_test_date,
+            applicant.english_official_report_available,
+        )
+    )
+    items.append(
+        DemoComparisonItem(
+            item_id="english:result",
+            category="english",
+            title="英语考试与官方成绩单",
+            comparison_status="recorded" if english_supplied else "needs_information",
+            description=(
+                "英语考试信息已记录并与该目标的审核规则并列展示；仍需核对考试类型、有效期和提交方式。"
+                if english_supplied
+                else "尚未提供英语考试信息；这不会被解释为不满足要求。"
+            ),
+            evidence=language_evidence,
+            limitation="记录成绩不等于成绩有效、官方成绩单可用、学校已收到或已满足英语要求。",
+        )
+    )
+
+    japanese_supplied = applicant.japanese_background is not None
+    items.append(
+        DemoComparisonItem(
+            item_id="japanese:background",
+            category="japanese",
+            title="日语学习或证明情况",
+            comparison_status="recorded" if japanese_supplied else "needs_information",
+            description=(
+                "日语情况已记录；当前审核证据不足以判断是否满足任何项目要求。"
+                if japanese_supplied
+                else "尚未提供日语情况；当前审核证据也不足以生成满足结论。"
+            ),
+            limitation="本项只记录申请人输入，不推断日语能力、免除、项目资格或录取结果。",
+        )
+    )
+
+    supplied_materials = {item.code: item.preparation for item in applicant.materials}
+    base_materials = {
+        requirement.requirement_id.removeprefix("material:"): requirement
+        for requirement in base.requirements
+        if requirement.category == "materials"
+    }
+    if material_result is not None:
+        for entry in material_result.entries:
+            preparation = supplied_materials.get(entry.code, DemoMaterialPreparation.UNKNOWN)
+            requirement = base_materials.get(entry.code.value)
+            applicability = entry.applicability.value
+            if entry.applicability is ApplicationMaterialApplicability.ELIGIBILITY_REVIEW_PATH:
+                status = "needs_review"
+            elif entry.applicability is ApplicationMaterialApplicability.NEEDS_INFORMATION:
+                status = "needs_information"
+            elif entry.applicability is ApplicationMaterialApplicability.NOT_COVERED:
+                status = "not_covered"
+            elif preparation is DemoMaterialPreparation.AVAILABLE:
+                status = "recorded"
+            else:
+                status = "needs_information"
+            items.append(
+                DemoComparisonItem(
+                    item_id=f"material:{entry.code.value}",
+                    category="materials",
+                    title=entry.official_name,
+                    comparison_status=status,
+                    official_status=applicability,
+                    preparation_status=preparation,
+                    description=_material_comparison_description(applicability, preparation),
+                    evidence=requirement.evidence if requirement is not None else (),
+                    limitation="个人准备状态与官方适用性分开记录；已有材料不表示其有效、已提交或已受理。",
+                )
+            )
+
+    return DemoApplicantComparisonResponse(
+        target=base.target,
+        comparison_statement="服务端已将个人自报信息与当前审核规则进行保守对照。",
+        limitation_statement="本结果不是完整 checklist，不判断最终资格、材料完整性、受理或录取。",
+        items=tuple(items),
+    )
+
+
+def _demo_applicant_profile(
+    target: DemoTargetRequest, applicant: DemoApplicantInput
+) -> ApplicantProfile:
+    credentials = None
+    if applicant.credential_basis is not None or applicant.completion_state is not None:
+        credentials = (
+            {
+                "institution_country_code": None,
+                "degree_level": "bachelor",
+                "credential_basis": applicant.credential_basis,
+                "completion_state": applicant.completion_state,
+                "completion_date": None,
+                "expected_completion_date": None,
+                "years_of_education": None,
+            },
+        )
+    return ApplicantProfile.model_validate(
+        {
+            "schema_version": "1.0",
+            "target_application": {
+                "graduate_school_or_college": target.college_id,
+                "department_or_program": target.department_id,
+                "requested_degree_level": target.degree_id.value,
+                "intake_year": target.intake.year,
+                "intake_month": target.intake.month,
+                "application_route": target.application_route,
+            },
+            "citizenship_and_residence": {
+                "citizenship_country_codes": None,
+                "current_residence_country_code": None,
+                "residence_status_category": None,
+            },
+            "academic_credentials": credentials,
+            "eligibility_facts": {
+                "age_at_enrollment": None,
+                "professional_experience_months": None,
+                "research_experience_months": None,
+                "individual_review_status": None,
+                "individual_review_requested": None,
+                "individual_review_completed": None,
+            },
+            "language_test_results": None,
+        }
+    )
+
+
+def _category_evidence(
+    response: DemoBaseRequirementsResponse,
+    category: Literal["eligibility", "language"],
+) -> tuple[DemoEvidence, ...]:
+    collected: list[DemoEvidence] = []
+    seen: set[tuple[str, str]] = set()
+    for requirement in response.requirements:
+        if requirement.category != category:
+            continue
+        for evidence in requirement.evidence:
+            key = (evidence.document_id, evidence.fact_id)
+            if key not in seen:
+                collected.append(evidence)
+                seen.add(key)
+    return tuple(collected)
+
+
+def _material_comparison_description(
+    applicability: str, preparation: DemoMaterialPreparation
+) -> str:
+    applicability_labels = {
+        "required": "该材料在当前官方共通清单中适用。",
+        "eligibility_review_path": "该材料由个别资格审查路径承接，不在共通清单重复判断。",
+        "needs_information": "学历路径信息不足，暂不能确定该材料在共通清单中的适用性。",
+        "not_covered": "当前审核范围不足以判断该材料的适用性。",
+    }
+    preparation_labels = {
+        DemoMaterialPreparation.AVAILABLE: "个人输入：已有。",
+        DemoMaterialPreparation.NOT_YET: "个人输入：尚未准备。",
+        DemoMaterialPreparation.UNKNOWN: "个人输入：未提供或不确定。",
+    }
+    return f"{applicability_labels[applicability]} {preparation_labels[preparation]}"
 
 
 def _college_catalog(plan: ReviewedReportPlan) -> tuple[DemoCollege, ...]:

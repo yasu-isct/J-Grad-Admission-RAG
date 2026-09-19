@@ -203,6 +203,15 @@ construct an `ApplicantProfile`, persist state, or claim that the applicant sati
 Path-dependent p.10 materials remain `needs_information` until DEMO-02 supplies a profile. Unknown
 targets and missing required routes return `422 invalid_request`.
 
+`POST /v1/applicant-comparison` accepts the same complete target plus a deliberately small,
+strict applicant input. Academic basis/completion, English test facts, Japanese background, and
+five material preparation states all preserve explicit null/unknown semantics. The server reuses
+the reviewed qualification-path and RULE-05A material policy; it returns separate official
+applicability and applicant preparation states with the existing evidence view model. English and
+Japanese input is recorded conservatively and never upgraded into language satisfaction without
+reviewed evidence. The endpoint stores nothing and returns no overall eligibility, completeness,
+receipt, or admission conclusion.
+
 Each returned evidence object contains the official document title and source URL, intake, exact
 Fact ID, official pages and Japanese Fact text, scope, and a conclusion limitation. The endpoint
 does not fabricate page fragments; the UI tells users which page to inspect in the official file.

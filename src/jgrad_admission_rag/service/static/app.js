@@ -6,6 +6,7 @@ const INTENT_ENDPOINT = "/v1/query-intents/parse";
 const REPORT_ENDPOINT = "/v1/applicant-reports";
 const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog";
 const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements";
+const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison";
 const MAX_QUERY_LENGTH = 1000;
 const TOP_K = 5;
 const CANDIDATE_K = 20;
@@ -49,6 +50,11 @@ const requirementsOutput = byId("requirements-output");
 const evidenceDrawer = byId("evidence-drawer");
 const drawerClose = byId("drawer-close");
 const drawerContent = byId("drawer-content");
+const applicantForm = byId("applicant-form");
+const comparisonSubmit = byId("comparison-submit");
+const comparisonRetry = byId("comparison-retry");
+const comparisonStatus = byId("comparison-status");
+const comparisonOutput = byId("comparison-output");
 
 let catalogItems = [];
 let lastAction = "catalog";
@@ -59,6 +65,10 @@ let requirementsPending = false;
 let requirementsController = null;
 let requirementsRequestId = 0;
 let drawerTrigger = null;
+let baseRequirementsLoaded = false;
+let comparisonPending = false;
+let comparisonController = null;
+let comparisonRequestId = 0;
 
 function setMessage(element, state, message, focus = false) {
   element.dataset.state = state;
@@ -962,6 +972,8 @@ function populateDemoCatalog(schools) {
 
 async function loadDemoCatalog() {
   cancelPendingRequirements();
+  baseRequirementsLoaded = false;
+  invalidateComparison("请先加载基础要求。");
   demoCatalog = [];
   requirementsRetry.hidden = true;
   clearDemoResults();
@@ -1112,12 +1124,162 @@ function openDemoEvidence(requirement, evidence, trigger) {
   drawerClose.focus();
 }
 
+function nullableDemoValue(id) {
+  return byId(id).value || null;
+}
+
+function nullableDemoNumber(id) {
+  const value = byId(id).value;
+  return value === "" ? null : Number(value);
+}
+
+function nullableDemoBoolean(id) {
+  const value = byId(id).value;
+  return value === "" ? null : value === "true";
+}
+
+function demoApplicantInput() {
+  return {
+    credential_basis: nullableDemoValue("demo-credential-basis"),
+    completion_state: nullableDemoValue("demo-completion-state"),
+    english_test_kind: nullableDemoValue("demo-english-kind"),
+    english_score: nullableDemoNumber("demo-english-score"),
+    english_test_date: nullableDemoValue("demo-english-date"),
+    english_official_report_available: nullableDemoBoolean("demo-english-report"),
+    japanese_background: nullableDemoValue("demo-japanese-background"),
+    materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({ code: select.dataset.materialCode, preparation: select.value }))
+  };
+}
+
+function demoComparisonRequest() {
+  return { schema_version: "1.0", target: demoTargetRequest(), applicant: demoApplicantInput() };
+}
+
+function cancelPendingComparison() {
+  comparisonRequestId += 1;
+  if (comparisonController) comparisonController.abort();
+  comparisonController = null;
+  comparisonPending = false;
+  comparisonSubmit.disabled = !baseRequirementsLoaded;
+}
+
+function clearComparison(message = "填写个人情况后，可由服务端进行保守对照。") {
+  comparisonOutput.replaceChildren();
+  comparisonRetry.hidden = true;
+  setMessage(comparisonStatus, "initial", message);
+}
+
+function comparisonStatusLabel(status) {
+  const labels = {
+    recorded: "已记录",
+    possible_match: "可能匹配，仍需核对",
+    needs_information: "需要更多信息",
+    needs_review: "需要学校／人工审核",
+    not_applicable: "不适用",
+    not_covered: "当前未覆盖"
+  };
+  return labels[status] || status;
+}
+
+function renderComparison(payload) {
+  comparisonOutput.replaceChildren();
+  const groups = [["education", "学历"], ["english", "英语"], ["japanese", "日语"], ["materials", "已有材料与官方适用性"]];
+  for (const [category, label] of groups) {
+    const entries = payload.items.filter((item) => item.category === category);
+    if (!entries.length) continue;
+    const section = document.createElement("section");
+    section.className = "requirement-group comparison-group";
+    section.append(heading(3, label));
+    const list = document.createElement("div");
+    list.className = "requirement-list";
+    for (const item of entries) {
+      const card = document.createElement("article");
+      card.className = "requirement-card comparison-card";
+      card.append(heading(4, item.title));
+      const status = document.createElement("span");
+      status.className = "requirement-status";
+      status.dataset.status = item.comparison_status;
+      status.textContent = comparisonStatusLabel(item.comparison_status);
+      const description = document.createElement("p");
+      description.textContent = item.description;
+      card.append(status, description);
+      if (item.official_status) {
+        const officialLabels = { required: "适用", eligibility_review_path: "由个别资格审查路径承接", needs_information: "需要学历路径信息", not_covered: "当前未覆盖" };
+        const preparationLabels = { available: "已有", not_yet: "尚未准备", unknown: "未提供／不确定" };
+        const official = document.createElement("p");
+        official.className = "field-detail";
+        official.textContent = `官方适用性：${officialLabels[item.official_status] || item.official_status}；个人准备状态：${preparationLabels[item.preparation_status] || item.preparation_status}`;
+        card.append(official);
+      }
+      if (item.evidence.length) {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        for (const evidence of item.evidence) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "secondary";
+          button.textContent = "查看依据";
+          button.addEventListener("click", () => openDemoEvidence(item, evidence, button));
+          actions.append(button);
+        }
+        card.append(actions);
+      }
+      list.append(card);
+    }
+    section.append(list);
+    comparisonOutput.append(section);
+  }
+  const boundary = document.createElement("p");
+  boundary.className = "final-notice";
+  boundary.textContent = `${payload.comparison_statement} 限制：${payload.limitation_statement}`;
+  comparisonOutput.append(boundary);
+}
+
+async function submitApplicantComparison() {
+  if (comparisonPending || !baseRequirementsLoaded || !demoTargetComplete()) return;
+  const requestSnapshot = JSON.stringify(demoComparisonRequest());
+  const requestId = ++comparisonRequestId;
+  comparisonController = new AbortController();
+  comparisonPending = true;
+  comparisonSubmit.disabled = true;
+  comparisonRetry.hidden = true;
+  setMessage(comparisonStatus, "loading", "正在由服务端对照个人情况与审核规则。");
+  try {
+    const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: comparisonController.signal });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.items)) throw new Error();
+    if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
+    renderComparison(payload);
+    setMessage(comparisonStatus, "success", "个人情况已完成保守对照。", true);
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    if (requestId !== comparisonRequestId) return;
+    comparisonOutput.replaceChildren();
+    comparisonRetry.hidden = false;
+    setMessage(comparisonStatus, "error", "个人情况暂时无法对照，请检查输入后重试。", true);
+  } finally {
+    if (requestId === comparisonRequestId) {
+      comparisonPending = false;
+      comparisonController = null;
+      comparisonSubmit.disabled = !baseRequirementsLoaded;
+    }
+  }
+}
+
+function invalidateComparison(message) {
+  cancelPendingComparison();
+  clearComparison(message);
+}
+
 async function submitBaseRequirements() {
   if (requirementsPending || !demoTargetComplete()) return;
   const requestPayload = demoTargetRequest();
   const requestSnapshot = JSON.stringify(requestPayload);
   const requestId = ++requirementsRequestId;
   requirementsController = new AbortController();
+  baseRequirementsLoaded = false;
+  invalidateComparison("基础要求正在更新，请稍候。");
   clearDemoResults("正在从服务端加载基础要求。");
   requirementsPending = true;
   updateRequirementsSubmit();
@@ -1130,6 +1292,9 @@ async function submitBaseRequirements() {
     if (!payload || !Array.isArray(payload.requirements)) throw new Error();
     if (requestId !== requirementsRequestId || !demoTargetComplete() || requestSnapshot !== JSON.stringify(demoTargetRequest())) return;
     renderRequirements(payload);
+    baseRequirementsLoaded = true;
+    comparisonSubmit.disabled = false;
+    clearComparison();
     setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。", true);
   } catch (error) {
     if (error && error.name === "AbortError") return;
@@ -1156,6 +1321,8 @@ function cancelPendingRequirements() {
 
 function handleDemoTargetChange(next) {
   cancelPendingRequirements();
+  baseRequirementsLoaded = false;
+  invalidateComparison("申请目标已改变，请重新加载基础要求。");
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
@@ -1175,6 +1342,9 @@ reportTab.addEventListener("click", () => activateTab(reportTab));
 evidenceTab.addEventListener("keydown", handleTabKey);
 reportTab.addEventListener("keydown", handleTabKey);
 targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
+applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
+applicantForm.addEventListener("input", () => invalidateComparison("个人输入已改变，请重新对照。"));
+comparisonRetry.addEventListener("click", submitApplicantComparison);
 schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
 demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
 intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));

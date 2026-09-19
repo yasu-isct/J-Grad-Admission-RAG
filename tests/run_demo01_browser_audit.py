@@ -22,7 +22,9 @@ from jgrad_admission_rag.reasoning.reviewed_report_plan import (  # noqa: E402
 )
 from jgrad_admission_rag.schemas.document_identity import load_document_identity  # noqa: E402
 from jgrad_admission_rag.service.demo_requirements import (  # noqa: E402
+    DemoApplicantComparisonRequest,
     DemoTargetRequest,
+    build_demo_applicant_comparison,
     build_demo_base_requirements,
     build_demo_target_catalog,
 )
@@ -58,6 +60,7 @@ CATALOG = build_demo_target_catalog((PLAN,)).model_dump(mode="json")
 
 class Handler(SimpleHTTPRequestHandler):
     base_requirement_requests = 0
+    comparison_requests = 0
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC_ROOT), **kwargs)
@@ -119,6 +122,14 @@ class Handler(SimpleHTTPRequestHandler):
             response = build_demo_base_requirements(request, PLAN, BUNDLE)
             self._json(response.model_dump(mode="json"))
             return
+        if self.path == "/v1/applicant-comparison":
+            type(self).comparison_requests += 1
+            if type(self).comparison_requests == 1:
+                time.sleep(0.3)
+            request = DemoApplicantComparisonRequest.model_validate(payload)
+            response = build_demo_applicant_comparison(request, PLAN, BUNDLE)
+            self._json(response.model_dump(mode="json"))
+            return
         self.send_error(404)
 
 
@@ -173,6 +184,25 @@ def main() -> None:
                     page.screenshot(path=drawer_screenshot)
                 page.keyboard.press("Escape")
                 assert trigger.evaluate("element => document.activeElement === element")
+                page.locator("#demo-credential-basis").select_option("university_graduation")
+                page.locator("#demo-completion-state").select_option("expected")
+                page.locator("#demo-english-kind").select_option("toeic_lr")
+                page.locator("#demo-english-score").fill("800")
+                page.locator("#demo-japanese-background").select_option("studied")
+                page.locator('[data-material-code="address_label"]').select_option("available")
+                assert page.locator("#comparison-submit").is_enabled()
+                page.locator("#comparison-submit").click()
+                if viewport == "desktop":
+                    page.locator("#demo-english-score").fill("810")
+                    page.wait_for_timeout(500)
+                    assert page.locator(".comparison-card").count() == 0
+                    assert "正在由服务端对照" not in page.locator("#comparison-status").inner_text()
+                    page.locator("#comparison-submit").click()
+                page.locator(".comparison-card").first.wait_for()
+                comparison_groups = page.locator(".comparison-group h3").all_text_contents()
+                assert comparison_groups == ["学历", "英语", "日语", "已有材料与官方适用性"]
+                assert "可能匹配，仍需核对" in page.locator("#comparison-output").inner_text()
+                assert "个人准备状态：已有" in page.locator("#comparison-output").inner_text()
                 overflow = page.evaluate(
                     "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                 )
@@ -187,6 +217,8 @@ def main() -> None:
                         "categories": categories,
                         "drawer_keyboard_close_and_focus_restore": True,
                         "stale_request_suppressed": True,
+                        "stale_comparison_suppressed": True,
+                        "comparison_groups": comparison_groups,
                         "conditional_program_evidence_visible": False,
                         "horizontal_overflow": overflow,
                         "screenshot": screenshot.relative_to(ROOT).as_posix(),

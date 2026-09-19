@@ -175,6 +175,107 @@ def test_demo_target_rejects_incomplete_or_unreviewed_selection(rule04b_client) 
     )
 
 
+@pytest.mark.parametrize(
+    ("basis", "education_status", "material_tail"),
+    [
+        ("university_graduation", "possible_match", ["required"] * 3),
+        (
+            "foreign_15_year_education",
+            "needs_review",
+            ["eligibility_review_path"] * 3,
+        ),
+        (None, "needs_information", ["needs_information"] * 3),
+    ],
+)
+def test_demo_applicant_comparison_is_conservative_and_path_aware(
+    rule04b_client, basis, education_status, material_tail
+) -> None:
+    client, document_id = rule04b_client
+    response = client.post(
+        "/v1/applicant-comparison",
+        json={
+            "schema_version": "1.0",
+            "target": {
+                "schema_version": "1.0",
+                "school_id": "isct",
+                "document_id": document_id,
+                "degree_id": "master",
+                "intake": {"year": 2027, "month": 4},
+                "college_id": "工学院",
+                "department_id": "システム制御系",
+                "application_route": None,
+            },
+            "applicant": {
+                "credential_basis": basis,
+                "completion_state": "expected" if basis else None,
+                "english_test_kind": "toeic_lr",
+                "english_score": 800,
+                "english_test_date": "2026-05-01",
+                "english_official_report_available": True,
+                "japanese_background": "certificate_available",
+                "materials": [
+                    {"code": "address_label", "preparation": "available"},
+                    {"code": "application_form", "preparation": "not_yet"},
+                ],
+            },
+        },
+    )
+
+    assert response.status_code == 200
+    items = response.json()["items"]
+    education = next(item for item in items if item["item_id"] == "education:credential")
+    assert education["comparison_status"] == education_status
+    assert "资格" not in response.json()["comparison_statement"]
+    assert (
+        next(item for item in items if item["item_id"] == "english:result")["comparison_status"]
+        == "recorded"
+    )
+    japanese = next(item for item in items if item["item_id"] == "japanese:background")
+    assert japanese["comparison_status"] == "recorded"
+    assert japanese["evidence"] == []
+    materials = [item for item in items if item["category"] == "materials"]
+    assert [item["official_status"] for item in materials[2:]] == material_tail
+    assert materials[0]["preparation_status"] == "available"
+    assert materials[1]["preparation_status"] == "not_yet"
+    assert all(item["evidence"][0]["fact_id"] == "fact:00104" for item in materials)
+    all_evidence = [evidence for item in items for evidence in item["evidence"]]
+    assert "fact:00347" not in {evidence["fact_id"] for evidence in all_evidence}
+    assert all(evidence["scope_type"] != "conditional_program" for evidence in all_evidence)
+
+
+def test_demo_applicant_comparison_rejects_ambiguous_language_or_material_input(
+    rule04b_client,
+) -> None:
+    client, document_id = rule04b_client
+    target = {
+        "school_id": "isct",
+        "document_id": document_id,
+        "degree_id": "master",
+        "intake": {"year": 2027, "month": 4},
+        "college_id": "工学院",
+        "department_id": "システム制御系",
+    }
+    score_without_kind = client.post(
+        "/v1/applicant-comparison",
+        json={"target": target, "applicant": {"english_score": 800}},
+    )
+    repeated_material = client.post(
+        "/v1/applicant-comparison",
+        json={
+            "target": target,
+            "applicant": {
+                "materials": [
+                    {"code": "address_label", "preparation": "available"},
+                    {"code": "address_label", "preparation": "not_yet"},
+                ]
+            },
+        },
+    )
+
+    assert score_without_kind.status_code == 422
+    assert repeated_material.status_code == 422
+
+
 def test_common_materials_do_not_expose_conditional_or_excluded_materials(rule04b_client) -> None:
     client, document_id = rule04b_client
     report, _ = _materials(

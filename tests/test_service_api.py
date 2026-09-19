@@ -431,6 +431,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
         "postV1ApplicantReports",
+        "postV1ApplicantComparison",
         "postV1BaseRequirements",
         "postV1QueryIntentsParse",
     }
@@ -474,9 +475,19 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert set(report_response["required"]) == {"report", "markdown"}
     target_operation = schema["paths"]["/v1/target-catalog"]["get"]
     base_operation = schema["paths"]["/v1/base-requirements"]["post"]
+    comparison_operation = schema["paths"]["/v1/applicant-comparison"]["post"]
     demo_request = schema["components"]["schemas"]["DemoTargetRequest"]
     assert set(target_operation["responses"]) == {"200", "500", "503"}
     assert set(base_operation["responses"]) == {"200", "404", "409", "415", "422", "500", "503"}
+    assert set(comparison_operation["responses"]) == {
+        "200",
+        "404",
+        "409",
+        "415",
+        "422",
+        "500",
+        "503",
+    }
     assert demo_request["additionalProperties"] is False
     assert set(demo_request["required"]) == {
         "school_id",
@@ -514,6 +525,8 @@ def test_service_exports_applicant_report_contracts() -> None:
     from jgrad_admission_rag.service import (
         ApplicantReportRequest,
         ApplicantReportResponse,
+        DemoApplicantComparisonRequest,
+        DemoApplicantComparisonResponse,
         DemoBaseRequirementsResponse,
         DemoTargetCatalogResponse,
         DemoTargetRequest,
@@ -522,6 +535,8 @@ def test_service_exports_applicant_report_contracts() -> None:
 
     assert ApplicantReportRequest.model_fields["schema_version"].default == "1.0"
     assert ApplicantReportResponse.model_fields["schema_version"].default == "1.0"
+    assert DemoApplicantComparisonRequest.model_fields["schema_version"].default == "1.0"
+    assert DemoApplicantComparisonResponse.model_fields["schema_version"].default == "1.0"
     assert QueryIntentParseRequest.model_fields["schema_version"].default == "1.0"
     assert DemoTargetCatalogResponse.model_fields["schema_version"].default == "1.0"
     assert DemoTargetRequest.model_fields["schema_version"].default == "1.0"
