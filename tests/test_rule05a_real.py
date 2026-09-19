@@ -267,6 +267,10 @@ def test_demo_applicant_comparison_is_conservative_and_path_aware(
     )
     with pytest.raises(ValidationError):
         DemoApplicantComparisonResponse.model_validate(invalid_group)
+    invalid_action = response.json()
+    invalid_action["items"][0]["next_action"] = "arbitrary action"
+    with pytest.raises(ValidationError):
+        DemoApplicantComparisonResponse.model_validate(invalid_action)
 
 
 def test_demo_applicant_comparison_rejects_ambiguous_language_or_material_input(

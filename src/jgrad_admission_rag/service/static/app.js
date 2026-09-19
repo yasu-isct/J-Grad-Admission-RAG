@@ -1171,6 +1171,14 @@ function cancelPendingComparison() {
 function clearComparison(message = "填写个人情况后，可由服务端进行保守对照。") {
   comparisonOutput.replaceChildren();
   readinessPanel.hidden = true;
+  readinessTarget.textContent = "";
+  partialChecklistStatement.textContent = "";
+  byId("count-total").textContent = "0";
+  byId("count-recorded").textContent = "0";
+  byId("count-action").textContent = "0";
+  byId("count-review").textContent = "0";
+  readinessFilters.querySelector('[value="all"]').checked = true;
+  filterEmpty.hidden = true;
   comparisonRetry.hidden = true;
   setMessage(comparisonStatus, "initial", message);
 }
@@ -1273,6 +1281,7 @@ async function submitApplicantComparison() {
   const requestSnapshot = JSON.stringify(demoComparisonRequest());
   const requestId = ++comparisonRequestId;
   comparisonController = new AbortController();
+  clearComparison("正在由服务端对照个人情况与审核规则。");
   comparisonPending = true;
   comparisonSubmit.disabled = true;
   comparisonRetry.hidden = true;
@@ -1288,7 +1297,7 @@ async function submitApplicantComparison() {
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== comparisonRequestId) return;
-    comparisonOutput.replaceChildren();
+    clearComparison("个人情况暂时无法对照，请检查输入后重试。");
     comparisonRetry.hidden = false;
     setMessage(comparisonStatus, "error", "个人情况暂时无法对照，请检查输入后重试。", true);
   } finally {

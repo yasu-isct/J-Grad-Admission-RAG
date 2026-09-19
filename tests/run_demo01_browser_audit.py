@@ -126,6 +126,9 @@ class Handler(SimpleHTTPRequestHandler):
             type(self).comparison_requests += 1
             if type(self).comparison_requests == 1:
                 time.sleep(0.3)
+            if type(self).comparison_requests == 3:
+                self._json({"code": "temporary_failure"}, status=503)
+                return
             request = DemoApplicantComparisonRequest.model_validate(payload)
             response = build_demo_applicant_comparison(request, PLAN, BUNDLE)
             self._json(response.model_dump(mode="json"))
@@ -205,12 +208,36 @@ def main() -> None:
                 assert "个人准备状态：已有" in page.locator("#comparison-output").inner_text()
                 assert page.locator("#readiness-panel").is_visible()
                 action_count = int(page.locator("#count-action").inner_text())
-                page.locator('input[name="readiness-filter"][value="action_required"]').check()
+                all_filter = page.locator('input[name="readiness-filter"][value="all"]')
+                action_filter = page.locator(
+                    'input[name="readiness-filter"][value="action_required"]'
+                )
+                all_filter.focus()
+                page.keyboard.press("ArrowRight")
+                assert action_filter.is_checked()
+                assert action_filter.evaluate("element => document.activeElement === element")
                 assert page.locator(".comparison-card:visible").count() == action_count
-                page.locator('input[name="readiness-filter"][value="all"]').check()
+                review_filter = page.locator(
+                    'input[name="readiness-filter"][value="review_required"]'
+                )
+                review_filter.focus()
+                page.keyboard.press("Space")
+                assert review_filter.is_checked()
+                assert page.locator("#filter-empty").is_visible()
+                assert page.locator("#filter-empty").get_attribute("aria-live") == "polite"
+                all_filter.focus()
+                page.keyboard.press("Space")
                 assert page.locator(".comparison-card:visible").count() == int(
                     page.locator("#count-total").inner_text()
                 )
+                if viewport == "desktop":
+                    page.locator("#comparison-submit").click()
+                    assert page.locator("#readiness-panel").is_hidden()
+                    page.locator("#comparison-retry").wait_for(state="visible")
+                    assert page.locator("#readiness-panel").is_hidden()
+                    assert page.locator("#comparison-output").inner_text() == ""
+                    page.locator("#comparison-retry").click()
+                    page.locator("#readiness-panel").wait_for(state="visible")
                 overflow = page.evaluate(
                     "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                 )
@@ -228,6 +255,7 @@ def main() -> None:
                         "stale_comparison_suppressed": True,
                         "comparison_groups": comparison_groups,
                         "readiness_filter_keyboard_flow": True,
+                        "failed_resubmit_clears_readiness_before_retry": True,
                         "conditional_program_evidence_visible": False,
                         "horizontal_overflow": overflow,
                         "screenshot": screenshot.relative_to(ROOT).as_posix(),

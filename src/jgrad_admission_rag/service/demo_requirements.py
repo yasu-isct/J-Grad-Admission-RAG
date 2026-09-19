@@ -225,6 +225,9 @@ class DemoComparisonItem(DemoModel):
         )
         if self.action_group != expected:
             raise ValueError("action group must match comparison status")
+        expected_action = _readiness_fields(self.comparison_status, self.category)["next_action"]
+        if self.next_action != expected_action:
+            raise ValueError("next action must match comparison status and category")
         return self
 
 
