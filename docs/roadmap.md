@@ -37,19 +37,20 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M7 Reviewed rule coverage | v1.1 | Reviewed dates, eligibility, language, page scope, and common materials cover the current guideline | Every enabled rule remains evidence-bound and conditional content fails closed |
 | M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
 
-## Current Sprint: M8 Interactive Applicant Demo
+## Completed M8 Summary
 
-M1 through M7 and DEMO-01 are complete. M8 validates the applicant-facing experience in three
-sequential slices. DEMO-01 established a server-owned application-target catalog, profile-free
-base requirements, and an accessible evidence drawer. DEMO-02 added grouped education, English,
-Japanese, and material-preparation input plus server-side comparison. DEMO-03 is active and adds the
-interactive partial checklist, filters, next actions, and final desktop/mobile acceptance. Only one dependent DEMO issue is active at
-a time; the browser does not persist Applicant Profile data.
+M1 through M8 are complete. M8 delivered the applicant-facing experience in three sequential
+slices. DEMO-01 established a server-owned application-target catalog, profile-free base
+requirements, and an accessible evidence drawer. DEMO-02 added grouped education, English,
+Japanese, and material-preparation input plus server-side comparison. DEMO-03 completed the
+interactive partial checklist, filters, server-derived next actions, and final desktop/mobile
+acceptance. The browser does not persist Applicant Profile data.
 
 The primary interface uses Simplified Chinese for navigation, explanations, and states; official
 school/college/department names and evidence remain Japanese. Technical Fact/scope details stay
 collapsed. M8 does not broaden low-frequency rules, add accounts, claim final eligibility, or move
-rule inference into the browser.
+rule inference into the browser. Any M9 implementation scope requires a separate product decision
+and evidence-impact audit.
 
 ## Completed M6 Summary
 
