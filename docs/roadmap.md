@@ -34,8 +34,24 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M4 Applicant-aware reasoning | v0.5 | The system explains whether a rule applies to a profile | Conclusions include status, evidence, and missing information |
 | M5 Multi-document corpus | v0.6 | Multiple schools, years, and programs can coexist safely | Version and document filters prevent accidental mixing |
 | M6 Usable service | v1.0 | API and report output expose the complete workflow | End-to-end scenarios are reproducible and observable |
+| M7 Reviewed rule coverage | v1.1 | Reviewed dates, eligibility, language, page scope, and common materials cover the current guideline | Every enabled rule remains evidence-bound and conditional content fails closed |
+| M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
 
-## Current Sprint: M6 Usable Service
+## Current Sprint: M8 Interactive Applicant Demo
+
+M1 through M7 are complete. M8 validates the applicant-facing experience in three sequential
+slices. DEMO-01 establishes a server-owned application-target catalog, profile-free base
+requirements, and an accessible evidence drawer. DEMO-02 adds grouped education, English,
+Japanese, and material-preparation input plus server-side comparison. DEMO-03 adds the interactive
+Checklist, filters, and final desktop/mobile acceptance. Only one dependent DEMO issue is active at
+a time; the browser does not persist Applicant Profile data.
+
+The primary interface uses Simplified Chinese for navigation, explanations, and states; official
+school/college/department names and evidence remain Japanese. Technical Fact/scope details stay
+collapsed. M8 does not broaden low-frequency rules, add accounts, claim final eligibility, or move
+rule inference into the browser.
+
+## Completed M6 Summary
 
 M1 through M5 are complete. M6 exposes the accepted engine boundaries as versioned local APIs,
 adds observable durable build operations, then connects cited applicant reports and a focused

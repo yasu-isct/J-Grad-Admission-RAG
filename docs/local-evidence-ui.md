@@ -1,12 +1,18 @@
-# Local Evidence And Applicant Report UI
+# Local Applicant Demo And Evidence UI
 
-APP-04A adds evidence search and APP-04B adds a separate applicant-report workflow. Open
+DEMO-01 makes a Simplified Chinese application-check wizard the primary local workflow while
+retaining APP-04A evidence search and APP-04B's detailed report as auxiliary tools. Open
 `http://127.0.0.1:8000/app` after starting `jgrad-serve` with at least one explicit reviewed report
-plan and an explicit query-intent catalog. The page lists only safe reviewed documents. Its first
-tab sends one-document evidence searches to `/v1/corpus/query`; its second tab parses a bounded
-Japanese question server-side and submits the existing APP-03D report request.
+plan and page-scope manifest. The browser first loads the server-owned target hierarchy, then asks
+for base requirements only after the user completes and submits a target.
 
 ```text
+audited manifest + reviewed policy + lifespan plans
+  -> GET /v1/target-catalog
+  -> choose School / Degree / Intake / College / Department / optional Route
+  -> POST /v1/base-requirements
+  -> reviewed dates, p.10 materials, eligibility prompt, language rules + exact evidence
+
 audited manifest + reviewed policy + lifespan plans
   -> GET /v1/reviewed-documents
   -> choose exactly one document
@@ -19,6 +25,19 @@ profile + intent + one document -> POST /v1/applicant-reports
 ```
 
 ## Boundary
+
+The wizard is profile-free in DEMO-01. `required`, `conditional`, `needs_information`, and
+`not_covered` describe official requirement coverage, not the applicant's preparation or final
+eligibility. RULE-05A exposes only the five reviewed p.10 common materials. The three
+qualification-path-dependent items remain `needs_information`; p.11 mixed foreign-national and
+scholarship material is not projected. Conditional program evidence is absent unless a later
+reviewed catalog explicitly exposes its route.
+
+Every requirement with evidence opens a modal side drawer. It displays the official title,
+school/intake, exact pages, server-returned Japanese text, safety limitation, and source link.
+Fact ID, document ID, and scope stay in collapsed technical details. Because the official source
+URL does not guarantee a stable page fragment, the UI opens the official source and separately
+instructs the user to inspect the returned page number.
 
 This screen answers where the official guideline contains potentially relevant text. Each result
 shows the returned document title and ID, Fact ID, official pages, exact search text, section path,
@@ -96,8 +115,9 @@ rate limiting, or public-hosting hardening.
 
 ## States
 
-Native labeled form controls, visible keyboard focus, a polite live status region, and a responsive
-single-column fallback cover catalog loading, parsing, report generation, complete,
+Native labeled form controls, visible keyboard focus, a polite live status region, a native modal
+dialog with focus restoration, and a responsive single-column fallback cover target-catalog and
+requirements loading, parsing, report generation, complete,
 needs-information, needs-review, not-applicable, invalid local input, unavailable/conflict,
 explicit retry, and clear states. The UI maps only allowlisted HTTP status/code classes to short
 Japanese recovery text and never displays raw exception bodies.

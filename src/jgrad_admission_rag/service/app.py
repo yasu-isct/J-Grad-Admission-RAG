@@ -63,6 +63,7 @@ from ..reasoning.reviewed_report_plan import (
 from ..retrieval.metadata_search import MetadataFilter, ScopePreference
 from ..schemas.corpus_manifest import CorpusManifestError, load_corpus_manifest
 from ..schemas.corpus_version import CorpusVersionSchemaError, load_corpus_version_policy
+from ..schemas.corpus_version import CorpusSelectionRequest
 from ..schemas.document_identity import (
     DocumentIdentity,
     DocumentIdentityError,
@@ -97,6 +98,13 @@ from .contracts import (
     ReviewedDocumentCatalogItem,
     ReviewedDocumentCatalogResponse,
     ReviewedDocumentPublicIdentity,
+)
+from .demo_requirements import (
+    DemoBaseRequirementsResponse,
+    DemoTargetCatalogResponse,
+    DemoTargetRequest,
+    build_demo_base_requirements,
+    build_demo_target_catalog,
 )
 from .jobs import (
     BuildJobRecord,
@@ -264,6 +272,7 @@ def create_app(
             "/v1/corpus/query",
             "/v1/applicant-reports",
             "/v1/query-intents/parse",
+            "/v1/base-requirements",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -341,6 +350,36 @@ def create_app(
             )
         return await to_thread.run_sync(
             partial(_build_reviewed_document_catalog, selected_settings, state)
+        )
+
+    @app.get(
+        "/v1/target-catalog",
+        response_model=DemoTargetCatalogResponse,
+        responses=CATALOG_ERROR_RESPONSES,
+        operation_id="getV1TargetCatalog",
+    )
+    async def target_catalog() -> DemoTargetCatalogResponse:
+        if not _report_service_ready(state):
+            raise ApiProblem(503, "report_service_unavailable", "target catalog is unavailable")
+        return await to_thread.run_sync(
+            partial(_build_demo_target_catalog_response, selected_settings, state)
+        )
+
+    @app.post(
+        "/v1/base-requirements",
+        response_model=DemoBaseRequirementsResponse,
+        responses=REPORT_ERROR_RESPONSES,
+        operation_id="postV1BaseRequirements",
+    )
+    async def base_requirements(request: DemoTargetRequest) -> DemoBaseRequirementsResponse:
+        if not _report_service_ready(state):
+            raise ApiProblem(
+                503,
+                "report_service_unavailable",
+                "base requirements service is unavailable",
+            )
+        return await to_thread.run_sync(
+            partial(_build_demo_base_requirements_response, request, selected_settings, state)
         )
 
     @app.post(
@@ -969,6 +1008,90 @@ def _build_reviewed_document_catalog(
             "report_service_unavailable",
             "reviewed document catalog is unavailable",
         ) from None
+
+
+def _build_demo_target_catalog_response(
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> DemoTargetCatalogResponse:
+    reviewed = _build_reviewed_document_catalog(settings, state)
+    ready_ids = {item.identity.document_id for item in reviewed.items}
+    return build_demo_target_catalog(
+        tuple(
+            plan for plan in state.report_plans if plan.document_identity.document_id in ready_ids
+        )
+    )
+
+
+def _build_demo_base_requirements_response(
+    request: DemoTargetRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> DemoBaseRequirementsResponse:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+    ):
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "base requirements service is unavailable",
+        )
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        policy = load_corpus_version_policy(settings.policy_path)
+        selection = select_corpus_documents(
+            manifest,
+            policy,
+            CorpusSelectionRequest(document_ids=(request.document_id,)),
+        )
+    except CorpusSelectionRequestError:
+        raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
+    except CorpusSelectionNoMatchError:
+        raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found") from None
+    except (
+        CorpusSelectionAmbiguousError,
+        CorpusSelectionNotReadyError,
+        CorpusSelectionVersionMismatchError,
+    ):
+        raise ApiProblem(
+            409, "corpus_selection_conflict", "reviewed target is unavailable"
+        ) from None
+    except (CorpusManifestError, CorpusVersionSchemaError, CorpusPolicyCompatibilityError):
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "base requirements service is unavailable",
+        ) from None
+
+    selected_identity = selection.selected_documents[0].entry.identity
+    matching_plans = tuple(
+        plan for plan in state.report_plans if plan.document_identity == selected_identity
+    )
+    matching_scopes = tuple(
+        item for item in state.page_scope_manifests if item.document_identity == selected_identity
+    )
+    if len(matching_plans) != 1 or len(matching_scopes) != 1:
+        raise ApiProblem(
+            503,
+            "report_service_unavailable",
+            "base requirements service is unavailable",
+        )
+    try:
+        evidence = prepare_reviewed_report_evidence(
+            settings.corpus_root,
+            manifest,
+            policy,
+            selection,
+            state.report_plans,
+            matching_scopes[0],
+        )
+        return build_demo_base_requirements(request, matching_plans[0], evidence)
+    except ReviewedReportEvidenceError as error:
+        _raise_report_evidence_problem(error)
+    except (KeyError, ValueError):
+        raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
 
 
 def _report_service_ready(state: ServiceState) -> bool:
