@@ -4,6 +4,8 @@ const CATALOG_ENDPOINT = "/v1/reviewed-documents";
 const QUERY_ENDPOINT = "/v1/corpus/query";
 const INTENT_ENDPOINT = "/v1/query-intents/parse";
 const REPORT_ENDPOINT = "/v1/applicant-reports";
+const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog";
+const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements";
 const MAX_QUERY_LENGTH = 1000;
 const TOP_K = 5;
 const CANDIDATE_K = 20;
@@ -31,11 +33,32 @@ const evidenceTab = byId("evidence-tab");
 const reportTab = byId("report-tab");
 const evidenceView = byId("evidence-view");
 const reportView = byId("report-view");
+const targetForm = byId("target-form");
+const schoolSelect = byId("school-select");
+const demoDegreeSelect = byId("demo-degree-select");
+const intakeSelect = byId("intake-select");
+const collegeSelect = byId("college-select");
+const departmentSelect = byId("department-select");
+const routeField = byId("route-field");
+const routeSelect = byId("route-select");
+const requirementsSubmit = byId("requirements-submit");
+const requirementsRetry = byId("requirements-retry");
+const targetStatus = byId("target-status");
+const targetSummary = byId("target-summary");
+const requirementsOutput = byId("requirements-output");
+const evidenceDrawer = byId("evidence-drawer");
+const drawerClose = byId("drawer-close");
+const drawerContent = byId("drawer-content");
 
 let catalogItems = [];
 let lastAction = "catalog";
 let reportPending = false;
 let reportCanRetry = false;
+let demoCatalog = [];
+let requirementsPending = false;
+let requirementsController = null;
+let requirementsRequestId = 0;
+let drawerTrigger = null;
 
 function setMessage(element, state, message, focus = false) {
   element.dataset.state = state;
@@ -803,6 +826,342 @@ function handleTabKey(event) {
   activateTab(event.currentTarget === evidenceTab ? reportTab : evidenceTab);
 }
 
+function option(value, label) {
+  const item = document.createElement("option");
+  item.value = value;
+  item.textContent = label;
+  return item;
+}
+
+function resetDemoSelect(select, message) {
+  select.replaceChildren(option("", message));
+  select.disabled = true;
+}
+
+function clearDemoResults(message = "完成左侧选择后，再明确加载要求。") {
+  requirementsOutput.replaceChildren();
+  targetSummary.textContent = message;
+}
+
+function currentSchool() {
+  return demoCatalog.find((item) => item.school_id === schoolSelect.value);
+}
+
+function currentDegree() {
+  const school = currentSchool();
+  return school ? school.degrees.find((item) => item.degree_id === demoDegreeSelect.value) : null;
+}
+
+function currentIntake() {
+  const degree = currentDegree();
+  return degree ? degree.intakes.find((item) => `${item.document_id}:${item.year}:${item.month}` === intakeSelect.value) : null;
+}
+
+function currentCollege() {
+  const intake = currentIntake();
+  return intake ? intake.colleges.find((item) => item.college_id === collegeSelect.value) : null;
+}
+
+function currentDepartment() {
+  const college = currentCollege();
+  return college ? college.departments.find((item) => item.department_id === departmentSelect.value) : null;
+}
+
+function demoTargetComplete() {
+  const department = currentDepartment();
+  return Boolean(
+    currentSchool() && currentDegree() && currentIntake() && currentCollege() && department
+    && (department.application_routes.length === 0 || routeSelect.value)
+  );
+}
+
+function updateRequirementsSubmit() {
+  requirementsSubmit.disabled = requirementsPending || !demoTargetComplete();
+}
+
+function populateDegreeSelect() {
+  resetDemoSelect(demoDegreeSelect, "请选择学位");
+  resetDemoSelect(intakeSelect, "请先选择学位");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const school = currentSchool();
+  if (!school) { updateRequirementsSubmit(); return; }
+  demoDegreeSelect.replaceChildren(option("", "请选择学位"));
+  for (const degree of school.degrees) demoDegreeSelect.append(option(degree.degree_id, degree.degree_name));
+  demoDegreeSelect.disabled = false;
+  if (school.degrees.length === 1) demoDegreeSelect.value = school.degrees[0].degree_id;
+  populateIntakeSelect();
+}
+
+function populateIntakeSelect() {
+  resetDemoSelect(intakeSelect, "请选择入学时间");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const degree = currentDegree();
+  if (!degree) { updateRequirementsSubmit(); return; }
+  intakeSelect.replaceChildren(option("", "请选择入学时间"));
+  for (const intake of degree.intakes) intakeSelect.append(option(`${intake.document_id}:${intake.year}:${intake.month}`, intake.intake_name));
+  intakeSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateCollegeSelect() {
+  resetDemoSelect(collegeSelect, "请选择学院");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const intake = currentIntake();
+  if (!intake) { updateRequirementsSubmit(); return; }
+  collegeSelect.replaceChildren(option("", "请选择学院"));
+  for (const college of intake.colleges) collegeSelect.append(option(college.college_id, college.college_name));
+  collegeSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateDepartmentSelect() {
+  resetDemoSelect(departmentSelect, "请选择系／专业");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const college = currentCollege();
+  if (!college) { updateRequirementsSubmit(); return; }
+  departmentSelect.replaceChildren(option("", "请选择系／专业"));
+  for (const department of college.departments) departmentSelect.append(option(department.department_id, department.department_name));
+  departmentSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateRouteSelect() {
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  const department = currentDepartment();
+  if (!department || department.application_routes.length === 0) {
+    routeField.hidden = true;
+    updateRequirementsSubmit();
+    return;
+  }
+  routeSelect.replaceChildren(option("", "请选择日程或方式"));
+  for (const route of department.application_routes) routeSelect.append(option(route.route_id, route.route_name));
+  routeSelect.disabled = false;
+  routeField.hidden = false;
+  updateRequirementsSubmit();
+}
+
+function populateDemoCatalog(schools) {
+  demoCatalog = schools;
+  schoolSelect.replaceChildren(option("", "请选择学校"));
+  for (const school of schools) schoolSelect.append(option(school.school_id, school.school_name));
+  schoolSelect.disabled = schools.length === 0;
+  if (schools.length === 1) schoolSelect.value = schools[0].school_id;
+  populateDegreeSelect();
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, schools.length ? "success" : "empty", schools.length ? "审核目录已就绪，请完成申请目标。" : "当前没有可用的审核目标。", schools.length === 0);
+}
+
+async function loadDemoCatalog() {
+  cancelPendingRequirements();
+  demoCatalog = [];
+  requirementsRetry.hidden = true;
+  clearDemoResults();
+  resetDemoSelect(schoolSelect, "正在读取审核目录");
+  resetDemoSelect(demoDegreeSelect, "请先选择学校");
+  resetDemoSelect(intakeSelect, "请先选择学位");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  setMessage(targetStatus, "loading", "正在读取服务端审核目标目录。");
+  try {
+    const response = await fetch(TARGET_CATALOG_ENDPOINT, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.schools)) throw new Error();
+    populateDemoCatalog(payload.schools);
+  } catch (_error) {
+    requirementsRetry.hidden = false;
+    setMessage(targetStatus, "error", "审核目录暂时无法读取，请重试。", true);
+  }
+}
+
+function demoTargetRequest() {
+  const intake = currentIntake();
+  return {
+    schema_version: "1.0",
+    school_id: schoolSelect.value,
+    document_id: intake.document_id,
+    degree_id: demoDegreeSelect.value,
+    intake: { year: intake.year, month: intake.month },
+    college_id: collegeSelect.value,
+    department_id: departmentSelect.value,
+    application_route: routeSelect.value || null
+  };
+}
+
+function requirementStatusLabel(status) {
+  const labels = {
+    required: "官方状态：必需",
+    conditional: "官方状态：有条件适用",
+    needs_information: "官方状态：需要个人信息",
+    needs_review: "官方状态：需要人工确认",
+    not_applicable: "官方状态：不适用",
+    not_covered: "官方状态：当前未覆盖"
+  };
+  return labels[status] || `官方状态：${status}`;
+}
+
+function renderRequirements(payload) {
+  requirementsOutput.replaceChildren();
+  const target = payload.target;
+  targetSummary.textContent = [target.school_name, target.degree_name, target.intake_name, target.college_name, target.department_name, target.application_route_name].filter(Boolean).join(" · ");
+  const groups = [
+    ["dates", "关键日期"], ["materials", "核心提交材料"],
+    ["eligibility", "学历与资格"], ["language", "语言要求"]
+  ];
+  for (const [category, label] of groups) {
+    const entries = payload.requirements.filter((item) => item.category === category);
+    if (!entries.length) continue;
+    const section = document.createElement("section");
+    section.className = "requirement-group";
+    section.append(heading(3, label));
+    const list = document.createElement("div");
+    list.className = "requirement-list";
+    for (const requirement of entries) {
+      const card = document.createElement("article");
+      card.className = "requirement-card";
+      card.append(heading(4, requirement.title));
+      const status = document.createElement("span");
+      status.className = "requirement-status";
+      status.dataset.status = requirement.official_status;
+      status.textContent = requirementStatusLabel(requirement.official_status);
+      const description = document.createElement("p");
+      description.textContent = requirement.description;
+      card.append(status, description);
+      if (requirement.reviewed_summary) {
+        const officialLabel = document.createElement("p");
+        officialLabel.className = "reviewed-summary-label";
+        officialLabel.textContent = "审核日期摘要（日文）";
+        const excerpt = document.createElement("blockquote");
+        excerpt.className = "reviewed-summary";
+        excerpt.textContent = requirement.reviewed_summary;
+        card.append(officialLabel, excerpt);
+      }
+      if (requirement.evidence.length) {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        for (const evidence of requirement.evidence) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "secondary";
+          button.textContent = requirement.evidence.length === 1 ? "查看依据" : `查看依据 · 第 ${evidence.pages.join("、")} 页`;
+          button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
+          actions.append(button);
+        }
+        card.append(actions);
+      }
+      list.append(card);
+    }
+    section.append(list);
+    requirementsOutput.append(section);
+  }
+  const boundary = document.createElement("p");
+  boundary.className = "final-notice";
+  boundary.textContent = `审核覆盖：${payload.coverage_statement} 限制：${payload.limitation_statement}`;
+  requirementsOutput.append(boundary);
+}
+
+function appendDefinition(list, term, value) {
+  const dt = document.createElement("dt");
+  dt.textContent = term;
+  const dd = document.createElement("dd");
+  dd.textContent = value;
+  list.append(dt, dd);
+}
+
+function openDemoEvidence(requirement, evidence, trigger) {
+  drawerTrigger = trigger;
+  drawerContent.replaceChildren();
+  drawerContent.append(heading(3, requirement.title));
+  const meta = document.createElement("dl");
+  meta.className = "evidence-meta";
+  appendDefinition(meta, "官方文档", evidence.official_title);
+  appendDefinition(meta, "学校／入学时间", `${evidence.school_name} · ${evidence.intake_name}`);
+  appendDefinition(meta, "官方页码", `第 ${evidence.pages.join("、")} 页（来源链接不保证自动定位，请在文件中查看该页）`);
+  const quote = document.createElement("blockquote");
+  quote.className = "evidence-text";
+  quote.textContent = evidence.official_text;
+  const limitation = document.createElement("p");
+  limitation.className = "final-notice";
+  limitation.textContent = `安全限制：${evidence.limitation}`;
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "技术详情";
+  const technical = document.createElement("dl");
+  technical.className = "evidence-meta";
+  appendDefinition(technical, "Fact ID", evidence.fact_id);
+  appendDefinition(technical, "Document ID", evidence.document_id);
+  appendDefinition(technical, "Scope", `${evidence.scope_type}${evidence.parent_college ? ` · ${evidence.parent_college}` : ""}${evidence.scope_targets.length ? ` · ${evidence.scope_targets.join("、")}` : ""}`);
+  details.append(summary, technical);
+  const source = document.createElement("a");
+  source.className = "source-link";
+  source.href = evidence.source_url;
+  source.target = "_blank";
+  source.rel = "noreferrer";
+  source.textContent = "打开官方来源";
+  drawerContent.append(meta, quote, limitation, details, source);
+  evidenceDrawer.showModal();
+  drawerClose.focus();
+}
+
+async function submitBaseRequirements() {
+  if (requirementsPending || !demoTargetComplete()) return;
+  const requestPayload = demoTargetRequest();
+  const requestSnapshot = JSON.stringify(requestPayload);
+  const requestId = ++requirementsRequestId;
+  requirementsController = new AbortController();
+  clearDemoResults("正在从服务端加载基础要求。");
+  requirementsPending = true;
+  updateRequirementsSubmit();
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
+  try {
+    const response = await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.requirements)) throw new Error();
+    if (requestId !== requirementsRequestId || !demoTargetComplete() || requestSnapshot !== JSON.stringify(demoTargetRequest())) return;
+    renderRequirements(payload);
+    setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。", true);
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    if (requestId !== requirementsRequestId) return;
+    clearDemoResults("基础要求暂时无法加载。");
+    requirementsRetry.hidden = false;
+    setMessage(targetStatus, "error", "无法加载基础要求，请检查选择后重试。", true);
+  } finally {
+    if (requestId === requirementsRequestId) {
+      requirementsPending = false;
+      requirementsController = null;
+      updateRequirementsSubmit();
+    }
+  }
+}
+
+function cancelPendingRequirements() {
+  requirementsRequestId += 1;
+  if (requirementsController) requirementsController.abort();
+  requirementsController = null;
+  requirementsPending = false;
+  updateRequirementsSubmit();
+}
+
+function handleDemoTargetChange(next) {
+  cancelPendingRequirements();
+  clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
+  next();
+}
+
 queryInput.addEventListener("input", () => { queryCount.textContent = `${queryInput.value.length} / ${MAX_QUERY_LENGTH}`; });
 reportQuery.addEventListener("input", () => { reportQueryCount.textContent = `${reportQuery.value.length} / ${MAX_QUERY_LENGTH}`; });
 documentSelect.addEventListener("change", () => { updateDocumentDetail(); clearReportResult(); setMessage(reportStatus, "initial", "募集要項が変わりました。条件を確認して明示的に再送信してください。"); });
@@ -815,5 +1174,16 @@ evidenceTab.addEventListener("click", () => activateTab(evidenceTab));
 reportTab.addEventListener("click", () => activateTab(reportTab));
 evidenceTab.addEventListener("keydown", handleTabKey);
 reportTab.addEventListener("keydown", handleTabKey);
+targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
+schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
+demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
+intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));
+collegeSelect.addEventListener("change", () => handleDemoTargetChange(populateDepartmentSelect));
+departmentSelect.addEventListener("change", () => handleDemoTargetChange(populateRouteSelect));
+routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequirementsSubmit));
+requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
+drawerClose.addEventListener("click", () => evidenceDrawer.close());
+evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
 
 loadCatalog();
+loadDemoCatalog();

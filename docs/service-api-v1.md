@@ -21,6 +21,8 @@ strict question -> server-owned RSN-02 catalog -> QueryIntent 1.0
 | POST | `/v1/corpus/query` | 200 | Complete document-qualified corpus retrieval result |
 | POST | `/v1/applicant-reports` | 200 | Partial reviewed-rule report plus exact Japanese Markdown |
 | GET | `/v1/reviewed-documents` | 200 | Safe deterministic catalog for local evidence selection |
+| GET | `/v1/target-catalog` | 200 | Reviewed School → Degree → Intake → College → Department → Route catalog |
+| POST | `/v1/base-requirements` | 200 | Profile-free reviewed requirements and exact official evidence for one complete target |
 | POST | `/v1/query-intents/parse` | 200 | Parse one bounded question with the lifespan-owned RSN-02 catalog |
 | POST | `/v1/build-jobs` | 202 | Durably accept one validated asynchronous build |
 | GET | `/v1/build-jobs/{job_id}` | 200 | Read fresh durable status and transition history |
@@ -186,6 +188,24 @@ When configured with RULE-05A, `report.application_materials` contains the five 
 their typed applicability (`required`, `eligibility_review_path`, `needs_information`, or
 `not_covered`), one official evidence reference, and an explicit non-receipt limitation. The field
 does not assert that any material was submitted, arrived, or was accepted.
+
+## Interactive Demo Requirements
+
+`GET /v1/target-catalog` projects only ready lifespan-loaded reviewed plans into a nested target
+catalog. School identity and degree/intake come from `DocumentIdentity`; college, department, and
+route options come from reviewed rule/policy scope. The catalog contains no rule predicates,
+evidence text, hashes, or applicant data. Conditional program routes outside DEMO-01 are not added.
+
+`POST /v1/base-requirements` accepts one strict complete target. The server re-runs COR-04 selection
+and APP-03B evidence materialization before projecting reviewed date rules, RULE-05A p.10 materials,
+an explicit eligibility-information prompt, and applicable reviewed English rules. It does not
+construct an `ApplicantProfile`, persist state, or claim that the applicant satisfies a condition.
+Path-dependent p.10 materials remain `needs_information` until DEMO-02 supplies a profile. Unknown
+targets and missing required routes return `422 invalid_request`.
+
+Each returned evidence object contains the official document title and source URL, intake, exact
+Fact ID, official pages and Japanese Fact text, scope, and a conclusion limitation. The endpoint
+does not fabricate page fragments; the UI tells users which page to inspect in the official file.
 
 The local page at `/app` and fixed `/assets/app.css` and `/assets/app.js` resources are excluded from
 OpenAPI. They are installed as Python package data and make no external requests. See

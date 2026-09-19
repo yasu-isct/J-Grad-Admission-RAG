@@ -144,6 +144,53 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
         assert f'<option value="{submission_method}">' in html
 
 
+def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> None:
+    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    css = (STATIC_ROOT / "app.css").read_text(encoding="utf-8")
+    javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
+
+    assert 'lang="zh-CN"' in html
+    assert "申请检查向导" in html
+    for field_id in (
+        "school-select",
+        "demo-degree-select",
+        "intake-select",
+        "college-select",
+        "department-select",
+        "route-select",
+    ):
+        assert f'<label for="{field_id}">' in html
+        assert f'id="{field_id}"' in html
+    assert '<dialog id="evidence-drawer"' in html
+    assert 'aria-labelledby="drawer-title"' in html
+    assert "技术详情" in javascript
+    assert 'const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog"' in javascript
+    assert 'const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements"' in javascript
+    assert "handleDemoTargetChange" in javascript
+    assert "clearDemoResults" in javascript
+    assert "evidenceDrawer.showModal()" in javascript
+    assert "drawerTrigger.focus()" in javascript
+    assert "new AbortController()" in javascript
+    assert "requirementsRequestId" in javascript
+    assert "requestSnapshot !== JSON.stringify(demoTargetRequest())" in javascript
+    assert (
+        'setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。")'
+        in javascript
+    )
+    assert "请在文件中查看该页" in javascript
+    assert "textContent" in javascript
+    assert "innerHTML" not in javascript
+    assert "localStorage" not in javascript
+    assert "sessionStorage" not in javascript
+    assert "東京科学大学" not in javascript
+    assert "http://" not in javascript
+    assert "https://" not in javascript
+    assert ".demo-shell" in css
+    assert ".evidence-drawer" in css
+    assert "100dvh" in css
+    assert "@media (max-width: 760px)" in css
+
+
 def test_report_ui_builds_exact_profile_and_server_owned_intent_flow() -> None:
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
     assert 'const INTENT_ENDPOINT = "/v1/query-intents/parse"' in javascript

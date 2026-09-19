@@ -10,6 +10,11 @@ except ModuleNotFoundError as error:
     raise
 
 from .runtime import ServiceDependencies, ServiceSettings
+from .demo_requirements import (
+    DemoBaseRequirementsResponse,
+    DemoTargetCatalogResponse,
+    DemoTargetRequest,
+)
 from .contracts import (
     ApplicantReportRequest,
     ApplicantReportResponse,
@@ -22,6 +27,9 @@ from .contracts import (
 __all__ = [
     "ApplicantReportRequest",
     "ApplicantReportResponse",
+    "DemoBaseRequirementsResponse",
+    "DemoTargetCatalogResponse",
+    "DemoTargetRequest",
     "QueryIntentParseRequest",
     "ReviewedDocumentCatalogItem",
     "ReviewedDocumentCatalogResponse",

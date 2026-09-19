@@ -88,6 +88,93 @@ def test_missing_credential_basis_fails_closed_for_path_dependent_items(rule04b_
     ]
 
 
+def test_demo_target_catalog_and_base_requirements_are_server_owned(rule04b_client) -> None:
+    client, document_id = rule04b_client
+    catalog_response = client.get("/v1/target-catalog")
+
+    assert catalog_response.status_code == 200
+    schools = catalog_response.json()["schools"]
+    assert [(item["school_id"], item["school_name"]) for item in schools] == [
+        ("isct", "東京科学大学")
+    ]
+    master = schools[0]["degrees"][0]
+    assert master["degree_id"] == "master"
+    intake = next(item for item in master["intakes"] if (item["year"], item["month"]) == (2027, 4))
+    engineering = next(item for item in intake["colleges"] if item["college_id"] == "工学院")
+    assert "システム制御系" in {item["department_id"] for item in engineering["departments"]}
+    assert "tsinghua_joint_program" not in catalog_response.text
+
+    response = client.post(
+        "/v1/base-requirements",
+        json={
+            "schema_version": "1.0",
+            "school_id": "isct",
+            "document_id": document_id,
+            "degree_id": "master",
+            "intake": {"year": 2027, "month": 4},
+            "college_id": "工学院",
+            "department_id": "システム制御系",
+            "application_route": None,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["coverage_status"] == "partial_reviewed_rules"
+    assert {item["category"] for item in payload["requirements"]} == {
+        "dates",
+        "materials",
+        "eligibility",
+        "language",
+    }
+    materials = [item for item in payload["requirements"] if item["category"] == "materials"]
+    assert [item["official_status"] for item in materials] == [
+        "required",
+        "required",
+        "needs_information",
+        "needs_information",
+        "needs_information",
+    ]
+    assert {evidence["fact_id"] for item in materials for evidence in item["evidence"]} == {
+        "fact:00104"
+    }
+    all_evidence = [evidence for item in payload["requirements"] for evidence in item["evidence"]]
+    assert all(evidence["pages"] and evidence["official_text"] for evidence in all_evidence)
+    dates = [item for item in payload["requirements"] if item["category"] == "dates"]
+    assert all(item["reviewed_summary"] for item in dates)
+    assert all(
+        "2026" in item["reviewed_summary"] or "到着日" in item["reviewed_summary"] for item in dates
+    )
+    assert "fact:00347" not in {evidence["fact_id"] for evidence in all_evidence}
+    assert "tsinghua_joint_program" not in response.text
+
+
+def test_demo_target_rejects_incomplete_or_unreviewed_selection(rule04b_client) -> None:
+    client, document_id = rule04b_client
+    base = {
+        "schema_version": "1.0",
+        "school_id": "isct",
+        "document_id": document_id,
+        "degree_id": "master",
+        "intake": {"year": 2027, "month": 4},
+        "college_id": "情報理工学院",
+        "department_id": "情報工学系",
+        "application_route": None,
+    }
+
+    missing_route = client.post("/v1/base-requirements", json=base)
+    unknown_department = client.post(
+        "/v1/base-requirements",
+        json={**base, "college_id": "工学院", "department_id": "未审核系"},
+    )
+
+    assert (missing_route.status_code, missing_route.json()["code"]) == (422, "invalid_request")
+    assert (unknown_department.status_code, unknown_department.json()["code"]) == (
+        422,
+        "invalid_request",
+    )
+
+
 def test_common_materials_do_not_expose_conditional_or_excluded_materials(rule04b_client) -> None:
     client, document_id = rule04b_client
     report, _ = _materials(

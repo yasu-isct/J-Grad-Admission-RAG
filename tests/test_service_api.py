@@ -421,6 +421,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "getV1HealthLive",
         "getV1HealthReady",
         "getV1ReviewedDocuments",
+        "getV1TargetCatalog",
         "postV1BuildJobs",
         "getV1BuildJob",
         "getV1BuildJobResult",
@@ -430,6 +431,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1KnowledgeBasesBuild",
         "postV1CorpusQuery",
         "postV1ApplicantReports",
+        "postV1BaseRequirements",
         "postV1QueryIntentsParse",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
@@ -470,6 +472,20 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert set(report_request["required"]) == {"report_id", "profile", "intent", "selection"}
     assert report_response["additionalProperties"] is False
     assert set(report_response["required"]) == {"report", "markdown"}
+    target_operation = schema["paths"]["/v1/target-catalog"]["get"]
+    base_operation = schema["paths"]["/v1/base-requirements"]["post"]
+    demo_request = schema["components"]["schemas"]["DemoTargetRequest"]
+    assert set(target_operation["responses"]) == {"200", "500", "503"}
+    assert set(base_operation["responses"]) == {"200", "404", "409", "415", "422", "500", "503"}
+    assert demo_request["additionalProperties"] is False
+    assert set(demo_request["required"]) == {
+        "school_id",
+        "document_id",
+        "degree_id",
+        "intake",
+        "college_id",
+        "department_id",
+    }
 
 
 def test_head_behavior_is_deliberate_and_does_not_leak_alternate_body() -> None:
@@ -498,12 +514,32 @@ def test_service_exports_applicant_report_contracts() -> None:
     from jgrad_admission_rag.service import (
         ApplicantReportRequest,
         ApplicantReportResponse,
+        DemoBaseRequirementsResponse,
+        DemoTargetCatalogResponse,
+        DemoTargetRequest,
         QueryIntentParseRequest,
     )
 
     assert ApplicantReportRequest.model_fields["schema_version"].default == "1.0"
     assert ApplicantReportResponse.model_fields["schema_version"].default == "1.0"
     assert QueryIntentParseRequest.model_fields["schema_version"].default == "1.0"
+    assert DemoTargetCatalogResponse.model_fields["schema_version"].default == "1.0"
+    assert DemoTargetRequest.model_fields["schema_version"].default == "1.0"
+    assert DemoBaseRequirementsResponse.model_fields["schema_version"].default == "1.0"
+
+
+def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:
+    source = (
+        Path(__file__).parents[1]
+        / "src"
+        / "jgrad_admission_rag"
+        / "service"
+        / "demo_requirements.py"
+    ).read_text(encoding="utf-8")
+
+    assert "2026年6月1日" not in source
+    assert "2026年6月4日" not in source
+    assert "reviewed_summary=rule.annotation_note" in source
 
 
 def test_cli_defaults_to_loopback_and_defers_provider_creation(

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ja">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>J-Grad Evidence Review</title>
+    <title>J-Grad 申请检查向导</title>
     <link rel="stylesheet" href="/assets/app.css">
     <script src="/assets/app.js" defer></script>
   </head>
@@ -12,16 +12,68 @@
       <div class="header-inner">
         <p class="product-mark" aria-hidden="true">JG</p>
         <div>
-          <h1>J-Grad Evidence Review</h1>
-          <p>大学院募集要項の公式記載と審査済み規則を確認するローカルツール</p>
+          <h1>J-Grad 申请检查向导</h1>
+          <p>把个人准备情况与日本大学院官方募集要项逐项对照</p>
         </div>
       </div>
     </header>
 
     <main class="workspace" aria-labelledby="workspace-heading">
       <section class="notice" aria-labelledby="workspace-heading">
-        <h2 id="workspace-heading">公式文書に基づく部分的な確認</h2>
-        <p><strong>根拠候補は出願資格や合否の判定ではありません。レポートも、総合的な出願資格、合否、合格可能性、または推奨を示しません。</strong></p>
+        <h2 id="workspace-heading">从官方要求开始，不替学校做最终判断</h2>
+        <p><strong>本工具只整理已人工审核的部分规则，不保证出愿资格、材料受理或录取结果。信息不足不会被解释为符合要求。</strong></p>
+      </section>
+
+      <nav class="stepper" aria-label="申请检查步骤">
+        <span aria-current="step"><strong>1</strong> 选择目标</span>
+        <span><strong>2</strong> 基础要求</span>
+        <span aria-disabled="true"><strong>3</strong> 个人情况</span>
+        <span aria-disabled="true"><strong>4</strong> Checklist</span>
+      </nav>
+
+      <section class="demo-shell" aria-labelledby="demo-heading">
+        <div class="target-panel">
+          <p class="section-label">STEP 1 · 申请目标</p>
+          <h2 id="demo-heading">你准备申请什么？</h2>
+          <p class="field-detail">选项来自服务端审核目录。改变目标会清除之前加载的要求。</p>
+          <form id="target-form" novalidate>
+            <div class="target-grid">
+              <div><label for="school-select">学校</label><select id="school-select" required disabled><option value="">正在读取审核目录</option></select></div>
+              <div><label for="demo-degree-select">学位</label><select id="demo-degree-select" required disabled><option value="">请先选择学校</option></select></div>
+              <div><label for="intake-select">入学时间</label><select id="intake-select" required disabled><option value="">请先选择学位</option></select></div>
+              <div><label for="college-select">学院</label><select id="college-select" required disabled><option value="">请先选择入学时间</option></select></div>
+              <div><label for="department-select">系／专业</label><select id="department-select" required disabled><option value="">请先选择学院</option></select></div>
+              <div id="route-field" hidden><label for="route-select">出愿日程／方式</label><select id="route-select" disabled><option value="">请选择日程或方式</option></select></div>
+            </div>
+            <div class="actions">
+              <button id="requirements-submit" type="submit" disabled>查看基础出愿要求</button>
+              <button id="requirements-retry" class="secondary" type="button" hidden>重试</button>
+            </div>
+          </form>
+          <div id="target-status" class="status-message" role="status" aria-live="polite" tabindex="-1">正在读取审核目录。</div>
+        </div>
+
+        <section class="requirements-panel" aria-labelledby="requirements-heading">
+          <div class="results-header">
+            <div><p class="section-label">STEP 2 · 官方要求</p><h2 id="requirements-heading">基础出愿要求</h2></div>
+          </div>
+          <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
+          <div id="requirements-output" class="requirements-output"></div>
+        </section>
+      </section>
+
+      <dialog id="evidence-drawer" class="evidence-drawer" aria-labelledby="drawer-title">
+        <div class="drawer-header">
+          <div><p class="section-label">OFFICIAL EVIDENCE</p><h2 id="drawer-title">官方依据</h2></div>
+          <button id="drawer-close" class="quiet" type="button" aria-label="关闭官方依据">关闭</button>
+        </div>
+        <div id="drawer-content" class="drawer-content"></div>
+      </dialog>
+
+      <section class="secondary-heading" aria-labelledby="secondary-heading">
+        <p class="section-label">辅助工具</p>
+        <h2 id="secondary-heading">证据检索与旧版详细报告</h2>
+        <p class="field-detail">需要核对其他原文时，可继续使用既有检索和详细报告功能。</p>
       </section>
 
       <section class="document-bar" aria-labelledby="document-heading">
