@@ -55,6 +55,11 @@ const comparisonSubmit = byId("comparison-submit");
 const comparisonRetry = byId("comparison-retry");
 const comparisonStatus = byId("comparison-status");
 const comparisonOutput = byId("comparison-output");
+const readinessPanel = byId("readiness-panel");
+const readinessTarget = byId("readiness-target");
+const partialChecklistStatement = byId("partial-checklist-statement");
+const readinessFilters = byId("readiness-filters");
+const filterEmpty = byId("filter-empty");
 
 let catalogItems = [];
 let lastAction = "catalog";
@@ -1165,6 +1170,15 @@ function cancelPendingComparison() {
 
 function clearComparison(message = "填写个人情况后，可由服务端进行保守对照。") {
   comparisonOutput.replaceChildren();
+  readinessPanel.hidden = true;
+  readinessTarget.textContent = "";
+  partialChecklistStatement.textContent = "";
+  byId("count-total").textContent = "0";
+  byId("count-recorded").textContent = "0";
+  byId("count-action").textContent = "0";
+  byId("count-review").textContent = "0";
+  readinessFilters.querySelector('[value="all"]').checked = true;
+  filterEmpty.hidden = true;
   comparisonRetry.hidden = true;
   setMessage(comparisonStatus, "initial", message);
 }
@@ -1183,6 +1197,13 @@ function comparisonStatusLabel(status) {
 
 function renderComparison(payload) {
   comparisonOutput.replaceChildren();
+  readinessTarget.textContent = [payload.target.school_name, payload.target.degree_name, payload.target.intake_name, payload.target.college_name, payload.target.department_name, payload.target.application_route_name].filter(Boolean).join(" · ");
+  partialChecklistStatement.textContent = payload.partial_checklist_statement;
+  byId("count-total").textContent = String(payload.counts.total);
+  byId("count-recorded").textContent = String(payload.counts.recorded);
+  byId("count-action").textContent = String(payload.counts.action_required);
+  byId("count-review").textContent = String(payload.counts.review_required);
+  readinessFilters.querySelector('[value="all"]').checked = true;
   const groups = [["education", "学历"], ["english", "英语"], ["japanese", "日语"], ["materials", "已有材料与官方适用性"]];
   for (const [category, label] of groups) {
     const entries = payload.items.filter((item) => item.category === category);
@@ -1195,6 +1216,7 @@ function renderComparison(payload) {
     for (const item of entries) {
       const card = document.createElement("article");
       card.className = "requirement-card comparison-card";
+      card.dataset.actionGroup = item.action_group;
       card.append(heading(4, item.title));
       const status = document.createElement("span");
       status.className = "requirement-status";
@@ -1203,6 +1225,10 @@ function renderComparison(payload) {
       const description = document.createElement("p");
       description.textContent = item.description;
       card.append(status, description);
+      const nextAction = document.createElement("p");
+      nextAction.className = "next-action";
+      nextAction.textContent = `下一步：${item.next_action}`;
+      card.append(nextAction);
       if (item.official_status) {
         const officialLabels = { required: "适用", eligibility_review_path: "由个别资格审查路径承接", needs_information: "需要学历路径信息", not_covered: "当前未覆盖" };
         const preparationLabels = { available: "已有", not_yet: "尚未准备", unknown: "未提供／不确定" };
@@ -1233,6 +1259,21 @@ function renderComparison(payload) {
   boundary.className = "final-notice";
   boundary.textContent = `${payload.comparison_statement} 限制：${payload.limitation_statement}`;
   comparisonOutput.append(boundary);
+  filterEmpty.hidden = true;
+  readinessPanel.hidden = false;
+}
+
+function applyReadinessFilter() {
+  const selected = readinessFilters.querySelector('input[name="readiness-filter"]:checked').value;
+  let visible = 0;
+  for (const card of comparisonOutput.querySelectorAll(".comparison-card")) {
+    card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;
+    if (!card.hidden) visible += 1;
+  }
+  for (const group of comparisonOutput.querySelectorAll(".comparison-group")) {
+    group.hidden = !Array.from(group.querySelectorAll(".comparison-card")).some((card) => !card.hidden);
+  }
+  filterEmpty.hidden = visible !== 0;
 }
 
 async function submitApplicantComparison() {
@@ -1240,6 +1281,7 @@ async function submitApplicantComparison() {
   const requestSnapshot = JSON.stringify(demoComparisonRequest());
   const requestId = ++comparisonRequestId;
   comparisonController = new AbortController();
+  clearComparison("正在由服务端对照个人情况与审核规则。");
   comparisonPending = true;
   comparisonSubmit.disabled = true;
   comparisonRetry.hidden = true;
@@ -1255,7 +1297,7 @@ async function submitApplicantComparison() {
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== comparisonRequestId) return;
-    comparisonOutput.replaceChildren();
+    clearComparison("个人情况暂时无法对照，请检查输入后重试。");
     comparisonRetry.hidden = false;
     setMessage(comparisonStatus, "error", "个人情况暂时无法对照，请检查输入后重试。", true);
   } finally {
@@ -1345,6 +1387,7 @@ targetForm.addEventListener("submit", (event) => { event.preventDefault(); submi
 applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
 applicantForm.addEventListener("input", () => invalidateComparison("个人输入已改变，请重新对照。"));
 comparisonRetry.addEventListener("click", submitApplicantComparison);
+readinessFilters.addEventListener("change", applyReadinessFilter);
 schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
 demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
 intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));

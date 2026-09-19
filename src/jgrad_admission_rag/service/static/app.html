@@ -28,7 +28,7 @@
         <span aria-current="step"><strong>1</strong> 选择目标</span>
         <span><strong>2</strong> 基础要求</span>
         <span><strong>3</strong> 个人情况</span>
-        <span aria-disabled="true"><strong>4</strong> Checklist</span>
+        <span><strong>4</strong> 准备视图</span>
       </nav>
 
       <section class="demo-shell" aria-labelledby="demo-heading">
@@ -109,6 +109,28 @@
             <div class="actions"><button id="comparison-submit" type="submit" disabled>对照个人情况</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
           </form>
           <div id="comparison-status" class="status-message" role="status" aria-live="polite">请先加载基础要求。</div>
+        </section>
+
+        <section id="readiness-panel" class="applicant-panel readiness-panel" aria-labelledby="readiness-heading" hidden>
+          <div class="results-header">
+            <div><p class="section-label">STEP 4 · 当前准备视图</p><h2 id="readiness-heading">接下来需要做什么？</h2></div>
+          </div>
+          <p id="readiness-target" class="target-summary"></p>
+          <p id="partial-checklist-statement" class="final-notice"></p>
+          <dl class="readiness-counts" aria-label="准备状态统计">
+            <div><dt>全部项目</dt><dd id="count-total">0</dd></div>
+            <div><dt>已记录</dt><dd id="count-recorded">0</dd></div>
+            <div><dt>需要补充</dt><dd id="count-action">0</dd></div>
+            <div><dt>需审核／未覆盖</dt><dd id="count-review">0</dd></div>
+          </dl>
+          <fieldset id="readiness-filters" class="readiness-filters">
+            <legend>筛选显示</legend>
+            <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
+            <label><input type="radio" name="readiness-filter" value="action_required"> 需要补充</label>
+            <label><input type="radio" name="readiness-filter" value="recorded"> 已记录</label>
+            <label><input type="radio" name="readiness-filter" value="review_required"> 需审核／未覆盖</label>
+          </fieldset>
+          <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
           <div id="comparison-output" class="comparison-output"></div>
         </section>
       </section>

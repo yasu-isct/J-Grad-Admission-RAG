@@ -205,18 +205,59 @@ class DemoComparisonItem(DemoModel):
         "not_covered",
     ]
     description: str
+    action_group: Literal["recorded", "action_required", "review_required"]
+    next_action: str = Field(min_length=1)
     official_status: str | None = None
     preparation_status: DemoMaterialPreparation | None = None
     evidence: tuple[DemoEvidence, ...] = ()
     limitation: str
+
+    @model_validator(mode="after")
+    def action_group_must_match_status(self) -> "DemoComparisonItem":
+        expected = (
+            "recorded"
+            if self.comparison_status in {"recorded", "possible_match", "not_applicable"}
+            else (
+                "action_required"
+                if self.comparison_status == "needs_information"
+                else "review_required"
+            )
+        )
+        if self.action_group != expected:
+            raise ValueError("action group must match comparison status")
+        expected_action = _readiness_fields(self.comparison_status, self.category)["next_action"]
+        if self.next_action != expected_action:
+            raise ValueError("next action must match comparison status and category")
+        return self
+
+
+class DemoReadinessCounts(DemoModel):
+    total: int = Field(ge=0, strict=True)
+    recorded: int = Field(ge=0, strict=True)
+    action_required: int = Field(ge=0, strict=True)
+    review_required: int = Field(ge=0, strict=True)
 
 
 class DemoApplicantComparisonResponse(DemoModel):
     schema_version: Literal["1.0"] = "1.0"
     target: DemoTargetSummary
     comparison_statement: str
+    partial_checklist_statement: str
     limitation_statement: str
     items: tuple[DemoComparisonItem, ...]
+    counts: DemoReadinessCounts
+
+    @model_validator(mode="after")
+    def counts_must_match_items(self) -> "DemoApplicantComparisonResponse":
+        expected = {
+            group: sum(item.action_group == group for item in self.items)
+            for group in ("recorded", "action_required", "review_required")
+        }
+        if self.counts.total != len(self.items) or any(
+            getattr(self.counts, group) != count for group, count in expected.items()
+        ):
+            raise ValueError("readiness counts must reconcile with comparison items")
+        return self
 
 
 _DEGREE_NAMES = {
@@ -557,6 +598,7 @@ def build_demo_applicant_comparison(
             title="学历与资格路径",
             comparison_status=education_status,
             description=education_description,
+            **_readiness_fields(education_status, "education"),
             evidence=eligibility_evidence,
             limitation="这是申请人自报信息与已审核路径的保守对照，不是出愿资格认定。",
         )
@@ -571,34 +613,38 @@ def build_demo_applicant_comparison(
             applicant.english_official_report_available,
         )
     )
+    english_status = "recorded" if english_supplied else "needs_information"
     items.append(
         DemoComparisonItem(
             item_id="english:result",
             category="english",
             title="英语考试与官方成绩单",
-            comparison_status="recorded" if english_supplied else "needs_information",
+            comparison_status=english_status,
             description=(
                 "英语考试信息已记录并与该目标的审核规则并列展示；仍需核对考试类型、有效期和提交方式。"
                 if english_supplied
                 else "尚未提供英语考试信息；这不会被解释为不满足要求。"
             ),
+            **_readiness_fields(english_status, "english"),
             evidence=language_evidence,
             limitation="记录成绩不等于成绩有效、官方成绩单可用、学校已收到或已满足英语要求。",
         )
     )
 
     japanese_supplied = applicant.japanese_background is not None
+    japanese_status = "recorded" if japanese_supplied else "needs_information"
     items.append(
         DemoComparisonItem(
             item_id="japanese:background",
             category="japanese",
             title="日语学习或证明情况",
-            comparison_status="recorded" if japanese_supplied else "needs_information",
+            comparison_status=japanese_status,
             description=(
                 "日语情况已记录；当前审核证据不足以判断是否满足任何项目要求。"
                 if japanese_supplied
                 else "尚未提供日语情况；当前审核证据也不足以生成满足结论。"
             ),
+            **_readiness_fields(japanese_status, "japanese"),
             limitation="本项只记录申请人输入，不推断日语能力、免除、项目资格或录取结果。",
         )
     )
@@ -633,16 +679,25 @@ def build_demo_applicant_comparison(
                     official_status=applicability,
                     preparation_status=preparation,
                     description=_material_comparison_description(applicability, preparation),
+                    **_readiness_fields(status, "materials"),
                     evidence=requirement.evidence if requirement is not None else (),
                     limitation="个人准备状态与官方适用性分开记录；已有材料不表示其有效、已提交或已受理。",
                 )
             )
 
+    counts = DemoReadinessCounts(
+        total=len(items),
+        recorded=sum(item.action_group == "recorded" for item in items),
+        action_required=sum(item.action_group == "action_required" for item in items),
+        review_required=sum(item.action_group == "review_required" for item in items),
+    )
     return DemoApplicantComparisonResponse(
         target=base.target,
         comparison_statement="服务端已将个人自报信息与当前审核规则进行保守对照。",
+        partial_checklist_statement="这是当前人工审核范围内的准备视图，不是学校官方完整 checklist。",
         limitation_statement="本结果不是完整 checklist，不判断最终资格、材料完整性、受理或录取。",
         items=tuple(items),
+        counts=counts,
     )
 
 
@@ -788,6 +843,32 @@ def _material_comparison_description(
         DemoMaterialPreparation.UNKNOWN: "个人输入：未提供或不确定。",
     }
     return f"{applicability_labels[applicability]} {preparation_labels[preparation]}"
+
+
+def _readiness_fields(status: str, category: str) -> dict[str, str]:
+    if status in {"recorded", "possible_match", "not_applicable"}:
+        actions = {
+            "education": "继续核对官方证明与适用条件，不要把可能匹配当作资格确认。",
+            "english": "核对考试类型、有效期、官方成绩单与该系提交方式。",
+            "japanese": "保留当前记录；如项目另有要求，请以官方原文或学校答复为准。",
+            "materials": "核对材料内容、有效性和提交方式；已有不表示已提交或已受理。",
+        }
+        return {"action_group": "recorded", "next_action": actions[category]}
+    if status == "needs_information":
+        actions = {
+            "education": "补充最接近的学历路径和毕业状态后重新对照。",
+            "english": "如已参加考试，请补充考试类型、成绩、日期和官方成绩单情况。",
+            "japanese": "如有相关学习或证明，可记录；当前不会据此判断满足要求。",
+            "materials": "确认该材料是否已有；若学历路径未知，请先补充学历信息。",
+        }
+        return {"action_group": "action_required", "next_action": actions[category]}
+    actions = {
+        "education": "查看绑定的官方依据，并向学校确认个别资格审查或未覆盖条件。",
+        "english": "查看官方依据并向该系确认当前未覆盖或需审核的英语条件。",
+        "japanese": "向学校确认项目是否另有日语要求。",
+        "materials": "查看官方依据；资格审查路径或未覆盖状态需由学校确认。",
+    }
+    return {"action_group": "review_required", "next_action": actions[category]}
 
 
 def _college_catalog(plan: ReviewedReportPlan) -> tuple[DemoCollege, ...]:

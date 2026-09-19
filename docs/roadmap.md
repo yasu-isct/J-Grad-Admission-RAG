@@ -41,9 +41,9 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 
 M1 through M7 and DEMO-01 are complete. M8 validates the applicant-facing experience in three
 sequential slices. DEMO-01 established a server-owned application-target catalog, profile-free
-base requirements, and an accessible evidence drawer. DEMO-02 is active and adds grouped education,
-English, Japanese, and material-preparation input plus server-side comparison. DEMO-03 adds the interactive
-Checklist, filters, and final desktop/mobile acceptance. Only one dependent DEMO issue is active at
+base requirements, and an accessible evidence drawer. DEMO-02 added grouped education, English,
+Japanese, and material-preparation input plus server-side comparison. DEMO-03 is active and adds the
+interactive partial checklist, filters, next actions, and final desktop/mobile acceptance. Only one dependent DEMO issue is active at
 a time; the browser does not persist Applicant Profile data.
 
 The primary interface uses Simplified Chinese for navigation, explanations, and states; official

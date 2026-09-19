@@ -214,6 +214,15 @@ def test_demo02_ui_collects_minimal_profile_and_invalidates_stale_comparisons() 
     assert "requestSnapshot !== JSON.stringify(demoComparisonRequest())" in javascript
     assert 'applicantForm.addEventListener("input",' in javascript
     assert "baseRequirementsLoaded = false" in javascript
+    assert 'id="readiness-panel"' in html
+    assert html.count('name="readiness-filter"') == 4
+    assert "item.action_group" in javascript
+    assert "item.next_action" in javascript
+    assert "applyReadinessFilter" in javascript
+    assert "payload.counts.action_required" in javascript
+    assert 'clearComparison("正在由服务端对照个人情况与审核规则。")' in javascript
+    assert 'clearComparison("个人情况暂时无法对照，请检查输入后重试。")' in javascript
+    assert 'role="status" aria-live="polite" hidden>当前筛选下没有项目。' in html
     assert "localStorage" not in javascript
     assert "sessionStorage" not in javascript
 

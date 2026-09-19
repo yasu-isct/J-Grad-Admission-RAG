@@ -33,7 +33,7 @@ STATIC_ROOT = ROOT / "src/jgrad_admission_rag/service/static"
 PLAN_PATH = ROOT / "tests/fixtures/reviewed_report_plan_isct_master_rule05a_v1.json"
 PDF_PATH = ROOT / "outputs/real_pdf/isct_2027_4_2026_9_master.pdf"
 IDENTITY_PATH = ROOT / "tests/fixtures/document_identity_isct_master_v1.json"
-SCREENSHOTS = ROOT / "outputs/demo01/browser"
+SCREENSHOTS = ROOT / "outputs/demo03/browser"
 OUTPUT = SCREENSHOTS / "audit.json"
 
 PLAN = load_reviewed_report_plan(PLAN_PATH)
@@ -126,6 +126,9 @@ class Handler(SimpleHTTPRequestHandler):
             type(self).comparison_requests += 1
             if type(self).comparison_requests == 1:
                 time.sleep(0.3)
+            if type(self).comparison_requests == 3:
+                self._json({"code": "temporary_failure"}, status=503)
+                return
             request = DemoApplicantComparisonRequest.model_validate(payload)
             response = build_demo_applicant_comparison(request, PLAN, BUNDLE)
             self._json(response.model_dump(mode="json"))
@@ -180,7 +183,7 @@ def main() -> None:
                 assert "Fact ID" not in drawer_text
                 drawer_screenshot = None
                 if viewport == "mobile":
-                    drawer_screenshot = SCREENSHOTS / "demo01-mobile-evidence.png"
+                    drawer_screenshot = SCREENSHOTS / "demo03-mobile-evidence.png"
                     page.screenshot(path=drawer_screenshot)
                 page.keyboard.press("Escape")
                 assert trigger.evaluate("element => document.activeElement === element")
@@ -203,11 +206,43 @@ def main() -> None:
                 assert comparison_groups == ["学历", "英语", "日语", "已有材料与官方适用性"]
                 assert "可能匹配，仍需核对" in page.locator("#comparison-output").inner_text()
                 assert "个人准备状态：已有" in page.locator("#comparison-output").inner_text()
+                assert page.locator("#readiness-panel").is_visible()
+                action_count = int(page.locator("#count-action").inner_text())
+                all_filter = page.locator('input[name="readiness-filter"][value="all"]')
+                action_filter = page.locator(
+                    'input[name="readiness-filter"][value="action_required"]'
+                )
+                all_filter.focus()
+                page.keyboard.press("ArrowRight")
+                assert action_filter.is_checked()
+                assert action_filter.evaluate("element => document.activeElement === element")
+                assert page.locator(".comparison-card:visible").count() == action_count
+                review_filter = page.locator(
+                    'input[name="readiness-filter"][value="review_required"]'
+                )
+                review_filter.focus()
+                page.keyboard.press("Space")
+                assert review_filter.is_checked()
+                assert page.locator("#filter-empty").is_visible()
+                assert page.locator("#filter-empty").get_attribute("aria-live") == "polite"
+                all_filter.focus()
+                page.keyboard.press("Space")
+                assert page.locator(".comparison-card:visible").count() == int(
+                    page.locator("#count-total").inner_text()
+                )
+                if viewport == "desktop":
+                    page.locator("#comparison-submit").click()
+                    assert page.locator("#readiness-panel").is_hidden()
+                    page.locator("#comparison-retry").wait_for(state="visible")
+                    assert page.locator("#readiness-panel").is_hidden()
+                    assert page.locator("#comparison-output").inner_text() == ""
+                    page.locator("#comparison-retry").click()
+                    page.locator("#readiness-panel").wait_for(state="visible")
                 overflow = page.evaluate(
                     "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                 )
                 assert overflow is False
-                screenshot = SCREENSHOTS / f"demo01-{viewport}.png"
+                screenshot = SCREENSHOTS / f"demo03-{viewport}.png"
                 page.screenshot(path=screenshot, full_page=True)
                 records.append(
                     {
@@ -219,6 +254,8 @@ def main() -> None:
                         "stale_request_suppressed": True,
                         "stale_comparison_suppressed": True,
                         "comparison_groups": comparison_groups,
+                        "readiness_filter_keyboard_flow": True,
+                        "failed_resubmit_clears_readiness_before_retry": True,
                         "conditional_program_evidence_visible": False,
                         "horizontal_overflow": overflow,
                         "screenshot": screenshot.relative_to(ROOT).as_posix(),
