@@ -60,7 +60,16 @@ def _wait_json(url: str, process: subprocess.Popen[str]) -> dict:
 
 def _launch_command(pdf: Path, workspace: Path, port: int, rebuild: bool) -> list[str]:
     executable = shutil.which("jgrad-demo")
-    command = [executable] if executable else [sys.executable, "-m", "jgrad_admission_rag.demo_cli"]
+    if executable is None:
+        script_name = "jgrad-demo.exe" if os.name == "nt" else "jgrad-demo"
+        sibling = Path(sys.executable).with_name(script_name)
+        executable = str(sibling) if sibling.is_file() else None
+    if executable is None:
+        raise RuntimeError(
+            "installed jgrad-demo entry point is unavailable; install .[service] and activate "
+            "that environment"
+        )
+    command = [executable]
     command.extend(["--pdf", str(pdf), "--workspace", str(workspace), "--port", str(port)])
     if rebuild:
         command.append("--rebuild")
@@ -183,6 +192,7 @@ def main() -> None:
         result = {
             "schema_version": "1.0",
             "service": "jgrad-demo -> uvicorn -> FastAPI",
+            "installed_entry_point": Path(command[0]).name,
             "test_http_handler_used": False,
             "pdf_sha256": actual_hash,
             "command": "jgrad-demo --pdf <absolute-path-to-reviewed-pdf>",

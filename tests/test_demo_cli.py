@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import socket
 import subprocess
+import shutil
 import sys
 import time
 from urllib.error import URLError
@@ -196,6 +197,50 @@ def test_demo_rejects_corrupt_reuse_and_recovers_only_with_rebuild(
     monkeypatch.undo()
     rebuilt = prepare_demo(pdf, workspace, rebuild=True, config_dir=config)
     assert rebuilt.reused is False
+
+
+def test_rebuild_refuses_an_unowned_runtime_directory(tmp_path: Path) -> None:
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    runtime = workspace / "runtime-v1"
+    runtime.mkdir(parents=True)
+    user_file = runtime / "user-file.txt"
+    user_file.write_text("keep me", encoding="utf-8")
+
+    with pytest.raises(DemoError, match="cannot be rebuilt safely"):
+        prepare_demo(pdf, workspace, rebuild=True, config_dir=config)
+
+    assert user_file.read_text(encoding="utf-8") == "keep me"
+
+
+def test_workspace_probe_preserves_a_preexisting_similar_file(tmp_path: Path) -> None:
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    workspace.mkdir()
+    user_file = workspace / ".jgrad-demo-write-probe"
+    user_file.write_text("keep me", encoding="utf-8")
+
+    prepare_demo(pdf, workspace, config_dir=config)
+
+    assert user_file.read_text(encoding="utf-8") == "keep me"
+
+
+def test_installed_console_entry_point_is_available() -> None:
+    executable = shutil.which("jgrad-demo")
+    if executable is None:
+        script_name = "jgrad-demo.exe" if os.name == "nt" else "jgrad-demo"
+        sibling = Path(sys.executable).with_name(script_name)
+        executable = str(sibling) if sibling.is_file() else None
+    assert executable is not None, "install the package before running its test suite"
+    result = subprocess.run(
+        [executable, "--help"],
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+    assert result.returncode == 0
+    assert "--pdf ABSOLUTE_PATH" in result.stdout
 
 
 def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Path) -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import shutil
 import tempfile
@@ -73,6 +74,7 @@ _CONFIG_FILENAMES = {
     "query_intent": "query_intent_catalog.json",
 }
 _RUNTIME_DIRECTORY = "runtime-v1"
+_OWNERSHIP_FILENAME = ".jgrad-demo-owned.json"
 _CORPUS_ID = "jgrad-demo-isct"
 _INDEX_DIMENSION = 8
 
@@ -172,7 +174,7 @@ def prepare_demo(
                 raise DemoError(
                     "demo workspace is stale or incompatible; rerun with --rebuild"
                 ) from None
-        _assert_owned_runtime(root, runtime_root)
+        _assert_owned_runtime(root, runtime_root, bundle)
         replace_runtime = True
 
     prefix = f".{_RUNTIME_DIRECTORY}.build-"
@@ -258,6 +260,7 @@ def _build_runtime(pdf: Path, root: Path, bundle: DemoConfigBundle) -> None:
         )
         _write_bytes(root / "corpus.json", canonical_corpus_manifest_bytes(manifest))
         _write_bytes(root / "policy.json", canonical_corpus_version_policy_bytes(policy))
+        _write_bytes(root / _OWNERSHIP_FILENAME, _ownership_bytes(bundle))
         config_root = root / "config"
         _write_bytes(config_root / _CONFIG_FILENAMES["identity"], bundle.identity_bytes)
         _write_bytes(config_root / _CONFIG_FILENAMES["plan"], bundle.plan_bytes)
@@ -286,6 +289,13 @@ def _validate_runtime(
             raise ValueError
         config_root = resolved_runtime / "config"
         if config_root.is_symlink() or not config_root.is_dir():
+            raise ValueError
+        ownership_path = resolved_runtime / _OWNERSHIP_FILENAME
+        if (
+            ownership_path.is_symlink()
+            or not ownership_path.is_file()
+            or ownership_path.read_bytes() != _ownership_bytes(bundle)
+        ):
             raise ValueError
         expected_configs = {
             _CONFIG_FILENAMES["identity"]: bundle.identity_bytes,
@@ -401,9 +411,9 @@ def _prepare_workspace(path_value: Path) -> Path:
         if requested.is_symlink() or not requested.is_dir():
             raise OSError
         resolved = requested.resolve(strict=True)
-        probe = resolved / ".jgrad-demo-write-probe"
-        probe.write_bytes(b"")
-        probe.unlink()
+        descriptor, probe_name = tempfile.mkstemp(prefix=".jgrad-demo-write-probe-", dir=resolved)
+        os.close(descriptor)
+        Path(probe_name).unlink()
         return resolved
     except (OSError, RuntimeError, TypeError, ValueError):
         raise DemoError("--workspace must be an absolute writable directory") from None
@@ -452,7 +462,11 @@ def _write_bytes(path: Path, payload: bytes) -> None:
         raise
 
 
-def _assert_owned_runtime(workspace: Path, runtime_root: Path) -> None:
+def _assert_owned_runtime(
+    workspace: Path,
+    runtime_root: Path,
+    bundle: DemoConfigBundle,
+) -> None:
     try:
         candidate = runtime_root.resolve(strict=False)
         if (
@@ -462,8 +476,26 @@ def _assert_owned_runtime(workspace: Path, runtime_root: Path) -> None:
             or not runtime_root.is_dir()
         ):
             raise OSError
+        marker = candidate / _OWNERSHIP_FILENAME
+        if (
+            marker.is_symlink()
+            or not marker.is_file()
+            or marker.read_bytes() != _ownership_bytes(bundle)
+        ):
+            raise OSError
     except OSError:
         raise DemoError("demo workspace cannot be rebuilt safely") from None
+
+
+def _ownership_bytes(bundle: DemoConfigBundle) -> bytes:
+    payload = {
+        "document_id": bundle.identity.document_id,
+        "owner": "jgrad-demo",
+        "schema_version": "1.0",
+    }
+    return (
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+    ).encode("utf-8")
 
 
 def _activate_runtime(
