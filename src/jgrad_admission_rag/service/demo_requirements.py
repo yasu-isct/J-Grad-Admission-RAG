@@ -34,7 +34,7 @@ from ..reasoning.reviewed_report_evidence import (
 )
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.document_identity import DegreeLevel, IntakeTerm
-from .date_presentation import ReviewedDatePresentation
+from .date_presentation import ReviewedDatePresentation, ordered_highlights_for_event
 
 
 class DemoModel(BaseModel):
@@ -1143,7 +1143,6 @@ def _date_events(
         or presentation.source_pdf_sha256 != plan.document_identity.source_pdf_sha256
     ):
         raise ValueError("date presentation identity mismatch")
-    highlights_by_id = {item.highlight_id: item for item in presentation.highlights}
     result = []
     for event in presentation.events:
         if (
@@ -1154,8 +1153,7 @@ def _date_events(
             continue
         grouped: dict[str, list[DemoEvidenceHighlight]] = {}
         fact_order: list[str] = []
-        for highlight_id in event.highlight_ids:
-            highlight = highlights_by_id[highlight_id]
+        for highlight in ordered_highlights_for_event(presentation, event):
             if highlight.fact_id not in grouped:
                 grouped[highlight.fact_id] = []
                 fact_order.append(highlight.fact_id)

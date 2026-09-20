@@ -10,6 +10,7 @@ from jgrad_admission_rag.service.date_presentation import (
     ReviewedDatePresentationError,
     canonical_reviewed_date_presentation_bytes,
     load_reviewed_date_presentation_bytes,
+    ordered_highlights_for_event,
     validate_highlights_against_official_text,
 )
 
@@ -122,3 +123,54 @@ def test_highlight_overlap_and_nondeterministic_order_fail_closed(mutation: str)
 
     with pytest.raises(ReviewedDatePresentationError):
         load_reviewed_date_presentation_bytes(json.dumps(payload).encode())
+
+
+@pytest.mark.parametrize("mutation", ["known_marked_unknown", "date_with_time"])
+def test_unknown_fields_and_precision_are_bidirectionally_consistent(mutation: str) -> None:
+    payload = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    event = payload["events"][1]
+    if mutation == "known_marked_unknown":
+        event["unknown_fields"] = ["end_date", "end_time", "start_time"]
+    else:
+        event["start_time"] = "09:00:00"
+        event["unknown_fields"] = ["end_time"]
+
+    with pytest.raises(ReviewedDatePresentationError):
+        load_reviewed_date_presentation_bytes(json.dumps(payload).encode())
+
+
+def test_event_highlights_project_in_fact_and_character_order_not_id_order() -> None:
+    payload = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    event_id = payload["events"][0]["event_id"]
+    payload["events"][0]["highlight_ids"] = ["highlight:a-late", "highlight:z-early"]
+    registration = next(
+        item
+        for item in payload["highlights"]
+        if item["highlight_id"] == "highlight:registration-open"
+    )
+    registration["claim_ids"].remove(event_id)
+    payload["highlights"] = [
+        {
+            "highlight_id": "highlight:z-early",
+            "fact_id": "fact:00099",
+            "start": 0,
+            "end": 2,
+            "exact_text": "先頭",
+            "claim_ids": [event_id],
+        },
+        {
+            "highlight_id": "highlight:a-late",
+            "fact_id": "fact:00099",
+            "start": 4,
+            "end": 6,
+            "exact_text": "後方",
+            "claim_ids": [event_id],
+        },
+        *payload["highlights"],
+    ]
+    presentation = load_reviewed_date_presentation_bytes(json.dumps(payload).encode())
+
+    ordered = ordered_highlights_for_event(presentation, presentation.events[0])
+
+    assert [item.highlight_id for item in ordered] == ["highlight:z-early", "highlight:a-late"]
+    assert [item.start for item in ordered] == [0, 4]

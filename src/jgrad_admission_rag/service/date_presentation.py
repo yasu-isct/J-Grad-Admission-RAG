@@ -60,14 +60,25 @@ class ReviewedDateEvent(DatePresentationModel):
             _validate_text(self.uncertainty_note, "event uncertainty note")
         _validate_sorted_unique(self.unknown_fields, "unknown fields")
         _validate_sorted_unique(self.highlight_ids, "highlight IDs")
+        expected_unknown_fields = tuple(
+            field_name
+            for field_name, value in sorted(
+                (
+                    ("start_time", self.start_time),
+                    ("end_date", self.end_date),
+                    ("end_time", self.end_time),
+                )
+            )
+            if value is None
+        )
+        if self.unknown_fields != expected_unknown_fields:
+            raise ValueError("unknown fields must exactly identify missing date values")
         if self.precision == "minute" and self.start_time is None:
             raise ValueError("minute precision requires a start time")
-        if self.start_time is None and "start_time" not in self.unknown_fields:
-            raise ValueError("missing start time must be explicit")
-        if self.end_date is None and "end_date" not in self.unknown_fields:
-            raise ValueError("missing end date must be explicit")
-        if self.end_time is None and "end_time" not in self.unknown_fields:
-            raise ValueError("missing end time must be explicit")
+        if self.precision == "date" and (self.start_time is not None or self.end_time is not None):
+            raise ValueError("date precision cannot carry a specific time")
+        if self.end_time is not None and self.end_date is None:
+            raise ValueError("an end time requires an end date")
         if self.end_date is not None and self.end_date < self.start_date:
             raise ValueError("date event cannot end before it starts")
         if self.event_type == "registration_open" and self.nature != "opens":
@@ -180,6 +191,23 @@ def validate_highlights_against_official_text(
         ) from None
 
 
+def ordered_highlights_for_event(
+    presentation: ReviewedDatePresentation,
+    event: ReviewedDateEvent,
+) -> tuple[ReviewedEvidenceHighlight, ...]:
+    """Return one event's highlights in validated Fact/character source order."""
+
+    if event not in presentation.events:
+        raise ReviewedDatePresentationError("date event is not part of the presentation")
+    selected_ids = set(event.highlight_ids)
+    result = tuple(
+        highlight for highlight in presentation.highlights if highlight.highlight_id in selected_ids
+    )
+    if len(result) != len(selected_ids):
+        raise ReviewedDatePresentationError("date event highlight binding is invalid")
+    return result
+
+
 def load_reviewed_date_presentation(path_value: str | Path) -> ReviewedDatePresentation:
     try:
         path = Path(path_value)
@@ -252,5 +280,6 @@ __all__ = [
     "canonical_reviewed_date_presentation_bytes",
     "load_reviewed_date_presentation",
     "load_reviewed_date_presentation_bytes",
+    "ordered_highlights_for_event",
     "validate_highlights_against_official_text",
 ]

@@ -235,7 +235,12 @@ def create_app(
         if selected_settings.source_pdf_path is not None:
             try:
                 state.source_document = await to_thread.run_sync(
-                    partial(_load_verified_source_document, selected_settings)
+                    partial(
+                        _load_verified_source_document,
+                        selected_settings,
+                        state.report_plans,
+                        state.date_presentations,
+                    )
                 )
             except Exception:
                 state.source_document_initialization_failed = True
@@ -1062,11 +1067,30 @@ def _load_date_presentations(
     return presentations
 
 
-def _load_verified_source_document(settings: ServiceSettings) -> VerifiedSourceDocument:
+def _load_verified_source_document(
+    settings: ServiceSettings,
+    plans: tuple[ReviewedReportPlan, ...],
+    presentations: tuple[ReviewedDatePresentation, ...],
+) -> VerifiedSourceDocument:
     path = settings.source_pdf_path
     document_id = settings.source_pdf_document_id
     expected_sha256 = settings.source_pdf_sha256
     if path is None or document_id is None or expected_sha256 is None:
+        raise ValueError
+    matching_identities = tuple(
+        plan.document_identity
+        for plan in plans
+        if plan.document_identity.document_id == document_id
+    )
+    if len(matching_identities) != 1 or matching_identities[0].source_pdf_sha256 != expected_sha256:
+        raise ValueError
+    matching_presentations = tuple(
+        presentation for presentation in presentations if presentation.document_id == document_id
+    )
+    if settings.date_presentation_paths and (
+        len(matching_presentations) != 1
+        or matching_presentations[0].source_pdf_sha256 != expected_sha256
+    ):
         raise ValueError
     if path.is_symlink() or not path.is_file() or path.resolve(strict=True) != path:
         raise ValueError

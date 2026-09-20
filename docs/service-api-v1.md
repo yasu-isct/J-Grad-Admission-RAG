@@ -239,6 +239,10 @@ failed source binding returns 503; any query string returns 422. One closed, ope
 `Range: bytes=...` request returns 206 with `Content-Range`; invalid or multiple ranges return 416.
 The route never accepts a filesystem path, does not appear in OpenAPI, uses `inline`, `no-store`,
 `nosniff`, and `Accept-Ranges: bytes`, and performs no runtime file lookup.
+Startup additionally requires the configured source document ID and SHA-256 to match exactly one
+lifespan-loaded reviewed report identity and, when configured, its reviewed date presentation. A
+file that matches only its own independently supplied hash is not sufficient and leaves the route
+unavailable.
 
 The local page at `/app` and fixed `/assets/app.css` and `/assets/app.js` resources are excluded from
 OpenAPI. They are installed as Python package data and make no external requests. See

@@ -77,6 +77,8 @@ official admissions webpage as a separate link. The PDF endpoint is read-only, s
 startup-verified in-memory document, supports the single byte ranges used by browser PDF viewers,
 and accepts neither filesystem paths nor query parameters. `#page=N` is a browser hint: if the
 native viewer cannot honor or expose it, the visible official page number is the manual fallback.
+The configured source ID and hash must also match the lifespan-loaded reviewed report identity and
+date presentation; a different PDF cannot become trusted merely by supplying its own matching hash.
 
 This screen answers where the official guideline contains potentially relevant text. Each result
 shows the returned document title and ID, Fact ID, official pages, exact search text, section path,
