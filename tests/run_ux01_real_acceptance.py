@@ -389,6 +389,7 @@ def main() -> None:
             "warning_state": _contrast("#64470e", "#fff1c9"),
             "review_state": _contrast("#5b4b77", "#eee9f5"),
             "body_text": _contrast("#172522", "#f5f6f3"),
+            "focus_on_white": _contrast("#9b6500", "#ffffff"),
         }
         assert all(value >= 4.5 for value in contrast_pairs.values())
         result = {

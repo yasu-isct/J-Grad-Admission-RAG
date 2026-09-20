@@ -20,6 +20,7 @@
   --color-review: #5b4b77;
   --color-review-soft: #eee9f5;
   --color-danger: #8a341f;
+  --color-focus: #9b6500;
   --space-1: 6px;
   --space-2: 10px;
   --space-3: 16px;
@@ -297,7 +298,7 @@ input:focus-visible,
 button:focus-visible,
 summary:focus-visible,
 [tabindex="-1"]:focus-visible {
-  outline: 3px solid #d99b24;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
