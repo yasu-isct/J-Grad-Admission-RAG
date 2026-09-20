@@ -64,6 +64,13 @@ from .schemas.page_scope_manifest import (
     load_page_scope_manifest,
     load_page_scope_manifest_bytes,
 )
+from .service.date_presentation import (
+    ReviewedDatePresentation,
+    ReviewedDatePresentationError,
+    canonical_reviewed_date_presentation_bytes,
+    load_reviewed_date_presentation_bytes,
+    validate_highlights_against_official_text,
+)
 from .utils import sha256_file
 
 _CONFIG_PACKAGE = "jgrad_admission_rag.demo_config"
@@ -72,6 +79,7 @@ _CONFIG_FILENAMES = {
     "plan": "reviewed_report_plan.json",
     "page_scope": "page_scope_manifest.json",
     "query_intent": "query_intent_catalog.json",
+    "date_presentation": "reviewed_date_presentation.json",
 }
 _RUNTIME_DIRECTORY = "runtime-v1"
 _OWNERSHIP_FILENAME = ".jgrad-demo-owned.json"
@@ -89,10 +97,12 @@ class DemoConfigBundle:
     plan: ReviewedReportPlan
     page_scope: PageScopeManifest
     query_intent: QueryIntentCatalog
+    date_presentation: ReviewedDatePresentation
     identity_bytes: bytes
     plan_bytes: bytes
     page_scope_bytes: bytes
     query_intent_bytes: bytes
+    date_presentation_bytes: bytes
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,6 +115,8 @@ class DemoRuntime:
     report_plan_path: Path
     page_scope_manifest_path: Path
     query_intent_catalog_path: Path
+    date_presentation_path: Path
+    source_pdf_path: Path
     identity: DocumentIdentity
     source_kb_sha256: str
     reused: bool
@@ -122,23 +134,32 @@ def load_demo_config(config_dir: Path | None = None) -> DemoConfigBundle:
         plan = load_reviewed_report_plan_bytes(values["plan"])
         page_scope = load_page_scope_manifest_bytes(values["page_scope"])
         query_intent = load_query_intent_catalog_bytes(values["query_intent"])
-        if plan.document_identity != identity or page_scope.document_identity != identity:
+        date_presentation = load_reviewed_date_presentation_bytes(values["date_presentation"])
+        if (
+            plan.document_identity != identity
+            or page_scope.document_identity != identity
+            or date_presentation.document_id != identity.document_id
+            or date_presentation.source_pdf_sha256 != identity.source_pdf_sha256
+        ):
             raise ValueError
         return DemoConfigBundle(
             identity=identity,
             plan=plan,
             page_scope=page_scope,
             query_intent=query_intent,
+            date_presentation=date_presentation,
             identity_bytes=canonical_document_identity_bytes(identity),
             plan_bytes=canonical_reviewed_report_plan_bytes(plan),
             page_scope_bytes=canonical_page_scope_manifest_bytes(page_scope),
             query_intent_bytes=canonical_query_intent_catalog_bytes(query_intent),
+            date_presentation_bytes=canonical_reviewed_date_presentation_bytes(date_presentation),
         )
     except (
         DocumentIdentityError,
         OSError,
         PageScopeManifestError,
         QueryIntentError,
+        ReviewedDatePresentationError,
         ReviewedReportPlanError,
         TypeError,
         ValueError,
@@ -169,7 +190,9 @@ def prepare_demo(
     if runtime_root.exists() or runtime_root.is_symlink():
         if not rebuild:
             try:
-                return _validate_runtime(root, runtime_root, bundle, reused=True)
+                return _validate_runtime(
+                    root, runtime_root, bundle, source_pdf_path=pdf, reused=True
+                )
             except DemoError:
                 raise DemoError(
                     "demo workspace is stale or incompatible; rerun with --rebuild"
@@ -184,7 +207,7 @@ def prepare_demo(
         raise DemoError("demo workspace is not writable") from None
     try:
         _build_runtime(pdf, stage, bundle)
-        validated = _validate_runtime(root, stage, bundle, reused=False)
+        validated = _validate_runtime(root, stage, bundle, source_pdf_path=pdf, reused=False)
         _activate_runtime(root, stage, runtime_root, replace=replace_runtime)
         return DemoRuntime(
             workspace=root,
@@ -205,6 +228,10 @@ def prepare_demo(
                 / "config"
                 / validated.query_intent_catalog_path.name
             ),
+            date_presentation_path=(
+                runtime_root.resolve(strict=True) / "config" / validated.date_presentation_path.name
+            ),
+            source_pdf_path=pdf,
             identity=validated.identity,
             source_kb_sha256=validated.source_kb_sha256,
             reused=False,
@@ -266,6 +293,10 @@ def _build_runtime(pdf: Path, root: Path, bundle: DemoConfigBundle) -> None:
         _write_bytes(config_root / _CONFIG_FILENAMES["plan"], bundle.plan_bytes)
         _write_bytes(config_root / _CONFIG_FILENAMES["page_scope"], bundle.page_scope_bytes)
         _write_bytes(config_root / _CONFIG_FILENAMES["query_intent"], bundle.query_intent_bytes)
+        _write_bytes(
+            config_root / _CONFIG_FILENAMES["date_presentation"],
+            bundle.date_presentation_bytes,
+        )
     except DemoError:
         raise
     except (CorpusBuildError, DocumentBuildError, IndexBuildError, SourceKbReadError, ValueError):
@@ -279,6 +310,7 @@ def _validate_runtime(
     runtime_root: Path,
     bundle: DemoConfigBundle,
     *,
+    source_pdf_path: Path,
     reused: bool,
 ) -> DemoRuntime:
     try:
@@ -302,6 +334,7 @@ def _validate_runtime(
             _CONFIG_FILENAMES["plan"]: bundle.plan_bytes,
             _CONFIG_FILENAMES["page_scope"]: bundle.page_scope_bytes,
             _CONFIG_FILENAMES["query_intent"]: bundle.query_intent_bytes,
+            _CONFIG_FILENAMES["date_presentation"]: bundle.date_presentation_bytes,
         }
         for filename, expected in expected_configs.items():
             path = config_root / filename
@@ -345,6 +378,7 @@ def _validate_runtime(
         plan_path = config_root / _CONFIG_FILENAMES["plan"]
         page_scope_path = config_root / _CONFIG_FILENAMES["page_scope"]
         intent_path = config_root / _CONFIG_FILENAMES["query_intent"]
+        date_presentation_path = config_root / _CONFIG_FILENAMES["date_presentation"]
         if load_reviewed_report_plan_bytes(plan_path.read_bytes()) != bundle.plan:
             raise ValueError
         if (
@@ -354,6 +388,15 @@ def _validate_runtime(
             raise ValueError
         if load_query_intent_catalog_bytes(intent_path.read_bytes()) != bundle.query_intent:
             raise ValueError
+        loaded_date_presentation = load_reviewed_date_presentation_bytes(
+            date_presentation_path.read_bytes()
+        )
+        if loaded_date_presentation != bundle.date_presentation:
+            raise ValueError
+        validate_highlights_against_official_text(
+            loaded_date_presentation,
+            {fact.fact_id: fact.text for fact in source.knowledge_base.facts},
+        )
         return DemoRuntime(
             workspace=workspace,
             runtime_root=resolved_runtime,
@@ -363,6 +406,8 @@ def _validate_runtime(
             report_plan_path=plan_path,
             page_scope_manifest_path=page_scope_path,
             query_intent_catalog_path=intent_path,
+            date_presentation_path=date_presentation_path,
+            source_pdf_path=source_pdf_path,
             identity=bundle.identity,
             source_kb_sha256=source.sha256,
             reused=reused,
@@ -375,6 +420,7 @@ def _validate_runtime(
         OSError,
         PageScopeManifestError,
         QueryIntentError,
+        ReviewedDatePresentationError,
         ReviewedReportPlanError,
         SourceKbReadError,
         TypeError,

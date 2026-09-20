@@ -104,6 +104,10 @@ def _serve(runtime, port: int) -> None:
             report_plan_paths=(runtime.report_plan_path,),
             page_scope_manifest_paths=(runtime.page_scope_manifest_path,),
             query_intent_catalog_path=runtime.query_intent_catalog_path,
+            date_presentation_paths=(runtime.date_presentation_path,),
+            source_pdf_path=runtime.source_pdf_path,
+            source_pdf_document_id=runtime.identity.document_id,
+            source_pdf_sha256=runtime.identity.source_pdf_sha256,
         )
         app = create_app(
             settings,

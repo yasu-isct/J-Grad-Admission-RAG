@@ -23,6 +23,7 @@ strict question -> server-owned RSN-02 catalog -> QueryIntent 1.0
 | GET | `/v1/reviewed-documents` | 200 | Safe deterministic catalog for local evidence selection |
 | GET | `/v1/target-catalog` | 200 | Reviewed School → Degree → Intake → College → Department → Route catalog |
 | POST | `/v1/base-requirements` | 200 | Profile-free reviewed requirements and exact official evidence for one complete target |
+| GET / HEAD | `/documents/{document_id}/source.pdf` | 200 / 206 | One startup-verified local source PDF; supports a single byte range and is excluded from OpenAPI |
 | POST | `/v1/query-intents/parse` | 200 | Parse one bounded question with the lifespan-owned RSN-02 catalog |
 | POST | `/v1/build-jobs` | 202 | Durably accept one validated asynchronous build |
 | GET | `/v1/build-jobs/{job_id}` | 200 | Read fresh durable status and transition history |
@@ -203,6 +204,14 @@ construct an `ApplicantProfile`, persist state, or claim that the applicant sati
 Path-dependent p.10 materials remain `needs_information` until DEMO-02 supplies a profile. Unknown
 targets and missing required routes return `422 invalid_request`.
 
+For a document with reviewed date presentation, each date requirement also contains typed
+`date_events`. The four allowed event types are `registration_open`, `application_window`,
+`arrival_deadline`, and `recommended_arrival`. Dates, optional times, `Asia/Tokyo`, precision,
+unknown fields, nature, and Chinese display text are server-owned reviewed data; clients must not
+derive a date or convert a must-arrive deadline into a mailing deadline. Each event carries exact
+evidence highlights with zero-based character offsets and the expected Japanese substring. The
+service verifies those offsets against the registered KB during startup.
+
 `POST /v1/applicant-comparison` accepts the same complete target plus a deliberately small,
 strict applicant input. Academic basis/completion, English test facts, Japanese background, and
 five material preparation states all preserve explicit null/unknown semantics. The server reuses
@@ -220,7 +229,20 @@ school checklist. The browser may filter these returned groups but does not recl
 
 Each returned evidence object contains the official document title and source URL, intake, exact
 Fact ID, official pages and Japanese Fact text, scope, and a conclusion limitation. The endpoint
-does not fabricate page fragments; the UI tells users which page to inspect in the official file.
+does not fabricate fragments for the remote official URL. When a verified local source document is
+configured, date evidence also includes a fixed same-origin `local_pdf_url`; the browser appends the
+reviewed page as `#page=N` while continuing to show the page number as a manual fallback.
+
+`GET` or `HEAD /documents/{document_id}/source.pdf` exposes only immutable bytes loaded after an
+exact SHA-256 check at service startup. A mismatched document ID returns 404; an unavailable or
+failed source binding returns 503; any query string returns 422. One closed, open-ended, or suffix
+`Range: bytes=...` request returns 206 with `Content-Range`; invalid or multiple ranges return 416.
+The route never accepts a filesystem path, does not appear in OpenAPI, uses `inline`, `no-store`,
+`nosniff`, and `Accept-Ranges: bytes`, and performs no runtime file lookup.
+Startup additionally requires the configured source document ID and SHA-256 to match exactly one
+lifespan-loaded reviewed report identity and, when configured, its reviewed date presentation. A
+file that matches only its own independently supplied hash is not sufficient and leaves the route
+unavailable.
 
 The local page at `/app` and fixed `/assets/app.css` and `/assets/app.js` resources are excluded from
 OpenAPI. They are installed as Python package data and make no external requests. See
@@ -254,6 +276,7 @@ allowlisted `details`. Validation consistently uses 422.
 | 503 | `job_service_unavailable` | Durable jobs are unconfigured or unhealthy |
 | 503 | `report_service_unavailable` | Report plans or current corpus cannot pass startup/runtime checks |
 | 503 | `intent_service_unavailable` | The explicitly configured intent catalog is unavailable or invalid |
+| 503 | `source_document_unavailable` | The verified local source PDF is unconfigured or failed its startup binding check |
 | 500 | `report_generation_failed` | Accepted report orchestration failed safely |
 | 500 | `internal_error` | Build or service failed without exposing internals |
 

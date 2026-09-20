@@ -60,6 +60,26 @@ Fact ID, document ID, and scope stay in collapsed technical details. Because the
 URL does not guarantee a stable page fragment, the UI opens the official source and separately
 instructs the user to inspect the returned page number.
 
+UX-02 gives the two reviewed date requirements a narrower presentation contract. The service
+returns registration opening, application window, must-arrive deadline, and recommended arrival as
+typed events with a reviewed Simplified Chinese conclusion, `Asia/Tokyo`, precision, and explicit
+unknown time fields. The browser displays those strings without parsing or calculating dates.
+“必着截止” remains textually distinct from “建议到达”, so the distinction does not depend on color.
+
+Each date event binds to one or more reviewed character ranges in the exact official Fact text.
+Startup fails readiness closed if a range, exact substring, Fact ID, document identity, or source
+PDF SHA-256 no longer reconciles. The drawer puts only those substrings under “直接依据”, uses native
+text nodes and `mark` elements, and keeps the full official Japanese context in a disclosure.
+
+When the formal `jgrad-demo --pdf <absolute-path>` runtime has loaded the hash-matched source PDF,
+the drawer offers a same-origin `/documents/{document_id}/source.pdf#page=N` link and retains the
+official admissions webpage as a separate link. The PDF endpoint is read-only, serves only the one
+startup-verified in-memory document, supports the single byte ranges used by browser PDF viewers,
+and accepts neither filesystem paths nor query parameters. `#page=N` is a browser hint: if the
+native viewer cannot honor or expose it, the visible official page number is the manual fallback.
+The configured source ID and hash must also match the lifespan-loaded reviewed report identity and
+date presentation; a different PDF cannot become trusted merely by supplying its own matching hash.
+
 This screen answers where the official guideline contains potentially relevant text. Each result
 shows the returned document title and ID, Fact ID, official pages, exact search text, section path,
 scope, Fact type, and vector/lexical/fusion diagnostics. Results are evidence candidates, not rule
@@ -89,6 +109,12 @@ enabled document. On every catalog request, the service reloads and audits the c
 reviewed version policy. It returns only ready documents with exactly one matching lifespan-loaded
 plan and page-scope manifest. Public catalog identities omit PDF/KB hashes, paths,
 index/provider/model configuration, predicates, and evidence text.
+
+Reviewed date presentation is optional for generic `jgrad-serve` deployments. The formal demo
+supplies its absolute reviewed date-presentation path plus the verified source PDF path, document
+ID, and SHA-256 as one complete configuration set. Omitting that set leaves existing APIs
+compatible and makes the local PDF route return a closed `503`; a partial or relative source-PDF
+configuration is rejected.
 
 The UI limits a question to 1,000 characters as a conservative browser input bound and submits the
 existing strict query schema with `top_k=5`, `candidate_k=20`, empty filters/preferences, and

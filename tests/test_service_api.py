@@ -560,7 +560,7 @@ def test_demo_applicant_input_rejects_non_finite_english_score() -> None:
         )
 
 
-def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:
+def test_demo_requirement_presentation_does_not_hardcode_official_dates() -> None:
     source = (
         Path(__file__).parents[1]
         / "src"
@@ -571,7 +571,9 @@ def test_demo_requirement_presentation_does_not_copy_official_dates() -> None:
 
     assert "2026年6月1日" not in source
     assert "2026年6月4日" not in source
-    assert "reviewed_summary=rule.annotation_note" in source
+    assert "date_presentation: ReviewedDatePresentation | None = None" in source
+    assert "display_text=event.display_text" in source
+    assert "reviewed_summary=None if date_events else rule.annotation_note" in source
 
 
 def test_cli_defaults_to_loopback_and_defers_provider_creation(
