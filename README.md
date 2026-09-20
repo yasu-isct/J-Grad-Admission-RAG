@@ -83,6 +83,10 @@ policy，随后以正式 `jgrad-serve` 所用的 FastAPI 装配在 `http://127.0
 首次 PDF 解析和索引可能需要一些时间；看到 Uvicorn 的 application startup complete 后即可打开
 页面。按 `Ctrl+C` 停止。
 
+日期区域会显示四项审核后的中文结论，并可在证据抽屉核对被突出显示的日文直接依据。抽屉中的
+“在 PDF 中查看第 N 页”通过本机只读路由打开已校验的同一份 PDF；是否自动跳到 `#page=N`
+取决于浏览器自带 PDF viewer，页面同时保留页码提示和官方招生网页入口。
+
 审核身份、最终 reviewed plan、page-scope 和 query-intent 配置随包位于
 `src/jgrad_admission_rag/demo_config`；启动路径不会读取 `tests/fixtures` 或 pytest 输出。
 

@@ -110,6 +110,11 @@ from .demo_requirements import (
     build_demo_base_requirements,
     build_demo_target_catalog,
 )
+from .date_presentation import (
+    ReviewedDatePresentation,
+    load_reviewed_date_presentation,
+    validate_highlights_against_official_text,
+)
 from .jobs import (
     BuildJobRecord,
     BuildJobRepository,
@@ -121,7 +126,12 @@ from .jobs import (
     JobState,
     JobValidationError,
 )
-from .runtime import ServiceDependencies, ServiceSettings, ServiceState
+from .runtime import (
+    ServiceDependencies,
+    ServiceSettings,
+    ServiceState,
+    VerifiedSourceDocument,
+)
 
 
 BUILD_OPENAPI_EXTRA = {
@@ -208,10 +218,28 @@ def create_app(
                     manifest.document_identity for manifest in state.page_scope_manifests
                 }:
                     raise ValueError
+                if selected_settings.date_presentation_paths:
+                    state.date_presentations = await to_thread.run_sync(
+                        partial(
+                            _load_date_presentations,
+                            selected_settings,
+                            state.report_plans,
+                        )
+                    )
             except Exception:
                 state.report_initialization_failed = True
                 state.report_plans = ()
                 state.page_scope_manifests = ()
+                state.date_presentations = ()
+                state.date_presentation_initialization_failed = True
+        if selected_settings.source_pdf_path is not None:
+            try:
+                state.source_document = await to_thread.run_sync(
+                    partial(_load_verified_source_document, selected_settings)
+                )
+            except Exception:
+                state.source_document_initialization_failed = True
+                state.source_document = None
         if selected_settings.query_intent_catalog_path is not None:
             try:
                 state.query_intent_catalog = await to_thread.run_sync(
@@ -238,6 +266,8 @@ def create_app(
             state.report_plans = ()
             state.page_scope_manifests = ()
             state.query_intent_catalog = None
+            state.date_presentations = ()
+            state.source_document = None
 
     app = FastAPI(
         title="J-Grad Admission RAG API",
@@ -307,6 +337,24 @@ def create_app(
     def local_app_js() -> FileResponse:
         return FileResponse(_ui_asset_path("app.js"), media_type="text/javascript; charset=utf-8")
 
+    @app.api_route(
+        "/documents/{document_id}/source.pdf",
+        methods=["GET", "HEAD"],
+        include_in_schema=False,
+    )
+    def verified_source_pdf(document_id: str, request: Request) -> Response:
+        if state.source_document is None:
+            raise ApiProblem(
+                503,
+                "source_document_unavailable",
+                "verified local source PDF is unavailable",
+            )
+        if document_id != state.source_document.document_id:
+            raise ApiProblem(404, "source_document_not_found", "source document was not found")
+        if request.query_params:
+            raise ApiProblem(422, "invalid_request", "source document query is invalid")
+        return _source_pdf_response(request, state.source_document)
+
     @app.get(
         "/v1/health/live",
         response_model=HealthResponse,
@@ -338,6 +386,14 @@ def create_app(
             is_ready = is_ready and _report_service_ready(state)
         if selected_settings.query_intent_catalog_path is not None:
             is_ready = is_ready and _query_intent_service_ready(state)
+        if selected_settings.date_presentation_paths:
+            is_ready = is_ready and bool(state.date_presentations)
+        if selected_settings.source_pdf_path is not None:
+            is_ready = (
+                is_ready
+                and state.source_document is not None
+                and not state.source_document_initialization_failed
+            )
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
 
     @app.get(
@@ -964,6 +1020,70 @@ def _load_page_scope_manifests(settings: ServiceSettings) -> tuple[PageScopeMani
     return manifests
 
 
+def _load_date_presentations(
+    settings: ServiceSettings,
+    plans: tuple[ReviewedReportPlan, ...],
+) -> tuple[ReviewedDatePresentation, ...]:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or not settings.date_presentation_paths
+    ):
+        raise ValueError
+    audited = audit_corpus_manifest(
+        load_corpus_manifest(settings.manifest_path),
+        settings.corpus_root,
+    )
+    entries = {entry.identity.document_id: entry for entry in audited.entries}
+    plan_identities = {plan.document_identity.document_id: plan.document_identity for plan in plans}
+    presentations = []
+    for path in settings.date_presentation_paths:
+        presentation = load_reviewed_date_presentation(path)
+        identity = plan_identities.get(presentation.document_id)
+        entry = entries.get(presentation.document_id)
+        if (
+            identity is None
+            or entry is None
+            or entry.identity != identity
+            or presentation.source_pdf_sha256 != identity.source_pdf_sha256
+        ):
+            raise ValueError
+        kb_path = resolve_registered_corpus_kb_path(settings.corpus_root, entry.kb_path)
+        kb = load_document_kb(kb_path)
+        validate_highlights_against_official_text(
+            presentation,
+            {fact.fact_id: fact.text for fact in kb.facts},
+        )
+        presentations.append(presentation)
+    presentations = tuple(presentations)
+    document_ids = tuple(item.document_id for item in presentations)
+    if len(document_ids) != len(set(document_ids)):
+        raise ValueError
+    return presentations
+
+
+def _load_verified_source_document(settings: ServiceSettings) -> VerifiedSourceDocument:
+    path = settings.source_pdf_path
+    document_id = settings.source_pdf_document_id
+    expected_sha256 = settings.source_pdf_sha256
+    if path is None or document_id is None or expected_sha256 is None:
+        raise ValueError
+    if path.is_symlink() or not path.is_file() or path.resolve(strict=True) != path:
+        raise ValueError
+    content = path.read_bytes()
+    if (
+        not content.startswith(b"%PDF-")
+        or len(content) > settings.max_pdf_bytes
+        or hashlib.sha256(content).hexdigest() != expected_sha256
+    ):
+        raise ValueError
+    return VerifiedSourceDocument(
+        document_id=document_id,
+        source_pdf_sha256=expected_sha256,
+        content=content,
+    )
+
+
 def _build_reviewed_document_catalog(
     settings: ServiceSettings,
     state: ServiceState,
@@ -1052,9 +1172,17 @@ def _build_demo_base_requirements_response(
     settings: ServiceSettings,
     state: ServiceState,
 ) -> DemoBaseRequirementsResponse:
-    plan, evidence = _load_demo_context(request, settings, state)
+    plan, evidence, date_presentation = _load_demo_context(request, settings, state)
     try:
-        return build_demo_base_requirements(request, plan, evidence)
+        return build_demo_base_requirements(
+            request,
+            plan,
+            evidence,
+            date_presentation=date_presentation,
+            source_pdf_document_id=(
+                state.source_document.document_id if state.source_document is not None else None
+            ),
+        )
     except (KeyError, ValueError):
         raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
 
@@ -1064,7 +1192,7 @@ def _build_demo_applicant_comparison_response(
     settings: ServiceSettings,
     state: ServiceState,
 ) -> DemoApplicantComparisonResponse:
-    plan, evidence = _load_demo_context(request.target, settings, state)
+    plan, evidence, _ = _load_demo_context(request.target, settings, state)
     try:
         return build_demo_applicant_comparison(request, plan, evidence)
     except (KeyError, ValueError, ValidationError):
@@ -1075,7 +1203,11 @@ def _load_demo_context(
     request: DemoTargetRequest,
     settings: ServiceSettings,
     state: ServiceState,
-) -> tuple[ReviewedReportPlan, ReviewedReportEvidenceBundle]:
+) -> tuple[
+    ReviewedReportPlan,
+    ReviewedReportEvidenceBundle,
+    ReviewedDatePresentation | None,
+]:
     if (
         settings.corpus_root is None
         or settings.manifest_path is None
@@ -1135,7 +1267,18 @@ def _load_demo_context(
             state.report_plans,
             matching_scopes[0],
         )
-        return matching_plans[0], evidence
+        matching_date_presentations = tuple(
+            item
+            for item in state.date_presentations
+            if item.document_id == selected_identity.document_id
+        )
+        if len(matching_date_presentations) > 1:
+            raise ValueError
+        return (
+            matching_plans[0],
+            evidence,
+            matching_date_presentations[0] if matching_date_presentations else None,
+        )
     except ReviewedReportEvidenceError as error:
         _raise_report_evidence_problem(error)
 
@@ -1338,8 +1481,73 @@ def _ui_asset_path(filename: str) -> Path:
     return Path(__file__).with_name("static") / filename
 
 
+def _source_pdf_response(request: Request, document: VerifiedSourceDocument) -> Response:
+    content = document.content
+    size = len(content)
+    range_header = request.headers.get("range")
+    start = 0
+    end = size - 1
+    status_code = 200
+    if range_header is not None:
+        try:
+            if not range_header.startswith("bytes=") or "," in range_header:
+                raise ValueError
+            value = range_header.removeprefix("bytes=")
+            start_value, separator, end_value = value.partition("-")
+            if separator != "-" or (not start_value and not end_value):
+                raise ValueError
+            if start_value:
+                start = int(start_value)
+                end = int(end_value) if end_value else size - 1
+                if start < 0 or start >= size or end < start:
+                    raise ValueError
+                end = min(end, size - 1)
+            else:
+                suffix_length = int(end_value)
+                if suffix_length <= 0:
+                    raise ValueError
+                start = max(size - suffix_length, 0)
+                end = size - 1
+            status_code = 206
+        except (TypeError, ValueError):
+            return Response(
+                status_code=416,
+                headers={
+                    "Accept-Ranges": "bytes",
+                    "Cache-Control": "no-store",
+                    "Content-Range": f"bytes */{size}",
+                    "Content-Type": "application/pdf",
+                    "X-Content-Type-Options": "nosniff",
+                },
+            )
+    selected_length = end - start + 1
+    headers = {
+        "Accept-Ranges": "bytes",
+        "Cache-Control": "no-store",
+        "Content-Disposition": f'inline; filename="{document.document_id}.pdf"',
+        "Content-Length": str(selected_length),
+        "X-Content-Type-Options": "nosniff",
+    }
+    if status_code == 206:
+        headers["Content-Range"] = f"bytes {start}-{end}/{size}"
+    body = b"" if request.method == "HEAD" else content[start : end + 1]
+    response = Response(
+        content=body,
+        status_code=status_code,
+        media_type="application/pdf",
+        headers=headers,
+    )
+    response.headers["Content-Length"] = str(selected_length)
+    return response
+
+
 def _secure_response(path: str, response: Response) -> Response:
-    if path.startswith("/v1/") or path == "/app" or path.startswith("/assets/"):
+    if (
+        path.startswith("/v1/")
+        or path == "/app"
+        or path.startswith("/assets/")
+        or path.startswith("/documents/")
+    ):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
         response.headers["Cache-Control"] = "no-store"

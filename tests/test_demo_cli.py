@@ -10,7 +10,7 @@ import shutil
 import sys
 import time
 from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 import fitz
 import pytest
@@ -32,6 +32,12 @@ from jgrad_admission_rag.schemas.page_scope_manifest import (
     PageScopeEntry,
     PageScopeManifest,
     canonical_page_scope_manifest_bytes,
+)
+from jgrad_admission_rag.service.date_presentation import (
+    ReviewedDateEvent,
+    ReviewedDatePresentation,
+    ReviewedEvidenceHighlight,
+    canonical_reviewed_date_presentation_bytes,
 )
 from tests.test_reviewed_report_evidence import _plan, _rule
 
@@ -102,6 +108,44 @@ def _synthetic_config(root: Path) -> tuple[Path, Path, DocumentIdentity]:
     )
     (config / "query_intent_catalog.json").write_bytes(
         canonical_query_intent_catalog_bytes(product.query_intent)
+    )
+    event_id = "date:synthetic:registration-open"
+    highlight_id = "highlight:synthetic:registration-open"
+    date_presentation = ReviewedDatePresentation(
+        presentation_id="synthetic-demo-key-dates-v1",
+        document_id=identity.document_id,
+        source_pdf_sha256=identity.source_pdf_sha256,
+        events=(
+            ReviewedDateEvent(
+                event_id=event_id,
+                intake_year=2027,
+                intake_month=4,
+                event_type="registration_open",
+                label="Registration opens",
+                display_text="2026年6月1日 09:00 起（JST）",
+                start_date="2026-06-01",
+                start_time="09:00:00",
+                timezone="Asia/Tokyo",
+                nature="opens",
+                precision="minute",
+                unknown_fields=("end_date", "end_time"),
+                uncertainty_note="Registration close is not specified.",
+                highlight_ids=(highlight_id,),
+            ),
+        ),
+        highlights=(
+            ReviewedEvidenceHighlight(
+                highlight_id=highlight_id,
+                fact_id=fact.fact_id,
+                start=0,
+                end=len(fact.text),
+                exact_text=fact.text,
+                claim_ids=(event_id,),
+            ),
+        ),
+    )
+    (config / "reviewed_date_presentation.json").write_bytes(
+        canonical_reviewed_date_presentation_bytes(date_presentation)
     )
     return pdf.resolve(), config.resolve(), identity
 
@@ -278,8 +322,20 @@ def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Pa
             catalog = json.loads(response.read())
         with urlopen(f"http://127.0.0.1:{port}/app", timeout=2) as response:  # noqa: S310
             app_html = response.read().decode("utf-8")
+        source_url = f"http://127.0.0.1:{port}/documents/{identity.document_id}/source.pdf"
+        with urlopen(source_url, timeout=2) as response:  # noqa: S310 - loopback URL
+            served_pdf = response.read()
+            assert response.headers["Content-Type"] == "application/pdf"
+            assert response.headers["Accept-Ranges"] == "bytes"
+        range_request = Request(source_url, headers={"Range": "bytes=0-15"})
+        with urlopen(range_request, timeout=2) as response:  # noqa: S310 - loopback URL
+            assert response.status == 206
+            assert response.read() == pdf.read_bytes()[:16]
+            assert response.headers["Content-Range"].startswith("bytes 0-15/")
         assert catalog["schools"][0]["school_id"] == identity.institution_id
         assert "STEP 1" in app_html
+        assert served_pdf == pdf.read_bytes()
+        assert hashlib.sha256(served_pdf).hexdigest() == identity.source_pdf_sha256
     finally:
         process.terminate()
         try:

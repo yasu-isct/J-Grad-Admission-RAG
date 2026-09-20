@@ -1162,6 +1162,52 @@ function requirementStatusLabel(status) {
   return labels[status] || `官方状态：${status}`;
 }
 
+function renderDateEvent(event) {
+  const card = document.createElement("article");
+  card.className = "date-event";
+  card.dataset.eventType = event.event_type;
+  const header = document.createElement("div");
+  header.className = "date-event-header";
+  header.append(heading(5, event.label));
+  const nature = document.createElement("span");
+  nature.className = "date-nature";
+  nature.dataset.nature = event.nature;
+  const natureLabels = {
+    opens: "开放时间",
+    period: "出愿期间",
+    must_arrive: "必着截止",
+    recommended_arrival: "建议到达"
+  };
+  nature.textContent = natureLabels[event.nature] || event.nature;
+  header.append(nature);
+  const conclusion = document.createElement("p");
+  conclusion.className = "date-conclusion";
+  conclusion.textContent = event.display_text;
+  card.append(header, conclusion);
+  if (event.uncertainty_note) {
+    const note = document.createElement("p");
+    note.className = "date-uncertainty";
+    note.textContent = event.uncertainty_note;
+    card.append(note);
+  }
+  if (Array.isArray(event.evidence) && event.evidence.length) {
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    for (const evidence of event.evidence) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "secondary";
+      button.textContent = event.evidence.length === 1
+        ? "核对直接依据"
+        : `核对直接依据 · 第 ${evidence.pages.join("、")} 页`;
+      button.addEventListener("click", () => openDemoEvidence(event, evidence, button));
+      actions.append(button);
+    }
+    card.append(actions);
+  }
+  return card;
+}
+
 function renderRequirements(payload) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
@@ -1193,6 +1239,12 @@ function renderRequirements(payload) {
       description.className = "requirement-description";
       description.textContent = requirement.description;
       card.append(status, description);
+      if (category === "dates" && Array.isArray(requirement.date_events) && requirement.date_events.length) {
+        const dateList = document.createElement("div");
+        dateList.className = "date-event-list";
+        for (const event of requirement.date_events) dateList.append(renderDateEvent(event));
+        card.append(dateList);
+      }
       if (requirement.deadline) {
         const deadline = document.createElement("p");
         deadline.className = "deadline-callout";
@@ -1208,7 +1260,7 @@ function renderRequirements(payload) {
         excerpt.textContent = requirement.reviewed_summary;
         card.append(officialLabel, excerpt);
       }
-      if (requirement.evidence.length) {
+      if ((!Array.isArray(requirement.date_events) || !requirement.date_events.length) && requirement.evidence.length) {
         const actions = document.createElement("div");
         actions.className = "actions";
         for (const evidence of requirement.evidence) {
@@ -1240,18 +1292,79 @@ function appendDefinition(list, term, value) {
   list.append(dt, dd);
 }
 
+function appendHighlightedOfficialText(container, officialText, highlights) {
+  let offset = 0;
+  for (const highlight of highlights) {
+    const valid = Number.isSafeInteger(highlight.start)
+      && Number.isSafeInteger(highlight.end)
+      && highlight.start >= offset
+      && highlight.end > highlight.start
+      && highlight.end <= officialText.length
+      && officialText.slice(highlight.start, highlight.end) === highlight.exact_text;
+    if (!valid) {
+      container.textContent = officialText;
+      return false;
+    }
+    container.append(document.createTextNode(officialText.slice(offset, highlight.start)));
+    const mark = document.createElement("mark");
+    mark.textContent = highlight.exact_text;
+    container.append(mark);
+    offset = highlight.end;
+  }
+  container.append(document.createTextNode(officialText.slice(offset)));
+  return true;
+}
+
+function verifiedLocalPdfHref(baseUrl, page) {
+  if (typeof baseUrl !== "string"
+      || !/^\/documents\/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?\/source\.pdf$/.test(baseUrl)
+      || !Number.isSafeInteger(page)
+      || page < 1) return null;
+  return `${baseUrl}#page=${page}`;
+}
+
 function openDemoEvidence(requirement, evidence, trigger) {
   drawerTrigger = trigger;
   drawerContent.replaceChildren();
-  drawerContent.append(heading(3, requirement.title));
+  drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
   const meta = document.createElement("dl");
   meta.className = "evidence-meta";
   appendDefinition(meta, "官方文档", evidence.official_title);
   appendDefinition(meta, "学校／入学时间", `${evidence.school_name} · ${evidence.intake_name}`);
   appendDefinition(meta, "官方页码", `第 ${evidence.pages.join("、")} 页（来源链接不保证自动定位，请在文件中查看该页）`);
-  const quote = document.createElement("blockquote");
-  quote.className = "evidence-text";
-  quote.textContent = evidence.official_text;
+  const highlights = Array.isArray(evidence.highlights) ? evidence.highlights : [];
+  const evidenceBody = document.createDocumentFragment();
+  if (highlights.length) {
+    const directHeading = document.createElement("p");
+    directHeading.className = "direct-evidence-heading";
+    directHeading.textContent = "与这条结论直接对应的官方原文";
+    evidenceBody.append(directHeading);
+    for (const highlight of highlights) {
+      const direct = document.createElement("blockquote");
+      direct.className = "direct-evidence";
+      const label = document.createElement("span");
+      label.className = "direct-evidence-label";
+      label.textContent = "直接依据";
+      const mark = document.createElement("mark");
+      mark.textContent = highlight.exact_text;
+      direct.append(label, mark);
+      evidenceBody.append(direct);
+    }
+    const context = document.createElement("details");
+    context.className = "official-context";
+    const contextSummary = document.createElement("summary");
+    contextSummary.textContent = "展开完整官方原文";
+    const quote = document.createElement("blockquote");
+    quote.className = "evidence-text";
+    appendHighlightedOfficialText(quote, evidence.official_text, highlights);
+    context.append(contextSummary, quote);
+    evidenceBody.append(context);
+  } else {
+    const quote = document.createElement("blockquote");
+    quote.className = "evidence-text";
+    quote.textContent = evidence.official_text;
+    evidenceBody.append(quote);
+  }
   const limitation = document.createElement("p");
   limitation.className = "final-notice";
   limitation.textContent = `安全限制：${evidence.limitation}`;
@@ -1264,13 +1377,29 @@ function openDemoEvidence(requirement, evidence, trigger) {
   appendDefinition(technical, "Document ID", evidence.document_id);
   appendDefinition(technical, "Scope", `${evidence.scope_type}${evidence.parent_college ? ` · ${evidence.parent_college}` : ""}${evidence.scope_targets.length ? ` · ${evidence.scope_targets.join("、")}` : ""}`);
   details.append(summary, technical);
+  const sourceActions = document.createElement("div");
+  sourceActions.className = "source-actions";
+  if (evidence.local_pdf_url) {
+    for (const page of evidence.pages) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const pdfLink = document.createElement("a");
+      pdfLink.className = "source-link pdf-source-link";
+      pdfLink.href = href;
+      pdfLink.target = "_blank";
+      pdfLink.rel = "noopener noreferrer";
+      pdfLink.textContent = `在 PDF 中查看第 ${page} 页`;
+      sourceActions.append(pdfLink);
+    }
+  }
   const source = document.createElement("a");
-  source.className = "source-link";
+  source.className = "source-link official-web-link";
   source.href = evidence.source_url;
   source.target = "_blank";
-  source.rel = "noreferrer";
-  source.textContent = "打开官方来源";
-  drawerContent.append(meta, quote, limitation, details, source);
+  source.rel = "noopener noreferrer";
+  source.textContent = "打开官方招生网页";
+  sourceActions.append(source);
+  drawerContent.append(meta, evidenceBody, limitation, details, sourceActions);
   evidenceDrawer.showModal();
   drawerClose.focus();
 }

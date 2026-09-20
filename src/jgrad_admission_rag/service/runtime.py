@@ -14,6 +14,7 @@ from ..retrieval.embedding import EmbeddingProvider
 from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.page_scope_manifest import PageScopeManifest
+from .date_presentation import ReviewedDatePresentation
 
 
 class ServiceSettings(BaseModel):
@@ -25,6 +26,13 @@ class ServiceSettings(BaseModel):
     report_plan_paths: tuple[Path, ...] = ()
     page_scope_manifest_paths: tuple[Path, ...] = ()
     query_intent_catalog_path: Path | None = None
+    date_presentation_paths: tuple[Path, ...] = ()
+    source_pdf_path: Path | None = None
+    source_pdf_document_id: str | None = Field(
+        default=None,
+        pattern=r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$",
+    )
+    source_pdf_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     max_pdf_bytes: int = Field(default=25 * 1024 * 1024, gt=0, strict=True)
     max_metadata_bytes: int = Field(default=256 * 1024, gt=0, strict=True)
     upload_chunk_bytes: int = Field(default=64 * 1024, gt=0, strict=True)
@@ -50,6 +58,22 @@ class ServiceSettings(BaseModel):
             and not self.query_intent_catalog_path.is_absolute()
         ):
             raise ValueError("query intent catalog path must be absolute")
+        if any(not path.is_absolute() for path in self.date_presentation_paths):
+            raise ValueError("reviewed date presentation paths must be absolute")
+        source_fields = (
+            self.source_pdf_path,
+            self.source_pdf_document_id,
+            self.source_pdf_sha256,
+        )
+        if any(value is not None for value in source_fields) and not all(
+            value is not None for value in source_fields
+        ):
+            raise ValueError("verified source PDF settings must be supplied together")
+        if self.source_pdf_path is not None and (
+            not self.source_pdf_path.is_absolute()
+            or self.source_pdf_path.resolve(strict=False) != self.source_pdf_path
+        ):
+            raise ValueError("verified source PDF path must be canonical and absolute")
         if self.job_root is not None and (
             not self.job_root.is_absolute() or self.job_root.resolve(strict=False) != self.job_root
         ):
@@ -62,6 +86,13 @@ class ServiceDependencies:
     provider_factory: Callable[[], EmbeddingProvider] | None = None
     repository_factory: Callable[[Path], Any] | None = None
     worker_factory: Callable[..., Any] | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class VerifiedSourceDocument:
+    document_id: str
+    source_pdf_sha256: str
+    content: bytes
 
 
 @dataclass(slots=True)
@@ -77,6 +108,15 @@ class ServiceState:
     report_initialization_failed: bool = False
     query_intent_catalog: QueryIntentCatalog | None = None
     query_intent_initialization_failed: bool = False
+    date_presentations: tuple[ReviewedDatePresentation, ...] = ()
+    date_presentation_initialization_failed: bool = False
+    source_document: VerifiedSourceDocument | None = None
+    source_document_initialization_failed: bool = False
 
 
-__all__ = ["ServiceDependencies", "ServiceSettings", "ServiceState"]
+__all__ = [
+    "ServiceDependencies",
+    "ServiceSettings",
+    "ServiceState",
+    "VerifiedSourceDocument",
+]

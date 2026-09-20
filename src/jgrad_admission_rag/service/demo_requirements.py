@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, time
 from enum import Enum
 from typing import Literal
 
@@ -34,6 +34,7 @@ from ..reasoning.reviewed_report_evidence import (
 )
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.document_identity import DegreeLevel, IntakeTerm
+from .date_presentation import ReviewedDatePresentation
 
 
 class DemoModel(BaseModel):
@@ -93,6 +94,14 @@ class DemoTargetRequest(DemoModel):
     application_route: str | None = None
 
 
+class DemoEvidenceHighlight(DemoModel):
+    highlight_id: str
+    start: int = Field(ge=0, strict=True)
+    end: int = Field(gt=0, strict=True)
+    exact_text: str = Field(min_length=1)
+    claim_ids: tuple[str, ...] = Field(min_length=1)
+
+
 class DemoEvidence(DemoModel):
     document_id: str
     official_title: str
@@ -106,6 +115,34 @@ class DemoEvidence(DemoModel):
     scope_targets: tuple[str, ...] = ()
     parent_college: str | None = None
     limitation: str
+    highlights: tuple[DemoEvidenceHighlight, ...] = ()
+    local_pdf_url: str | None = Field(
+        default=None,
+        pattern=r"^/documents/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?/source\.pdf$",
+    )
+
+
+class DemoDateEvent(DemoModel):
+    event_id: str
+    event_type: Literal[
+        "registration_open",
+        "application_window",
+        "arrival_deadline",
+        "recommended_arrival",
+    ]
+    label: str
+    display_text: str
+    start_date: date
+    start_time: time | None = None
+    end_date: date | None = None
+    end_time: time | None = None
+    timezone: Literal["Asia/Tokyo"]
+    nature: Literal["opens", "period", "must_arrive", "recommended_arrival"]
+    precision: Literal["date", "minute"]
+    unknown_fields: tuple[Literal["start_time", "end_date", "end_time"], ...] = ()
+    uncertainty_note: str | None = None
+    highlight_ids: tuple[str, ...] = Field(min_length=1)
+    evidence: tuple[DemoEvidence, ...] = Field(min_length=1)
 
 
 class DemoRequirement(DemoModel):
@@ -124,6 +161,7 @@ class DemoRequirement(DemoModel):
     ]
     deadline: str | None = None
     evidence: tuple[DemoEvidence, ...] = ()
+    date_events: tuple[DemoDateEvent, ...] = ()
     limitation: str
 
 
@@ -342,6 +380,9 @@ def build_demo_base_requirements(
     request: DemoTargetRequest,
     plan: ReviewedReportPlan,
     evidence_bundle: ReviewedReportEvidenceBundle,
+    *,
+    date_presentation: ReviewedDatePresentation | None = None,
+    source_pdf_document_id: str | None = None,
 ) -> DemoBaseRequirementsResponse:
     """Build a safe, profile-free requirements view from reviewed typed artifacts."""
 
@@ -358,6 +399,18 @@ def build_demo_base_requirements(
     )
     for rule in date_rules:
         arrival = "materials-arrival-window" in rule.rule_id
+        date_events = _date_events(
+            plan,
+            request,
+            evidence_by_fact,
+            date_presentation,
+            (
+                ("arrival_deadline", "recommended_arrival")
+                if arrival
+                else ("registration_open", "application_window")
+            ),
+            source_pdf_document_id,
+        )
         requirements.append(
             _rule_requirement(
                 plan,
@@ -377,7 +430,8 @@ def build_demo_base_requirements(
                     if arrival
                     else "请根据下方官方日文核对网上登记开始时间与出愿期间。"
                 ),
-                reviewed_summary=rule.annotation_note,
+                reviewed_summary=None if date_events else rule.annotation_note,
+                date_events=date_events,
             )
         )
 
@@ -1028,6 +1082,7 @@ def _rule_requirement(
     request: DemoTargetRequest,
     description: str | None = None,
     reviewed_summary: str | None = None,
+    date_events: tuple[DemoDateEvent, ...] = (),
 ) -> DemoRequirement:
     return DemoRequirement(
         requirement_id=f"rule:{rule.rule_id}",
@@ -1035,6 +1090,7 @@ def _rule_requirement(
         title=title,
         description=description or rule.annotation_note,
         reviewed_summary=reviewed_summary,
+        date_events=date_events,
         official_status=status,
         evidence=tuple(
             _demo_evidence(plan, evidence_by_fact[binding.fact_id], limitation, request.intake)
@@ -1049,6 +1105,9 @@ def _demo_evidence(
     record: ReviewedReportEvidenceRecord,
     limitation: str,
     intake: IntakeTerm,
+    *,
+    highlights: tuple[DemoEvidenceHighlight, ...] = (),
+    local_pdf_url: str | None = None,
 ) -> DemoEvidence:
     identity = plan.document_identity
     return DemoEvidence(
@@ -1064,11 +1123,92 @@ def _demo_evidence(
         scope_targets=record.scope_targets,
         parent_college=record.parent_college,
         limitation=limitation,
+        highlights=highlights,
+        local_pdf_url=local_pdf_url,
     )
+
+
+def _date_events(
+    plan: ReviewedReportPlan,
+    request: DemoTargetRequest,
+    evidence_by_fact: dict[str, ReviewedReportEvidenceRecord],
+    presentation: ReviewedDatePresentation | None,
+    event_types: tuple[str, ...],
+    source_pdf_document_id: str | None,
+) -> tuple[DemoDateEvent, ...]:
+    if presentation is None:
+        return ()
+    if (
+        presentation.document_id != plan.document_identity.document_id
+        or presentation.source_pdf_sha256 != plan.document_identity.source_pdf_sha256
+    ):
+        raise ValueError("date presentation identity mismatch")
+    highlights_by_id = {item.highlight_id: item for item in presentation.highlights}
+    result = []
+    for event in presentation.events:
+        if (
+            event.intake_year != request.intake.year
+            or event.intake_month != request.intake.month
+            or event.event_type not in event_types
+        ):
+            continue
+        grouped: dict[str, list[DemoEvidenceHighlight]] = {}
+        fact_order: list[str] = []
+        for highlight_id in event.highlight_ids:
+            highlight = highlights_by_id[highlight_id]
+            if highlight.fact_id not in grouped:
+                grouped[highlight.fact_id] = []
+                fact_order.append(highlight.fact_id)
+            grouped[highlight.fact_id].append(
+                DemoEvidenceHighlight(
+                    highlight_id=highlight.highlight_id,
+                    start=highlight.start,
+                    end=highlight.end,
+                    exact_text=highlight.exact_text,
+                    claim_ids=highlight.claim_ids,
+                )
+            )
+        evidence = tuple(
+            _demo_evidence(
+                plan,
+                evidence_by_fact[fact_id],
+                "日期结论仅复述已审核的官方日期语义；请通过原文与 PDF 页码最终核对。",
+                request.intake,
+                highlights=tuple(grouped[fact_id]),
+                local_pdf_url=(
+                    f"/documents/{presentation.document_id}/source.pdf"
+                    if source_pdf_document_id == presentation.document_id
+                    else None
+                ),
+            )
+            for fact_id in fact_order
+        )
+        result.append(
+            DemoDateEvent(
+                event_id=event.event_id,
+                event_type=event.event_type,
+                label=event.label,
+                display_text=event.display_text,
+                start_date=event.start_date,
+                start_time=event.start_time,
+                end_date=event.end_date,
+                end_time=event.end_time,
+                timezone=event.timezone,
+                nature=event.nature,
+                precision=event.precision,
+                unknown_fields=event.unknown_fields,
+                uncertainty_note=event.uncertainty_note,
+                highlight_ids=event.highlight_ids,
+                evidence=evidence,
+            )
+        )
+    return tuple(result)
 
 
 __all__ = [
     "DemoBaseRequirementsResponse",
+    "DemoDateEvent",
+    "DemoEvidenceHighlight",
     "DemoTargetCatalogResponse",
     "DemoTargetRequest",
     "build_demo_base_requirements",
