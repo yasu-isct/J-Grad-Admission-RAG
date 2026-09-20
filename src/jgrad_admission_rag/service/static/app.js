@@ -44,6 +44,7 @@ const routeField = byId("route-field");
 const routeSelect = byId("route-select");
 const requirementsSubmit = byId("requirements-submit");
 const requirementsRetry = byId("requirements-retry");
+const targetCompletionHint = byId("target-completion-hint");
 const targetStatus = byId("target-status");
 const targetSummary = byId("target-summary");
 const requirementsOutput = byId("requirements-output");
@@ -60,6 +61,19 @@ const readinessTarget = byId("readiness-target");
 const partialChecklistStatement = byId("partial-checklist-statement");
 const readinessFilters = byId("readiness-filters");
 const filterEmpty = byId("filter-empty");
+const requirementsContinue = byId("requirements-continue");
+const editTarget = byId("edit-target");
+const editRequirements = byId("edit-requirements");
+const editApplicant = byId("edit-applicant");
+const flowSteps = [1, 2, 3, 4].map((number) => ({
+  number,
+  panel: byId(number === 3 ? "applicant-panel" : number === 4 ? "readiness-panel" : `step-${number}-panel`),
+  heading: byId(number === 1 ? "demo-heading" : number === 2 ? "requirements-heading" : number === 3 ? "applicant-heading" : "readiness-heading"),
+  content: number < 4 ? byId(`step-${number}-content`) : null,
+  summary: number < 4 ? byId(`step-${number}-summary`) : null,
+  badge: byId(`step-${number}-badge`),
+  nav: byId(`step-nav-${number}`)
+}));
 
 let catalogItems = [];
 let lastAction = "catalog";
@@ -74,6 +88,66 @@ let baseRequirementsLoaded = false;
 let comparisonPending = false;
 let comparisonController = null;
 let comparisonRequestId = 0;
+let activeStep = 1;
+let requirementsEverLoaded = false;
+let comparisonComplete = false;
+let comparisonEverLoaded = false;
+
+const stepStateLabels = {
+  locked: "未开始",
+  current: "当前",
+  complete: "已完成",
+  stale: "需要重新确认"
+};
+
+function stepState(number) {
+  if (number === activeStep) return "current";
+  if (number === 1) return baseRequirementsLoaded ? "complete" : "locked";
+  if (number === 2) {
+    if (baseRequirementsLoaded) return activeStep === 2 ? "current" : "complete";
+    return requirementsEverLoaded ? "stale" : "locked";
+  }
+  if (number === 3) {
+    if (comparisonComplete) return activeStep === 3 ? "current" : "complete";
+    if (comparisonEverLoaded) return "stale";
+    return "locked";
+  }
+  if (comparisonComplete) return activeStep === 4 ? "current" : "complete";
+  return comparisonEverLoaded ? "stale" : "locked";
+}
+
+function updateFlowPresentation() {
+  for (const step of flowSteps) {
+    const state = stepState(step.number);
+    const isActive = step.number === activeStep;
+    step.nav.dataset.state = state;
+    step.nav.querySelector("small").textContent = stepStateLabels[state];
+    if (isActive) step.nav.setAttribute("aria-current", "step");
+    else step.nav.removeAttribute("aria-current");
+    step.panel.dataset.stepState = state;
+    step.badge.textContent = stepStateLabels[state];
+
+    const available = step.number === 1
+      || (step.number === 2 && baseRequirementsLoaded)
+      || (step.number === 3 && baseRequirementsLoaded && (activeStep >= 3 || comparisonComplete))
+      || (step.number === 4 && comparisonComplete && activeStep === 4);
+    step.panel.hidden = !available;
+    if (step.content) step.content.hidden = !isActive;
+    if (step.summary) step.summary.hidden = isActive || state !== "complete";
+  }
+}
+
+function focusStep(number) {
+  const step = flowSteps[number - 1];
+  step.panel.scrollIntoView({ block: "start", behavior: "auto" });
+  step.heading.focus({ preventScroll: true });
+}
+
+function activateStep(number, focus = false) {
+  activeStep = number;
+  updateFlowPresentation();
+  if (focus) requestAnimationFrame(() => focusStep(number));
+}
 
 function setMessage(element, state, message, focus = false) {
   element.dataset.state = state;
@@ -890,8 +964,69 @@ function demoTargetComplete() {
   );
 }
 
+function targetLabel(target) {
+  return [
+    target.school_name,
+    target.degree_name,
+    target.intake_name,
+    target.college_name,
+    target.department_name,
+    target.application_route_name
+  ].filter(Boolean).join(" · ");
+}
+
+function updateTargetStepSummary(target) {
+  byId("step-1-summary-text").textContent = targetLabel(target);
+}
+
+function updateRequirementsStepSummary(payload) {
+  const labels = [
+    ["dates", "关键日期"],
+    ["materials", "核心材料"],
+    ["eligibility", "学历资格"],
+    ["language", "语言要求"]
+  ];
+  const counts = labels.map(([category, label]) => {
+    const count = payload.requirements.filter((item) => item.category === category).length;
+    return `${label} ${count} 项`;
+  });
+  const hasDates = payload.requirements.some((item) => item.category === "dates");
+  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? "；请优先核对关键日期与截止说明。" : ""}`;
+}
+
+function updateApplicantStepSummary() {
+  const categories = [
+    ["学历", ["demo-credential-basis", "demo-completion-state"].some((id) => byId(id).value)],
+    ["英语", ["demo-english-kind", "demo-english-score", "demo-english-date", "demo-english-report"].some((id) => byId(id).value)],
+    ["日语", Boolean(byId("demo-japanese-background").value)],
+    ["材料", Array.from(document.querySelectorAll("[data-material-code]")).some((select) => select.value !== "unknown")]
+  ];
+  const provided = categories.filter(([, value]) => value).map(([label]) => label);
+  const missing = categories.filter(([, value]) => !value).map(([label]) => label);
+  const parts = [
+    `已提供类别：${provided.length ? provided.join("、") : "无"}`,
+    `未提供类别：${missing.length ? missing.join("、") : "无"}`
+  ];
+  byId("step-3-summary-text").textContent = parts.join("；");
+}
+
 function updateRequirementsSubmit() {
-  requirementsSubmit.disabled = requirementsPending || !demoTargetComplete();
+  const department = currentDepartment();
+  const missing = [
+    [currentSchool(), "学校"],
+    [currentDegree(), "学位"],
+    [currentIntake(), "入学时间"],
+    [currentCollege(), "学院"],
+    [department, "系／专业"],
+    [department && (department.application_routes.length === 0 || routeSelect.value), "出愿日程／方式"]
+  ].filter(([complete]) => !complete).map(([, label]) => label);
+  requirementsSubmit.disabled = requirementsPending || missing.length > 0;
+  targetCompletionHint.dataset.state = missing.length ? "incomplete" : "ready";
+  targetCompletionHint.textContent = requirementsPending
+    ? "正在读取官方要求，请稍候。"
+    : missing.length
+      ? `还需选择：${missing.join("、")}。`
+      : "申请目标已完整，可以查看基础出愿要求。";
 }
 
 function populateDegreeSelect() {
@@ -979,6 +1114,7 @@ async function loadDemoCatalog() {
   cancelPendingRequirements();
   baseRequirementsLoaded = false;
   invalidateComparison("请先加载基础要求。");
+  activateStep(1);
   demoCatalog = [];
   requirementsRetry.hidden = true;
   clearDemoResults();
@@ -1029,7 +1165,9 @@ function requirementStatusLabel(status) {
 function renderRequirements(payload) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
-  targetSummary.textContent = [target.school_name, target.degree_name, target.intake_name, target.college_name, target.department_name, target.application_route_name].filter(Boolean).join(" · ");
+  targetSummary.textContent = targetLabel(target);
+  updateTargetStepSummary(target);
+  updateRequirementsStepSummary(payload);
   const groups = [
     ["dates", "关键日期"], ["materials", "核心提交材料"],
     ["eligibility", "学历与资格"], ["language", "语言要求"]
@@ -1045,14 +1183,22 @@ function renderRequirements(payload) {
     for (const requirement of entries) {
       const card = document.createElement("article");
       card.className = "requirement-card";
+      card.dataset.category = category;
       card.append(heading(4, requirement.title));
       const status = document.createElement("span");
       status.className = "requirement-status";
       status.dataset.status = requirement.official_status;
       status.textContent = requirementStatusLabel(requirement.official_status);
       const description = document.createElement("p");
+      description.className = "requirement-description";
       description.textContent = requirement.description;
       card.append(status, description);
+      if (requirement.deadline) {
+        const deadline = document.createElement("p");
+        deadline.className = "deadline-callout";
+        deadline.textContent = `官方日期／截止：${requirement.deadline}`;
+        card.append(deadline);
+      }
       if (requirement.reviewed_summary) {
         const officialLabel = document.createElement("p");
         officialLabel.className = "reviewed-summary-label";
@@ -1069,7 +1215,7 @@ function renderRequirements(payload) {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "secondary";
-          button.textContent = requirement.evidence.length === 1 ? "查看依据" : `查看依据 · 第 ${evidence.pages.join("、")} 页`;
+          button.textContent = requirement.evidence.length === 1 ? "查看官方依据" : `查看官方依据 · 第 ${evidence.pages.join("、")} 页`;
           button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
           actions.append(button);
         }
@@ -1169,6 +1315,7 @@ function cancelPendingComparison() {
 }
 
 function clearComparison(message = "填写个人情况后，可由服务端进行保守对照。") {
+  comparisonComplete = false;
   comparisonOutput.replaceChildren();
   readinessPanel.hidden = true;
   readinessTarget.textContent = "";
@@ -1197,7 +1344,7 @@ function comparisonStatusLabel(status) {
 
 function renderComparison(payload) {
   comparisonOutput.replaceChildren();
-  readinessTarget.textContent = [payload.target.school_name, payload.target.degree_name, payload.target.intake_name, payload.target.college_name, payload.target.department_name, payload.target.application_route_name].filter(Boolean).join(" · ");
+  readinessTarget.textContent = targetLabel(payload.target);
   partialChecklistStatement.textContent = payload.partial_checklist_statement;
   byId("count-total").textContent = String(payload.counts.total);
   byId("count-recorded").textContent = String(payload.counts.recorded);
@@ -1244,7 +1391,7 @@ function renderComparison(payload) {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "secondary";
-          button.textContent = "查看依据";
+          button.textContent = "查看官方依据";
           button.addEventListener("click", () => openDemoEvidence(item, evidence, button));
           actions.append(button);
         }
@@ -1260,7 +1407,9 @@ function renderComparison(payload) {
   boundary.textContent = `${payload.comparison_statement} 限制：${payload.limitation_statement}`;
   comparisonOutput.append(boundary);
   filterEmpty.hidden = true;
-  readinessPanel.hidden = false;
+  comparisonComplete = true;
+  comparisonEverLoaded = true;
+  updateApplicantStepSummary();
 }
 
 function applyReadinessFilter() {
@@ -1293,7 +1442,8 @@ async function submitApplicantComparison() {
     if (!payload || !Array.isArray(payload.items)) throw new Error();
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload);
-    setMessage(comparisonStatus, "success", "个人情况已完成保守对照。", true);
+    setMessage(comparisonStatus, "success", "个人情况已完成保守对照。");
+    activateStep(4, true);
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== comparisonRequestId) return;
@@ -1316,6 +1466,7 @@ function invalidateComparison(message) {
 
 async function submitBaseRequirements() {
   if (requirementsPending || !demoTargetComplete()) return;
+  activateStep(1);
   const requestPayload = demoTargetRequest();
   const requestSnapshot = JSON.stringify(requestPayload);
   const requestId = ++requirementsRequestId;
@@ -1335,9 +1486,11 @@ async function submitBaseRequirements() {
     if (requestId !== requirementsRequestId || !demoTargetComplete() || requestSnapshot !== JSON.stringify(demoTargetRequest())) return;
     renderRequirements(payload);
     baseRequirementsLoaded = true;
+    requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
     clearComparison();
-    setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。", true);
+    setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。");
+    activateStep(2, true);
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== requirementsRequestId) return;
@@ -1368,6 +1521,7 @@ function handleDemoTargetChange(next) {
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
+  activateStep(1);
   next();
 }
 
@@ -1385,9 +1539,18 @@ evidenceTab.addEventListener("keydown", handleTabKey);
 reportTab.addEventListener("keydown", handleTabKey);
 targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
 applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
-applicantForm.addEventListener("input", () => invalidateComparison("个人输入已改变，请重新对照。"));
+applicantForm.addEventListener("input", () => {
+  invalidateComparison("个人输入已改变，请重新对照。");
+  if (baseRequirementsLoaded) activateStep(3);
+});
 comparisonRetry.addEventListener("click", submitApplicantComparison);
 readinessFilters.addEventListener("change", applyReadinessFilter);
+requirementsContinue.addEventListener("click", () => {
+  if (baseRequirementsLoaded) activateStep(3, true);
+});
+editTarget.addEventListener("click", () => activateStep(1, true));
+editRequirements.addEventListener("click", () => activateStep(2, true));
+editApplicant.addEventListener("click", () => activateStep(3, true));
 schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
 demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
 intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));
@@ -1398,5 +1561,6 @@ requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) subm
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
 
+updateFlowPresentation();
 loadCatalog();
 loadDemoCatalog();

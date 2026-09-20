@@ -10,32 +10,48 @@
   <body>
     <header class="app-header">
       <div class="header-inner">
-        <p class="product-mark" aria-hidden="true">JG</p>
-        <div>
+        <p class="product-mark" aria-hidden="true">J</p>
+        <div class="header-copy">
           <h1>J-Grad 申请检查向导</h1>
-          <p>把个人准备情况与日本大学院官方募集要项逐项对照</p>
+          <p>依据审核过的募集要项，分四步整理你的申请准备</p>
         </div>
+        <span class="runtime-boundary">本地运行 · 不保存个人资料</span>
       </div>
     </header>
 
     <main class="workspace" aria-labelledby="workspace-heading">
-      <section class="notice" aria-labelledby="workspace-heading">
-        <h2 id="workspace-heading">从官方要求开始，不替学校做最终判断</h2>
-        <p><strong>本工具只整理已人工审核的部分规则，不保证出愿资格、材料受理或录取结果。信息不足不会被解释为符合要求。</strong></p>
+      <section class="intro" aria-labelledby="workspace-heading">
+        <p class="eyebrow">申请准备检查</p>
+        <h2 id="workspace-heading">先选定申请目标，再逐步核对官方要求</h2>
+        <p>每次只处理当前一步。你可以随时返回修改，后续旧结果会按现有安全规则清除。</p>
+        <p class="essential-boundary"><strong>本工具不是最终资格判断。</strong> 信息不足不会被解释为符合要求。</p>
+        <details class="scope-details">
+          <summary>使用范围</summary>
+          <p>本工具只整理已人工审核的部分规则，不保证出愿资格、材料受理或录取结果。个人输入不保存到浏览器或服务器，最终请以学校官方说明和招生部门确认为准。</p>
+        </details>
       </section>
 
       <nav class="stepper" aria-label="申请检查步骤">
-        <span aria-current="step"><strong>1</strong> 选择目标</span>
-        <span><strong>2</strong> 基础要求</span>
-        <span><strong>3</strong> 个人情况</span>
-        <span><strong>4</strong> 准备视图</span>
+        <ol>
+          <li id="step-nav-1" data-state="current" aria-current="step"><span class="step-number">1</span><span><strong>选择目标</strong><small>当前</small></span></li>
+          <li id="step-nav-2" data-state="locked"><span class="step-number">2</span><span><strong>官方要求</strong><small>未开始</small></span></li>
+          <li id="step-nav-3" data-state="locked"><span class="step-number">3</span><span><strong>个人情况</strong><small>未开始</small></span></li>
+          <li id="step-nav-4" data-state="locked"><span class="step-number">4</span><span><strong>准备清单</strong><small>未开始</small></span></li>
+        </ol>
       </nav>
 
-      <section class="demo-shell" aria-labelledby="demo-heading">
-        <div class="target-panel">
-          <p class="section-label">STEP 1 · 申请目标</p>
-          <h2 id="demo-heading">你准备申请什么？</h2>
-          <p class="field-detail">选项来自服务端审核目录。改变目标会清除之前加载的要求。</p>
+      <section class="demo-shell application-flow" aria-label="四步申请检查">
+        <section id="step-1-panel" class="flow-step" data-step-state="current" aria-labelledby="demo-heading">
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 1 · 申请目标</p><h2 id="demo-heading" tabindex="-1">你准备申请什么？</h2></div>
+            <span id="step-1-badge" class="step-state-badge">当前</span>
+          </header>
+          <div id="step-1-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已选择的目标</p><p id="step-1-summary-text"></p></div>
+            <button id="edit-target" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-1-content" class="flow-step-content">
+          <p class="field-detail">选项来自服务端审核目录。全部选完后，按钮会变为可用。</p>
           <form id="target-form" novalidate>
             <div class="target-grid">
               <div><label for="school-select">学校</label><select id="school-select" required disabled><option value="">正在读取审核目录</option></select></div>
@@ -49,22 +65,38 @@
               <button id="requirements-submit" type="submit" disabled>查看基础出愿要求</button>
               <button id="requirements-retry" class="secondary" type="button" hidden>重试</button>
             </div>
+            <p id="target-completion-hint" class="action-hint">请完成申请目标选择，按钮随后会变为可用。</p>
           </form>
           <div id="target-status" class="status-message" role="status" aria-live="polite" tabindex="-1">正在读取审核目录。</div>
-        </div>
-
-        <section class="requirements-panel" aria-labelledby="requirements-heading">
-          <div class="results-header">
-            <div><p class="section-label">STEP 2 · 官方要求</p><h2 id="requirements-heading">基础出愿要求</h2></div>
           </div>
-          <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
-          <div id="requirements-output" class="requirements-output"></div>
         </section>
 
-        <section id="applicant-panel" class="applicant-panel" aria-labelledby="applicant-heading">
-          <div class="results-header">
-            <div><p class="section-label">STEP 3 · 个人情况</p><h2 id="applicant-heading">填写最少信息并对照</h2></div>
+        <section id="step-2-panel" class="flow-step requirements-panel" data-step-state="locked" aria-labelledby="requirements-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 2 · 官方要求</p><h2 id="requirements-heading" tabindex="-1">基础出愿要求</h2></div>
+            <span id="step-2-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-2-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已加载的要求</p><p id="step-2-summary-text"></p></div>
+            <button id="edit-requirements" class="quiet edit-step" type="button">修改</button>
           </div>
+          <div id="step-2-content" class="flow-step-content">
+          <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
+          <div id="requirements-output" class="requirements-output"></div>
+          <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button></div>
+          </div>
+        </section>
+
+        <section id="applicant-panel" class="flow-step applicant-panel" data-step-state="locked" aria-labelledby="applicant-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 3 · 个人情况</p><h2 id="applicant-heading" tabindex="-1">填写最少信息并对照</h2></div>
+            <span id="step-3-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-3-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">信息提供情况</p><p id="step-3-summary-text"></p></div>
+            <button id="edit-applicant" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-3-content" class="flow-step-content">
           <p class="field-detail">只填写用于本次页面对照的信息。不会保存到浏览器或服务器；空值表示“未提供”，不会被判为不满足。</p>
           <form id="applicant-form" novalidate>
             <div class="profile-grid">
@@ -109,12 +141,14 @@
             <div class="actions"><button id="comparison-submit" type="submit" disabled>对照个人情况</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
           </form>
           <div id="comparison-status" class="status-message" role="status" aria-live="polite">请先加载基础要求。</div>
+          </div>
         </section>
 
-        <section id="readiness-panel" class="applicant-panel readiness-panel" aria-labelledby="readiness-heading" hidden>
-          <div class="results-header">
-            <div><p class="section-label">STEP 4 · 当前准备视图</p><h2 id="readiness-heading">接下来需要做什么？</h2></div>
-          </div>
+        <section id="readiness-panel" class="flow-step applicant-panel readiness-panel" data-step-state="locked" aria-labelledby="readiness-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 4 · 当前准备视图</p><h2 id="readiness-heading" tabindex="-1">接下来需要做什么？</h2></div>
+            <span id="step-4-badge" class="step-state-badge">未开始</span>
+          </header>
           <p id="readiness-target" class="target-summary"></p>
           <p id="partial-checklist-statement" class="final-notice"></p>
           <dl class="readiness-counts" aria-label="准备状态统计">
@@ -143,6 +177,9 @@
         <div id="drawer-content" class="drawer-content"></div>
       </dialog>
 
+      <details id="advanced-tools" class="advanced-tools">
+        <summary><span><strong>高级工具</strong><small>证据检索与旧版详细报告</small></span></summary>
+        <div class="advanced-tools-content">
       <section class="secondary-heading" aria-labelledby="secondary-heading">
         <p class="section-label">辅助工具</p>
         <h2 id="secondary-heading">证据检索与旧版详细报告</h2>
@@ -345,6 +382,8 @@
           </section>
         </div>
       </section>
+        </div>
+      </details>
     </main>
   </body>
 </html>

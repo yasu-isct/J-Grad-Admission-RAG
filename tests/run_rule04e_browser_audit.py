@@ -166,6 +166,7 @@ def main():
                     page.wait_for_function(
                         "document.querySelector('#report-submit').disabled === false"
                     )
+                    page.locator("#advanced-tools > summary").click()
                     page.locator("#report-tab").click()
                     page.locator("#report-query").fill(scenario)
                     page.locator("#graduate-school").fill(college)

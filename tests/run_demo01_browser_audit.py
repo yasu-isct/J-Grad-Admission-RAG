@@ -187,6 +187,7 @@ def main() -> None:
                     page.screenshot(path=drawer_screenshot)
                 page.keyboard.press("Escape")
                 assert trigger.evaluate("element => document.activeElement === element")
+                page.locator("#requirements-continue").click()
                 page.locator("#demo-credential-basis").select_option("university_graduation")
                 page.locator("#demo-completion-state").select_option("expected")
                 page.locator("#demo-english-kind").select_option("toeic_lr")

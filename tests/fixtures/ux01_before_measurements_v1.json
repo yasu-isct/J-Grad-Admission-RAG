@@ -1,0 +1,18 @@
+{
+  "baseline_commit": "ef45d521bbf2c42670b73db5d9a0ecc8bd07c0a6",
+  "schema_version": "1.0",
+  "viewports": {
+    "desktop": {
+      "complete_height": 7330,
+      "initial_height": 2420,
+      "requirements_height": 4568,
+      "width": 1440
+    },
+    "mobile": {
+      "complete_height": 10523,
+      "initial_height": 3802,
+      "requirements_height": 6737,
+      "width": 390
+    }
+  }
+}
