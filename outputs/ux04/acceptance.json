@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "issue": 144,
+  "service": "installed jgrad-demo -> uvicorn -> FastAPI",
+  "test_http_handler_used": false,
+  "pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "ready": {
+    "schema_version": "1.0",
+    "status": "ready",
+    "ready": true
+  },
+  "http": {
+    "must_arrive": "2026年6月10日 必着（不是当天寄出即可）",
+    "material_count": 5,
+    "needs_information_count": 5,
+    "profile_comparable_count": 4,
+    "other_confirmation_count": 1,
+    "pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "pdf_content_type": "application/pdf",
+    "pdf_accept_ranges": "bytes",
+    "pdf_range_status": 206
+  },
+  "browser": {
+    "name": "Chromium",
+    "version": "153.0.8010.52"
+  },
+  "records": [
+    {
+      "viewport": "desktop-1440",
+      "initial_open_groups": 4,
+      "empty_unknown_and_filled_requests": 3,
+      "keyboard_summary_and_focus": true,
+      "target_change_cleared_inputs": true,
+      "checklist_regression": true,
+      "pdf_page_link": "/documents/isct_2027_4_2026_9_master/source.pdf#page=9",
+      "horizontal_overflow": false,
+      "external_requests": [],
+      "screenshots": [
+        "outputs/ux04/browser/ux04-desktop-1440-step3-initial.png",
+        "outputs/ux04/browser/ux04-desktop-1440-step3-filled.png",
+        "outputs/ux04/browser/ux04-desktop-1440-checklist.png"
+      ]
+    },
+    {
+      "viewport": "mobile-390",
+      "initial_open_groups": 1,
+      "empty_unknown_and_filled_requests": 3,
+      "keyboard_summary_and_focus": true,
+      "target_change_cleared_inputs": true,
+      "checklist_regression": true,
+      "pdf_page_link": "/documents/isct_2027_4_2026_9_master/source.pdf#page=9",
+      "horizontal_overflow": false,
+      "external_requests": [],
+      "screenshots": [
+        "outputs/ux04/browser/ux04-mobile-390-step3-initial.png",
+        "outputs/ux04/browser/ux04-mobile-390-step3-filled.png",
+        "outputs/ux04/browser/ux04-mobile-390-checklist.png"
+      ]
+    }
+  ]
+}

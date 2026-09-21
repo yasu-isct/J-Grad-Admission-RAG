@@ -98,47 +98,74 @@
             <button id="edit-applicant" class="quiet edit-step" type="button">修改</button>
           </div>
           <div id="step-3-content" class="flow-step-content">
-          <p class="field-detail">只填写用于本次页面对照的信息。不会保存到浏览器或服务器；空值表示“未提供”，不会被判为不满足。</p>
+          <p class="field-detail profile-intro">只填写用于本次页面对照的信息，不会保存到浏览器或服务器。可以暂时留空或选择“不知道”；空值不会被判为不符合。</p>
+          <p class="profile-state-guide"><strong>状态怎么理解：</strong>“未填写”是尚未作答；“不知道”是主动标记待确认；“不适用”仅是个人判断，不代表官方豁免；“尚未取得”表示目前没有相应成绩单或材料。最终仍以官方适用性和学校确认结果为准。</p>
           <form id="applicant-form" novalidate>
             <div class="profile-grid">
-              <fieldset data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility">
+              <details class="profile-group" data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility" open>
+                <summary><span class="profile-group-title"><strong>1 · 学历与毕业情况</strong><small>用于对照已审核的学历路径；不能替代学校资格认定。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
                 <legend>学历</legend>
                 <label for="demo-credential-basis">最接近的学历路径</label>
-                <select id="demo-credential-basis">
-                  <option value="">未提供／不确定</option>
+                <p id="credential-help" class="field-help">选择与你最接近的路径，帮助服务端找对应的已审核条件；选不准可以标记不知道。</p>
+                <select id="demo-credential-basis" aria-describedby="credential-help">
+                  <option value="">未填写</option>
+                  <option value="ui_unknown">不知道／需要确认</option>
                   <option value="university_graduation">日本大学毕业或预计毕业</option>
                   <option value="foreign_16_year_bachelor_equivalent">外国 16 年教育／学士相当</option>
                   <option value="foreign_15_year_education">外国 15 年教育（需个别资格审查）</option>
                   <option value="university_three_year_enrollment">大学在学满 3 年等（需个别资格审查）</option>
                 </select>
                 <label for="demo-completion-state">毕业状态</label>
-                <select id="demo-completion-state"><option value="">未提供</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
-              </fieldset>
-              <fieldset data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">
+                <p id="completion-help" class="field-help">记录你是否已毕业或预计毕业；此处不要求填写毕业日期，也不会自动认定资格。</p>
+                <select id="demo-completion-state" aria-describedby="completion-help"><option value="">未填写</option><option value="ui_unknown">不知道／需要确认</option><option value="ui_not_applicable">目前不适用／暂无毕业状态</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>2 · 英语考试与成绩单</strong><small>记录考试信息；成绩有效性与提交方式仍需核对。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
                 <legend>英语</legend>
                 <label for="demo-english-kind">考试类型</label>
-                <select id="demo-english-kind"><option value="">未提供</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="other">其他</option></select>
-                <label for="demo-english-score">成绩</label><input id="demo-english-score" type="number" min="0" step="0.01" inputmode="decimal">
-                <label for="demo-english-date">考试日期</label><input id="demo-english-date" type="date">
-                <label for="demo-english-report">是否有官方成绩单</label><select id="demo-english-report"><option value="">未提供</option><option value="true">有</option><option value="false">没有／尚未取得</option></select>
-              </fieldset>
-              <fieldset data-profile-group="japanese" data-profile-label="日语学习或证明情况" data-requirement-categories="language">
+                <p id="english-kind-help" class="field-help">若填写成绩或考试日期，服务端也需要知道考试类型；未参加可选择“目前不适用”。</p>
+                <select id="demo-english-kind" aria-describedby="english-kind-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道考试类型</option><option value="ui_not_applicable">未参加／目前不适用</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="other">其他</option></select>
+                <label for="demo-english-score">成绩</label>
+                <p id="english-score-help" class="field-help">有成绩时填写数字；没有或不知道可留空。填写分数不会自动判定成绩有效。</p>
+                <input id="demo-english-score" type="number" min="0" max="10000" step="0.01" inputmode="decimal" aria-describedby="english-score-help english-link-hint">
+                <label for="demo-english-date">考试日期</label>
+                <p id="english-date-help" class="field-help">用于之后核对有效期；日期不确定可以留空，不会被当作不符合。</p>
+                <input id="demo-english-date" type="date" aria-describedby="english-date-help english-link-hint">
+                <label for="demo-english-report">官方成绩单</label>
+                <p id="english-report-help" class="field-help">这里只记录你是否已取得官方成绩单；“已取得”不代表学校已收到或受理。</p>
+                <select id="demo-english-report" aria-describedby="english-report-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用／未参加考试</option><option value="true">已取得官方成绩单</option><option value="false">尚未取得官方成绩单</option></select>
+                <p id="english-link-hint" class="linked-field-hint" role="status" aria-live="polite">成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="japanese" data-profile-label="日语学习或证明情况" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>3 · 日语学习或证明</strong><small>仅记录你的情况，证据不足时不生成满足结论。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
                 <legend>日语</legend>
                 <label for="demo-japanese-background">学习或证明情况</label>
-                <select id="demo-japanese-background"><option value="">未提供</option><option value="studied">学过日语</option><option value="certificate_available">有日语能力证明</option><option value="not_studied">未学过／暂无证明</option></select>
-                <p class="field-detail">这里只记录，不会据此判断语言要求已满足。</p>
-              </fieldset>
-              <fieldset class="materials-fieldset" data-profile-group="materials" data-profile-label="已有材料的准备状态" data-requirement-categories="materials">
-                <legend>已有材料</legend>
+                <p id="japanese-help" class="field-help">有学习经历或证明可记录；不知道、暂不适用或尚无证明都不会被判为不符合。</p>
+                <select id="demo-japanese-background" aria-describedby="japanese-help japanese-limit"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用</option><option value="studied">学过日语</option><option value="certificate_available">有日语能力证明</option><option value="not_studied">未学过／尚无证明</option></select>
+                <p id="japanese-limit" class="profile-limit">日语信息目前只记录。现有审核证据不足时，不会给出“已满足日语要求”的结论。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group materials-fieldset" data-profile-group="materials" data-profile-label="已有材料的准备状态" data-requirement-categories="materials">
+                <summary><span class="profile-group-title"><strong>4 · 材料准备状态</strong><small>只记录你手中是否已有；官方适用性在结果中单独显示。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>材料准备</legend>
+                <p id="material-help" class="field-help">“我已准备”仅表示你自报已有材料，不代表内容有效、学校已收到或受理。认为不适用时仍需查看官方适用性。</p>
                 <div class="material-inputs">
-                  <label>宛名标签<select data-material-code="address_label"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
-                  <label>入学志愿票<select data-material-code="application_form"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
-                  <label>志望理由书<select data-material-code="statement_of_purpose"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
-                  <label>学士课程成绩证明书<select data-material-code="bachelor_transcript"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
-                  <label>毕业（预计）证明书<select data-material-code="graduation_or_expected_graduation_certificate"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
+                  <label>宛名标签<select data-material-code="address_label" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>入学志愿票<select data-material-code="application_form" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>志望理由书<select data-material-code="statement_of_purpose" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>学士课程成绩证明书<select data-material-code="bachelor_transcript" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>毕业（预计）证明书<select data-material-code="graduation_or_expected_graduation_certificate" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
                 </div>
-              </fieldset>
+                </fieldset>
+              </details>
             </div>
+            <p class="profile-submit-help">不必填完所有项目也可以对照。未填写／不知道会保留为未知，不会自动判为不符合；个别资格审查仍需学校确认。</p>
             <div class="actions"><button id="comparison-submit" type="submit" disabled>对照个人情况</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
           </form>
           <div id="comparison-status" class="status-message" role="status" aria-live="polite">请先加载基础要求。</div>
