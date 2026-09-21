@@ -911,6 +911,7 @@ legend {
 .overview-metrics dt { color: var(--color-text-muted); font-size: 12px; font-weight: 700; }
 .overview-metrics dd { margin: 6px 0 0; color: #233934; font-size: 18px; font-weight: 800; line-height: 1.45; overflow-wrap: anywhere; }
 .overview-metrics div[data-metric="deadline"] dd { color: #762d1b; font-size: 20px; }
+.overview-metric-note { margin: 6px 0 0; color: var(--color-text-muted); font-size: 11px; line-height: 1.4; }
 .overview-action {
   align-self: start;
   position: sticky;
@@ -968,6 +969,15 @@ legend {
   border-radius: var(--radius-md);
   background: #fffbef;
 }
+.pending-other-notice {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-warning);
+  color: #5c430f;
+  background: #fff6dd;
+  line-height: 1.6;
+}
+.profile-input-heading { margin: 0 0 10px; color: #263d37; font-size: 14px; }
 .profile-needs-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .profile-needs-list li {
   padding: 7px 10px;

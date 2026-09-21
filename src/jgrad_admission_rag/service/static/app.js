@@ -1155,7 +1155,7 @@ function requirementStatusLabel(status) {
   const labels = {
     required: "官方状态：必需",
     conditional: "官方状态：有条件适用",
-    needs_information: "官方状态：需要个人信息",
+    needs_information: "官方状态：待补充信息",
     needs_review: "官方状态：需要人工确认",
     not_applicable: "官方状态：不适用",
     not_covered: "官方状态：当前未覆盖"
@@ -1306,7 +1306,7 @@ function renderApplicationOverview(payload, overview) {
   const metricValues = [
     ["最重要的必着截止", overview.deadlineText, "deadline"],
     ["核心材料", overview.materialCount === null ? "暂无已审核数据" : `${overview.materialCount} 项`, "materials"],
-    ["需补充个人信息后判断", overview.needsInformationCount === null ? "暂无已审核数据" : `${overview.needsInformationCount} 项`, "pending"]
+    ["基础要求待确认", overview.needsInformationCount === null ? "暂无已审核数据" : `${overview.needsInformationCount} 项`, "pending"]
   ];
   for (const [label, value, kind] of metricValues) {
     const item = document.createElement("div");
@@ -1317,6 +1317,13 @@ function renderApplicationOverview(payload, overview) {
     dd.textContent = value;
     item.append(dt, dd);
     metrics.append(item);
+  }
+  if (overview.needsInformationCount !== null) {
+    const pendingMetric = metrics.querySelector('[data-metric="pending"]');
+    const note = document.createElement("p");
+    note.className = "overview-metric-note";
+    note.textContent = `其中 ${overview.profileComparableCount} 项可进入个人对照，${overview.otherConfirmationCount} 项需另行确认`;
+    pendingMetric.append(note);
   }
   copy.append(metrics);
 
@@ -1380,15 +1387,26 @@ function renderPendingRequirements(entries, overview) {
   section.className = "result-section pending-section";
   const count = overview.needsInformationCount;
   section.append(heading(3, count === null
-    ? "需要个人信息才能判断"
-    : `填写以下信息后，可以进一步判断 ${count} 项要求`));
+    ? "仍需进一步确认的基础要求"
+    : `仍需进一步确认的基础要求：${count} 项`));
   const explanation = document.createElement("p");
   explanation.className = "section-intro";
-  explanation.textContent = "这些项目目前不是“不符合”，而是资料不足。完成下一步后，系统会按现有规则重新判断。";
+  explanation.textContent = count === null
+    ? "当前暂无已审核数据，不会推断要求是否满足。"
+    : `其中 ${overview.profileComparableCount} 项可进入现有个人对照；${overview.otherConfirmationCount} 项需另行确认。待确认不等于不符合，填写个人情况也不保证所有项目都能得出结论。`;
   section.append(explanation);
+  if (overview.otherConfirmationRequirements.length) {
+    const otherNotice = document.createElement("p");
+    otherNotice.className = "pending-other-notice";
+    otherNotice.textContent = `当前个人情况步骤不处理：${overview.otherConfirmationRequirements.map((item) => item.title).join("、")}。请核对实际情况及官方要求。`;
+    section.append(otherNotice);
+  }
+  const inputHeading = heading(4, "下一步可填写的个人情况");
+  inputHeading.className = "profile-input-heading";
+  section.append(inputHeading);
   const categories = document.createElement("ul");
   categories.className = "profile-needs-list";
-  for (const group of overview.neededProfileGroups) {
+  for (const group of overview.profileInputGroups) {
     const item = document.createElement("li");
     item.textContent = group.label;
     categories.append(item);
@@ -1403,7 +1421,7 @@ function renderPendingRequirements(entries, overview) {
     const details = document.createElement("details");
     details.className = "pending-details";
     const summary = document.createElement("summary");
-    summary.textContent = `查看待判断的 ${entries.length} 项要求`;
+    summary.textContent = `查看待确认的 ${entries.length} 项要求`;
     const list = document.createElement("div");
     list.className = "requirement-list";
     for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true }));

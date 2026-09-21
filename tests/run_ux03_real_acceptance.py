@@ -105,9 +105,15 @@ def _http_checks(base_url: str, pdf: Path, expected_hash: str) -> dict:
     ]
     materials = [item for item in requirements if item["category"] == "materials"]
     pending = [item for item in requirements if item["official_status"] == "needs_information"]
+    profile_comparable = [
+        item for item in pending if item["category"] in {"eligibility", "materials", "language"}
+    ]
+    other_confirmation = [item for item in pending if item not in profile_comparable]
     assert len(must_arrive) == 1
     assert len(materials) == 5
     assert len(pending) == 5
+    assert len(profile_comparable) == 4
+    assert [item["category"] for item in other_confirmation] == ["dates"]
 
     pdf_url = f"{base_url}/documents/{DOCUMENT_ID}/source.pdf"
     with urlopen(pdf_url, timeout=10) as response:  # noqa: S310 - fixed loopback URL
@@ -125,6 +131,8 @@ def _http_checks(base_url: str, pdf: Path, expected_hash: str) -> dict:
         "must_arrive": must_arrive[0]["display_text"],
         "material_count": len(materials),
         "needs_information_count": len(pending),
+        "profile_comparable_count": len(profile_comparable),
+        "other_confirmation_count": len(other_confirmation),
         "pdf_sha256": expected_hash,
         "pdf_content_type": content_type,
         "pdf_accept_ranges": accept_ranges,
@@ -153,8 +161,18 @@ def _browser_flow(browser, base_url: str, viewport_name: str, width: int) -> dic
         )
         expect(page.locator('.overview-metrics [data-metric="materials"]')).to_contain_text("5 项")
         expect(page.locator('.overview-metrics [data-metric="pending"]')).to_contain_text("5 项")
+        expect(page.locator('.overview-metrics [data-metric="pending"]')).to_contain_text(
+            "其中 4 项可进入个人对照，1 项需另行确认"
+        )
         assert page.locator(".application-overview").inner_text().index("必着截止") >= 0
-        assert page.locator(".profile-needs-list li").count() == 2
+        expect(page.locator(".pending-section h3")).to_have_text("仍需进一步确认的基础要求：5 项")
+        expect(page.locator(".pending-other-notice")).to_contain_text("材料必着期限")
+        assert page.locator(".profile-needs-list li").all_text_contents() == [
+            "学历、预计毕业时间与资格审查路径",
+            "英语考试与成绩",
+            "日语学习或证明情况",
+            "已有材料的准备状态",
+        ]
 
         order = page.eval_on_selector_all(
             ".application-overview, .key-dates-section, .materials-section, .pending-section, "
@@ -227,7 +245,13 @@ def _browser_flow(browser, base_url: str, viewport_name: str, width: int) -> dic
             "viewport": viewport_name,
             "screenshot": screenshot.relative_to(ROOT).as_posix(),
             "first_viewport_contains_must_arrive": True,
-            "overview_counts": {"materials": 5, "needs_information": 5},
+            "overview_counts": {
+                "materials": 5,
+                "needs_information": 5,
+                "profile_comparable": 4,
+                "other_confirmation": 1,
+            },
+            "profile_input_groups": page.locator(".profile-needs-list li").all_text_contents(),
             "target_reset_and_resubmit": True,
             "keyboard_cta_and_drawer_focus_restore": True,
             "pdf_page_link": pdf_href,

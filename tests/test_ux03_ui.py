@@ -39,6 +39,11 @@ def _profile_groups() -> list[dict]:
             "requirementCategories": ["language"],
         },
         {
+            "key": "japanese",
+            "label": "日语学习或证明情况",
+            "requirementCategories": ["language"],
+        },
+        {
             "key": "materials",
             "label": "已有材料的准备状态",
             "requirementCategories": ["materials"],
@@ -78,8 +83,12 @@ def test_structured_overview_aggregates_typed_fields_only() -> None:
     assert result["deadlineText"] == "结构化必着日期"
     assert result["materialCount"] == 2
     assert result["needsInformationCount"] == 2
-    assert [item["key"] for item in result["neededProfileGroups"]] == [
+    assert result["profileComparableCount"] == 2
+    assert result["otherConfirmationCount"] == 0
+    assert [item["key"] for item in result["profileInputGroups"]] == [
         "education",
+        "english",
+        "japanese",
         "materials",
     ]
     assert "2099" not in json.dumps(result, ensure_ascii=False)
@@ -100,7 +109,84 @@ def test_overview_degrades_without_reviewed_dates_materials_or_requirements() ->
     assert missing_categories["needsInformationCount"] == 0
     assert missing_requirements["materialCount"] is None
     assert missing_requirements["needsInformationCount"] is None
+    assert missing_requirements["profileComparableCount"] is None
+    assert missing_requirements["profileInputGroups"] == []
     assert missing_requirements["target"]["schoolName"] == "暂无已审核数据"
+
+
+def test_real_response_shape_separates_unhandled_date_from_profile_comparison() -> None:
+    payload = {
+        "target": {
+            "school_name": "東京科学大学",
+            "degree_name": "修士课程",
+            "intake_name": "2027年4月入学",
+            "college_name": "工学院",
+            "department_name": "システム制御系",
+        },
+        "requirements": [
+            {
+                "requirement_id": "rule:date-arrival",
+                "category": "dates",
+                "title": "材料必着期限",
+                "official_status": "needs_information",
+                "date_events": [{"nature": "must_arrive", "display_text": "结构化必着日期"}],
+            },
+            {
+                "requirement_id": "material:address_label",
+                "category": "materials",
+                "official_status": "required",
+            },
+            {
+                "requirement_id": "material:application_form",
+                "category": "materials",
+                "official_status": "required",
+            },
+            {
+                "requirement_id": "material:statement_of_purpose",
+                "category": "materials",
+                "official_status": "needs_information",
+            },
+            {
+                "requirement_id": "material:bachelor_transcript",
+                "category": "materials",
+                "official_status": "needs_information",
+            },
+            {
+                "requirement_id": "material:graduation_certificate",
+                "category": "materials",
+                "official_status": "needs_information",
+            },
+            {
+                "requirement_id": "rule:eligibility",
+                "category": "eligibility",
+                "official_status": "needs_information",
+            },
+            {
+                "requirement_id": "rule:english",
+                "category": "language",
+                "official_status": "required",
+            },
+            {
+                "requirement_id": "rule:english-submit",
+                "category": "language",
+                "official_status": "conditional",
+            },
+        ],
+    }
+
+    result = _overview(payload, _profile_groups())
+
+    assert result["needsInformationCount"] == 5
+    assert result["profileComparableCount"] == 4
+    assert result["otherConfirmationCount"] == 1
+    assert [item["category"] for item in result["otherConfirmationRequirements"]] == ["dates"]
+    assert [item["key"] for item in result["profileInputGroups"]] == [
+        "education",
+        "english",
+        "japanese",
+        "materials",
+    ]
+    assert result["deadlineText"] == "结构化必着日期"
 
 
 def test_result_hierarchy_cta_profile_schema_and_reset_are_explicit() -> None:
@@ -111,10 +197,14 @@ def test_result_hierarchy_cta_profile_schema_and_reset_are_explicit() -> None:
     assert '<script src="/assets/overview.js" defer></script>' in html
     assert 'data-profile-group="education"' in html
     assert 'data-requirement-categories="eligibility"' in html
+    assert 'data-profile-group="japanese"' in html
     assert "renderApplicationOverview(payload, overview)" in javascript
     assert "renderKeyDates(dateRequirements)" in javascript
     assert 'renderRequirementSection("必须准备的材料"' in javascript
     assert "renderPendingRequirements(pending, overview)" in javascript
+    assert '"基础要求待确认"' in javascript
+    assert "其中 ${overview.profileComparableCount} 项可进入现有个人对照" in javascript
+    assert "当前个人情况步骤不处理" in javascript
     assert 'button.textContent = "填写个人情况，检查我还缺什么"' in javascript
     assert 'item.official_status === "needs_information"' in javascript
     assert 'event.nature === "must_arrive"' not in javascript

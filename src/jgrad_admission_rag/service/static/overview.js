@@ -22,13 +22,24 @@
     const needsInformation = requirements
       ? requirements.filter((item) => item && item.official_status === "needs_information")
       : [];
-    const pendingCategories = new Set(needsInformation.map((item) => item.category));
-    const neededProfileGroups = profileGroups.filter((group) => (
+    const profileInputGroups = profileGroups.filter((group) => (
       group
       && typeof group.key === "string"
       && typeof group.label === "string"
       && Array.isArray(group.requirementCategories)
-      && group.requirementCategories.some((category) => pendingCategories.has(category))
+      && requirements
+      && group.requirementCategories.some((category) => (
+        requirements.some((item) => item && item.category === category)
+      ))
+    ));
+    const comparableCategories = new Set(profileInputGroups.flatMap(
+      (group) => group.requirementCategories
+    ));
+    const profileComparableRequirements = needsInformation.filter((item) => (
+      comparableCategories.has(item.category)
+    ));
+    const otherConfirmationRequirements = needsInformation.filter((item) => (
+      !comparableCategories.has(item.category)
     ));
 
     return Object.freeze({
@@ -48,7 +59,11 @@
         ? requirements.filter((item) => item && item.category === "materials").length
         : null,
       needsInformationCount: requirements ? needsInformation.length : null,
-      neededProfileGroups: Object.freeze(neededProfileGroups.map((group) => Object.freeze({
+      profileComparableCount: requirements ? profileComparableRequirements.length : null,
+      otherConfirmationCount: requirements ? otherConfirmationRequirements.length : null,
+      profileComparableRequirements: Object.freeze(profileComparableRequirements),
+      otherConfirmationRequirements: Object.freeze(otherConfirmationRequirements),
+      profileInputGroups: Object.freeze(profileInputGroups.map((group) => Object.freeze({
         key: group.key,
         label: group.label
       })))
