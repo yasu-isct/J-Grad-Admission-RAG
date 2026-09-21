@@ -929,6 +929,7 @@ function resetDemoSelect(select, message) {
 
 function clearDemoResults(message = "完成左侧选择后，再明确加载要求。") {
   requirementsOutput.replaceChildren();
+  targetSummary.hidden = false;
   targetSummary.textContent = message;
 }
 
@@ -1162,6 +1163,31 @@ function requirementStatusLabel(status) {
   return labels[status] || `官方状态：${status}`;
 }
 
+function profileGroupsFromSchema() {
+  return Array.from(document.querySelectorAll("[data-profile-group]"), (group) => ({
+    key: group.dataset.profileGroup,
+    label: group.dataset.profileLabel,
+    requirementCategories: (group.dataset.requirementCategories || "")
+      .split(",")
+      .filter(Boolean)
+  }));
+}
+
+function applicationOverview(payload) {
+  return globalThis.JGradOverview.buildApplicationOverview(payload, profileGroupsFromSchema());
+}
+
+function profileCta(className = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = "填写个人情况，检查我还缺什么";
+  button.addEventListener("click", () => {
+    if (baseRequirementsLoaded) activateStep(3, true);
+  });
+  return button;
+}
+
 function renderDateEvent(event) {
   const card = document.createElement("article");
   card.className = "date-event";
@@ -1208,76 +1234,238 @@ function renderDateEvent(event) {
   return card;
 }
 
+function appendRequirementEvidence(card, requirement) {
+  if (!Array.isArray(requirement.evidence) || !requirement.evidence.length) return;
+  const actions = document.createElement("div");
+  actions.className = "actions requirement-evidence-actions";
+  for (const evidence of requirement.evidence) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = requirement.evidence.length === 1
+      ? "查看官方依据"
+      : `查看官方依据 · 第 ${evidence.pages.join("、")} 页`;
+    button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
+    actions.append(button);
+  }
+  card.append(actions);
+}
+
+function renderRequirementCard(requirement, options = {}) {
+  const card = document.createElement("article");
+  card.className = `requirement-card${options.compact ? " requirement-card-compact" : ""}`;
+  card.dataset.category = requirement.category;
+  card.append(heading(4, requirement.title));
+  const status = document.createElement("span");
+  status.className = "requirement-status";
+  status.dataset.status = requirement.official_status;
+  status.textContent = requirementStatusLabel(requirement.official_status);
+  const description = document.createElement("p");
+  description.className = "requirement-description";
+  description.textContent = requirement.description;
+  card.append(status, description);
+  if (requirement.deadline) {
+    const deadline = document.createElement("p");
+    deadline.className = "deadline-callout";
+    deadline.textContent = `官方日期／截止：${requirement.deadline}`;
+    card.append(deadline);
+  }
+  if (!options.compact && requirement.reviewed_summary) {
+    const detail = document.createElement("details");
+    detail.className = "technical-disclosure";
+    const summary = document.createElement("summary");
+    summary.textContent = "查看审核日期摘要（日文）";
+    const excerpt = document.createElement("blockquote");
+    excerpt.className = "reviewed-summary";
+    excerpt.textContent = requirement.reviewed_summary;
+    detail.append(summary, excerpt);
+    card.append(detail);
+  }
+  appendRequirementEvidence(card, requirement);
+  return card;
+}
+
+function renderApplicationOverview(payload, overview) {
+  const section = document.createElement("section");
+  section.className = "application-overview";
+  section.setAttribute("aria-labelledby", "application-overview-heading");
+  const copy = document.createElement("div");
+  copy.className = "application-overview-copy";
+  const eyebrow = document.createElement("p");
+  eyebrow.className = "section-label";
+  eyebrow.textContent = "申请概览";
+  const title = heading(3, "先确认截止，再开始准备");
+  title.id = "application-overview-heading";
+  const target = document.createElement("p");
+  target.className = "overview-target";
+  target.textContent = targetLabel(payload.target);
+  copy.append(eyebrow, title, target);
+
+  const metrics = document.createElement("dl");
+  metrics.className = "overview-metrics";
+  const metricValues = [
+    ["最重要的必着截止", overview.deadlineText, "deadline"],
+    ["核心材料", overview.materialCount === null ? "暂无已审核数据" : `${overview.materialCount} 项`, "materials"],
+    ["需补充个人信息后判断", overview.needsInformationCount === null ? "暂无已审核数据" : `${overview.needsInformationCount} 项`, "pending"]
+  ];
+  for (const [label, value, kind] of metricValues) {
+    const item = document.createElement("div");
+    item.dataset.metric = kind;
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    dd.textContent = value;
+    item.append(dt, dd);
+    metrics.append(item);
+  }
+  copy.append(metrics);
+
+  const action = document.createElement("aside");
+  action.className = "overview-action";
+  const actionLabel = document.createElement("p");
+  actionLabel.textContent = "下一步";
+  const actionHint = document.createElement("p");
+  actionHint.className = "field-detail";
+  actionHint.textContent = "填写后会使用现有规则保守对照，不会保存个人资料。";
+  action.append(actionLabel, profileCta("overview-cta"), actionHint);
+  section.append(copy, action);
+  return section;
+}
+
+function renderKeyDates(requirements) {
+  const section = document.createElement("section");
+  section.className = "result-section key-dates-section";
+  section.append(heading(3, "关键时间"));
+  const intro = document.createElement("p");
+  intro.className = "section-intro";
+  intro.textContent = "“必着”表示材料必须在该时点前送达；“建议到达”只是降低延误风险的建议，不是另一个强制截止。";
+  section.append(intro);
+  const dateList = document.createElement("div");
+  dateList.className = "date-event-list";
+  for (const requirement of requirements) {
+    for (const event of Array.isArray(requirement.date_events) ? requirement.date_events : []) {
+      dateList.append(renderDateEvent(event));
+    }
+  }
+  if (!dateList.childElementCount) {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = "暂无已审核数据";
+    dateList.append(empty);
+  }
+  section.append(dateList);
+  return section;
+}
+
+function renderRequirementSection(title, entries, className) {
+  const section = document.createElement("section");
+  section.className = `result-section ${className}`;
+  section.append(heading(3, title));
+  const list = document.createElement("div");
+  list.className = "requirement-list";
+  if (entries.length) {
+    for (const requirement of entries) list.append(renderRequirementCard(requirement));
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = "暂无已审核数据";
+    list.append(empty);
+  }
+  section.append(list);
+  return section;
+}
+
+function renderPendingRequirements(entries, overview) {
+  const section = document.createElement("section");
+  section.className = "result-section pending-section";
+  const count = overview.needsInformationCount;
+  section.append(heading(3, count === null
+    ? "需要个人信息才能判断"
+    : `填写以下信息后，可以进一步判断 ${count} 项要求`));
+  const explanation = document.createElement("p");
+  explanation.className = "section-intro";
+  explanation.textContent = "这些项目目前不是“不符合”，而是资料不足。完成下一步后，系统会按现有规则重新判断。";
+  section.append(explanation);
+  const categories = document.createElement("ul");
+  categories.className = "profile-needs-list";
+  for (const group of overview.neededProfileGroups) {
+    const item = document.createElement("li");
+    item.textContent = group.label;
+    categories.append(item);
+  }
+  if (!categories.childElementCount) {
+    const item = document.createElement("li");
+    item.textContent = "暂无已审核数据";
+    categories.append(item);
+  }
+  section.append(categories);
+  if (entries.length) {
+    const details = document.createElement("details");
+    details.className = "pending-details";
+    const summary = document.createElement("summary");
+    summary.textContent = `查看待判断的 ${entries.length} 项要求`;
+    const list = document.createElement("div");
+    list.className = "requirement-list";
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true }));
+    details.append(summary, list);
+    section.append(details);
+  }
+  return section;
+}
+
 function renderRequirements(payload) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
+  targetSummary.hidden = true;
   targetSummary.textContent = targetLabel(target);
   updateTargetStepSummary(target);
   updateRequirementsStepSummary(payload);
-  const groups = [
-    ["dates", "关键日期"], ["materials", "核心提交材料"],
-    ["eligibility", "学历与资格"], ["language", "语言要求"]
-  ];
-  for (const [category, label] of groups) {
-    const entries = payload.requirements.filter((item) => item.category === category);
-    if (!entries.length) continue;
-    const section = document.createElement("section");
-    section.className = "requirement-group";
-    section.append(heading(3, label));
-    const list = document.createElement("div");
-    list.className = "requirement-list";
-    for (const requirement of entries) {
-      const card = document.createElement("article");
-      card.className = "requirement-card";
-      card.dataset.category = category;
-      card.append(heading(4, requirement.title));
-      const status = document.createElement("span");
-      status.className = "requirement-status";
-      status.dataset.status = requirement.official_status;
-      status.textContent = requirementStatusLabel(requirement.official_status);
-      const description = document.createElement("p");
-      description.className = "requirement-description";
-      description.textContent = requirement.description;
-      card.append(status, description);
-      if (category === "dates" && Array.isArray(requirement.date_events) && requirement.date_events.length) {
-        const dateList = document.createElement("div");
-        dateList.className = "date-event-list";
-        for (const event of requirement.date_events) dateList.append(renderDateEvent(event));
-        card.append(dateList);
-      }
-      if (requirement.deadline) {
-        const deadline = document.createElement("p");
-        deadline.className = "deadline-callout";
-        deadline.textContent = `官方日期／截止：${requirement.deadline}`;
-        card.append(deadline);
-      }
-      if (requirement.reviewed_summary) {
-        const officialLabel = document.createElement("p");
-        officialLabel.className = "reviewed-summary-label";
-        officialLabel.textContent = "审核日期摘要（日文）";
-        const excerpt = document.createElement("blockquote");
-        excerpt.className = "reviewed-summary";
-        excerpt.textContent = requirement.reviewed_summary;
-        card.append(officialLabel, excerpt);
-      }
-      if ((!Array.isArray(requirement.date_events) || !requirement.date_events.length) && requirement.evidence.length) {
-        const actions = document.createElement("div");
-        actions.className = "actions";
-        for (const evidence of requirement.evidence) {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "secondary";
-          button.textContent = requirement.evidence.length === 1 ? "查看官方依据" : `查看官方依据 · 第 ${evidence.pages.join("、")} 页`;
-          button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
-          actions.append(button);
-        }
-        card.append(actions);
-      }
-      list.append(card);
-    }
-    section.append(list);
-    requirementsOutput.append(section);
+  const overview = applicationOverview(payload);
+  const requirements = payload.requirements;
+  const dateRequirements = requirements.filter((item) => item.category === "dates");
+  const requiredMaterials = requirements.filter((item) => (
+    item.category === "materials" && item.official_status === "required"
+  ));
+  const pending = requirements.filter((item) => item.official_status === "needs_information");
+  const secondary = requirements.filter((item) => (
+    item.category !== "dates"
+    && !(item.category === "materials" && item.official_status === "required")
+    && item.official_status !== "needs_information"
+  ));
+
+  requirementsOutput.append(
+    renderApplicationOverview(payload, overview),
+    renderKeyDates(dateRequirements),
+    renderRequirementSection("必须准备的材料", requiredMaterials, "materials-section"),
+    renderPendingRequirements(pending, overview)
+  );
+
+  const next = document.createElement("section");
+  next.className = "result-section next-step-section";
+  const nextCopy = document.createElement("div");
+  nextCopy.append(heading(3, "下一步：对照你的个人情况"));
+  const nextText = document.createElement("p");
+  nextText.textContent = "继续到现有个人情况步骤，填写后查看还缺哪些材料或信息。";
+  nextCopy.append(nextText);
+  next.append(nextCopy, profileCta("next-step-cta"));
+  requirementsOutput.append(next);
+
+  const other = document.createElement("details");
+  other.className = "result-section other-requirements";
+  const otherSummary = document.createElement("summary");
+  otherSummary.textContent = `其他说明与已审核要求${secondary.length ? `（${secondary.length} 项）` : ""}`;
+  const otherList = document.createElement("div");
+  otherList.className = "requirement-list";
+  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement));
+  if (!secondary.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = "暂无其他已审核要求";
+    otherList.append(empty);
   }
+  other.append(otherSummary, otherList);
+  requirementsOutput.append(other);
+
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
   boundary.textContent = `审核覆盖：${payload.coverage_statement} 限制：${payload.limitation_statement}`;
