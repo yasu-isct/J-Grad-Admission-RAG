@@ -997,10 +997,10 @@ function updateRequirementsStepSummary(payload) {
 
 function updateApplicantStepSummary() {
   const categories = [
-    ["学历", ["demo-credential-basis", "demo-completion-state"].some((id) => byId(id).value)],
-    ["英语", ["demo-english-kind", "demo-english-score", "demo-english-date", "demo-english-report"].some((id) => byId(id).value)],
-    ["日语", Boolean(byId("demo-japanese-background").value)],
-    ["材料", Array.from(document.querySelectorAll("[data-material-code]")).some((select) => select.value !== "unknown")]
+    ["学历", profileGroupHasProvidedValue("education")],
+    ["英语", profileGroupHasProvidedValue("english")],
+    ["日语", profileGroupHasProvidedValue("japanese")],
+    ["材料", profileGroupHasProvidedValue("materials")]
   ];
   const provided = categories.filter(([, value]) => value).map(([label]) => label);
   const missing = categories.filter(([, value]) => !value).map(([label]) => label);
@@ -1028,6 +1028,73 @@ function updateRequirementsSubmit() {
     : missing.length
       ? `还需选择：${missing.join("、")}。`
       : "申请目标已完整，可以查看基础出愿要求。";
+}
+
+function profileValueState(control) {
+  if (!control.value) return "empty";
+  if (["unknown", "ui_unknown", "ui_not_applicable"].includes(control.value)) return "unknown";
+  return "provided";
+}
+
+function profileGroupControls(group) {
+  return Array.from(group.querySelectorAll("select, input"));
+}
+
+function profileGroupHasProvidedValue(key) {
+  const group = applicantForm.querySelector(`[data-profile-group="${key}"]`);
+  return profileGroupControls(group).some((control) => profileValueState(control) === "provided");
+}
+
+function updateProfileGroupStates() {
+  for (const group of applicantForm.querySelectorAll(".profile-group")) {
+    const values = profileGroupControls(group).map(profileValueState);
+    const state = values.every((value) => value === "provided")
+      ? "complete"
+      : values.some((value) => value === "provided")
+        ? "partial"
+        : values.some((value) => value === "unknown") ? "unknown" : "empty";
+    const labels = { complete: "已填写", partial: "已填写部分", unknown: "仍需确认", empty: "待填写" };
+    const badge = group.querySelector(".profile-group-state");
+    badge.dataset.state = state;
+    badge.textContent = labels[state];
+  }
+}
+
+function updateEnglishInputHint() {
+  const kind = byId("demo-english-kind").value;
+  const score = byId("demo-english-score").value;
+  const date = byId("demo-english-date").value;
+  const report = byId("demo-english-report").value;
+  const concreteKind = kind && !kind.startsWith("ui_");
+  const hint = byId("english-link-hint");
+  if ((score || date) && !concreteKind) {
+    hint.dataset.state = "attention";
+    hint.textContent = "已填写成绩或考试日期：服务端还需要考试类型。可先继续填写，但提交前请选类型，或清空成绩与日期。";
+  } else if (kind === "ui_not_applicable" && report === "true") {
+    hint.dataset.state = "attention";
+    hint.textContent = "你选择了未参加考试，同时标记已取得官方成绩单；请核对这两项输入。这里不判断成绩是否有效。";
+  } else if (concreteKind) {
+    hint.dataset.state = "info";
+    hint.textContent = "考试类型已记录。成绩、日期和官方成绩单可暂时留空；已填写也不代表成绩有效或学校已受理。";
+  } else {
+    hint.dataset.state = "info";
+    hint.textContent = "成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。";
+  }
+}
+
+function initializeProfileGroups() {
+  const desktop = window.matchMedia("(min-width: 761px)").matches;
+  for (const group of applicantForm.querySelectorAll(".profile-group")) {
+    group.open = desktop || group.dataset.profileGroup === "education";
+  }
+  updateProfileGroupStates();
+  updateEnglishInputHint();
+}
+
+function resetApplicantInputs() {
+  applicantForm.reset();
+  updateProfileGroupStates();
+  updateEnglishInputHint();
 }
 
 function populateDegreeSelect() {
@@ -1611,7 +1678,8 @@ function openDemoEvidence(requirement, evidence, trigger) {
 }
 
 function nullableDemoValue(id) {
-  return byId(id).value || null;
+  const value = byId(id).value;
+  return value && !value.startsWith("ui_") ? value : null;
 }
 
 function nullableDemoNumber(id) {
@@ -1621,7 +1689,7 @@ function nullableDemoNumber(id) {
 
 function nullableDemoBoolean(id) {
   const value = byId(id).value;
-  return value === "" ? null : value === "true";
+  return value === "true" ? true : value === "false" ? false : null;
 }
 
 function demoApplicantInput() {
@@ -1633,7 +1701,10 @@ function demoApplicantInput() {
     english_test_date: nullableDemoValue("demo-english-date"),
     english_official_report_available: nullableDemoBoolean("demo-english-report"),
     japanese_background: nullableDemoValue("demo-japanese-background"),
-    materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({ code: select.dataset.materialCode, preparation: select.value }))
+    materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({
+      code: select.dataset.materialCode,
+      preparation: ["available", "not_yet"].includes(select.value) ? select.value : "unknown"
+    }))
   };
 }
 
@@ -1854,6 +1925,7 @@ function handleDemoTargetChange(next) {
   baseRequirementsLoaded = false;
   invalidateComparison("申请目标已改变，请重新加载基础要求。");
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
+  resetApplicantInputs();
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
   activateStep(1);
@@ -1875,8 +1947,14 @@ reportTab.addEventListener("keydown", handleTabKey);
 targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
 applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
 applicantForm.addEventListener("input", () => {
+  updateProfileGroupStates();
+  updateEnglishInputHint();
   invalidateComparison("个人输入已改变，请重新对照。");
   if (baseRequirementsLoaded) activateStep(3);
+});
+applicantForm.addEventListener("change", () => {
+  updateProfileGroupStates();
+  updateEnglishInputHint();
 });
 comparisonRetry.addEventListener("click", submitApplicantComparison);
 readinessFilters.addEventListener("change", applyReadinessFilter);
@@ -1897,5 +1975,6 @@ drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
 
 updateFlowPresentation();
+initializeProfileGroups();
 loadCatalog();
 loadDemoCatalog();
