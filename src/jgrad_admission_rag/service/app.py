@@ -342,6 +342,12 @@ def create_app(
     def local_app_js() -> FileResponse:
         return FileResponse(_ui_asset_path("app.js"), media_type="text/javascript; charset=utf-8")
 
+    @app.get("/assets/overview.js", include_in_schema=False)
+    def local_overview_js() -> FileResponse:
+        return FileResponse(
+            _ui_asset_path("overview.js"), media_type="text/javascript; charset=utf-8"
+        )
+
     @app.api_route(
         "/documents/{document_id}/source.pdf",
         methods=["GET", "HEAD"],

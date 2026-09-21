@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>J-Grad 申请检查向导</title>
     <link rel="stylesheet" href="/assets/app.css">
+    <script src="/assets/overview.js" defer></script>
     <script src="/assets/app.js" defer></script>
   </head>
   <body>
@@ -100,7 +101,7 @@
           <p class="field-detail">只填写用于本次页面对照的信息。不会保存到浏览器或服务器；空值表示“未提供”，不会被判为不满足。</p>
           <form id="applicant-form" novalidate>
             <div class="profile-grid">
-              <fieldset>
+              <fieldset data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility">
                 <legend>学历</legend>
                 <label for="demo-credential-basis">最接近的学历路径</label>
                 <select id="demo-credential-basis">
@@ -113,7 +114,7 @@
                 <label for="demo-completion-state">毕业状态</label>
                 <select id="demo-completion-state"><option value="">未提供</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
               </fieldset>
-              <fieldset>
+              <fieldset data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">
                 <legend>英语</legend>
                 <label for="demo-english-kind">考试类型</label>
                 <select id="demo-english-kind"><option value="">未提供</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="other">其他</option></select>
@@ -121,13 +122,13 @@
                 <label for="demo-english-date">考试日期</label><input id="demo-english-date" type="date">
                 <label for="demo-english-report">是否有官方成绩单</label><select id="demo-english-report"><option value="">未提供</option><option value="true">有</option><option value="false">没有／尚未取得</option></select>
               </fieldset>
-              <fieldset>
+              <fieldset data-profile-group="japanese" data-profile-label="日语学习或证明情况" data-requirement-categories="language">
                 <legend>日语</legend>
                 <label for="demo-japanese-background">学习或证明情况</label>
                 <select id="demo-japanese-background"><option value="">未提供</option><option value="studied">学过日语</option><option value="certificate_available">有日语能力证明</option><option value="not_studied">未学过／暂无证明</option></select>
                 <p class="field-detail">这里只记录，不会据此判断语言要求已满足。</p>
               </fieldset>
-              <fieldset class="materials-fieldset">
+              <fieldset class="materials-fieldset" data-profile-group="materials" data-profile-label="已有材料的准备状态" data-requirement-categories="materials">
                 <legend>已有材料</legend>
                 <div class="material-inputs">
                   <label>宛名标签<select data-material-code="address_label"><option value="unknown">未提供／不确定</option><option value="available">已有</option><option value="not_yet">尚未准备</option></select></label>
