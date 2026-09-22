@@ -208,6 +208,34 @@ def _browser_flow(browser, base_url: str, name: str, width: int) -> dict:
         review_screenshot = SCREENSHOTS / f"ux05-{name}-review-step4.png"
         page.locator("#readiness-panel").screenshot(path=review_screenshot)
 
+        # No selectable target in this fixed PDF currently returns not_covered. Exercise
+        # that display branch with the same real response shape, without claiming it came
+        # from the HTTP service or changing any rule/API response.
+        page.evaluate(
+            """payload => {
+              const displayFixture = structuredClone(payload);
+              const item = displayFixture.items.find(entry => entry.comparison_status === 'needs_review');
+              item.comparison_status = 'not_covered';
+              item.next_action = '查看官方依据，并向学校人工确认当前未覆盖的条件。';
+              renderComparison(displayFixture);
+            }""",
+            review,
+        )
+        uncovered_card = page.locator(
+            '.comparison-card:has(.requirement-status[data-status="not_covered"])'
+        ).first
+        assert "当前未覆盖" in uncovered_card.inner_text()
+        uncovered_card.locator(".personal-check input").check()
+        assert "当前未覆盖" in uncovered_card.locator(".requirement-status").inner_text()
+        assert "已满足" not in uncovered_card.inner_text()
+        assert page.locator("#count-action").inner_text() == str(
+            review["counts"]["action_required"]
+        )
+        assert page.locator("#count-review").inner_text() == str(
+            review["counts"]["review_required"]
+        )
+        page.evaluate("payload => renderComparison(payload)", review)
+
         page.locator("#edit-target").click()
         expect(page.locator("#demo-heading")).to_be_focused()
         assert page.locator(".personal-check input:checked").count() == 0
@@ -236,6 +264,7 @@ def _browser_flow(browser, base_url: str, name: str, width: int) -> dict:
             "check_uncheck_isolated_from_system_counts": True,
             "edit_resubmit_refresh_reset": True,
             "keyboard_filter_focus_and_evidence": True,
+            "supplemental_not_covered_display_fixture": True,
             "step_four_pdf_link": step_four_pdf,
             "horizontal_overflow": False,
             "external_requests": [],
