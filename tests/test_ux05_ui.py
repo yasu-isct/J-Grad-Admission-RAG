@@ -22,6 +22,9 @@ def test_step_four_separates_system_counts_from_personal_progress() -> None:
     assert "item.evidence" in js
     assert "item.limitation" in js
     assert "我的处理进度：已标记处理（仅个人记录）" in js
+    assert "readinessFilters.querySelector('[value=\"all\"]').checked = true" in js
+    assert "applyReadinessFilter();" in js
+    assert "target.focus({ preventScroll: true })" in js
     assert (
         "学校已受理"
         not in js.split("function renderComparison(payload)", 1)[1].split(

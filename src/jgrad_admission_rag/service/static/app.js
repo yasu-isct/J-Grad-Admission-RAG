@@ -1774,6 +1774,16 @@ function renderPriorityActions(entries) {
     const link = document.createElement("a");
     link.href = `#${cardId}`;
     link.textContent = item.title;
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      readinessFilters.querySelector('[value="all"]').checked = true;
+      applyReadinessFilter();
+      const target = byId(cardId);
+      if (!target) return;
+      window.history.replaceState(null, "", `#${cardId}`);
+      target.scrollIntoView({ block: "start", behavior: "auto" });
+      target.focus({ preventScroll: true });
+    });
     const action = document.createElement("span");
     action.textContent = `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
     row.append(link, action);
@@ -1816,6 +1826,7 @@ function renderComparison(payload) {
       const card = document.createElement("article");
       card.className = "requirement-card comparison-card";
       card.id = cardId;
+      card.tabIndex = -1;
       card.dataset.actionGroup = item.action_group;
       const category = document.createElement("p");
       category.className = "comparison-category";

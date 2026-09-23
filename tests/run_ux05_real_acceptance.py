@@ -124,10 +124,18 @@ def _browser_flow(browser, base_url: str, name: str, width: int) -> dict:
         checkbox.check()
 
         priority_link = page.locator("#priority-actions a").first
+        priority_target = priority_link.get_attribute("href")
+        page.locator('#readiness-filters input[value="recorded"]').check()
+        expect(page.locator(priority_target)).to_be_hidden()
         priority_link.focus()
         page.keyboard.press("Enter")
         assert re.fullmatch(
             r"#comparison-(action_required|review_required)-\d+", page.evaluate("location.hash")
+        )
+        assert page.locator('#readiness-filters input[value="all"]').is_checked()
+        expect(page.locator(priority_target)).to_be_visible()
+        assert page.locator(priority_target).evaluate(
+            "element => document.activeElement === element"
         )
         for group, field in (
             ("action_required", "action_required"),
