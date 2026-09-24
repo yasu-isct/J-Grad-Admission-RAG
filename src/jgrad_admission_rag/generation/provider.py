@@ -67,6 +67,7 @@ class GenerationProvider(Protocol):
 def generate_checked(provider: GenerationProvider, request: GenerationRequest) -> GenerationResult:
     """Validate both sides of a provider call and reject all unbound references."""
 
+    hydrated_output: GenerationDraft | None
     try:
         checked_request = GenerationRequest.model_validate(request.model_dump(mode="json"))
     except Exception:
@@ -175,6 +176,11 @@ def generate_checked(provider: GenerationProvider, request: GenerationRequest) -
     except Exception:
         # Hydrated text contains trusted evidence and applicant values. Keep validation
         # representations, including oversized aggregate inputs, behind the safe boundary.
+        hydrated_output = None
+
+    # Raise after leaving the handler so the sensitive validation exception is not retained in
+    # either __context__ or __cause__ on the public error object.
+    if hydrated_output is None:
         raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
 
     return GenerationResult(

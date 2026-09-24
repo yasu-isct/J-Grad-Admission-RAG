@@ -507,6 +507,48 @@ def test_hydration_size_failure_does_not_leak_applicant_values() -> None:
     assert caught.value.code is GenerationErrorCode.MALFORMED_OUTPUT
     assert secret not in str(caught.value)
     assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+
+
+def test_hydration_size_failure_does_not_leak_evidence_values() -> None:
+    secret = "PRIVATE_EVIDENCE_SECRET"
+    evidence = tuple(
+        GenerationEvidence(
+            evidence_id=f"evidence:{index + 1:04d}",
+            role=EvidenceRole.PRIMARY,
+            text=("x" * (20_000 - len(secret)) + secret if index == 9 else "x" * 20_000),
+        )
+        for index in range(10)
+    )
+    claims = tuple(
+        GeneratedClaim(
+            claim_id=f"claim:{index + 1:04d}",
+            kind=ClaimKind.OFFICIAL_FACT,
+            text=f"draft-{index}",
+            evidence_ids=(item.evidence_id,),
+        )
+        for index, item in enumerate(evidence)
+    )
+    request = GenerationRequest(
+        request_id="request:large-private-evidence",
+        question="summarize",
+        target=GenerationTarget(application_label="target"),
+        evidence=evidence,
+    )
+    draft = GenerationDraft(
+        answer="\n".join(claim.text for claim in claims),
+        claims=claims,
+        needs_review=False,
+        refused=False,
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), request)
+
+    assert caught.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+    assert secret not in str(caught.value)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
 
 
 class _FakeResponses:
