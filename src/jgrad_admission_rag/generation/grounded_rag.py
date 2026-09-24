@@ -76,6 +76,7 @@ class GroundedRagTarget(GroundedModel):
     document_id: str
     application_label: str = Field(min_length=1, max_length=500)
     scope_targets: tuple[str, ...] = ()
+    parent_college: str | None = Field(default=None, max_length=500)
 
     @field_validator("document_id")
     @classmethod
@@ -99,10 +100,18 @@ class GroundedRagTarget(GroundedModel):
             raise ValueError("scope targets must be sorted, unique, non-empty, and trimmed")
         return values
 
+    @field_validator("parent_college")
+    @classmethod
+    def parent_college_must_be_trimmed(cls, value: str | None) -> str | None:
+        if value is not None and (not value or value != value.strip()):
+            raise ValueError("parent college must be None or a non-empty trimmed string")
+        return value
+
     def generation_target(self) -> GenerationTarget:
         return GenerationTarget(
             application_label=self.application_label,
             scope_targets=self.scope_targets,
+            parent_college=self.parent_college,
         )
 
 
@@ -456,6 +465,15 @@ def _prepare_request(
         raise ValueError("selected target does not match retrieval scope preference")
     if target.scope_targets and not (filtered_scopes or preferred_scopes):
         raise ValueError("selected target is absent from retrieval scope")
+    selected_colleges = (target.parent_college,) if target.parent_college is not None else ()
+    filtered_colleges = pack.request.metadata_filter.parent_colleges
+    preferred_colleges = pack.request.scope_preference.preferred_parent_colleges
+    if filtered_colleges and filtered_colleges != selected_colleges:
+        raise ValueError("selected parent college does not match retrieval filter")
+    if preferred_colleges and preferred_colleges != selected_colleges:
+        raise ValueError("selected parent college does not match retrieval preference")
+    if selected_colleges and not (filtered_colleges or preferred_colleges):
+        raise ValueError("selected parent college is absent from retrieval scope")
     if (
         answer.document_id != pack.runtime.document_id
         or answer.source_kb_sha256 != pack.runtime.source_kb_sha256
@@ -501,6 +519,12 @@ def _prepare_request(
         )
     if set(answer.source_rule_ids) != {finding.rule_id for finding in answer.rule_findings}:
         raise ValueError("not every reviewed rule has citable evidence")
+    if any(
+        finding.original_status is not ApplicabilityStatus.NOT_APPLICABLE
+        and not _finding_scope_matches_target(finding, target)
+        for finding in answer.rule_findings
+    ):
+        raise ValueError("reviewed finding scope does not match selected target")
 
     rule_generation_findings = tuple(
         _generation_finding(finding, by_fact_id, missing_by_rule[finding.rule_id])
@@ -571,6 +595,22 @@ def _binding(
         text=record.text,
         scope_label=" / ".join(record.section_path),
     )
+
+
+def _finding_scope_matches_target(finding: RuleFinding, target: GroundedRagTarget) -> bool:
+    scope = finding.scope
+    if scope.scope_type == "global":
+        return True
+    if scope.scope_type == "college":
+        expected_colleges = set(scope.scope_targets)
+        if scope.parent_college is not None:
+            expected_colleges.add(scope.parent_college)
+        return target.parent_college in expected_colleges
+    if scope.scope_targets and not set(scope.scope_targets).intersection(target.scope_targets):
+        return False
+    if scope.parent_college is not None and scope.parent_college != target.parent_college:
+        return False
+    return True
 
 
 def _generation_finding(

@@ -20,8 +20,11 @@ to one EvidencePack record and, after generation, reconstitutes document ID, Fac
 pages, PDF SHA, KB SHA, and evidence role.
 
 The orchestration accepts only one source-consistent EvidencePack and CitedAnswer. The selected
-target must match retrieval scope. Reviewed citations must already close against pack evidence, and
-the complete reviewed state is copied into the GroundedAnswer independently of model output.
+document, scope targets, and parent college must match retrieval scope. Confirmed or pending
+targeted findings must also match that target; an explicitly `not_applicable` finding retains its
+reviewed non-matching scope as evidence of non-applicability. Reviewed citations must already close
+against pack evidence, and the complete reviewed state is copied into the GroundedAnswer
+independently of model output.
 
 Citation or state failure rejects the entire generated answer. We do not delete isolated claims or
 fall back to uncited prose because either policy could change the meaning of the remaining text and
@@ -47,4 +50,3 @@ applicant statements remain visibly non-authoritative. Cross-document/year/hash/
 provider-authored authority fail closed. The output is more constrained than free-form RAG and may
 abstain more often, but downstream API/UI work receives a self-auditing contract instead of prose
 that merely looks cited.
-

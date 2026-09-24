@@ -17,11 +17,17 @@ EvidencePack + CitedAnswer + explicit target/applicant facts
 
 The orchestrator revalidates every input before provider activity. The EvidencePack query becomes
 the generation question, so a caller cannot substitute a different question after retrieval. The
-explicit generation target must match the pack's scope preference and any hard scope-target filter.
-Its authoritative document ID must equal the pack runtime document, independently of its display
-label. The reviewed answer must match the pack's document ID, KB SHA, and PDF SHA. Every reviewed
+explicit generation target must match the pack's scope-target and parent-college preferences and
+any corresponding hard filters. Its authoritative document ID must equal the pack runtime document,
+independently of its display label. The reviewed answer must match the pack's document ID, KB SHA,
+and PDF SHA. Every reviewed
 citation must then match one pack record by document ID, Fact ID, exact sorted source pages, and
 primary/reference role. Every reviewed source rule must still have a citable finding.
+
+Global findings remain valid for every selected target. A confirmed, pending, active, or overridden
+targeted finding must match the selected scope and parent college before provider activity. A
+reviewed `not_applicable` finding may intentionally retain its different source scope; its explicit
+status and scope are preserved rather than rewritten as a matching rule.
 
 An empty pack or a reviewed rule without official evidence fails as insufficient/mismatched
 evidence before the provider is called. Retrieval scores remain diagnostics and never become rule

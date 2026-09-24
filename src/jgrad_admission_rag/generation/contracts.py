@@ -117,6 +117,7 @@ class ApplicantFact(GenerationModel):
 class GenerationTarget(GenerationModel):
     application_label: str = Field(min_length=1, max_length=500)
     scope_targets: tuple[str, ...] = ()
+    parent_college: str | None = Field(default=None, max_length=500)
 
     @field_validator("application_label")
     @classmethod
@@ -130,6 +131,13 @@ class GenerationTarget(GenerationModel):
     def scopes_must_be_canonical(cls, values: tuple[str, ...]) -> tuple[str, ...]:
         _validate_canonical_strings(values, "scope_targets")
         return values
+
+    @field_validator("parent_college")
+    @classmethod
+    def parent_college_must_be_trimmed(cls, value: str | None) -> str | None:
+        if value is not None and (not value or value != value.strip()):
+            raise ValueError("parent_college must be None or a non-empty trimmed string")
+        return value
 
 
 class GenerationRuleFinding(GenerationModel):

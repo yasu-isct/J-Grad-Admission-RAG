@@ -56,6 +56,19 @@ RULE_ID = "rule:one"
 FINDING_ID = f"finding:{RULE_ID}"
 
 
+class _RecordingDraftProvider:
+    identity = GenerationProviderIdentity(provider="recording", model="recording")
+
+    def __init__(self, draft: GenerationDraft) -> None:
+        self.draft = draft
+        self.calls = 0
+
+    def generate(self, request: object) -> GenerationDraft:
+        del request
+        self.calls += 1
+        return self.draft
+
+
 def _runtime() -> EvidenceRuntime:
     return EvidenceRuntime(
         document_id=DOCUMENT_ID,
@@ -185,12 +198,30 @@ def _pack(*, empty: bool = False) -> EvidencePack:
     )
 
 
+def _scoped_pack(
+    *, scope_target: str | None = None, parent_college: str | None = None
+) -> EvidencePack:
+    payload = _pack().model_dump(mode="json")
+    if scope_target is not None:
+        payload["request"]["metadata_filter"]["scope_targets"] = [scope_target]
+    if parent_college is not None:
+        payload["request"]["metadata_filter"]["parent_colleges"] = [parent_college]
+    scope_type = "program" if scope_target is not None else "college"
+    for collection in ("primary_evidence", "attached_reference_evidence"):
+        for record in payload[collection]:
+            record["scope_type"] = scope_type
+            record["scope_targets"] = [scope_target] if scope_target is not None else []
+            record["parent_college"] = parent_college
+    return EvidencePack.model_validate(payload)
+
+
 def _cited_answer(
     *,
     status: ApplicabilityStatus = ApplicabilityStatus.CONFIRMED,
     document_id: str = DOCUMENT_ID,
     primary_role: ReviewedEvidenceRole = ReviewedEvidenceRole.PRIMARY,
     primary_fact_id: str = "fact:primary",
+    scope: RuleScope | None = None,
 ) -> CitedAnswer:
     disposition = {
         ApplicabilityStatus.CONFIRMED: ResolutionDisposition.ACTIVE,
@@ -224,7 +255,7 @@ def _cited_answer(
         finding_id=FINDING_ID,
         rule_id=RULE_ID,
         subject_key="eligibility",
-        scope=RuleScope(scope_type="global"),
+        scope=scope or RuleScope(scope_type="global"),
         original_status=status,
         disposition=disposition,
         source_applicability_step_id=f"applicability:{RULE_ID}",
@@ -386,11 +417,13 @@ def _run(
     *,
     pack: EvidencePack | None = None,
     answer: CitedAnswer | None = None,
+    target: GroundedRagTarget | None = None,
+    provider: object | None = None,
 ):
     return run_grounded_rag(
-        DeterministicFakeGenerationProvider(draft),
+        provider or DeterministicFakeGenerationProvider(draft),
         request_id="request:one",
-        target=GroundedRagTarget(document_id=DOCUMENT_ID, application_label="target"),
+        target=target or GroundedRagTarget(document_id=DOCUMENT_ID, application_label="target"),
         applicant_facts=(ApplicantFact(field_path="profile.status", value="synthetic"),),
         evidence_pack=pack or _pack(),
         cited_answer=answer or _cited_answer(),
@@ -486,6 +519,76 @@ def test_orchestrator_rejects_target_mismatch_before_provider_call(
             cited_answer=_cited_answer(),
         )
     assert caught.value.code is GroundedRagErrorCode.EVIDENCE_MISMATCH
+
+
+def test_orchestrator_rejects_parent_college_mismatch_before_provider_call() -> None:
+    pack = _scoped_pack(parent_college="Foreign College")
+    provider = _RecordingDraftProvider(_draft())
+    with pytest.raises(GroundedRagError) as caught:
+        _run(
+            pack=pack,
+            provider=provider,
+            target=GroundedRagTarget(
+                document_id=DOCUMENT_ID,
+                application_label="target",
+                parent_college="Selected College",
+            ),
+        )
+    assert caught.value.code is GroundedRagErrorCode.EVIDENCE_MISMATCH
+    assert provider.calls == 0
+
+
+def test_orchestrator_accepts_matching_parent_college_and_reviewed_scope() -> None:
+    college = "Selected College"
+    result = _run(
+        _draft(),
+        pack=_scoped_pack(parent_college=college),
+        answer=_cited_answer(scope=RuleScope(scope_type="college", scope_targets=(college,))),
+        target=GroundedRagTarget(
+            document_id=DOCUMENT_ID,
+            application_label="target",
+            parent_college=college,
+        ),
+    )
+    assert result.reviewed_state.rule_findings[0].scope.scope_targets == (college,)
+
+
+def test_orchestrator_rejects_confirmed_finding_for_different_program() -> None:
+    pack = _scoped_pack(scope_target="program:B")
+    target = GroundedRagTarget(
+        document_id=DOCUMENT_ID,
+        application_label="target",
+        scope_targets=("program:B",),
+    )
+    wrong_scope = RuleScope(scope_type="program", scope_targets=("program:A",))
+    provider = _RecordingDraftProvider(_draft())
+    with pytest.raises(GroundedRagError) as caught:
+        _run(
+            pack=pack,
+            answer=_cited_answer(scope=wrong_scope),
+            target=target,
+            provider=provider,
+        )
+    assert caught.value.code is GroundedRagErrorCode.EVIDENCE_MISMATCH
+    assert provider.calls == 0
+
+
+def test_orchestrator_preserves_explicit_not_applicable_scope_mismatch() -> None:
+    pack = _scoped_pack(scope_target="program:B")
+    target = GroundedRagTarget(
+        document_id=DOCUMENT_ID,
+        application_label="target",
+        scope_targets=("program:B",),
+    )
+    other_scope = RuleScope(scope_type="program", scope_targets=("program:A",))
+    result = _run(
+        _draft(),
+        pack=pack,
+        answer=_cited_answer(status=ApplicabilityStatus.NOT_APPLICABLE, scope=other_scope),
+        target=target,
+    )
+    assert "original_status=not_applicable" in result.claims[1].text
+    assert "scope_targets=program:A" in result.claims[1].text
 
 
 def test_orchestrator_rejects_unknown_evidence_and_missing_finding() -> None:
