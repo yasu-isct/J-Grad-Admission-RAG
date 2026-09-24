@@ -473,6 +473,7 @@ src/jgrad_admission_rag/
   schemas/      Durable JSON contracts such as DocumentKnowledgeBase
   retrieval/    Embedding providers, local vector indexes, and future retrieval services
   reasoning/    Applicant/query contracts, reviewed applicability rules, later reasoning
+  generation/   Provider-neutral structured drafts and optional generation adapters
   cli/          Command-line entry points
 docs/           Architecture and migration notes
 tests/          Focused unit tests

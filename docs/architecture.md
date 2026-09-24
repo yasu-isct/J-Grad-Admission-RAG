@@ -290,10 +290,11 @@ four-step Demo with official text and page-linked citations.
 This is retrieval-and-reasoning complete and RAG-ready, but it is not yet a complete LLM-generated
 RAG path. The packaged Demo defaults to the non-semantic `deterministic-fake` provider for offline
 repeatability. M9-01 adds an explicit cache-only pinned BGE-M3 Demo selection on the same existing
-hybrid retrieval path; startup displays the audited embedding identity and semantic status. Later M9
-slices add a replaceable Generation provider, structured grounded output, and deterministic citation
-validation. Until those slices pass their gates, current answer prose remains deterministic and
-arbitrary natural-language questions are not supported.
+hybrid retrieval path; startup displays the audited embedding identity and semantic status. M9-02
+adds a replaceable Generation provider, opaque evidence references, strict structured drafts, a
+deterministic offline fake, and an optional bounded OpenAI Responses adapter. M9-03 will add
+deterministic citation binding, validation, and hydration. Until those later gates pass, current
+Demo answer prose remains deterministic and arbitrary natural-language questions are not supported.
 
 ## Main Boundaries
 

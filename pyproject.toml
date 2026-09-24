@@ -29,6 +29,9 @@ service = [
 embedding = [
     "sentence-transformers>=3.0.0",
 ]
+generation = [
+    "openai>=1.68.0,<3",
+]
 
 [project.scripts]
 jgrad-build-kb = "jgrad_admission_rag.cli.build_kb:main"
