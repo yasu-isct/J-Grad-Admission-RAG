@@ -6,7 +6,7 @@
   "expected_kb_schema_version": "0.6",
   "fact_content_sha256": "43224956463a7daa6e3479a232fcb1bdc813c3ea0340b96faa1b3d9e9d0ac5fc",
   "fact_structure_sha256": "201f5f902a61c727f2160e5025e59f3602317f00d8f868c2c8ebb48b42f9ae62",
-  "language": "ja",
+  "language": "ja+zh",
   "annotation_policy_version": "1.0",
   "queries": [
     {
@@ -1546,6 +1546,98 @@
         }
       ],
       "annotation_note": "附録2が利用可能なクレジットカードとネットバンキングを直接案内する。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0035",
+      "query": "网上申请什么时候开放，纸质材料最晚必须在什么时候送达学校？",
+      "query_language": "zh",
+      "category": "application_dates",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00000",
+        "fact:00006",
+        "fact:00099",
+        "fact:00100",
+        "fact:00101",
+        "fact:00102"
+      ],
+      "gold_evidence": [
+        {"fact_id": "fact:00000", "source_pages": [2], "scope_type": "unknown", "scope_targets": []},
+        {"fact_id": "fact:00006", "source_pages": [2], "scope_type": "unknown", "scope_targets": []},
+        {"fact_id": "fact:00099", "source_pages": [9], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00100", "source_pages": [9], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00101", "source_pages": [9], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00102", "source_pages": [9], "scope_type": "global", "scope_targets": []}
+      ],
+      "annotation_note": "中文跨语言查询；沿用经审核的 rq:0001 日程证据集合。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": false,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0036",
+      "query": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+      "query_language": "zh",
+      "category": "language_tests",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00107",
+        "fact:00109"
+      ],
+      "gold_evidence": [
+        {"fact_id": "fact:00107", "source_pages": [11], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00109", "source_pages": [11], "scope_type": "global", "scope_targets": []}
+      ],
+      "annotation_note": "中文跨语言查询；共同提交规则与 TOEFL 有效类型、日期及格式缺一不可。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": false
+    },
+    {
+      "query_id": "rq:0037",
+      "query": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+      "query_language": "zh",
+      "category": "eligibility",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00059",
+        "fact:00062",
+        "fact:00072",
+        "fact:00075"
+      ],
+      "gold_evidence": [
+        {"fact_id": "fact:00059", "source_pages": [7], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00062", "source_pages": [7], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00072", "source_pages": [7], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00075", "source_pages": [7], "scope_type": "global", "scope_targets": []}
+      ],
+      "annotation_note": "中文跨语言查询；沿用经审核的 rq:0012 海外大学资格及引用展开证据。",
+      "scope_sensitive": false,
+      "requires_multiple_clauses": true,
+      "requires_reference_expansion": true
+    },
+    {
+      "query_id": "rq:0038",
+      "query": "所有申请人共同需要提交哪些申请材料？",
+      "query_language": "zh",
+      "category": "documents",
+      "query_style": "paraphrase",
+      "relevant_fact_ids": [
+        "fact:00103",
+        "fact:00104",
+        "fact:00105",
+        "fact:00106"
+      ],
+      "gold_evidence": [
+        {"fact_id": "fact:00103", "source_pages": [10], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00104", "source_pages": [10], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00105", "source_pages": [10], "scope_type": "global", "scope_targets": []},
+        {"fact_id": "fact:00106", "source_pages": [10], "scope_type": "global", "scope_targets": []}
+      ],
+      "annotation_note": "中文跨语言查询；沿用经审核的 rq:0005 全体申请人共同材料证据。",
       "scope_sensitive": false,
       "requires_multiple_clauses": false,
       "requires_reference_expansion": false

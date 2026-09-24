@@ -424,7 +424,7 @@ def test_evaluation_benchmark_loader_reads_one_validated_snapshot(
 
     assert reads == 1
     assert loaded.benchmark_id == "isct-master-retrieval-v1"
-    assert len(loaded.queries) == 34
+    assert len(loaded.queries) == 38
 
 
 def test_evaluation_benchmark_loader_rejects_missing_and_malformed_paths(tmp_path: Path) -> None:

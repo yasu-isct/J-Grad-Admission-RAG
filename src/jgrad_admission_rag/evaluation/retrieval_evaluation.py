@@ -13,12 +13,19 @@ from ..retrieval.local_index import LocalVectorIndex
 from ..schemas.document_kb import DocumentKnowledgeBase
 from ..schemas.evidence_pack import EvidencePack, EvidenceRuntime
 from ..schemas.index import derive_index_payloads
-from .retrieval_queries import QueryCategory, QueryStyle, RetrievalBenchmark, RetrievalQuery
+from .retrieval_queries import (
+    QueryCategory,
+    QueryLanguage,
+    QueryStyle,
+    RetrievalBenchmark,
+    RetrievalQuery,
+)
 
 RETRIEVAL_EVALUATION_SCHEMA_VERSION = "1.0"
 RETRIEVAL_METRIC_VERSION = "retrieval-metrics-v1"
 EVALUATED_K_VALUES = (1, 3, 5, 10)
 BREAKDOWN_DIMENSIONS = (
+    "query_language",
     "category",
     "query_style",
     "scope_sensitive",
@@ -190,6 +197,7 @@ class RankedFact(_StrictModel):
 
 class QueryEvaluation(_StrictModel):
     query_id: str
+    query_language: QueryLanguage = "ja"
     category: QueryCategory
     query_style: QueryStyle
     scope_sensitive: bool
@@ -284,6 +292,7 @@ class MetricSummary(_StrictModel):
 
 class Breakdown(_StrictModel):
     dimension: Literal[
+        "query_language",
         "category",
         "query_style",
         "scope_sensitive",
@@ -588,6 +597,7 @@ def _evaluate_query(query: RetrievalQuery, pack: EvidencePack) -> QueryEvaluatio
     )
     return QueryEvaluation(
         query_id=query.query_id,
+        query_language=query.query_language,
         category=query.category,
         query_style=query.query_style,
         scope_sensitive=query.scope_sensitive,
@@ -665,7 +675,13 @@ def _summary(queries: Sequence[QueryEvaluation]) -> MetricSummary:
 
 def _breakdowns(queries: Sequence[QueryEvaluation]) -> tuple[Breakdown, ...]:
     values: list[Breakdown] = []
-    for dimension in BREAKDOWN_DIMENSIONS:
+    languages = {query.query_language for query in queries}
+    dimensions = (
+        BREAKDOWN_DIMENSIONS
+        if languages != {"ja"}
+        else tuple(item for item in BREAKDOWN_DIMENSIONS if item != "query_language")
+    )
+    for dimension in dimensions:
         groups: defaultdict[str, list[QueryEvaluation]] = defaultdict(list)
         for query in queries:
             groups[_group_value(query, dimension)].append(query)
@@ -681,6 +697,8 @@ def _breakdowns(queries: Sequence[QueryEvaluation]) -> tuple[Breakdown, ...]:
 
 
 def _group_value(query: QueryEvaluation, dimension: str) -> str:
+    if dimension == "query_language":
+        return query.query_language
     if dimension == "category":
         return query.category
     if dimension == "query_style":

@@ -346,8 +346,10 @@ but are never quality-eligible. See
 
 The checked-in semantic gate verifies the reviewed RET-08 baseline without loading a model, KB, or
 vector index. It binds the compact report, frozen benchmark, BGE-M3 identity, retrieval metrics,
-and signed retrieval-affecting source set. It is the CI guard for retrieval changes, not a replacement
-for a new semantic evaluation when the benchmark or intended behavior changes:
+and signed retrieval-affecting source set. The report includes 34 Japanese and four Chinese queries;
+the accepted quality floors remain explicitly scoped to Japanese while the Chinese cross-language
+slice is recorded separately. It is the CI guard for retrieval changes, not a replacement for a new
+semantic evaluation when the benchmark or intended behavior changes:
 
 ```powershell
 jgrad-check-retrieval-gate `

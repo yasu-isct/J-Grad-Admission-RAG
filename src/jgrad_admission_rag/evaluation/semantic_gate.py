@@ -10,6 +10,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 from .retrieval_evaluation import (
     RetrievalEvaluationReport,
+    _breakdowns,
+    _summary,
     canonical_retrieval_evaluation_bytes,
 )
 
@@ -128,6 +130,7 @@ class SemanticGatePolicy(_StrictModel):
     schema_version: Literal["1.0"] = SEMANTIC_GATE_POLICY_SCHEMA_VERSION
     gate_version: Literal["semantic-retrieval-gate-v1"] = SEMANTIC_GATE_VERSION
     baseline: BaselineBinding
+    quality_query_language: Literal["ja"] = "ja"
     global_floors: MetricFloors
     count_caps: CountCaps
     weak_slice_floors: tuple[SliceFloor, ...]
@@ -433,12 +436,17 @@ def evaluate_semantic_gate(
         baseline.benchmark_sha256,
     )
 
-    overall = report.aggregates.overall
+    quality_queries = tuple(
+        query for query in report.queries if query.query_language == policy.quality_query_language
+    )
+    if not quality_queries:
+        raise SemanticGateInputError("quality language cohort is missing")
+    overall = _summary(quality_queries)
     for field, threshold in policy.global_floors.model_dump(mode="python").items():
         observed = overall.mrr if field == "mrr" else getattr(overall.recall, field)
         _at_least(checks, f"global.{field}", "overall", observed, threshold)
-    missing_gold = sum(len(query.missing_gold.at_10) for query in report.queries)
-    partial_queries = sum(query.recall.recall_at_10 < 1.0 for query in report.queries)
+    missing_gold = sum(len(query.missing_gold.at_10) for query in quality_queries)
+    partial_queries = sum(query.recall.recall_at_10 < 1.0 for query in quality_queries)
     _at_most(
         checks,
         "count.zero_hit_queries",
@@ -462,7 +470,7 @@ def evaluate_semantic_gate(
     )
 
     summaries = {
-        (item.dimension, item.group): item.summary for item in report.aggregates.breakdowns
+        (item.dimension, item.group): item.summary for item in _breakdowns(quality_queries)
     }
     for slice_floor in policy.weak_slice_floors:
         summary = summaries.get((slice_floor.dimension, slice_floor.group))

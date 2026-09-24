@@ -34,8 +34,8 @@ primary Facts. The report computes:
 - `Recall@k = |Gq intersect Rk(q)| / |Gq|` for `k` in `1, 3, 5, 10`.
 - Reciprocal rank is `1 / r`, where `r` is the first relevant primary rank, or zero for no hit.
 - Overall Recall@K and MRR are arithmetic macro averages over queries.
-- Breakdowns use the same macro calculation for category, query style, scope sensitivity,
-  multiple-clause need, and reference-expansion need.
+- Mixed-language benchmarks add a query-language breakdown alongside category, query style, scope
+  sensitivity, multiple-clause need, and reference-expansion need.
 
 Metrics use ranked primary Facts only. A gold Fact reached solely through an attached reference is
 listed in `reference_only_gold_fact_ids` when the benchmark marks the query as requiring reference
@@ -50,7 +50,9 @@ future comparison or gate must use the stored values rather than rounded text.
 `deterministic-fake` embeddings test deterministic plumbing only. Their reports always contain
 `semantic_evaluation=false`, `quality_eligible=false`, and `gate_status=not_evaluated`. This version
 defines no acceptance threshold and does not add a CI quality gate. A separately accepted semantic
-baseline and threshold policy are required before retrieval quality can gate changes.
+baseline and threshold policy are required before retrieval quality can gate changes. The current
+semantic policy gates the original Japanese cohort and records the Chinese cross-language cohort
+separately, so adding exploratory languages cannot silently relax an accepted quality floor.
 
 ## Report Safety
 

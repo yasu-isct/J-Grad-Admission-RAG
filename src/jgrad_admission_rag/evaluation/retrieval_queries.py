@@ -33,11 +33,13 @@ QueryCategory = Literal[
     "department_requirements",
 ]
 QueryStyle = Literal["paraphrase", "exact_term", "identifier"]
+QueryLanguage = Literal["ja", "zh"]
 
 _FACT_ID_RE = re.compile(r"fact:\d{5}\Z")
 _QUERY_ID_RE = re.compile(r"rq:\d{4}\Z")
 _SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 _JAPANESE_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
+_CJK_RE = re.compile(r"[\u3400-\u9fff]")
 _TRIVIAL_QUERY_CHAR_RE = re.compile(r"[^0-9A-Za-z\u3040-\u30ff\u3400-\u9fff]+")
 
 
@@ -80,6 +82,7 @@ class GoldEvidence(_StrictModel):
 class RetrievalQuery(_StrictModel):
     query_id: str
     query: str
+    query_language: QueryLanguage = "ja"
     category: QueryCategory
     query_style: QueryStyle
     relevant_fact_ids: list[str]
@@ -98,12 +101,17 @@ class RetrievalQuery(_StrictModel):
 
     @field_validator("query")
     @classmethod
-    def query_must_be_natural_japanese(cls, value: str) -> str:
+    def query_must_be_natural_text(cls, value: str) -> str:
         if not value or value != value.strip():
             raise ValueError("query must be a non-empty trimmed string")
-        if _JAPANESE_RE.search(value) is None:
-            raise ValueError("query must contain Japanese text")
         return value
+
+    @model_validator(mode="after")
+    def query_text_must_match_language(self) -> RetrievalQuery:
+        pattern = _JAPANESE_RE if self.query_language == "ja" else _CJK_RE
+        if pattern.search(self.query) is None:
+            raise ValueError(f"query must contain {self.query_language} text")
+        return self
 
     @field_validator("annotation_note")
     @classmethod
@@ -147,7 +155,7 @@ class RetrievalBenchmark(_StrictModel):
     expected_kb_schema_version: str
     fact_content_sha256: str
     fact_structure_sha256: str
-    language: Literal["ja"]
+    language: Literal["ja", "ja+zh"]
     annotation_policy_version: Literal["1.0"]
     queries: list[RetrievalQuery]
 
@@ -179,6 +187,10 @@ class RetrievalBenchmark(_StrictModel):
         coverage = benchmark_coverage(self)
         if coverage["total_queries"] < MINIMUM_QUERY_COUNT:
             raise ValueError(f"benchmark requires at least {MINIMUM_QUERY_COUNT} queries")
+        observed_languages = {query.query_language for query in self.queries}
+        expected_languages = {"ja"} if self.language == "ja" else {"ja", "zh"}
+        if observed_languages != expected_languages:
+            raise ValueError("benchmark language does not match query languages")
         if len(coverage["by_category"]) < MINIMUM_CATEGORY_COUNT:
             raise ValueError(f"benchmark requires at least {MINIMUM_CATEGORY_COUNT} categories")
         if coverage["by_style"].get("paraphrase", 0) < MINIMUM_PARAPHRASE_COUNT:
@@ -214,6 +226,7 @@ def load_retrieval_benchmark(path: str | Path) -> RetrievalBenchmark:
 def benchmark_coverage(benchmark: RetrievalBenchmark) -> dict[str, object]:
     category_counts = Counter(query.category for query in benchmark.queries)
     style_counts = Counter(query.query_style for query in benchmark.queries)
+    language_counts = Counter(query.query_language for query in benchmark.queries)
     scope_counts = Counter(
         evidence.scope_type for query in benchmark.queries for evidence in query.gold_evidence
     )
@@ -221,6 +234,7 @@ def benchmark_coverage(benchmark: RetrievalBenchmark) -> dict[str, object]:
         "total_queries": len(benchmark.queries),
         "by_category": dict(sorted(category_counts.items())),
         "by_style": dict(sorted(style_counts.items())),
+        "by_language": dict(sorted(language_counts.items())),
         "by_scope": dict(sorted(scope_counts.items())),
         "single_fact_queries": sum(
             len(query.relevant_fact_ids) == 1 for query in benchmark.queries
