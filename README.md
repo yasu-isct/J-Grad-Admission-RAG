@@ -6,9 +6,10 @@ retrieval and page-linked official sources.
 面向日本大学院募集要项的可信混合 RAG 系统，通过语义检索、BM25、申请者规则推理和官方页码引用，
 生成有证据约束的申请回答。
 
-> **Current status:** M1–M8 are complete. The repository is retrieval-and-reasoning complete and
-> RAG-ready; M9 is adding the replaceable LLM Generation layer and server-side citation validation.
-> The current Demo does **not** yet offer arbitrary natural-language, LLM-generated answers.
+> **Current status:** M1–M9 are complete. The local Demo now exposes a bounded end-to-end grounded
+> RAG path: Japanese or Chinese questions are classified into reviewed topics, retrieved with the
+> configured hybrid index, combined with reviewed rule state, generated through a replaceable
+> provider, and rejected unless every factual claim passes server-side citation validation.
 
 ## What Applicants Can Verify Today
 
@@ -21,8 +22,10 @@ fixed official Science Tokyo master's guideline:
 - compare those reviewed requirements with an in-memory Applicant Profile;
 - see a conservative gap summary and session-only preparation checklist;
 - open the exact Japanese official text, physical PDF page, local PDF viewer, and official webpage.
+- ask a Japanese or Chinese question within the reviewed eligibility, language, date, fee, or
+  contact scope and inspect the server-validated answer citations.
 
-![Current real Demo showing the reviewed gap summary and preparation checklist](outputs/ux05/browser/ux05-desktop-1440-review-step4.png)
+![Real M9 Demo showing a grounded date answer with two page-9 citations](docs/assets/m9-grounded-rag-1440.png)
 
 The current packaged Demo is intentionally narrow: it covers the hash-verified `2027 April / 2026
 September Master's Program Admission Guidelines` for Science Tokyo and the reviewed target/rule
@@ -38,18 +41,21 @@ exact official PDF
   -> pinned semantic retrieval + BM25 + RRF
   -> EvidencePack candidates
   -> Applicant Profile + human-reviewed rules
-  -> verified grounded answer (M9 Generation work in progress)
+  -> replaceable Generation provider
+  -> server-validated GroundedAnswer + page-linked citations
 ```
 
 `ScopedFact` remains the authority for official text and pages. Retrieval proposes evidence; it does
-not decide whether a rule applies. Reviewed rules compare explicit Applicant Profile fields. The M9
+not decide whether a rule applies. Reviewed rules compare explicit Applicant Profile fields. The
 generator may organize only those inputs, while the server owns evidence IDs and validates every
 citation. No vector database is used: the current index is a rebuildable local NumPy artifact.
 
 The repository already includes a pinned BGE-M3 identity, a Sentence Transformers adapter, BM25,
-RRF, a reviewed retrieval benchmark, and an offline semantic regression gate. The packaged Demo
-still defaults to `deterministic-fake` embeddings for fast, repeatable offline assembly; that provider
-is non-semantic and must not be used as evidence of multilingual retrieval quality.
+RRF, a 42-query mixed-language retrieval benchmark, and offline semantic and grounded-RAG release
+gates. The packaged Demo still defaults to `deterministic-fake` embeddings for fast, repeatable
+offline assembly; that provider is non-semantic and must not be used as evidence of multilingual
+retrieval quality. Formal semantic acceptance uses the pinned BGE-M3 cache-only path documented
+below.
 
 ## Quick Start: Reviewed Local Demo
 
@@ -136,6 +142,32 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 
 该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
 受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。
+
+自然语言区域只接受当前人工审核目录可识别的日文或中文主题，不是任意 PDF 聊天。默认生成器
+`reviewed-state-offline` 完全离线；可选 OpenAI Responses provider 仍受同一结构化输出和引用校验
+边界约束。仓库和默认 CI 不调用付费 API。
+
+## M9 Release Evidence
+
+The checked-in M9-05 gate recomputes deterministic metrics from 20 human-reviewed cases and a
+cache-only BGE-M3 retrieval report. The accepted formal run produced 8 grounded answers, 2
+needs-information results, and 10 safe refusals. Citation correctness, citation completeness,
+groundedness, refusal correctness, and missing-information correctness are all `1.0`; unsupported
+claim rate is `0.0`, Recall@10 is `0.7121`, subset MRR is `0.5114`, and Chinese-to-Japanese hit rate
+is `0.75`. The broader 42-query retrieval report records Recall@10 `0.8495` and MRR `0.8312`.
+
+```powershell
+jgrad-check-grounded-rag-gate `
+  --suite tests\fixtures\grounded_rag_evaluation_suite_v1.json `
+  --observations tests\fixtures\grounded_rag_observations_v1.json `
+  --retrieval-report tests\fixtures\grounded_rag_retrieval_report_v1.json `
+  --report tests\fixtures\grounded_rag_evaluation_report_v1.json `
+  --policy config\grounded_rag_release_gate_v1.json
+```
+
+See [Grounded RAG Release Evaluation](docs/evaluation/grounded-rag-release-v1.md) for metric scope,
+reproduction boundaries, real-browser acceptance, and the separately authorized paid-provider
+workflow.
 
 ## Run The Local API
 

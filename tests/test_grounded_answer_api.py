@@ -34,8 +34,15 @@ from jgrad_admission_rag.service.app import (
     GROUNDED_RETRIEVAL_CANDIDATE_K,
     GROUNDED_RETRIEVAL_TOP_K,
     _bounded_grounded_retrieval_depth,
+    _project_reviewed_answer_to_retrieval,
 )
 from tests.test_demo_cli import _synthetic_config
+from tests.test_grounded_rag import _cited_answer, _pack
+from jgrad_admission_rag.reasoning.cited_answer import CitedAnswer
+from jgrad_admission_rag.reasoning.query_intent import (
+    load_query_intent_catalog,
+    parse_query_intent,
+)
 
 
 class _FailingGenerationProvider:
@@ -223,3 +230,22 @@ def test_grounded_retrieval_depth_is_bounded_independently_of_document_size() ->
         GROUNDED_RETRIEVAL_CANDIDATE_K,
     )
     assert _bounded_grounded_retrieval_depth(2) == (2, 2)
+
+
+def test_reviewed_answer_projection_is_bound_to_requested_intent_category() -> None:
+    catalog = load_query_intent_catalog(
+        Path(__file__).parents[1] / "src/jgrad_admission_rag/demo_config/query_intent_catalog.json"
+    )
+    payload = _cited_answer().model_dump(mode="json")
+    payload["rule_findings"][0]["subject_key"] = "eligibility.reviewed.test-rule"
+    answer = CitedAnswer.model_validate(payload)
+
+    eligibility = parse_query_intent("出願資格を教えてください。", catalog)
+    dates = parse_query_intent("出願期間はいつですか。", catalog)
+
+    projected = _project_reviewed_answer_to_retrieval(_pack(), answer, eligibility)
+    assert projected is not None
+    assert tuple(item.subject_key for item in projected.rule_findings) == (
+        "eligibility.reviewed.test-rule",
+    )
+    assert _project_reviewed_answer_to_retrieval(_pack(), answer, dates) is None

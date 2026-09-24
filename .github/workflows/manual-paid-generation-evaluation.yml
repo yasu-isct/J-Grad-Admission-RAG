@@ -1,0 +1,56 @@
+name: Manual paid generation evaluation
+
+on:
+  workflow_dispatch:
+    inputs:
+      authorization:
+        description: 'Type "I AUTHORIZE 20 PAID SYNTHETIC CALLS" after approving cost in the task'
+        required: true
+        type: string
+      model:
+        description: "Explicit OpenAI model snapshot to evaluate"
+        required: true
+        type: string
+      max_cases:
+        description: "Bounded number of synthetic reviewed cases (1-20)"
+        required: true
+        default: "20"
+        type: choice
+        options: ["1", "5", "10", "20"]
+
+permissions:
+  contents: read
+
+jobs:
+  authorization-gate:
+    if: ${{ inputs.authorization == 'I AUTHORIZE 20 PAID SYNTHETIC CALLS' }}
+    runs-on: ubuntu-latest
+    environment: paid-generation-evaluation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install explicit generation dependencies
+        run: python -m pip install -e ".[dev,generation]"
+      - name: Verify offline release corpus before any paid evaluation
+        run: |
+          jgrad-check-grounded-rag-gate \
+            --suite tests/fixtures/grounded_rag_evaluation_suite_v1.json \
+            --observations tests/fixtures/grounded_rag_observations_v1.json \
+            --retrieval-report tests/fixtures/grounded_rag_retrieval_report_v1.json \
+            --report tests/fixtures/grounded_rag_evaluation_report_v1.json \
+            --policy config/grounded_rag_release_gate_v1.json
+      - name: Paid provider evaluation is intentionally local-artifact gated
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JGRAD_EVAL_MODEL: ${{ inputs.model }}
+          JGRAD_EVAL_MAX_CASES: ${{ inputs.max_cases }}
+          JGRAD_ALLOW_PAID_EVALUATION: I AUTHORIZE 20 PAID SYNTHETIC CALLS
+        run: |
+          python -m jgrad_admission_rag.cli.manual_generation_evaluation \
+            --suite tests/fixtures/grounded_rag_evaluation_suite_v1.json \
+            --model "$JGRAD_EVAL_MODEL" \
+            --max-cases "$JGRAD_EVAL_MAX_CASES" \
+            --synthetic-only

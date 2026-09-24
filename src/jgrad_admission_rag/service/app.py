@@ -51,7 +51,13 @@ from ..reasoning.applicant_report import (
     build_applicant_report,
     render_applicant_report_markdown,
 )
-from ..reasoning.cited_answer import CitedAnswer
+from ..reasoning.applicability import ApplicabilityStatus
+from ..reasoning.cited_answer import (
+    CitedAnswer,
+    ProcessNoticeKind,
+    ReportStatus,
+)
+from ..reasoning.rule_resolution import ResolutionDisposition
 from ..reasoning.query_intent import (
     DiagnosticCode,
     QueryIntent,
@@ -1481,7 +1487,12 @@ def _build_grounded_answer_response(
             reviewed_evidence,
         )
         target_summary = build_demo_target_summary(state.report_plans, request.target)
-        if not _retrieval_covers_reviewed_answer(evidence_pack, report.cited_answer):
+        reviewed_answer = _project_reviewed_answer_to_retrieval(
+            evidence_pack,
+            report.cited_answer,
+            intent,
+        )
+        if reviewed_answer is None:
             raise ApiProblem(
                 422,
                 "insufficient_evidence",
@@ -1545,7 +1556,7 @@ def _build_grounded_answer_response(
                 target=grounded_target,
                 applicant_facts=(),
                 evidence_pack=evidence_pack,
-                cited_answer=report.cited_answer,
+                cited_answer=reviewed_answer,
             )
     except GroundedRagError as error:
         _raise_grounded_problem(error.code)
@@ -1596,11 +1607,18 @@ def _bounded_grounded_retrieval_depth(row_count: int) -> tuple[int, int]:
     return top_k, min(GROUNDED_RETRIEVAL_CANDIDATE_K, row_count)
 
 
-def _retrieval_covers_reviewed_answer(
+def _project_reviewed_answer_to_retrieval(
     evidence_pack: EvidencePack,
     cited_answer: CitedAnswer,
-) -> bool:
-    """Require exact reviewed citations to occur in the bounded retrieval result."""
+    intent: QueryIntent,
+) -> CitedAnswer | None:
+    """Project reviewed findings to the exact bounded retrieval result.
+
+    The applicant report is intentionally a whole-plan audit object.  A natural-language
+    answer must instead expose only applicable findings whose complete, server-owned
+    citation set occurred in this request's bounded retrieval result.  No citation is
+    inserted from the wider reviewed bundle after retrieval.
+    """
 
     retrieved = {
         (
@@ -1611,16 +1629,133 @@ def _retrieval_covers_reviewed_answer(
         )
         for record in evidence_pack.primary_evidence + evidence_pack.attached_reference_evidence
     }
-    required = {
-        (
+    if not retrieved or not cited_answer.interaction_analysis_complete:
+        return None
+
+    prefixes_by_category = {
+        "application_dates": ("application_dates.",),
+        "contacts_forms": ("contacts.",),
+        "eligibility": ("eligibility.",),
+        "fees": ("fees.",),
+        "language_tests": ("language.",),
+    }
+    allowed_subject_prefixes = tuple(
+        prefix
+        for category in intent.requested_categories
+        for prefix in prefixes_by_category.get(category.value, ())
+    )
+    if not allowed_subject_prefixes:
+        return None
+
+    def citation_key(citation: Any) -> tuple[str, str, tuple[int, ...], str]:
+        return (
             citation.document_id,
             citation.fact_id,
             citation.source_pages,
             "primary" if citation.role.value == "primary" else "reference",
         )
-        for citation in cited_answer.citation_inventory
+
+    candidates = tuple(
+        finding
+        for finding in cited_answer.rule_findings
+        if finding.original_status is not ApplicabilityStatus.NOT_APPLICABLE
+        and finding.subject_key.startswith(allowed_subject_prefixes)
+        and finding.activated_override is None
+        and all(citation.source_rule_id == finding.rule_id for citation in finding.citations)
+        and {citation_key(citation) for citation in finding.citations} <= retrieved
+    )
+    if not candidates:
+        return None
+    confirmed = tuple(
+        finding
+        for finding in candidates
+        if finding.original_status is ApplicabilityStatus.CONFIRMED
+        and finding.disposition is ResolutionDisposition.ACTIVE
+    )
+    # A complete applicable rule is sufficient for a factual answer. Pending
+    # alternatives remain available in the full applicant report, but must not
+    # inject unrelated profile questions into this retrieval-bounded answer.
+    # When retrieval found no confirmed rule, retain the pending slice so the
+    # response continues to fail closed as needs-information.
+    findings = confirmed or candidates
+
+    rule_ids = tuple(sorted(finding.rule_id for finding in findings))
+    selected_rules = set(rule_ids)
+    warnings = tuple(
+        warning
+        for warning in cited_answer.interaction_warnings
+        if set(warning.rule_ids) <= selected_rules
+        and {citation_key(citation) for citation in warning.citations} <= retrieved
+    )
+    missing_information = tuple(
+        item for item in cited_answer.missing_information if item.rule_id in selected_rules
+    )
+    process_notices = tuple(
+        item
+        for item in cited_answer.process_notices
+        if item.rule_ids and set(item.rule_ids) <= selected_rules
+    )
+    interaction_steps = {warning.source_interaction_step_id for warning in warnings} | {
+        step_id
+        for notice in process_notices
+        for step_id in notice.source_step_ids
+        if step_id.startswith("interaction:")
     }
-    return bool(required) and required <= retrieved
+    source_trace_step_ids = (
+        tuple(f"applicability:{rule_id}" for rule_id in rule_ids)
+        + tuple(f"resolution:{rule_id}" for rule_id in rule_ids)
+        + tuple(sorted(interaction_steps))
+    )
+    inventory = {
+        (
+            citation.document_id,
+            citation.fact_id,
+            citation.source_pages,
+            citation.role.value,
+            citation.source_rule_id,
+            citation.source_step_ids,
+        ): citation
+        for source in findings + warnings
+        for citation in source.citations
+    }
+    citation_inventory = tuple(inventory[key] for key in sorted(inventory))
+    review_notice_kinds = {
+        ProcessNoticeKind.MISSING_OFFICIAL_EVIDENCE,
+        ProcessNoticeKind.OVERRIDE_EVIDENCE_INCOMPLETE,
+        ProcessNoticeKind.INTERACTION_EVIDENCE_INCOMPLETE,
+        ProcessNoticeKind.SCOPE_INPUT_CONFLICT,
+        ProcessNoticeKind.INTERACTION_ANALYSIS_INCOMPLETE,
+    }
+    if warnings or any(item.kind in review_notice_kinds for item in process_notices):
+        report_status = ReportStatus.NEEDS_REVIEW
+    elif (
+        missing_information
+        or any(item.disposition is ResolutionDisposition.PENDING for item in findings)
+        or any(item.kind is ProcessNoticeKind.MISSING_SCOPE for item in process_notices)
+    ):
+        report_status = ReportStatus.NEEDS_INFORMATION
+    else:
+        report_status = ReportStatus.COMPLETE
+
+    try:
+        return CitedAnswer(
+            answer_id=cited_answer.answer_id,
+            source_trace_id=cited_answer.source_trace_id,
+            document_id=cited_answer.document_id,
+            source_kb_sha256=cited_answer.source_kb_sha256,
+            source_pdf_sha256=cited_answer.source_pdf_sha256,
+            report_status=report_status,
+            interaction_analysis_complete=True,
+            source_rule_ids=rule_ids,
+            source_trace_step_ids=source_trace_step_ids,
+            rule_findings=findings,
+            interaction_warnings=warnings,
+            missing_information=missing_information,
+            process_notices=process_notices,
+            citation_inventory=citation_inventory,
+        )
+    except (ValidationError, ValueError):
+        return None
 
 
 def _raise_grounded_problem(code: GroundedRagErrorCode) -> None:
