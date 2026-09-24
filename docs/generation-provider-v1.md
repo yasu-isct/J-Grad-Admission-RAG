@@ -48,6 +48,8 @@ chain backend exception text that could contain applicant or evidence data. Hydr
 aggregate-size validation are inside the same privacy-safe boundary, so a Pydantic input-value
 representation cannot escape when trusted source text expands the draft. The stable public error is
 raised after leaving the validation handler and therefore retains neither exception context nor cause.
+The same rule applies to request/output revalidation, provider invocation, SDK construction and
+parsing, and parsed-output validation.
 
 `DeterministicFakeGenerationProvider` is the offline default for contract tests and local assembly.
 It needs no API key, performs no network activity, and returns a conservative needs-review result

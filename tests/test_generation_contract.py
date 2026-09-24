@@ -467,6 +467,7 @@ def test_provider_failures_do_not_expose_input_or_cause() -> None:
         generate_checked(BrokenProvider(), _request())
     assert secret not in str(caught.value)
     assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
 
 
 def test_hydration_size_failure_does_not_leak_applicant_values() -> None:
@@ -598,6 +599,27 @@ def test_openai_adapter_requires_environment_key(monkeypatch: pytest.MonkeyPatch
     assert caught.value.code is GenerationErrorCode.MISSING_API_KEY
 
 
+def test_openai_adapter_client_failure_does_not_retain_exception_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    secret = "PRIVATE_CLIENT_SECRET"
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key-never-sent")
+
+    def broken_factory(**kwargs: object) -> object:
+        del kwargs
+        raise RuntimeError(secret)
+
+    with pytest.raises(GenerationError) as caught:
+        OpenAIResponsesGenerationProvider(
+            OpenAIResponsesConfig(model="gpt-test"), _client_factory=broken_factory
+        )
+
+    assert caught.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert secret not in str(caught.value)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+
+
 def test_openai_adapter_uses_structured_responses_bounded_controls_and_store_false(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -665,6 +687,7 @@ def test_openai_adapter_maps_timeout_without_leaking_exception(
     assert caught.value.code is GenerationErrorCode.PROVIDER_TIMEOUT
     assert "秘密" not in str(caught.value)
     assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
 
 
 @pytest.mark.parametrize(
@@ -688,6 +711,29 @@ def test_openai_adapter_classifies_parse_failures_without_payload_leak(
     assert caught.value.code is code
     assert "秘密" not in str(caught.value)
     assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+
+
+def test_openai_adapter_parsed_validation_does_not_retain_payload_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    secret = "PRIVATE_PARSED_SECRET"
+
+    class SensitiveParsed:
+        def model_dump(self, **kwargs: object) -> object:
+            del kwargs
+            raise RuntimeError(secret)
+
+    response = SimpleNamespace(status="completed", output=(), output_parsed=SensitiveParsed())
+    provider, _ = _provider(monkeypatch, _FakeResponses(response))
+
+    with pytest.raises(GenerationError) as caught:
+        provider.generate(_request())
+
+    assert caught.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+    assert secret not in str(caught.value)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
 
 
 def test_installed_openai_sdk_signature_smoke() -> None:

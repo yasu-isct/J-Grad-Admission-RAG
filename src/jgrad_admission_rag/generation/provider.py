@@ -68,27 +68,40 @@ def generate_checked(provider: GenerationProvider, request: GenerationRequest) -
     """Validate both sides of a provider call and reject all unbound references."""
 
     hydrated_output: GenerationDraft | None
+    checked_request: GenerationRequest | None
     try:
         checked_request = GenerationRequest.model_validate(request.model_dump(mode="json"))
     except Exception:
+        checked_request = None
+    if checked_request is None:
         raise GenerationError(GenerationErrorCode.INVALID_INPUT) from None
+
+    identity: GenerationProviderIdentity | None
     try:
         identity = GenerationProviderIdentity.model_validate(
             provider.identity.model_dump(mode="json")
         )
     except Exception:
+        identity = None
+    if identity is None:
         raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
 
+    provider_error: GenerationErrorCode | None = None
     try:
         raw_output = provider.generate(checked_request)
-    except GenerationError:
-        raise
+    except GenerationError as error:
+        provider_error = error.code
     except Exception:
-        raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
+        provider_error = GenerationErrorCode.PROVIDER_UNAVAILABLE
+    if provider_error is not None:
+        raise GenerationError(provider_error) from None
 
+    output: GenerationDraft | None
     try:
         output = GenerationDraft.model_validate(raw_output.model_dump(mode="json"))
     except Exception:
+        output = None
+    if output is None:
         raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
 
     if output.refused:

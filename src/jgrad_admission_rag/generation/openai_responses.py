@@ -82,19 +82,28 @@ class OpenAIResponsesGenerationProvider:
             prompt_version=GENERATION_PROMPT_VERSION,
         )
         if _client_factory is None:
+            imported_factory: Callable[..., Any] | None = None
             try:
                 from openai import OpenAI
             except (ImportError, ModuleNotFoundError):
+                pass
+            else:
+                imported_factory = OpenAI
+            if imported_factory is None:
                 raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
-            _client_factory = OpenAI
+            _client_factory = imported_factory
+        client: Any | None = None
         try:
-            self._client = _client_factory(
+            client = _client_factory(
                 api_key=api_key,
                 timeout=float(config.timeout_seconds),
                 max_retries=config.max_retries,
             )
         except Exception:
+            pass
+        if client is None:
             raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
+        self._client = client
 
     @property
     def identity(self) -> GenerationProviderIdentity:
@@ -107,6 +116,8 @@ class OpenAIResponsesGenerationProvider:
             sort_keys=True,
             separators=(",", ":"),
         )
+        provider_error: GenerationErrorCode | None = None
+        response: Any | None = None
         try:
             response = self._client.responses.parse(
                 model=self._config.model,
@@ -121,14 +132,17 @@ class OpenAIResponsesGenerationProvider:
         except Exception as error:
             name = type(error).__name__
             if name in {"APITimeoutError", "TimeoutException", "ReadTimeout", "ConnectTimeout"}:
-                raise GenerationError(GenerationErrorCode.PROVIDER_TIMEOUT) from None
-            if name in {"LengthFinishReasonError"}:
-                raise GenerationError(GenerationErrorCode.INCOMPLETE_RESPONSE) from None
-            if name in {"ContentFilterFinishReasonError"}:
-                raise GenerationError(GenerationErrorCode.PROVIDER_REFUSAL) from None
-            if name in {"ValidationError", "JSONDecodeError"}:
-                raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
-            raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
+                provider_error = GenerationErrorCode.PROVIDER_TIMEOUT
+            elif name in {"LengthFinishReasonError"}:
+                provider_error = GenerationErrorCode.INCOMPLETE_RESPONSE
+            elif name in {"ContentFilterFinishReasonError"}:
+                provider_error = GenerationErrorCode.PROVIDER_REFUSAL
+            elif name in {"ValidationError", "JSONDecodeError"}:
+                provider_error = GenerationErrorCode.MALFORMED_OUTPUT
+            else:
+                provider_error = GenerationErrorCode.PROVIDER_UNAVAILABLE
+        if provider_error is not None:
+            raise GenerationError(provider_error) from None
 
         if _contains_refusal(response):
             raise GenerationError(GenerationErrorCode.PROVIDER_REFUSAL)
@@ -137,12 +151,16 @@ class OpenAIResponsesGenerationProvider:
         parsed = getattr(response, "output_parsed", None)
         if parsed is None:
             raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT)
+        draft: GenerationDraft | None = None
         try:
-            return GenerationDraft.model_validate(
+            draft = GenerationDraft.model_validate(
                 parsed.model_dump(mode="json") if hasattr(parsed, "model_dump") else parsed
             )
         except Exception:
+            pass
+        if draft is None:
             raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
+        return draft
 
 
 def _contains_refusal(response: object) -> bool:
