@@ -1,69 +1,72 @@
 # J-Grad Admission RAG
 
-RAG-ready knowledge engine for Japanese graduate admission guidelines: full-document extraction,
-scoped facts, vector indexing, and applicant-aware retrieval.
+An evidence-grounded, rule-augmented RAG system for Japanese graduate admissions, with hybrid
+retrieval and page-linked official sources.
 
-## What This Is
+面向日本大学院募集要项的可信混合 RAG 系统，通过语义检索、BM25、申请者规则推理和官方页码引用，
+生成有证据约束的申请回答。
 
-This repository is the RAG-first successor path to the profile-guided extractor experiments in
-[`yasu-isct/flie-extract`](https://github.com/yasu-isct/flie-extract).
+> **Current status:** M1–M8 are complete. The repository is retrieval-and-reasoning complete and
+> RAG-ready; M9 is adding the replaceable LLM Generation layer and server-side citation validation.
+> The current Demo does **not** yet offer arbitrary natural-language, LLM-generated answers.
 
-The goal is to turn Japanese graduate admission PDFs into a maintainable knowledge base that can be
-queried many times by different applicants:
+## What Applicants Can Verify Today
+
+The local Chinese-language Demo guides an applicant through a reviewed four-step workflow for one
+fixed official Science Tokyo master's guideline:
+
+- choose the school, degree, April 2027 intake, college, and department;
+- review key dates, education and individual-eligibility-review paths, language information, and
+  common application materials;
+- compare those reviewed requirements with an in-memory Applicant Profile;
+- see a conservative gap summary and session-only preparation checklist;
+- open the exact Japanese official text, physical PDF page, local PDF viewer, and official webpage.
+
+![Current real Demo showing the reviewed gap summary and preparation checklist](outputs/ux05/browser/ux05-desktop-1440-review-step4.png)
+
+The current packaged Demo is intentionally narrow: it covers the hash-verified `2027 April / 2026
+September Master's Program Admission Guidelines` for Science Tokyo and the reviewed target/rule
+scope shipped in `src/jgrad_admission_rag/demo_config`. It does not support other schools, accounts,
+cloud persistence, public deployment, or final eligibility, receipt, completeness, or admission
+decisions.
+
+## Trust Architecture
 
 ```text
-Offline build:
-reviewed identity + exact PDF -> chunks -> scoped facts -> diagnostics/gates -> document_kb.json
-
-Online query:
-student query/profile -> vector/hybrid retrieval -> reasoning chains -> answer/report
+exact official PDF
+  -> traceable ScopedFacts + pages
+  -> pinned semantic retrieval + BM25 + RRF
+  -> EvidencePack candidates
+  -> Applicant Profile + human-reviewed rules
+  -> verified grounded answer (M9 Generation work in progress)
 ```
 
-## Current MVP
+`ScopedFact` remains the authority for official text and pages. Retrieval proposes evidence; it does
+not decide whether a rule applies. Reviewed rules compare explicit Applicant Profile fields. The M9
+generator may organize only those inputs, while the server owns evidence IDs and validates every
+citation. No vector database is used: the current index is a rebuildable local NumPy artifact.
 
-The current implementation focuses on the offline builder:
+The repository already includes a pinned BGE-M3 identity, a Sentence Transformers adapter, BM25,
+RRF, a reviewed retrieval benchmark, and an offline semantic regression gate. The packaged Demo
+still defaults to `deterministic-fake` embeddings for fast, repeatable offline assembly; that provider
+is non-semantic and must not be used as evidence of multilingual retrieval quality.
 
-- PyMuPDF + pdfplumber PDF extraction.
-- Markdown chunking.
-- Lightweight category routing.
-- Document index with anchors and references.
-- Reference link resolution.
-- RAG-facing `document_kb.json` schema with scoped facts and retrieval units.
-- Claim-level reference diagnostics and optional structural quality gates.
+## Quick Start: Reviewed Local Demo
 
-## Quickstart
+Requirements: Windows PowerShell, Python 3.11+, and the exact official PDF linked below.
 
 ```powershell
+git clone https://github.com/yasu-isct/J-Grad-Admission-RAG.git
+cd J-Grad-Admission-RAG
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e .[dev]
-
-python -m jgrad_admission_rag.cli.build_kb samples\admission.pdf `
-  --identity samples\admission.identity.json `
-  --output outputs\kb\sample\document_kb.json
+python -m pip install -e ".[service]"
+jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf
 ```
 
-The generated `document_kb.json` is the handoff artifact for vector indexing and query-time
-retrieval. It also contains a `diagnostics` section with traceable Fact IDs, reference claims,
-the active quality thresholds, and their gate result. A failed enabled gate still writes the
-artifact and makes the CLI exit with code `2` so the evidence can be inspected.
-
-The required identity file is reviewed metadata, not extracted data. It binds one exact PDF hash to
-an institution, document family, edition, degree coverage, and intake terms. The builder verifies
-the hash before extraction and never infers these fields from a filename or title. See
-[Document Identity v1](docs/document-identity-v1.md).
-
-Multiple validated KBs can be assembled through the explicit `CorpusManifest` API. The manifest is
-an immutable inventory of exact document identities, KB-byte hashes, and optional validated fresh
-indexes; it does not scan folders or choose a current edition. See
-[Corpus Manifest v1](docs/corpus-manifest-v1.md).
-
-Reviewed active/historical policy can select one or several exact ready editions, after which the
-library-level corpus search path audits those artifacts and builds an immutable in-memory context.
-Each query uses one embedding plus corpus-global vector, BM25, RRF, and scope-preference ranking;
-every candidate remains qualified by document identity and official page provenance. It does not
-merge index files or make eligibility decisions. See
-[Corpus Retrieval v1](docs/corpus-retrieval-v1.md).
+Open `http://127.0.0.1:8000/app`. The PDF path must be absolute and its SHA-256 must match the
+packaged reviewed identity. The repository does not redistribute the PDF or download it for you.
+Run `jgrad-demo --help` to inspect the supported local options.
 
 ## 运行真实本地 Demo
 
