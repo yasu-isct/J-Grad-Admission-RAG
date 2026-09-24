@@ -109,6 +109,23 @@ jgrad-demo `
 `deterministic-fake`，只用于完全离线、可复现的本地装配，不代表真实语义检索质量，不需要付费 API
 或外网请求。服务固定绑定 `127.0.0.1`，不要将这个无认证 Demo 暴露到局域网或公网。
 
+如已单独准备好仓库固定版本的 BGE-M3 cache，可选择正式语义路径：
+
+```powershell
+python -m pip install -e ".[service,embedding]"
+jgrad-demo `
+  --pdf D:\path\to\isct_2027_4_2026_9_master.pdf `
+  --workspace D:\jgrad-demo-bge-m3 `
+  --embedding-provider bge-m3 `
+  --embedding-cache D:\path\to\reviewed-cache
+```
+
+Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
+`5617a9f61b028005a4858fdac845db406aefb181`、1024 维，并始终以 cache-only 模式加载；启动器
+不会静默下载模型。cache 缺失或不完整时会在服务启动前失败并说明安装/准备方式。启动输出会显示
+经索引审计后的 provider、model、revision、dimension 和 `semantic=true/false`。同一 workspace
+若由另一 provider 构建，需使用单独 workspace，或在核对路径后显式 `--rebuild`。
+
 常见失败及处理：
 
 - PDF 缺失或哈希不符：从上面的官方页面重新下载指定版本，不要改名推断或选择“最新文件”。
