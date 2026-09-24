@@ -31,6 +31,13 @@ class ClaimKind(str, Enum):
     APPLICANT_STATEMENT = "applicant_statement"
 
 
+class GenerationLimitation(str, Enum):
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"
+    NEEDS_REVIEW = "needs_review"
+    NOT_COVERED = "not_covered"
+    PROVIDER_NOT_CALLED = "provider_not_called"
+
+
 class GenerationEvidence(GenerationModel):
     """Untrusted evidence text exposed to a model under an opaque server ID.
 
@@ -213,7 +220,7 @@ class GenerationRequest(GenerationModel):
 class GeneratedClaim(GenerationModel):
     claim_id: str
     kind: ClaimKind
-    text: str = Field(min_length=1, max_length=4_000)
+    text: str = Field(min_length=1, max_length=25_000)
     evidence_ids: tuple[str, ...] = ()
     finding_ids: tuple[str, ...] = ()
     applicant_fact_paths: tuple[str, ...] = ()
@@ -251,8 +258,6 @@ class GeneratedClaim(GenerationModel):
 
     @model_validator(mode="after")
     def grounding_must_match_kind(self) -> GeneratedClaim:
-        if _contains_prohibited_conclusion(self.text):
-            raise ValueError("claim text contains a prohibited final conclusion")
         if self.kind is ClaimKind.OFFICIAL_FACT:
             if not self.evidence_ids or self.finding_ids or self.applicant_fact_paths:
                 raise ValueError("official claims require only evidence IDs")
@@ -268,19 +273,27 @@ class GeneratedClaim(GenerationModel):
 
 class GenerationDraft(GenerationModel):
     schema_version: Literal["1.1"] = GENERATION_SCHEMA_VERSION
-    answer: str = Field(max_length=20_000)
+    answer: str = Field(max_length=200_000)
     claims: tuple[GeneratedClaim, ...] = ()
     missing_information: tuple[str, ...] = ()
-    limitations: tuple[str, ...] = ()
+    limitations: tuple[GenerationLimitation, ...] = ()
     needs_review: StrictBool
     refused: StrictBool
     refusal_reason: str | None = Field(default=None, max_length=1_000)
 
-    @field_validator("missing_information", "limitations")
+    @field_validator("missing_information")
     @classmethod
-    def text_lists_must_be_unique(cls, values: tuple[str, ...]) -> tuple[str, ...]:
-        if any(not value.strip() for value in values) or len(set(values)) != len(values):
-            raise ValueError("text list entries must be non-blank and unique")
+    def missing_information_must_be_canonical(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        _validate_canonical_ids(values, "missing_information")
+        return values
+
+    @field_validator("limitations")
+    @classmethod
+    def limitations_must_be_canonical(
+        cls, values: tuple[GenerationLimitation, ...]
+    ) -> tuple[GenerationLimitation, ...]:
+        if values != tuple(sorted(set(values), key=lambda item: item.value)):
+            raise ValueError("limitations must be sorted and unique")
         return values
 
     @field_validator("refusal_reason")
@@ -395,23 +408,3 @@ def _validate_canonical_ids(
         _validate_identifier(value, label)
         if pattern is not None and not pattern.fullmatch(value):
             raise ValueError(f"{label} contains an invalid opaque ID")
-
-
-_PROHIBITED_CONCLUSIONS = (
-    re.compile(r"(?:符合|具备)申请资格"),
-    re.compile(r"材料已受理"),
-    re.compile(r"申请材料(?:是)?完整"),
-    re.compile(r"(?:保证|一定|肯定).{0,6}(?:录取|合格)"),
-    re.compile(r"出願資格(?:を満たしています|があります)"),
-    re.compile(r"書類は受理されます"),
-    re.compile(r"申請は完全です"),
-    re.compile(r"必ず合格"),
-    re.compile(r"\b(?:you are|the applicant is) eligible\b", re.IGNORECASE),
-    re.compile(r"\bapplication (?:is|has been) (?:accepted|complete)\b", re.IGNORECASE),
-    re.compile(r"\bguaranteed admission\b", re.IGNORECASE),
-    re.compile(r"\b(?:you|the applicant) will be admitted\b", re.IGNORECASE),
-)
-
-
-def _contains_prohibited_conclusion(value: str) -> bool:
-    return any(pattern.search(value) is not None for pattern in _PROHIBITED_CONCLUSIONS)

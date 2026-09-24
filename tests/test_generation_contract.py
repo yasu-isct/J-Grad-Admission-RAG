@@ -21,6 +21,7 @@ from jgrad_admission_rag.generation import (
     GenerationErrorCode,
     GenerationEvidence,
     GenerationEvidenceMaterial,
+    GenerationLimitation,
     GenerationProviderIdentity,
     GenerationRequest,
     GenerationRuleFinding,
@@ -70,7 +71,7 @@ def _request(*, injected: bool = False) -> GenerationRequest:
 
 
 def _grounded_draft() -> GenerationDraft:
-    claim_text = "審査済みの卒業条件は confirmed と記録されています。"
+    claim_text = "Reviewed finding finding:eligibility-1 [confirmed]: 卒業資格を満たす。"
     return GenerationDraft(
         answer=claim_text,
         claims=(
@@ -164,12 +165,38 @@ def test_default_fake_needs_no_key_and_abstains(monkeypatch: pytest.MonkeyPatch)
     assert result.output.answer == ""
 
 
+def test_default_fake_preserves_request_missing_information() -> None:
+    payload = _request().model_dump()
+    payload["rule_findings"][0].update(
+        status="needs_information", missing_fields=("eligibility.expected_completion_date",)
+    )
+    result = generate_checked(
+        DeterministicFakeGenerationProvider(), GenerationRequest.model_validate(payload)
+    )
+    assert result.output.missing_information == ("eligibility.expected_completion_date",)
+
+
+def test_non_claim_channels_do_not_accept_arbitrary_display_text() -> None:
+    with pytest.raises(ValidationError):
+        GenerationDraft(
+            answer="",
+            limitations=("you are eligible",),
+            needs_review=True,
+            refused=False,
+        )
+
+    draft = _grounded_draft().model_copy(update={"missing_information": ("profile.secret",)})
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), _request())
+    assert caught.value.code is GenerationErrorCode.UNKNOWN_REFERENCE
+
+
 def test_answer_cannot_bypass_atomic_claims() -> None:
     with pytest.raises(ValidationError, match="exact ordered claim projection"):
         GenerationDraft(
             answer="The deadline is tomorrow.",
             claims=(),
-            limitations=("no evidence",),
+            limitations=(GenerationLimitation.INSUFFICIENT_EVIDENCE,),
             needs_review=True,
             refused=False,
         )
@@ -221,6 +248,27 @@ def test_applicant_claim_must_bind_to_an_input_fact() -> None:
     assert caught.value.code is GenerationErrorCode.UNKNOWN_REFERENCE
 
 
+def test_applicant_claim_text_is_hydrated_from_the_bound_value() -> None:
+    text = "Applicant-provided eligibility.completion_state: TOEFL 120"
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.APPLICANT_STATEMENT,
+                text=text,
+                applicant_fact_paths=("eligibility.completion_state",),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    request = _request().model_copy(update={"rule_findings": ()})
+    result = generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert result.output.answer == "Applicant-provided eligibility.completion_state: completed"
+    assert "TOEFL 120" not in result.output.answer
+
+
 def test_reviewed_claim_evidence_must_belong_to_its_finding() -> None:
     text = "The reviewed condition is recorded as confirmed."
     draft = GenerationDraft(
@@ -242,15 +290,37 @@ def test_reviewed_claim_evidence_must_belong_to_its_finding() -> None:
     assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
 
 
+def test_claims_are_atomic_before_server_hydration() -> None:
+    text = "draft"
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.OFFICIAL_FACT,
+                text=text,
+                evidence_ids=("evidence:0001", "evidence:0002"),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    request = _request().model_copy(update={"rule_findings": ()})
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
 def test_pending_finding_cannot_be_presented_as_clean_or_hide_missing_fields() -> None:
     payload = _request().model_dump()
     payload["rule_findings"][0].update(
         status="needs_information", missing_fields=("eligibility.expected_completion_date",)
     )
     request = GenerationRequest.model_validate(payload)
-    claim = _grounded_draft().claims[0]
+    claim_text = "Reviewed finding finding:eligibility-1 [needs_information]: 卒業資格を満たす。"
+    claim = _grounded_draft().claims[0].model_copy(update={"text": claim_text})
     clean = GenerationDraft(
-        answer=claim.text,
+        answer=claim_text,
         claims=(claim,),
         needs_review=False,
         refused=False,
@@ -263,6 +333,11 @@ def test_pending_finding_cannot_be_presented_as_clean_or_hide_missing_fields() -
     with pytest.raises(GenerationError) as caught:
         generate_checked(DeterministicFakeGenerationProvider(hidden_missing), request)
     assert caught.value.code is GenerationErrorCode.STATE_MISMATCH
+
+    valid = hidden_missing.model_copy(
+        update={"missing_information": ("eligibility.expected_completion_date",)}
+    )
+    assert generate_checked(DeterministicFakeGenerationProvider(valid), request).output == valid
 
 
 def test_finding_status_requires_exact_missing_field_shape() -> None:
@@ -279,23 +354,78 @@ def test_finding_status_requires_exact_missing_field_shape() -> None:
 
 @pytest.mark.parametrize(
     "text",
-    (
-        "你符合申请资格。",
-        "申请材料完整。",
-        "保证录取。",
-        "出願資格を満たしています。",
-        "You are eligible.",
-        "Guaranteed admission.",
-    ),
+    ("你符合申请资格。", "申请资格已经得到确认。", "出願資格を満たしています。"),
 )
-def test_prohibited_final_conclusions_fail_schema_validation(text: str) -> None:
-    with pytest.raises(ValidationError, match="prohibited final conclusion"):
-        GeneratedClaim(
-            claim_id="claim:0001",
-            kind=ClaimKind.OFFICIAL_FACT,
-            text=text,
-            evidence_ids=("evidence:0001",),
-        )
+def test_arbitrary_or_final_conclusion_text_cannot_bypass_server_hydration(text: str) -> None:
+    claim = GeneratedClaim(
+        claim_id="claim:0001",
+        kind=ClaimKind.OFFICIAL_FACT,
+        text=text,
+        evidence_ids=("evidence:0001",),
+    )
+    draft = GenerationDraft(
+        answer=text,
+        claims=(claim,),
+        needs_review=False,
+        refused=False,
+    )
+    request = _request().model_copy(update={"rule_findings": ()})
+    result = generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert result.output.answer == "Official evidence evidence:0001: 大学を卒業した者。"
+    assert text not in result.output.answer
+
+
+def test_answer_cannot_omit_a_selected_pending_finding() -> None:
+    payload = _request().model_dump()
+    payload["rule_findings"][0].update(
+        status="needs_information", missing_fields=("eligibility.expected_completion_date",)
+    )
+    request = GenerationRequest.model_validate(payload)
+    text = "Official evidence evidence:0001: 大学を卒業した者。"
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.OFFICIAL_FACT,
+                text=text,
+                evidence_ids=("evidence:0001",),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert caught.value.code is GenerationErrorCode.STATE_MISMATCH
+
+
+def test_pending_finding_wording_is_server_hydrated() -> None:
+    payload = _request().model_dump()
+    payload["rule_findings"][0].update(
+        status="needs_information", missing_fields=("eligibility.expected_completion_date",)
+    )
+    request = GenerationRequest.model_validate(payload)
+    false_text = "Reviewed finding finding:eligibility-1 [confirmed]: 条件を満たす。"
+    draft = GenerationDraft(
+        answer=false_text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.REVIEWED_RULE,
+                text=false_text,
+                evidence_ids=("evidence:0001",),
+                finding_ids=("finding:eligibility-1",),
+            ),
+        ),
+        missing_information=("eligibility.expected_completion_date",),
+        needs_review=True,
+        refused=False,
+    )
+    result = generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert "[needs_information]" in result.output.answer
+    assert "[confirmed]" not in result.output.answer
+    assert "条件を満たす" not in result.output.answer
 
 
 def test_checked_boundary_rejects_unknown_ids() -> None:

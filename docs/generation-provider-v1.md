@@ -23,24 +23,28 @@ or retrieval score. A model therefore cannot assign source authority or invent p
 server-owned ID-to-provenance binding is intentionally outside this contract.
 
 The structured draft separates answer text into typed atomic claims. Official facts require only
-evidence IDs; reviewed-rule claims require finding IDs plus evidence belonging to those findings;
-applicant statements require only field paths present in the request. The public `answer` must be
-the exact newline-joined projection of those claims, so it cannot carry additional uncited prose.
-Limitations are a separate non-answer channel. Missing information, limitations, review state, and
-refusal state are explicit. With no supportable claims, the answer is empty and the draft must
-abstain with `needs_review=true` plus a missing-information or limitation reason.
+evidence IDs; reviewed-rule claims require finding IDs plus the exact evidence belonging to those
+findings; applicant statements require only field paths present in the request. Claim text is
+server-hydrated: an official claim reproduces the bound evidence text, a rule claim reproduces its
+reviewed statement and status, and an applicant claim reproduces the bound path/value. The model may
+select and order those records but cannot author a different factual sentence. The public `answer`
+must be the exact newline-joined projection of the hydrated claims, so it cannot carry additional
+uncited prose. Limitations are a separate non-answer channel. Missing information, limitations,
+review state, and refusal state are explicit. With no supportable claims, the answer is empty and
+the draft must abstain with `needs_review=true` plus a missing-information or limitation reason.
 
 ## Checked provider boundary
 
 `GenerationProvider` exposes immutable provider identity and one synchronous `generate` method.
 `generate_checked` revalidates the request, identity, and draft, rejects refusals, and rejects every
-evidence ID, finding ID, or applicant path absent from the request. Reviewed-rule evidence must
-belong to the cited finding. A cited pending/review finding forces review state, and required missing
-fields cannot disappear. A conservative multilingual phrase policy also rejects claims of final
-eligibility, material acceptance, application completeness, or guaranteed admission. Returned
-provider/model/prompt metadata is assigned outside the model output. Errors have stable,
-privacy-safe codes and do not chain backend exception text that could contain applicant or evidence
-data.
+evidence ID, finding ID, or applicant path absent from the request. Any non-empty answer must cover
+every selected rule finding exactly once. Reviewed-rule evidence and hydrated text must match that
+finding exactly. Pending/review/not-covered state is derived from the entire request, not from model
+citations, so required review and missing fields cannot disappear. Because no claim has a free-text
+display channel, paraphrased final eligibility, material acceptance, completeness, or admission
+guarantees fail hydration rather than relying on a phrase blacklist. Returned provider/model/prompt
+metadata is assigned outside the model output. Errors have stable, privacy-safe codes and do not
+chain backend exception text that could contain applicant or evidence data.
 
 `DeterministicFakeGenerationProvider` is the offline default for contract tests and local assembly.
 It needs no API key, performs no network activity, and returns a conservative needs-review result
