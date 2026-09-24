@@ -36,6 +36,25 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M6 Usable service | v1.0 | API and report output expose the complete workflow | End-to-end scenarios are reproducible and observable |
 | M7 Reviewed rule coverage | v1.1 | Reviewed dates, eligibility, language, page scope, and common materials cover the current guideline | Every enabled rule remains evidence-bound and conditional content fails closed |
 | M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
+| M9 Evidence-grounded End-to-End RAG | v1.3 | Chinese or Japanese questions produce structured answers over scoped evidence and reviewed rule results | Pinned semantic retrieval, citation validation, refusal behavior, and real end-to-end acceptance pass |
+
+## Active M9 Plan
+
+M9 is active. It connects the accepted M1–M8 boundaries without allowing a model to replace official
+Facts, reviewed applicability rules, or server-owned citations. Work proceeds one dependency at a
+time:
+
+| ID | Task | Acceptance signal | Dependency |
+| --- | --- | --- | --- |
+| M9-00 | Update public project positioning and status | README, architecture, roadmap, About, and Project reflect the verified M1–M8 baseline and active M9 scope | None |
+| M9-01 | Add the formal pinned BGE-M3 Demo path | Cache-only real semantic retrieval is selectable, visible, cross-language tested, and fake/BM25 paths remain compatible | M9-00 |
+| M9-02 | Define the Generation provider and structured output contract | Replaceable provider boundary, deterministic fake, strict schema, privacy-safe failures, and an initial supported API adapter | M9-01 |
+| M9-03 | Orchestrate grounded RAG and validate citations | EvidencePack, reviewed rule results, and generated claims produce a fail-closed `GroundedAnswer` with server-reconstituted citations | M9-02 |
+| M9-04 | Add the natural-language RAG API and page experience | The existing four-step flow can ask a scoped Chinese/Japanese question and inspect every validated citation | M9-03 |
+| M9-05 | Evaluate and close the release gate | Reviewed query set, deterministic metrics, real PDF/BGE-M3/browser acceptance, refusal paths, and independent release review pass | M9-04 |
+
+Paid API calls are never part of default CI and require explicit per-run authorization. Model files,
+official PDFs, API keys, raw personal profiles, and sensitive model responses are not committed.
 
 ## Completed M8 Summary
 
@@ -49,8 +68,8 @@ acceptance. The browser does not persist Applicant Profile data.
 The primary interface uses Simplified Chinese for navigation, explanations, and states; official
 school/college/department names and evidence remain Japanese. Technical Fact/scope details stay
 collapsed. M8 does not broaden low-frequency rules, add accounts, claim final eligibility, or move
-rule inference into the browser. Any M9 implementation scope requires a separate product decision
-and evidence-impact audit.
+rule inference into the browser. M9 preserves those boundaries while adding scoped natural-language
+retrieval, replaceable generation, and deterministic citation validation in the sequence above.
 
 ## Completed M6 Summary
 

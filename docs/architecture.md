@@ -278,18 +278,31 @@ construct the runtime provider; vector search still rechecks the actual runtime 
 Stale indexes are rebuilt to a new absent directory and activated by switching the caller path;
 automatic overwrite, deletion, and directory swapping are outside the supported safety contract.
 
-## Current MVP
+## Current System (M1–M8 Complete, M9 Active)
 
-The first migrated slice builds `document_kb.json` from a source PDF. It reuses the stable extraction,
-chunking, lightweight document index, reference resolver, and recursive retrieval primitives from
-`flie-extract`, but wraps them in a RAG-oriented schema.
+The current local system spans the full deterministic path from one exact, hash-verified official
+PDF to an applicant-facing reviewed report. It builds traceable `ScopedFact` records, validates a
+rebuildable local vector index, combines vector and BM25 candidates with RRF, scopes evidence to one
+reviewed document and target, applies human-reviewed applicant rules, and serves a Chinese-language
+four-step Demo with official text and page-linked citations.
+
+This is retrieval-and-reasoning complete and RAG-ready, but it is not yet a complete LLM-generated
+RAG path. The packaged Demo defaults to the non-semantic `deterministic-fake` provider for offline
+repeatability. The pinned BGE-M3 semantic path exists at the adapter, benchmark, and regression-gate
+layers, while M9 adds formal Demo selection, a replaceable Generation provider, structured grounded
+output, and deterministic citation validation. Until those slices pass their gates, current answer
+prose remains deterministic and arbitrary natural-language questions are not supported.
 
 ## Main Boundaries
 
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.
 - `schemas`: durable JSON contracts such as `DocumentKnowledgeBase`.
-- `retrieval`: embedding provider contracts plus future vector and hybrid retrieval services.
-- `reasoning`: strict applicant/query inputs, reviewed-rule applicability, and later reasoning chains.
+- `retrieval`: embedding providers, vector and BM25 candidate generation, RRF, scope preference, and
+  immutable `EvidencePack` output.
+- `reasoning`: strict applicant/query inputs, reviewed-rule applicability, interaction policies,
+  cited traces, and deterministic report presentation.
+- `generation` (M9): provider-neutral structured language generation over verified evidence and rule
+  results; it never owns Fact IDs, source pages, or rule applicability.
 - `cli`: command-line entry points.
 - `service`: optional versioned HTTP transport, lifecycle, and runtime configuration.
 
