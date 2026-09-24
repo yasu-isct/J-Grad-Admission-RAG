@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Sequence
 
 from ..evaluation.retrieval_evaluation import (
@@ -50,6 +51,10 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--retrieval-mode", choices=("hybrid",), default="hybrid")
     parser.add_argument("--top-k", type=positive_int, default=10)
     parser.add_argument("--candidate-k", type=positive_int, default=50)
+    parser.add_argument(
+        "--output",
+        help="Optional path for canonical report bytes; stdout remains the default.",
+    )
     add_provider_arguments(parser)
     return parser
 
@@ -133,7 +138,10 @@ def main(argv: Sequence[str] | None = None) -> None:
         _write_error("embedding_error", str(error), args.provider)
         raise SystemExit(2) from None
 
-    sys.stdout.write(output.decode("utf-8"))
+    if args.output is None:
+        sys.stdout.write(output.decode("utf-8"))
+    else:
+        Path(args.output).write_bytes(output)
 
 
 if __name__ == "__main__":

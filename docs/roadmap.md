@@ -38,23 +38,25 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
 | M9 Evidence-grounded End-to-End RAG | v1.3 | Chinese or Japanese questions produce structured answers over scoped evidence and reviewed rule results | Pinned semantic retrieval, citation validation, refusal behavior, and real end-to-end acceptance pass |
 
-## Active M9 Plan
+## Completed M9 Summary
 
-M9 is active. It connects the accepted M1–M8 boundaries without allowing a model to replace official
-Facts, reviewed applicability rules, or server-owned citations. Work proceeds one dependency at a
-time:
+M9 is complete. It connects the accepted M1–M8 boundaries without allowing a model to replace
+official Facts, reviewed applicability rules, or server-owned citations:
 
-| ID | Task | Acceptance signal | Dependency |
-| --- | --- | --- | --- |
-| M9-00 | Update public project positioning and status | README, architecture, roadmap, About, and Project reflect the verified M1–M8 baseline and active M9 scope | None |
-| M9-01 | Add the formal pinned BGE-M3 Demo path | Cache-only real semantic retrieval is selectable, visible, cross-language tested, and fake/BM25 paths remain compatible | M9-00 |
-| M9-02 | Define the Generation provider and structured output contract | Replaceable provider boundary, deterministic fake, strict schema, privacy-safe failures, and an initial supported API adapter | M9-01 |
-| M9-03 | Orchestrate grounded RAG and validate citations | EvidencePack, reviewed rule results, and generated claims produce a fail-closed `GroundedAnswer` with server-reconstituted citations | M9-02 |
-| M9-04 | Add the natural-language RAG API and page experience | The existing four-step flow can ask a scoped Chinese/Japanese question and inspect every validated citation | M9-03 |
-| M9-05 | Evaluate and close the release gate | Reviewed query set, deterministic metrics, real PDF/BGE-M3/browser acceptance, refusal paths, and independent release review pass | M9-04 |
+| ID | Task | Status |
+| --- | --- | --- |
+| M9-00 | Update public project positioning and status | Complete |
+| M9-01 | Add the formal pinned BGE-M3 Demo path | Complete |
+| M9-02 | Define the Generation provider and structured output contract | Complete |
+| M9-03 | Orchestrate grounded RAG and validate citations | Complete |
+| M9-04 | Add the natural-language RAG API and page experience | Complete |
+| M9-05 | Evaluate and close the release gate | Complete |
 
 Paid API calls are never part of default CI and require explicit per-run authorization. Model files,
 official PDFs, API keys, raw personal profiles, and sensitive model responses are not committed.
+M9-05 adds a 20-case human-reviewed grounded-answer suite, a 42-query Japanese/Chinese retrieval
+benchmark, a deterministic offline release gate, a separately authorized manual paid-provider
+workflow, and real PDF/BGE-M3/service/browser acceptance at 1440px and 390px.
 
 ## Completed M8 Summary
 

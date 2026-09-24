@@ -279,7 +279,7 @@ construct the runtime provider; vector search still rechecks the actual runtime 
 Stale indexes are rebuilt to a new absent directory and activated by switching the caller path;
 automatic overwrite, deletion, and directory swapping are outside the supported safety contract.
 
-## Current System (M1–M8 Complete, M9 Active)
+## Current System (M1–M9 Complete)
 
 The current local system spans the full deterministic path from one exact, hash-verified official
 PDF to an applicant-facing reviewed report. It builds traceable `ScopedFact` records, validates a
@@ -287,19 +287,21 @@ rebuildable local vector index, combines vector and BM25 candidates with RRF, sc
 reviewed document and target, applies human-reviewed applicant rules, and serves a Chinese-language
 four-step Demo with official text and page-linked citations.
 
-This is retrieval-and-reasoning complete and RAG-ready, but it is not yet a complete LLM-generated
-RAG path. The packaged Demo defaults to the non-semantic `deterministic-fake` provider for offline
-repeatability. M9-01 adds an explicit cache-only pinned BGE-M3 Demo selection on the same existing
-hybrid retrieval path; startup displays the audited embedding identity and semantic status. M9-02
-adds a replaceable Generation provider, opaque evidence references, strict structured drafts, a
-deterministic offline fake, and an optional bounded OpenAI Responses adapter. M9-03 adds a
-fail-closed orchestration contract that binds one EvidencePack and reviewed CitedAnswer, assigns
+The system now includes a bounded end-to-end grounded RAG path. The packaged Demo defaults to the
+non-semantic `deterministic-fake` embedding provider for offline repeatability and offers an explicit
+cache-only pinned BGE-M3 selection on the same hybrid retrieval path. Startup displays the audited
+embedding identity and semantic status. The replaceable Generation boundary accepts opaque evidence
+references and strict structured drafts through a deterministic offline provider or an optional,
+bounded OpenAI Responses adapter. Grounded orchestration applies a fail-closed contract that binds
+one EvidencePack and reviewed CitedAnswer, assigns
 request-local opaque evidence IDs, and hydrates `GroundedAnswer` citations from server-owned
 document, Fact, page, PDF-hash, and KB-hash provenance. See
 [Grounded RAG orchestration v1](grounded-rag-v1.md) and
-[ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). Until the later UI gate passes,
-current Demo answer prose remains deterministic and arbitrary natural-language questions are not
-supported.
+[ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). The browser reuses the selected
+target and in-memory Applicant Profile, displays provider metadata and limitations, and opens each
+validated citation in the existing evidence drawer. Intent recognition remains deliberately bounded
+to the reviewed Japanese/Chinese catalog; unsupported or insufficiently evidenced questions fail
+closed.
 
 ## Main Boundaries
 

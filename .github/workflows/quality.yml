@@ -44,5 +44,15 @@ jobs:
             --policy config/semantic_retrieval_gate_v1.json \
             --manifest config/semantic_retrieval_gate_manifest_v1.json \
             --repository-root .
+      - name: Check grounded RAG release baseline
+        run: |
+          jgrad-check-grounded-rag-gate \
+            --suite tests/fixtures/grounded_rag_evaluation_suite_v1.json \
+            --observations tests/fixtures/grounded_rag_observations_v1.json \
+            --retrieval-benchmark tests/fixtures/grounded_rag_retrieval_queries_v1.json \
+            --retrieval-report tests/fixtures/grounded_rag_retrieval_report_v1.json \
+            --report tests/fixtures/grounded_rag_evaluation_report_v1.json \
+            --policy config/grounded_rag_release_gate_v1.json \
+            --repository-root .
       - name: Confirm no Hugging Face cache was created
         run: test ! -e "$HF_HOME" || test -z "$(find "$HF_HOME" -mindepth 1 -print -quit)"

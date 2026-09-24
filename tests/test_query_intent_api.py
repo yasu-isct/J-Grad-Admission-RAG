@@ -7,6 +7,10 @@ import pytest
 from fastapi.testclient import TestClient
 
 from jgrad_admission_rag.service import ServiceSettings, create_app
+from jgrad_admission_rag.reasoning.query_intent import (
+    load_query_intent_catalog,
+    parse_query_intent,
+)
 
 
 CATALOG = Path(__file__).parents[1] / "config" / "query_intent_catalog_v1.json"
@@ -191,3 +195,24 @@ def test_intent_catalog_is_not_reloaded_or_discovered_per_request(tmp_path: Path
 def test_intent_catalog_path_must_be_absolute() -> None:
     with pytest.raises(ValueError):
         ServiceSettings(query_intent_catalog_path=Path("relative.json"))
+
+
+@pytest.mark.parametrize(
+    ("query", "category", "scope_target"),
+    (
+        ("出願期間と書類必着日はいつですか。", "application_dates", None),
+        ("网上申请什么时候开放，纸质材料什么时候必须送达？", "application_dates", None),
+        ("哪些 TOEFL 成绩有效？", "language_tests", None),
+        ("信息工学系的学历资格是什么？", "eligibility", "情報工学系"),
+    ),
+)
+def test_demo_catalog_recognizes_reviewed_japanese_and_chinese_aliases(
+    query: str, category: str, scope_target: str | None
+) -> None:
+    catalog = load_query_intent_catalog(
+        Path(__file__).parents[1] / "src/jgrad_admission_rag/demo_config/query_intent_catalog.json"
+    )
+    intent = parse_query_intent(query, catalog)
+    assert category in {item.value for item in intent.requested_categories}
+    if scope_target is not None:
+        assert scope_target in intent.requested_scope.department_or_program_targets
