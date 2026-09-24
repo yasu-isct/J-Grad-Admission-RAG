@@ -10,6 +10,7 @@ except ModuleNotFoundError as error:
     raise
 
 from .runtime import ServiceDependencies, ServiceSettings
+from .grounded_answers import GroundedAnswerRequest, GroundedAnswerResponse
 from .demo_requirements import (
     DemoApplicantComparisonRequest,
     DemoApplicantComparisonResponse,
@@ -34,6 +35,8 @@ __all__ = [
     "DemoBaseRequirementsResponse",
     "DemoTargetCatalogResponse",
     "DemoTargetRequest",
+    "GroundedAnswerRequest",
+    "GroundedAnswerResponse",
     "QueryIntentParseRequest",
     "ReviewedDocumentCatalogItem",
     "ReviewedDocumentCatalogResponse",

@@ -11,6 +11,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ..retrieval.embedding import EmbeddingProvider
+from ..generation.provider import GenerationProvider
 from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.page_scope_manifest import PageScopeManifest
@@ -84,6 +85,7 @@ class ServiceSettings(BaseModel):
 @dataclass(frozen=True, slots=True)
 class ServiceDependencies:
     provider_factory: Callable[[], EmbeddingProvider] | None = None
+    generation_provider_factory: Callable[[], GenerationProvider] | None = None
     repository_factory: Callable[[Path], Any] | None = None
     worker_factory: Callable[..., Any] | None = None
 
@@ -100,6 +102,9 @@ class ServiceState:
     provider: EmbeddingProvider | None = None
     initialization_failed: bool = False
     provider_lock: Lock = field(default_factory=Lock)
+    generation_provider: GenerationProvider | None = None
+    generation_initialization_failed: bool = False
+    generation_provider_lock: Lock = field(default_factory=Lock)
     job_repository: Any | None = None
     job_worker: Any | None = None
     job_initialization_failed: bool = False

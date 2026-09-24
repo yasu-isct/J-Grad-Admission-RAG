@@ -9,6 +9,7 @@ multipart upload -> exact identity check -> DocumentKnowledgeBase 0.6 + diagnost
 strict JSON -> COR-04 selection -> COR-05 prepare/search -> CorpusSearchResult 1.0
 strict profile/intent -> COR-04 -> reviewed evidence -> ApplicantReport 1.0 + fixed Markdown
 strict question -> server-owned RSN-02 catalog -> QueryIntent 1.0
+strict question/target/profile -> hybrid EvidencePack + reviewed CitedAnswer -> GroundedAnswer 1.0
 ```
 
 ## Routes
@@ -20,6 +21,7 @@ strict question -> server-owned RSN-02 catalog -> QueryIntent 1.0
 | POST | `/v1/knowledge-bases/build` | 200 | Complete detached KB, summary, and quality decision |
 | POST | `/v1/corpus/query` | 200 | Complete document-qualified corpus retrieval result |
 | POST | `/v1/applicant-reports` | 200 | Partial reviewed-rule report plus exact Japanese Markdown |
+| POST | `/v1/grounded-answers` | 200 | Fail-closed natural-language answer with reviewed state and authoritative citations |
 | GET | `/v1/reviewed-documents` | 200 | Safe deterministic catalog for local evidence selection |
 | GET | `/v1/target-catalog` | 200 | Reviewed School → Degree → Intake → College → Department → Route catalog |
 | POST | `/v1/base-requirements` | 200 | Profile-free reviewed requirements and exact official evidence for one complete target |
@@ -220,6 +222,16 @@ applicability and applicant preparation states with the existing evidence view m
 Japanese input is recorded conservatively and never upgraded into language satisfaction without
 reviewed evidence. The endpoint stores nothing and returns no overall eligibility, completeness,
 receipt, or admission conclusion.
+
+`POST /v1/grounded-answers` accepts the same target and small applicant input plus one trimmed,
+printable question of at most 1000 characters. It performs selected-document hybrid retrieval,
+constructs an `EvidencePack`, parses reviewed intent, builds the deterministic applicant report,
+and then invokes the lifespan-owned generation provider under its own lock. The response exposes
+provider/model identity, the complete reviewed `CitedAnswer`, grounded claims, missing fields,
+limitations, and a presentation inventory for every returned citation. Caller-supplied evidence,
+hashes, rule findings, citations, source URLs, and provider identity are never accepted. The
+packaged demo provider is deterministic and offline. See
+[Natural-language grounded RAG API and page v1](natural-language-grounded-rag-v1.md).
 
 The same response includes a server-derived readiness presentation. Every item has an
 `action_group` (`recorded`, `action_required`, or `review_required`) and a bounded next action.

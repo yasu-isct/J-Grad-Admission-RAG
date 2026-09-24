@@ -9,6 +9,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, AsyncIterator
 from uuid import UUID
+from uuid import uuid4
 
 from anyio import CancelScope, open_file, to_thread
 from fastapi import FastAPI, Request, Response
@@ -19,6 +20,12 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
+from ..generation import (
+    GroundedRagError,
+    GroundedRagErrorCode,
+    GroundedRagTarget,
+    run_grounded_rag,
+)
 from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
     CorpusSearchError,
@@ -62,6 +69,7 @@ from ..reasoning.reviewed_report_plan import (
     load_reviewed_report_plan,
 )
 from ..retrieval.metadata_search import MetadataFilter, ScopePreference
+from ..retrieval.evidence_pack import build_corpus_evidence_pack
 from ..schemas.corpus_manifest import CorpusManifestError, load_corpus_manifest
 from ..schemas.corpus_version import CorpusVersionSchemaError, load_corpus_version_policy
 from ..schemas.corpus_version import CorpusSelectionRequest
@@ -82,6 +90,7 @@ from .contracts import (
     BUILD_ERROR_RESPONSES,
     CATALOG_ERROR_RESPONSES,
     HEALTH_ERROR_RESPONSES,
+    GROUNDED_ERROR_RESPONSES,
     JOB_ERROR_RESPONSES,
     INTENT_ERROR_RESPONSES,
     QUERY_ERROR_RESPONSES,
@@ -107,9 +116,13 @@ from .demo_requirements import (
     DemoTargetCatalogResponse,
     DemoTargetRequest,
     build_demo_applicant_comparison,
+    build_demo_applicant_profile,
     build_demo_base_requirements,
+    build_demo_evidence_inventory,
     build_demo_target_catalog,
+    build_demo_target_summary,
 )
+from .grounded_answers import GroundedAnswerRequest, GroundedAnswerResponse
 from .date_presentation import (
     ReviewedDatePresentation,
     load_reviewed_date_presentation,
@@ -190,6 +203,12 @@ def create_app(
             except Exception:
                 state.initialization_failed = True
                 state.provider = None
+        if selected_dependencies.generation_provider_factory is not None:
+            try:
+                state.generation_provider = selected_dependencies.generation_provider_factory()
+            except Exception:
+                state.generation_initialization_failed = True
+                state.generation_provider = None
         if selected_settings.job_root is not None:
             try:
                 repository_factory = selected_dependencies.repository_factory or BuildJobRepository
@@ -268,6 +287,7 @@ def create_app(
                 except Exception:
                     state.job_initialization_failed = True
             state.provider = None
+            state.generation_provider = None
             state.report_plans = ()
             state.page_scope_manifests = ()
             state.query_intent_catalog = None
@@ -313,6 +333,7 @@ def create_app(
             "/v1/query-intents/parse",
             "/v1/base-requirements",
             "/v1/applicant-comparison",
+            "/v1/grounded-answers",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -405,6 +426,12 @@ def create_app(
                 and state.source_document is not None
                 and not state.source_document_initialization_failed
             )
+        if selected_dependencies.generation_provider_factory is not None:
+            is_ready = (
+                is_ready
+                and state.generation_provider is not None
+                and not state.generation_initialization_failed
+            )
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
 
     @app.get(
@@ -471,6 +498,23 @@ def create_app(
             )
         return await to_thread.run_sync(
             partial(_build_demo_applicant_comparison_response, request, selected_settings, state)
+        )
+
+    @app.post(
+        "/v1/grounded-answers",
+        response_model=GroundedAnswerResponse,
+        responses=GROUNDED_ERROR_RESPONSES,
+        operation_id="postV1GroundedAnswers",
+    )
+    async def grounded_answer(request: GroundedAnswerRequest) -> GroundedAnswerResponse:
+        if not _grounded_answer_service_ready(state):
+            raise ApiProblem(
+                503,
+                "grounded_service_unavailable",
+                "grounded answer service is unavailable",
+            )
+        return await to_thread.run_sync(
+            partial(_build_grounded_answer_response, request, selected_settings, state)
         )
 
     @app.post(
@@ -1321,8 +1365,231 @@ def _report_service_ready(state: ServiceState) -> bool:
     )
 
 
+def _grounded_answer_service_ready(state: ServiceState) -> bool:
+    return (
+        state.provider is not None
+        and not state.initialization_failed
+        and state.generation_provider is not None
+        and not state.generation_initialization_failed
+        and _report_service_ready(state)
+        and _query_intent_service_ready(state)
+    )
+
+
 def _query_intent_service_ready(state: ServiceState) -> bool:
     return state.query_intent_catalog is not None and not state.query_intent_initialization_failed
+
+
+def _build_grounded_answer_response(
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> GroundedAnswerResponse:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+        or state.provider is None
+        or state.generation_provider is None
+        or state.query_intent_catalog is None
+    ):
+        raise ApiProblem(
+            503,
+            "grounded_service_unavailable",
+            "grounded answer service is unavailable",
+        )
+
+    plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        policy = load_corpus_version_policy(settings.policy_path)
+        selection = select_corpus_documents(
+            manifest,
+            policy,
+            CorpusSelectionRequest(document_ids=(request.target.document_id,)),
+        )
+        context = prepare_corpus_search_context(settings.corpus_root, manifest, policy, selection)
+        if context.row_count < 1:
+            raise ApiProblem(
+                422,
+                "insufficient_evidence",
+                "grounded answer has insufficient reviewed evidence",
+            )
+        with state.provider_lock:
+            search_result = search_corpus(
+                context,
+                request.question,
+                state.provider,
+                top_k=context.row_count,
+                candidate_k=context.row_count,
+                metadata_filter=MetadataFilter(),
+                scope_preference=ScopePreference(
+                    preferred_scope_targets=(request.target.department_id,),
+                    preferred_parent_colleges=(request.target.college_id,),
+                ),
+            )
+        evidence_pack = build_corpus_evidence_pack(search_result)
+    except ApiProblem:
+        raise
+    except CorpusSearchInputError:
+        raise ApiProblem(422, "invalid_request", "grounded question is invalid") from None
+    except CorpusSearchProviderError:
+        raise ApiProblem(503, "provider_unavailable", "query provider is unavailable") from None
+    except (
+        CorpusManifestError,
+        CorpusPolicyCompatibilityError,
+        CorpusSearchError,
+        CorpusSelectionAmbiguousError,
+        CorpusSelectionNoMatchError,
+        CorpusSelectionNotReadyError,
+        CorpusSelectionRequestError,
+        CorpusSelectionVersionMismatchError,
+        CorpusVersionSchemaError,
+    ):
+        raise ApiProblem(
+            503,
+            "grounded_service_unavailable",
+            "grounded answer service is unavailable",
+        ) from None
+    except Exception:
+        raise ApiProblem(
+            500,
+            "grounded_preparation_failed",
+            "grounded answer preparation failed",
+        ) from None
+
+    try:
+        intent = parse_query_intent(request.question, state.query_intent_catalog)
+        if {
+            DiagnosticCode.NO_RECOGNIZED_INTENT,
+            DiagnosticCode.AMBIGUOUS_ALIAS,
+        }.intersection(intent.diagnostics):
+            raise ValueError
+        profile = build_demo_applicant_profile(request.target, request.applicant)
+        report_id = f"grounded-{uuid4().hex}"
+        report = build_applicant_report(
+            report_id,
+            profile,
+            intent,
+            plan,
+            reviewed_evidence,
+        )
+        target_summary = build_demo_target_summary(state.report_plans, request.target)
+    except ApplicantReportError as error:
+        if error.code in {
+            ApplicantReportFailure.INVALID_INPUT,
+            ApplicantReportFailure.UNSUPPORTED_INTENT,
+        }:
+            raise ApiProblem(
+                422,
+                "unsupported_question",
+                "question is outside the current reviewed scope",
+            ) from None
+        if error.code is ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH:
+            raise ApiProblem(
+                409,
+                "report_preparation_failed",
+                "reviewed report preparation failed",
+            ) from None
+        raise ApiProblem(
+            500,
+            "grounded_preparation_failed",
+            "grounded answer preparation failed",
+        ) from None
+    except (QueryIntentError, ValidationError, ValueError):
+        raise ApiProblem(
+            422,
+            "unsupported_question",
+            "question is outside the current reviewed scope",
+        ) from None
+    except Exception:
+        raise ApiProblem(
+            500,
+            "grounded_preparation_failed",
+            "grounded answer preparation failed",
+        ) from None
+
+    grounded_target = GroundedRagTarget(
+        document_id=request.target.document_id,
+        application_label=" / ".join(
+            (
+                target_summary.school_name,
+                target_summary.degree_name,
+                target_summary.intake_name,
+                target_summary.college_name,
+                target_summary.department_name,
+            )
+        ),
+        scope_targets=(request.target.department_id,),
+        parent_college=request.target.college_id,
+    )
+    try:
+        with state.generation_provider_lock:
+            answer = run_grounded_rag(
+                state.generation_provider,
+                request_id=f"request:{uuid4().hex}",
+                target=grounded_target,
+                applicant_facts=(),
+                evidence_pack=evidence_pack,
+                cited_answer=report.cited_answer,
+            )
+    except GroundedRagError as error:
+        _raise_grounded_problem(error.code)
+    except Exception:
+        raise ApiProblem(
+            500,
+            "grounded_generation_failed",
+            "grounded answer generation failed",
+        ) from None
+
+    cited_fact_ids = tuple(item.fact_id for item in answer.citation_inventory)
+    try:
+        evidence = build_demo_evidence_inventory(
+            plan,
+            reviewed_evidence,
+            request.target,
+            cited_fact_ids,
+            source_pdf_document_id=(
+                state.source_document.document_id if state.source_document is not None else None
+            ),
+        )
+        return GroundedAnswerResponse(
+            target=target_summary,
+            reviewed_scope_statement=plan.reviewed_coverage_statement,
+            official_source_url=plan.document_identity.official_source_url,
+            local_pdf_url=(
+                f"/documents/{request.target.document_id}/source.pdf"
+                if state.source_document is not None
+                and state.source_document.document_id == request.target.document_id
+                else None
+            ),
+            answer=answer,
+            evidence=evidence,
+        )
+    except Exception:
+        raise ApiProblem(
+            500,
+            "grounded_presentation_failed",
+            "grounded answer presentation failed",
+        ) from None
+
+
+def _raise_grounded_problem(code: GroundedRagErrorCode) -> None:
+    mapping = {
+        GroundedRagErrorCode.INVALID_INPUT: (422, "invalid_request"),
+        GroundedRagErrorCode.INSUFFICIENT_EVIDENCE: (422, "insufficient_evidence"),
+        GroundedRagErrorCode.EVIDENCE_MISMATCH: (409, "evidence_mismatch"),
+        GroundedRagErrorCode.RULE_STATE_MISMATCH: (409, "rule_state_mismatch"),
+        GroundedRagErrorCode.PROVIDER_UNAVAILABLE: (503, "generation_provider_unavailable"),
+        GroundedRagErrorCode.PROVIDER_TIMEOUT: (504, "generation_provider_timeout"),
+        GroundedRagErrorCode.PROVIDER_REFUSAL: (502, "generation_provider_refusal"),
+        GroundedRagErrorCode.INCOMPLETE_RESPONSE: (502, "incomplete_response"),
+        GroundedRagErrorCode.MALFORMED_OUTPUT: (502, "malformed_output"),
+        GroundedRagErrorCode.INVALID_CITATION: (502, "invalid_citation"),
+        GroundedRagErrorCode.UNSUPPORTED_CLAIM: (502, "unsupported_claim"),
+    }
+    status, public_code = mapping[code]
+    raise ApiProblem(status, public_code, "grounded answer could not be produced") from None
 
 
 def _build_applicant_report_response(
