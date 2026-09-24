@@ -15,6 +15,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from ..generation.grounded_rag import GroundedAnswer
 from ..service.demo_requirements import DemoApplicantInput, DemoTargetRequest
 from .retrieval_evaluation import RetrievalEvaluationReport
+from .retrieval_queries import RetrievalBenchmark
+from .semantic_gate import ImplementationContractError, implementation_contract
 
 GROUNDED_RAG_EVALUATION_SCHEMA_VERSION = "1.0"
 GROUNDED_RAG_EVALUATION_VERSION = "grounded-rag-release-v1"
@@ -157,6 +159,7 @@ class GroundedRagEvaluationSuite(_StrictModel):
     source_kb_sha256: str
     source_pdf_sha256: str
     retrieval_benchmark_id: str
+    retrieval_benchmark_sha256: str
     retrieval_report_sha256: str
     generation_provider: Literal["reviewed-state-offline"]
     generation_model: Literal["grounded-reviewed-v1"]
@@ -167,7 +170,12 @@ class GroundedRagEvaluationSuite(_StrictModel):
     forbidden_conclusion_terms: tuple[str, ...] = Field(min_length=4)
     cases: tuple[GroundedRagEvaluationCase, ...] = Field(min_length=20)
 
-    @field_validator("source_kb_sha256", "source_pdf_sha256", "retrieval_report_sha256")
+    @field_validator(
+        "source_kb_sha256",
+        "source_pdf_sha256",
+        "retrieval_benchmark_sha256",
+        "retrieval_report_sha256",
+    )
     @classmethod
     def hashes_must_be_sha256(cls, value: str) -> str:
         _validate_sha256(value)
@@ -219,7 +227,7 @@ class GroundedRagEvaluationSuite(_StrictModel):
         if {item.category for item in self.cases} != required_categories:
             raise ValueError("evaluation categories do not cover the release contract")
         dispositions = Counter(item.expected_disposition for item in self.cases)
-        if dispositions["answered"] < 8 or dispositions["needs_information"] < 2:
+        if dispositions["answered"] < 6 or dispositions["needs_information"] < 2:
             raise ValueError("evaluation lacks answer and missing-information coverage")
         if dispositions["refused"] < 2 or sum(item.cross_language for item in self.cases) < 4:
             raise ValueError("evaluation lacks refusal or cross-language coverage")
@@ -388,19 +396,36 @@ class GroundedRagGatePolicy(_StrictModel):
     evaluation_version: Literal["grounded-rag-release-v1"] = GROUNDED_RAG_EVALUATION_VERSION
     suite_sha256: str
     observations_sha256: str
+    retrieval_benchmark_sha256: str
     retrieval_report_sha256: str
     report_sha256: str
+    implementation_paths: tuple[str, ...] = Field(min_length=1)
+    implementation_sha256: str
     minimum_case_count: int = Field(ge=20)
     metric_floors: GroundedRagMetricFloors
     unsupported_claim_rate_ceiling: float = Field(ge=0, le=1)
 
     @field_validator(
-        "suite_sha256", "observations_sha256", "retrieval_report_sha256", "report_sha256"
+        "suite_sha256",
+        "observations_sha256",
+        "retrieval_benchmark_sha256",
+        "retrieval_report_sha256",
+        "report_sha256",
+        "implementation_sha256",
     )
     @classmethod
     def hashes_must_be_sha256(cls, value: str) -> str:
         _validate_sha256(value)
         return value
+
+    @field_validator("implementation_paths")
+    @classmethod
+    def implementation_paths_must_be_canonical(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        if values != tuple(sorted(set(values))) or any(
+            not value or value != value.strip() or "\\" in value for value in values
+        ):
+            raise ValueError("implementation paths must be sorted unique POSIX paths")
+        return values
 
 
 class GroundedRagGateCheck(_StrictModel):
@@ -480,6 +505,7 @@ def evaluate_grounded_rag_release(
     suite: GroundedRagEvaluationSuite,
     observations: GroundedRagObservationSet,
     retrieval_report: RetrievalEvaluationReport,
+    retrieval_benchmark: RetrievalBenchmark,
 ) -> GroundedRagEvaluationReport:
     """Recompute all release metrics from strict source-bound inputs."""
 
@@ -490,14 +516,23 @@ def evaluate_grounded_rag_release(
     checked_retrieval = RetrievalEvaluationReport.model_validate(
         retrieval_report.model_dump(mode="json")
     )
+    checked_benchmark = RetrievalBenchmark.model_validate(
+        retrieval_benchmark.model_dump(mode="json")
+    )
     suite_bytes = canonical_grounded_rag_suite_bytes(checked_suite)
     if checked_observations.suite_sha256 != _sha256(suite_bytes):
         raise GroundedRagEvaluationError("observation suite binding does not reconcile")
     retrieval_bytes = _canonical_model_bytes(checked_retrieval)
+    benchmark_bytes = _canonical_model_bytes(checked_benchmark)
+    if checked_suite.retrieval_benchmark_sha256 != _sha256(benchmark_bytes):
+        raise GroundedRagEvaluationError("retrieval benchmark binding does not reconcile")
     if checked_suite.retrieval_report_sha256 != _sha256(retrieval_bytes):
         raise GroundedRagEvaluationError("retrieval report binding does not reconcile")
     if (
         checked_retrieval.benchmark.benchmark_id != checked_suite.retrieval_benchmark_id
+        or checked_benchmark.benchmark_id != checked_suite.retrieval_benchmark_id
+        or checked_benchmark.document_id != checked_suite.document_id
+        or checked_benchmark.source_pdf_sha256 != checked_suite.source_pdf_sha256
         or checked_retrieval.benchmark.document_id != checked_suite.document_id
         or checked_retrieval.runtime.source_kb_sha256 != checked_suite.source_kb_sha256
         or checked_retrieval.runtime.source_pdf_sha256 != checked_suite.source_pdf_sha256
@@ -507,7 +542,7 @@ def evaluate_grounded_rag_release(
     observations_by_id = {item.case_id: item for item in checked_observations.observations}
     if tuple(observations_by_id) != tuple(item.case_id for item in checked_suite.cases):
         raise GroundedRagEvaluationError("observation coverage does not reconcile")
-    retrieval_by_id = {item.query_id: item for item in checked_retrieval.queries}
+    benchmark_by_id = {item.query_id: item for item in checked_benchmark.queries}
 
     retrieval_recalls: list[float] = []
     retrieval_rrs: list[float] = []
@@ -524,13 +559,20 @@ def evaluate_grounded_rag_release(
     for case in checked_suite.cases:
         observed = observations_by_id[case.case_id]
         if case.retrieval_query_id is not None:
-            retrieval = retrieval_by_id.get(case.retrieval_query_id)
-            if retrieval is None:
-                raise GroundedRagEvaluationError("retrieval query is absent from bound report")
-            retrieval_recalls.append(retrieval.recall.recall_at_10)
-            retrieval_rrs.append(retrieval.reciprocal_rank)
+            benchmark_query = benchmark_by_id.get(case.retrieval_query_id)
+            if benchmark_query is None or benchmark_query.query != case.question:
+                raise GroundedRagEvaluationError(
+                    "release question does not match its bound retrieval query"
+                )
+            relevant = set(benchmark_query.relevant_fact_ids)
+            ranked_at_10 = observed.ranked_retrieved_fact_ids[:10]
+            relevant_ranks = tuple(
+                rank for rank, fact_id in enumerate(ranked_at_10, start=1) if fact_id in relevant
+            )
+            retrieval_recalls.append(len(set(ranked_at_10) & relevant) / len(relevant))
+            retrieval_rrs.append(1.0 / relevant_ranks[0] if relevant_ranks else 0.0)
             if case.cross_language:
-                cross_hits.append(float(retrieval.first_relevant_rank is not None))
+                cross_hits.append(float(bool(relevant_ranks)))
         expected_citations = {
             (
                 checked_suite.document_id,
@@ -619,19 +661,31 @@ def evaluate_grounded_rag_gate(
     suite: GroundedRagEvaluationSuite,
     observations: GroundedRagObservationSet,
     retrieval_report: RetrievalEvaluationReport,
+    retrieval_benchmark: RetrievalBenchmark,
     expected_report: GroundedRagEvaluationReport,
+    repository_root: str | Path,
 ) -> GroundedRagGateResult:
     """Recompute the release report, bind every input hash, and enforce approved thresholds."""
 
     checked_policy = GroundedRagGatePolicy.model_validate(policy.model_dump(mode="json"))
-    actual = evaluate_grounded_rag_release(suite, observations, retrieval_report)
+    actual = evaluate_grounded_rag_release(
+        suite, observations, retrieval_report, retrieval_benchmark
+    )
     expected = GroundedRagEvaluationReport.model_validate(expected_report.model_dump(mode="json"))
     actual_bytes = canonical_grounded_rag_report_bytes(actual)
     expected_bytes = canonical_grounded_rag_report_bytes(expected)
     suite_hash = _sha256(canonical_grounded_rag_suite_bytes(suite))
     observations_hash = _sha256(canonical_grounded_rag_observations_bytes(observations))
     retrieval_hash = _sha256(_canonical_model_bytes(retrieval_report))
+    benchmark_hash = _sha256(_canonical_model_bytes(retrieval_benchmark))
     report_hash = _sha256(expected_bytes)
+    implementation_paths, implementation_hash = implementation_contract(
+        repository_root, checked_policy.implementation_paths
+    )
+    if implementation_paths != checked_policy.implementation_paths:
+        raise ImplementationContractError(
+            "grounded RAG implementation path set no longer matches the policy"
+        )
     checks = [
         _gate_check("suite_sha256", suite_hash, "==", checked_policy.suite_sha256),
         _gate_check(
@@ -641,12 +695,24 @@ def evaluate_grounded_rag_gate(
             checked_policy.observations_sha256,
         ),
         _gate_check(
+            "retrieval_benchmark_sha256",
+            benchmark_hash,
+            "==",
+            checked_policy.retrieval_benchmark_sha256,
+        ),
+        _gate_check(
             "retrieval_report_sha256",
             retrieval_hash,
             "==",
             checked_policy.retrieval_report_sha256,
         ),
         _gate_check("report_sha256", report_hash, "==", checked_policy.report_sha256),
+        _gate_check(
+            "implementation_sha256",
+            implementation_hash,
+            "==",
+            checked_policy.implementation_sha256,
+        ),
         _gate_check("report_recomputed", _sha256(actual_bytes), "==", report_hash),
         _gate_check("case_count", actual.case_count, ">=", checked_policy.minimum_case_count),
     ]
@@ -691,6 +757,10 @@ def canonical_grounded_rag_policy_bytes(policy: GroundedRagGatePolicy) -> bytes:
     return _canonical_typed_bytes(policy, GroundedRagGatePolicy, "evaluation policy")
 
 
+def canonical_retrieval_benchmark_bytes(benchmark: RetrievalBenchmark) -> bytes:
+    return _canonical_typed_bytes(benchmark, RetrievalBenchmark, "retrieval benchmark")
+
+
 def canonical_grounded_rag_gate_result_bytes(result: GroundedRagGateResult) -> bytes:
     return _canonical_typed_bytes(result, GroundedRagGateResult, "evaluation gate result")
 
@@ -709,6 +779,10 @@ def load_grounded_rag_report_bytes(raw_bytes: bytes) -> GroundedRagEvaluationRep
 
 def load_grounded_rag_policy_bytes(raw_bytes: bytes) -> GroundedRagGatePolicy:
     return _load_bytes(raw_bytes, GroundedRagGatePolicy, "evaluation policy")
+
+
+def load_retrieval_benchmark_bytes(raw_bytes: bytes) -> RetrievalBenchmark:
+    return _load_bytes(raw_bytes, RetrievalBenchmark, "retrieval benchmark")
 
 
 def read_regular_file_bytes(path_value: str | Path, *, label: str) -> bytes:

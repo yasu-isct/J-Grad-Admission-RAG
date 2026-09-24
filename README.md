@@ -150,19 +150,22 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 ## M9 Release Evidence
 
 The checked-in M9-05 gate recomputes deterministic metrics from 20 human-reviewed cases and a
-cache-only BGE-M3 retrieval report. The accepted formal run produced 8 grounded answers, 2
+cache-only BGE-M3 retrieval report. The accepted formal run produced 6 grounded answers, 4
 needs-information results, and 10 safe refusals. Citation correctness, citation completeness,
 groundedness, refusal correctness, and missing-information correctness are all `1.0`; unsupported
-claim rate is `0.0`, Recall@10 is `0.7121`, subset MRR is `0.5114`, and Chinese-to-Japanese hit rate
-is `0.75`. The broader 42-query retrieval report records Recall@10 `0.8495` and MRR `0.8312`.
+claim rate is `0.0`. Recall@10 is `0.6364`, subset MRR is `0.2455`, and Chinese-to-Japanese hit rate
+is `0.50`, all computed from the formal service's recorded rankings. The broader 42-query retrieval
+report records Recall@10 `0.8495` and MRR `0.8312`.
 
 ```powershell
 jgrad-check-grounded-rag-gate `
   --suite tests\fixtures\grounded_rag_evaluation_suite_v1.json `
   --observations tests\fixtures\grounded_rag_observations_v1.json `
+  --retrieval-benchmark tests\fixtures\grounded_rag_retrieval_queries_v1.json `
   --retrieval-report tests\fixtures\grounded_rag_retrieval_report_v1.json `
   --report tests\fixtures\grounded_rag_evaluation_report_v1.json `
-  --policy config\grounded_rag_release_gate_v1.json
+  --policy config\grounded_rag_release_gate_v1.json `
+  --repository-root .
 ```
 
 See [Grounded RAG Release Evaluation](docs/evaluation/grounded-rag-release-v1.md) for metric scope,

@@ -19,7 +19,9 @@ from jgrad_admission_rag.evaluation.grounded_rag_evaluation import (
     canonical_grounded_rag_observations_bytes,
     canonical_grounded_rag_report_bytes,
     canonical_grounded_rag_suite_bytes,
+    canonical_retrieval_benchmark_bytes,
     evaluate_grounded_rag_release,
+    load_retrieval_benchmark_bytes,
     project_grounded_answer,
     refusal_observation,
 )
@@ -35,6 +37,7 @@ SUITE_PATH = FIXTURES / "grounded_rag_evaluation_suite_v1.json"
 OBSERVATIONS_PATH = FIXTURES / "grounded_rag_observations_v1.json"
 REPORT_PATH = FIXTURES / "grounded_rag_evaluation_report_v1.json"
 RETRIEVAL_REPORT_PATH = FIXTURES / "grounded_rag_retrieval_report_v1.json"
+RETRIEVAL_BENCHMARK_PATH = FIXTURES / "grounded_rag_retrieval_queries_v1.json"
 TARGET = {
     "schema_version": "1.0",
     "school_id": "isct",
@@ -111,9 +114,12 @@ CASE_REVISIONS = {
         "expected_error_code": "insufficient_evidence",
     },
     "rag:0007": {
-        "expected_disposition": "answered",
+        "question": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+        "expected_disposition": "needs_information",
         "expected_evidence": [{"fact_id": "fact:00111", "source_pages": [11]}],
-        "expected_missing_fields": [],
+        "expected_missing_fields": [
+            "language_test_results.selected.toefl_test_taker_score_report_pdf"
+        ],
         "expected_error_code": None,
     },
     "rag:0008": {
@@ -164,9 +170,12 @@ CASE_REVISIONS = {
         ],
     },
     "rag:0015": {
-        "expected_disposition": "answered",
-        "expected_evidence": [{"fact_id": "fact:00122", "source_pages": [12]}],
-        "expected_missing_fields": [],
+        "expected_disposition": "needs_information",
+        "expected_evidence": [
+            {"fact_id": "fact:00114", "source_pages": [11]},
+            {"fact_id": "fact:00122", "source_pages": [12]},
+        ],
+        "expected_missing_fields": ["language_test_results.selected.test_date"],
         "expected_error_code": None,
     },
     "rag:0016": {
@@ -214,8 +223,12 @@ def main() -> None:
 
     raw_suite = json.loads(SUITE_PATH.read_text(encoding="utf-8"))
     retrieval = load_retrieval_evaluation_bytes(RETRIEVAL_REPORT_PATH.read_bytes())
+    benchmark = load_retrieval_benchmark_bytes(RETRIEVAL_BENCHMARK_PATH.read_bytes())
     raw_suite.setdefault("target", TARGET)
     raw_suite["source_kb_sha256"] = retrieval.runtime.source_kb_sha256
+    raw_suite["retrieval_benchmark_sha256"] = hashlib.sha256(
+        canonical_retrieval_benchmark_bytes(benchmark)
+    ).hexdigest()
     raw_suite["retrieval_report_sha256"] = hashlib.sha256(
         canonical_retrieval_evaluation_bytes(retrieval)
     ).hexdigest()
@@ -228,7 +241,7 @@ def main() -> None:
         suite_sha256=hashlib.sha256(suite_bytes).hexdigest(),
         observations=tuple(_observe(args.base_url, suite, case) for case in suite.cases),
     )
-    report = evaluate_grounded_rag_release(suite, observations, retrieval)
+    report = evaluate_grounded_rag_release(suite, observations, retrieval, benchmark)
     SUITE_PATH.write_bytes(suite_bytes)
     OBSERVATIONS_PATH.write_bytes(canonical_grounded_rag_observations_bytes(observations))
     REPORT_PATH.write_bytes(canonical_grounded_rag_report_bytes(report))

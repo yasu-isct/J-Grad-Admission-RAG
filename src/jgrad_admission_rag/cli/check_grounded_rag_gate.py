@@ -13,12 +13,14 @@ from ..evaluation.grounded_rag_evaluation import (
     load_grounded_rag_policy_bytes,
     load_grounded_rag_report_bytes,
     load_grounded_rag_suite_bytes,
+    load_retrieval_benchmark_bytes,
     read_regular_file_bytes,
 )
 from ..evaluation.retrieval_evaluation import (
     EvaluationReportError,
     load_retrieval_evaluation_bytes,
 )
+from ..evaluation.semantic_gate import ImplementationContractError
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -32,8 +34,16 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--retrieval-report", required=True, help="Canonical pinned semantic report JSON."
     )
+    parser.add_argument(
+        "--retrieval-benchmark", required=True, help="Canonical reviewed retrieval benchmark JSON."
+    )
     parser.add_argument("--report", required=True, help="Canonical grounded release report JSON.")
     parser.add_argument("--policy", required=True, help="Canonical grounded release policy JSON.")
+    parser.add_argument(
+        "--repository-root",
+        required=True,
+        help="Repository root used to verify the bound implementation contract.",
+    )
     return parser
 
 
@@ -47,6 +57,9 @@ def main(argv: Sequence[str] | None = None) -> None:
         retrieval_report = load_retrieval_evaluation_bytes(
             read_regular_file_bytes(args.retrieval_report, label="retrieval report")
         )
+        retrieval_benchmark = load_retrieval_benchmark_bytes(
+            read_regular_file_bytes(args.retrieval_benchmark, label="retrieval benchmark")
+        )
         report = load_grounded_rag_report_bytes(
             read_regular_file_bytes(args.report, label="report")
         )
@@ -58,9 +71,15 @@ def main(argv: Sequence[str] | None = None) -> None:
             suite,
             observations,
             retrieval_report,
+            retrieval_benchmark,
             report,
+            args.repository_root,
         )
-    except (GroundedRagEvaluationError, EvaluationReportError) as error:
+    except (
+        GroundedRagEvaluationError,
+        EvaluationReportError,
+        ImplementationContractError,
+    ) as error:
         print(
             json.dumps(
                 {"error": str(error), "kind": "grounded_rag_gate_error"},

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -38,7 +39,7 @@ from jgrad_admission_rag.service.app import (
 )
 from tests.test_demo_cli import _synthetic_config
 from tests.test_grounded_rag import _cited_answer, _pack
-from jgrad_admission_rag.reasoning.cited_answer import CitedAnswer
+from jgrad_admission_rag.reasoning.cited_answer import CitedAnswer, ReportStatus
 from jgrad_admission_rag.reasoning.query_intent import (
     load_query_intent_catalog,
     parse_query_intent,
@@ -249,3 +250,84 @@ def test_reviewed_answer_projection_is_bound_to_requested_intent_category() -> N
         "eligibility.reviewed.test-rule",
     )
     assert _project_reviewed_answer_to_retrieval(_pack(), answer, dates) is None
+
+
+def test_reviewed_answer_projection_preserves_all_retained_rule_states() -> None:
+    catalog = load_query_intent_catalog(
+        Path(__file__).parents[1] / "src/jgrad_admission_rag/demo_config/query_intent_catalog.json"
+    )
+    base = _cited_answer().model_dump(mode="json")
+    findings = []
+    inventory = []
+    statuses = (
+        ("rule:confirmed", "confirmed", "active"),
+        ("rule:not-applicable", "not_applicable", "not_applicable"),
+        ("rule:pending", "needs_information", "pending"),
+    )
+    for rule_id, original_status, disposition in statuses:
+        finding = copy.deepcopy(base["rule_findings"][0])
+        finding.update(
+            {
+                "finding_id": f"finding:{rule_id}",
+                "rule_id": rule_id,
+                "subject_key": "eligibility.reviewed.shared-state",
+                "original_status": original_status,
+                "disposition": disposition,
+                "source_applicability_step_id": f"applicability:{rule_id}",
+                "source_resolution_step_id": f"resolution:{rule_id}",
+            }
+        )
+        for citation in finding["citations"]:
+            citation["source_rule_id"] = rule_id
+            citation["source_step_ids"] = [
+                f"applicability:{rule_id}",
+                f"resolution:{rule_id}",
+            ]
+        findings.append(finding)
+        inventory.extend(finding["citations"])
+    base.update(
+        {
+            "report_status": ReportStatus.NEEDS_INFORMATION.value,
+            "source_rule_ids": sorted(rule_id for rule_id, _, _ in statuses),
+            "source_trace_step_ids": sorted(
+                step
+                for rule_id, _, _ in statuses
+                for step in (f"applicability:{rule_id}", f"resolution:{rule_id}")
+            ),
+            "rule_findings": sorted(findings, key=lambda item: item["rule_id"]),
+            "missing_information": [
+                {
+                    "rule_id": "rule:pending",
+                    "field_path": "academic.expected_completion_date",
+                    "source_applicability_step_id": "applicability:rule:pending",
+                    "source_resolution_step_id": "resolution:rule:pending",
+                }
+            ],
+            "citation_inventory": sorted(
+                inventory,
+                key=lambda item: (
+                    item["document_id"],
+                    item["fact_id"],
+                    item["source_pages"],
+                    item["role"],
+                    item["source_rule_id"],
+                    item["source_step_ids"],
+                ),
+            ),
+        }
+    )
+    answer = CitedAnswer.model_validate(base)
+    intent = parse_query_intent("出願資格を教えてください。", catalog)
+
+    projected = _project_reviewed_answer_to_retrieval(_pack(), answer, intent)
+
+    assert projected is not None
+    assert projected.report_status is ReportStatus.NEEDS_INFORMATION
+    assert tuple(item.original_status.value for item in projected.rule_findings) == (
+        "confirmed",
+        "not_applicable",
+        "needs_information",
+    )
+    assert tuple(item.field_path for item in projected.missing_information) == (
+        "academic.expected_completion_date",
+    )

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -20,6 +21,7 @@ from jgrad_admission_rag.evaluation.grounded_rag_evaluation import (
     load_grounded_rag_policy_bytes,
     load_grounded_rag_report_bytes,
     load_grounded_rag_suite_bytes,
+    load_retrieval_benchmark_bytes,
     project_grounded_answer,
 )
 from jgrad_admission_rag.evaluation.retrieval_evaluation import (
@@ -32,6 +34,7 @@ FIXTURES = ROOT / "tests/fixtures"
 SUITE = FIXTURES / "grounded_rag_evaluation_suite_v1.json"
 OBSERVATIONS = FIXTURES / "grounded_rag_observations_v1.json"
 RETRIEVAL = FIXTURES / "grounded_rag_retrieval_report_v1.json"
+BENCHMARK = FIXTURES / "grounded_rag_retrieval_queries_v1.json"
 REPORT = FIXTURES / "grounded_rag_evaluation_report_v1.json"
 POLICY = ROOT / "config/grounded_rag_release_gate_v1.json"
 
@@ -42,12 +45,13 @@ def _inputs():
         load_grounded_rag_suite_bytes(SUITE.read_bytes()),
         load_grounded_rag_observations_bytes(OBSERVATIONS.read_bytes()),
         load_retrieval_evaluation_bytes(RETRIEVAL.read_bytes()),
+        load_retrieval_benchmark_bytes(BENCHMARK.read_bytes()),
         load_grounded_rag_report_bytes(REPORT.read_bytes()),
     )
 
 
 def test_release_suite_is_canonical_reviewed_and_covers_required_behavior() -> None:
-    _, suite, observations, retrieval, report = _inputs()
+    _, suite, observations, retrieval, _, report = _inputs()
     assert SUITE.read_bytes() == canonical_grounded_rag_suite_bytes(suite)
     assert OBSERVATIONS.read_bytes() == canonical_grounded_rag_observations_bytes(observations)
     assert REPORT.read_bytes() == canonical_grounded_rag_report_bytes(report)
@@ -64,10 +68,12 @@ def test_release_suite_is_canonical_reviewed_and_covers_required_behavior() -> N
 
 
 def test_release_gate_recomputes_every_metric_and_passes_approved_thresholds() -> None:
-    policy, suite, observations, retrieval, report = _inputs()
-    recomputed = evaluate_grounded_rag_release(suite, observations, retrieval)
+    policy, suite, observations, retrieval, benchmark, report = _inputs()
+    recomputed = evaluate_grounded_rag_release(suite, observations, retrieval, benchmark)
     assert canonical_grounded_rag_report_bytes(recomputed) == REPORT.read_bytes()
-    result = evaluate_grounded_rag_gate(policy, suite, observations, retrieval, report)
+    result = evaluate_grounded_rag_gate(
+        policy, suite, observations, retrieval, benchmark, report, ROOT
+    )
     assert result.passed
     assert result.failure_codes == ()
     assert recomputed.metrics.citation_correctness == 1
@@ -76,20 +82,22 @@ def test_release_gate_recomputes_every_metric_and_passes_approved_thresholds() -
     assert recomputed.metrics.groundedness == 1
     assert recomputed.metrics.refusal_correctness == 1
     assert recomputed.metrics.missing_information_correctness == 1
-    assert recomputed.metrics.cross_language_hit_rate_at_10 == 0.75
+    assert recomputed.metrics.cross_language_hit_rate_at_10 == 0.5
 
 
 def test_foreign_citation_and_forbidden_conclusion_fail_the_gate() -> None:
-    policy, suite, observations, retrieval, report = _inputs()
+    policy, suite, observations, retrieval, benchmark, report = _inputs()
     payload = observations.model_dump(mode="json")
-    payload["observations"][1]["claims"][0]["citations"][0]["fact_id"] = "fact:99999"
+    for claim in payload["observations"][1]["claims"]:
+        for citation in claim["citations"]:
+            citation["fact_id"] = "fact:99999"
     payload["observations"][2]["claims"][0]["text"] = "材料已受理"
     tampered = type(observations).model_validate(payload)
-    evaluated = evaluate_grounded_rag_release(suite, tampered, retrieval)
+    evaluated = evaluate_grounded_rag_release(suite, tampered, retrieval, benchmark)
     assert evaluated.metrics.citation_correctness < 1
     assert evaluated.metrics.citation_completeness < 1
     assert evaluated.metrics.unsupported_claim_rate > 0
-    gate = evaluate_grounded_rag_gate(policy, suite, tampered, retrieval, report)
+    gate = evaluate_grounded_rag_gate(policy, suite, tampered, retrieval, benchmark, report, ROOT)
     assert not gate.passed
     assert {
         "citation_correctness",
@@ -102,7 +110,7 @@ def test_foreign_citation_and_forbidden_conclusion_fail_the_gate() -> None:
 
 
 def test_suite_and_observation_bindings_fail_closed() -> None:
-    _, suite, observations, retrieval, _ = _inputs()
+    _, suite, observations, retrieval, benchmark, _ = _inputs()
     payload = suite.model_dump(mode="json")
     payload["cases"][0]["unknown"] = True
     with pytest.raises(ValidationError):
@@ -110,7 +118,44 @@ def test_suite_and_observation_bindings_fail_closed() -> None:
 
     detached = observations.model_copy(update={"suite_sha256": "0" * 64})
     with pytest.raises(GroundedRagEvaluationError, match="suite binding"):
-        evaluate_grounded_rag_release(suite, detached, retrieval)
+        evaluate_grounded_rag_release(suite, detached, retrieval, benchmark)
+
+
+def test_release_query_binding_and_recorded_rankings_are_authoritative() -> None:
+    _, suite, observations, retrieval, benchmark, _ = _inputs()
+    suite_payload = suite.model_dump(mode="json")
+    suite_payload["cases"][6]["question"] = "哪些 TOEFL 成绩有效？"
+    mismatched_suite = GroundedRagEvaluationSuite.model_validate(suite_payload)
+    rebound_observations = observations.model_copy(
+        update={
+            "suite_sha256": hashlib.sha256(
+                canonical_grounded_rag_suite_bytes(mismatched_suite)
+            ).hexdigest()
+        }
+    )
+    with pytest.raises(GroundedRagEvaluationError, match="does not match"):
+        evaluate_grounded_rag_release(mismatched_suite, rebound_observations, retrieval, benchmark)
+
+    baseline = evaluate_grounded_rag_release(suite, observations, retrieval, benchmark)
+    observation_payload = observations.model_dump(mode="json")
+    observation_payload["observations"][19]["ranked_retrieved_fact_ids"] = [
+        "fact:99998",
+        "fact:99999",
+    ]
+    degraded_observations = type(observations).model_validate(observation_payload)
+    degraded = evaluate_grounded_rag_release(suite, degraded_observations, retrieval, benchmark)
+    assert degraded.metrics.retrieval_recall_at_10 < baseline.metrics.retrieval_recall_at_10
+    assert degraded.metrics.retrieval_mrr < baseline.metrics.retrieval_mrr
+
+
+def test_release_gate_binds_the_implementation_contract() -> None:
+    policy, suite, observations, retrieval, benchmark, report = _inputs()
+    tampered_policy = policy.model_copy(update={"implementation_sha256": "0" * 64})
+    result = evaluate_grounded_rag_gate(
+        tampered_policy, suite, observations, retrieval, benchmark, report, ROOT
+    )
+    assert not result.passed
+    assert "implementation_sha256" in result.failure_codes
 
 
 def test_projection_accepts_only_server_validated_grounded_answer_state() -> None:
@@ -141,10 +186,14 @@ def test_gate_cli_passes_and_noncanonical_input_exits_two(tmp_path: Path, capsys
         str(OBSERVATIONS),
         "--retrieval-report",
         str(RETRIEVAL),
+        "--retrieval-benchmark",
+        str(BENCHMARK),
         "--report",
         str(REPORT),
         "--policy",
         str(POLICY),
+        "--repository-root",
+        str(ROOT),
     ]
     with pytest.raises(SystemExit) as passed:
         gate_main(arguments)

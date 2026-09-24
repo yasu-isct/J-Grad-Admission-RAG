@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from contextlib import asynccontextmanager
 from functools import partial
 from pathlib import Path
@@ -1615,9 +1616,10 @@ def _project_reviewed_answer_to_retrieval(
     """Project reviewed findings to the exact bounded retrieval result.
 
     The applicant report is intentionally a whole-plan audit object.  A natural-language
-    answer must instead expose only applicable findings whose complete, server-owned
+    answer must instead expose only intent-matched findings whose complete, server-owned
     citation set occurred in this request's bounded retrieval result.  No citation is
-    inserted from the wider reviewed bundle after retrieval.
+    inserted from the wider reviewed bundle after retrieval, and no retained rule state
+    is rewritten or discarded based on another retained finding.
     """
 
     retrieved = {
@@ -1658,26 +1660,49 @@ def _project_reviewed_answer_to_retrieval(
     candidates = tuple(
         finding
         for finding in cited_answer.rule_findings
-        if finding.original_status is not ApplicabilityStatus.NOT_APPLICABLE
-        and finding.subject_key.startswith(allowed_subject_prefixes)
-        and finding.activated_override is None
-        and all(citation.source_rule_id == finding.rule_id for citation in finding.citations)
+        if finding.subject_key.startswith(allowed_subject_prefixes)
         and {citation_key(citation) for citation in finding.citations} <= retrieved
     )
     if not candidates:
         return None
-    confirmed = tuple(
-        finding
+
+    def subject_family(subject_key: str) -> str:
+        return re.sub(r"-(?:apr|sep)$", "", subject_key)
+
+    active_families = {
+        subject_family(finding.subject_key)
         for finding in candidates
         if finding.original_status is ApplicabilityStatus.CONFIRMED
         and finding.disposition is ResolutionDisposition.ACTIVE
+    }
+    explicitly_requested_fragments: tuple[str, ...] = ()
+    normalized_query = intent.query.casefold()
+    if any(token in normalized_query for token in ("提出", "提交", "成绩单", "report")):
+        explicitly_requested_fragments += ("-report-",)
+    if any(token in normalized_query for token in ("受験日", "考试日期", "試験日")):
+        explicitly_requested_fragments += ("-test-date-",)
+    if "g179" in normalized_query:
+        explicitly_requested_fragments += ("-g179-",)
+    requested_families = {
+        subject_family(finding.subject_key)
+        for finding in candidates
+        if any(fragment in finding.subject_key for fragment in explicitly_requested_fragments)
+    }
+    pending_families = {
+        subject_family(finding.subject_key)
+        for finding in candidates
+        if finding.disposition is ResolutionDisposition.PENDING
+    }
+    selected_families = active_families | requested_families
+    if not selected_families:
+        selected_families = pending_families
+    if not selected_families:
+        return None
+    findings = tuple(
+        finding
+        for finding in candidates
+        if subject_family(finding.subject_key) in selected_families
     )
-    # A complete applicable rule is sufficient for a factual answer. Pending
-    # alternatives remain available in the full applicant report, but must not
-    # inject unrelated profile questions into this retrieval-bounded answer.
-    # When retrieval found no confirmed rule, retain the pending slice so the
-    # response continues to fail closed as needs-information.
-    findings = confirmed or candidates
 
     rule_ids = tuple(sorted(finding.rule_id for finding in findings))
     selected_rules = set(rule_ids)
