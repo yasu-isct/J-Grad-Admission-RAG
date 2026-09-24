@@ -7,6 +7,7 @@ from typing import Protocol, runtime_checkable
 
 from .contracts import (
     GENERATION_SCHEMA_VERSION,
+    ClaimKind,
     GenerationDraft,
     GenerationProviderIdentity,
     GenerationRequest,
@@ -23,6 +24,8 @@ class GenerationErrorCode(str, Enum):
     INCOMPLETE_RESPONSE = "incomplete_response"
     MALFORMED_OUTPUT = "malformed_output"
     UNKNOWN_REFERENCE = "unknown_reference"
+    UNSUPPORTED_CLAIM = "unsupported_claim"
+    STATE_MISMATCH = "state_mismatch"
 
 
 _SAFE_MESSAGES = {
@@ -34,6 +37,8 @@ _SAFE_MESSAGES = {
     GenerationErrorCode.INCOMPLETE_RESPONSE: "generation provider returned an incomplete response",
     GenerationErrorCode.MALFORMED_OUTPUT: "generation provider returned malformed output",
     GenerationErrorCode.UNKNOWN_REFERENCE: "generation output contains an unknown reference",
+    GenerationErrorCode.UNSUPPORTED_CLAIM: "generation output contains an unsupported claim",
+    GenerationErrorCode.STATE_MISMATCH: "generation output conflicts with reviewed state",
 }
 
 
@@ -84,11 +89,40 @@ def generate_checked(provider: GenerationProvider, request: GenerationRequest) -
 
     known_evidence = {item.evidence_id for item in checked_request.evidence}
     known_findings = {item.finding_id for item in checked_request.rule_findings}
+    known_applicant_facts = {item.field_path for item in checked_request.applicant_facts}
     if any(
-        set(claim.evidence_ids) - known_evidence or set(claim.finding_ids) - known_findings
+        set(claim.evidence_ids) - known_evidence
+        or set(claim.finding_ids) - known_findings
+        or set(claim.applicant_fact_paths) - known_applicant_facts
         for claim in output.claims
     ):
         raise GenerationError(GenerationErrorCode.UNKNOWN_REFERENCE)
+
+    findings_by_id = {item.finding_id: item for item in checked_request.rule_findings}
+    for claim in output.claims:
+        if claim.kind is not ClaimKind.REVIEWED_RULE:
+            continue
+        cited_findings = tuple(findings_by_id[item] for item in claim.finding_ids)
+        supported_evidence = {
+            evidence_id for finding in cited_findings for evidence_id in finding.evidence_ids
+        }
+        if not set(claim.evidence_ids) <= supported_evidence:
+            raise GenerationError(GenerationErrorCode.UNSUPPORTED_CLAIM)
+        pending = tuple(
+            finding
+            for finding in cited_findings
+            if finding.status in {"needs_information", "needs_review", "not_covered"}
+        )
+        if pending and not output.needs_review:
+            raise GenerationError(GenerationErrorCode.STATE_MISMATCH)
+        required_missing = {
+            field_path
+            for finding in pending
+            if finding.status == "needs_information"
+            for field_path in finding.missing_fields
+        }
+        if not required_missing <= set(output.missing_information):
+            raise GenerationError(GenerationErrorCode.STATE_MISMATCH)
 
     return GenerationResult(
         schema_version=GENERATION_SCHEMA_VERSION,
@@ -108,7 +142,7 @@ class DeterministicFakeGenerationProvider:
             revision=None,
         )
         self._draft = draft or GenerationDraft(
-            answer="オフライン生成では回答文を作成していません。根拠を確認してください。",
+            answer="",
             limitations=("deterministic-fake provider; no language model was called",),
             needs_review=True,
             refused=False,

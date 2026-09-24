@@ -9,8 +9,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, field_validator, model_validator
 
-GENERATION_SCHEMA_VERSION = "1.0"
-GENERATION_PROMPT_VERSION = "grounded-answer-v1"
+GENERATION_SCHEMA_VERSION = "1.1"
+GENERATION_PROMPT_VERSION = "grounded-answer-v2"
 
 _SAFE_ID = re.compile(r"^[^\W][\w.:/-]*$", re.UNICODE)
 _EVIDENCE_ID = re.compile(r"^evidence:[0-9]{4}$")
@@ -29,7 +29,6 @@ class ClaimKind(str, Enum):
     OFFICIAL_FACT = "official_fact"
     REVIEWED_RULE = "reviewed_rule"
     APPLICANT_STATEMENT = "applicant_statement"
-    LIMITATION = "limitation"
 
 
 class GenerationEvidence(GenerationModel):
@@ -130,7 +129,9 @@ class GenerationRuleFinding(GenerationModel):
     """A deterministic, reviewed finding supplied as context—not recomputed by the model."""
 
     finding_id: str
-    status: Literal["confirmed", "not_applicable", "needs_information", "needs_review"]
+    status: Literal[
+        "confirmed", "not_applicable", "needs_information", "needs_review", "not_covered"
+    ]
     statement: str = Field(min_length=1, max_length=4_000)
     evidence_ids: tuple[str, ...]
     missing_fields: tuple[str, ...] = ()
@@ -162,9 +163,15 @@ class GenerationRuleFinding(GenerationModel):
             _validate_identifier(value, "missing field")
         return values
 
+    @model_validator(mode="after")
+    def status_must_reconcile_with_missing_fields(self) -> GenerationRuleFinding:
+        if (self.status == "needs_information") != bool(self.missing_fields):
+            raise ValueError("only needs_information findings require non-empty missing_fields")
+        return self
+
 
 class GenerationRequest(GenerationModel):
-    schema_version: Literal["1.0"] = GENERATION_SCHEMA_VERSION
+    schema_version: Literal["1.1"] = GENERATION_SCHEMA_VERSION
     request_id: str
     question: str = Field(min_length=1, max_length=8_000)
     target: GenerationTarget
@@ -209,6 +216,7 @@ class GeneratedClaim(GenerationModel):
     text: str = Field(min_length=1, max_length=4_000)
     evidence_ids: tuple[str, ...] = ()
     finding_ids: tuple[str, ...] = ()
+    applicant_fact_paths: tuple[str, ...] = ()
 
     @field_validator("claim_id")
     @classmethod
@@ -235,24 +243,31 @@ class GeneratedClaim(GenerationModel):
         _validate_canonical_ids(values, "claim finding_ids")
         return values
 
+    @field_validator("applicant_fact_paths")
+    @classmethod
+    def applicant_paths_must_be_canonical(cls, values: tuple[str, ...]) -> tuple[str, ...]:
+        _validate_canonical_ids(values, "claim applicant_fact_paths")
+        return values
+
     @model_validator(mode="after")
     def grounding_must_match_kind(self) -> GeneratedClaim:
-        if (
-            self.kind in {ClaimKind.OFFICIAL_FACT, ClaimKind.REVIEWED_RULE}
-            and not self.evidence_ids
+        if _contains_prohibited_conclusion(self.text):
+            raise ValueError("claim text contains a prohibited final conclusion")
+        if self.kind is ClaimKind.OFFICIAL_FACT:
+            if not self.evidence_ids or self.finding_ids or self.applicant_fact_paths:
+                raise ValueError("official claims require only evidence IDs")
+        elif self.kind is ClaimKind.REVIEWED_RULE:
+            if not self.evidence_ids or not self.finding_ids or self.applicant_fact_paths:
+                raise ValueError("reviewed-rule claims require only evidence and finding IDs")
+        elif self.kind is ClaimKind.APPLICANT_STATEMENT and (
+            not self.applicant_fact_paths or self.evidence_ids or self.finding_ids
         ):
-            raise ValueError("official and reviewed-rule claims require evidence IDs")
-        if self.kind is ClaimKind.REVIEWED_RULE and not self.finding_ids:
-            raise ValueError("reviewed-rule claims require finding IDs")
-        if self.kind in {ClaimKind.APPLICANT_STATEMENT, ClaimKind.LIMITATION} and (
-            self.evidence_ids or self.finding_ids
-        ):
-            raise ValueError("applicant and limitation claims cannot cite official context")
+            raise ValueError("applicant claims require only applicant fact paths")
         return self
 
 
 class GenerationDraft(GenerationModel):
-    schema_version: Literal["1.0"] = GENERATION_SCHEMA_VERSION
+    schema_version: Literal["1.1"] = GENERATION_SCHEMA_VERSION
     answer: str = Field(max_length=20_000)
     claims: tuple[GeneratedClaim, ...] = ()
     missing_information: tuple[str, ...] = ()
@@ -280,11 +295,17 @@ class GenerationDraft(GenerationModel):
         claim_ids = tuple(item.claim_id for item in self.claims)
         if claim_ids != tuple(f"claim:{index:04d}" for index in range(1, len(self.claims) + 1)):
             raise ValueError("claim IDs must be contiguous and ordered")
+        if self.answer != assemble_generation_answer(self.claims):
+            raise ValueError("answer must be the exact ordered claim projection")
         if self.refused:
             if self.answer or self.claims or self.refusal_reason is None:
                 raise ValueError("a refusal may only contain its explicit reason")
-        elif not self.answer.strip() or self.refusal_reason is not None:
-            raise ValueError("a non-refusal requires an answer and no refusal_reason")
+        elif self.refusal_reason is not None:
+            raise ValueError("a non-refusal cannot contain a refusal_reason")
+        elif not self.claims and (
+            not self.needs_review or not (self.missing_information or self.limitations)
+        ):
+            raise ValueError("an empty answer must explicitly abstain with a review reason")
         return self
 
 
@@ -292,7 +313,7 @@ class GenerationProviderIdentity(GenerationModel):
     provider: str
     model: str
     revision: str | None = None
-    prompt_version: Literal["grounded-answer-v1"] = GENERATION_PROMPT_VERSION
+    prompt_version: Literal["grounded-answer-v2"] = GENERATION_PROMPT_VERSION
 
     @field_validator("provider", "model")
     @classmethod
@@ -310,7 +331,7 @@ class GenerationProviderIdentity(GenerationModel):
 
 
 class GenerationResult(GenerationModel):
-    schema_version: Literal["1.0"] = GENERATION_SCHEMA_VERSION
+    schema_version: Literal["1.1"] = GENERATION_SCHEMA_VERSION
     request_id: str
     provider: GenerationProviderIdentity
     output: GenerationDraft
@@ -336,6 +357,12 @@ def assign_generation_evidence_ids(
         )
         for index, material in enumerate(materials, start=1)
     )
+
+
+def assemble_generation_answer(claims: tuple[GeneratedClaim, ...]) -> str:
+    """Render only ordered, typed atomic claims into the answer channel."""
+
+    return "\n".join(claim.text for claim in claims)
 
 
 def canonical_generation_result_bytes(result: GenerationResult) -> bytes:
@@ -368,3 +395,23 @@ def _validate_canonical_ids(
         _validate_identifier(value, label)
         if pattern is not None and not pattern.fullmatch(value):
             raise ValueError(f"{label} contains an invalid opaque ID")
+
+
+_PROHIBITED_CONCLUSIONS = (
+    re.compile(r"(?:符合|具备)申请资格"),
+    re.compile(r"材料已受理"),
+    re.compile(r"申请材料(?:是)?完整"),
+    re.compile(r"(?:保证|一定|肯定).{0,6}(?:录取|合格)"),
+    re.compile(r"出願資格(?:を満たしています|があります)"),
+    re.compile(r"書類は受理されます"),
+    re.compile(r"申請は完全です"),
+    re.compile(r"必ず合格"),
+    re.compile(r"\b(?:you are|the applicant is) eligible\b", re.IGNORECASE),
+    re.compile(r"\bapplication (?:is|has been) (?:accepted|complete)\b", re.IGNORECASE),
+    re.compile(r"\bguaranteed admission\b", re.IGNORECASE),
+    re.compile(r"\b(?:you|the applicant) will be admitted\b", re.IGNORECASE),
+)
+
+
+def _contains_prohibited_conclusion(value: str) -> bool:
+    return any(pattern.search(value) is not None for pattern in _PROHIBITED_CONCLUSIONS)

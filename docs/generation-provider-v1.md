@@ -1,4 +1,4 @@
-# Generation provider and structured output v1
+# Generation provider and structured output v1.1
 
 M9-02 adds a provider-neutral language-generation boundary. It does not replace retrieval,
 deterministic rule evaluation, or the existing cited report. M9-03 will bind opaque generation IDs
@@ -22,18 +22,25 @@ It never includes an authoritative Fact ID, document ID, page, source hash, file
 or retrieval score. A model therefore cannot assign source authority or invent provenance. The
 server-owned ID-to-provenance binding is intentionally outside this contract.
 
-The structured draft separates answer text into typed claims. Official facts require evidence IDs;
-reviewed-rule claims require both evidence and finding IDs. Applicant statements and limitations
-cannot cite official context. Missing information, limitations, review state, and refusal state are
-explicit. There is no uncited string fallback after schema or provider failure.
+The structured draft separates answer text into typed atomic claims. Official facts require only
+evidence IDs; reviewed-rule claims require finding IDs plus evidence belonging to those findings;
+applicant statements require only field paths present in the request. The public `answer` must be
+the exact newline-joined projection of those claims, so it cannot carry additional uncited prose.
+Limitations are a separate non-answer channel. Missing information, limitations, review state, and
+refusal state are explicit. With no supportable claims, the answer is empty and the draft must
+abstain with `needs_review=true` plus a missing-information or limitation reason.
 
 ## Checked provider boundary
 
 `GenerationProvider` exposes immutable provider identity and one synchronous `generate` method.
 `generate_checked` revalidates the request, identity, and draft, rejects refusals, and rejects every
-evidence or finding ID absent from the request. Returned provider/model/prompt metadata is assigned
-outside the model output. Errors have stable, privacy-safe codes and do not chain backend exception
-text that could contain applicant or evidence data.
+evidence ID, finding ID, or applicant path absent from the request. Reviewed-rule evidence must
+belong to the cited finding. A cited pending/review finding forces review state, and required missing
+fields cannot disappear. A conservative multilingual phrase policy also rejects claims of final
+eligibility, material acceptance, application completeness, or guaranteed admission. Returned
+provider/model/prompt metadata is assigned outside the model output. Errors have stable,
+privacy-safe codes and do not chain backend exception text that could contain applicant or evidence
+data.
 
 `DeterministicFakeGenerationProvider` is the offline default for contract tests and local assembly.
 It needs no API key, performs no network activity, and returns a conservative needs-review result
@@ -47,11 +54,15 @@ Install the adapter separately:
 python -m pip install -e ".[generation]"
 ```
 
-The adapter uses the official Python SDK's Responses API and Structured Outputs parser. In the
-Responses API, structured output is configured through `text.format`; the Python SDK provides
-`responses.parse(..., text_format=Model)`. See the official
+The optional dependency supports the reviewed current official Python SDK 3.x line (`>=3.17,<4`).
+CI installs this extra and runs a credential-free import and call-signature smoke test without
+making an API request. The adapter uses the official SDK's Responses API and Structured Outputs
+parser. In the Responses API, structured output is configured through `text.format`; the Python SDK
+provides `responses.parse(..., text_format=Model)`. See the official
 [Structured Outputs guide](https://developers.openai.com/api/docs/guides/structured-outputs) and
 [Responses migration guide](https://developers.openai.com/api/docs/guides/migrate-to-responses).
+The supported version floor was checked against the official
+[openai-python releases](https://github.com/openai/openai-python/releases).
 
 Operational controls are explicit:
 

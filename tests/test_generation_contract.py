@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import subprocess
+import sys
+import textwrap
 from types import SimpleNamespace
 
 import pytest
@@ -66,13 +70,14 @@ def _request(*, injected: bool = False) -> GenerationRequest:
 
 
 def _grounded_draft() -> GenerationDraft:
+    claim_text = "審査済みの卒業条件は confirmed と記録されています。"
     return GenerationDraft(
-        answer="提示された条件では、卒業資格を満たします。",
+        answer=claim_text,
         claims=(
             GeneratedClaim(
                 claim_id="claim:0001",
                 kind=ClaimKind.REVIEWED_RULE,
-                text="卒業資格を満たします。",
+                text=claim_text,
                 evidence_ids=("evidence:0001",),
                 finding_ids=("finding:eligibility-1",),
             ),
@@ -125,9 +130,9 @@ def test_request_requires_contiguous_ids_and_bound_finding_evidence() -> None:
 
 
 def test_factual_claims_require_citations_and_rule_claims_require_findings() -> None:
-    with pytest.raises(ValidationError, match="require evidence"):
+    with pytest.raises(ValidationError, match="require only evidence"):
         GeneratedClaim(claim_id="claim:0001", kind=ClaimKind.OFFICIAL_FACT, text="unsupported")
-    with pytest.raises(ValidationError, match="require finding"):
+    with pytest.raises(ValidationError, match="require only evidence and finding"):
         GeneratedClaim(
             claim_id="claim:0001",
             kind=ClaimKind.REVIEWED_RULE,
@@ -145,7 +150,7 @@ def test_checked_fake_is_deterministic_and_canonical() -> None:
     assert canonical_generation_result_bytes(first).endswith(b"\n")
     assert json.loads(canonical_generation_result_bytes(first))["provider"] == {
         "model": "grounded-static-v1",
-        "prompt_version": "grounded-answer-v1",
+        "prompt_version": "grounded-answer-v2",
         "provider": "deterministic-fake",
         "revision": None,
     }
@@ -156,6 +161,141 @@ def test_default_fake_needs_no_key_and_abstains(monkeypatch: pytest.MonkeyPatch)
     result = generate_checked(DeterministicFakeGenerationProvider(), _request())
     assert result.output.needs_review is True
     assert result.output.claims == ()
+    assert result.output.answer == ""
+
+
+def test_answer_cannot_bypass_atomic_claims() -> None:
+    with pytest.raises(ValidationError, match="exact ordered claim projection"):
+        GenerationDraft(
+            answer="The deadline is tomorrow.",
+            claims=(),
+            limitations=("no evidence",),
+            needs_review=True,
+            refused=False,
+        )
+
+
+def test_empty_evidence_rejects_factual_answer() -> None:
+    request = GenerationRequest(
+        request_id="request:no-evidence",
+        question="deadline?",
+        target=GenerationTarget(application_label="target"),
+        evidence=(),
+    )
+    text = "The official deadline is tomorrow."
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.OFFICIAL_FACT,
+                text=text,
+                evidence_ids=("evidence:0001",),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), request)
+    assert caught.value.code is GenerationErrorCode.UNKNOWN_REFERENCE
+
+
+def test_applicant_claim_must_bind_to_an_input_fact() -> None:
+    text = "The applicant states that a score is available."
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.APPLICANT_STATEMENT,
+                text=text,
+                applicant_fact_paths=("language.toefl.score",),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), _request())
+    assert caught.value.code is GenerationErrorCode.UNKNOWN_REFERENCE
+
+
+def test_reviewed_claim_evidence_must_belong_to_its_finding() -> None:
+    text = "The reviewed condition is recorded as confirmed."
+    draft = GenerationDraft(
+        answer=text,
+        claims=(
+            GeneratedClaim(
+                claim_id="claim:0001",
+                kind=ClaimKind.REVIEWED_RULE,
+                text=text,
+                evidence_ids=("evidence:0002",),
+                finding_ids=("finding:eligibility-1",),
+            ),
+        ),
+        needs_review=False,
+        refused=False,
+    )
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), _request())
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
+def test_pending_finding_cannot_be_presented_as_clean_or_hide_missing_fields() -> None:
+    payload = _request().model_dump()
+    payload["rule_findings"][0].update(
+        status="needs_information", missing_fields=("eligibility.expected_completion_date",)
+    )
+    request = GenerationRequest.model_validate(payload)
+    claim = _grounded_draft().claims[0]
+    clean = GenerationDraft(
+        answer=claim.text,
+        claims=(claim,),
+        needs_review=False,
+        refused=False,
+    )
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(clean), request)
+    assert caught.value.code is GenerationErrorCode.STATE_MISMATCH
+
+    hidden_missing = clean.model_copy(update={"needs_review": True})
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(hidden_missing), request)
+    assert caught.value.code is GenerationErrorCode.STATE_MISMATCH
+
+
+def test_finding_status_requires_exact_missing_field_shape() -> None:
+    payload = _request().rule_findings[0].model_dump()
+    payload["status"] = "needs_information"
+    with pytest.raises(ValidationError, match="non-empty missing_fields"):
+        GenerationRuleFinding.model_validate(payload)
+
+    payload["status"] = "confirmed"
+    payload["missing_fields"] = ("eligibility.expected_completion_date",)
+    with pytest.raises(ValidationError, match="non-empty missing_fields"):
+        GenerationRuleFinding.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    "text",
+    (
+        "你符合申请资格。",
+        "申请材料完整。",
+        "保证录取。",
+        "出願資格を満たしています。",
+        "You are eligible.",
+        "Guaranteed admission.",
+    ),
+)
+def test_prohibited_final_conclusions_fail_schema_validation(text: str) -> None:
+    with pytest.raises(ValidationError, match="prohibited final conclusion"):
+        GeneratedClaim(
+            claim_id="claim:0001",
+            kind=ClaimKind.OFFICIAL_FACT,
+            text=text,
+            evidence_ids=("evidence:0001",),
+        )
 
 
 def test_checked_boundary_rejects_unknown_ids() -> None:
@@ -313,3 +453,58 @@ def test_openai_adapter_maps_timeout_without_leaking_exception(
     assert caught.value.code is GenerationErrorCode.PROVIDER_TIMEOUT
     assert "秘密" not in str(caught.value)
     assert caught.value.__cause__ is None
+
+
+@pytest.mark.parametrize(
+    ("exception_name", "code"),
+    (
+        ("LengthFinishReasonError", GenerationErrorCode.INCOMPLETE_RESPONSE),
+        ("ContentFilterFinishReasonError", GenerationErrorCode.PROVIDER_REFUSAL),
+        ("ValidationError", GenerationErrorCode.MALFORMED_OUTPUT),
+        ("JSONDecodeError", GenerationErrorCode.MALFORMED_OUTPUT),
+    ),
+)
+def test_openai_adapter_classifies_parse_failures_without_payload_leak(
+    monkeypatch: pytest.MonkeyPatch,
+    exception_name: str,
+    code: GenerationErrorCode,
+) -> None:
+    error_type = type(exception_name, (Exception,), {})
+    provider, _ = _provider(monkeypatch, _FakeResponses(error=error_type("private-profile-秘密")))
+    with pytest.raises(GenerationError) as caught:
+        provider.generate(_request())
+    assert caught.value.code is code
+    assert "秘密" not in str(caught.value)
+    assert caught.value.__cause__ is None
+
+
+def test_installed_openai_sdk_signature_smoke() -> None:
+    if importlib.util.find_spec("openai") is None:
+        pytest.skip("OpenAI SDK optional extra is not installed")
+    script = textwrap.dedent(
+        """
+        import inspect
+        from importlib.metadata import version
+        import openai
+
+        major, minor, *_ = (int(part) for part in version("openai").split(".") if part.isdigit())
+        assert (major, minor) >= (3, 17)
+        assert major < 4
+        client = openai.OpenAI(api_key="not-a-real-credential")
+        try:
+            parameters = inspect.signature(client.responses.parse).parameters
+            required = {"model", "input", "text_format", "max_output_tokens", "store"}
+            assert required <= set(parameters)
+        finally:
+            client.close()
+        """
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert completed.returncode == 0, "installed OpenAI SDK signature smoke failed"
+    assert "openai" not in sys.modules
