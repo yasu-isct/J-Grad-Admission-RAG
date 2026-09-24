@@ -44,7 +44,9 @@ citations, so required review and missing fields cannot disappear. Because no cl
 display channel, paraphrased final eligibility, material acceptance, completeness, or admission
 guarantees fail hydration rather than relying on a phrase blacklist. Returned provider/model/prompt
 metadata is assigned outside the model output. Errors have stable, privacy-safe codes and do not
-chain backend exception text that could contain applicant or evidence data.
+chain backend exception text that could contain applicant or evidence data. Hydration and final
+aggregate-size validation are inside the same privacy-safe boundary, so a Pydantic input-value
+representation cannot escape when trusted source text expands the draft.
 
 `DeterministicFakeGenerationProvider` is the offline default for contract tests and local assembly.
 It needs no API key, performs no network activity, and returns a conservative needs-review result

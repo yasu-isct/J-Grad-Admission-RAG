@@ -148,29 +148,34 @@ def generate_checked(provider: GenerationProvider, request: GenerationRequest) -
     if set(output.missing_information) - known_missing:
         raise GenerationError(GenerationErrorCode.UNKNOWN_REFERENCE)
 
-    hydrated_claims = tuple(
-        GeneratedClaim.model_validate(
-            {
-                **claim.model_dump(mode="json"),
-                "text": _render_claim_text(
-                    claim,
-                    evidence_by_id=evidence_by_id,
-                    findings_by_id=findings_by_id,
-                    applicant_facts_by_path=applicant_facts_by_path,
-                ),
-            }
+    try:
+        hydrated_claims = tuple(
+            GeneratedClaim.model_validate(
+                {
+                    **claim.model_dump(mode="json"),
+                    "text": _render_claim_text(
+                        claim,
+                        evidence_by_id=evidence_by_id,
+                        findings_by_id=findings_by_id,
+                        applicant_facts_by_path=applicant_facts_by_path,
+                    ),
+                }
+            )
+            for claim in output.claims
         )
-        for claim in output.claims
-    )
-    hydrated_output = GenerationDraft(
-        answer=assemble_generation_answer(hydrated_claims),
-        claims=hydrated_claims,
-        missing_information=output.missing_information,
-        limitations=output.limitations,
-        needs_review=output.needs_review,
-        refused=False,
-        refusal_reason=None,
-    )
+        hydrated_output = GenerationDraft(
+            answer=assemble_generation_answer(hydrated_claims),
+            claims=hydrated_claims,
+            missing_information=output.missing_information,
+            limitations=output.limitations,
+            needs_review=output.needs_review,
+            refused=False,
+            refusal_reason=None,
+        )
+    except Exception:
+        # Hydrated text contains trusted evidence and applicant values. Keep validation
+        # representations, including oversized aggregate inputs, behind the safe boundary.
+        raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
 
     return GenerationResult(
         schema_version=GENERATION_SCHEMA_VERSION,

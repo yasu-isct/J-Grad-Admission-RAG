@@ -469,6 +469,46 @@ def test_provider_failures_do_not_expose_input_or_cause() -> None:
     assert caught.value.__cause__ is None
 
 
+def test_hydration_size_failure_does_not_leak_applicant_values() -> None:
+    secret = "PRIVATE_APPLICANT_SECRET"
+    applicant_facts = tuple(
+        ApplicantFact(
+            field_path=f"profile.field{index:03d}",
+            value=("x" * (4000 - len(secret)) + secret if index == 49 else "x" * 4000),
+        )
+        for index in range(50)
+    )
+    claims = tuple(
+        GeneratedClaim(
+            claim_id=f"claim:{index + 1:04d}",
+            kind=ClaimKind.APPLICANT_STATEMENT,
+            text=f"draft-{index}",
+            applicant_fact_paths=(fact.field_path,),
+        )
+        for index, fact in enumerate(applicant_facts)
+    )
+    request = GenerationRequest(
+        request_id="request:large-private-profile",
+        question="summarize",
+        target=GenerationTarget(application_label="target"),
+        applicant_facts=applicant_facts,
+        evidence=(),
+    )
+    draft = GenerationDraft(
+        answer="\n".join(claim.text for claim in claims),
+        claims=claims,
+        needs_review=False,
+        refused=False,
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        generate_checked(DeterministicFakeGenerationProvider(draft), request)
+
+    assert caught.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+    assert secret not in str(caught.value)
+    assert caught.value.__cause__ is None
+
+
 class _FakeResponses:
     def __init__(self, response: object = None, error: Exception | None = None) -> None:
         self.response = response
