@@ -259,11 +259,12 @@ preferences prevent benchmark annotations from influencing retrieval. Fake embed
 deterministic plumbing baseline but are explicitly ineligible for quality gates. See
 [Retrieval Evaluation v1](evaluation/retrieval-evaluation-v1.md).
 
-The first semantic baseline uses one externally cached, pinned BGE-M3 revision to characterize the
-frozen benchmark with three byte-identical cache-only runs. It records model and artifact bindings,
-primary-only metrics, and diagnostic Fact IDs without committing the model, index, PDF, or reports.
-Its `quality_eligible` result is evidence for a later threshold decision, never a threshold by
-itself. See [BGE-M3 Semantic Baseline](evaluation/semantic-baseline-bge-m3.md).
+The semantic baseline uses one externally cached, pinned BGE-M3 revision and three byte-identical
+cache-only runs. The 38-query benchmark records Japanese and Chinese query language; the accepted
+gate remains explicitly bound to the original 34-query Japanese cohort while the Chinese slice is
+reported separately. It records model and artifact bindings, primary-only metrics, and diagnostic
+Fact IDs without committing the model, index, PDF, or local run reports. See
+[BGE-M3 Semantic Baseline](evaluation/semantic-baseline-bge-m3.md).
 
 The semantic regression gate is a separate pure verifier over a compact report, approved policy,
 and signed retrieval-affecting implementation set. It never loads a model, KB, or vector index in
@@ -288,10 +289,11 @@ four-step Demo with official text and page-linked citations.
 
 This is retrieval-and-reasoning complete and RAG-ready, but it is not yet a complete LLM-generated
 RAG path. The packaged Demo defaults to the non-semantic `deterministic-fake` provider for offline
-repeatability. The pinned BGE-M3 semantic path exists at the adapter, benchmark, and regression-gate
-layers, while M9 adds formal Demo selection, a replaceable Generation provider, structured grounded
-output, and deterministic citation validation. Until those slices pass their gates, current answer
-prose remains deterministic and arbitrary natural-language questions are not supported.
+repeatability. M9-01 adds an explicit cache-only pinned BGE-M3 Demo selection on the same existing
+hybrid retrieval path; startup displays the audited embedding identity and semantic status. Later M9
+slices add a replaceable Generation provider, structured grounded output, and deterministic citation
+validation. Until those slices pass their gates, current answer prose remains deterministic and
+arbitrary natural-language questions are not supported.
 
 ## Main Boundaries
 

@@ -97,6 +97,21 @@ def test_frozen_semantic_baseline_passes_every_required_check() -> None:
     }
 
 
+def test_cross_language_metrics_are_reported_but_japanese_remains_quality_cohort() -> None:
+    report = load_retrieval_evaluation_bytes(_report_bytes())
+    summaries = {
+        item.group: item.summary
+        for item in report.aggregates.breakdowns
+        if item.dimension == "query_language"
+    }
+
+    assert _policy().quality_query_language == "ja"
+    assert summaries["ja"].query_count == 34
+    assert summaries["ja"].zero_hit_query_ids == ()
+    assert summaries["zh"].query_count == 4
+    assert summaries["zh"].zero_hit_query_ids == ("rq:0037", "rq:0038")
+
+
 def test_frozen_benchmark_report_and_policy_share_one_kb_schema_binding() -> None:
     benchmark_path = ROOT / "tests/fixtures/retrieval_queries_v1.json"
     benchmark = load_retrieval_benchmark(benchmark_path)
@@ -236,10 +251,21 @@ def test_count_caps_fail_at_one_less_than_the_accepted_value(
 
 def test_zero_hit_cap_fails_when_a_zero_hit_is_introduced() -> None:
     report = load_retrieval_evaluation_bytes(_report_bytes())
-    overall = report.aggregates.overall.model_copy(update={"zero_hit_query_ids": ("rq:0001",)})
-    changed = report.model_copy(
-        update={"aggregates": report.aggregates.model_copy(update={"overall": overall})}
+    query = report.queries[0].model_copy(
+        update={
+            "first_relevant_rank": None,
+            "reciprocal_rank": 0.0,
+            "recall": report.queries[0].recall.model_copy(
+                update={
+                    "recall_at_1": 0.0,
+                    "recall_at_3": 0.0,
+                    "recall_at_5": 0.0,
+                    "recall_at_10": 0.0,
+                }
+            ),
+        }
     )
+    changed = report.model_copy(update={"queries": (query, *report.queries[1:])})
     policy = _policy()
     policy_bytes = POLICY_PATH.read_bytes()
 

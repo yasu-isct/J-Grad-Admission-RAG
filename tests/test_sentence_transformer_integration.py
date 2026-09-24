@@ -10,6 +10,10 @@ from pathlib import Path
 import pytest
 
 from jgrad_admission_rag.builder.kb_builder import build_document_kb
+from jgrad_admission_rag.cli import evaluate_retrieval as evaluate_retrieval_cli
+from jgrad_admission_rag.evaluation.retrieval_evaluation import (
+    load_retrieval_evaluation_bytes,
+)
 from jgrad_admission_rag.schemas.document_identity import load_document_identity
 from jgrad_admission_rag.retrieval.embedding import embed_documents_checked, embed_query_checked
 from jgrad_admission_rag.retrieval.sentence_transformer import (
@@ -18,6 +22,9 @@ from jgrad_admission_rag.retrieval.sentence_transformer import (
 )
 
 pytestmark = pytest.mark.model_integration
+
+BGE_M3_MODEL = "BAAI/bge-m3"
+BGE_M3_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
 
 
 def test_explicit_sentence_transformer_model_against_real_projection() -> None:
@@ -95,3 +102,58 @@ def test_explicit_sentence_transformer_model_against_real_projection() -> None:
             "allow_download": allow_download,
         }
     )
+
+
+def test_pinned_bge_m3_cross_language_benchmark_is_cache_only_and_repeatable(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    cache = os.getenv("JGRAD_BGE_M3_CACHE")
+    index = os.getenv("JGRAD_BGE_M3_INDEX")
+    kb = os.getenv("JGRAD_BGE_M3_KB")
+    if not cache or not index or not kb:
+        pytest.skip("set JGRAD_BGE_M3_CACHE, JGRAD_BGE_M3_INDEX, and JGRAD_BGE_M3_KB explicitly")
+
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
+    monkeypatch.setenv("TRANSFORMERS_OFFLINE", "1")
+    benchmark = Path(__file__).parent / "fixtures" / "retrieval_queries_v1.json"
+    args = [
+        index,
+        "--current-kb",
+        kb,
+        "--benchmark",
+        str(benchmark),
+        "--provider",
+        "sentence-transformers",
+        "--model",
+        BGE_M3_MODEL,
+        "--revision",
+        BGE_M3_REVISION,
+        "--dimension",
+        "1024",
+        "--batch-size",
+        "8",
+        "--cache-folder",
+        cache,
+    ]
+
+    outputs: list[bytes] = []
+    for _ in range(3):
+        evaluate_retrieval_cli.main(args)
+        captured = capsys.readouterr()
+        assert "download" not in captured.err.casefold()
+        outputs.append(captured.out.encode("utf-8"))
+
+    assert outputs[0] == outputs[1] == outputs[2]
+    report = load_retrieval_evaluation_bytes(outputs[0])
+    assert report.runtime.embedding_model == BGE_M3_MODEL
+    assert report.runtime.embedding_revision == BGE_M3_REVISION
+    assert report.runtime.semantic is True
+    assert report.benchmark.ordered_query_count == 38
+    language_summaries = {
+        breakdown.group: breakdown.summary
+        for breakdown in report.aggregates.breakdowns
+        if breakdown.dimension == "query_language"
+    }
+    assert language_summaries["ja"].query_count == 34
+    assert language_summaries["zh"].query_count == 4

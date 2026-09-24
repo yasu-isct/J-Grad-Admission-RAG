@@ -17,6 +17,16 @@ import pytest
 
 from jgrad_admission_rag.builder.kb_builder import DocumentBuildError, build_document_kb
 from jgrad_admission_rag.demo import DemoError, load_demo_config, prepare_demo
+from jgrad_admission_rag.demo_embedding import (
+    BGE_M3_DEMO_PROVIDER,
+    BGE_M3_DIMENSION,
+    BGE_M3_MODEL,
+    BGE_M3_REVISION,
+    DemoEmbeddingConfigurationError,
+    create_demo_embedding_provider,
+    resolve_demo_embedding_configuration,
+)
+from jgrad_admission_rag.retrieval.embedding import EmbeddingIdentity, EmbeddingProviderError
 from jgrad_admission_rag.reasoning.query_intent import canonical_query_intent_catalog_bytes
 from jgrad_admission_rag.reasoning.applicability import RuleScope
 from jgrad_admission_rag.reasoning.reviewed_report_plan import (
@@ -40,6 +50,24 @@ from jgrad_admission_rag.service.date_presentation import (
     canonical_reviewed_date_presentation_bytes,
 )
 from tests.test_reviewed_report_evidence import _plan, _rule
+
+
+class _ControlledBgeProvider:
+    identity = EmbeddingIdentity(
+        "sentence-transformers", BGE_M3_MODEL, BGE_M3_REVISION, BGE_M3_DIMENSION
+    )
+
+    def embed_documents(self, texts):
+        return [[1.0, *([0.0] * (BGE_M3_DIMENSION - 1))] for _ in texts]
+
+    def embed_query(self, _text):
+        return [1.0, *([0.0] * (BGE_M3_DIMENSION - 1))]
+
+
+class _UnavailableBgeProvider:
+    @property
+    def identity(self):
+        raise EmbeddingProviderError("sentence-transformers model loading failed")
 
 
 def _synthetic_config(root: Path) -> tuple[Path, Path, DocumentIdentity]:
@@ -180,6 +208,10 @@ def test_demo_builds_and_reuses_a_fully_audited_workspace(tmp_path: Path) -> Non
     assert built.reused is False
     assert reused.reused is True
     assert reused.identity == identity
+    assert reused.embedding_identity == EmbeddingIdentity(
+        "deterministic-fake", "sha256-counter-v1", None, 8
+    )
+    assert reused.semantic is False
     assert reused.report_plan_path.is_relative_to(workspace)
     assert str(pdf) not in reused.report_plan_path.read_text(encoding="utf-8")
     assert (
@@ -285,6 +317,90 @@ def test_installed_console_entry_point_is_available() -> None:
     )
     assert result.returncode == 0
     assert "--pdf ABSOLUTE_PATH" in result.stdout
+    assert "--embedding-provider {deterministic-fake,bge-m3}" in result.stdout
+    assert "--embedding-cache ABSOLUTE_PATH" in result.stdout
+
+
+def test_demo_embedding_selection_is_narrow_pinned_and_cache_only(tmp_path: Path) -> None:
+    fake = resolve_demo_embedding_configuration()
+    bge = resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER)
+
+    assert fake.identity == EmbeddingIdentity("deterministic-fake", "sha256-counter-v1", None, 8)
+    assert fake.semantic is False
+    assert bge.identity == EmbeddingIdentity(
+        "sentence-transformers", BGE_M3_MODEL, BGE_M3_REVISION, BGE_M3_DIMENSION
+    )
+    assert bge.semantic is True
+    bge_provider = create_demo_embedding_provider(bge)
+    assert bge_provider.config.allow_download is False
+    assert bge_provider.config.cache_folder is None
+    cached_bge = resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER, tmp_path.resolve())
+    assert create_demo_embedding_provider(cached_bge).config.cache_folder == tmp_path.resolve()
+    with pytest.raises(DemoEmbeddingConfigurationError, match="only valid"):
+        resolve_demo_embedding_configuration("deterministic-fake", tmp_path)
+    with pytest.raises(DemoEmbeddingConfigurationError, match="canonical absolute"):
+        resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER, Path("relative-cache"))
+
+
+def test_demo_builds_and_audits_the_selected_pinned_bge_identity(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    bge = resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER)
+    monkeypatch.setattr(
+        demo, "create_demo_embedding_provider", lambda _configuration: _ControlledBgeProvider()
+    )
+
+    built = prepare_demo(pdf, workspace, config_dir=config, embedding_configuration=bge)
+    reused = prepare_demo(pdf, workspace, config_dir=config, embedding_configuration=bge)
+
+    assert built.embedding_identity == bge.identity
+    assert built.semantic is True
+    assert reused.reused is True
+    with pytest.raises(DemoError, match="stale or incompatible"):
+        prepare_demo(pdf, workspace, config_dir=config)
+
+
+def test_bge_build_failure_is_cache_only_and_actionable(monkeypatch, tmp_path: Path) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    bge = resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER)
+    monkeypatch.setattr(
+        demo, "create_demo_embedding_provider", lambda _configuration: _UnavailableBgeProvider()
+    )
+
+    with pytest.raises(DemoError, match="no download was attempted") as captured:
+        prepare_demo(pdf, workspace, config_dir=config, embedding_configuration=bge)
+
+    assert BGE_M3_MODEL in str(captured.value)
+    assert BGE_M3_REVISION in str(captured.value)
+
+
+def test_launcher_prints_the_audited_provider_identity_before_serving(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    import uvicorn
+
+    from jgrad_admission_rag import demo_cli
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    runtime = prepare_demo(pdf, (tmp_path / "workspace").resolve(), config_dir=config)
+    embedding = resolve_demo_embedding_configuration()
+    monkeypatch.setattr(uvicorn, "run", lambda *_args, **_kwargs: None)
+
+    demo_cli._serve(runtime, 8000, embedding)
+
+    output = capsys.readouterr().out
+    assert (
+        "provider=deterministic-fake model=sha256-counter-v1 revision=none "
+        "dimension=8 semantic=false"
+    ) in output
+    assert "not semantic search quality" in output
 
 
 def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Path) -> None:
@@ -393,7 +509,9 @@ def test_cli_reports_clean_interrupt(monkeypatch, capsys, tmp_path: Path) -> Non
     workspace = (tmp_path / "workspace").resolve()
     monkeypatch.setattr(demo_cli, "_require_available_port", lambda _port: None)
     monkeypatch.setattr(
-        demo_cli, "_serve", lambda _runtime, _port: (_ for _ in ()).throw(KeyboardInterrupt)
+        demo_cli,
+        "_serve",
+        lambda _runtime, _port, _embedding: (_ for _ in ()).throw(KeyboardInterrupt),
     )
 
     demo_cli.main(

@@ -1,8 +1,9 @@
 # BGE-M3 Semantic Baseline
 
-This is the first semantic characterization for the frozen 34-query Japanese admission-retrieval
-benchmark. It is evidence for a later threshold decision, not a quality gate or a pass/fail claim.
-The model, benchmark, retrieval configuration, and input KB were held fixed throughout.
+This is the semantic characterization for the frozen 38-query Japanese/Chinese
+admission-retrieval benchmark. The first 34 Japanese queries remain the quality-gated cohort; four
+Chinese queries characterize cross-language retrieval without weakening the accepted Japanese
+thresholds. The model, benchmark, retrieval configuration, and input KB are fixed throughout.
 
 ## Provenance
 
@@ -30,13 +31,13 @@ area. The older 382-unit `outputs/kb/isct_master` artifact was not used.
 | Binding | SHA-256 / value |
 | --- | --- |
 | Source PDF | `57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735` |
-| Current KB, schema `0.6`, 316 Facts/Units | `f35402bc970c2153889ec8d62b7b684681cfa07812392ac983071f331e323106` |
-| Frozen benchmark, canonical LF bytes | `d0ddca5beb3453f640e75210902add20691f75d7f9fb1b8c7fab952f5ddffd3e` |
-| Payloads | `f6368aa24177af955a111b49f801662c41562f2d959ae75ab5f4df561a052a50` |
-| Semantic vectors | `c572be91232311bdbe76043edc0917af9c069fdd91800528c68c1f74fc8ede7d` |
-| Index manifest | `934341d39e0635eef1860659df7c167c3169c807c4bb288387c69873c0350443` |
+| Current KB, schema `0.6`, 334 Facts/Units | `b24f85ecc0400a7d6e6e0fac94e078b2515a0c378b5bc35383efcd05977dedf6` |
+| Frozen benchmark, canonical LF bytes | `47be02726a2091e352bc8d0a9037be97d429eb7c8b260c63e9130ee1b733de20` |
+| Payloads | `6d49c6d579216846749672a4fdd7520eb0ab1405cda9c976372ed413554214aa` |
+| Semantic vectors | `3aca31a683e2145fa9e24566abd3af40540bba8473b0d6a895e0cf6297f67f58` |
+| Index manifest | `ff2dc4f94abafb85cc60f9af9da94c52daa3d305b25e3843a8010dedd7e6523b` |
 
-The semantic index is a new absent-directory build with 316 normalized vectors. It binds the model
+The semantic index is a new absent-directory build with 334 normalized vectors. It binds the model
 identity above and uses `hybrid`, `bm25-v1`, `rrf-v1`, `RRF_K=60`, `top_k=10`, and
 `candidate_k=50`. Every request has empty metadata filters and empty scope preferences.
 
@@ -77,57 +78,28 @@ the canonical stdout bytes must remain identical.
 
 ## Three-Run Result
 
-The RULE-01B report is stored as canonical LF JSON on Windows and in the committed Git blob. Both
-have SHA-256 `9ce74f992a3ac77a7e97ce6f46a20eb3c4fedeab52cb11e0b25d65f4f539e796`.
+The report is stored as canonical LF JSON on Windows and in the committed Git blob. Both have
+SHA-256 `1ba6fb5d0b74b35d13bb5bbf503849b5e1545be7c45d3aa5c8300b884b77623b`.
 Each reports `semantic_evaluation=true`, `quality_eligible=true`, and `gate_status=not_evaluated`.
 
 | Queries | Recall@1 | Recall@3 | Recall@5 | Recall@10 | MRR | Zero hits |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Overall, 34 | 0.4199 | 0.7621 | 0.8582 | 0.9396 | 0.9608 | none |
+| Overall, 38 | 0.3691 | 0.6810 | 0.7810 | 0.8635 | 0.8781 | `rq:0037`, `rq:0038` |
+| Japanese quality cohort | 0.4125 | 0.7464 | 0.8533 | 0.9405 | 0.9608 | none |
+| Chinese cross-language cohort | 0.0000 | 0.1250 | 0.1667 | 0.2083 | 0.1750 | `rq:0037`, `rq:0038` |
 
 The values above are display-rounded only. The canonical report and its SHA retain full precision.
-Independent recomputation from the emitted primary Fact IDs matched all 34 per-query values and the
-macro values exactly.
-
-| Breakdown | Queries | R@1 | R@3 | R@5 | R@10 | MRR |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| category: application_dates | 2 | 0.2500 | 0.7500 | 0.9167 | 1.0000 | 1.0000 |
-| category: contacts_forms | 2 | 0.6667 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| category: department_requirements | 4 | 0.7500 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| category: documents | 5 | 0.4286 | 0.6857 | 0.7857 | 0.8857 | 1.0000 |
-| category: eligibility | 3 | 0.2056 | 0.5333 | 0.6444 | 0.7667 | 1.0000 |
-| category: enrollment | 3 | 0.2333 | 0.7000 | 0.9333 | 0.9333 | 0.7778 |
-| category: fees | 3 | 0.2778 | 0.7222 | 0.8333 | 1.0000 | 0.7778 |
-| category: language_tests | 4 | 0.6667 | 0.8750 | 0.9583 | 1.0000 | 1.0000 |
-| category: results | 2 | 0.2667 | 0.6333 | 1.0000 | 1.0000 | 1.0000 |
-| category: selection_exams | 6 | 0.3250 | 0.7250 | 0.7250 | 0.9028 | 1.0000 |
-| style: exact_term | 7 | 0.2667 | 0.6690 | 0.6690 | 0.8452 | 0.9048 |
-| style: identifier | 6 | 0.3889 | 0.7222 | 0.9722 | 1.0000 | 0.8889 |
-| style: paraphrase | 21 | 0.4798 | 0.8045 | 0.8887 | 0.9537 | 1.0000 |
-| scope_sensitive: false | 25 | 0.3610 | 0.7198 | 0.8371 | 0.9278 | 0.9467 |
-| scope_sensitive: true | 9 | 0.5833 | 0.8796 | 0.9167 | 0.9722 | 1.0000 |
-| multiple_clause: false | 27 | 0.4778 | 0.8160 | 0.9049 | 0.9877 | 0.9506 |
-| multiple_clause: true | 7 | 0.1966 | 0.5541 | 0.6779 | 0.7541 | 1.0000 |
-| reference_expansion: false | 33 | 0.4250 | 0.7701 | 0.8690 | 0.9529 | 0.9596 |
-| reference_expansion: true | 1 | 0.2500 | 0.5000 | 0.5000 | 0.5000 | 1.0000 |
+Independent recomputation from the emitted primary Fact IDs matched all 38 per-query values and the
+macro values exactly. The report also retains category, style, scope, clause, and reference slices.
+The semantic gate declares `quality_query_language="ja"`, so the accepted Japanese thresholds and
+count caps remain unchanged while the Chinese slice is visible for later M9 improvement work.
 
 ## Partial-Coverage Diagnostics
 
-There are no zero-hit queries. The six rows below have missing gold Facts at primary Top-10. IDs
-are evidence references only; no benchmark question or admission text is reproduced here.
-
-| Query | Category/style/flags | Gold IDs | Primary Top-10 IDs | First rank | Reference-only | Classification and evidence |
-| --- | --- | --- | --- | ---: | --- | --- |
-| `rq:0008` | eligibility / paraphrase / multi | `24,26,29,31,33` | `24,33,29,116,101,119,289,118,26,102` | 1 | none | `multi_clause_partial`: `fact:00031` remains outside primary Top-10. |
-| `rq:0012` | eligibility / exact_term / multi, reference | `59,62,72,75` | `59,72,96,88,119,94,90,86,92,101` | 1 | `62,75` | `reference_only_recovery`: attached resolved targets recover `62` and `75`. |
-| `rq:0019` | selection_exams / exact_term | `2,4,6,108,113,114` | `113,108,242,177,188,179,2,204,4,189` | 1 | none | `semantic_candidate_missing`: `fact:00006` and `fact:00114` are outside primary Top-10. |
-| `rq:0021` | enrollment / paraphrase / multi | `2,5,6,116,118` | `5,2,118,116,122,28,33,56,289,298` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00006` remains outside primary Top-10. |
-| `rq:0024` | documents / paraphrase / multi | `122,123,124,125,126,127,128` | `125,128,122,130,100,129,104,102,98,101` | 1 | none | `semantic_candidate_missing`: `123`, `124`, `126`, and `127` remain outside primary Top-10. |
-| `rq:0031` | selection_exams / exact_term / scope | `119,250,251,252` | `251,252,250,253,256,197,254,188,189,201` | 1 | none | `lexical_only_candidate_lost_in_fusion`: `fact:00119` remains outside primary Top-10. |
-
-Fact IDs in compact cells omit `fact:` and leading zeroes. These classifications are a closed,
-evidence-backed description of the observed run. They do not edit annotations, revise Fact
-boundaries, or tune ranking.
+The Japanese cohort retains six partial Top-10 queries and no zero-hit query. Of the four new
+Chinese queries, dates and English-score requirements retrieve some gold evidence; the education
+eligibility and common-material queries are zero-hit at Top-10. These are measured limitations, not
+permission to change gold labels, Fact boundaries, rules, or accepted Japanese thresholds.
 
 ## Comparison And Next Decision
 
@@ -136,25 +108,25 @@ The prior deterministic-fake plumbing report had Recall@1/3/5/10 of
 quality-ineligible. The semantic result demonstrates why a semantic baseline was needed, but its
 values are not targets and do not establish thresholds.
 
-RET-09 reviewed these full-precision results, the six diagnostic rows, and the approved tolerances.
-The resulting offline semantic regression gate binds this report, its runtime inputs, and the
-retrieval-affecting implementation set without loading the model in CI. See
+The offline semantic regression gate binds this report, its runtime inputs, the Japanese quality
+cohort, and the retrieval-affecting implementation set without loading the model in CI. See
 [ADR 0003](../decisions/0003-semantic-retrieval-regression-gate.md). Model files, the PDF, semantic
 index, and the three local reports remain untracked.
 
 ## Verification
 
-All commands ran after acquisition with the external cache already populated and offline variables
-set. No Python source file changed in RET-08, so changed-file formatting had no target.
+All model-dependent commands ran with the existing cache populated and both Hugging Face and
+Transformers forced offline. The formal Demo used the fixed real PDF and an isolated generated
+workspace; neither the model snapshot nor generated index/report files are committed.
 
 | Check | Result |
 | --- | --- |
-| BGE-M3 index build plus three offline evaluations | 316 vectors; all three reports byte-identical |
-| `pytest -m "not model_integration" -q` | 1,180 passed, 16 skipped, 1 deselected |
-| Semantic gate and CLI focused tests | 36 passed, 1 skipped |
-| Chromium scenarios 1, 3, 4, 5, and 6 | passed at 1,440 px and 390 px; no horizontal overflow |
-| `ruff check . --no-cache` | passed |
-| `ruff format --check --no-cache .` | passed |
+| BGE-M3 index build plus three offline evaluations | 334 vectors; all three reports byte-identical |
+| Dedicated cache-only model integration | passed; three evaluator outputs byte-identical |
+| `pytest -m "not model_integration and not real_pdf" -q` | 1,301 passed, 17 skipped, 282 deselected |
+| Formal real-PDF BGE-M3 Demo | live, ready, and `/app` returned HTTP 200 |
+| `ruff check src tests --no-cache` | passed |
+| `ruff format --check src tests --no-cache` | passed |
 | `compileall -q src tests` | passed |
 | `git diff --check` | passed |
 

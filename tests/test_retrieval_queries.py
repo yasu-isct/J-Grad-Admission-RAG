@@ -31,27 +31,28 @@ def test_v1_fixture_loads_with_frozen_coverage() -> None:
     )
     assert benchmark.expected_kb_schema_version == "0.6"
     assert benchmark_coverage(benchmark) == {
-        "total_queries": 34,
+        "total_queries": 38,
         "by_category": {
-            "application_dates": 2,
+            "application_dates": 3,
             "contacts_forms": 2,
             "department_requirements": 4,
-            "documents": 5,
-            "eligibility": 3,
+            "documents": 6,
+            "eligibility": 4,
             "enrollment": 3,
             "fees": 3,
-            "language_tests": 4,
+            "language_tests": 5,
             "results": 2,
             "selection_exams": 6,
         },
-        "by_style": {"exact_term": 7, "identifier": 6, "paraphrase": 21},
-        "by_scope": {"department": 22, "global": 35, "unknown": 50},
+        "by_style": {"exact_term": 7, "identifier": 6, "paraphrase": 25},
+        "by_language": {"ja": 34, "zh": 4},
+        "by_scope": {"department": 22, "global": 49, "unknown": 52},
         "single_fact_queries": 5,
-        "multi_fact_queries": 29,
-        "single_clause_queries": 27,
-        "multiple_clause_queries": 7,
+        "multi_fact_queries": 33,
+        "single_clause_queries": 29,
+        "multiple_clause_queries": 9,
         "scope_sensitive_queries": 9,
-        "reference_expansion_queries": 1,
+        "reference_expansion_queries": 2,
     }
 
 
@@ -83,7 +84,7 @@ def test_dataset_contract_rejects_versions_hashes_and_extra_fields(mutation, mes
         RetrievalBenchmark.model_validate(payload)
 
 
-def test_query_ids_must_be_contiguous_and_questions_non_duplicate_japanese() -> None:
+def test_query_ids_must_be_contiguous_and_questions_non_duplicate_by_language() -> None:
     payload = _payload()
     payload["queries"][1]["query_id"] = "rq:0003"
     with pytest.raises(ValidationError, match="unique, contiguous"):
@@ -96,7 +97,17 @@ def test_query_ids_must_be_contiguous_and_questions_non_duplicate_japanese() -> 
 
     payload = _payload()
     payload["queries"][0]["query"] = "TOEFL 2026?"
-    with pytest.raises(ValidationError, match="Japanese text"):
+    with pytest.raises(ValidationError, match="ja text"):
+        RetrievalBenchmark.model_validate(payload)
+
+    payload = _payload()
+    payload["queries"][-1]["query"] = "TOEFL 2026?"
+    with pytest.raises(ValidationError, match="zh text"):
+        RetrievalBenchmark.model_validate(payload)
+
+    payload = _payload()
+    payload["language"] = "ja"
+    with pytest.raises(ValidationError, match="does not match query languages"):
         RetrievalBenchmark.model_validate(payload)
 
 

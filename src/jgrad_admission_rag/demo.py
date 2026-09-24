@@ -23,6 +23,12 @@ from .corpus_selection import (
     CorpusPolicyCompatibilityError,
     validate_corpus_version_policy,
 )
+from .demo_embedding import (
+    DemoEmbeddingConfiguration,
+    create_demo_embedding_provider,
+    demo_embedding_failure_message,
+    resolve_demo_embedding_configuration,
+)
 from .reasoning.query_intent import (
     QueryIntentCatalog,
     QueryIntentError,
@@ -35,7 +41,7 @@ from .reasoning.reviewed_report_plan import (
     canonical_reviewed_report_plan_bytes,
     load_reviewed_report_plan_bytes,
 )
-from .retrieval.embedding import DeterministicFakeEmbeddingProvider
+from .retrieval.embedding import EmbeddingIdentity, EmbeddingProviderError
 from .retrieval.local_index import IndexBuildError
 from .retrieval.source_kb import SourceKbReadError, read_source_kb_exact
 from .schemas.corpus_manifest import (
@@ -84,7 +90,6 @@ _CONFIG_FILENAMES = {
 _RUNTIME_DIRECTORY = "runtime-v1"
 _OWNERSHIP_FILENAME = ".jgrad-demo-owned.json"
 _CORPUS_ID = "jgrad-demo-isct"
-_INDEX_DIMENSION = 8
 
 
 class DemoError(Exception):
@@ -119,6 +124,8 @@ class DemoRuntime:
     source_pdf_path: Path
     identity: DocumentIdentity
     source_kb_sha256: str
+    embedding_identity: EmbeddingIdentity
+    semantic: bool
     reused: bool
 
 
@@ -178,10 +185,12 @@ def prepare_demo(
     *,
     rebuild: bool = False,
     config_dir: Path | None = None,
+    embedding_configuration: DemoEmbeddingConfiguration | None = None,
 ) -> DemoRuntime:
     """Validate one explicit official PDF and build or audit its local runtime."""
 
     bundle = load_demo_config(config_dir)
+    embedding = embedding_configuration or resolve_demo_embedding_configuration()
     pdf = _validate_pdf(pdf_path, bundle.identity)
     root = _prepare_workspace(workspace)
     runtime_root = root / _RUNTIME_DIRECTORY
@@ -191,7 +200,12 @@ def prepare_demo(
         if not rebuild:
             try:
                 return _validate_runtime(
-                    root, runtime_root, bundle, source_pdf_path=pdf, reused=True
+                    root,
+                    runtime_root,
+                    bundle,
+                    embedding,
+                    source_pdf_path=pdf,
+                    reused=True,
                 )
             except DemoError:
                 raise DemoError(
@@ -206,8 +220,10 @@ def prepare_demo(
     except OSError:
         raise DemoError("demo workspace is not writable") from None
     try:
-        _build_runtime(pdf, stage, bundle)
-        validated = _validate_runtime(root, stage, bundle, source_pdf_path=pdf, reused=False)
+        _build_runtime(pdf, stage, bundle, embedding)
+        validated = _validate_runtime(
+            root, stage, bundle, embedding, source_pdf_path=pdf, reused=False
+        )
         _activate_runtime(root, stage, runtime_root, replace=replace_runtime)
         return DemoRuntime(
             workspace=root,
@@ -234,6 +250,8 @@ def prepare_demo(
             source_pdf_path=pdf,
             identity=validated.identity,
             source_kb_sha256=validated.source_kb_sha256,
+            embedding_identity=validated.embedding_identity,
+            semantic=validated.semantic,
             reused=False,
         )
     except DemoError:
@@ -244,7 +262,12 @@ def prepare_demo(
         raise DemoError("demo artifacts could not be built safely") from None
 
 
-def _build_runtime(pdf: Path, root: Path, bundle: DemoConfigBundle) -> None:
+def _build_runtime(
+    pdf: Path,
+    root: Path,
+    bundle: DemoConfigBundle,
+    embedding: DemoEmbeddingConfiguration,
+) -> None:
     identity = bundle.identity
     document_id = identity.document_id
     kb_relative = f"documents/{document_id}/document_kb.json"
@@ -269,7 +292,7 @@ def _build_runtime(pdf: Path, root: Path, bundle: DemoConfigBundle) -> None:
         build_local_index(
             kb_path,
             index_path,
-            DeterministicFakeEmbeddingProvider(_INDEX_DIMENSION),
+            create_demo_embedding_provider(embedding),
         )
         manifest = build_corpus_manifest(
             _CORPUS_ID,
@@ -299,7 +322,11 @@ def _build_runtime(pdf: Path, root: Path, bundle: DemoConfigBundle) -> None:
         )
     except DemoError:
         raise
-    except (CorpusBuildError, DocumentBuildError, IndexBuildError, SourceKbReadError, ValueError):
+    except IndexBuildError as error:
+        if isinstance(error.__cause__, EmbeddingProviderError):
+            raise DemoError(demo_embedding_failure_message(embedding, error.__cause__)) from None
+        raise DemoError("official PDF artifacts could not be assembled safely") from None
+    except (CorpusBuildError, DocumentBuildError, SourceKbReadError, ValueError):
         raise DemoError("official PDF artifacts could not be assembled safely") from None
     except OSError:
         raise DemoError("demo workspace is not writable") from None
@@ -309,6 +336,7 @@ def _validate_runtime(
     workspace: Path,
     runtime_root: Path,
     bundle: DemoConfigBundle,
+    embedding: DemoEmbeddingConfiguration,
     *,
     source_pdf_path: Path,
     reused: bool,
@@ -355,6 +383,16 @@ def _validate_runtime(
             raise ValueError
         entry = audited.entries[0]
         if entry.index_state != "ready" or entry.source_kb_sha256 != bundle.plan.source_kb_sha256:
+            raise ValueError
+        if entry.index_manifest is None:
+            raise ValueError
+        embedding_identity = EmbeddingIdentity(
+            provider=entry.index_manifest.embedding_provider,
+            model=entry.index_manifest.embedding_model,
+            revision=entry.index_manifest.embedding_revision,
+            dimension=entry.index_manifest.embedding_dimension,
+        )
+        if embedding_identity != embedding.identity:
             raise ValueError
         source = read_source_kb_exact(resolved_runtime / Path(*entry.kb_path.split("/")))
         if (
@@ -410,6 +448,8 @@ def _validate_runtime(
             source_pdf_path=source_pdf_path,
             identity=bundle.identity,
             source_kb_sha256=source.sha256,
+            embedding_identity=embedding_identity,
+            semantic=embedding.semantic,
             reused=reused,
         )
     except (
@@ -602,7 +642,9 @@ def runtime_fingerprint(runtime: DemoRuntime) -> str:
 
     payload = (
         f"{runtime.identity.document_id}\0{runtime.identity.source_pdf_sha256}\0"
-        f"{runtime.source_kb_sha256}"
+        f"{runtime.source_kb_sha256}\0{runtime.embedding_identity.provider}\0"
+        f"{runtime.embedding_identity.model}\0{runtime.embedding_identity.revision}\0"
+        f"{runtime.embedding_identity.dimension}"
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
