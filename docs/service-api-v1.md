@@ -225,13 +225,17 @@ receipt, or admission conclusion.
 
 `POST /v1/grounded-answers` accepts the same target and small applicant input plus one trimmed,
 printable question of at most 1000 characters. It performs selected-document hybrid retrieval,
-constructs an `EvidencePack`, parses reviewed intent, builds the deterministic applicant report,
+bounded to 12 returned records and 48 candidates independent of document size, constructs an
+`EvidencePack`, parses reviewed intent, builds the deterministic applicant report,
 and then invokes the lifespan-owned generation provider under its own lock. The response exposes
 provider/model identity, the complete reviewed `CitedAnswer`, grounded claims, missing fields,
 limitations, and a presentation inventory for every returned citation. Caller-supplied evidence,
 hashes, rule findings, citations, source URLs, and provider identity are never accepted. The
 packaged demo provider is deterministic and offline. See
 [Natural-language grounded RAG API and page v1](natural-language-grounded-rag-v1.md).
+The provider is not called unless all exact reviewed citations are present in the bounded result;
+the generation boundary also rejects more than 16 evidence records or 60,000 evidence/scope
+characters.
 
 The same response includes a server-derived readiness presentation. Every item has an
 `action_group` (`recorded`, `action_required`, or `review_required`) and a bounded next action.

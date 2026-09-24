@@ -16,6 +16,11 @@ from jgrad_admission_rag.generation import (
     GenerationProviderIdentity,
     ReviewedStateGenerationProvider,
 )
+from jgrad_admission_rag.generation.contracts import GenerationRequest
+from jgrad_admission_rag.generation.grounded_rag import (
+    MAX_GROUNDED_EVIDENCE_CHARACTERS,
+    MAX_GROUNDED_EVIDENCE_RECORDS,
+)
 from jgrad_admission_rag.reasoning.reviewed_report_evidence import (
     ReviewedReportEvidenceBundle,
     ReviewedReportEvidenceCounts,
@@ -25,6 +30,11 @@ from jgrad_admission_rag.reasoning.reviewed_report_plan import load_reviewed_rep
 from jgrad_admission_rag.schemas.document_kb import load_document_kb
 from jgrad_admission_rag.schemas.corpus_manifest import load_corpus_manifest
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
+from jgrad_admission_rag.service.app import (
+    GROUNDED_RETRIEVAL_CANDIDATE_K,
+    GROUNDED_RETRIEVAL_TOP_K,
+    _bounded_grounded_retrieval_depth,
+)
 from tests.test_demo_cli import _synthetic_config
 
 
@@ -38,7 +48,21 @@ class _FailingGenerationProvider:
         raise GenerationError(self.code)
 
 
-def _grounded_client(tmp_path: Path) -> tuple[TestClient, object]:
+class _RecordingGenerationProvider:
+    def __init__(self) -> None:
+        self.delegate = ReviewedStateGenerationProvider()
+        self.identity = self.delegate.identity
+        self.requests: list[GenerationRequest] = []
+
+    def generate(self, request: GenerationRequest):
+        self.requests.append(request)
+        return self.delegate.generate(request)
+
+
+def _grounded_client(
+    tmp_path: Path,
+    generation_provider_factory=ReviewedStateGenerationProvider,
+) -> tuple[TestClient, object]:
     pdf, config, _ = _synthetic_config(tmp_path)
     runtime = prepare_demo(pdf, (tmp_path / "workspace").resolve(), config_dir=config)
     embedding = create_demo_embedding_provider(resolve_demo_embedding_configuration())
@@ -58,7 +82,7 @@ def _grounded_client(tmp_path: Path) -> tuple[TestClient, object]:
         settings,
         ServiceDependencies(
             provider_factory=lambda: embedding,
-            generation_provider_factory=ReviewedStateGenerationProvider,
+            generation_provider_factory=generation_provider_factory,
         ),
     )
     return TestClient(app), runtime
@@ -85,7 +109,8 @@ def test_grounded_answer_runs_offline_retrieval_review_and_citation_closure(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
-    client, runtime = _grounded_client(tmp_path)
+    recorder = _RecordingGenerationProvider()
+    client, runtime = _grounded_client(tmp_path, lambda: recorder)
     plan = load_reviewed_report_plan(runtime.report_plan_path)
     manifest = load_corpus_manifest(runtime.manifest_path)
     kb_path = resolve_registered_corpus_kb_path(runtime.corpus_root, manifest.entries[0].kb_path)
@@ -141,6 +166,14 @@ def test_grounded_answer_runs_offline_retrieval_review_and_citation_closure(
     )
     assert body["local_pdf_url"] == f"/documents/{runtime.identity.document_id}/source.pdf"
     assert body["official_source_url"] == runtime.identity.official_source_url
+    assert len(recorder.requests) == 1
+    provider_request = recorder.requests[0]
+    assert len(provider_request.evidence) <= GROUNDED_RETRIEVAL_TOP_K
+    assert len(provider_request.evidence) <= MAX_GROUNDED_EVIDENCE_RECORDS
+    assert (
+        sum(len(item.text) + len(item.scope_label or "") for item in provider_request.evidence)
+        <= MAX_GROUNDED_EVIDENCE_CHARACTERS
+    )
 
     expected = {
         GenerationErrorCode.PROVIDER_TIMEOUT: (504, "generation_provider_timeout"),
@@ -182,3 +215,11 @@ def test_grounded_answer_is_strict_and_fails_closed_without_generation_provider(
         "grounded_service_unavailable",
     )
     assert "eligibility" not in unavailable.text
+
+
+def test_grounded_retrieval_depth_is_bounded_independently_of_document_size() -> None:
+    assert _bounded_grounded_retrieval_depth(391) == (
+        GROUNDED_RETRIEVAL_TOP_K,
+        GROUNDED_RETRIEVAL_CANDIDATE_K,
+    )
+    assert _bounded_grounded_retrieval_depth(2) == (2, 2)

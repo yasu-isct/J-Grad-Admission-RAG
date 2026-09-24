@@ -20,6 +20,10 @@ from jgrad_admission_rag.generation import (
     canonical_grounded_answer_bytes,
     run_grounded_rag,
 )
+from jgrad_admission_rag.generation.grounded_rag import (
+    MAX_GROUNDED_EVIDENCE_CHARACTERS,
+    MAX_GROUNDED_EVIDENCE_RECORDS,
+)
 from jgrad_admission_rag.reasoning.applicability import (
     ApplicabilityStatus,
     EvidenceRole as ReviewedEvidenceRole,
@@ -493,6 +497,65 @@ def test_orchestrator_rejects_tampered_pages_before_provider_call() -> None:
             cited_answer=_cited_answer(),
         )
     assert caught.value.code is GroundedRagErrorCode.EVIDENCE_MISMATCH
+
+
+def test_orchestrator_rejects_oversized_evidence_before_provider_call() -> None:
+    base = _pack()
+    too_many_payload = base.model_dump(mode="json")
+    primary = too_many_payload["primary_evidence"][0]
+    records = []
+    for index in range(1, MAX_GROUNDED_EVIDENCE_RECORDS + 2):
+        record = dict(primary)
+        record.update(
+            {
+                "primary_rank": index,
+                "row_index": index - 1,
+                "unit_id": f"unit:{index}",
+                "fact_id": "fact:primary" if index == 1 else f"fact:{index}",
+                "vector_rank": index,
+                "lexical_rank": index,
+            }
+        )
+        records.append(record)
+    record_count = len(records)
+    too_many_payload["request"].update(
+        {
+            "top_k_requested": record_count,
+            "candidate_k_requested": record_count,
+            "candidate_k_resolved": record_count,
+        }
+    )
+    too_many_payload["runtime"].update(
+        {
+            "corpus_row_count": record_count,
+            "eligible_row_count": record_count,
+            "vector_candidate_count": record_count,
+            "lexical_candidate_count": record_count,
+        }
+    )
+    too_many_payload["primary_evidence"] = records
+    too_many_payload["attached_reference_evidence"] = []
+    too_many_payload["resolved_relations"] = []
+    too_many_payload["counts"].update(
+        {
+            "primary_evidence_count": record_count,
+            "attached_evidence_count": 0,
+            "resolved_relation_count": 0,
+            "unique_evidence_count": record_count,
+        }
+    )
+
+    oversized_text = base.primary_evidence[0].model_copy(
+        update={"text": "x" * (MAX_GROUNDED_EVIDENCE_CHARACTERS + 1)}
+    )
+    too_long = base.model_copy(update={"primary_evidence": (oversized_text,)})
+
+    for pack in (EvidencePack.model_validate(too_many_payload), too_long):
+        provider = _RecordingDraftProvider(_draft())
+        with pytest.raises(GroundedRagError) as caught:
+            _run(_draft(), pack=pack, provider=provider)
+        assert caught.value.code is GroundedRagErrorCode.INSUFFICIENT_EVIDENCE
+        assert provider.calls == 0
 
 
 @pytest.mark.parametrize(

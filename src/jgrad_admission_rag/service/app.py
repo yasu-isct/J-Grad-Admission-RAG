@@ -51,6 +51,7 @@ from ..reasoning.applicant_report import (
     build_applicant_report,
     render_applicant_report_markdown,
 )
+from ..reasoning.cited_answer import CitedAnswer
 from ..reasoning.query_intent import (
     DiagnosticCode,
     QueryIntent,
@@ -73,6 +74,7 @@ from ..retrieval.evidence_pack import build_corpus_evidence_pack
 from ..schemas.corpus_manifest import CorpusManifestError, load_corpus_manifest
 from ..schemas.corpus_version import CorpusVersionSchemaError, load_corpus_version_policy
 from ..schemas.corpus_version import CorpusSelectionRequest
+from ..schemas.evidence_pack import EvidencePack
 from ..schemas.document_identity import (
     DocumentIdentity,
     DocumentIdentityError,
@@ -145,6 +147,9 @@ from .runtime import (
     ServiceState,
     VerifiedSourceDocument,
 )
+
+GROUNDED_RETRIEVAL_TOP_K = 12
+GROUNDED_RETRIEVAL_CANDIDATE_K = 48
 
 
 BUILD_OPENAPI_EXTRA = {
@@ -1415,13 +1420,14 @@ def _build_grounded_answer_response(
                 "insufficient_evidence",
                 "grounded answer has insufficient reviewed evidence",
             )
+        top_k, candidate_k = _bounded_grounded_retrieval_depth(context.row_count)
         with state.provider_lock:
             search_result = search_corpus(
                 context,
                 request.question,
                 state.provider,
-                top_k=context.row_count,
-                candidate_k=context.row_count,
+                top_k=top_k,
+                candidate_k=candidate_k,
                 metadata_filter=MetadataFilter(),
                 scope_preference=ScopePreference(
                     preferred_scope_targets=(request.target.department_id,),
@@ -1475,6 +1481,14 @@ def _build_grounded_answer_response(
             reviewed_evidence,
         )
         target_summary = build_demo_target_summary(state.report_plans, request.target)
+        if not _retrieval_covers_reviewed_answer(evidence_pack, report.cited_answer):
+            raise ApiProblem(
+                422,
+                "insufficient_evidence",
+                "grounded answer has insufficient reviewed evidence",
+            )
+    except ApiProblem:
+        raise
     except ApplicantReportError as error:
         if error.code in {
             ApplicantReportFailure.INVALID_INPUT,
@@ -1541,7 +1555,6 @@ def _build_grounded_answer_response(
             "grounded_generation_failed",
             "grounded answer generation failed",
         ) from None
-
     cited_fact_ids = tuple(item.fact_id for item in answer.citation_inventory)
     try:
         evidence = build_demo_evidence_inventory(
@@ -1572,6 +1585,42 @@ def _build_grounded_answer_response(
             "grounded_presentation_failed",
             "grounded answer presentation failed",
         ) from None
+
+
+def _bounded_grounded_retrieval_depth(row_count: int) -> tuple[int, int]:
+    """Keep model-facing retrieval independent of selected-document size."""
+
+    if isinstance(row_count, bool) or not isinstance(row_count, int) or row_count < 1:
+        raise ValueError("row_count must be a positive integer")
+    top_k = min(GROUNDED_RETRIEVAL_TOP_K, row_count)
+    return top_k, min(GROUNDED_RETRIEVAL_CANDIDATE_K, row_count)
+
+
+def _retrieval_covers_reviewed_answer(
+    evidence_pack: EvidencePack,
+    cited_answer: CitedAnswer,
+) -> bool:
+    """Require exact reviewed citations to occur in the bounded retrieval result."""
+
+    retrieved = {
+        (
+            record.document_id,
+            record.fact_id,
+            record.source_pages,
+            "primary" if record.role == "primary" else "reference",
+        )
+        for record in evidence_pack.primary_evidence + evidence_pack.attached_reference_evidence
+    }
+    required = {
+        (
+            citation.document_id,
+            citation.fact_id,
+            citation.source_pages,
+            "primary" if citation.role.value == "primary" else "reference",
+        )
+        for citation in cited_answer.citation_inventory
+    }
+    return bool(required) and required <= retrieved
 
 
 def _raise_grounded_problem(code: GroundedRagErrorCode) -> None:

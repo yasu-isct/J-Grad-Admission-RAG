@@ -4,6 +4,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import threading
+import time
 
 from playwright.sync_api import expect, sync_playwright
 
@@ -72,19 +73,25 @@ def _evidence() -> dict:
 
 
 class Handler(SimpleHTTPRequestHandler):
+    retry_attempts = 0
+    retry_lock = threading.Lock()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC_ROOT), **kwargs)
 
     def log_message(self, _format, *_args):
         return
 
-    def _json(self, payload: dict) -> None:
+    def _json(self, payload: dict, status: int = 200) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode()
-        self.send_response(200)
+        self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionAbortedError, ConnectionResetError):
+            pass
 
     def do_GET(self):
         if self.path == "/v1/reviewed-documents":
@@ -99,7 +106,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         length = int(self.headers.get("Content-Length", "0"))
-        json.loads(self.rfile.read(length) or b"{}")
+        request = json.loads(self.rfile.read(length) or b"{}")
         if self.path == "/v1/base-requirements":
             self._json(
                 {
@@ -120,6 +127,23 @@ class Handler(SimpleHTTPRequestHandler):
             )
             return
         if self.path == "/v1/grounded-answers":
+            question = request.get("question")
+            if question in {"タイムアウト", "古い回答"}:
+                time.sleep(0.2)
+            if question == "再試行":
+                with self.retry_lock:
+                    self.__class__.retry_attempts += 1
+                    attempt = self.__class__.retry_attempts
+                if attempt == 1:
+                    self._json(
+                        {
+                            "schema_version": "1.0",
+                            "code": "generation_provider_unavailable",
+                            "message": "grounded answer could not be produced",
+                        },
+                        status=503,
+                    )
+                    return
             citation = {
                 "evidence_id": "evidence:0001",
                 "document_id": DOCUMENT_ID,
@@ -180,6 +204,16 @@ def main() -> None:
             )
             for width in (1440, 390):
                 page = browser.new_page(viewport={"width": width, "height": 1000})
+                page.add_init_script(
+                    """
+                    const nativeSetTimeout = globalThis.setTimeout.bind(globalThis);
+                    globalThis.setTimeout = (callback, delay, ...args) => {
+                      const isTimeoutScenario = delay === 15000
+                        && document.querySelector("#grounded-question")?.value === "タイムアウト";
+                      return nativeSetTimeout(callback, isTimeoutScenario ? 50 : delay, ...args);
+                    };
+                    """
+                )
                 page.goto(f"http://127.0.0.1:{port}/app.html")
                 page.locator("#intake-select").select_option(f"{DOCUMENT_ID}:2027:4")
                 page.locator("#college-select").select_option("理学院")
@@ -203,6 +237,39 @@ def main() -> None:
                 assert not page.evaluate(
                     "document.documentElement.scrollWidth > document.documentElement.clientWidth"
                 )
+                if width == 1440:
+                    page.locator("#grounded-question").fill("再試行")
+                    page.locator("#grounded-answer-submit").click()
+                    expect(page.locator("#grounded-answer-retry")).to_be_visible()
+                    expect(page.locator("#grounded-answer-status")).to_contain_text("暂时不可用")
+                    page.locator("#grounded-answer-retry").click()
+                    expect(page.locator(".grounded-claim")).to_contain_text(
+                        "Reviewed eligibility finding."
+                    )
+
+                    page.locator("#grounded-question").fill("タイムアウト")
+                    page.locator("#grounded-answer-submit").click()
+                    expect(page.locator("#grounded-answer-status")).to_contain_text("超时")
+                    expect(page.locator("#grounded-answer-retry")).to_be_visible()
+
+                    page.locator("#grounded-question").fill("古い回答")
+                    page.locator("#grounded-answer-submit").click()
+                    page.wait_for_timeout(20)
+                    page.locator("#grounded-question").fill("新しい質問")
+                    page.wait_for_timeout(250)
+                    expect(page.locator(".grounded-claim")).to_have_count(0)
+
+                    page.locator("#grounded-question").fill("古い回答")
+                    page.locator("#grounded-answer-submit").click()
+                    page.wait_for_timeout(20)
+                    page.locator("#applicant-form").evaluate(
+                        "element => element.dispatchEvent(new Event('input', { bubbles: true }))"
+                    )
+                    expect(page.locator("#grounded-answer-status")).to_contain_text(
+                        "个人情况已改变"
+                    )
+                    page.wait_for_timeout(250)
+                    expect(page.locator(".grounded-claim")).to_have_count(0)
                 page.close()
             browser.close()
     finally:
