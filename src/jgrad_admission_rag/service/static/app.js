@@ -1723,6 +1723,7 @@ function cancelPendingComparison() {
 function clearComparison(message = "填写个人情况后，可由服务端进行保守对照。") {
   comparisonComplete = false;
   comparisonOutput.replaceChildren();
+  byId("priority-actions").replaceChildren();
   readinessPanel.hidden = true;
   readinessTarget.textContent = "";
   partialChecklistStatement.textContent = "";
@@ -1748,6 +1749,55 @@ function comparisonStatusLabel(status) {
   return labels[status] || status;
 }
 
+function resetChecklistProgress() {
+  for (const checkbox of comparisonOutput.querySelectorAll(".personal-check input")) {
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new Event("change"));
+  }
+}
+
+function renderPriorityActions(entries) {
+  const container = byId("priority-actions");
+  container.replaceChildren();
+  const pending = entries.filter(({ item }) => item.action_group !== "recorded");
+  const title = heading(4, "优先处理");
+  container.append(title);
+  if (!pending.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "当前没有被系统归入补充或人工确认的项目；已记录仍不等于学校确认或完成出愿。";
+    container.append(empty);
+    return;
+  }
+  const list = document.createElement("ol");
+  for (const { item, cardId } of pending.slice(0, 3)) {
+    const row = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = `#${cardId}`;
+    link.textContent = item.title;
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      readinessFilters.querySelector('[value="all"]').checked = true;
+      applyReadinessFilter();
+      const target = byId(cardId);
+      if (!target) return;
+      window.history.replaceState(null, "", `#${cardId}`);
+      target.scrollIntoView({ block: "start", behavior: "auto" });
+      target.focus({ preventScroll: true });
+    });
+    const action = document.createElement("span");
+    action.textContent = `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
+    row.append(link, action);
+    list.append(row);
+  }
+  container.append(list);
+  if (pending.length > 3) {
+    const remainder = document.createElement("p");
+    remainder.className = "field-detail";
+    remainder.textContent = `下方还有 ${pending.length - 3} 项需要逐项核对。`;
+    container.append(remainder);
+  }
+}
+
 function renderComparison(payload) {
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
@@ -1757,27 +1807,43 @@ function renderComparison(payload) {
   byId("count-action").textContent = String(payload.counts.action_required);
   byId("count-review").textContent = String(payload.counts.review_required);
   readinessFilters.querySelector('[value="all"]').checked = true;
-  const groups = [["education", "学历"], ["english", "英语"], ["japanese", "日语"], ["materials", "已有材料与官方适用性"]];
-  for (const [category, label] of groups) {
-    const entries = payload.items.filter((item) => item.category === category);
+  const groups = [["action_required", "需要补充"], ["review_required", "需学校／人工确认"], ["recorded", "已记录／可能匹配"]];
+  const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
+    .filter((item) => item.action_group === actionGroup)
+    .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
+  renderPriorityActions(entriesWithIds);
+  const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
+  for (const [actionGroup, label] of groups) {
+    const entries = entriesWithIds.filter(({ item }) => item.action_group === actionGroup);
     if (!entries.length) continue;
     const section = document.createElement("section");
     section.className = "requirement-group comparison-group";
+    section.dataset.actionGroup = actionGroup;
     section.append(heading(3, label));
     const list = document.createElement("div");
     list.className = "requirement-list";
-    for (const item of entries) {
+    for (const { item, cardId } of entries) {
       const card = document.createElement("article");
       card.className = "requirement-card comparison-card";
+      card.id = cardId;
+      card.tabIndex = -1;
       card.dataset.actionGroup = item.action_group;
+      const category = document.createElement("p");
+      category.className = "comparison-category";
+      category.textContent = categoryLabels[item.category] || item.category;
+      card.append(category);
       card.append(heading(4, item.title));
+      const statusLabel = document.createElement("p");
+      statusLabel.className = "comparison-state-label";
+      statusLabel.textContent = "系统对照状态";
       const status = document.createElement("span");
       status.className = "requirement-status";
       status.dataset.status = item.comparison_status;
       status.textContent = comparisonStatusLabel(item.comparison_status);
       const description = document.createElement("p");
-      description.textContent = item.description;
-      card.append(status, description);
+      description.className = "comparison-reason";
+      description.textContent = `原因：${item.description}`;
+      card.append(statusLabel, status, description);
       const nextAction = document.createElement("p");
       nextAction.className = "next-action";
       nextAction.textContent = `下一步：${item.next_action}`;
@@ -1789,6 +1855,24 @@ function renderComparison(payload) {
         official.className = "field-detail";
         official.textContent = `官方适用性：${officialLabels[item.official_status] || item.official_status}；个人准备状态：${preparationLabels[item.preparation_status] || item.preparation_status}`;
         card.append(official);
+      }
+      const progress = document.createElement("p");
+      progress.className = "personal-progress";
+      progress.textContent = item.action_group === "recorded" ? "我的处理进度：此项没有待勾选行动" : "我的处理进度：待处理";
+      card.append(progress);
+      if (item.action_group !== "recorded") {
+        const label = document.createElement("label");
+        label.className = "personal-check";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("change", () => {
+          progress.textContent = checkbox.checked ? "我的处理进度：已标记处理（仅个人记录）" : "我的处理进度：待处理";
+          card.dataset.handled = checkbox.checked ? "true" : "false";
+        });
+        const labelText = document.createElement("span");
+        labelText.textContent = "我已处理（仅记录个人进度）";
+        label.append(checkbox, labelText);
+        card.append(label);
       }
       if (item.evidence.length) {
         const actions = document.createElement("div");
@@ -1802,6 +1886,16 @@ function renderComparison(payload) {
           actions.append(button);
         }
         card.append(actions);
+      }
+      if (item.limitation) {
+        const limit = document.createElement("details");
+        limit.className = "comparison-limit";
+        const summary = document.createElement("summary");
+        summary.textContent = "判断边界";
+        const text = document.createElement("p");
+        text.textContent = item.limitation;
+        limit.append(summary, text);
+        card.append(limit);
       }
       list.append(card);
     }
@@ -1961,9 +2055,9 @@ readinessFilters.addEventListener("change", applyReadinessFilter);
 requirementsContinue.addEventListener("click", () => {
   if (baseRequirementsLoaded) activateStep(3, true);
 });
-editTarget.addEventListener("click", () => activateStep(1, true));
+editTarget.addEventListener("click", () => { resetChecklistProgress(); activateStep(1, true); });
 editRequirements.addEventListener("click", () => activateStep(2, true));
-editApplicant.addEventListener("click", () => activateStep(3, true));
+editApplicant.addEventListener("click", () => { resetChecklistProgress(); activateStep(3, true); });
 schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
 demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
 intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));

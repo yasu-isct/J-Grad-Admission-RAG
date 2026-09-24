@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "issue": 146,
+  "service": "installed jgrad-demo -> uvicorn -> FastAPI",
+  "test_http_handler_used": false,
+  "pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  "ready": {
+    "schema_version": "1.0",
+    "status": "ready",
+    "ready": true
+  },
+  "http": {
+    "must_arrive": "2026年6月10日 必着（不是当天寄出即可）",
+    "material_count": 5,
+    "needs_information_count": 5,
+    "profile_comparable_count": 4,
+    "other_confirmation_count": 1,
+    "pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "pdf_content_type": "application/pdf",
+    "pdf_accept_ranges": "bytes",
+    "pdf_range_status": 206
+  },
+  "browser": {
+    "name": "Chromium",
+    "version": "153.0.8010.53"
+  },
+  "records": [
+    {
+      "viewport": "desktop-1440",
+      "empty_counts": {
+        "total": 8,
+        "recorded": 0,
+        "action_required": 8,
+        "review_required": 0
+      },
+      "partial_counts": {
+        "total": 8,
+        "recorded": 1,
+        "action_required": 7,
+        "review_required": 0
+      },
+      "direct_material_counts": {
+        "total": 8,
+        "recorded": 2,
+        "action_required": 6,
+        "review_required": 0
+      },
+      "review_counts": {
+        "total": 8,
+        "recorded": 1,
+        "action_required": 3,
+        "review_required": 4
+      },
+      "target_reset_counts": {
+        "total": 8,
+        "recorded": 0,
+        "action_required": 8,
+        "review_required": 0
+      },
+      "check_uncheck_isolated_from_system_counts": true,
+      "edit_resubmit_refresh_reset": true,
+      "keyboard_filter_focus_and_evidence": true,
+      "supplemental_not_covered_display_fixture": true,
+      "step_four_pdf_link": null,
+      "horizontal_overflow": false,
+      "external_requests": [],
+      "screenshots": [
+        "outputs/ux05/browser/ux05-desktop-1440-empty-step4.png",
+        "outputs/ux05/browser/ux05-desktop-1440-filters.png",
+        "outputs/ux05/browser/ux05-desktop-1440-review-step4.png"
+      ]
+    },
+    {
+      "viewport": "mobile-390",
+      "empty_counts": {
+        "total": 8,
+        "recorded": 0,
+        "action_required": 8,
+        "review_required": 0
+      },
+      "partial_counts": {
+        "total": 8,
+        "recorded": 1,
+        "action_required": 7,
+        "review_required": 0
+      },
+      "direct_material_counts": {
+        "total": 8,
+        "recorded": 2,
+        "action_required": 6,
+        "review_required": 0
+      },
+      "review_counts": {
+        "total": 8,
+        "recorded": 1,
+        "action_required": 3,
+        "review_required": 4
+      },
+      "target_reset_counts": {
+        "total": 8,
+        "recorded": 0,
+        "action_required": 8,
+        "review_required": 0
+      },
+      "check_uncheck_isolated_from_system_counts": true,
+      "edit_resubmit_refresh_reset": true,
+      "keyboard_filter_focus_and_evidence": true,
+      "supplemental_not_covered_display_fixture": true,
+      "step_four_pdf_link": null,
+      "horizontal_overflow": false,
+      "external_requests": [],
+      "screenshots": [
+        "outputs/ux05/browser/ux05-mobile-390-empty-step4.png",
+        "outputs/ux05/browser/ux05-mobile-390-filters.png",
+        "outputs/ux05/browser/ux05-mobile-390-review-step4.png"
+      ]
+    }
+  ]
+}

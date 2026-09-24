@@ -178,13 +178,17 @@
             <span id="step-4-badge" class="step-state-badge">未开始</span>
           </header>
           <p id="readiness-target" class="target-summary"></p>
+          <section class="action-summary" aria-labelledby="action-summary-heading">
+            <div class="action-summary-heading"><div><p class="section-label">先看下一步</p><h3 id="action-summary-heading">当前行动摘要</h3></div><p class="action-summary-total">本次对照 <span id="count-total">0</span> 项</p></div>
+            <dl class="readiness-counts" aria-label="系统对照状态统计">
+              <div data-group="action_required"><dt>需要补充</dt><dd id="count-action">0</dd></div>
+              <div data-group="review_required"><dt>需学校／人工确认</dt><dd id="count-review">0</dd></div>
+              <div data-group="recorded"><dt>已记录／可能匹配</dt><dd id="count-recorded">0</dd></div>
+            </dl>
+            <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
+          </section>
           <p id="partial-checklist-statement" class="final-notice"></p>
-          <dl class="readiness-counts" aria-label="准备状态统计">
-            <div><dt>全部项目</dt><dd id="count-total">0</dd></div>
-            <div><dt>已记录</dt><dd id="count-recorded">0</dd></div>
-            <div><dt>需要补充</dt><dd id="count-action">0</dd></div>
-            <div><dt>需审核／未覆盖</dt><dd id="count-review">0</dd></div>
-          </dl>
+          <p class="progress-boundary">“系统对照状态”来自当前人工审核覆盖范围内的规则；“我的处理进度”只是此页面会话中的自我标记。刷新、修改目标、返回修改个人情况或重新对照都会清空勾选。材料实际到达、最终资格、申请完整性和录取均未由此验证。</p>
           <fieldset id="readiness-filters" class="readiness-filters">
             <legend>筛选显示</legend>
             <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
