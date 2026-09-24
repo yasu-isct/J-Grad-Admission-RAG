@@ -442,6 +442,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1ApplicantComparison",
         "postV1BaseRequirements",
         "postV1QueryIntentsParse",
+        "postV1GroundedAnswers",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
     catalog_operation = schema["paths"]["/v1/reviewed-documents"]["get"]

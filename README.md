@@ -210,6 +210,12 @@ The strict report and fixed Japanese Markdown remain visibly partial, include a 
 appendix, and never claim overall eligibility or admission. See
 [Applicant Report v1](docs/reasoning/applicant-report-v1.md).
 
+The local service also exposes a fail-closed natural-language grounded answer endpoint and an
+independent page area that reuse the current reviewed target and in-memory applicant profile. The
+packaged provider is deterministic and offline; every displayed factual claim is closed against
+server-owned reviewed evidence before it reaches the browser. See
+[Natural-language grounded RAG API and page v1](docs/natural-language-grounded-rag-v1.md).
+
 The current RULE-05A plan also projects the five p.10 common application materials from one
 authoritative Fact. Items 3–5 are handled by the separate eligibility-review material path for
 eligibility routes (9)–(11), and remain `needs_information` when the profile cannot identify the

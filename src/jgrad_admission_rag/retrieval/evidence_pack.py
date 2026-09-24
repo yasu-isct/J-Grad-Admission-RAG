@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
 
@@ -20,6 +21,7 @@ from ..schemas.evidence_pack import (
 )
 from .lexical_search import LEXICAL_SCORING_VERSION, LEXICAL_TOKENIZER_VERSION
 from .metadata_search import MetadataSearchHit, MetadataSearchResult
+from .metadata_search import PARENT_COLLEGE_MATCH_BOOST, SCOPE_TARGET_MATCH_BOOST
 from .reference_expansion import (
     REFERENCE_EXPANSION_DEPTH,
     REFERENCE_EXPANSION_VERSION,
@@ -29,6 +31,114 @@ from .reference_expansion import (
 )
 
 FAKE_PROVIDER_NAME = "deterministic-fake"
+
+if TYPE_CHECKING:
+    from ..corpus_search import CorpusSearchResult
+
+
+def build_corpus_evidence_pack(result: CorpusSearchResult) -> EvidencePack:
+    """Project one selected-document corpus search into the strict EvidencePack contract."""
+
+    try:
+        from ..corpus_search import CorpusSearchResult
+
+        checked = CorpusSearchResult.model_validate(result.model_dump(mode="json"))
+        if len(checked.selected_documents) != 1:
+            raise ValueError
+        selected = checked.selected_documents[0]
+        manifest = selected.entry.index_manifest
+        if manifest is None or any(
+            hit.key.document_id != selected.entry.identity.document_id for hit in checked.hits
+        ):
+            raise ValueError
+        primaries = tuple(
+            PrimaryEvidence(
+                primary_rank=hit.rank,
+                ranking_score=hit.ranking_score,
+                fused_score=hit.fused_score,
+                scope_boost_total=hit.scope_boost_total,
+                matched_preferences=hit.matched_preferences,
+                matched_scope_targets=hit.matched_scope_targets,
+                matched_parent_college=hit.matched_parent_college,
+                fusion_version=checked.fusion_version,
+                vector_rank=hit.vector_rank,
+                vector_score=hit.vector_score,
+                lexical_rank=hit.lexical_rank,
+                lexical_score=hit.lexical_score,
+                matched_channels=hit.matched_channels,
+                row_index=hit.key.local_row_index,
+                document_id=hit.key.document_id,
+                unit_id=hit.key.unit_id,
+                fact_id=hit.key.fact_id,
+                text=hit.text,
+                source_pages=hit.source_pages,
+                section_path=hit.section_path,
+                fact_type=hit.fact_type,
+                scope_type=hit.scope_type,
+                scope_targets=hit.scope_targets,
+                parent_college=hit.parent_college,
+                metadata=hit.metadata,
+            )
+            for hit in checked.hits
+        )
+        return EvidencePack(
+            request=EvidenceRequest(
+                query=checked.request.query,
+                top_k_requested=checked.request.top_k,
+                candidate_k_requested=checked.request.candidate_k,
+                candidate_k_resolved=checked.candidate_k_resolved,
+                metadata_filter=EvidenceMetadataFilter(
+                    **checked.request.metadata_filter.model_dump()
+                ),
+                scope_preference=EvidenceScopePreference(
+                    **checked.request.scope_preference.model_dump()
+                ),
+            ),
+            runtime=EvidenceRuntime(
+                document_id=manifest.document_id,
+                source_kb_sha256=manifest.source_kb_sha256,
+                source_pdf_sha256=manifest.source_pdf_sha256,
+                index_schema_version=manifest.index_schema_version,
+                source_kb_schema_version=manifest.source_kb_schema_version,
+                payloads_sha256=manifest.payloads_sha256,
+                vectors_sha256=manifest.vectors_sha256,
+                index_builder_version=manifest.builder_version,
+                embedding_provider=manifest.embedding_provider,
+                embedding_model=manifest.embedding_model,
+                embedding_revision=manifest.embedding_revision,
+                embedding_dimension=manifest.embedding_dimension,
+                distance_metric=manifest.distance_metric,
+                semantic=checked.semantic,
+                lexical_tokenizer_version=checked.lexical_tokenizer_version,
+                lexical_scoring_version=checked.lexical_scoring_version,
+                fusion_version=checked.fusion_version,
+                rrf_k=checked.rrf_k,
+                metadata_filter_version=checked.metadata_filter_version,
+                scope_rerank_version=checked.scope_rerank_version,
+                scope_target_match_boost=SCOPE_TARGET_MATCH_BOOST,
+                parent_college_match_boost=PARENT_COLLEGE_MATCH_BOOST,
+                reference_expansion_version="reference-one-hop-v1",
+                reference_expansion_depth=1,
+                corpus_row_count=checked.corpus_row_count,
+                eligible_row_count=checked.eligible_row_count,
+                vector_candidate_count=checked.vector_candidate_count,
+                lexical_candidate_count=checked.lexical_candidate_count,
+            ),
+            primary_evidence=primaries,
+            attached_reference_evidence=(),
+            resolved_relations=(),
+            reference_warnings=(),
+            counts=EvidenceCounts(
+                primary_evidence_count=len(primaries),
+                attached_evidence_count=0,
+                resolved_relation_count=0,
+                warning_count=0,
+                warning_status_counts={"ambiguous": 0, "unresolved": 0},
+                unique_evidence_count=len(primaries),
+            ),
+        )
+    except (AttributeError, TypeError, ValueError, ValidationError):
+        raise EvidencePackError("Corpus search result cannot form an EvidencePack") from None
 
 
 def build_evidence_pack(

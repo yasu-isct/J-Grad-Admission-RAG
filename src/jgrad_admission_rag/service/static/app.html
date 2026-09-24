@@ -201,6 +201,26 @@
         </section>
       </section>
 
+      <section id="grounded-answer-panel" class="grounded-answer-panel" aria-labelledby="grounded-answer-heading">
+        <header class="grounded-answer-header">
+          <div>
+            <p class="section-label">NATURAL-LANGUAGE RAG · 独立功能</p>
+            <h2 id="grounded-answer-heading">向当前审核范围提问</h2>
+          </div>
+          <span class="ai-badge">AI 生成</span>
+        </header>
+        <p class="field-detail">自动复用上方已选择的学校、项目、入学时间与本页内个人情况；问题中无需重复。回答只会在检索证据和人工审核规则完全闭合时显示。</p>
+        <p id="grounded-context" class="target-summary">请先完成目标选择并加载基础要求。</p>
+        <form id="grounded-answer-form" novalidate>
+          <label for="grounded-question">问题</label>
+          <textarea id="grounded-question" rows="4" maxlength="1000" disabled aria-describedby="grounded-question-help grounded-question-count" placeholder="例如：出願資格について、私に不足している情報は何ですか？"></textarea>
+          <div class="input-meta"><p id="grounded-question-help">目前支持审核目录能识别的资格、语言、日期、费用、联系表单等主题。</p><p id="grounded-question-count">0 / 1000</p></div>
+          <div class="actions"><button id="grounded-answer-submit" type="submit" disabled>生成有依据的回答</button><button id="grounded-answer-retry" class="secondary" type="button" hidden>重试</button></div>
+        </form>
+        <div id="grounded-answer-status" class="status-message" role="status" aria-live="polite">加载基础要求后即可提问。</div>
+        <section id="grounded-answer-output" class="grounded-answer-output" aria-live="polite" hidden></section>
+      </section>
+
       <dialog id="evidence-drawer" class="evidence-drawer" aria-labelledby="drawer-title">
         <div class="drawer-header">
           <div><p class="section-label">OFFICIAL EVIDENCE</p><h2 id="drawer-title">官方依据</h2></div>

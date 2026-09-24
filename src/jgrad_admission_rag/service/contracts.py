@@ -368,6 +368,9 @@ REPORT_ERROR_RESPONSES = {
     status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 503)
 }
 INTENT_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (415, 422, 500, 503)}
+GROUNDED_ERROR_RESPONSES = {
+    status: {"model": ErrorEnvelope} for status in (404, 409, 415, 422, 500, 502, 503, 504)
+}
 CATALOG_ERROR_RESPONSES = {status: {"model": ErrorEnvelope} for status in (500, 503)}
 
 

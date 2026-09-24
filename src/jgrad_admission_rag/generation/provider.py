@@ -241,6 +241,61 @@ class DeterministicFakeGenerationProvider:
         )
 
 
+class ReviewedStateGenerationProvider:
+    """Offline demo provider that selects every reviewed finding without inventing prose."""
+
+    def __init__(self) -> None:
+        self._identity = GenerationProviderIdentity(
+            provider="reviewed-state-offline",
+            model="grounded-reviewed-v1",
+            revision="1",
+        )
+
+    @property
+    def identity(self) -> GenerationProviderIdentity:
+        return self._identity
+
+    def generate(self, request: GenerationRequest) -> GenerationDraft:
+        claims = tuple(
+            GeneratedClaim(
+                claim_id=f"claim:{index:04d}",
+                kind=ClaimKind.REVIEWED_RULE,
+                text="reviewed finding",
+                evidence_ids=finding.evidence_ids,
+                finding_ids=(finding.finding_id,),
+            )
+            for index, finding in enumerate(request.rule_findings, start=1)
+        )
+        missing = tuple(
+            sorted(
+                {
+                    path
+                    for finding in request.rule_findings
+                    if finding.status == "needs_information"
+                    for path in finding.missing_fields
+                }
+            )
+        )
+        pending = any(
+            finding.status in {"needs_information", "needs_review", "not_covered"}
+            for finding in request.rule_findings
+        )
+        needs_review = pending or not claims
+        limitations = (
+            (GenerationLimitation.NEEDS_REVIEW,)
+            if pending
+            else ((GenerationLimitation.INSUFFICIENT_EVIDENCE,) if not claims else ())
+        )
+        return GenerationDraft(
+            answer=assemble_generation_answer(claims),
+            claims=claims,
+            missing_information=missing,
+            limitations=limitations,
+            needs_review=needs_review,
+            refused=False,
+        )
+
+
 def _render_claim_text(
     claim: GeneratedClaim,
     *,

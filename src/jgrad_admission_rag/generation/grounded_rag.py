@@ -28,6 +28,8 @@ from .contracts import (
 from .provider import GenerationError, GenerationErrorCode, GenerationProvider, generate_checked
 
 GROUNDED_RAG_SCHEMA_VERSION = "1.0"
+MAX_GROUNDED_EVIDENCE_RECORDS = 16
+MAX_GROUNDED_EVIDENCE_CHARACTERS = 60_000
 _SAFE_ID = re.compile(r"^[^\W][\w.:/-]*$", re.UNICODE)
 
 
@@ -350,6 +352,13 @@ def run_grounded_rag(
     if fact_paths != tuple(sorted(set(fact_paths))):
         raise GroundedRagError(GroundedRagErrorCode.INVALID_INPUT)
     if not checked_pack.primary_evidence and not checked_pack.attached_reference_evidence:
+        raise GroundedRagError(GroundedRagErrorCode.INSUFFICIENT_EVIDENCE)
+    checked_records = checked_pack.primary_evidence + checked_pack.attached_reference_evidence
+    if (
+        len(checked_records) > MAX_GROUNDED_EVIDENCE_RECORDS
+        or sum(len(item.text) + len(" / ".join(item.section_path)) for item in checked_records)
+        > MAX_GROUNDED_EVIDENCE_CHARACTERS
+    ):
         raise GroundedRagError(GroundedRagErrorCode.INSUFFICIENT_EVIDENCE)
 
     prepared: _PreparedRequest | None = None

@@ -771,6 +771,22 @@ def _demo_applicant_profile(
                 "years_of_education": None,
             },
         )
+    language_results = None
+    if (
+        applicant.english_test_kind is not None
+        or applicant.english_score is not None
+        or applicant.english_test_date is not None
+        or applicant.english_official_report_available is not None
+    ):
+        language_results = (
+            {
+                "test_kind": applicant.english_test_kind,
+                "score": applicant.english_score,
+                "test_date": applicant.english_test_date,
+                "validity_status": None,
+                "official_report_available": applicant.english_official_report_available,
+            },
+        )
     return ApplicantProfile.model_validate(
         {
             "schema_version": "1.0",
@@ -796,8 +812,51 @@ def _demo_applicant_profile(
                 "individual_review_requested": None,
                 "individual_review_completed": None,
             },
-            "language_test_results": None,
+            "language_test_results": language_results,
         }
+    )
+
+
+def build_demo_applicant_profile(
+    target: DemoTargetRequest, applicant: DemoApplicantInput
+) -> ApplicantProfile:
+    """Build the strict reasoning profile used by the demo and grounded-answer API."""
+
+    return _demo_applicant_profile(target, applicant)
+
+
+def build_demo_target_summary(
+    plans: tuple[ReviewedReportPlan, ...], request: DemoTargetRequest
+) -> DemoTargetSummary:
+    """Resolve one request through the same reviewed target catalog shown in the UI."""
+
+    return _resolve_catalog_target(build_demo_target_catalog(plans), request)
+
+
+def build_demo_evidence_inventory(
+    plan: ReviewedReportPlan,
+    evidence: ReviewedReportEvidenceBundle,
+    request: DemoTargetRequest,
+    fact_ids: tuple[str, ...],
+    *,
+    source_pdf_document_id: str | None,
+) -> tuple[DemoEvidence, ...]:
+    """Expose only cited exact evidence records with safe, verified navigation metadata."""
+
+    records = {item.fact_id: item for item in evidence.evidence_records}
+    return tuple(
+        _demo_evidence(
+            plan,
+            records[fact_id],
+            "生成内容只绑定到这段已审核官方原文；请通过 PDF 页码和官方网页最终核对。",
+            request.intake,
+            local_pdf_url=(
+                f"/documents/{request.document_id}/source.pdf"
+                if source_pdf_document_id == request.document_id
+                else None
+            ),
+        )
+        for fact_id in sorted(set(fact_ids))
     )
 
 
@@ -1204,11 +1263,21 @@ def _date_events(
 
 
 __all__ = [
+    "DemoApplicantComparisonRequest",
+    "DemoApplicantComparisonResponse",
+    "DemoApplicantInput",
     "DemoBaseRequirementsResponse",
+    "DemoEvidence",
     "DemoDateEvent",
     "DemoEvidenceHighlight",
+    "DemoModel",
     "DemoTargetCatalogResponse",
     "DemoTargetRequest",
+    "DemoTargetSummary",
+    "build_demo_applicant_profile",
+    "build_demo_evidence_inventory",
     "build_demo_base_requirements",
+    "build_demo_applicant_comparison",
     "build_demo_target_catalog",
+    "build_demo_target_summary",
 ]

@@ -7,6 +7,7 @@ const REPORT_ENDPOINT = "/v1/applicant-reports";
 const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog";
 const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements";
 const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison";
+const GROUNDED_ANSWER_ENDPOINT = "/v1/grounded-answers";
 const MAX_QUERY_LENGTH = 1000;
 const TOP_K = 5;
 const CANDIDATE_K = 20;
@@ -65,6 +66,14 @@ const requirementsContinue = byId("requirements-continue");
 const editTarget = byId("edit-target");
 const editRequirements = byId("edit-requirements");
 const editApplicant = byId("edit-applicant");
+const groundedForm = byId("grounded-answer-form");
+const groundedQuestion = byId("grounded-question");
+const groundedQuestionCount = byId("grounded-question-count");
+const groundedSubmit = byId("grounded-answer-submit");
+const groundedRetry = byId("grounded-answer-retry");
+const groundedStatus = byId("grounded-answer-status");
+const groundedOutput = byId("grounded-answer-output");
+const groundedContext = byId("grounded-context");
 const flowSteps = [1, 2, 3, 4].map((number) => ({
   number,
   panel: byId(number === 3 ? "applicant-panel" : number === 4 ? "readiness-panel" : `step-${number}-panel`),
@@ -92,6 +101,9 @@ let activeStep = 1;
 let requirementsEverLoaded = false;
 let comparisonComplete = false;
 let comparisonEverLoaded = false;
+let groundedController = null;
+let groundedRequestId = 0;
+let groundedCanRetry = false;
 
 const stepStateLabels = {
   locked: "未开始",
@@ -160,6 +172,185 @@ function setMessage(element, state, message, focus = false) {
 
 function setStatus(state, message, focus = false) {
   setMessage(statusMessage, state, message, focus);
+}
+
+function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
+  groundedRequestId += 1;
+  if (groundedController) groundedController.abort();
+  groundedController = null;
+  groundedCanRetry = false;
+  groundedRetry.hidden = true;
+  groundedOutput.replaceChildren();
+  groundedOutput.hidden = true;
+  groundedQuestion.disabled = !baseRequirementsLoaded;
+  groundedSubmit.disabled = !baseRequirementsLoaded;
+  setMessage(groundedStatus, "initial", message);
+}
+
+function updateGroundedContext() {
+  if (!baseRequirementsLoaded || !demoTargetComplete()) {
+    groundedContext.textContent = "请先完成目标选择并加载基础要求。";
+    return;
+  }
+  const target = currentDepartment();
+  const intake = currentIntake();
+  groundedContext.textContent = `当前复用：${currentSchool().school_name} · ${target ? target.department_name : departmentSelect.value} · ${intake.intake_name}；个人情况取自上方本页表单。`;
+}
+
+function groundedRequestPayload() {
+  return {
+    schema_version: "1.0",
+    question: groundedQuestion.value.trim(),
+    target: demoTargetRequest(),
+    applicant: demoApplicantInput()
+  };
+}
+
+function groundedFailureMessage(code, status) {
+  if (code === "generation_provider_timeout" || status === 504) return "生成服务超时。当前选择和问题仍保留，可重试。";
+  if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
+  if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
+  if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答未通过证据或引用校验，因此已安全隐藏。请重试或查看基础要求。";
+  if (code === "unsupported_question" || status === 422) return "问题超出当前人工审核范围，或未包含可识别的资格、语言、日期、费用等主题。";
+  return "暂时无法生成有依据的回答，请重试。";
+}
+
+function appendGroundedList(container, title, values) {
+  if (!Array.isArray(values) || !values.length) return;
+  const section = document.createElement("section");
+  section.className = "grounded-boundary";
+  section.append(heading(3, title));
+  const list = document.createElement("ul");
+  for (const value of values) {
+    const item = document.createElement("li");
+    item.textContent = String(value);
+    list.append(item);
+  }
+  section.append(list);
+  container.append(section);
+}
+
+function renderGroundedAnswer(payload) {
+  groundedOutput.replaceChildren();
+  const answer = payload.answer;
+  const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
+  const meta = document.createElement("p");
+  meta.className = "grounded-answer-meta";
+  for (const text of [
+    `AI 生成 · ${answer.provider.provider}`,
+    `模型 ${answer.provider.model}`,
+    answer.provider.revision ? `revision ${answer.provider.revision}` : "revision 未提供",
+    answer.needs_review ? "需要人工复核" : "审核状态完整"
+  ]) {
+    const badge = document.createElement("span");
+    badge.textContent = text;
+    meta.append(badge);
+  }
+  groundedOutput.append(meta);
+  const scope = document.createElement("p");
+  scope.className = "grounded-boundary";
+  scope.textContent = `审核范围：${payload.reviewed_scope_statement}`;
+  groundedOutput.append(scope);
+
+  if (!Array.isArray(answer.claims) || !answer.claims.length) {
+    const empty = document.createElement("p");
+    empty.className = "grounded-boundary";
+    empty.textContent = "证据已检索，但离线 provider 没有返回可安全展示的事实性主张。";
+    groundedOutput.append(empty);
+  }
+  for (const claim of answer.claims || []) {
+    const card = document.createElement("article");
+    card.className = "grounded-claim";
+    card.dataset.kind = claim.kind;
+    const label = document.createElement("p");
+    label.className = "comparison-category";
+    label.textContent = claim.kind === "reviewed_rule" ? "人工审核规则" : claim.kind === "official_fact" ? "官方证据事实" : "申请人自报信息";
+    const text = document.createElement("p");
+    text.textContent = claim.text;
+    card.append(label, text);
+    const controls = document.createElement("div");
+    controls.className = "grounded-citations";
+    for (const citation of claim.citations || []) {
+      const evidence = evidenceByFact.get(citation.fact_id);
+      if (!evidence) continue;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `查看依据 · 第 ${citation.source_pages.join("、")} 页`;
+      button.addEventListener("click", () => openDemoEvidence({ title: "生成回答的官方依据" }, evidence, button));
+      controls.append(button);
+    }
+    if (controls.childElementCount) card.append(controls);
+    groundedOutput.append(card);
+  }
+  appendGroundedList(groundedOutput, "仍缺少的信息", answer.missing_information);
+  appendGroundedList(groundedOutput, "限制", answer.limitations);
+  const sources = document.createElement("div");
+  sources.className = "grounded-source-actions";
+  if (payload.local_pdf_url) {
+    const pdf = document.createElement("a");
+    pdf.className = "source-link";
+    pdf.href = payload.local_pdf_url;
+    pdf.target = "_blank";
+    pdf.rel = "noopener noreferrer";
+    pdf.textContent = "打开本地已校验 PDF";
+    sources.append(pdf);
+  }
+  const official = document.createElement("a");
+  official.className = "source-link";
+  official.href = payload.official_source_url;
+  official.target = "_blank";
+  official.rel = "noopener noreferrer";
+  official.textContent = "打开官方招生网页";
+  sources.append(official);
+  groundedOutput.append(sources);
+  groundedOutput.hidden = false;
+}
+
+async function submitGroundedAnswer() {
+  const question = groundedQuestion.value.trim();
+  if (!baseRequirementsLoaded || !demoTargetComplete() || !question || question.length > MAX_QUERY_LENGTH) {
+    setMessage(groundedStatus, "error", "请输入 1–1000 个字符的问题，并先加载基础要求。", true);
+    return;
+  }
+  if (groundedController) groundedController.abort();
+  const payload = groundedRequestPayload();
+  const snapshot = JSON.stringify(payload);
+  const requestId = ++groundedRequestId;
+  groundedController = new AbortController();
+  const timeout = globalThis.setTimeout(() => groundedController && groundedController.abort("timeout"), 15000);
+  groundedSubmit.disabled = true;
+  groundedRetry.hidden = true;
+  groundedOutput.hidden = true;
+  groundedCanRetry = false;
+  setMessage(groundedStatus, "loading", "正在检索审核证据并校验生成引用。");
+  try {
+    const response = await fetch(GROUNDED_ANSWER_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: snapshot, cache: "no-store", credentials: "same-origin", signal: groundedController.signal });
+    const body = await response.json().catch(() => ({}));
+    if (requestId !== groundedRequestId || snapshot !== JSON.stringify(groundedRequestPayload())) return;
+    if (!response.ok) {
+      const failure = new Error("grounded request failed");
+      failure.code = body.code;
+      failure.status = response.status;
+      throw failure;
+    }
+    if (!body.answer || !Array.isArray(body.answer.claims) || !Array.isArray(body.evidence)) throw new Error("invalid response");
+    renderGroundedAnswer(body);
+    setMessage(groundedStatus, "success", "回答已通过审核状态与引用闭合校验。", true);
+  } catch (error) {
+    if (requestId !== groundedRequestId) return;
+    const timedOut = groundedController && groundedController.signal.reason === "timeout";
+    groundedCanRetry = true;
+    groundedRetry.hidden = false;
+    groundedOutput.replaceChildren();
+    groundedOutput.hidden = true;
+    setMessage(groundedStatus, "error", timedOut ? "生成服务超时。当前选择和问题仍保留，可重试。" : groundedFailureMessage(error && error.code, error && error.status), true);
+  } finally {
+    globalThis.clearTimeout(timeout);
+    if (requestId === groundedRequestId) {
+      groundedController = null;
+      groundedSubmit.disabled = !baseRequirementsLoaded;
+    }
+  }
 }
 
 function clearResults() {
@@ -1972,6 +2163,8 @@ async function submitBaseRequirements() {
   const requestId = ++requirementsRequestId;
   requirementsController = new AbortController();
   baseRequirementsLoaded = false;
+  clearGroundedAnswer("基础要求正在更新，请稍候。");
+  updateGroundedContext();
   invalidateComparison("基础要求正在更新，请稍候。");
   clearDemoResults("正在从服务端加载基础要求。");
   requirementsPending = true;
@@ -1989,6 +2182,8 @@ async function submitBaseRequirements() {
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
     clearComparison();
+    clearGroundedAnswer("可针对当前目标和本页个人情况提问。");
+    updateGroundedContext();
     setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。");
     activateStep(2, true);
   } catch (error) {
@@ -2020,6 +2215,8 @@ function handleDemoTargetChange(next) {
   invalidateComparison("申请目标已改变，请重新加载基础要求。");
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
   resetApplicantInputs();
+  clearGroundedAnswer("申请目标已改变，请重新加载基础要求后提问。");
+  updateGroundedContext();
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
   activateStep(1);
@@ -2028,6 +2225,7 @@ function handleDemoTargetChange(next) {
 
 queryInput.addEventListener("input", () => { queryCount.textContent = `${queryInput.value.length} / ${MAX_QUERY_LENGTH}`; });
 reportQuery.addEventListener("input", () => { reportQueryCount.textContent = `${reportQuery.value.length} / ${MAX_QUERY_LENGTH}`; });
+groundedQuestion.addEventListener("input", () => { groundedQuestionCount.textContent = `${groundedQuestion.value.length} / ${MAX_QUERY_LENGTH}`; });
 documentSelect.addEventListener("change", () => { updateDocumentDetail(); clearReportResult(); setMessage(reportStatus, "initial", "募集要項が変わりました。条件を確認して明示的に再送信してください。"); });
 form.addEventListener("submit", (event) => { event.preventDefault(); submitSearch(); });
 reportForm.addEventListener("submit", (event) => { event.preventDefault(); submitReport(); });
@@ -2044,6 +2242,8 @@ applicantForm.addEventListener("input", () => {
   updateProfileGroupStates();
   updateEnglishInputHint();
   invalidateComparison("个人输入已改变，请重新对照。");
+  clearGroundedAnswer("个人情况已改变；下次提交将使用最新的本页输入。");
+  updateGroundedContext();
   if (baseRequirementsLoaded) activateStep(3);
 });
 applicantForm.addEventListener("change", () => {
@@ -2065,10 +2265,14 @@ collegeSelect.addEventListener("change", () => handleDemoTargetChange(populateDe
 departmentSelect.addEventListener("change", () => handleDemoTargetChange(populateRouteSelect));
 routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequirementsSubmit));
 requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
+groundedForm.addEventListener("submit", (event) => { event.preventDefault(); submitGroundedAnswer(); });
+groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
 
 updateFlowPresentation();
 initializeProfileGroups();
+clearGroundedAnswer();
+updateGroundedContext();
 loadCatalog();
 loadDemoCatalog();

@@ -37,6 +37,7 @@ from .provider import (
     GenerationError,
     GenerationErrorCode,
     GenerationProvider,
+    ReviewedStateGenerationProvider,
     generate_checked,
 )
 
@@ -62,6 +63,7 @@ __all__ = [
     "GenerationEvidenceMaterial",
     "GenerationLimitation",
     "GenerationProvider",
+    "ReviewedStateGenerationProvider",
     "GenerationProviderIdentity",
     "GenerationRequest",
     "GenerationResult",

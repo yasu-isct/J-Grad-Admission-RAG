@@ -121,6 +121,7 @@ def _serve(
 ) -> None:
     from .service.app import create_app
     from .service.runtime import ServiceDependencies, ServiceSettings
+    from .generation import ReviewedStateGenerationProvider
 
     try:
         import uvicorn
@@ -142,7 +143,10 @@ def _serve(
         )
         app = create_app(
             settings,
-            ServiceDependencies(provider_factory=lambda: provider),
+            ServiceDependencies(
+                provider_factory=lambda: provider,
+                generation_provider_factory=ReviewedStateGenerationProvider,
+            ),
         )
     except EmbeddingProviderError as error:
         raise DemoError(demo_embedding_failure_message(embedding, error)) from None
