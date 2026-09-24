@@ -10,12 +10,14 @@ from .contracts import (
     GenerationDraft,
     GenerationEvidence,
     GenerationEvidenceMaterial,
+    GenerationLimitation,
     GenerationProviderIdentity,
     GenerationRequest,
     GenerationResult,
     GenerationRuleFinding,
     GenerationTarget,
     assign_generation_evidence_ids,
+    assemble_generation_answer,
     canonical_generation_result_bytes,
 )
 from .openai_responses import OpenAIResponsesConfig, OpenAIResponsesGenerationProvider
@@ -40,6 +42,7 @@ __all__ = [
     "GenerationErrorCode",
     "GenerationEvidence",
     "GenerationEvidenceMaterial",
+    "GenerationLimitation",
     "GenerationProvider",
     "GenerationProviderIdentity",
     "GenerationRequest",
@@ -49,6 +52,7 @@ __all__ = [
     "OpenAIResponsesConfig",
     "OpenAIResponsesGenerationProvider",
     "assign_generation_evidence_ids",
+    "assemble_generation_answer",
     "canonical_generation_result_bytes",
     "generate_checked",
 ]

@@ -30,7 +30,7 @@ embedding = [
     "sentence-transformers>=3.0.0",
 ]
 generation = [
-    "openai>=1.68.0,<3",
+    "openai>=3.17.0,<4",
 ]
 
 [project.scripts]
