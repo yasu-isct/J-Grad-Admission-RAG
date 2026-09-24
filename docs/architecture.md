@@ -292,9 +292,14 @@ RAG path. The packaged Demo defaults to the non-semantic `deterministic-fake` pr
 repeatability. M9-01 adds an explicit cache-only pinned BGE-M3 Demo selection on the same existing
 hybrid retrieval path; startup displays the audited embedding identity and semantic status. M9-02
 adds a replaceable Generation provider, opaque evidence references, strict structured drafts, a
-deterministic offline fake, and an optional bounded OpenAI Responses adapter. M9-03 will add
-deterministic citation binding, validation, and hydration. Until those later gates pass, current
-Demo answer prose remains deterministic and arbitrary natural-language questions are not supported.
+deterministic offline fake, and an optional bounded OpenAI Responses adapter. M9-03 adds a
+fail-closed orchestration contract that binds one EvidencePack and reviewed CitedAnswer, assigns
+request-local opaque evidence IDs, and hydrates `GroundedAnswer` citations from server-owned
+document, Fact, page, PDF-hash, and KB-hash provenance. See
+[Grounded RAG orchestration v1](grounded-rag-v1.md) and
+[ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). Until the later UI gate passes,
+current Demo answer prose remains deterministic and arbitrary natural-language questions are not
+supported.
 
 ## Main Boundaries
 

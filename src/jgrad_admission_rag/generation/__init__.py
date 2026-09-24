@@ -21,6 +21,17 @@ from .contracts import (
     canonical_generation_result_bytes,
 )
 from .openai_responses import OpenAIResponsesConfig, OpenAIResponsesGenerationProvider
+from .grounded_rag import (
+    GROUNDED_RAG_SCHEMA_VERSION,
+    GroundedAnswer,
+    GroundedCitation,
+    GroundedClaim,
+    GroundedRagError,
+    GroundedRagErrorCode,
+    GroundedRagTarget,
+    canonical_grounded_answer_bytes,
+    run_grounded_rag,
+)
 from .provider import (
     DeterministicFakeGenerationProvider,
     GenerationError,
@@ -32,11 +43,18 @@ from .provider import (
 __all__ = [
     "GENERATION_PROMPT_VERSION",
     "GENERATION_SCHEMA_VERSION",
+    "GROUNDED_RAG_SCHEMA_VERSION",
     "ApplicantFact",
     "ClaimKind",
     "DeterministicFakeGenerationProvider",
     "EvidenceRole",
     "GeneratedClaim",
+    "GroundedAnswer",
+    "GroundedCitation",
+    "GroundedClaim",
+    "GroundedRagError",
+    "GroundedRagErrorCode",
+    "GroundedRagTarget",
     "GenerationDraft",
     "GenerationError",
     "GenerationErrorCode",
@@ -54,5 +72,7 @@ __all__ = [
     "assign_generation_evidence_ids",
     "assemble_generation_answer",
     "canonical_generation_result_bytes",
+    "canonical_grounded_answer_bytes",
     "generate_checked",
+    "run_grounded_rag",
 ]
