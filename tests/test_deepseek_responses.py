@@ -27,6 +27,11 @@ from jgrad_admission_rag.generation import (
     generate_checked,
 )
 from jgrad_admission_rag.generation.config import GenerationRuntimeConfiguration
+from jgrad_admission_rag.generation.deepseek_schema import (
+    DeepSeekSchemaProjectionError,
+    DeepSeekSchemaProjectionErrorCode,
+)
+from jgrad_admission_rag.generation import deepseek_responses as deepseek_module
 from jgrad_admission_rag.demo_cli import _parser as demo_parser
 from jgrad_admission_rag.manual_deepseek_evaluation import main as manual_deepseek_main
 
@@ -158,6 +163,61 @@ def test_deepseek_uses_only_its_key_and_fixed_base_url(monkeypatch: pytest.Monke
     }
 
 
+def test_deepseek_projection_error_context_is_detached(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "deepseek-test-key")
+
+    def fail_projection(_: object) -> object:
+        try:
+            raise RuntimeError("PRIVATE-SCHEMA-CONTEXT")
+        except RuntimeError:
+            raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA)
+
+    monkeypatch.setattr(deepseek_module, "build_deepseek_schema_projection", fail_projection)
+    with pytest.raises(GenerationError) as caught:
+        DeepSeekResponsesGenerationProvider(
+            DeepSeekResponsesConfig(model="deepseek-flash"),
+            _client_factory=lambda **_: FakeClient(FakeResponses()),
+        )
+    assert caught.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert "PRIVATE-SCHEMA-CONTEXT" not in str(caught.value)
+
+
+def test_deepseek_unexpected_projector_error_is_detached(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "deepseek-test-key")
+
+    def fail_projection(_: object) -> object:
+        raise RuntimeError("PRIVATE-PROJECTOR-CONTEXT")
+
+    monkeypatch.setattr(deepseek_module, "build_deepseek_schema_projection", fail_projection)
+    with pytest.raises(GenerationError) as caught:
+        DeepSeekResponsesGenerationProvider(
+            DeepSeekResponsesConfig(model="deepseek-flash"),
+            _client_factory=lambda **_: FakeClient(FakeResponses()),
+        )
+    assert caught.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert caught.value.args == ("generation provider is unavailable",)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert "PRIVATE-PROJECTOR-CONTEXT" not in str(caught.value)
+
+
+def test_deepseek_schema_hook_error_is_detached() -> None:
+    class SensitiveSchema:
+        @classmethod
+        def model_json_schema(cls) -> dict[str, object]:
+            raise RuntimeError("PRIVATE-SCHEMA-HOOK")
+
+    with pytest.raises(GenerationError) as caught:
+        deepseek_module._projection_for(SensitiveSchema)  # type: ignore[arg-type]
+    assert caught.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert caught.value.args == ("generation provider is unavailable",)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert "PRIVATE-SCHEMA-HOOK" not in str(caught.value)
+
+
 def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -176,6 +236,10 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     text = responses.kwargs["text"]
     assert text["format"]["type"] == "json_schema"  # type: ignore[index]
     assert text["format"]["strict"] is True  # type: ignore[index]
+    wire_schema = text["format"]["schema"]  # type: ignore[index]
+    assert "$defs" not in wire_schema
+    assert "maxLength" not in json.dumps(wire_schema)
+    assert wire_schema != GenerationDraft.model_json_schema()
     sent = responses.kwargs["input"][1]["content"]  # type: ignore[index]
     assert "evidence:0001" in sent
     assert "source_pdf" not in sent
@@ -294,6 +358,10 @@ def test_deepseek_question_analysis_preserves_multilingual_server_constraints(
     assert provider.analyze(question) == expected
     assert expected.detected_language is language
     assert responses.kwargs["text"]["format"]["type"] == "json_schema"  # type: ignore[index]
+    wire_schema = responses.kwargs["text"]["format"]["schema"]  # type: ignore[index]
+    assert "$defs" not in wire_schema
+    assert "minItems" not in json.dumps(wire_schema)
+    assert wire_schema != expected.model_json_schema()
 
 
 def test_deepseek_question_analysis_accepts_one_typo_but_rejects_topic_redirect(

@@ -15,6 +15,10 @@ from .contracts import (
     GenerationProviderIdentity,
     GenerationRequest,
 )
+from .deepseek_schema import (
+    DeepSeekSchemaProjection,
+    build_deepseek_schema_projection,
+)
 from .provider import GenerationError, GenerationErrorCode
 from .question_analysis import (
     ALLOWED_CANONICAL_TERMS,
@@ -79,6 +83,7 @@ class DeepSeekResponsesGenerationProvider:
             revision=None,
             prompt_version=GENERATION_PROMPT_VERSION,
         )
+        self._schema_projection = _projection_for(GenerationDraft)
         self._client = _create_client(config, _client_factory)
 
     @property
@@ -99,6 +104,7 @@ class DeepSeekResponsesGenerationProvider:
             payload=payload,
             schema=GenerationDraft,
             schema_name="generation_draft",
+            projection=self._schema_projection,
         )
 
 
@@ -115,6 +121,7 @@ class DeepSeekResponsesQuestionUnderstandingProvider:
     ) -> None:
         self._config = config
         self.model_name = config.model
+        self._schema_projection = _projection_for(QuestionAnalysis)
         self._client = _create_client(config, _client_factory)
 
     def analyze(self, question: str) -> QuestionAnalysis:
@@ -136,6 +143,7 @@ class DeepSeekResponsesQuestionUnderstandingProvider:
             payload=payload,
             schema=QuestionAnalysis,
             schema_name="question_analysis",
+            projection=self._schema_projection,
         )
         if not analysis_matches_server_constraints(question, analysis, anchor):
             raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT)
@@ -183,6 +191,7 @@ def _request_structured_output(
     payload: str,
     schema: type[_SchemaModel],
     schema_name: str,
+    projection: DeepSeekSchemaProjection,
 ) -> _SchemaModel:
     failure: GenerationErrorCode | None = None
     response: Any | None = None
@@ -198,7 +207,7 @@ def _request_structured_output(
                     "type": "json_schema",
                     "name": schema_name,
                     "strict": True,
-                    "schema": schema.model_json_schema(),
+                    "schema": projection.schema,
                 }
             },
             max_output_tokens=config.max_output_tokens,
@@ -241,6 +250,17 @@ def _request_structured_output(
     if validated is None:
         raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
     return validated
+
+
+def _projection_for(schema: type[BaseModel]) -> DeepSeekSchemaProjection:
+    projection: DeepSeekSchemaProjection | None = None
+    try:
+        projection = build_deepseek_schema_projection(schema.model_json_schema())
+    except Exception:
+        pass
+    if projection is None:
+        raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
+    return projection
 
 
 __all__ = [

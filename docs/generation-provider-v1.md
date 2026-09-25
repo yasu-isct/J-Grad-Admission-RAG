@@ -96,7 +96,10 @@ The separate DeepSeek adapter uses the same provider-neutral request and server 
 has its own `DeepSeekResponsesConfig`, `DEEPSEEK_API_KEY` credential source, model allowlist, and
 fixed official endpoint. It deliberately does not inherit OpenAI endpoint or credential behavior.
 DeepSeek's compatibility documentation marks Responses `text.format` as fully supported, so the
-adapter sends a strict JSON Schema and then independently parses and validates `output_text`.
+adapter sends a strict provider-specific wire projection and then independently parses and
+validates `output_text` against the original complete Pydantic model. The projection only removes
+or rewrites constraints unsupported by DeepSeek's strict dialect; it does not affect the OpenAI
+adapter or weaken server-owned validation.
 DeepSeek documents `store` as unsupported and responses as always `store: false`; the adapter also
 sends `store=False` for explicit compatibility intent. It does not inspect, persist, or log
 reasoning output. Full operational details and the live-call gate are in
