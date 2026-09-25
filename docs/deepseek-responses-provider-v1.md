@@ -21,9 +21,38 @@ features available while natural-language generation reports itself unconfigured
 ## Structured and grounded boundary
 
 Both calls use the official OpenAI-compatible Responses shape. The request supplies
-`text.format.type=json_schema`, a strict Pydantic-derived JSON Schema, a bounded
+`text.format.type=json_schema`, a DeepSeek-compatible strict JSON Schema, a bounded
 `max_output_tokens`, and `store=False`. DeepSeek's compatibility guide says `text.format` is fully
 supported and that storage is unsupported with responses always reporting `store: false`.
+
+### DeepSeek schema projection
+
+DeepSeek strict Structured Outputs accepts a narrower JSON Schema dialect than the complete
+Pydantic schemas used by this service. M10-04 therefore adds a provider-local wire projection. It
+does not replace or modify the application models and is never used by `openai-responses` or
+`reviewed-state-offline`.
+
+Projection version `1.0`:
+
+- deep-copies the source schema and deterministically inlines only local `#/$defs/...` references;
+- makes every object closed with `additionalProperties: false` and lists every property in
+  `required`;
+- represents fields that were omissible as required nullable values for the wire protocol;
+- converts `const` to a one-value `enum`;
+- removes wire-unsupported defaults, string/number/array validation constraints, and annotations;
+- rejects unknown keywords, remote or unresolved references, cycles, conflicting constraints,
+  excessive depth, and excessive input/output size.
+
+Each projected schema has a canonical SHA-256 identity. Operations may record only the projection
+version and a short hash prefix alongside non-sensitive status/latency metadata; the schema,
+prompt, evidence, profile, and raw response are not default-log fields.
+
+The projection is an API compatibility layer, not a trust boundary. DeepSeek output is decoded and
+validated again with the original full Pydantic model. Constraints omitted from the wire schema,
+including text length, patterns, numeric bounds, and array sizes, remain authoritative locally.
+Question analysis must still reconcile with the deterministic server anchor, and answer generation
+must still pass the existing citation and claim closure checks. A wire-valid but locally invalid
+response fails closed.
 
 The question-analysis result is parsed locally and must exactly reconcile with the deterministic
 server constraint after only bounded alias/typo correction. A model cannot redirect an exam,
@@ -83,5 +112,6 @@ Official references:
 
 - [DeepSeek API quick start](https://api-docs.deepseek.com/)
 - [Using the Responses API](https://api-docs.deepseek.com/guides/responses_api)
+- [Strict JSON Schema constraints](https://api-docs.deepseek.com/guides/tool_calls)
 - [JSON Output](https://api-docs.deepseek.com/guides/json_mode)
 - [Models and pricing](https://api-docs.deepseek.com/quick_start/pricing)

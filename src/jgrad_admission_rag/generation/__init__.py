@@ -27,6 +27,14 @@ from .deepseek_responses import (
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
 )
+from .deepseek_schema import (
+    DEEPSEEK_SCHEMA_PROJECTION_VERSION,
+    DeepSeekSchemaProjection,
+    DeepSeekSchemaProjectionError,
+    DeepSeekSchemaProjectionErrorCode,
+    build_deepseek_schema_projection,
+    project_deepseek_strict_schema,
+)
 from .openai_responses import OpenAIResponsesConfig, OpenAIResponsesGenerationProvider
 from .grounded_rag import (
     GROUNDED_RAG_SCHEMA_VERSION,
@@ -67,6 +75,10 @@ __all__ = [
     "ClaimKind",
     "DEEPSEEK_BASE_URL",
     "DEEPSEEK_MODEL_NAMES",
+    "DEEPSEEK_SCHEMA_PROJECTION_VERSION",
+    "DeepSeekSchemaProjection",
+    "DeepSeekSchemaProjectionError",
+    "DeepSeekSchemaProjectionErrorCode",
     "DeepSeekResponsesConfig",
     "DeepSeekResponsesGenerationProvider",
     "DeepSeekResponsesQuestionUnderstandingProvider",
@@ -104,9 +116,11 @@ __all__ = [
     "QuestionSubquestion",
     "QuestionUnderstandingProvider",
     "assign_generation_evidence_ids",
+    "build_deepseek_schema_projection",
     "assemble_generation_answer",
     "canonical_generation_result_bytes",
     "canonical_grounded_answer_bytes",
     "generate_checked",
+    "project_deepseek_strict_schema",
     "run_grounded_rag",
 ]

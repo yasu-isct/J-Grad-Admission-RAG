@@ -176,6 +176,10 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     text = responses.kwargs["text"]
     assert text["format"]["type"] == "json_schema"  # type: ignore[index]
     assert text["format"]["strict"] is True  # type: ignore[index]
+    wire_schema = text["format"]["schema"]  # type: ignore[index]
+    assert "$defs" not in wire_schema
+    assert "maxLength" not in json.dumps(wire_schema)
+    assert wire_schema != GenerationDraft.model_json_schema()
     sent = responses.kwargs["input"][1]["content"]  # type: ignore[index]
     assert "evidence:0001" in sent
     assert "source_pdf" not in sent
@@ -294,6 +298,10 @@ def test_deepseek_question_analysis_preserves_multilingual_server_constraints(
     assert provider.analyze(question) == expected
     assert expected.detected_language is language
     assert responses.kwargs["text"]["format"]["type"] == "json_schema"  # type: ignore[index]
+    wire_schema = responses.kwargs["text"]["format"]["schema"]  # type: ignore[index]
+    assert "$defs" not in wire_schema
+    assert "minItems" not in json.dumps(wire_schema)
+    assert wire_schema != expected.model_json_schema()
 
 
 def test_deepseek_question_analysis_accepts_one_typo_but_rejects_topic_redirect(
