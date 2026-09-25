@@ -238,6 +238,14 @@ input {
 .grounded-boundary { padding: 14px; border-radius: var(--radius-sm); color: #4f421e; background: var(--color-warning-soft); line-height: 1.65; overflow-wrap: anywhere; }
 .grounded-source-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .grounded-source-actions .source-link { margin-top: 0; }
+.grounded-subanswer { display: grid; gap: 12px; min-width: 0; padding: 18px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); }
+.grounded-subanswer h3 { margin: 0; font-size: 17px; line-height: 1.5; overflow-wrap: anywhere; }
+.grounded-supported, .grounded-missing { margin: 0; padding: 10px 12px; border-radius: var(--radius-sm); line-height: 1.6; }
+.grounded-supported { color: #1d4f3d; background: #eaf6f0; }
+.grounded-missing { color: #6b4d12; background: var(--color-warning-soft); }
+.grounded-audit { min-width: 0; padding: 10px 12px; border: 1px dashed var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-muted); }
+.grounded-audit summary { cursor: pointer; font-weight: 700; }
+.grounded-audit > p { overflow-wrap: anywhere; }
 
 .evidence-drawer {
   width: min(560px, 100%);

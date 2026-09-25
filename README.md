@@ -6,10 +6,10 @@ retrieval and page-linked official sources.
 面向日本大学院募集要项的可信混合 RAG 系统，通过语义检索、BM25、申请者规则推理和官方页码引用，
 生成有证据约束的申请回答。
 
-> **Current status:** M1–M9 are complete. The local Demo now exposes a bounded end-to-end grounded
-> RAG path: Japanese or Chinese questions are classified into reviewed topics, retrieved with the
-> configured hybrid index, combined with reviewed rule state, generated through a replaceable
-> provider, and rejected unless every factual claim passes server-side citation validation.
+> **Current status:** M1–M9 are complete and M10 productization is active. The local Demo now
+> normalizes and splits Japanese, Chinese, or mixed questions, retrieves each bounded subquestion
+> with the configured hybrid index, combines reviewed rule state, and returns supported siblings
+> only after server-side citation validation while labelling missing evidence explicitly.
 
 ## What Applicants Can Verify Today
 
@@ -143,9 +143,26 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
 受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。
 
-自然语言区域只接受当前人工审核目录可识别的日文或中文主题，不是任意 PDF 聊天。默认生成器
-`reviewed-state-offline` 完全离线；可选 OpenAI Responses provider 仍受同一结构化输出和引用校验
-边界约束。仓库和默认 CI 不调用付费 API。
+自然语言区域先以严格结构分析中文、日文或混合问题，再逐个子问题执行受限检索与引用闭合；它
+仍不是任意 PDF 或互联网聊天。默认生成器 `reviewed-state-offline` 完全离线，并明确显示“离线规则
+结果”。可选 OpenAI Responses provider 仍受同一结构化输出和引用校验边界约束：
+
+```powershell
+$env:OPENAI_API_KEY = "<set-locally; never commit>"
+jgrad-demo `
+  --pdf D:\path\to\isct_2027_4_2026_9_master.pdf `
+  --embedding-provider bge-m3 `
+  --embedding-cache D:\J-Grad-Admission-RAG\outputs\model-cache `
+  --generation-provider openai-responses `
+  --generation-model gpt-5.4-mini-2026-03-17
+```
+
+未设置密钥时，普通结构化流程和服务 readiness 不受影响，页面显示“在线生成服务未配置”，不会
+伪装成联网 AI 或静默降级。代码不提供任意 Base URL，使用 SDK 默认官方地址；请求固定
+`store=False` 并限制 timeout、输出 token 与 SDK retry。仓库和默认 CI 不调用付费 API，真实请求
+必须另外获得精确调用次数授权。参见
+[Natural-language RAG productization v1](docs/natural-language-productization-v1.md) 与
+[M10 language/score coverage audit](docs/evaluation/m10-language-coverage-audit.md)。
 
 ## M9 Release Evidence
 

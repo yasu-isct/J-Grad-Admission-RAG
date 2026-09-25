@@ -729,12 +729,14 @@ def test_orchestrator_projects_citable_interaction_warning_as_required_review() 
     result = run_grounded_rag(
         RecordingProvider(),
         request_id="request:warning",
+        question="请用中文只回答这个子问题。",
         target=GroundedRagTarget(document_id=DOCUMENT_ID, application_label="target"),
         applicant_facts=(),
         evidence_pack=_pack(),
         cited_answer=_warning_answer(),
     )
     assert captured is not None
+    assert captured.question == "请用中文只回答这个子问题。"
     warning_finding = next(
         item for item in captured.rule_findings if item.finding_id.startswith("finding:warning:")
     )

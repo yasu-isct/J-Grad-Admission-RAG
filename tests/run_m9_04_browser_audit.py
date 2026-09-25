@@ -94,6 +94,18 @@ class Handler(SimpleHTTPRequestHandler):
             pass
 
     def do_GET(self):
+        if self.path == "/v1/generation-status":
+            self._json(
+                {
+                    "schema_version": "1.0",
+                    "provider": "reviewed-state-offline",
+                    "model": "grounded-reviewed-v1",
+                    "mode": "offline_rules",
+                    "configured": True,
+                    "label": "离线规则结果",
+                }
+            )
+            return
         if self.path == "/v1/reviewed-documents":
             self._json({"schema_version": "1.0", "items": []})
             return
@@ -126,7 +138,7 @@ class Handler(SimpleHTTPRequestHandler):
                 }
             )
             return
-        if self.path == "/v1/grounded-answers":
+        if self.path == "/v1/natural-language-answers":
             question = request.get("question")
             if question in {"タイムアウト", "古い回答"}:
                 time.sleep(0.2)
@@ -156,36 +168,85 @@ class Handler(SimpleHTTPRequestHandler):
             self._json(
                 {
                     "schema_version": "1.0",
-                    "target": {
-                        "school_name": "Demo University",
-                        "degree_name": "硕士",
-                        "intake_name": "2027年4月入学",
-                        "college_name": "理学院",
-                        "department_name": "数学系",
-                        "application_route_name": None,
+                    "mode": {
+                        "schema_version": "1.0",
+                        "provider": "reviewed-state-offline",
+                        "model": "grounded-reviewed-v1",
+                        "mode": "offline_rules",
+                        "configured": True,
+                        "label": "离线规则结果",
                     },
-                    "reviewed_scope_statement": "Reviewed eligibility scope.",
-                    "official_source_url": "https://example.edu/admissions",
-                    "local_pdf_url": f"/documents/{DOCUMENT_ID}/source.pdf",
-                    "answer": {
-                        "provider": {
-                            "provider": "reviewed-state-offline",
-                            "model": "grounded-reviewed-v1",
-                            "revision": "1",
-                        },
-                        "needs_review": True,
-                        "claims": [
+                    "analysis": {
+                        "schema_version": "1.0",
+                        "detected_language": "ja",
+                        "normalized_question": question,
+                        "corrections": [],
+                        "requested_intents": ["eligibility"],
+                        "subquestions": [
                             {
-                                "kind": "reviewed_rule",
-                                "text": "Reviewed eligibility finding.",
-                                "citations": [citation],
+                                "subquestion_id": "subquestion:01",
+                                "question": question,
+                                "retrieval_query": question,
+                                "requested_intent": "eligibility",
+                                "needs_clarification": False,
                             }
                         ],
-                        "citation_inventory": [citation],
-                        "missing_information": ["eligibility_facts.age_at_enrollment"],
-                        "limitations": ["needs_review"],
+                        "mentioned_exam_types": [],
+                        "mentioned_scores": [],
+                        "target_scope_mentions": [],
+                        "missing_context": [],
+                        "unsupported_parts": [],
                     },
-                    "evidence": [_evidence()],
+                    "summary": "1件に分解し、1件に根拠を確認しました。0件は確認が必要です。",
+                    "subanswers": [
+                        {
+                            "schema_version": "1.0",
+                            "subquestion": {
+                                "subquestion_id": "subquestion:01",
+                                "question": question,
+                                "retrieval_query": question,
+                                "requested_intent": "eligibility",
+                                "needs_clarification": False,
+                            },
+                            "status": "answered",
+                            "message": "已找到并通过服务器引用校验的官方依据。",
+                            "result": {
+                                "schema_version": "1.0",
+                                "target": {
+                                    "school_name": "Demo University",
+                                    "degree_name": "硕士",
+                                    "intake_name": "2027年4月入学",
+                                    "college_name": "理学院",
+                                    "department_name": "数学系",
+                                    "application_route_name": None,
+                                },
+                                "reviewed_scope_statement": "Reviewed eligibility scope.",
+                                "official_source_url": "https://example.edu/admissions",
+                                "local_pdf_url": f"/documents/{DOCUMENT_ID}/source.pdf",
+                                "answer": {
+                                    "provider": {
+                                        "provider": "reviewed-state-offline",
+                                        "model": "grounded-reviewed-v1",
+                                        "revision": "1",
+                                    },
+                                    "needs_review": True,
+                                    "claims": [
+                                        {
+                                            "kind": "reviewed_rule",
+                                            "text": "Reviewed eligibility finding.",
+                                            "citations": [citation],
+                                        }
+                                    ],
+                                    "citation_inventory": [citation],
+                                    "missing_information": ["eligibility_facts.age_at_enrollment"],
+                                    "limitations": ["needs_review"],
+                                },
+                                "evidence": [_evidence()],
+                            },
+                        },
+                    ],
+                    "missing_context": [],
+                    "unsupported_parts": [],
                 }
             )
             return

@@ -13,6 +13,11 @@ from ..cli.provider_config import (
     create_provider,
     resolve_provider_configuration,
 )
+from ..generation.config import (
+    add_generation_arguments,
+    create_generation_providers,
+    resolve_generation_configuration,
+)
 from .app import create_app
 from .runtime import ServiceDependencies, ServiceSettings
 
@@ -50,6 +55,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--job-worker-max-active", type=int, default=1)
     parser.add_argument("--job-shutdown-grace-seconds", type=float, default=0.25)
     add_provider_arguments(parser)
+    add_generation_arguments(parser)
     return parser
 
 
@@ -64,6 +70,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         _parser().error("port, upload, worker concurrency, or shutdown grace is out of range")
     try:
         provider_configuration = resolve_provider_configuration(args)
+        generation_configuration = resolve_generation_configuration(args)
         report_plan_paths = tuple(Path(path) for path in args.report_plan)
         if any(not path.is_absolute() for path in report_plan_paths):
             raise ValueError("reviewed report plan paths must be absolute")
@@ -92,6 +99,8 @@ def main(argv: Sequence[str] | None = None) -> None:
             job_root=(Path(args.job_root).resolve(strict=False) if args.job_root else None),
             job_worker_max_active=args.job_worker_max_active,
             job_shutdown_grace_seconds=args.job_shutdown_grace_seconds,
+            generation_provider_name=generation_configuration.provider,
+            generation_model_name=generation_configuration.model,
         )
     except (CliConfigurationError, ValueError) as error:
         print(f"configuration error: {error}", file=sys.stderr)
@@ -99,7 +108,15 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     app = create_app(
         settings,
-        ServiceDependencies(provider_factory=lambda: create_provider(provider_configuration)),
+        ServiceDependencies(
+            provider_factory=lambda: create_provider(provider_configuration),
+            generation_provider_factory=lambda: create_generation_providers(
+                generation_configuration
+            )[0],
+            question_understanding_provider_factory=lambda: create_generation_providers(
+                generation_configuration
+            )[1],
+        ),
     )
     import uvicorn
 

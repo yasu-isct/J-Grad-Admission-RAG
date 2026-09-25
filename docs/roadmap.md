@@ -37,6 +37,16 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M7 Reviewed rule coverage | v1.1 | Reviewed dates, eligibility, language, page scope, and common materials cover the current guideline | Every enabled rule remains evidence-bound and conditional content fails closed |
 | M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
 | M9 Evidence-grounded End-to-End RAG | v1.3 | Chinese or Japanese questions produce structured answers over scoped evidence and reviewed rule results | Pinned semantic retrieval, citation validation, refusal behavior, and real end-to-end acceptance pass |
+| M10 Natural-language RAG Productization | v1.4 | Multilingual, conversational questions are normalized and split into independently grounded subanswers | Explicit online/offline mode, partial answers, server-validated citations, and knowledge-gap disclosure pass |
+
+## Active M10
+
+M10-01 connects explicit OpenAI Responses question understanding and citation-constrained
+generation while retaining the fully offline reviewed-state mode. Fixed lexicon parsing becomes a
+fallback/downstream adapter rather than the product entry gate. Multi-intent questions are split,
+retrieved, and closed independently so one unsupported part does not erase supported siblings.
+Knowledge coverage remains explicit; missing JLPT/J.TEST and score-to-final-points authority is
+tracked separately and is never supplied by a model.
 
 ## Completed M9 Summary
 

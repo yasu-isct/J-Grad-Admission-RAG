@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ..retrieval.embedding import EmbeddingProvider
 from ..generation.provider import GenerationProvider
+from ..generation.question_analysis import QuestionUnderstandingProvider
 from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.page_scope_manifest import PageScopeManifest
@@ -40,6 +41,11 @@ class ServiceSettings(BaseModel):
     job_root: Path | None = None
     job_worker_max_active: int = Field(default=1, ge=1, le=8, strict=True)
     job_shutdown_grace_seconds: float = Field(default=0.25, ge=0, le=60, strict=True)
+    generation_provider_name: str = Field(
+        default="reviewed-state-offline",
+        pattern=r"^(reviewed-state-offline|openai-responses)$",
+    )
+    generation_model_name: str | None = Field(default=None, min_length=1, max_length=200)
 
     @model_validator(mode="after")
     def query_paths_must_be_complete_and_absolute(self) -> ServiceSettings:
@@ -79,6 +85,10 @@ class ServiceSettings(BaseModel):
             not self.job_root.is_absolute() or self.job_root.resolve(strict=False) != self.job_root
         ):
             raise ValueError("job repository root must be canonical and absolute")
+        if (self.generation_provider_name == "openai-responses") != bool(
+            self.generation_model_name
+        ):
+            raise ValueError("online generation requires one model; offline generation has none")
         return self
 
 
@@ -86,6 +96,9 @@ class ServiceSettings(BaseModel):
 class ServiceDependencies:
     provider_factory: Callable[[], EmbeddingProvider] | None = None
     generation_provider_factory: Callable[[], GenerationProvider] | None = None
+    question_understanding_provider_factory: Callable[[], QuestionUnderstandingProvider] | None = (
+        None
+    )
     repository_factory: Callable[[Path], Any] | None = None
     worker_factory: Callable[..., Any] | None = None
 
@@ -105,6 +118,9 @@ class ServiceState:
     generation_provider: GenerationProvider | None = None
     generation_initialization_failed: bool = False
     generation_provider_lock: Lock = field(default_factory=Lock)
+    question_understanding_provider: QuestionUnderstandingProvider | None = None
+    question_understanding_initialization_failed: bool = False
+    question_understanding_provider_lock: Lock = field(default_factory=Lock)
     job_repository: Any | None = None
     job_worker: Any | None = None
     job_initialization_failed: bool = False

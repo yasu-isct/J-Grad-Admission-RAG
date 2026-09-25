@@ -1,0 +1,48 @@
+name: Manual paid M10 question analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      authorization:
+        description: 'Type "I AUTHORIZE N PAID SYNTHETIC ANALYSIS CALLS" with N matching max_cases'
+        required: true
+        type: string
+      model:
+        description: "Explicit OpenAI model snapshot to evaluate"
+        required: true
+        default: "gpt-5.4-mini-2026-03-17"
+        type: string
+      max_cases:
+        description: "Exact number of synthetic analysis calls"
+        required: true
+        default: "1"
+        type: choice
+        options: ["1", "2", "3", "4", "5", "6", "7", "8"]
+
+permissions:
+  contents: read
+
+jobs:
+  authorization-gate:
+    if: ${{ inputs.authorization == format('I AUTHORIZE {0} PAID SYNTHETIC ANALYSIS CALLS', inputs.max_cases) }}
+    runs-on: ubuntu-latest
+    environment: paid-generation-evaluation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install explicit generation dependencies
+        run: python -m pip install -e ".[dev,generation]"
+      - name: Run exact-call synthetic question analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          JGRAD_EVAL_MODEL: ${{ inputs.model }}
+          JGRAD_EVAL_MAX_CASES: ${{ inputs.max_cases }}
+          JGRAD_ALLOW_PAID_QUESTION_ANALYSIS: ${{ inputs.authorization }}
+        run: |
+          python -m jgrad_admission_rag.manual_question_analysis_evaluation \
+            --model "$JGRAD_EVAL_MODEL" \
+            --max-cases "$JGRAD_EVAL_MAX_CASES" \
+            --synthetic-only
