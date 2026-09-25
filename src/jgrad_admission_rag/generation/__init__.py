@@ -20,6 +20,13 @@ from .contracts import (
     assemble_generation_answer,
     canonical_generation_result_bytes,
 )
+from .deepseek_responses import (
+    DEEPSEEK_BASE_URL,
+    DEEPSEEK_MODEL_NAMES,
+    DeepSeekResponsesConfig,
+    DeepSeekResponsesGenerationProvider,
+    DeepSeekResponsesQuestionUnderstandingProvider,
+)
 from .openai_responses import OpenAIResponsesConfig, OpenAIResponsesGenerationProvider
 from .grounded_rag import (
     GROUNDED_RAG_SCHEMA_VERSION,
@@ -58,6 +65,11 @@ __all__ = [
     "GROUNDED_RAG_SCHEMA_VERSION",
     "ApplicantFact",
     "ClaimKind",
+    "DEEPSEEK_BASE_URL",
+    "DEEPSEEK_MODEL_NAMES",
+    "DeepSeekResponsesConfig",
+    "DeepSeekResponsesGenerationProvider",
+    "DeepSeekResponsesQuestionUnderstandingProvider",
     "DeterministicFakeGenerationProvider",
     "DeterministicQuestionUnderstandingProvider",
     "DetectedLanguage",

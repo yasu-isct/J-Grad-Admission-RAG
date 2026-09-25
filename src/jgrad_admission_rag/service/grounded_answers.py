@@ -61,7 +61,7 @@ class GroundedAnswerResponse(DemoModel):
 
 class GenerationStatusResponse(DemoModel):
     schema_version: Literal["1.0"] = "1.0"
-    provider: Literal["reviewed-state-offline", "openai-responses"]
+    provider: Literal["reviewed-state-offline", "openai-responses", "deepseek-responses"]
     model: str
     mode: Literal["offline_rules", "online_model"]
     configured: bool

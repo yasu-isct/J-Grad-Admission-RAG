@@ -55,7 +55,7 @@ parsing, and parsed-output validation.
 It needs no API key, performs no network activity, and returns a conservative needs-review result
 unless a fixed test draft is supplied.
 
-## Optional OpenAI adapter
+## Optional online adapters
 
 Install the adapter separately:
 
@@ -91,6 +91,16 @@ the official [API quickstart](https://developers.openai.com/api/docs/quickstart)
 Construction alone makes no API request. Any real request is paid/external processing and requires
 an explicit operator choice of model plus approval of the exact call count and synthetic input.
 Applicant profiles and private evidence must not be sent during integration validation.
+
+The separate DeepSeek adapter uses the same provider-neutral request and server validation, but
+has its own `DeepSeekResponsesConfig`, `DEEPSEEK_API_KEY` credential source, model allowlist, and
+fixed official endpoint. It deliberately does not inherit OpenAI endpoint or credential behavior.
+DeepSeek's compatibility documentation marks Responses `text.format` as fully supported, so the
+adapter sends a strict JSON Schema and then independently parses and validates `output_text`.
+DeepSeek documents `store` as unsupported and responses as always `store: false`; the adapter also
+sends `store=False` for explicit compatibility intent. It does not inspect, persist, or log
+reasoning output. Full operational details and the live-call gate are in
+[DeepSeek Responses provider v1](deepseek-responses-provider-v1.md).
 
 ## M10 question-analysis companion
 

@@ -561,7 +561,7 @@ def create_app(
         if not _natural_language_service_ready(state):
             code = (
                 "online_generation_not_configured"
-                if selected_settings.generation_provider_name == "openai-responses"
+                if selected_settings.generation_provider_name != "reviewed-state-offline"
                 else "grounded_service_unavailable"
             )
             message = (
@@ -1445,7 +1445,8 @@ def _generation_status_response(
     settings: ServiceSettings,
     state: ServiceState,
 ) -> GenerationStatusResponse:
-    online = settings.generation_provider_name == "openai-responses"
+    online = settings.generation_provider_name != "reviewed-state-offline"
+    deepseek = settings.generation_provider_name == "deepseek-responses"
     configured = _natural_language_service_ready(state)
     return GenerationStatusResponse(
         provider=settings.generation_provider_name,
@@ -1453,8 +1454,12 @@ def _generation_status_response(
         mode="online_model" if online else "offline_rules",
         configured=configured,
         label=(
-            "在线大模型回答"
-            if online and configured
+            f"DeepSeek 在线模型 · {settings.generation_model_name}"
+            if deepseek and configured
+            else "DeepSeek 在线生成服务未配置"
+            if deepseek
+            else "在线大模型回答"
+            if configured and online
             else "在线生成服务未配置"
             if online
             else "离线规则结果"

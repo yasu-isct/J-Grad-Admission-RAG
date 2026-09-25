@@ -9,6 +9,9 @@ from jgrad_admission_rag.demo_embedding import (
     resolve_demo_embedding_configuration,
 )
 from jgrad_admission_rag.generation import (
+    DeepSeekResponsesConfig,
+    DeepSeekResponsesGenerationProvider,
+    DeepSeekResponsesQuestionUnderstandingProvider,
     DeterministicQuestionUnderstandingProvider,
     OpenAIResponsesConfig,
     OpenAIResponsesGenerationProvider,
@@ -16,15 +19,23 @@ from jgrad_admission_rag.generation import (
     ReviewedStateGenerationProvider,
 )
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
+from jgrad_admission_rag.service.runtime import ServiceState
 from tests.test_demo_cli import _synthetic_config
 from tests.test_grounded_answer_api import _target
 
 
-def _client(tmp_path, *, online: bool = False) -> TestClient:
+def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestClient:
     pdf, config, _ = _synthetic_config(tmp_path)
     runtime = prepare_demo(pdf, (tmp_path / "workspace").resolve(), config_dir=config)
     embedding = create_demo_embedding_provider(resolve_demo_embedding_configuration())
-    model = "test-model" if online else None
+    model = "deepseek-flash" if deepseek else "test-model" if online else None
+    provider_name = (
+        "deepseek-responses"
+        if deepseek
+        else "openai-responses"
+        if online
+        else "reviewed-state-offline"
+    )
     settings = ServiceSettings(
         corpus_root=runtime.corpus_root,
         manifest_path=runtime.manifest_path,
@@ -36,10 +47,19 @@ def _client(tmp_path, *, online: bool = False) -> TestClient:
         source_pdf_path=runtime.source_pdf_path,
         source_pdf_document_id=runtime.identity.document_id,
         source_pdf_sha256=runtime.identity.source_pdf_sha256,
-        generation_provider_name="openai-responses" if online else "reviewed-state-offline",
+        generation_provider_name=provider_name,
         generation_model_name=model,
     )
-    if online:
+    if deepseek:
+        deepseek_config = DeepSeekResponsesConfig(model=model or "")
+
+        def generation_factory():
+            return DeepSeekResponsesGenerationProvider(deepseek_config)
+
+        def analysis_factory():
+            return DeepSeekResponsesQuestionUnderstandingProvider(deepseek_config)
+
+    elif online:
         openai_config = OpenAIResponsesConfig(model=model or "")
 
         def generation_factory():
@@ -113,6 +133,53 @@ def test_missing_online_key_keeps_structured_service_ready_and_labels_nl_unconfi
     assert status.json()["label"] == "在线生成服务未配置"
     assert response.status_code == 503
     assert response.json()["code"] == "online_generation_not_configured"
+
+
+def test_missing_deepseek_key_keeps_readiness_and_identifies_provider(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+    monkeypatch.setenv("OPENAI_API_KEY", "must-not-be-used")
+    client = _client(tmp_path, deepseek=True)
+    with client:
+        readiness = client.get("/v1/health/ready")
+        status = client.get("/v1/generation-status")
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "TOEIC可以吗？", "target": target, "applicant": {}},
+        )
+
+    assert readiness.json() == {"schema_version": "1.0", "status": "ready", "ready": True}
+    assert status.json() == {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": False,
+        "label": "DeepSeek 在线生成服务未配置",
+    }
+    assert response.status_code == 503
+    assert response.json()["code"] == "online_generation_not_configured"
+
+
+def test_configured_deepseek_status_shows_actual_model_name() -> None:
+    settings = ServiceSettings(
+        generation_provider_name="deepseek-responses",
+        generation_model_name="deepseek-v4-pro",
+    )
+    state = ServiceState(
+        provider=object(),
+        generation_provider=object(),
+        question_understanding_provider=object(),
+        report_plans=(object(),),
+        page_scope_manifests=(object(),),
+        query_intent_catalog=object(),
+    )
+    status = service_app._generation_status_response(settings, state)
+    assert status.configured is True
+    assert status.model == "deepseek-v4-pro"
+    assert status.label == "DeepSeek 在线模型 · deepseek-v4-pro"
 
 
 def test_reviewed_evidence_conflict_is_not_downgraded_to_missing_coverage(
