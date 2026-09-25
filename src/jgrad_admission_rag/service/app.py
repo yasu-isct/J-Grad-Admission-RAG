@@ -22,6 +22,8 @@ from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..generation import (
+    GenerationError,
+    GenerationErrorCode,
     GroundedRagError,
     GroundedRagErrorCode,
     GroundedRagTarget,
@@ -131,7 +133,13 @@ from .demo_requirements import (
     build_demo_target_catalog,
     build_demo_target_summary,
 )
-from .grounded_answers import GroundedAnswerRequest, GroundedAnswerResponse
+from .grounded_answers import (
+    GenerationStatusResponse,
+    GroundedAnswerRequest,
+    GroundedAnswerResponse,
+    NaturalLanguageAnswerResponse,
+    NaturalLanguageSubanswer,
+)
 from .date_presentation import (
     ReviewedDatePresentation,
     load_reviewed_date_presentation,
@@ -221,6 +229,14 @@ def create_app(
             except Exception:
                 state.generation_initialization_failed = True
                 state.generation_provider = None
+        if selected_dependencies.question_understanding_provider_factory is not None:
+            try:
+                state.question_understanding_provider = (
+                    selected_dependencies.question_understanding_provider_factory()
+                )
+            except Exception:
+                state.question_understanding_initialization_failed = True
+                state.question_understanding_provider = None
         if selected_settings.job_root is not None:
             try:
                 repository_factory = selected_dependencies.repository_factory or BuildJobRepository
@@ -300,6 +316,7 @@ def create_app(
                     state.job_initialization_failed = True
             state.provider = None
             state.generation_provider = None
+            state.question_understanding_provider = None
             state.report_plans = ()
             state.page_scope_manifests = ()
             state.query_intent_catalog = None
@@ -346,6 +363,7 @@ def create_app(
             "/v1/base-requirements",
             "/v1/applicant-comparison",
             "/v1/grounded-answers",
+            "/v1/natural-language-answers",
         }:
             media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
             expected = (
@@ -438,13 +456,15 @@ def create_app(
                 and state.source_document is not None
                 and not state.source_document_initialization_failed
             )
-        if selected_dependencies.generation_provider_factory is not None:
-            is_ready = (
-                is_ready
-                and state.generation_provider is not None
-                and not state.generation_initialization_failed
-            )
         return HealthResponse(status="ready" if is_ready else "not_ready", ready=is_ready)
+
+    @app.get(
+        "/v1/generation-status",
+        response_model=GenerationStatusResponse,
+        operation_id="getV1GenerationStatus",
+    )
+    def generation_status() -> GenerationStatusResponse:
+        return _generation_status_response(selected_settings, state)
 
     @app.get(
         "/v1/reviewed-documents",
@@ -527,6 +547,31 @@ def create_app(
             )
         return await to_thread.run_sync(
             partial(_build_grounded_answer_response, request, selected_settings, state)
+        )
+
+    @app.post(
+        "/v1/natural-language-answers",
+        response_model=NaturalLanguageAnswerResponse,
+        responses=GROUNDED_ERROR_RESPONSES,
+        operation_id="postV1NaturalLanguageAnswers",
+    )
+    async def natural_language_answer(
+        request: GroundedAnswerRequest,
+    ) -> NaturalLanguageAnswerResponse:
+        if not _natural_language_service_ready(state):
+            code = (
+                "online_generation_not_configured"
+                if selected_settings.generation_provider_name == "openai-responses"
+                else "grounded_service_unavailable"
+            )
+            message = (
+                "online generation service is not configured"
+                if code == "online_generation_not_configured"
+                else "grounded answer service is unavailable"
+            )
+            raise ApiProblem(503, code, message)
+        return await to_thread.run_sync(
+            partial(_build_natural_language_answer_response, request, selected_settings, state)
         )
 
     @app.post(
@@ -1388,6 +1433,179 @@ def _grounded_answer_service_ready(state: ServiceState) -> bool:
     )
 
 
+def _natural_language_service_ready(state: ServiceState) -> bool:
+    return (
+        _grounded_answer_service_ready(state)
+        and state.question_understanding_provider is not None
+        and not state.question_understanding_initialization_failed
+    )
+
+
+def _generation_status_response(
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> GenerationStatusResponse:
+    online = settings.generation_provider_name == "openai-responses"
+    configured = _natural_language_service_ready(state)
+    return GenerationStatusResponse(
+        provider=settings.generation_provider_name,
+        model=settings.generation_model_name or "grounded-reviewed-v1",
+        mode="online_model" if online else "offline_rules",
+        configured=configured,
+        label=(
+            "在线大模型回答"
+            if online and configured
+            else "在线生成服务未配置"
+            if online
+            else "离线规则结果"
+        ),
+    )
+
+
+def _build_natural_language_answer_response(
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> NaturalLanguageAnswerResponse:
+    analyzer = state.question_understanding_provider
+    if analyzer is None:
+        raise ApiProblem(
+            503, "grounded_service_unavailable", "grounded answer service is unavailable"
+        )
+    try:
+        with state.question_understanding_provider_lock:
+            analysis = analyzer.analyze(request.question)
+    except GenerationError as error:
+        if error.code is GenerationErrorCode.PROVIDER_TIMEOUT:
+            raise ApiProblem(
+                504, "generation_provider_timeout", "question analysis timed out"
+            ) from None
+        if error.code is GenerationErrorCode.MISSING_API_KEY:
+            raise ApiProblem(
+                503,
+                "online_generation_not_configured",
+                "online generation service is not configured",
+            ) from None
+        raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
+    except Exception:
+        raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
+
+    subanswers: list[NaturalLanguageSubanswer] = []
+    for subquestion in analysis.subquestions:
+        language = analysis.detected_language.value
+        if subquestion.requested_intent == "exam_identity":
+            subanswers.append(
+                NaturalLanguageSubanswer(
+                    subquestion=subquestion,
+                    status="interpreted",
+                    message=_localized_message(
+                        language,
+                        "已将这一简称规范化为 TOEIC L&R；这只是问题理解，不是官方受理结论。",
+                        "この略称を TOEIC L&R として正規化しました。これは質問理解であり、公式の受理可否ではありません。",
+                    ),
+                )
+            )
+            continue
+        if subquestion.requested_intent == "language_test_acceptance" and re.search(
+            r"\bJLPT\b|\bJ\.TEST\b", subquestion.retrieval_query, re.IGNORECASE
+        ):
+            subanswers.append(
+                NaturalLanguageSubanswer(
+                    subquestion=subquestion,
+                    status="no_clear_evidence",
+                    message=_localized_message(
+                        language,
+                        "当前审核资料中未找到明确依据。",
+                        "現在の確認済み資料では明確な根拠を確認できませんでした。",
+                    ),
+                )
+            )
+            continue
+        child_request = GroundedAnswerRequest(
+            question=subquestion.retrieval_query,
+            target=request.target,
+            applicant=request.applicant,
+        )
+        try:
+            result = _build_grounded_answer_response(
+                child_request,
+                settings,
+                state,
+                generation_question=_localized_generation_question(
+                    subquestion.question, analysis.detected_language.value
+                ),
+            )
+        except ApiProblem as error:
+            if error.envelope.code in {
+                "insufficient_evidence",
+                "unsupported_question",
+            }:
+                status = (
+                    "needs_clarification"
+                    if subquestion.needs_clarification
+                    else "no_clear_evidence"
+                )
+                message = (
+                    _localized_message(
+                        language,
+                        "需要补充信息后才能在当前审核范围内判断。",
+                        "現在の確認範囲で判断するには追加情報が必要です。",
+                    )
+                    if status == "needs_clarification"
+                    else _localized_message(
+                        language,
+                        "当前审核资料中未找到明确依据。",
+                        "現在の確認済み資料では明確な根拠を確認できませんでした。",
+                    )
+                )
+                subanswers.append(
+                    NaturalLanguageSubanswer(
+                        subquestion=subquestion,
+                        status=status,
+                        message=message,
+                    )
+                )
+                continue
+            raise
+        subanswers.append(
+            NaturalLanguageSubanswer(
+                subquestion=subquestion,
+                status="answered",
+                message=_localized_message(
+                    language,
+                    "已找到并通过服务器引用校验的官方依据。",
+                    "サーバー側の引用検証を通過した公式根拠を確認しました。",
+                ),
+                result=result,
+            )
+        )
+
+    answered = sum(item.status in {"answered", "interpreted"} for item in subanswers)
+    unavailable = len(subanswers) - answered
+    if language == "ja":
+        summary = f"{len(subanswers)}件に分解し、{answered}件に根拠を確認しました。{unavailable}件は確認が必要です。"
+    else:
+        summary = f"已拆分为 {len(subanswers)} 个子问题：{answered} 个找到已校验依据，{unavailable} 个仍需补充或未找到明确依据。"
+    return NaturalLanguageAnswerResponse(
+        mode=_generation_status_response(settings, state),
+        analysis=analysis,
+        summary=summary,
+        subanswers=tuple(subanswers),
+        missing_context=analysis.missing_context,
+        unsupported_parts=analysis.unsupported_parts,
+    )
+
+
+def _localized_generation_question(question: str, language: str) -> str:
+    if language in {"zh", "mixed"}:
+        return f"请用自然中文回答，并且只回答这个子问题：{question}"
+    return f"自然な日本語で、このサブ質問だけに回答してください：{question}"
+
+
+def _localized_message(language: str, chinese: str, japanese: str) -> str:
+    return japanese if language == "ja" else chinese
+
+
 def _query_intent_service_ready(state: ServiceState) -> bool:
     return state.query_intent_catalog is not None and not state.query_intent_initialization_failed
 
@@ -1396,6 +1614,8 @@ def _build_grounded_answer_response(
     request: GroundedAnswerRequest,
     settings: ServiceSettings,
     state: ServiceState,
+    *,
+    generation_question: str | None = None,
 ) -> GroundedAnswerResponse:
     if (
         settings.corpus_root is None
@@ -1554,6 +1774,7 @@ def _build_grounded_answer_response(
             answer = run_grounded_rag(
                 state.generation_provider,
                 request_id=f"request:{uuid4().hex}",
+                question=generation_question or request.question,
                 target=grounded_target,
                 applicant_facts=(),
                 evidence_pack=evidence_pack,

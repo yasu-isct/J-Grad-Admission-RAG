@@ -6,7 +6,13 @@
 
 For every request the service selects exactly the requested reviewed document, audits its current corpus/index bindings, and runs hybrid retrieval across that document. Retrieval returns at most 12 ranked records from at most 48 candidates; the depth never expands to the document row count. The search result is projected into an `EvidencePack` with exact document, KB, PDF, row, Fact, page, scope, ranking, embedding, and lexical provenance. The question is separately parsed through the reviewed intent catalog. The server then builds the strict applicant profile and deterministic `ApplicantReport`/`CitedAnswer` from the matching reviewed plan and evidence bundle.
 
-Only after those steps succeed does `run_grounded_rag` receive the request-local question, target scope, EvidencePack, and reviewed state. Every exact citation required by the reviewed answer must occur in the bounded retrieval result; otherwise the endpoint returns `insufficient_evidence` without calling the generation provider. The generation boundary independently rejects more than 16 evidence records or more than 60,000 evidence/scope characters. M9-03 closes every returned claim against opaque request-local evidence IDs and then restores only server-owned authoritative provenance. Cross-document, cross-hash, cross-scope, unknown-reference, incomplete, malformed, and unsupported claims fail closed; no partial answer is returned.
+Only after those steps succeed does `run_grounded_rag` receive the request-local question, target scope, EvidencePack, and reviewed state. Every exact citation required by the reviewed answer must occur in the bounded retrieval result; otherwise the endpoint returns `insufficient_evidence` without calling the generation provider. The generation boundary independently rejects more than 16 evidence records or more than 60,000 evidence/scope characters. M9-03 closes every returned claim against opaque request-local evidence IDs and then restores only server-owned authoritative provenance. Cross-document, cross-hash, cross-scope, unknown-reference, incomplete, malformed, and unsupported claims fail closed inside each M9 grounded answer.
+
+M10 adds a product route above this unchanged boundary. It analyzes and splits at most eight
+subquestions, then invokes this closed path separately for each substantive subquestion. An
+insufficient or unsupported sibling receives an explicit no-clear-evidence/clarification state
+without deleting other independently validated results. Provider/citation failures still fail the
+request closed. See [Natural-language RAG productization v1](natural-language-productization-v1.md).
 
 The response includes the immutable `GroundedAnswer`, a cited-evidence presentation inventory, a verified local-PDF route when configured, and the separately labelled official webpage URL. Provider output is data, not markup.
 

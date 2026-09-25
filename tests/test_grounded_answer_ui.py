@@ -13,9 +13,15 @@ def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() 
     assert 'id="grounded-question"' in html
     assert 'id="grounded-answer-status"' in html
     assert 'id="grounded-answer-output"' in html
+    assert 'id="generation-mode-label"' in html
     assert "target: demoTargetRequest()" in javascript
     assert "applicant: demoApplicantInput()" in javascript
-    assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/grounded-answers"' in javascript
+    assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers"' in javascript
+    assert 'const GENERATION_STATUS_ENDPOINT = "/v1/generation-status"' in javascript
+    assert "在线生成服务未配置" in javascript
+    assert "generationModeLabel.textContent = generationStatus.label" in javascript
+    assert 'auditSummary.textContent = "技术详情 / 审计信息"' in javascript
+    assert "label.textContent = claim.kind" not in javascript
 
 
 def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
@@ -38,6 +44,8 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "insufficient_evidence" in javascript
     assert "openDemoEvidence" in javascript
     assert "verifiedLocalPdfHref" in javascript
+    assert "payload.subanswers" in javascript
+    assert 'item.status === "answered"' in javascript
 
 
 def test_grounded_answer_layout_has_mobile_overflow_guards() -> None:

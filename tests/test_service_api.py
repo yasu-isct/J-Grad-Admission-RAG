@@ -428,6 +428,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
     assert operations == {
         "getV1HealthLive",
         "getV1HealthReady",
+        "getV1GenerationStatus",
         "getV1ReviewedDocuments",
         "getV1TargetCatalog",
         "postV1BuildJobs",
@@ -443,6 +444,7 @@ def test_openapi_exposes_only_versioned_contract_routes() -> None:
         "postV1BaseRequirements",
         "postV1QueryIntentsParse",
         "postV1GroundedAnswers",
+        "postV1NaturalLanguageAnswers",
     }
     assert "ErrorEnvelope" in schema["components"]["schemas"]
     catalog_operation = schema["paths"]["/v1/reviewed-documents"]["get"]

@@ -62,8 +62,8 @@ def main() -> None:
                 "募集要項にない学生寮の空室数を教えてください。"
             )
             page.locator("#grounded-answer-submit").click()
-            expect(page.locator("#grounded-answer-status")).to_contain_text(
-                "人工审核范围", timeout=30_000
+            expect(page.locator(".grounded-missing")).to_contain_text(
+                "需要补充信息", timeout=30_000
             )
             expect(page.locator(".grounded-claim")).to_have_count(0)
             page.close()

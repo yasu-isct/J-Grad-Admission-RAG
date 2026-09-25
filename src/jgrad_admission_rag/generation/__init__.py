@@ -40,6 +40,17 @@ from .provider import (
     ReviewedStateGenerationProvider,
     generate_checked,
 )
+from .question_analysis import (
+    DetectedLanguage,
+    DeterministicQuestionUnderstandingProvider,
+    ExamType,
+    MentionedScore,
+    OpenAIResponsesQuestionUnderstandingProvider,
+    QuestionAnalysis,
+    QuestionCorrection,
+    QuestionSubquestion,
+    QuestionUnderstandingProvider,
+)
 
 __all__ = [
     "GENERATION_PROMPT_VERSION",
@@ -48,7 +59,10 @@ __all__ = [
     "ApplicantFact",
     "ClaimKind",
     "DeterministicFakeGenerationProvider",
+    "DeterministicQuestionUnderstandingProvider",
+    "DetectedLanguage",
     "EvidenceRole",
+    "ExamType",
     "GeneratedClaim",
     "GroundedAnswer",
     "GroundedCitation",
@@ -71,6 +85,12 @@ __all__ = [
     "GenerationTarget",
     "OpenAIResponsesConfig",
     "OpenAIResponsesGenerationProvider",
+    "OpenAIResponsesQuestionUnderstandingProvider",
+    "MentionedScore",
+    "QuestionAnalysis",
+    "QuestionCorrection",
+    "QuestionSubquestion",
+    "QuestionUnderstandingProvider",
     "assign_generation_evidence_ids",
     "assemble_generation_answer",
     "canonical_generation_result_bytes",

@@ -1,4 +1,4 @@
-# Generation provider and structured output v1.1
+# Generation provider and structured output v1.2
 
 M9-02 adds a provider-neutral language-generation boundary. It does not replace retrieval,
 deterministic rule evaluation, or the existing cited report. M9-03 will bind opaque generation IDs
@@ -91,3 +91,12 @@ the official [API quickstart](https://developers.openai.com/api/docs/quickstart)
 Construction alone makes no API request. Any real request is paid/external processing and requires
 an explicit operator choice of model plus approval of the exact call count and synthetic input.
 Applicant profiles and private evidence must not be sent during integration validation.
+
+## M10 question-analysis companion
+
+M10-01 adds a separate strict `QuestionUnderstandingProvider`. Its OpenAI Responses adapter uses
+the same environment-only key, SDK default endpoint, timeout/token/retry bounds, and `store=False`
+policy, but parses `QuestionAnalysis` rather than an answer draft. The deterministic provider is the
+offline default. Analysis can correct aliases and split a request; it cannot provide official facts,
+rule applicability, or citations. See
+[Natural-language RAG productization v1](natural-language-productization-v1.md).

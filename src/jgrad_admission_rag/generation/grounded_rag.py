@@ -321,6 +321,7 @@ def run_grounded_rag(
     provider: GenerationProvider,
     *,
     request_id: str,
+    question: str | None = None,
     target: GroundedRagTarget,
     applicant_facts: tuple[ApplicantFact, ...],
     evidence_pack: EvidencePack,
@@ -365,6 +366,7 @@ def run_grounded_rag(
     try:
         prepared = _prepare_request(
             request_id,
+            question,
             checked_target,
             checked_facts,
             checked_pack,
@@ -459,6 +461,7 @@ def canonical_grounded_answer_bytes(answer: GroundedAnswer) -> bytes:
 
 def _prepare_request(
     request_id: str,
+    question: str | None,
     target: GroundedRagTarget,
     applicant_facts: tuple[ApplicantFact, ...],
     pack: EvidencePack,
@@ -573,7 +576,7 @@ def _prepare_request(
     )
     request = GenerationRequest(
         request_id=request_id,
-        question=pack.request.query,
+        question=question or pack.request.query,
         target=target.generation_target(),
         applicant_facts=applicant_facts,
         rule_findings=generation_findings,

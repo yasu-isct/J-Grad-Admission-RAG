@@ -19,6 +19,12 @@ from .demo_embedding import (
     resolve_demo_embedding_configuration,
 )
 from .retrieval.embedding import EmbeddingProviderError
+from .generation.config import (
+    GenerationRuntimeConfiguration,
+    add_generation_arguments,
+    create_generation_providers,
+    resolve_generation_configuration,
+)
 
 _HOST = "127.0.0.1"
 
@@ -66,6 +72,7 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Safely replace this demo's generated runtime after an audit failure or upgrade.",
     )
+    add_generation_arguments(parser)
     return parser
 
 
@@ -82,6 +89,7 @@ def main(
             args.embedding_provider,
             args.embedding_cache,
         )
+        generation = resolve_generation_configuration(args)
         workspace = Path(args.workspace) if args.workspace else default_workspace(bundle.identity)
         _require_available_port(args.port)
         runtime = prepare_demo(
@@ -91,8 +99,11 @@ def main(
             config_dir=config_dir,
             embedding_configuration=embedding,
         )
-        _serve(runtime, args.port, embedding)
-    except (DemoEmbeddingConfigurationError, DemoError) as error:
+        if generation == GenerationRuntimeConfiguration():
+            _serve(runtime, args.port, embedding)
+        else:
+            _serve(runtime, args.port, embedding, generation)
+    except (DemoEmbeddingConfigurationError, DemoError, ValueError) as error:
         print(f"jgrad-demo: {error}", file=sys.stderr)
         raise SystemExit(2) from None
     except KeyboardInterrupt:
@@ -118,14 +129,15 @@ def _serve(
     runtime: DemoRuntime,
     port: int,
     embedding: DemoEmbeddingConfiguration,
+    generation: GenerationRuntimeConfiguration | None = None,
 ) -> None:
     from .service.app import create_app
     from .service.runtime import ServiceDependencies, ServiceSettings
-    from .generation import ReviewedStateGenerationProvider
 
     try:
         import uvicorn
 
+        generation = generation or GenerationRuntimeConfiguration()
         provider = create_demo_embedding_provider(embedding)
         if provider.identity != runtime.embedding_identity:
             raise ValueError
@@ -140,12 +152,17 @@ def _serve(
             source_pdf_path=runtime.source_pdf_path,
             source_pdf_document_id=runtime.identity.document_id,
             source_pdf_sha256=runtime.identity.source_pdf_sha256,
+            generation_provider_name=generation.provider,
+            generation_model_name=generation.model,
         )
         app = create_app(
             settings,
             ServiceDependencies(
                 provider_factory=lambda: provider,
-                generation_provider_factory=ReviewedStateGenerationProvider,
+                generation_provider_factory=lambda: create_generation_providers(generation)[0],
+                question_understanding_provider_factory=lambda: create_generation_providers(
+                    generation
+                )[1],
             ),
         )
     except EmbeddingProviderError as error:
@@ -164,6 +181,11 @@ def _serve(
         "Retrieval: "
         f"provider={identity.provider} model={identity.model} revision={identity.revision or 'none'} "
         f"dimension={identity.dimension} semantic={str(runtime.semantic).lower()}"
+    )
+    print(
+        "Generation: "
+        f"provider={generation.provider} model={generation.model or 'reviewed-rules'} "
+        f"online={str(generation.is_online).lower()}"
     )
     if not runtime.semantic:
         print("Retrieval quality: offline contract index only; not semantic search quality")

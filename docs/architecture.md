@@ -279,7 +279,7 @@ construct the runtime provider; vector search still rechecks the actual runtime 
 Stale indexes are rebuilt to a new absent directory and activated by switching the caller path;
 automatic overwrite, deletion, and directory swapping are outside the supported safety contract.
 
-## Current System (M1–M9 Complete)
+## Current System (M1–M9 Complete, M10 Active)
 
 The current local system spans the full deterministic path from one exact, hash-verified official
 PDF to an applicant-facing reviewed report. It builds traceable `ScopedFact` records, validates a
@@ -299,9 +299,12 @@ document, Fact, page, PDF-hash, and KB-hash provenance. See
 [Grounded RAG orchestration v1](grounded-rag-v1.md) and
 [ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). The browser reuses the selected
 target and in-memory Applicant Profile, displays provider metadata and limitations, and opens each
-validated citation in the existing evidence drawer. Intent recognition remains deliberately bounded
-to the reviewed Japanese/Chinese catalog; unsupported or insufficiently evidenced questions fail
-closed.
+validated citation in the existing evidence drawer. M10 adds a strict multilingual question
+analysis layer with an offline alias fallback or an explicitly configured OpenAI Responses adapter.
+The reviewed Japanese/Chinese catalog remains a downstream rule adapter rather than the only
+product gate. Each bounded subquestion closes independently; unsupported siblings are labelled
+without discarding validated grounded answers. See
+[Natural-language RAG productization v1](natural-language-productization-v1.md).
 
 ## Main Boundaries
 
