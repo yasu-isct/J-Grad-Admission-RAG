@@ -14,7 +14,7 @@ changing a key or endpoint.
 - default DeepSeek timeout: 90 seconds (an explicit CLI value may reduce it); OpenAI retains its
   30-second default;
 - the server publishes a browser request deadline derived from the configured provider timeout,
-  SDK attempts, the current maximum of nine provider calls, and a 15-second transport grace; the
+  SDK attempts, the current maximum of two provider calls, and a 15-second transport grace; the
   browser therefore cannot pre-empt the normal provider budget but still recovers from a hung
   fetch or lock wait;
 - default DeepSeek output budget: 8,000 tokens (an explicit CLI value may override it within the
@@ -70,17 +70,23 @@ The question-analysis result is parsed locally and must exactly reconcile with t
 server constraint after only bounded alias/typo correction. A model cannot redirect an exam,
 retrieval topic, or user-facing subquestion.
 
-The answer call receives only the already bounded EvidencePack projection (at most 16 records and
-60,000 evidence characters), request-local `evidence:NNNN` IDs, reviewed finding transport data,
+The answer call receives only the consolidated bounded evidence projection (at most 16 records and
+60,000 evidence characters), request-local `evidence:NNNN` IDs, typed proposition transport data,
 and any explicitly selected non-identifying applicant facts. The current product route sends no
 Applicant Profile facts to generation. It never sends document IDs, Fact IDs, pages, hashes,
 filesystem paths, a complete PDF, names, contacts, or credentials.
 
 The model output is not authoritative. Local schema validation rejects empty, incomplete, refusal,
-or malformed responses. `generate_checked` then rejects unknown evidence/finding/applicant IDs,
-unsupported claims, missing reviewed findings, and state mismatches. `run_grounded_rag` alone maps
-opaque evidence IDs back to server-owned document, Fact, page, and hash provenance. This preserves
-the M9 release-gate semantics and prevents cross-document citations.
+or malformed responses. `generate_checked` then rejects unknown evidence/proposition IDs and
+unsupported claims. The consolidated validator additionally checks typed subject/value semantics
+and exact evidence closure before it retains model claim text. Only server code maps opaque IDs back
+to document, Fact and page provenance. The original `/v1/grounded-answers` hydration path and M9
+release-gate semantics remain unchanged.
+
+The product route places a bounded exact cache before online analysis. A valid miss uses at most one
+question-analysis and one consolidated-answer call; an exact hit uses neither. The digest includes
+source/index/rule/prompt/schema/provider/model/revision identity, and failed validation or provider
+operations are never cached. The cache is process-memory-only and is cleared by restart.
 
 No response body or `reasoning_content` is logged or persisted. Public exceptions contain stable
 codes only and detach SDK or validation exception context before leaving the provider boundary.

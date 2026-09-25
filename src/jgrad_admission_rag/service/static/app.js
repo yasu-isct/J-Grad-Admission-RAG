@@ -236,7 +236,7 @@ function appendGroundedList(container, title, values) {
   container.append(section);
 }
 
-function appendGroundedResult(container, payload) {
+function appendGroundedResult(container, payload, delivery, mode) {
   const answer = payload.answer;
   const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
   if (!Array.isArray(answer.claims) || !answer.claims.length) {
@@ -272,7 +272,8 @@ function appendGroundedResult(container, payload) {
   auditSummary.textContent = "技术详情 / 审计信息";
   audit.append(auditSummary);
   const meta = document.createElement("p");
-  meta.textContent = `provider=${answer.provider.provider} · model=${answer.provider.model}`;
+  const generationTiming = delivery.generation_ms === null ? "cache" : `${delivery.generation_ms} ms`;
+  meta.textContent = `provider=${mode.provider} · model=${mode.model} · generation=${generationTiming} · validation=${delivery.validation_ms} ms · ${delivery.knowledge_base_version}`;
   audit.append(meta);
   appendGroundedList(audit, "审核范围", [payload.reviewed_scope_statement]);
   appendGroundedList(audit, "仍缺少的信息", answer.missing_information);
@@ -286,8 +287,16 @@ function renderGroundedAnswer(payload) {
   meta.className = "grounded-answer-meta";
   for (const text of [
     payload.mode.label,
+    payload.delivery.source === "cache_hit"
+      ? "已验证缓存回答"
+      : payload.delivery.source === "live"
+        ? payload.mode.provider === "deepseek-responses"
+          ? "DeepSeek 实时生成"
+          : "在线模型实时生成"
+        : "离线规则回答",
     `provider · ${payload.mode.provider}`,
-    `模型 · ${payload.mode.model}`
+    `模型 · ${payload.mode.model}`,
+    `知识库 · ${payload.delivery.knowledge_base_version}`
   ]) {
     const badge = document.createElement("span");
     badge.textContent = text;
@@ -301,6 +310,7 @@ function renderGroundedAnswer(payload) {
   summary.textContent = payload.summary;
   scope.append(summary);
   groundedOutput.append(scope);
+  if (payload.result) appendGroundedResult(groundedOutput, payload.result, payload.delivery, payload.mode);
   for (const item of payload.subanswers || []) {
     const section = document.createElement("section");
     section.className = "grounded-subanswer";
@@ -309,9 +319,12 @@ function renderGroundedAnswer(payload) {
     disposition.className = item.status === "answered" ? "grounded-supported" : "grounded-missing";
     disposition.textContent = item.message;
     section.append(disposition);
-    if (item.result) appendGroundedResult(section, item.result);
     groundedOutput.append(section);
   }
+  const cacheNote = document.createElement("p");
+  cacheNote.className = "grounded-boundary";
+  cacheNote.textContent = "精确缓存仅保存在当前服务进程中，服务重启后会清除。";
+  groundedOutput.append(cacheNote);
   appendGroundedList(groundedOutput, "需要补充的信息", payload.missing_context);
   appendGroundedList(groundedOutput, "不支持的请求部分", payload.unsupported_parts);
   groundedOutput.hidden = false;

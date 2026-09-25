@@ -10,11 +10,13 @@ must cite their supporting evidence IDs; reviewed-rule claims must also cite fin
 invent IDs, facts, eligibility decisions, pages, sources, or missing applicant details. State
 missing information and limitations explicitly. Applicant-statement claims must cite only input
 applicant fact paths. The answer must equal claim texts joined in order with one newline and contain
-no other text. If there are no supportable claims, return an empty answer, set needs_review, and
-explain the abstention under missing_information or limitations. Draft claim text and draft answer
-are non-authoritative transport fields: the server discards and reconstructs them from the selected
-evidence IDs, finding IDs, and applicant paths. Include exactly one reviewed-rule claim for every
-supplied finding and preserve each status. Never claim final eligibility, material acceptance,
+no other text. Write each claim naturally in the language requested by the question. Claim text is
+retained only on natural-answer requests whose server-owned typed proposition validates every
+subject, relation, number, date, exam name, and polarity; other callers still receive a conservative
+server projection. Never turn missing coverage into a negative school rule. If there are no
+supportable claims, return an empty answer, set needs_review, and explain the abstention under
+missing_information or limitations. Include exactly one reviewed-rule claim for every supplied
+finding and preserve each status. Never claim final eligibility, material acceptance,
 application completeness, guaranteed admission, or an admission result. If safety policy requires
 refusal, set refused. Return only the supplied structured schema."""
 

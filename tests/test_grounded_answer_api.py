@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from pathlib import Path
+from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 
@@ -18,6 +19,9 @@ from jgrad_admission_rag.generation import (
     ReviewedStateGenerationProvider,
 )
 from jgrad_admission_rag.generation.contracts import GenerationRequest
+from jgrad_admission_rag.generation.question_analysis import (
+    DeterministicQuestionUnderstandingProvider,
+)
 from jgrad_admission_rag.generation.grounded_rag import (
     MAX_GROUNDED_EVIDENCE_CHARACTERS,
     MAX_GROUNDED_EVIDENCE_RECORDS,
@@ -35,7 +39,9 @@ from jgrad_admission_rag.service.app import (
     GROUNDED_RETRIEVAL_CANDIDATE_K,
     GROUNDED_RETRIEVAL_TOP_K,
     _bounded_grounded_retrieval_depth,
+    _obligations_for_reviewed_finding,
     _project_reviewed_answer_to_retrieval,
+    _reviewed_exact_evidence_propositions,
 )
 from tests.test_demo_cli import _synthetic_config
 from tests.test_grounded_rag import _cited_answer, _pack
@@ -250,6 +256,62 @@ def test_reviewed_answer_projection_is_bound_to_requested_intent_category() -> N
         "eligibility.reviewed.test-rule",
     )
     assert _project_reviewed_answer_to_retrieval(_pack(), answer, dates) is None
+
+
+def test_reviewed_finding_becomes_exact_evidence_proposition_for_generic_intent() -> None:
+    catalog = load_query_intent_catalog(
+        Path(__file__).parents[1] / "src/jgrad_admission_rag/demo_config/query_intent_catalog.json"
+    )
+    payload = _cited_answer().model_dump(mode="json")
+    payload["rule_findings"][0]["subject_key"] = "eligibility.reviewed.test-rule"
+    answer = CitedAnswer.model_validate(payload)
+    pack = _pack()
+    projected = _project_reviewed_answer_to_retrieval(
+        pack,
+        answer,
+        parse_query_intent("出願資格を教えてください。", catalog),
+    )
+    assert projected is not None
+    records = pack.primary_evidence + pack.attached_reference_evidence
+    evidence_id_by_fact = {
+        record.fact_id: f"evidence:{index:04d}" for index, record in enumerate(records, start=1)
+    }
+    analysis = SimpleNamespace(
+        subquestions=(
+            SimpleNamespace(
+                subquestion_id="subquestion:01",
+                requested_intent="eligibility",
+            ),
+        )
+    )
+
+    propositions = _reviewed_exact_evidence_propositions(
+        projected,
+        analysis,
+        records,
+        evidence_id_by_fact,
+        start_index=1,
+        suppress_language=False,
+    )
+
+    assert len(propositions) == 1
+    assert propositions[0].predicate.value == "exact_evidence"
+    assert propositions[0].obligation_ids == ("subquestion:01",)
+    assert propositions[0].exact_evidence_text in {record.text for record in records}
+
+
+def test_language_finding_binds_only_matching_exam_subquestion() -> None:
+    analysis = DeterministicQuestionUnderstandingProvider().analyze(
+        "TOEFL iBT 和 TOEIC IP 可以吗？"
+    )
+
+    assert _obligations_for_reviewed_finding(
+        analysis, "language.reviewed.external-toefl_ibt-apr"
+    ) == ("subquestion:01",)
+    assert _obligations_for_reviewed_finding(
+        analysis, "language.reviewed.external-toeic_ip-apr"
+    ) == ("subquestion:02",)
+    assert _obligations_for_reviewed_finding(analysis, "language.reviewed.unspecified-apr") == ()
 
 
 def test_reviewed_answer_projection_preserves_all_retained_rule_states() -> None:

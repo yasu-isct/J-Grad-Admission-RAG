@@ -7,9 +7,10 @@ retrieval and page-linked official sources.
 生成有证据约束的申请回答。
 
 > **Current status:** M1–M9 are complete and M10 productization is active. The local Demo now
-> normalizes and splits Japanese, Chinese, or mixed questions, retrieves each bounded subquestion
-> with the configured hybrid index, combines reviewed rule state, and returns supported siblings
-> only after server-side citation validation while labelling missing evidence explicitly.
+> normalizes and splits Japanese, Chinese, or mixed questions, retrieves all bounded subquestions
+> with the configured hybrid index, combines reviewed rule state into one bounded bundle, and
+> retains natural wording only after typed claim and citation validation. Exact validated repeats
+> use a bounded process-local cache while missing evidence remains explicit.
 
 ## What Applicants Can Verify Today
 
@@ -41,8 +42,8 @@ exact official PDF
   -> pinned semantic retrieval + BM25 + RRF
   -> EvidencePack candidates
   -> Applicant Profile + human-reviewed rules
-  -> replaceable Generation provider
-  -> server-validated GroundedAnswer + page-linked citations
+  -> typed server-owned propositions + replaceable Generation provider
+  -> validated natural answer + page-linked citations + exact TTL/LRU cache
 ```
 
 `ScopedFact` remains the authority for official text and pages. Retrieval proposes evidence; it does
@@ -143,9 +144,12 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
 受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。
 
-自然语言区域先以严格结构分析中文、日文或混合问题，再逐个子问题执行受限检索与引用闭合；它
-仍不是任意 PDF 或互联网聊天。默认生成器 `reviewed-state-offline` 完全离线，并明确显示“离线规则
-结果”。可选 OpenAI Responses provider 仍受同一结构化输出和引用校验边界约束：
+自然语言区域先以严格结构分析中文、日文或混合问题，再在本地为全部子问题执行受限检索与规则
+判断，最后最多调用一次生成模型形成综合回答。服务器只保留通过类型化命题、数字、适用范围和
+引用闭合校验的自然措辞；它仍不是任意 PDF 或互联网聊天。完全相同且版本仍有效的成功结果可
+命中进程内有界 TTL/LRU cache，此时不再调用问题理解或生成模型；cache 不写磁盘，服务重启即
+失效。默认生成器 `reviewed-state-offline` 完全离线，并明确显示“离线规则结果”。可选 OpenAI
+Responses provider 仍受同一结构化输出和引用校验边界约束：
 
 ```powershell
 $env:OPENAI_API_KEY = "<set-locally; never commit>"
@@ -179,6 +183,11 @@ DeepSeek 的默认单次请求超时为 90 秒（OpenAI 保持 30 秒）；可�
 `--generation-timeout-seconds` 显式收紧，但现有 120 秒硬上限保持不变。
 有据回答固定关闭 DeepSeek 思考输出，避免隐藏推理占用结构化输出预算；多语言问题分析保留模型
 默认思考能力。服务器仍执行完整 Pydantic、语义约束、审核状态和引用闭合校验。
+新问题最多使用一次问题理解和一次综合生成调用；页面显示实时生成或已验证缓存、生成/校验耗时
+和知识库短版本。cache key 覆盖问题、目标、相关申请信息、KB/PDF、索引、规则、prompt、schema、
+provider、model、revision、page-scope 和投影器版本，任何一项变化都会 miss。缓存值只含已校验
+claim、安全引用键和子问题 disposition，不含问题正文、Applicant Profile、检索词、证据正文或原始
+模型响应；命中时由当前审核状态重建证据抽屉。失败、拒绝或未通过校验的结果不会缓存。
 
 未设置密钥时，普通结构化流程和服务 readiness 不受影响，页面显示“在线生成服务未配置”，不会
 伪装成联网 AI 或静默降级。代码不提供任意 Base URL，使用 SDK 默认官方地址；请求固定

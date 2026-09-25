@@ -6,6 +6,7 @@ from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 
+from ..generation.contracts import ClaimKind
 from ..generation.grounded_rag import GroundedAnswer
 from ..generation.question_analysis import QuestionAnalysis, QuestionSubquestion
 from .demo_requirements import (
@@ -76,13 +77,74 @@ class NaturalLanguageSubanswer(DemoModel):
         "answered", "interpreted", "no_clear_evidence", "needs_clarification", "unsupported"
     ]
     message: str = Field(min_length=1, max_length=1_000)
-    result: GroundedAnswerResponse | None = None
+    claim_ids: tuple[str, ...] = ()
+
+
+class PublicGroundedCitation(DemoModel):
+    document_id: str
+    fact_id: str
+    source_pages: tuple[int, ...]
+    role: Literal["primary", "reference"]
+
+
+class PublicGroundedClaim(DemoModel):
+    claim_id: str
+    kind: ClaimKind
+    text: str = Field(min_length=1, max_length=25_000)
+    citations: tuple[PublicGroundedCitation, ...] = ()
+
+
+class PublicGroundedAnswer(DemoModel):
+    answer: str = Field(max_length=200_000)
+    claims: tuple[PublicGroundedClaim, ...] = ()
+    needs_review: bool
+    missing_information: tuple[str, ...] = ()
+    limitations: tuple[str, ...] = ()
 
     @model_validator(mode="after")
-    def result_must_match_status(self) -> NaturalLanguageSubanswer:
-        if (self.status == "answered") != (self.result is not None):
-            raise ValueError("only evidence-answered subquestions carry a grounded result")
+    def answer_must_match_claims(self) -> PublicGroundedAnswer:
+        if self.answer != "\n".join(item.text for item in self.claims):
+            raise ValueError("public answer must equal its ordered claim projection")
         return self
+
+
+class PublicGroundedResult(DemoModel):
+    target: DemoTargetSummary
+    reviewed_scope_statement: str = Field(min_length=1, max_length=500)
+    official_source_url: str
+    local_pdf_url: str | None = None
+    answer: PublicGroundedAnswer
+    evidence: tuple[DemoEvidence, ...]
+
+    @model_validator(mode="after")
+    def evidence_must_cover_every_public_citation(self) -> PublicGroundedResult:
+        evidence_keys = {(item.document_id, item.fact_id, item.pages) for item in self.evidence}
+        citation_keys = {
+            (citation.document_id, citation.fact_id, citation.source_pages)
+            for claim in self.answer.claims
+            for citation in claim.citations
+        }
+        document_ids = {key[0] for key in citation_keys}
+        if (
+            citation_keys != evidence_keys
+            or len(document_ids) != 1
+            or any(
+                claim.kind is not ClaimKind.APPLICANT_STATEMENT and not claim.citations
+                for claim in self.answer.claims
+            )
+        ):
+            raise ValueError("public evidence must exactly cover answer citations")
+        return self
+
+
+class NaturalLanguageDeliveryMetadata(DemoModel):
+    source: Literal["live", "cache_hit", "offline"]
+    generation_ms: int | None = Field(default=None, ge=0, strict=True)
+    validation_ms: int = Field(ge=0, strict=True)
+    knowledge_base_version: str = Field(pattern=r"^kb-[0-9a-f]{12}$")
+    cache_scope: Literal["process_memory"] = "process_memory"
+    cache_cleared_on_restart: Literal[True] = True
+    cache_ttl_seconds: int = Field(ge=1, le=3_600, strict=True)
 
 
 class NaturalLanguageAnswerResponse(DemoModel):
@@ -91,6 +153,8 @@ class NaturalLanguageAnswerResponse(DemoModel):
     analysis: QuestionAnalysis
     summary: str = Field(min_length=1, max_length=1_000)
     subanswers: tuple[NaturalLanguageSubanswer, ...]
+    result: PublicGroundedResult | None = None
+    delivery: NaturalLanguageDeliveryMetadata
     missing_context: tuple[str, ...] = ()
     unsupported_parts: tuple[str, ...] = ()
 
@@ -102,6 +166,16 @@ class NaturalLanguageAnswerResponse(DemoModel):
             raise ValueError("missing context must be analysis-owned")
         if self.unsupported_parts != self.analysis.unsupported_parts:
             raise ValueError("unsupported parts must be analysis-owned")
+        answered_claims = {claim_id for item in self.subanswers for claim_id in item.claim_ids}
+        result_claims = (
+            {claim.claim_id for claim in self.result.answer.claims}
+            if self.result is not None
+            else set()
+        )
+        if answered_claims != result_claims:
+            raise ValueError("subanswer claim mapping must cover the public result")
+        if (self.result is not None) != bool(result_claims):
+            raise ValueError("a public result must contain at least one claim")
         return self
 
 
@@ -110,5 +184,10 @@ __all__ = [
     "GroundedAnswerRequest",
     "GroundedAnswerResponse",
     "NaturalLanguageAnswerResponse",
+    "NaturalLanguageDeliveryMetadata",
     "NaturalLanguageSubanswer",
+    "PublicGroundedAnswer",
+    "PublicGroundedCitation",
+    "PublicGroundedClaim",
+    "PublicGroundedResult",
 ]

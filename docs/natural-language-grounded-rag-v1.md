@@ -8,11 +8,17 @@ For every request the service selects exactly the requested reviewed document, a
 
 Only after those steps succeed does `run_grounded_rag` receive the request-local question, target scope, EvidencePack, and reviewed state. Every exact citation required by the reviewed answer must occur in the bounded retrieval result; otherwise the endpoint returns `insufficient_evidence` without calling the generation provider. The generation boundary independently rejects more than 16 evidence records or more than 60,000 evidence/scope characters. M9-03 closes every returned claim against opaque request-local evidence IDs and then restores only server-owned authoritative provenance. Cross-document, cross-hash, cross-scope, unknown-reference, incomplete, malformed, and unsupported claims fail closed inside each M9 grounded answer.
 
-M10 adds a product route above this unchanged boundary. It analyzes and splits at most eight
-subquestions, then invokes this closed path separately for each substantive subquestion. An
-insufficient or unsupported sibling receives an explicit no-clear-evidence/clarification state
-without deleting other independently validated results. Provider/citation failures still fail the
-request closed. See [Natural-language RAG productization v1](natural-language-productization-v1.md).
+M10 adds a product route above this unchanged M9 endpoint. It analyzes and splits at most eight
+subquestions, performs all retrieval locally, fairly deduplicates the results into one bounded
+bundle, and invokes one consolidated generation boundary over server-owned typed propositions.
+Every consolidated evidence record carries its authoritative scope metadata. Unknown scope or a
+nonmatching college/department/program is rejected before the provider call; global and university
+records must not carry narrower scope metadata.
+Validated model wording is retained only when the proposition predicate, values, scope, opaque IDs,
+and complete citation set reconcile. An insufficient sibling receives an explicit
+no-clear-evidence/clarification state without deleting supported results. Provider/citation or
+semantic-validation failures still fail the request closed. See
+[Natural-language RAG productization v1](natural-language-productization-v1.md).
 
 The response includes the immutable `GroundedAnswer`, a cited-evidence presentation inventory, a verified local-PDF route when configured, and the separately labelled official webpage URL. Provider output is data, not markup.
 
@@ -28,6 +34,16 @@ Input and reviewed-scope failures return 422. Corpus/evidence/rule reconciliatio
 
 ## Browser boundary
 
-The natural-language area is outside the four-step application flow and reuses its current target and applicant form values at submission time. Target or profile changes abort an in-flight request and clear the answer. The server publishes a trusted whole-request browser budget derived from the configured per-SDK-request timeout, SDK retry count, one analysis call, at most eight current per-subquestion generation calls, and a 15-second transport grace. The browser aborts only after that budget, so it cannot report a timeout while the server is within its maximum normal provider budget, but an unresolved fetch or lock wait cannot leave the page loading forever. Explicit retry and a request snapshot prevent stale results from appearing. M10-07 is expected to reduce this deliberately conservative budget by consolidating generation into one call.
+The natural-language area is outside the four-step application flow and reuses its current target and applicant form values at submission time. Target or profile changes abort an in-flight request and clear the answer. The server publishes a trusted whole-request browser budget derived from the configured per-SDK-request timeout, SDK retry count, one analysis call, one consolidated generation call, and a 15-second transport grace. The browser aborts only after that budget, so it cannot report a timeout while the server is within its maximum normal provider budget, but an unresolved fetch or lock wait cannot leave the page loading forever. Explicit retry and a request snapshot prevent stale results from appearing.
+
+A successful response may enter a bounded process-local exact TTL/LRU cache. Its canonical digest
+covers request, target/profile, source and index identity, reviewed plan, provider/model/revision,
+page-scope identity, and all relevant prompt/schema/validator/projector versions. Single-flight combines concurrent identical
+misses. Failures never enter the cache; restart clears it. The public response reports
+`live`/`cache_hit`/`offline`, generation and validation timing, and a short KB identifier without
+exposing the cache key, hashes, local paths, or internal rule/finding IDs.
+The in-memory value contains only validated claims, safe citation keys and disposition mappings;
+question/profile/retrieval/evidence text and raw provider output are not stored. Evidence display
+objects are rebuilt from authoritative state on each hit.
 
 Generated claims are inserted with `textContent`. The page does not use HTML/Markdown rendering, `innerHTML`, `insertAdjacentHTML`, cookies, `localStorage`, or `sessionStorage`. Each official or reviewed claim has citation buttons opening the existing evidence drawer; the drawer exposes verified PDF page links and the official webpage as separate actions. Question, answer, retry, and applicant state are memory-only, so reload clears them.

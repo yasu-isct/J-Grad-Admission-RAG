@@ -299,12 +299,15 @@ document, Fact, page, PDF-hash, and KB-hash provenance. See
 [Grounded RAG orchestration v1](grounded-rag-v1.md) and
 [ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). The browser reuses the selected
 target and in-memory Applicant Profile, displays provider metadata and limitations, and opens each
-validated citation in the existing evidence drawer. M10 adds a strict multilingual question
-analysis layer with an offline alias fallback or an explicitly configured OpenAI Responses adapter.
-The reviewed Japanese/Chinese catalog remains a downstream rule adapter rather than the only
-product gate. Each bounded subquestion closes independently; unsupported siblings are labelled
-without discarding validated grounded answers. See
-[Natural-language RAG productization v1](natural-language-productization-v1.md).
+validated citation in the existing evidence drawer. M10 adds a strict multilingual
+question-analysis layer and a consolidated final-generation boundary. Local retrieval and reviewed
+reasoning finish before the one final call. The server retains model wording only for typed
+propositions whose values, scope and request-local opaque citations validate, then restores public
+page evidence. A bounded single-flight exact cache sits before online analysis, so an identical
+valid repeat makes zero provider calls; version or source changes miss. Unsupported siblings remain
+explicit without discarding validated claims. See
+[Natural-language RAG productization v1](natural-language-productization-v1.md) and
+[ADR 0006](decisions/0006-validated-natural-language-and-exact-cache.md).
 
 ## Main Boundaries
 

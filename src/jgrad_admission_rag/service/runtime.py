@@ -17,6 +17,7 @@ from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.page_scope_manifest import PageScopeManifest
 from .date_presentation import ReviewedDatePresentation
+from .response_cache import ExactResponseCache
 
 
 class ServiceSettings(BaseModel):
@@ -48,6 +49,8 @@ class ServiceSettings(BaseModel):
     generation_model_name: str | None = Field(default=None, min_length=1, max_length=200)
     generation_timeout_seconds: float | None = Field(default=None, gt=0, le=120)
     generation_max_retries: int = Field(default=1, ge=0, le=2, strict=True)
+    natural_answer_cache_capacity: int = Field(default=128, ge=1, le=1_024, strict=True)
+    natural_answer_cache_ttl_seconds: int = Field(default=600, ge=1, le=3_600, strict=True)
 
     @model_validator(mode="after")
     def query_paths_must_be_complete_and_absolute(self) -> ServiceSettings:
@@ -123,6 +126,7 @@ class ServiceState:
     question_understanding_provider: QuestionUnderstandingProvider | None = None
     question_understanding_initialization_failed: bool = False
     question_understanding_provider_lock: Lock = field(default_factory=Lock)
+    natural_answer_cache: ExactResponseCache[Any] | None = None
     job_repository: Any | None = None
     job_worker: Any | None = None
     job_initialization_failed: bool = False
