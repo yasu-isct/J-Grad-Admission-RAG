@@ -8,6 +8,7 @@ import pytest
 
 from jgrad_admission_rag.generation import (
     DEEPSEEK_BASE_URL,
+    DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     ApplicantFact,
     ClaimKind,
     DeepSeekResponsesConfig,
@@ -120,6 +121,7 @@ def _provider(
 def test_deepseek_configuration_is_closed_and_models_are_allowlisted() -> None:
     default_config = DeepSeekResponsesConfig(model="deepseek-flash")
     assert default_config.model == "deepseek-flash"
+    assert default_config.timeout_seconds == DEEPSEEK_DEFAULT_TIMEOUT_SECONDS
     assert default_config.max_output_tokens == 8_000
     assert DeepSeekResponsesConfig(model="deepseek-v4-pro").model == "deepseek-v4-pro"
     with pytest.raises(ValueError, match="DeepSeek model"):
@@ -132,7 +134,22 @@ def test_deepseek_configuration_is_closed_and_models_are_allowlisted() -> None:
         provider="deepseek-responses", model="deepseek-flash"
     )
     assert deepseek_runtime.is_online
+    assert deepseek_runtime.timeout_seconds == DEEPSEEK_DEFAULT_TIMEOUT_SECONDS
     assert deepseek_runtime.max_output_tokens == 8_000
+    assert (
+        GenerationRuntimeConfiguration(
+            provider="openai-responses", model="gpt-test"
+        ).timeout_seconds
+        == 30.0
+    )
+    assert (
+        GenerationRuntimeConfiguration(
+            provider="deepseek-responses",
+            model="deepseek-flash",
+            timeout_seconds=45,
+        ).timeout_seconds
+        == 45
+    )
     assert (
         GenerationRuntimeConfiguration(
             provider="openai-responses", model="gpt-test"
@@ -183,7 +200,7 @@ def test_deepseek_uses_only_its_key_and_fixed_base_url(monkeypatch: pytest.Monke
     assert client_args == {
         "api_key": "deepseek-test-key",
         "base_url": DEEPSEEK_BASE_URL,
-        "timeout": 30.0,
+        "timeout": DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
         "max_retries": 1,
     }
 
@@ -255,6 +272,7 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     assert responses.calls == 1
     assert responses.kwargs["model"] == "deepseek-flash"
     assert responses.kwargs["max_output_tokens"] == 8_000
+    assert responses.kwargs["reasoning"] == {"effort": "none"}
     assert responses.kwargs["store"] is False
     assert "stream" not in responses.kwargs
     assert "tools" not in responses.kwargs
@@ -268,6 +286,9 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     sent = responses.kwargs["input"][1]["content"]  # type: ignore[index]
     system_prompt = responses.kwargs["input"][0]["content"]  # type: ignore[index]
     assert "every array field must be a JSON array, never null" in system_prompt
+    assert "claim:0001, claim:0002" in system_prompt
+    assert "exactly the claim text values joined" in system_prompt
+    assert "refusal_reason=null" in system_prompt
     assert "evidence:0001" in sent
     assert "source_pdf" not in sent
     assert "reasoning_content" not in sent
@@ -384,6 +405,7 @@ def test_deepseek_question_analysis_preserves_multilingual_server_constraints(
     )
     assert provider.analyze(question) == expected
     assert expected.detected_language is language
+    assert "reasoning" not in responses.kwargs
     assert responses.kwargs["text"]["format"]["type"] == "json_schema"  # type: ignore[index]
     wire_schema = responses.kwargs["text"]["format"]["schema"]  # type: ignore[index]
     assert "$defs" not in wire_schema
@@ -511,6 +533,18 @@ def test_live_diagnostic_reports_only_safe_pydantic_error_shape() -> None:
     assert diagnostic == "pydantic_invalid"
     assert errors == ["claims.tuple_type"]
     assert "draft" not in json.dumps(errors)
+
+
+def test_live_diagnostic_allowlists_generation_root_validator_category() -> None:
+    invalid = _draft().model_dump(mode="json")
+    invalid["answer"] = "not the ordered claim projection"
+    response = SimpleNamespace(output_text=json.dumps(invalid, ensure_ascii=False))
+
+    diagnostic, errors = _safe_structured_output_diagnostic(response, "citation-closure")
+
+    assert diagnostic == "pydantic_invalid"
+    assert errors == ["value_error_answer_projection"]
+    assert "not the ordered claim projection" not in json.dumps(errors)
 
 
 def test_live_diagnostic_distinguishes_json_missing_and_valid_output() -> None:

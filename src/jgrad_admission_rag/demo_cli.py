@@ -154,6 +154,8 @@ def _serve(
             source_pdf_sha256=runtime.identity.source_pdf_sha256,
             generation_provider_name=generation.provider,
             generation_model_name=generation.model,
+            generation_timeout_seconds=generation.timeout_seconds,
+            generation_max_retries=generation.max_retries,
         )
         app = create_app(
             settings,

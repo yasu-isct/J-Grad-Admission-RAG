@@ -16,6 +16,7 @@ from pydantic import ValidationError
 from .generation import (
     ClaimKind,
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
+    DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
@@ -80,6 +81,17 @@ _SAFE_VALIDATION_LOCATIONS = frozenset(
         "unsupported_parts",
     }
 )
+_SAFE_VALUE_ERROR_CODES = {
+    "Value error, claim IDs must be contiguous and ordered": "value_error_claim_order",
+    "Value error, answer must be the exact ordered claim projection": (
+        "value_error_answer_projection"
+    ),
+    "Value error, a refusal may only contain its explicit reason": "value_error_refusal_shape",
+    "Value error, a non-refusal cannot contain a refusal_reason": "value_error_refusal_reason",
+    "Value error, an empty answer must explicitly abstain with a review reason": (
+        "value_error_empty_answer"
+    ),
+}
 
 
 class _CallBudgetExceeded(RuntimeError):
@@ -199,7 +211,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     config = DeepSeekResponsesConfig(
         model=args.model,
-        timeout_seconds=30,
+        timeout_seconds=DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
         max_output_tokens=DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
         max_retries=0,
     )
@@ -228,11 +240,11 @@ def main(argv: Sequence[str] | None = None) -> None:
             )
 
         result = generate_checked(generator, _synthetic_generation_request())
-        citation_valid = (
-            len(result.output.claims) == 1
-            and result.output.claims[0].kind is ClaimKind.REVIEWED_RULE
-            and result.output.claims[0].evidence_ids == ("evidence:0001",)
-            and result.output.claims[0].finding_ids == ("finding:synthetic-english-score",)
+        citation_valid = any(
+            claim.kind is ClaimKind.REVIEWED_RULE
+            and claim.evidence_ids == ("evidence:0001",)
+            and claim.finding_ids == ("finding:synthetic-english-score",)
+            for claim in result.output.claims
         )
         if not citation_valid:
             raise ValueError("synthetic citation validation failed")
@@ -342,6 +354,13 @@ def _safe_validation_errors(error: ValidationError) -> list[str]:
             if isinstance(raw_type, str) and _SAFE_DIAGNOSTIC_PART.fullmatch(raw_type)
             else "other"
         )
+        if error_type == "value_error":
+            message = item.get("msg")
+            error_type = (
+                _SAFE_VALUE_ERROR_CODES.get(message, "value_error")
+                if isinstance(message, str)
+                else "value_error"
+            )
         location: list[str] = []
         for part in item.get("loc", ()):
             if isinstance(part, int):

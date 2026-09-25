@@ -175,6 +175,10 @@ DeepSeek provider 固定使用 `https://api.deepseek.com` 的非流式 Responses
 `deepseek-flash` 或 `deepseek-v4-pro`，并通过 `text.format` JSON Schema 与本地 Pydantic、引用
 闭合校验双重验证输出。页面会显示实际模型；缺少密钥时显示“DeepSeek 在线生成服务未配置”，
 不会改用离线文本后继续标成 AI 生成。
+DeepSeek 的默认单次请求超时为 90 秒（OpenAI 保持 30 秒）；可以通过
+`--generation-timeout-seconds` 显式收紧，但现有 120 秒硬上限保持不变。
+有据回答固定关闭 DeepSeek 思考输出，避免隐藏推理占用结构化输出预算；多语言问题分析保留模型
+默认思考能力。服务器仍执行完整 Pydantic、语义约束、审核状态和引用闭合校验。
 
 未设置密钥时，普通结构化流程和服务 readiness 不受影响，页面显示“在线生成服务未配置”，不会
 伪装成联网 AI 或静默降级。代码不提供任意 Base URL，使用 SDK 默认官方地址；请求固定

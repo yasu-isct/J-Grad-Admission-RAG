@@ -11,9 +11,18 @@ changing a key or endpoint.
 - accepted models: `deepseek-flash` and `deepseek-v4-pro`;
 - explicit `--generation-model` required;
 - timeout at most 120 seconds, output at most 16,384 tokens, SDK retries at most two;
+- default DeepSeek timeout: 90 seconds (an explicit CLI value may reduce it); OpenAI retains its
+  30-second default;
+- the server publishes a browser request deadline derived from the configured provider timeout,
+  SDK attempts, the current maximum of nine provider calls, and a 15-second transport grace; the
+  browser therefore cannot pre-empt the normal provider budget but still recovers from a hung
+  fetch or lock wait;
 - default DeepSeek output budget: 8,000 tokens (an explicit CLI value may override it within the
   same 128–16,384 hard bounds); OpenAI retains its 2,000-token default;
 - first stable path is non-streaming and has no outer retry loop;
+- grounded drafting explicitly uses `reasoning.effort=none`, so hidden reasoning does not consume
+  its bounded structured-output budget or enter logs; multilingual question analysis retains the
+  provider default because its server-constrained decomposition needs that capability;
 - no Web Search, file search, tools, file upload, or whole-PDF input.
 
 There is intentionally no Base URL argument. `OPENAI_API_KEY` cannot satisfy DeepSeek startup.
@@ -113,7 +122,9 @@ authorization for an agent to call the service.
 
 The evaluator counts each SDK request before transmission, including failed calls. Its report is
 limited to phase, attempt number, latency, allowlisted response status/incomplete reason, stable
-structured-output validation categories, and citation-validation status. Pydantic error inputs,
+structured-output validation categories, and citation-validation status. Citation acceptance uses
+the production `generate_checked` boundary and requires the expected reviewed-rule claim; it does
+not reject additional official claims that already passed that same server-owned closure. Pydantic error inputs,
 model-controlled extra field names, raw output, questions, evidence, profiles, and exception text
 are never emitted. A failed question-analysis phase stops the batch before citation generation.
 

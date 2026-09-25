@@ -8,6 +8,7 @@ from typing import Any
 
 from .deepseek_responses import (
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
+    DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
@@ -31,7 +32,7 @@ GENERATION_PROVIDER_NAMES = (
 class GenerationRuntimeConfiguration:
     provider: str = "reviewed-state-offline"
     model: str | None = None
-    timeout_seconds: float = 30.0
+    timeout_seconds: float | None = None
     max_output_tokens: int | None = None
     max_retries: int = 1
 
@@ -44,6 +45,12 @@ class GenerationRuntimeConfiguration:
             raise ValueError("--generation-model is required for online generation")
         if self.provider == "reviewed-state-offline" and self.model is not None:
             raise ValueError("--generation-model is only valid for online generation")
+        if self.timeout_seconds is None:
+            object.__setattr__(
+                self,
+                "timeout_seconds",
+                DEEPSEEK_DEFAULT_TIMEOUT_SECONDS if self.provider == "deepseek-responses" else 30.0,
+            )
         if self.max_output_tokens is None:
             object.__setattr__(
                 self,
@@ -78,7 +85,12 @@ def add_generation_arguments(parser: argparse.ArgumentParser) -> None:
         "--generation-model",
         help="Explicit model name; required with either online generation provider.",
     )
-    parser.add_argument("--generation-timeout-seconds", type=float, default=30.0)
+    parser.add_argument(
+        "--generation-timeout-seconds",
+        type=float,
+        default=None,
+        help="Provider timeout; defaults to 90 seconds for DeepSeek and 30 otherwise.",
+    )
     parser.add_argument(
         "--generation-max-output-tokens",
         type=int,

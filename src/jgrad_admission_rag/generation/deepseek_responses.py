@@ -31,6 +31,7 @@ from .responses_common import GROUNDING_SYSTEM_PROMPT, contains_refusal
 
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEEPSEEK_MODEL_NAMES = ("deepseek-flash", "deepseek-v4-pro")
+DEEPSEEK_DEFAULT_TIMEOUT_SECONDS = 90.0
 DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS = 8_000
 _DEEPSEEK_GROUNDING_SYSTEM_PROMPT = (
     GROUNDING_SYSTEM_PROMPT
@@ -38,7 +39,12 @@ _DEEPSEEK_GROUNDING_SYSTEM_PROMPT = (
 For this DeepSeek wire schema, every array field must be a JSON array, never null; use an empty
 array when that field does not apply. missing_information contains only sorted, unique, safe
 identifier paths for genuinely absent inputs, never explanatory prose; otherwise return an empty
-array."""
+array. Number claim_id values contiguously as claim:0001, claim:0002, and so on. answer must be
+exactly the claim text values joined in that same order with one newline and no added heading,
+bullet, prefix, suffix, or explanation. For an ordinary non-refusal set refused=false and
+refusal_reason=null. For a refusal return no claims and an empty answer with a non-empty
+refusal_reason. If there are no claims for a non-refusal, set needs_review=true and return at least
+one canonical missing_information value or limitation. Keep limitations sorted and unique."""
 )
 
 _SchemaModel = TypeVar("_SchemaModel", bound=BaseModel)
@@ -49,7 +55,7 @@ class DeepSeekResponsesConfig:
     """Closed DeepSeek configuration; the endpoint and credential source are not configurable."""
 
     model: str
-    timeout_seconds: float = 30.0
+    timeout_seconds: float = DEEPSEEK_DEFAULT_TIMEOUT_SECONDS
     max_output_tokens: int = DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS
     max_retries: int = 1
 
@@ -114,6 +120,7 @@ class DeepSeekResponsesGenerationProvider:
             schema=GenerationDraft,
             schema_name="generation_draft",
             projection=self._schema_projection,
+            reasoning_effort="none",
         )
 
 
@@ -201,17 +208,18 @@ def _request_structured_output(
     schema: type[_SchemaModel],
     schema_name: str,
     projection: DeepSeekSchemaProjection,
+    reasoning_effort: str | None = None,
 ) -> _SchemaModel:
     failure: GenerationErrorCode | None = None
     response: Any | None = None
     try:
-        response = client.responses.create(
-            model=config.model,
-            input=[
+        request_options: dict[str, object] = {
+            "model": config.model,
+            "input": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": payload},
             ],
-            text={
+            "text": {
                 "format": {
                     "type": "json_schema",
                     "name": schema_name,
@@ -219,8 +227,13 @@ def _request_structured_output(
                     "schema": projection.schema,
                 }
             },
-            max_output_tokens=config.max_output_tokens,
-            store=False,
+            "max_output_tokens": config.max_output_tokens,
+            "store": False,
+        }
+        if reasoning_effort is not None:
+            request_options["reasoning"] = {"effort": reasoning_effort}
+        response = client.responses.create(
+            **request_options,
         )
     except Exception as error:
         name = type(error).__name__
@@ -275,6 +288,7 @@ def _projection_for(schema: type[BaseModel]) -> DeepSeekSchemaProjection:
 __all__ = [
     "DEEPSEEK_BASE_URL",
     "DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS",
+    "DEEPSEEK_DEFAULT_TIMEOUT_SECONDS",
     "DEEPSEEK_MODEL_NAMES",
     "DeepSeekResponsesConfig",
     "DeepSeekResponsesGenerationProvider",

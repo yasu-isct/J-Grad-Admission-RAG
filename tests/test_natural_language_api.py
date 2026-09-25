@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
+import pytest
 
 import jgrad_admission_rag.service.app as service_app
 from jgrad_admission_rag.demo import prepare_demo
@@ -13,6 +14,8 @@ from jgrad_admission_rag.generation import (
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
     DeterministicQuestionUnderstandingProvider,
+    GenerationError,
+    GenerationErrorCode,
     OpenAIResponsesConfig,
     OpenAIResponsesGenerationProvider,
     OpenAIResponsesQuestionUnderstandingProvider,
@@ -22,6 +25,14 @@ from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, cr
 from jgrad_admission_rag.service.runtime import ServiceState
 from tests.test_demo_cli import _synthetic_config
 from tests.test_grounded_answer_api import _target
+
+
+class _FailingQuestionUnderstandingProvider:
+    def __init__(self, code: GenerationErrorCode) -> None:
+        self.code = code
+
+    def analyze(self, _question: str):
+        raise GenerationError(self.code)
 
 
 def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestClient:
@@ -158,9 +169,46 @@ def test_missing_deepseek_key_keeps_readiness_and_identifies_provider(
         "mode": "online_model",
         "configured": False,
         "label": "DeepSeek 在线生成服务未配置",
+        "request_timeout_seconds": 1635,
     }
     assert response.status_code == 503
     assert response.json()["code"] == "online_generation_not_configured"
+
+
+@pytest.mark.parametrize(
+    ("provider_code", "expected_status", "expected_code"),
+    (
+        (GenerationErrorCode.PROVIDER_UNAVAILABLE, 503, "generation_provider_unavailable"),
+        (GenerationErrorCode.PROVIDER_TIMEOUT, 504, "generation_provider_timeout"),
+        (GenerationErrorCode.PROVIDER_REFUSAL, 502, "generation_provider_refusal"),
+        (GenerationErrorCode.INCOMPLETE_RESPONSE, 502, "incomplete_response"),
+        (GenerationErrorCode.MALFORMED_OUTPUT, 502, "malformed_output"),
+    ),
+)
+def test_question_analysis_failures_have_distinct_safe_error_codes(
+    tmp_path, provider_code, expected_status, expected_code
+) -> None:
+    client = _client(tmp_path)
+    with client:
+        client.app.state.service_state.question_understanding_provider = (
+            _FailingQuestionUnderstandingProvider(provider_code)
+        )
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={
+                "question": "private question marker",
+                "target": target,
+                "applicant": {"english_test_kind": "toeic_lr", "english_score": 840},
+            },
+        )
+
+    assert (response.status_code, response.json()["code"]) == (
+        expected_status,
+        expected_code,
+    )
+    assert "private question marker" not in response.text
+    assert "840" not in response.text
 
 
 def test_configured_deepseek_status_shows_actual_model_name() -> None:
@@ -180,6 +228,28 @@ def test_configured_deepseek_status_shows_actual_model_name() -> None:
     assert status.configured is True
     assert status.model == "deepseek-v4-pro"
     assert status.label == "DeepSeek 在线模型 · deepseek-v4-pro"
+    assert status.request_timeout_seconds == 1635
+
+
+def test_generation_request_timeout_budget_tracks_provider_configuration() -> None:
+    settings = ServiceSettings(
+        generation_provider_name="deepseek-responses",
+        generation_model_name="deepseek-flash",
+        generation_timeout_seconds=45,
+        generation_max_retries=0,
+    )
+    state = ServiceState(
+        provider=object(),
+        generation_provider=object(),
+        question_understanding_provider=object(),
+        report_plans=(object(),),
+        page_scope_manifests=(object(),),
+        query_intent_catalog=object(),
+    )
+
+    status = service_app._generation_status_response(settings, state)
+
+    assert status.request_timeout_seconds == 420
 
 
 def test_reviewed_evidence_conflict_is_not_downgraded_to_missing_coverage(

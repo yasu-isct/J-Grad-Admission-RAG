@@ -321,7 +321,7 @@ async function loadGenerationStatus() {
   try {
     const response = await fetch(GENERATION_STATUS_ENDPOINT, { headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
     const body = await response.json();
-    if (!response.ok || typeof body.configured !== "boolean") throw new Error("invalid generation status");
+    if (!response.ok || typeof body.configured !== "boolean" || !Number.isInteger(body.request_timeout_seconds) || body.request_timeout_seconds < 1 || body.request_timeout_seconds > 3600) throw new Error("invalid generation status");
     generationStatus = body;
   } catch (_) {
     generationStatus = { configured: false, label: "生成模式状态不可用" };
@@ -341,7 +341,7 @@ async function submitGroundedAnswer() {
   const snapshot = JSON.stringify(payload);
   const requestId = ++groundedRequestId;
   groundedController = new AbortController();
-  const timeout = globalThis.setTimeout(() => groundedController && groundedController.abort("timeout"), 15000);
+  const timeout = globalThis.setTimeout(() => groundedController && groundedController.abort("timeout"), generationStatus.request_timeout_seconds * 1000);
   groundedSubmit.disabled = true;
   groundedRetry.hidden = true;
   groundedOutput.hidden = true;

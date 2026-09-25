@@ -23,6 +23,7 @@ from .contracts import (
 from .deepseek_responses import (
     DEEPSEEK_BASE_URL,
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
+    DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     DEEPSEEK_MODEL_NAMES,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
@@ -76,6 +77,7 @@ __all__ = [
     "ClaimKind",
     "DEEPSEEK_BASE_URL",
     "DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS",
+    "DEEPSEEK_DEFAULT_TIMEOUT_SECONDS",
     "DEEPSEEK_MODEL_NAMES",
     "DEEPSEEK_SCHEMA_PROJECTION_VERSION",
     "DeepSeekSchemaProjection",
