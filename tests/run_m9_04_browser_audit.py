@@ -103,6 +103,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "mode": "offline_rules",
                     "configured": True,
                     "label": "离线规则结果",
+                    "request_timeout_seconds": 1,
                 }
             )
             return
@@ -175,6 +176,7 @@ class Handler(SimpleHTTPRequestHandler):
                         "mode": "offline_rules",
                         "configured": True,
                         "label": "离线规则结果",
+                        "request_timeout_seconds": 1,
                     },
                     "analysis": {
                         "schema_version": "1.0",
@@ -269,7 +271,7 @@ def main() -> None:
                     """
                     const nativeSetTimeout = globalThis.setTimeout.bind(globalThis);
                     globalThis.setTimeout = (callback, delay, ...args) => {
-                      const isTimeoutScenario = delay === 15000
+                      const isTimeoutScenario = delay === 1000
                         && document.querySelector("#grounded-question")?.value === "タイムアウト";
                       return nativeSetTimeout(callback, isTimeoutScenario ? 50 : delay, ...args);
                     };

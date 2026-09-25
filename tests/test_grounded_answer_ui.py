@@ -40,6 +40,9 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
         assert forbidden not in javascript
     assert "textContent = claim.text" in javascript
     assert "groundedController.abort" in javascript
+    assert 'abort("timeout")' in javascript
+    assert "15000" not in javascript
+    assert "generationStatus.request_timeout_seconds * 1000" in javascript
     assert "snapshot !== JSON.stringify(groundedRequestPayload())" in javascript
     assert "generation_provider_timeout" in javascript
     assert "invalid_citation" in javascript

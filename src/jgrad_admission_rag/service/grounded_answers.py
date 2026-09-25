@@ -66,6 +66,7 @@ class GenerationStatusResponse(DemoModel):
     mode: Literal["offline_rules", "online_model"]
     configured: bool
     label: str
+    request_timeout_seconds: int = Field(gt=0, le=3_600, strict=True)
 
 
 class NaturalLanguageSubanswer(DemoModel):

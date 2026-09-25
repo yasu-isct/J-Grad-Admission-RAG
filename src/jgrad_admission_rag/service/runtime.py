@@ -46,6 +46,8 @@ class ServiceSettings(BaseModel):
         pattern=r"^(reviewed-state-offline|openai-responses|deepseek-responses)$",
     )
     generation_model_name: str | None = Field(default=None, min_length=1, max_length=200)
+    generation_timeout_seconds: float | None = Field(default=None, gt=0, le=120)
+    generation_max_retries: int = Field(default=1, ge=0, le=2, strict=True)
 
     @model_validator(mode="after")
     def query_paths_must_be_complete_and_absolute(self) -> ServiceSettings:

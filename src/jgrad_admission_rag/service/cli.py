@@ -101,6 +101,8 @@ def main(argv: Sequence[str] | None = None) -> None:
             job_shutdown_grace_seconds=args.job_shutdown_grace_seconds,
             generation_provider_name=generation_configuration.provider,
             generation_model_name=generation_configuration.model,
+            generation_timeout_seconds=generation_configuration.timeout_seconds,
+            generation_max_retries=generation_configuration.max_retries,
         )
     except (CliConfigurationError, ValueError) as error:
         print(f"configuration error: {error}", file=sys.stderr)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import re
 from contextlib import asynccontextmanager
 from functools import partial
@@ -1464,6 +1465,23 @@ def _generation_status_response(
             if online
             else "离线规则结果"
         ),
+        request_timeout_seconds=_generation_request_timeout_seconds(settings),
+    )
+
+
+def _generation_request_timeout_seconds(settings: ServiceSettings) -> int:
+    if settings.generation_provider_name == "reviewed-state-offline":
+        return 30
+    provider_timeout = settings.generation_timeout_seconds
+    if provider_timeout is None:
+        provider_timeout = (
+            90.0 if settings.generation_provider_name == "deepseek-responses" else 30.0
+        )
+    maximum_provider_calls = 1 + 8
+    sdk_attempts = settings.generation_max_retries + 1
+    transport_grace_seconds = 15
+    return math.ceil(provider_timeout * sdk_attempts * maximum_provider_calls) + (
+        transport_grace_seconds
     )
 
 
@@ -1481,17 +1499,22 @@ def _build_natural_language_answer_response(
         with state.question_understanding_provider_lock:
             analysis = analyzer.analyze(request.question)
     except GenerationError as error:
-        if error.code is GenerationErrorCode.PROVIDER_TIMEOUT:
-            raise ApiProblem(
-                504, "generation_provider_timeout", "question analysis timed out"
-            ) from None
-        if error.code is GenerationErrorCode.MISSING_API_KEY:
-            raise ApiProblem(
+        status, public_code = {
+            GenerationErrorCode.INVALID_INPUT: (422, "invalid_request"),
+            GenerationErrorCode.MISSING_API_KEY: (503, "online_generation_not_configured"),
+            GenerationErrorCode.PROVIDER_UNAVAILABLE: (
                 503,
-                "online_generation_not_configured",
-                "online generation service is not configured",
-            ) from None
-        raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
+                "generation_provider_unavailable",
+            ),
+            GenerationErrorCode.PROVIDER_TIMEOUT: (504, "generation_provider_timeout"),
+            GenerationErrorCode.PROVIDER_REFUSAL: (502, "generation_provider_refusal"),
+            GenerationErrorCode.INCOMPLETE_RESPONSE: (502, "incomplete_response"),
+            GenerationErrorCode.MALFORMED_OUTPUT: (502, "malformed_output"),
+            GenerationErrorCode.UNKNOWN_REFERENCE: (502, "invalid_citation"),
+            GenerationErrorCode.UNSUPPORTED_CLAIM: (502, "unsupported_claim"),
+            GenerationErrorCode.STATE_MISMATCH: (409, "rule_state_mismatch"),
+        }[error.code]
+        raise ApiProblem(status, public_code, "question analysis failed") from None
     except Exception:
         raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
 
