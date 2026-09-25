@@ -41,12 +41,13 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 
 ## Active M10
 
-M10-01 connects explicit OpenAI Responses question understanding and citation-constrained
-generation while retaining the fully offline reviewed-state mode. Fixed lexicon parsing becomes a
-fallback/downstream adapter rather than the product entry gate. Multi-intent questions are split,
-retrieved, and closed independently so one unsupported part does not erase supported siblings.
-Knowledge coverage remains explicit; missing JLPT/J.TEST and score-to-final-points authority is
-tracked separately and is never supplied by a model.
+M10-01 connected explicit Responses question understanding, M10-02–06 added and stabilized the
+first-party DeepSeek provider, and M10-07 is consolidating the product path. A cache miss uses at
+most one analysis call and one final generation call after all local retrieval and reviewed-rule
+work. Validated natural claim text is retained behind typed server-owned propositions; an exact,
+bounded process-local cache makes an identical valid repeat use zero provider calls. Knowledge
+coverage remains explicit: missing JLPT/J.TEST and score-to-final-points authority is never supplied
+by a model or turned into a negative rule.
 
 ## Completed M9 Summary
 

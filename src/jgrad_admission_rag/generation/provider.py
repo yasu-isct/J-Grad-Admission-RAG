@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from collections.abc import Callable
 from typing import Protocol, runtime_checkable
 
 from .contracts import (
@@ -64,7 +65,15 @@ class GenerationProvider(Protocol):
     def generate(self, request: GenerationRequest) -> GenerationDraft: ...
 
 
-def generate_checked(provider: GenerationProvider, request: GenerationRequest) -> GenerationResult:
+ClaimTextValidator = Callable[[GeneratedClaim, GenerationRequest], bool]
+
+
+def generate_checked(
+    provider: GenerationProvider,
+    request: GenerationRequest,
+    *,
+    claim_text_validator: ClaimTextValidator | None = None,
+) -> GenerationResult:
     """Validate both sides of a provider call and reject all unbound references."""
 
     hydrated_output: GenerationDraft | None
@@ -163,38 +172,47 @@ def generate_checked(provider: GenerationProvider, request: GenerationRequest) -
         raise GenerationError(GenerationErrorCode.UNKNOWN_REFERENCE)
 
     try:
-        hydrated_claims = tuple(
-            GeneratedClaim.model_validate(
-                {
-                    **claim.model_dump(mode="json"),
-                    "text": _render_claim_text(
-                        claim,
-                        evidence_by_id=evidence_by_id,
-                        findings_by_id=findings_by_id,
-                        applicant_facts_by_path=applicant_facts_by_path,
-                    ),
-                }
+        if claim_text_validator is not None:
+            if any(not claim_text_validator(claim, checked_request) for claim in output.claims):
+                raise ValueError
+            hydrated_output = output
+        else:
+            hydrated_claims = tuple(
+                GeneratedClaim.model_validate(
+                    {
+                        **claim.model_dump(mode="json"),
+                        "text": _render_claim_text(
+                            claim,
+                            evidence_by_id=evidence_by_id,
+                            findings_by_id=findings_by_id,
+                            applicant_facts_by_path=applicant_facts_by_path,
+                        ),
+                    }
+                )
+                for claim in output.claims
             )
-            for claim in output.claims
-        )
-        hydrated_output = GenerationDraft(
-            answer=assemble_generation_answer(hydrated_claims),
-            claims=hydrated_claims,
-            missing_information=output.missing_information,
-            limitations=output.limitations,
-            needs_review=output.needs_review,
-            refused=False,
-            refusal_reason=None,
-        )
+            hydrated_output = GenerationDraft(
+                answer=assemble_generation_answer(hydrated_claims),
+                claims=hydrated_claims,
+                missing_information=output.missing_information,
+                limitations=output.limitations,
+                needs_review=output.needs_review,
+                refused=False,
+                refusal_reason=None,
+            )
     except Exception:
-        # Hydrated text contains trusted evidence and applicant values. Keep validation
-        # representations, including oversized aggregate inputs, behind the safe boundary.
+        # Trusted evidence, applicant values, and validator internals stay behind the safe error.
         hydrated_output = None
 
     # Raise after leaving the handler so the sensitive validation exception is not retained in
     # either __context__ or __cause__ on the public error object.
     if hydrated_output is None:
-        raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
+        code = (
+            GenerationErrorCode.UNSUPPORTED_CLAIM
+            if claim_text_validator is not None
+            else GenerationErrorCode.MALFORMED_OUTPUT
+        )
+        raise GenerationError(code) from None
 
     return GenerationResult(
         schema_version=GENERATION_SCHEMA_VERSION,

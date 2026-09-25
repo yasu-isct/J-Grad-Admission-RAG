@@ -57,8 +57,12 @@ interpretation, score conversion/allocation, JLPT, and J.TEST questions. Prompt-
 and admission guarantees are recorded as unsupported parts and are never followed.
 
 The fixed M9 intent lexicon remains a reviewed downstream adapter. It is no longer the product
-entry gate: analysis succeeds first, then every substantive subquestion independently attempts
-bounded target-scoped retrieval and reviewed-report closure.
+entry gate: analysis succeeds first, then every substantive subquestion receives bounded,
+target-scoped local retrieval. Those results are fairly deduplicated into one request-local bundle
+before reviewed-report reasoning and final generation. Scope preference affects ranking only, so a
+separate hard boundary removes unknown and nonmatching college/department/program records before
+the model call; the consolidated generator checks the same scope metadata again before invoking its
+provider.
 
 The user-facing subquestion and generation instruction follow the detected user language, while
 the separate retrieval query remains concise Japanese for the reviewed Japanese source. The
@@ -67,9 +71,11 @@ retrieval query is never reused as a reason to switch a Chinese user's answer in
 ## Partial-answer and trust policy
 
 `POST /v1/natural-language-answers` reuses the selected document, college, department, intake,
-schedule, and in-memory applicant form. It performs at most eight subquestion runs. Each run uses
-the existing top-12/candidate-48 hybrid retrieval, scope preferences, EvidencePack construction,
-reviewed report, opaque evidence IDs, checked provider call, and server citation hydration.
+schedule, and in-memory applicant form. A cache miss makes one bounded analysis call, performs all
+top-12/candidate-48 hybrid searches and reviewed reasoning locally, and makes at most one final
+generation call. The consolidated boundary permits at most 16 evidence records and 60,000
+evidence/scope characters. It assigns new request-local opaque evidence and proposition IDs; the
+model never receives Fact IDs, pages, hashes, paths, names, contacts, or the complete PDF.
 
 An unsupported or insufficiently evidenced subquestion becomes `no_clear_evidence` with the fixed
 message `当前审核资料中未找到明确依据。`; a clarification-dependent one becomes
@@ -78,18 +84,47 @@ outputs, citation failures, and unexpected server conflicts still fail closed ra
 misrepresented as missing knowledge.
 
 Alias interpretation is labelled separately and explicitly says that normalization is not an
-official acceptance conclusion. Every affirmative admissions fact remains inside a nested M9
-`GroundedAnswer`, so it carries server-hydrated document, Fact, page, KB-hash, and PDF-hash
-provenance. The model never sees those authoritative identifiers or local paths.
+official acceptance conclusion. Affirmative claims must match a server-owned typed proposition.
+The first controlled semantic predicate permits a natural statement of an exact department English
+maximum only when its subject and sole numeric value match reviewed state and its complete evidence
+set. Conversion relations, admission outcomes, negative requirements, named-exam inferences, and
+extra numbers are rejected. Active, confirmed reviewed findings for dates, eligibility, fees,
+contacts, and other supported categories may use exact-evidence propositions only when their
+complete citation set is present in this request's bounded retrieval; the official evidence text
+must remain verbatim. Pending, not-applicable, cross-scope, and partially retrieved findings do not
+become affirmative claims. After
+validation, server-owned document, Fact and page provenance is restored for the public evidence
+drawer; hashes and internal finding/rule identifiers are not part of the public natural answer.
+
+## Exact validated response cache
+
+Before online analysis, the server applies its deterministic normalizer and computes a SHA-256 key
+over canonical JSON. The key covers the exact request, normalized question and language, selected
+target and applicant input, document/KB/PDF, reviewed-plan and page-scope state, manifest/policy and embedding
+identity, analysis/generation schema and prompt versions, claim-validator/pipeline versions, and
+generation provider/model/revision. The reviewed-evidence projector version is explicit. Only the
+digest is held as the cache key.
+
+The cache is process-local, concurrency-safe, single-flight, TTL-bounded, capacity-bounded, and
+deterministically LRU-evicted. Only a response that completed all local validation is inserted.
+Timeout, refusal, malformed output, invalid citation, unsupported claim, and other failures are not
+cached. An exact hit returns the same answer and citations without either online call. The response
+and page label the source as `live`, `cache_hit`, or `offline`, expose bounded timing and a short KB
+identifier, and state that restart clears the cache. It is not a semantic or cross-user cache.
+The cached value itself is limited to validated public claims, safe citation keys, and disposition
+mappings. It excludes the raw/normalized question, Applicant Profile, retrieval queries, official
+evidence text, and raw provider response. On a hit the evidence drawer is reconstructed from the
+current authoritative reviewed state. A response whose online analysis differs from the local
+key-time analysis is deliberately not inserted.
 
 ## Browser boundary
 
-The browser fetches the actual generation status, displays `在线大模型回答`, `离线规则结果`, or
-`在线生成服务未配置`, and never derives the label from marketing text. The main answer presents a
-direct status summary and ordered subquestions. Missing evidence and missing context are prominent.
-Provider/model, reviewed scope, missing fields, and limitations are placed in collapsed
-`技术详情 / 审计信息`. Factual strings still use `textContent`, and citations continue to open the
-existing verified evidence drawer and local PDF page controls.
+The browser fetches the actual generation status and never derives the label from marketing text.
+It renders one consolidated natural answer, then the ordered subquestion dispositions. It shows
+`DeepSeek 实时生成`, `已验证缓存回答`, or the explicit offline label together with provider/model,
+timing, and a short KB version. Missing evidence and missing context are prominent. Reviewed scope,
+missing fields, and limitations remain in collapsed `技术详情 / 审计信息`. Factual strings still use
+`textContent`, and citations continue to open the verified evidence drawer and PDF page controls.
 
 Question, profile, analysis, and answers remain request-local and browser-memory-only. The service
 does not log or persist API responses, keys, questions, profiles, or generated output.
@@ -98,9 +133,10 @@ does not log or persist API responses, keys, questions, profiles, or generated o
 
 CI and ordinary local verification use fake/offline providers only. A real request is a separate
 operator action that requires a locally set key, an explicit model, synthetic applicant data, and
-advance authorization of an exact maximum call count. One multi-intent request can consume one
-analysis call plus one generation call for each evidence-supported subquestion, so authorization
-must cover that computed upper bound. No real request was made for M10-01 implementation.
+advance authorization of an exact maximum call count. One new multi-intent request can consume at
+most one analysis plus one consolidated generation call; an exact validated repeat consumes zero.
+Authorization must still count every SDK attempt before transmission. M10-07 development does not
+inherit any earlier live-call authorization.
 
 The planned first manual acceptance model is the explicit snapshot
 `gpt-5.4-mini-2026-03-17`; it is operator configuration, not a code default. The official model

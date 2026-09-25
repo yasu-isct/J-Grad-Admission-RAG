@@ -20,6 +20,18 @@ from .contracts import (
     assemble_generation_answer,
     canonical_generation_result_bytes,
 )
+from .consolidated_grounded_rag import (
+    CLAIM_SEMANTICS_VERSION,
+    CONSOLIDATED_PIPELINE_VERSION,
+    MAX_CONSOLIDATED_EVIDENCE_CHARACTERS,
+    MAX_CONSOLIDATED_EVIDENCE_RECORDS,
+    ClaimableProposition,
+    ConsolidatedEvidenceRecord,
+    ConsolidatedGroundedAnswer,
+    ConsolidatedGroundedClaim,
+    PropositionPredicate,
+    run_consolidated_grounded_rag,
+)
 from .deepseek_responses import (
     DEEPSEEK_BASE_URL,
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
@@ -74,7 +86,13 @@ __all__ = [
     "GENERATION_SCHEMA_VERSION",
     "GROUNDED_RAG_SCHEMA_VERSION",
     "ApplicantFact",
+    "CLAIM_SEMANTICS_VERSION",
     "ClaimKind",
+    "ClaimableProposition",
+    "CONSOLIDATED_PIPELINE_VERSION",
+    "ConsolidatedEvidenceRecord",
+    "ConsolidatedGroundedAnswer",
+    "ConsolidatedGroundedClaim",
     "DEEPSEEK_BASE_URL",
     "DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS",
     "DEEPSEEK_DEFAULT_TIMEOUT_SECONDS",
@@ -115,6 +133,9 @@ __all__ = [
     "OpenAIResponsesGenerationProvider",
     "OpenAIResponsesQuestionUnderstandingProvider",
     "MentionedScore",
+    "MAX_CONSOLIDATED_EVIDENCE_CHARACTERS",
+    "MAX_CONSOLIDATED_EVIDENCE_RECORDS",
+    "PropositionPredicate",
     "QuestionAnalysis",
     "QuestionCorrection",
     "QuestionSubquestion",
@@ -127,4 +148,5 @@ __all__ = [
     "generate_checked",
     "project_deepseek_strict_schema",
     "run_grounded_rag",
+    "run_consolidated_grounded_rag",
 ]

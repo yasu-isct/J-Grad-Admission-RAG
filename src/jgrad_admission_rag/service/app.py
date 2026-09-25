@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, AsyncIterator
+from time import perf_counter
+from typing import Any, AsyncIterator, Callable
 from uuid import UUID
 from uuid import uuid4
 
@@ -23,12 +26,31 @@ from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..generation import (
+    CLAIM_SEMANTICS_VERSION,
+    CONSOLIDATED_PIPELINE_VERSION,
+    GENERATION_PROMPT_VERSION,
+    GENERATION_SCHEMA_VERSION,
+    MAX_CONSOLIDATED_EVIDENCE_CHARACTERS,
+    MAX_CONSOLIDATED_EVIDENCE_RECORDS,
+    ClaimKind,
+    ClaimableProposition,
+    ConsolidatedEvidenceRecord,
+    EvidenceRole as GenerationEvidenceRole,
+    GenerationEvidence,
     GenerationError,
     GenerationErrorCode,
+    GenerationTarget,
     GroundedRagError,
     GroundedRagErrorCode,
     GroundedRagTarget,
+    PropositionPredicate,
+    run_consolidated_grounded_rag,
     run_grounded_rag,
+)
+from ..generation.question_analysis import (
+    QUESTION_ANALYSIS_PROMPT_VERSION,
+    QUESTION_ANALYSIS_SCHEMA_VERSION,
+    DeterministicQuestionUnderstandingProvider,
 )
 from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
@@ -56,6 +78,7 @@ from ..reasoning.applicant_report import (
     render_applicant_report_markdown,
 )
 from ..reasoning.applicability import ApplicabilityStatus
+from ..reasoning.language_score_allocation import LanguageScoreAllocationStatus
 from ..reasoning.cited_answer import (
     CitedAnswer,
     ProcessNoticeKind,
@@ -94,6 +117,7 @@ from ..schemas.document_identity import (
 from ..schemas.document_kb import load_document_kb
 from ..schemas.page_scope_manifest import (
     PageScopeManifest,
+    canonical_page_scope_manifest_bytes,
     load_page_scope_manifest,
     load_page_scope_manifest_bytes,
 )
@@ -139,7 +163,12 @@ from .grounded_answers import (
     GroundedAnswerRequest,
     GroundedAnswerResponse,
     NaturalLanguageAnswerResponse,
+    NaturalLanguageDeliveryMetadata,
     NaturalLanguageSubanswer,
+    PublicGroundedAnswer,
+    PublicGroundedCitation,
+    PublicGroundedClaim,
+    PublicGroundedResult,
 )
 from .date_presentation import (
     ReviewedDatePresentation,
@@ -163,9 +192,38 @@ from .runtime import (
     ServiceState,
     VerifiedSourceDocument,
 )
+from .response_cache import ExactResponseCache
 
 GROUNDED_RETRIEVAL_TOP_K = 12
 GROUNDED_RETRIEVAL_CANDIDATE_K = 48
+REVIEWED_EVIDENCE_PROJECTION_VERSION = "reviewed-evidence-projection-v1"
+
+
+@dataclass(frozen=True, slots=True)
+class _CachedSubanswerState:
+    subquestion_id: str
+    status: str
+    message: str
+    claim_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class _CachedPublicClaim:
+    claim_id: str
+    kind: ClaimKind
+    text: str | None
+    exact_text_citation_key: tuple[str, str, tuple[int, ...]] | None
+    citations: tuple[PublicGroundedCitation, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class _CachedNaturalAnswerCore:
+    claims: tuple[_CachedPublicClaim, ...]
+    cited_fact_ids: tuple[str, ...]
+    needs_review: bool
+    missing_information: tuple[str, ...]
+    limitations: tuple[str, ...]
+    subanswers: tuple[_CachedSubanswerState, ...]
 
 
 BUILD_OPENAPI_EXTRA = {
@@ -214,7 +272,12 @@ def create_app(
 
     selected_settings = settings or ServiceSettings()
     selected_dependencies = dependencies or ServiceDependencies()
-    state = ServiceState()
+    state = ServiceState(
+        natural_answer_cache=ExactResponseCache(
+            capacity=selected_settings.natural_answer_cache_capacity,
+            ttl_seconds=selected_settings.natural_answer_cache_ttl_seconds,
+        )
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -323,6 +386,7 @@ def create_app(
             state.query_intent_catalog = None
             state.date_presentations = ()
             state.source_document = None
+            state.natural_answer_cache = None
 
     app = FastAPI(
         title="J-Grad Admission RAG API",
@@ -1477,7 +1541,7 @@ def _generation_request_timeout_seconds(settings: ServiceSettings) -> int:
         provider_timeout = (
             90.0 if settings.generation_provider_name == "deepseek-responses" else 30.0
         )
-    maximum_provider_calls = 1 + 8
+    maximum_provider_calls = 2
     sdk_attempts = settings.generation_max_retries + 1
     transport_grace_seconds = 15
     return math.ceil(provider_timeout * sdk_attempts * maximum_provider_calls) + (
@@ -1486,6 +1550,299 @@ def _generation_request_timeout_seconds(settings: ServiceSettings) -> int:
 
 
 def _build_natural_language_answer_response(
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> NaturalLanguageAnswerResponse:
+    cache = state.natural_answer_cache
+    if cache is None:
+        raise ApiProblem(
+            503, "grounded_service_unavailable", "grounded answer service is unavailable"
+        )
+    try:
+        local_analysis = DeterministicQuestionUnderstandingProvider().analyze(request.question)
+        key = _natural_answer_cache_key(request, settings, state, local_analysis)
+    except GenerationError:
+        raise ApiProblem(422, "invalid_request", "question analysis failed") from None
+    except Exception:
+        raise ApiProblem(
+            503, "grounded_service_unavailable", "grounded service is unavailable"
+        ) from None
+
+    response, hit = cache.get_or_compute(
+        key,
+        lambda: _build_uncached_natural_language_answer_response(request, settings, state),
+        project=_project_natural_answer_for_cache,
+        should_cache=lambda item: item.analysis == local_analysis,
+    )
+    if not hit:
+        return response
+    if not isinstance(response, _CachedNaturalAnswerCore):
+        raise ApiProblem(500, "grounded_cache_failed", "grounded answer cache is invalid")
+    return _rebuild_cached_natural_answer_response(
+        request,
+        settings,
+        state,
+        local_analysis,
+        response,
+    )
+
+
+def _project_natural_answer_for_cache(
+    response: NaturalLanguageAnswerResponse,
+) -> _CachedNaturalAnswerCore:
+    answer = response.result.answer if response.result is not None else None
+    evidence_text_by_key = (
+        {
+            (item.document_id, item.fact_id, item.pages): item.official_text
+            for item in response.result.evidence
+        }
+        if response.result is not None
+        else {}
+    )
+    cited_fact_ids = tuple(
+        sorted({citation.fact_id for claim in answer.claims for citation in claim.citations})
+        if answer is not None
+        else ()
+    )
+    return _CachedNaturalAnswerCore(
+        claims=tuple(
+            _project_public_claim_for_cache(claim, evidence_text_by_key)
+            for claim in (answer.claims if answer is not None else ())
+        ),
+        cited_fact_ids=cited_fact_ids,
+        needs_review=answer.needs_review if answer is not None else False,
+        missing_information=answer.missing_information if answer is not None else (),
+        limitations=answer.limitations if answer is not None else (),
+        subanswers=tuple(
+            _CachedSubanswerState(
+                subquestion_id=item.subquestion.subquestion_id,
+                status=item.status,
+                message=item.message,
+                claim_ids=item.claim_ids,
+            )
+            for item in response.subanswers
+        ),
+    )
+
+
+def _project_public_claim_for_cache(
+    claim: PublicGroundedClaim,
+    evidence_text_by_key: dict[tuple[str, str, tuple[int, ...]], str],
+) -> _CachedPublicClaim:
+    exact_key = next(
+        (
+            (citation.document_id, citation.fact_id, citation.source_pages)
+            for citation in claim.citations
+            if evidence_text_by_key.get(
+                (citation.document_id, citation.fact_id, citation.source_pages)
+            )
+            == claim.text
+        ),
+        None,
+    )
+    return _CachedPublicClaim(
+        claim_id=claim.claim_id,
+        kind=claim.kind,
+        text=None if exact_key is not None else claim.text,
+        exact_text_citation_key=exact_key,
+        citations=claim.citations,
+    )
+
+
+def _rebuild_cached_natural_answer_response(
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+    analysis: Any,
+    cached: _CachedNaturalAnswerCore,
+) -> NaturalLanguageAnswerResponse:
+    plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
+    cached_by_id = {item.subquestion_id: item for item in cached.subanswers}
+    if set(cached_by_id) != {item.subquestion_id for item in analysis.subquestions}:
+        raise ApiProblem(409, "grounded_cache_mismatch", "grounded answer cache is stale")
+    subanswers = tuple(
+        NaturalLanguageSubanswer(
+            subquestion=item,
+            status=cached_by_id[item.subquestion_id].status,
+            message=cached_by_id[item.subquestion_id].message,
+            claim_ids=cached_by_id[item.subquestion_id].claim_ids,
+        )
+        for item in analysis.subquestions
+    )
+    target_summary = build_demo_target_summary(state.report_plans, request.target)
+    result = None
+    if cached.claims:
+        evidence = build_demo_evidence_inventory(
+            plan,
+            reviewed_evidence,
+            request.target,
+            cached.cited_fact_ids,
+            source_pdf_document_id=(
+                state.source_document.document_id if state.source_document is not None else None
+            ),
+        )
+        evidence_text_by_key = {
+            (item.document_id, item.fact_id, item.pages): item.official_text for item in evidence
+        }
+        claims = tuple(
+            PublicGroundedClaim(
+                claim_id=item.claim_id,
+                kind=item.kind,
+                text=_restore_cached_claim_text(item, evidence_text_by_key),
+                citations=item.citations,
+            )
+            for item in cached.claims
+        )
+        answer = PublicGroundedAnswer(
+            answer="\n".join(item.text for item in claims),
+            claims=claims,
+            needs_review=cached.needs_review,
+            missing_information=cached.missing_information,
+            limitations=cached.limitations,
+        )
+        result = PublicGroundedResult(
+            target=target_summary,
+            reviewed_scope_statement=plan.reviewed_coverage_statement,
+            official_source_url=plan.document_identity.official_source_url,
+            local_pdf_url=(
+                f"/documents/{request.target.document_id}/source.pdf"
+                if state.source_document is not None
+                and state.source_document.document_id == request.target.document_id
+                else None
+            ),
+            answer=answer,
+            evidence=evidence,
+        )
+    answered = sum(item.status in {"answered", "interpreted"} for item in subanswers)
+    unavailable = len(subanswers) - answered
+    summary = (
+        f"{len(subanswers)}件に分解し、{answered}件に根拠を確認しました。{unavailable}件は確認が必要です。"
+        if analysis.detected_language.value == "ja"
+        else f"已拆分为 {len(subanswers)} 个子问题：{answered} 个找到已校验依据，{unavailable} 个仍需补充或未找到明确依据。"
+    )
+    return NaturalLanguageAnswerResponse(
+        mode=_generation_status_response(settings, state),
+        analysis=analysis,
+        summary=summary,
+        subanswers=subanswers,
+        result=result,
+        delivery=NaturalLanguageDeliveryMetadata(
+            source="cache_hit",
+            generation_ms=None,
+            validation_ms=0,
+            knowledge_base_version=f"kb-{plan.source_kb_sha256[:12]}",
+            cache_ttl_seconds=settings.natural_answer_cache_ttl_seconds,
+        ),
+        missing_context=analysis.missing_context,
+        unsupported_parts=analysis.unsupported_parts,
+    )
+
+
+def _restore_cached_claim_text(
+    claim: _CachedPublicClaim,
+    evidence_text_by_key: dict[tuple[str, str, tuple[int, ...]], str],
+) -> str:
+    if claim.text is not None:
+        return claim.text
+    if (
+        claim.exact_text_citation_key is None
+        or claim.exact_text_citation_key not in evidence_text_by_key
+    ):
+        raise ApiProblem(409, "grounded_cache_mismatch", "grounded answer cache is stale")
+    return evidence_text_by_key[claim.exact_text_citation_key]
+
+
+def _natural_answer_cache_key(
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+    local_analysis: Any,
+) -> str:
+    plans = tuple(
+        plan
+        for plan in state.report_plans
+        if plan.document_identity.document_id == request.target.document_id
+    )
+    plan_payload = plans[0].model_dump(mode="json") if len(plans) == 1 else None
+    generation_identity = getattr(state.generation_provider, "identity", None)
+    generation_payload = (
+        generation_identity.model_dump(mode="json")
+        if hasattr(generation_identity, "model_dump")
+        else {
+            "provider": settings.generation_provider_name,
+            "model": settings.generation_model_name,
+        }
+    )
+    analyzer = state.question_understanding_provider
+    embedding_identity = getattr(state.provider, "identity", None)
+    embedding_payload = (
+        {
+            "provider": getattr(embedding_identity, "provider", None),
+            "model": getattr(embedding_identity, "model", None),
+            "revision": getattr(embedding_identity, "revision", None),
+            "dimension": getattr(embedding_identity, "dimension", None),
+        }
+        if embedding_identity is not None
+        else {"provider_class": type(state.provider).__name__}
+    )
+    matching_page_scopes = tuple(
+        item
+        for item in state.page_scope_manifests
+        if isinstance(item, PageScopeManifest)
+        and item.document_identity.document_id == request.target.document_id
+    )
+    page_scope_sha256 = (
+        hashlib.sha256(canonical_page_scope_manifest_bytes(matching_page_scopes[0])).hexdigest()
+        if len(matching_page_scopes) == 1
+        else None
+    )
+    payload = {
+        "cache_key_version": "natural-answer-exact-v1",
+        "request": request.model_dump(mode="json"),
+        "normalized_question": local_analysis.normalized_question,
+        "detected_language": local_analysis.detected_language.value,
+        "plan": plan_payload,
+        "query_catalog": (
+            state.query_intent_catalog.model_dump(mode="json")
+            if hasattr(state.query_intent_catalog, "model_dump")
+            else None
+        ),
+        "question_analysis": {
+            "schema": QUESTION_ANALYSIS_SCHEMA_VERSION,
+            "prompt": QUESTION_ANALYSIS_PROMPT_VERSION,
+            "provider": getattr(analyzer, "provider_name", type(analyzer).__name__),
+            "model": getattr(analyzer, "model_name", None),
+        },
+        "generation": {
+            "schema": GENERATION_SCHEMA_VERSION,
+            "prompt": GENERATION_PROMPT_VERSION,
+            "pipeline": CONSOLIDATED_PIPELINE_VERSION,
+            "claim_semantics": CLAIM_SEMANTICS_VERSION,
+            "provider_identity": generation_payload,
+            "reviewed_evidence_projection": REVIEWED_EVIDENCE_PROJECTION_VERSION,
+        },
+        "retrieval": {
+            "mode": "hybrid-bm25-vector-rrf-v1",
+            "top_k": GROUNDED_RETRIEVAL_TOP_K,
+            "candidate_k": GROUNDED_RETRIEVAL_CANDIDATE_K,
+            "embedding_identity": embedding_payload,
+            "manifest_sha256": _configured_file_sha256(settings.manifest_path),
+            "policy_sha256": _configured_file_sha256(settings.policy_path),
+            "page_scope_sha256": page_scope_sha256,
+        },
+    }
+    canonical = json.dumps(
+        payload, ensure_ascii=False, allow_nan=False, separators=(",", ":"), sort_keys=True
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
+
+def _configured_file_sha256(path: Path | None) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path is not None else None
+
+
+def _build_uncached_natural_language_answer_response(
     request: GroundedAnswerRequest,
     settings: ServiceSettings,
     state: ServiceState,
@@ -1518,93 +1875,76 @@ def _build_natural_language_answer_response(
     except Exception:
         raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
 
+    language = analysis.detected_language.value
+    packs = _retrieve_natural_answer_evidence(analysis, request, settings, state)
+    if packs:
+        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
+        result, claims_by_obligation, generation_ms, validation_ms = _consolidate_natural_answer(
+            request,
+            analysis,
+            plan,
+            reviewed_evidence,
+            packs,
+            state,
+        )
+    else:
+        matching_plans = tuple(
+            item
+            for item in state.report_plans
+            if item.document_identity.document_id == request.target.document_id
+        )
+        if len(matching_plans) != 1:
+            raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
+        plan = matching_plans[0]
+        result, claims_by_obligation, generation_ms, validation_ms = None, {}, 0, 0
     subanswers: list[NaturalLanguageSubanswer] = []
     for subquestion in analysis.subquestions:
-        language = analysis.detected_language.value
+        claim_ids = claims_by_obligation.get(subquestion.subquestion_id, ())
         if subquestion.requested_intent == "exam_identity":
-            subanswers.append(
-                NaturalLanguageSubanswer(
-                    subquestion=subquestion,
-                    status="interpreted",
-                    message=_localized_message(
-                        language,
-                        "已将这一简称规范化为 TOEIC L&R；这只是问题理解，不是官方受理结论。",
-                        "この略称を TOEIC L&R として正規化しました。これは質問理解であり、公式の受理可否ではありません。",
-                    ),
-                )
+            status = "interpreted"
+            message = _localized_message(
+                language,
+                "已将“托业”规范化为 TOEIC L&R；这只是问题理解，不代表官方受理结论。",
+                "「托业／トーイック」を TOEIC L&R として正規化しました。これは質問理解であり、公式の受理可否ではありません。",
             )
-            continue
-        if subquestion.requested_intent == "language_test_acceptance" and re.search(
+        elif subquestion.requested_intent == "language_score_conversion" and claim_ids:
+            status = "answered"
+            message = _localized_message(
+                language,
+                "审核资料确认了英语部分的满分/上限，但没有公开 TOEIC 分数到最终英语配点的换算关系，因此不能仅凭现有资料换算该成绩。",
+                "確認済み資料には英語部分の満点・上限がありますが、TOEIC 得点から最終配点への換算関係は公開されていないため、現資料だけでは換算できません。",
+            )
+        elif subquestion.requested_intent == "language_test_acceptance" and re.search(
             r"\bJLPT\b|\bJ\.TEST\b", subquestion.retrieval_query, re.IGNORECASE
         ):
-            subanswers.append(
-                NaturalLanguageSubanswer(
-                    subquestion=subquestion,
-                    status="no_clear_evidence",
-                    message=_localized_message(
-                        language,
-                        "当前审核资料中未找到明确依据。",
-                        "現在の確認済み資料では明確な根拠を確認できませんでした。",
-                    ),
-                )
+            status = "no_clear_evidence"
+            message = _localized_message(
+                language,
+                "当前审核资料中未找到 JLPT/J.TEST 要求或替代规则；这不等于“不需要”或“不接受”。",
+                "現在の確認済み資料では JLPT/J.TEST の要件または代替規則を確認できませんでした。「不要」または「不受理」という意味ではありません。",
             )
-            continue
-        child_request = GroundedAnswerRequest(
-            question=subquestion.retrieval_query,
-            target=request.target,
-            applicant=request.applicant,
-        )
-        try:
-            result = _build_grounded_answer_response(
-                child_request,
-                settings,
-                state,
-                generation_question=_localized_generation_question(
-                    subquestion.question, analysis.detected_language.value
-                ),
+        elif claim_ids:
+            status = "answered"
+            message = _localized_message(
+                language,
+                "已找到并通过服务器引用与内容校验的官方依据。",
+                "サーバー側の引用・内容検証を通過した公式根拠を確認しました。",
             )
-        except ApiProblem as error:
-            if error.envelope.code in {
-                "insufficient_evidence",
-                "unsupported_question",
-            }:
-                status = (
-                    "needs_clarification"
-                    if subquestion.needs_clarification
-                    else "no_clear_evidence"
-                )
-                message = (
-                    _localized_message(
-                        language,
-                        "需要补充信息后才能在当前审核范围内判断。",
-                        "現在の確認範囲で判断するには追加情報が必要です。",
-                    )
-                    if status == "needs_clarification"
-                    else _localized_message(
-                        language,
-                        "当前审核资料中未找到明确依据。",
-                        "現在の確認済み資料では明確な根拠を確認できませんでした。",
-                    )
-                )
-                subanswers.append(
-                    NaturalLanguageSubanswer(
-                        subquestion=subquestion,
-                        status=status,
-                        message=message,
-                    )
-                )
-                continue
-            raise
+        else:
+            status = (
+                "needs_clarification" if subquestion.needs_clarification else "no_clear_evidence"
+            )
+            message = _localized_message(
+                language,
+                "当前审核资料中未找到足以确定回答的明确依据。",
+                "現在の確認済み資料では、確定的に回答できる明確な根拠を確認できませんでした。",
+            )
         subanswers.append(
             NaturalLanguageSubanswer(
                 subquestion=subquestion,
-                status="answered",
-                message=_localized_message(
-                    language,
-                    "已找到并通过服务器引用校验的官方依据。",
-                    "サーバー側の引用検証を通過した公式根拠を確認しました。",
-                ),
-                result=result,
+                status=status,
+                message=message,
+                claim_ids=claim_ids,
             )
         )
 
@@ -1619,9 +1959,535 @@ def _build_natural_language_answer_response(
         analysis=analysis,
         summary=summary,
         subanswers=tuple(subanswers),
+        result=result,
+        delivery=NaturalLanguageDeliveryMetadata(
+            source=(
+                "offline"
+                if settings.generation_provider_name == "reviewed-state-offline"
+                else "live"
+            ),
+            generation_ms=generation_ms,
+            validation_ms=validation_ms,
+            knowledge_base_version=f"kb-{plan.source_kb_sha256[:12]}",
+            cache_ttl_seconds=settings.natural_answer_cache_ttl_seconds,
+        ),
         missing_context=analysis.missing_context,
         unsupported_parts=analysis.unsupported_parts,
     )
+
+
+def _retrieve_natural_answer_evidence(
+    analysis: Any,
+    request: GroundedAnswerRequest,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> tuple[EvidencePack, ...]:
+    if (
+        settings.corpus_root is None
+        or settings.manifest_path is None
+        or settings.policy_path is None
+        or state.provider is None
+    ):
+        raise ApiProblem(503, "grounded_service_unavailable", "grounded service is unavailable")
+    queries = tuple(
+        item.retrieval_query
+        for item in analysis.subquestions
+        if item.requested_intent != "exam_identity"
+        and not (
+            item.requested_intent == "language_test_acceptance"
+            and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
+        )
+    )
+    if not queries:
+        return ()
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        policy = load_corpus_version_policy(settings.policy_path)
+        selection = select_corpus_documents(
+            manifest,
+            policy,
+            CorpusSelectionRequest(document_ids=(request.target.document_id,)),
+        )
+        context = prepare_corpus_search_context(settings.corpus_root, manifest, policy, selection)
+        if context.row_count < 1:
+            return ()
+        top_k, candidate_k = _bounded_grounded_retrieval_depth(context.row_count)
+        packs = []
+        for query in queries:
+            with state.provider_lock:
+                search_result = search_corpus(
+                    context,
+                    query,
+                    state.provider,
+                    top_k=top_k,
+                    candidate_k=candidate_k,
+                    metadata_filter=MetadataFilter(),
+                    scope_preference=ScopePreference(
+                        preferred_scope_targets=(request.target.department_id,),
+                        preferred_parent_colleges=(request.target.college_id,),
+                    ),
+                )
+            packs.append(build_corpus_evidence_pack(search_result))
+        return tuple(packs)
+    except CorpusSearchInputError:
+        raise ApiProblem(422, "invalid_request", "grounded question is invalid") from None
+    except CorpusSearchProviderError:
+        raise ApiProblem(503, "provider_unavailable", "query provider is unavailable") from None
+    except (
+        CorpusManifestError,
+        CorpusPolicyCompatibilityError,
+        CorpusSearchError,
+        CorpusSelectionAmbiguousError,
+        CorpusSelectionNoMatchError,
+        CorpusSelectionNotReadyError,
+        CorpusSelectionRequestError,
+        CorpusSelectionVersionMismatchError,
+        CorpusVersionSchemaError,
+    ):
+        raise ApiProblem(
+            503, "grounded_service_unavailable", "grounded service is unavailable"
+        ) from None
+
+
+def _consolidate_natural_answer(
+    request: GroundedAnswerRequest,
+    analysis: Any,
+    plan: ReviewedReportPlan,
+    reviewed_evidence: ReviewedReportEvidenceBundle,
+    packs: tuple[EvidencePack, ...],
+    state: ServiceState,
+) -> tuple[PublicGroundedResult | None, dict[str, tuple[str, ...]], int, int]:
+    if not packs or state.generation_provider is None or state.query_intent_catalog is None:
+        return None, {}, 0, 0
+    try:
+        reasoning_query = next(
+            (
+                item.retrieval_query
+                for item in analysis.subquestions
+                if item.requested_intent not in {"exam_identity", "language_test_acceptance"}
+            ),
+            next(
+                (
+                    item.retrieval_query
+                    for item in analysis.subquestions
+                    if item.requested_intent != "exam_identity"
+                ),
+                request.question,
+            ),
+        )
+        intent = parse_query_intent(reasoning_query, state.query_intent_catalog)
+        if {
+            DiagnosticCode.NO_RECOGNIZED_INTENT,
+            DiagnosticCode.AMBIGUOUS_ALIAS,
+        }.intersection(intent.diagnostics):
+            raise ValueError
+        profile = build_demo_applicant_profile(request.target, request.applicant)
+        report = build_applicant_report(
+            f"natural-{uuid4().hex}", profile, intent, plan, reviewed_evidence
+        )
+        target_summary = build_demo_target_summary(state.report_plans, request.target)
+    except ApplicantReportError as error:
+        if error.code is ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH:
+            raise ApiProblem(
+                409, "report_preparation_failed", "reviewed report preparation failed"
+            ) from None
+        if error.code in {
+            ApplicantReportFailure.INVALID_INPUT,
+            ApplicantReportFailure.UNSUPPORTED_INTENT,
+        }:
+            return None, {}, 0, 0
+        raise ApiProblem(
+            500, "grounded_preparation_failed", "grounded preparation failed"
+        ) from None
+    except (QueryIntentError, ValidationError, ValueError):
+        return None, {}, 0, 0
+
+    conversion_obligations = tuple(
+        item.subquestion_id
+        for item in analysis.subquestions
+        if item.requested_intent == "language_score_conversion"
+    )
+    allocation = report.language_score_allocation
+    mandatory_fact_id = (
+        allocation.evidence.fact_id
+        if conversion_obligations
+        and allocation is not None
+        and allocation.status is LanguageScoreAllocationStatus.CONFIRMED
+        and allocation.evidence is not None
+        else None
+    )
+    selected = _select_consolidated_evidence(packs, mandatory_fact_id, request.target)
+    if not selected:
+        return None, {}, 0, 0
+    source_kb_sha256 = plan.source_kb_sha256
+    source_pdf_sha256 = plan.document_identity.source_pdf_sha256
+    evidence = tuple(
+        ConsolidatedEvidenceRecord(
+            evidence=GenerationEvidence(
+                evidence_id=f"evidence:{index:04d}",
+                role=(
+                    GenerationEvidenceRole.PRIMARY
+                    if getattr(record, "role", "primary") == "primary"
+                    else GenerationEvidenceRole.REFERENCE
+                ),
+                text=record.text,
+                scope_label=" / ".join(record.section_path),
+            ),
+            document_id=record.document_id,
+            fact_id=record.fact_id,
+            source_pages=record.source_pages,
+            source_kb_sha256=source_kb_sha256,
+            source_pdf_sha256=source_pdf_sha256,
+            scope_type=record.scope_type,
+            scope_targets=record.scope_targets,
+            parent_college=record.parent_college,
+        )
+        for index, record in enumerate(selected, start=1)
+    )
+    evidence_id_by_fact = {item.fact_id: item.evidence.evidence_id for item in evidence}
+    propositions = []
+    if (
+        mandatory_fact_id is not None
+        and allocation is not None
+        and allocation.maximum_points is not None
+        and mandatory_fact_id in evidence_id_by_fact
+    ):
+        subject = (
+            _localized_department_name(request.target.department_id)
+            if analysis.detected_language.value in {"zh", "mixed"}
+            else request.target.department_id
+        )
+        propositions.append(
+            ClaimableProposition(
+                proposition_id="proposition:0001",
+                obligation_ids=tuple(sorted(conversion_obligations)),
+                predicate=PropositionPredicate.MAXIMUM_POINTS,
+                subject=subject,
+                numeric_value=allocation.maximum_points,
+                evidence_ids=(evidence_id_by_fact[mandatory_fact_id],),
+            )
+        )
+    projected_reviewed = (
+        _project_reviewed_answer_to_records(selected, report.cited_answer, intent)
+        if isinstance(getattr(report, "cited_answer", None), CitedAnswer)
+        else None
+    )
+    if projected_reviewed is not None:
+        propositions.extend(
+            _reviewed_exact_evidence_propositions(
+                projected_reviewed,
+                analysis,
+                selected,
+                evidence_id_by_fact,
+                start_index=len(propositions) + 1,
+                suppress_language=mandatory_fact_id is not None,
+            )
+        )
+    if not propositions:
+        return None, {}, 0, 0
+
+    target = GenerationTarget(
+        application_label=" / ".join(
+            (
+                target_summary.school_name,
+                target_summary.degree_name,
+                target_summary.intake_name,
+                target_summary.college_name,
+                target_summary.department_name,
+            )
+        ),
+        scope_targets=(request.target.department_id,),
+        parent_college=request.target.college_id,
+    )
+    timed_provider = _TimedGenerationProvider(state.generation_provider)
+    started = perf_counter()
+    try:
+        with state.generation_provider_lock:
+            answer = run_consolidated_grounded_rag(
+                timed_provider,
+                request_id=f"request:{uuid4().hex}",
+                question=_localized_consolidated_generation_question(
+                    request.question, analysis.detected_language.value
+                ),
+                target=target,
+                evidence=evidence,
+                propositions=tuple(propositions),
+            )
+    except GenerationError as error:
+        _raise_generation_problem(error.code)
+    except ValueError:
+        raise ApiProblem(409, "evidence_mismatch", "grounded evidence is inconsistent") from None
+    except Exception:
+        raise ApiProblem(500, "grounded_generation_failed", "grounded generation failed") from None
+    total_ms = max(0, round((perf_counter() - started) * 1000))
+    generation_ms = timed_provider.elapsed_ms
+    validation_ms = max(0, total_ms - generation_ms)
+
+    public_claims = tuple(
+        PublicGroundedClaim(
+            claim_id=claim.claim_id,
+            kind=claim.kind,
+            text=claim.text,
+            citations=tuple(
+                PublicGroundedCitation(
+                    document_id=citation.document_id,
+                    fact_id=citation.fact_id,
+                    source_pages=citation.source_pages,
+                    role=citation.role.value,
+                )
+                for citation in claim.citations
+            ),
+        )
+        for claim in answer.claims
+    )
+    cited_fact_ids = tuple(
+        citation.fact_id for claim in answer.claims for citation in claim.citations
+    )
+    evidence_inventory = build_demo_evidence_inventory(
+        plan,
+        reviewed_evidence,
+        request.target,
+        cited_fact_ids,
+        source_pdf_document_id=(
+            state.source_document.document_id if state.source_document is not None else None
+        ),
+    )
+    gaps = tuple(
+        item.subquestion_id
+        for item in analysis.subquestions
+        if item.requested_intent == "language_test_acceptance"
+        and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
+    )
+    result = PublicGroundedResult(
+        target=target_summary,
+        reviewed_scope_statement=plan.reviewed_coverage_statement,
+        official_source_url=plan.document_identity.official_source_url,
+        local_pdf_url=(
+            f"/documents/{request.target.document_id}/source.pdf"
+            if state.source_document is not None
+            and state.source_document.document_id == request.target.document_id
+            else None
+        ),
+        answer=PublicGroundedAnswer(
+            answer="\n".join(item.text for item in public_claims),
+            claims=public_claims,
+            needs_review=bool(gaps),
+            limitations=("部分子问题在当前审核资料中没有明确依据。",) if gaps else (),
+        ),
+        evidence=evidence_inventory,
+    )
+    claims_by_obligation: dict[str, list[str]] = {}
+    for claim in answer.claims:
+        for obligation_id in claim.obligation_ids:
+            claims_by_obligation.setdefault(obligation_id, []).append(claim.claim_id)
+    return (
+        result,
+        {key: tuple(value) for key, value in claims_by_obligation.items()},
+        generation_ms,
+        validation_ms,
+    )
+
+
+def _obligations_for_reviewed_finding(
+    analysis: Any,
+    subject_key: str,
+) -> tuple[str, ...]:
+    intents_by_prefix = {
+        "application_dates.": {"application_dates"},
+        "contacts.": {"contacts_forms"},
+        "eligibility.": {"eligibility"},
+        "fees.": {"fees"},
+        "language.": {
+            "language_tests",
+            "language_score_conversion",
+            "language_test_acceptance",
+        },
+    }
+    accepted = next(
+        (values for prefix, values in intents_by_prefix.items() if subject_key.startswith(prefix)),
+        set(),
+    )
+    candidates = tuple(
+        item
+        for item in analysis.subquestions
+        if item.requested_intent in accepted or item.requested_intent == "general"
+    )
+    if not subject_key.startswith("language.") or len(candidates) < 2:
+        return tuple(sorted(item.subquestion_id for item in candidates))
+    exam_matcher = _reviewed_language_exam_matcher(subject_key)
+    if exam_matcher is None:
+        return ()
+    return tuple(
+        sorted(
+            item.subquestion_id
+            for item in candidates
+            if exam_matcher(item.retrieval_query.casefold())
+        )
+    )
+
+
+def _reviewed_language_exam_matcher(subject_key: str) -> Callable[[str], bool] | None:
+    normalized = subject_key.casefold().replace("-", "_").replace(".", "_")
+    if "home_edition" in normalized:
+        return lambda query: "toefl ibt home edition" in query
+    if "toeic_ip" in normalized:
+        return lambda query: "toeic ip" in query
+    if "toefl_itp" in normalized:
+        return lambda query: "toefl itp" in query
+    if "toefl_ibt" in normalized:
+        return lambda query: "toefl ibt" in query and "home edition" not in query
+    if "toeic_lr" in normalized:
+        return lambda query: "toeic l&r" in query
+    if "jlpt" in normalized:
+        return lambda query: "jlpt" in query
+    if "j_test" in normalized:
+        return lambda query: "j.test" in query or "j-test" in query
+    return None
+
+
+def _reviewed_exact_evidence_propositions(
+    reviewed_answer: CitedAnswer,
+    analysis: Any,
+    selected: tuple[Any, ...],
+    evidence_id_by_fact: dict[str, str],
+    *,
+    start_index: int,
+    suppress_language: bool,
+) -> tuple[ClaimableProposition, ...]:
+    selected_by_fact = {record.fact_id: record for record in selected}
+    propositions = []
+    for finding in reviewed_answer.rule_findings:
+        if (
+            finding.original_status is not ApplicabilityStatus.CONFIRMED
+            or finding.disposition
+            not in {ResolutionDisposition.ACTIVE, ResolutionDisposition.OVERRIDDEN}
+            or (suppress_language and finding.subject_key.startswith("language."))
+        ):
+            continue
+        obligation_ids = _obligations_for_reviewed_finding(analysis, finding.subject_key)
+        citation_facts = tuple(sorted({item.fact_id for item in finding.citations}))
+        if (
+            not obligation_ids
+            or any(fact_id not in evidence_id_by_fact for fact_id in citation_facts)
+            or any(fact_id not in selected_by_fact for fact_id in citation_facts)
+        ):
+            continue
+        propositions.append(
+            ClaimableProposition(
+                proposition_id=f"proposition:{start_index + len(propositions):04d}",
+                obligation_ids=obligation_ids,
+                predicate=PropositionPredicate.EXACT_EVIDENCE,
+                subject=finding.subject_key,
+                exact_evidence_text=selected_by_fact[citation_facts[0]].text,
+                evidence_ids=tuple(
+                    sorted(evidence_id_by_fact[fact_id] for fact_id in citation_facts)
+                ),
+            )
+        )
+    return tuple(propositions)
+
+
+def _select_consolidated_evidence(
+    packs: tuple[EvidencePack, ...],
+    mandatory_fact_id: str | None,
+    target: DemoTargetRequest,
+) -> tuple[Any, ...]:
+    queues = [list(pack.primary_evidence + pack.attached_reference_evidence) for pack in packs]
+    candidates: list[Any] = []
+    while any(queues):
+        for queue in queues:
+            if queue:
+                candidates.append(queue.pop(0))
+    if mandatory_fact_id is not None:
+        mandatory = next(
+            (item for item in candidates if item.fact_id == mandatory_fact_id),
+            None,
+        )
+        if mandatory is None:
+            return ()
+        candidates = [mandatory, *(item for item in candidates if item is not mandatory)]
+    selected = []
+    seen: set[tuple[str, str, tuple[int, ...]]] = set()
+    characters = 0
+    for record in candidates:
+        if not _retrieved_evidence_matches_target(record, target):
+            continue
+        key = (record.document_id, record.fact_id, record.source_pages)
+        if key in seen or len(record.text) > 20_000:
+            continue
+        added = len(record.text) + len(" / ".join(record.section_path))
+        if (
+            len(selected) >= MAX_CONSOLIDATED_EVIDENCE_RECORDS
+            or characters + added > MAX_CONSOLIDATED_EVIDENCE_CHARACTERS
+        ):
+            continue
+        selected.append(record)
+        seen.add(key)
+        characters += added
+    if mandatory_fact_id is not None and not any(
+        item.fact_id == mandatory_fact_id for item in selected
+    ):
+        return ()
+    return tuple(selected)
+
+
+def _retrieved_evidence_matches_target(record: Any, target: DemoTargetRequest) -> bool:
+    if record.scope_type == "unknown":
+        return False
+    if record.scope_type in {"global", "university"}:
+        return not record.scope_targets and record.parent_college is None
+    if record.scope_type == "college":
+        expected_colleges = set(record.scope_targets)
+        if record.parent_college is not None:
+            expected_colleges.add(record.parent_college)
+        return target.college_id in expected_colleges
+    if not record.scope_targets or target.department_id not in record.scope_targets:
+        return False
+    return record.parent_college is None or record.parent_college == target.college_id
+
+
+class _TimedGenerationProvider:
+    def __init__(self, provider: Any) -> None:
+        self._provider = provider
+        self.elapsed_ms = 0
+
+    @property
+    def identity(self) -> Any:
+        return self._provider.identity
+
+    def generate(self, request: Any) -> Any:
+        started = perf_counter()
+        try:
+            return self._provider.generate(request)
+        finally:
+            self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
+
+
+def _localized_department_name(value: str) -> str:
+    return "信息工学系" if value == "情報工学系" else value
+
+
+def _localized_consolidated_generation_question(question: str, language: str) -> str:
+    if language in {"zh", "mixed"}:
+        return f"请用自然中文综合回答，并严格保持每条已审核命题的含义：{question}"
+    return f"自然な日本語で総合的に回答し、各確認済み命題の意味を厳密に保ってください：{question}"
+
+
+def _raise_generation_problem(code: GenerationErrorCode) -> None:
+    mapping = {
+        GenerationErrorCode.INVALID_INPUT: (422, "invalid_request"),
+        GenerationErrorCode.MISSING_API_KEY: (503, "online_generation_not_configured"),
+        GenerationErrorCode.PROVIDER_UNAVAILABLE: (503, "generation_provider_unavailable"),
+        GenerationErrorCode.PROVIDER_TIMEOUT: (504, "generation_provider_timeout"),
+        GenerationErrorCode.PROVIDER_REFUSAL: (502, "generation_provider_refusal"),
+        GenerationErrorCode.INCOMPLETE_RESPONSE: (502, "incomplete_response"),
+        GenerationErrorCode.MALFORMED_OUTPUT: (502, "malformed_output"),
+        GenerationErrorCode.UNKNOWN_REFERENCE: (502, "invalid_citation"),
+        GenerationErrorCode.UNSUPPORTED_CLAIM: (502, "unsupported_claim"),
+        GenerationErrorCode.STATE_MISMATCH: (409, "rule_state_mismatch"),
+    }
+    status, public_code = mapping[code]
+    raise ApiProblem(status, public_code, "grounded answer could not be produced") from None
 
 
 def _localized_generation_question(question: str, language: str) -> str:
@@ -1871,6 +2737,15 @@ def _project_reviewed_answer_to_retrieval(
     is rewritten or discarded based on another retained finding.
     """
 
+    records = evidence_pack.primary_evidence + evidence_pack.attached_reference_evidence
+    return _project_reviewed_answer_to_records(records, cited_answer, intent)
+
+
+def _project_reviewed_answer_to_records(
+    records: tuple[Any, ...],
+    cited_answer: CitedAnswer,
+    intent: QueryIntent,
+) -> CitedAnswer | None:
     retrieved = {
         (
             record.document_id,
@@ -1878,7 +2753,7 @@ def _project_reviewed_answer_to_retrieval(
             record.source_pages,
             "primary" if record.role == "primary" else "reference",
         )
-        for record in evidence_pack.primary_evidence + evidence_pack.attached_reference_evidence
+        for record in records
     }
     if not retrieved or not cited_answer.interaction_analysis_complete:
         return None
