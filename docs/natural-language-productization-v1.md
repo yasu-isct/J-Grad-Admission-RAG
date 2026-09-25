@@ -29,6 +29,14 @@ normalized question, explicit corrections, requested intents, ordered subquestio
 queries, mentioned exam types/scores, target-scope mentions, missing context, and unsupported
 parts. Subquestion IDs are contiguous and all lists are bounded and canonical.
 
+Before an online call, the server builds a request-local semantic constraint from its deterministic
+normalizer and sends it beside the untrusted question. The Structured Output must preserve the
+detected language, corrections, exam types/scores, intents, subquestions, clarification state, and
+retrieval queries exactly. A schema-valid response that changes the exam, language, user-facing
+subquestion, or retrieval topic is rejected as malformed before retrieval. SDK and validation
+exceptions are converted only after leaving their handlers, so private provider payloads cannot
+remain reachable through an exposed exception context.
+
 The deterministic fallback recognizes Chinese, Japanese, and mixed forms of TOEIC L&R, TOEFL iBT
 and Home Edition, JLPT, and J.TEST. It decomposes the formal M10 acceptance question into alias
 interpretation, score conversion/allocation, JLPT, and J.TEST questions. Prompt-injection requests

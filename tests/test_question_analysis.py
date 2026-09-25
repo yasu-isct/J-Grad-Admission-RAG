@@ -93,6 +93,25 @@ def test_openai_analysis_requires_environment_key(monkeypatch) -> None:
     assert captured.value.code is GenerationErrorCode.MISSING_API_KEY
 
 
+def test_openai_analysis_drops_private_client_construction_context(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    secret = "PRIVATE-CLIENT-PAYLOAD"
+
+    def broken_factory(**_kwargs):
+        raise RuntimeError(secret)
+
+    with pytest.raises(GenerationError) as captured:
+        OpenAIResponsesQuestionUnderstandingProvider(
+            OpenAIResponsesConfig(model="test-model"),
+            _client_factory=broken_factory,
+        )
+
+    assert captured.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert secret not in str(captured.value)
+
+
 def test_generation_provider_configuration_is_explicit_and_has_no_base_url() -> None:
     with pytest.raises(ValueError, match="generation-model"):
         GenerationRuntimeConfiguration(provider="openai-responses")
@@ -144,6 +163,125 @@ def test_openai_analysis_uses_structured_outputs_store_false_and_bounds(monkeypa
         "max_retries": 1,
     }
     assert "base_url" not in captured["client"]
+    sent = captured["input"][1]["content"]
+    assert '"server_constraints"' in sent
+
+
+def test_openai_analysis_drops_private_validation_context(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    secret = "PRIVATE-APPLICANT-VALUE"
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(
+                status="completed",
+                output_parsed={"schema_version": "1.0", "private": secret},
+            )
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(FORMAL_QUESTION)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert secret not in str(captured.value)
+
+
+def test_openai_analysis_drops_private_sdk_exception_context(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    secret = "PRIVATE-SDK-PAYLOAD"
+
+    class Responses:
+        def parse(self, **_kwargs):
+            raise RuntimeError(secret)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(FORMAL_QUESTION)
+
+    assert captured.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+    assert secret not in str(captured.value)
+
+
+def test_online_analysis_cannot_redirect_exam_or_retrieval_semantics(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    question = "TOEFL Home Edition和托业都可以吗？"
+    anchor = DeterministicQuestionUnderstandingProvider().analyze(question)
+    first = anchor.subquestions[0].model_copy(
+        update={
+            "requested_intent": "exam_identity",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+        }
+    )
+    redirected = anchor.model_copy(
+        update={
+            "requested_intents": ("exam_identity", "language_test_acceptance"),
+            "subquestions": (first, *anchor.subquestions[1:]),
+            "mentioned_exam_types": (ExamType.TOEIC_LR,),
+        }
+    )
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=redirected)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(question)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+    assert captured.value.__cause__ is None
+    assert captured.value.__context__ is None
+
+
+def test_online_analysis_cannot_replace_user_facing_subquestion(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    anchor = DeterministicQuestionUnderstandingProvider().analyze(FORMAL_QUESTION)
+    replaced = anchor.model_copy(
+        update={
+            "subquestions": (
+                anchor.subquestions[0].model_copy(update={"question": "请回答完全无关的问题。"}),
+                *anchor.subquestions[1:],
+            )
+        }
+    )
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=replaced)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(FORMAL_QUESTION)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
 
 
 def test_paid_question_analysis_workflow_is_manual_exact_call_and_protected() -> None:
