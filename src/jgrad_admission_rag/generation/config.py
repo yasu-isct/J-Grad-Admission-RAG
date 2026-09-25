@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .deepseek_responses import (
+    DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
@@ -31,7 +32,7 @@ class GenerationRuntimeConfiguration:
     provider: str = "reviewed-state-offline"
     model: str | None = None
     timeout_seconds: float = 30.0
-    max_output_tokens: int = 2_000
+    max_output_tokens: int | None = None
     max_retries: int = 1
 
     def __post_init__(self) -> None:
@@ -43,6 +44,14 @@ class GenerationRuntimeConfiguration:
             raise ValueError("--generation-model is required for online generation")
         if self.provider == "reviewed-state-offline" and self.model is not None:
             raise ValueError("--generation-model is only valid for online generation")
+        if self.max_output_tokens is None:
+            object.__setattr__(
+                self,
+                "max_output_tokens",
+                DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS
+                if self.provider == "deepseek-responses"
+                else 2_000,
+            )
         common = {
             "timeout_seconds": self.timeout_seconds,
             "max_output_tokens": self.max_output_tokens,
@@ -70,7 +79,12 @@ def add_generation_arguments(parser: argparse.ArgumentParser) -> None:
         help="Explicit model name; required with either online generation provider.",
     )
     parser.add_argument("--generation-timeout-seconds", type=float, default=30.0)
-    parser.add_argument("--generation-max-output-tokens", type=int, default=2_000)
+    parser.add_argument(
+        "--generation-max-output-tokens",
+        type=int,
+        default=None,
+        help=("Bounded provider output budget; defaults to 8000 for DeepSeek and 2000 otherwise."),
+    )
     parser.add_argument("--generation-max-retries", type=int, default=1)
 
 
@@ -93,7 +107,7 @@ def create_generation_providers(
         deepseek_config = DeepSeekResponsesConfig(
             model=configuration.model or "",
             timeout_seconds=configuration.timeout_seconds,
-            max_output_tokens=configuration.max_output_tokens,
+            max_output_tokens=configuration.max_output_tokens or DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
             max_retries=configuration.max_retries,
         )
         return (
@@ -103,7 +117,7 @@ def create_generation_providers(
     config = OpenAIResponsesConfig(
         model=configuration.model or "",
         timeout_seconds=configuration.timeout_seconds,
-        max_output_tokens=configuration.max_output_tokens,
+        max_output_tokens=configuration.max_output_tokens or 2_000,
         max_retries=configuration.max_retries,
     )
     return (

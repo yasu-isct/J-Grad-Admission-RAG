@@ -82,7 +82,7 @@ def test_production_schemas_project_to_closed_deepseek_subset(model: object) -> 
     _walk_schema(first.schema)
 
 
-def test_optional_properties_become_required_and_nullable() -> None:
+def test_optional_properties_become_required_with_original_default_semantics() -> None:
     projected = project_deepseek_strict_schema(
         {
             "type": "object",
@@ -101,10 +101,8 @@ def test_optional_properties_become_required_and_nullable() -> None:
 
     assert projected["required"] == ["required_value", "defaulted_value", "nullable_value"]
     assert projected["properties"]["defaulted_value"] == {
-        "anyOf": [
-            {"type": "array", "items": {"type": "string"}},
-            {"type": "null"},
-        ]
+        "type": "array",
+        "items": {"type": "string"},
     }
     assert projected["properties"]["nullable_value"] == {
         "anyOf": [{"type": "integer"}, {"type": "null"}]
@@ -118,6 +116,25 @@ def test_empty_object_is_closed() -> None:
         "required": [],
         "additionalProperties": False,
     }
+
+
+def test_generation_defaults_are_non_nullable_but_optional_value_remains_nullable() -> None:
+    projected = project_deepseek_strict_schema(GenerationDraft.model_json_schema())
+    properties = projected["properties"]
+
+    assert properties["claims"]["type"] == "array"
+    assert "anyOf" not in properties["claims"]
+    assert properties["missing_information"]["type"] == "array"
+    assert "anyOf" not in properties["missing_information"]
+    claim_properties = properties["claims"]["items"]["properties"]
+    assert claim_properties["finding_ids"]["type"] == "array"
+    assert "anyOf" not in claim_properties["finding_ids"]
+    assert claim_properties["applicant_fact_paths"]["type"] == "array"
+    assert "anyOf" not in claim_properties["applicant_fact_paths"]
+    assert properties["refusal_reason"]["anyOf"] == [
+        {"type": "string"},
+        {"type": "null"},
+    ]
 
 
 def test_projection_strips_wire_constraints_but_preserves_shape() -> None:
@@ -153,9 +170,7 @@ def test_projection_strips_wire_constraints_but_preserves_shape() -> None:
         "type": "array",
         "items": {"type": "string"},
     }
-    assert projected["properties"]["version"] == {
-        "anyOf": [{"type": "string", "enum": ["1.0"]}, {"type": "null"}]
-    }
+    assert projected["properties"]["version"] == {"type": "string", "enum": ["1.0"]}
 
 
 def test_local_references_are_inlined() -> None:

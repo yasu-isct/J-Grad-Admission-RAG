@@ -11,6 +11,8 @@ changing a key or endpoint.
 - accepted models: `deepseek-flash` and `deepseek-v4-pro`;
 - explicit `--generation-model` required;
 - timeout at most 120 seconds, output at most 16,384 tokens, SDK retries at most two;
+- default DeepSeek output budget: 8,000 tokens (an explicit CLI value may override it within the
+  same 128–16,384 hard bounds); OpenAI retains its 2,000-token default;
 - first stable path is non-streaming and has no outer retry loop;
 - no Web Search, file search, tools, file upload, or whole-PDF input.
 
@@ -37,7 +39,8 @@ Projection version `1.0`:
 - deep-copies the source schema and deterministically inlines only local `#/$defs/...` references;
 - makes every object closed with `additionalProperties: false` and lists every property in
   `required`;
-- represents fields that were omissible as required nullable values for the wire protocol;
+- lists fields with non-null defaults as required values of their original type, while fields whose
+  source schema permits `null` remain nullable;
 - converts `const` to a one-value `enum`;
 - removes wire-unsupported defaults, string/number/array validation constraints, and annotations;
 - rejects unknown keywords, remote or unresolved references, cycles, conflicting constraints,
@@ -107,6 +110,19 @@ The evaluator records only model, exact call count, latency, result status, and 
 status. It does not emit questions, raw responses, keys, or personal data. Running it still requires
 the user's explicit authorization in the active task; setting the environment guard alone is not
 authorization for an agent to call the service.
+
+The evaluator counts each SDK request before transmission, including failed calls. Its report is
+limited to phase, attempt number, latency, allowlisted response status/incomplete reason, stable
+structured-output validation categories, and citation-validation status. Pydantic error inputs,
+model-controlled extra field names, raw output, questions, evidence, profiles, and exception text
+are never emitted. A failed question-analysis phase stops the batch before citation generation.
+
+M10-05 synthetic acceptance with `deepseek-flash` established that the earlier 2,000-token budget
+could return `incomplete`. With the bounded 8,000-token default and non-null wire types for fields
+that have non-null Pydantic defaults, the formal multilingual question completed and passed the
+original `QuestionAnalysis` plus deterministic server constraints; the following synthetic
+generation completed and passed the original `GenerationDraft` plus server-owned citation closure.
+No raw response was persisted.
 
 Official references:
 

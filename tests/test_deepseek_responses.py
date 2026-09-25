@@ -33,7 +33,14 @@ from jgrad_admission_rag.generation.deepseek_schema import (
 )
 from jgrad_admission_rag.generation import deepseek_responses as deepseek_module
 from jgrad_admission_rag.demo_cli import _parser as demo_parser
-from jgrad_admission_rag.manual_deepseek_evaluation import main as manual_deepseek_main
+from jgrad_admission_rag.manual_deepseek_evaluation import (
+    _CallBudgetExceeded,
+    _LiveCallLedger,
+    _ObservedResponses,
+    _emit_report,
+    _safe_structured_output_diagnostic,
+    main as manual_deepseek_main,
+)
 
 
 FORMAL_QUESTION = "托业840按官方的标准是多少英语配点，还有没有jlpt成绩,j-test可以吗"
@@ -111,7 +118,9 @@ def _provider(
 
 
 def test_deepseek_configuration_is_closed_and_models_are_allowlisted() -> None:
-    assert DeepSeekResponsesConfig(model="deepseek-flash").model == "deepseek-flash"
+    default_config = DeepSeekResponsesConfig(model="deepseek-flash")
+    assert default_config.model == "deepseek-flash"
+    assert default_config.max_output_tokens == 8_000
     assert DeepSeekResponsesConfig(model="deepseek-v4-pro").model == "deepseek-v4-pro"
     with pytest.raises(ValueError, match="DeepSeek model"):
         DeepSeekResponsesConfig(model="deepseek-chat")
@@ -119,9 +128,25 @@ def test_deepseek_configuration_is_closed_and_models_are_allowlisted() -> None:
         GenerationRuntimeConfiguration(provider="deepseek-responses")
     with pytest.raises(ValueError, match="DeepSeek model"):
         GenerationRuntimeConfiguration(provider="deepseek-responses", model="gpt-5")
-    assert GenerationRuntimeConfiguration(
+    deepseek_runtime = GenerationRuntimeConfiguration(
         provider="deepseek-responses", model="deepseek-flash"
-    ).is_online
+    )
+    assert deepseek_runtime.is_online
+    assert deepseek_runtime.max_output_tokens == 8_000
+    assert (
+        GenerationRuntimeConfiguration(
+            provider="openai-responses", model="gpt-test"
+        ).max_output_tokens
+        == 2_000
+    )
+    assert (
+        GenerationRuntimeConfiguration(
+            provider="deepseek-responses",
+            model="deepseek-flash",
+            max_output_tokens=512,
+        ).max_output_tokens
+        == 512
+    )
     parser = demo_parser()
     parsed = parser.parse_args(
         [
@@ -229,7 +254,7 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
 
     assert responses.calls == 1
     assert responses.kwargs["model"] == "deepseek-flash"
-    assert responses.kwargs["max_output_tokens"] == 2_000
+    assert responses.kwargs["max_output_tokens"] == 8_000
     assert responses.kwargs["store"] is False
     assert "stream" not in responses.kwargs
     assert "tools" not in responses.kwargs
@@ -241,6 +266,8 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     assert "maxLength" not in json.dumps(wire_schema)
     assert wire_schema != GenerationDraft.model_json_schema()
     sent = responses.kwargs["input"][1]["content"]  # type: ignore[index]
+    system_prompt = responses.kwargs["input"][0]["content"]  # type: ignore[index]
+    assert "every array field must be a JSON array, never null" in system_prompt
     assert "evidence:0001" in sent
     assert "source_pdf" not in sent
     assert "reasoning_content" not in sent
@@ -420,12 +447,136 @@ def test_deepseek_live_evaluation_refuses_before_provider_without_exact_guard(
     assert "exact one-run call authorization" in capsys.readouterr().err
 
 
+def test_live_ledger_counts_incomplete_call_and_allowlists_reason() -> None:
+    response = SimpleNamespace(
+        status="incomplete",
+        incomplete_details=SimpleNamespace(reason="max_output_tokens", private="SECRET"),
+    )
+    ledger = _LiveCallLedger(model="deepseek-flash", max_calls=2)
+    observed = _ObservedResponses(FakeResponses(response), ledger, "question-analysis")
+
+    assert observed.create(model="deepseek-flash") is response
+    assert ledger.calls == 1
+    assert ledger.observations == [
+        {
+            "attempt": 1,
+            "citation_validation": "not_applicable",
+            "incomplete_reason": "max_output_tokens",
+            "latency_ms": ledger.observations[0]["latency_ms"],
+            "phase": "question-analysis",
+            "response_status": "incomplete",
+            "result_status": "response_received",
+            "structured_output": "missing",
+            "validation_errors": [],
+        }
+    ]
+    assert "SECRET" not in json.dumps(ledger.observations)
+
+
+def test_live_ledger_sanitizes_unknown_status_reason_and_transport_error() -> None:
+    ledger = _LiveCallLedger(model="deepseek-flash", max_calls=3)
+    unknown = _ObservedResponses(
+        FakeResponses(
+            SimpleNamespace(
+                status="PRIVATE-STATUS",
+                incomplete_details=SimpleNamespace(reason="PRIVATE-REASON"),
+            )
+        ),
+        ledger,
+        "question-analysis",
+    )
+    unknown.create()
+    assert ledger.observations[0]["response_status"] == "other"
+    assert ledger.observations[0]["incomplete_reason"] == "other"
+
+    failed = _ObservedResponses(
+        FakeResponses(error=RuntimeError("PRIVATE-TRANSPORT")),
+        ledger,
+        "citation-closure",
+    )
+    with pytest.raises(RuntimeError, match="PRIVATE-TRANSPORT"):
+        failed.create()
+    assert ledger.calls == 2
+    assert ledger.observations[1]["result_status"] == "transport_error"
+    assert "PRIVATE-TRANSPORT" not in json.dumps(ledger.observations)
+
+
+def test_live_diagnostic_reports_only_safe_pydantic_error_shape() -> None:
+    invalid = _draft().model_dump(mode="json")
+    invalid["claims"] = None
+    response = SimpleNamespace(output_text=json.dumps(invalid, ensure_ascii=False))
+
+    diagnostic, errors = _safe_structured_output_diagnostic(response, "citation-closure")
+
+    assert diagnostic == "pydantic_invalid"
+    assert errors == ["claims.tuple_type"]
+    assert "draft" not in json.dumps(errors)
+
+
+def test_live_diagnostic_distinguishes_json_missing_and_valid_output() -> None:
+    assert _safe_structured_output_diagnostic(
+        SimpleNamespace(output_text="{"), "citation-closure"
+    ) == ("invalid_json", [])
+    assert _safe_structured_output_diagnostic(
+        SimpleNamespace(output_text=""), "citation-closure"
+    ) == ("missing", [])
+    assert _safe_structured_output_diagnostic(
+        SimpleNamespace(output_text=_draft().model_dump_json()), "citation-closure"
+    ) == ("pydantic_valid", [])
+
+
+def test_live_diagnostic_does_not_emit_model_controlled_extra_field_name() -> None:
+    invalid = _draft().model_dump(mode="json")
+    invalid["private_payload_name"] = "SECRET"
+    diagnostic, errors = _safe_structured_output_diagnostic(
+        SimpleNamespace(output_text=json.dumps(invalid)), "citation-closure"
+    )
+    assert diagnostic == "pydantic_invalid"
+    assert errors == ["field.extra_forbidden"]
+    assert "private_payload_name" not in json.dumps(errors)
+
+
+def test_live_ledger_enforces_call_budget_before_sdk_call() -> None:
+    ledger = _LiveCallLedger(model="deepseek-flash", max_calls=1)
+    responses = FakeResponses(SimpleNamespace(status="completed", incomplete_details=None))
+    observed = _ObservedResponses(responses, ledger, "question-analysis")
+    observed.create()
+    with pytest.raises(_CallBudgetExceeded):
+        observed.create()
+    assert responses.calls == 1
+    assert ledger.calls == 1
+
+
+def test_live_report_contains_only_safe_bounded_observations(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    ledger = _LiveCallLedger(model="deepseek-flash", max_calls=2)
+    index = ledger.begin("citation-closure")
+    ledger.response_received(
+        index,
+        SimpleNamespace(
+            status="incomplete",
+            incomplete_details=SimpleNamespace(reason="content_filter", raw="PRIVATE-RAW"),
+        ),
+        12.3456,
+    )
+    ledger.fail("incomplete_response")
+    _emit_report(ledger, error_code="incomplete_response", success=False)
+    report = json.loads(capsys.readouterr().out)
+    assert report["calls"] == 1
+    assert report["max_calls"] == 2
+    assert report["success"] is False
+    assert report["observations"][0]["citation_validation"] == "failed"
+    assert "PRIVATE-RAW" not in json.dumps(report)
+
+
 def test_deepseek_live_evaluation_source_does_not_emit_raw_questions_or_responses() -> None:
     source = (
         Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "manual_deepseek_evaluation.py"
     ).read_text(encoding="utf-8")
     assert '"question": question' not in source
     assert '"raw_response"' not in source
-    assert '"calls": len(observations)' in source
+    assert '"calls": ledger.calls' in source
     assert '"latency_ms"' in source
     assert '"citation_validation"' in source
+    assert '"incomplete_reason"' in source

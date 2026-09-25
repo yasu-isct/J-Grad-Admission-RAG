@@ -278,7 +278,8 @@ def _project_node(
                 depth=depth + 1,
                 reference_stack=reference_stack,
             )
-            if key not in required_set and not _allows_null(child):
+            has_non_null_default = isinstance(value, dict) and value.get("default") is not None
+            if key not in required_set and not has_non_null_default and not _allows_null(child):
                 child = {"anyOf": [child, {"type": "null"}]}
             projected_properties[key] = child
         projected["properties"] = projected_properties
