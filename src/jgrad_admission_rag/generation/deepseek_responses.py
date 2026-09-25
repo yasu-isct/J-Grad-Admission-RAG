@@ -31,6 +31,15 @@ from .responses_common import GROUNDING_SYSTEM_PROMPT, contains_refusal
 
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEEPSEEK_MODEL_NAMES = ("deepseek-flash", "deepseek-v4-pro")
+DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS = 8_000
+_DEEPSEEK_GROUNDING_SYSTEM_PROMPT = (
+    GROUNDING_SYSTEM_PROMPT
+    + """
+For this DeepSeek wire schema, every array field must be a JSON array, never null; use an empty
+array when that field does not apply. missing_information contains only sorted, unique, safe
+identifier paths for genuinely absent inputs, never explanatory prose; otherwise return an empty
+array."""
+)
 
 _SchemaModel = TypeVar("_SchemaModel", bound=BaseModel)
 
@@ -41,7 +50,7 @@ class DeepSeekResponsesConfig:
 
     model: str
     timeout_seconds: float = 30.0
-    max_output_tokens: int = 2_000
+    max_output_tokens: int = DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS
     max_retries: int = 1
 
     def __post_init__(self) -> None:
@@ -100,7 +109,7 @@ class DeepSeekResponsesGenerationProvider:
         return _request_structured_output(
             self._client,
             config=self._config,
-            system_prompt=GROUNDING_SYSTEM_PROMPT,
+            system_prompt=_DEEPSEEK_GROUNDING_SYSTEM_PROMPT,
             payload=payload,
             schema=GenerationDraft,
             schema_name="generation_draft",
@@ -265,6 +274,7 @@ def _projection_for(schema: type[BaseModel]) -> DeepSeekSchemaProjection:
 
 __all__ = [
     "DEEPSEEK_BASE_URL",
+    "DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS",
     "DEEPSEEK_MODEL_NAMES",
     "DeepSeekResponsesConfig",
     "DeepSeekResponsesGenerationProvider",

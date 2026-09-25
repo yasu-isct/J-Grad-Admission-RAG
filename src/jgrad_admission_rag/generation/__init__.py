@@ -22,6 +22,7 @@ from .contracts import (
 )
 from .deepseek_responses import (
     DEEPSEEK_BASE_URL,
+    DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
     DEEPSEEK_MODEL_NAMES,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
@@ -74,6 +75,7 @@ __all__ = [
     "ApplicantFact",
     "ClaimKind",
     "DEEPSEEK_BASE_URL",
+    "DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS",
     "DEEPSEEK_MODEL_NAMES",
     "DEEPSEEK_SCHEMA_PROJECTION_VERSION",
     "DeepSeekSchemaProjection",
