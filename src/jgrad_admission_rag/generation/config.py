@@ -51,9 +51,7 @@ class GenerationRuntimeConfiguration:
         if self.provider == "deepseek-responses":
             DeepSeekResponsesConfig(model=self.model or "", **common)
         else:
-            OpenAIResponsesConfig(
-                model=self.model or "offline-validation-placeholder", **common
-            )
+            OpenAIResponsesConfig(model=self.model or "offline-validation-placeholder", **common)
 
     @property
     def is_online(self) -> bool:

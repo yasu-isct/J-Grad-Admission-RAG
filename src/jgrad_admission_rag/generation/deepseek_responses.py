@@ -42,9 +42,7 @@ class DeepSeekResponsesConfig:
 
     def __post_init__(self) -> None:
         if self.model not in DEEPSEEK_MODEL_NAMES:
-            raise ValueError(
-                "DeepSeek model must be one of: " + ", ".join(DEEPSEEK_MODEL_NAMES)
-            )
+            raise ValueError("DeepSeek model must be one of: " + ", ".join(DEEPSEEK_MODEL_NAMES))
         if (
             not isinstance(self.timeout_seconds, (int, float))
             or isinstance(self.timeout_seconds, bool)

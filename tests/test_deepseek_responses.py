@@ -185,9 +185,18 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
 @pytest.mark.parametrize(
     ("response", "expected"),
     [
-        (SimpleNamespace(status="completed", output=(), output_text=""), GenerationErrorCode.MALFORMED_OUTPUT),
-        (SimpleNamespace(status="completed", output=(), output_text="{"), GenerationErrorCode.MALFORMED_OUTPUT),
-        (SimpleNamespace(status="incomplete", output=(), output_text="{}"), GenerationErrorCode.INCOMPLETE_RESPONSE),
+        (
+            SimpleNamespace(status="completed", output=(), output_text=""),
+            GenerationErrorCode.MALFORMED_OUTPUT,
+        ),
+        (
+            SimpleNamespace(status="completed", output=(), output_text="{"),
+            GenerationErrorCode.MALFORMED_OUTPUT,
+        ),
+        (
+            SimpleNamespace(status="incomplete", output=(), output_text="{}"),
+            GenerationErrorCode.INCOMPLETE_RESPONSE,
+        ),
         (
             SimpleNamespace(
                 status="completed",
@@ -196,7 +205,10 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
             ),
             GenerationErrorCode.PROVIDER_REFUSAL,
         ),
-        (SimpleNamespace(status="completed", output=(), output_text="{}"), GenerationErrorCode.MALFORMED_OUTPUT),
+        (
+            SimpleNamespace(status="completed", output=(), output_text="{}"),
+            GenerationErrorCode.MALFORMED_OUTPUT,
+        ),
     ],
 )
 def test_deepseek_generation_fails_closed(
@@ -212,9 +224,7 @@ def test_deepseek_timeout_does_not_retain_sensitive_exception(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     timeout_type = type("APITimeoutError", (Exception,), {})
-    provider, _ = _provider(
-        monkeypatch, FakeResponses(error=timeout_type("private-profile-秘密"))
-    )
+    provider, _ = _provider(monkeypatch, FakeResponses(error=timeout_type("private-profile-秘密")))
     with pytest.raises(GenerationError) as caught:
         provider.generate(_request())
     assert caught.value.code is GenerationErrorCode.PROVIDER_TIMEOUT
@@ -337,19 +347,14 @@ def test_deepseek_live_evaluation_refuses_before_provider_without_exact_guard(
     monkeypatch.setenv("DEEPSEEK_API_KEY", "not-used")
     monkeypatch.delenv("JGRAD_ALLOW_DEEPSEEK_LIVE", raising=False)
     with pytest.raises(SystemExit) as stopped:
-        manual_deepseek_main(
-            ["--model", "deepseek-flash", "--max-calls", "2", "--synthetic-only"]
-        )
+        manual_deepseek_main(["--model", "deepseek-flash", "--max-calls", "2", "--synthetic-only"])
     assert stopped.value.code == 2
     assert "exact one-run call authorization" in capsys.readouterr().err
 
 
 def test_deepseek_live_evaluation_source_does_not_emit_raw_questions_or_responses() -> None:
     source = (
-        Path(__file__).parents[1]
-        / "src"
-        / "jgrad_admission_rag"
-        / "manual_deepseek_evaluation.py"
+        Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "manual_deepseek_evaluation.py"
     ).read_text(encoding="utf-8")
     assert '"question": question' not in source
     assert '"raw_response"' not in source
