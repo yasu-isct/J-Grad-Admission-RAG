@@ -157,11 +157,31 @@ jgrad-demo `
   --generation-model gpt-5.4-mini-2026-03-17
 ```
 
+如使用 DeepSeek，必须显式选择独立 provider；它不会读取 `OPENAI_API_KEY`，也不能配置任意
+Base URL：
+
+```powershell
+$env:DEEPSEEK_API_KEY = "<set-locally; never commit>"
+jgrad-demo `
+  --pdf D:\J-Grad-Admission-RAG\outputs\real_pdf\isct_2027_4_2026_9_master.pdf `
+  --workspace D:\J-Grad-Admission-RAG\outputs\m10-deepseek-live `
+  --embedding-provider bge-m3 `
+  --embedding-cache D:\J-Grad-Admission-RAG\outputs\model-cache `
+  --generation-provider deepseek-responses `
+  --generation-model deepseek-flash
+```
+
+DeepSeek provider 固定使用 `https://api.deepseek.com` 的非流式 Responses API，只允许
+`deepseek-flash` 或 `deepseek-v4-pro`，并通过 `text.format` JSON Schema 与本地 Pydantic、引用
+闭合校验双重验证输出。页面会显示实际模型；缺少密钥时显示“DeepSeek 在线生成服务未配置”，
+不会改用离线文本后继续标成 AI 生成。
+
 未设置密钥时，普通结构化流程和服务 readiness 不受影响，页面显示“在线生成服务未配置”，不会
 伪装成联网 AI 或静默降级。代码不提供任意 Base URL，使用 SDK 默认官方地址；请求固定
 `store=False` 并限制 timeout、输出 token 与 SDK retry。仓库和默认 CI 不调用付费 API，真实请求
 必须另外获得精确调用次数授权。参见
 [Natural-language RAG productization v1](docs/natural-language-productization-v1.md) 与
+[DeepSeek Responses provider v1](docs/deepseek-responses-provider-v1.md)、
 [M10 language/score coverage audit](docs/evaluation/m10-language-coverage-audit.md)。
 
 ## M9 Release Evidence

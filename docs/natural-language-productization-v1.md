@@ -10,15 +10,25 @@ Both `jgrad-demo` and `jgrad-serve` accept:
 - `--generation-provider reviewed-state-offline` (default): deterministic question normalization,
   reviewed-state generation, no key, network request, or model download;
 - `--generation-provider openai-responses --generation-model <model>`: OpenAI Responses API for
-  Structured Outputs question analysis and the existing citation-constrained generation draft.
+  Structured Outputs question analysis and the existing citation-constrained generation draft;
+- `--generation-provider deepseek-responses --generation-model <model>`: DeepSeek's
+  OpenAI-compatible Responses API through an explicit first-party adapter. Only
+  `deepseek-flash` and `deepseek-v4-pro` are accepted.
 
 The online adapter reads only `OPENAI_API_KEY`, uses the official SDK default endpoint, sends
 `store=False`, and bounds timeout, output tokens, and SDK retries. There is no configurable base
 URL and no retry loop around the SDK. Provider construction makes no request.
 
+The DeepSeek adapter reads only `DEEPSEEK_API_KEY` and pins `https://api.deepseek.com` in code.
+It never reads `OPENAI_API_KEY`, and no CLI, environment, or request option can replace the base
+URL. It uses non-streaming `responses.create`, a strict `text.format` JSON Schema, local Pydantic
+validation, bounded output/timeout/SDK retries, and no tools. See
+[DeepSeek Responses provider v1](deepseek-responses-provider-v1.md).
+
 If online mode is selected without a usable key, the service continues to report ready when its
 corpus, retrieval, and structured report functions are healthy. `GET /v1/generation-status`
-reports `configured=false` and the browser displays `在线生成服务未配置`; the natural-language
+reports `configured=false` and the browser displays `在线生成服务未配置` for OpenAI or
+`DeepSeek 在线生成服务未配置` for DeepSeek; the natural-language
 route returns a privacy-safe 503. The service never silently falls back and labels offline rules as
 online AI.
 

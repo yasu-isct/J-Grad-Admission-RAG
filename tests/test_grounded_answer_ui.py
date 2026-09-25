@@ -19,6 +19,8 @@ def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() 
     assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers"' in javascript
     assert 'const GENERATION_STATUS_ENDPOINT = "/v1/generation-status"' in javascript
     assert "在线生成服务未配置" in javascript
+    assert "DeepSeek 在线生成服务未配置" in javascript
+    assert "DEEPSEEK_API_KEY" in javascript
     assert "generationModeLabel.textContent = generationStatus.label" in javascript
     assert 'auditSummary.textContent = "技术详情 / 审计信息"' in javascript
     assert "label.textContent = claim.kind" not in javascript

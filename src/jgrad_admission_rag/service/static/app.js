@@ -211,6 +211,7 @@ function groundedRequestPayload() {
 }
 
 function groundedFailureMessage(code, status) {
+  if (code === "online_generation_not_configured" && generationStatus && generationStatus.provider === "deepseek-responses") return "DeepSeek 在线生成服务未配置。请在本机设置 DEEPSEEK_API_KEY 后重新启动，或切换到离线规则模式。";
   if (code === "online_generation_not_configured") return "在线生成服务未配置。请在本机设置 OPENAI_API_KEY 后重新启动，或切换到离线规则模式。";
   if (code === "generation_provider_timeout" || status === 504) return "生成服务超时。当前选择和问题仍保留，可重试。";
   if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";

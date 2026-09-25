@@ -43,7 +43,7 @@ class ServiceSettings(BaseModel):
     job_shutdown_grace_seconds: float = Field(default=0.25, ge=0, le=60, strict=True)
     generation_provider_name: str = Field(
         default="reviewed-state-offline",
-        pattern=r"^(reviewed-state-offline|openai-responses)$",
+        pattern=r"^(reviewed-state-offline|openai-responses|deepseek-responses)$",
     )
     generation_model_name: str | None = Field(default=None, min_length=1, max_length=200)
 
@@ -85,7 +85,7 @@ class ServiceSettings(BaseModel):
             not self.job_root.is_absolute() or self.job_root.resolve(strict=False) != self.job_root
         ):
             raise ValueError("job repository root must be canonical and absolute")
-        if (self.generation_provider_name == "openai-responses") != bool(
+        if (self.generation_provider_name != "reviewed-state-offline") != bool(
             self.generation_model_name
         ):
             raise ValueError("online generation requires one model; offline generation has none")
