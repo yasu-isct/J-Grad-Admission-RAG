@@ -363,6 +363,41 @@ def test_online_analysis_cannot_overwrite_an_existing_exam_alias(monkeypatch) ->
     assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
 
 
+@pytest.mark.parametrize(
+    ("question", "original"),
+    [
+        ("test可以吗？", "test"),
+        ("contest可以吗？", "test"),
+    ],
+)
+def test_online_analysis_cannot_redirect_plain_test_text_to_jtest(
+    question: str,
+    original: str,
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    redirected = DeterministicQuestionUnderstandingProvider().analyze("J.TEST可以吗？")
+    redirected = redirected.model_copy(
+        update={"corrections": (QuestionCorrection(original=original, normalized="J.TEST"),)}
+    )
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=redirected)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(question)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+
+
 def test_paid_question_analysis_workflow_is_manual_exact_call_and_protected() -> None:
     workflow = (
         Path(__file__).parents[1] / ".github/workflows/manual-paid-m10-question-analysis.yml"

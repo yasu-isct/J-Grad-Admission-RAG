@@ -420,7 +420,13 @@ def _apply_supported_corrections(
     for item in sorted(corrections, key=lambda value: (-len(value.original), value.original)):
         if not _supported_correction(item):
             return None
-        pattern = re.compile(re.escape(item.original), re.IGNORECASE)
+        escaped = re.escape(item.original)
+        pattern = re.compile(
+            rf"(?<![A-Za-z0-9]){escaped}(?![A-Za-z0-9])"
+            if _ascii_token(item.original) is not None
+            else escaped,
+            re.IGNORECASE,
+        )
         if pattern.search(corrected) is None:
             return None
         corrected = pattern.sub(item.normalized, corrected)
@@ -450,6 +456,8 @@ def _ascii_token(value: str) -> str | None:
 def _single_safe_typo(source: str, target: str) -> bool:
     if source == target:
         return True
+    if source[0] != target[0]:
+        return False
     if abs(len(source) - len(target)) == 1:
         longer, shorter = (source, target) if len(source) > len(target) else (target, source)
         return any(longer[:index] + longer[index + 1 :] == shorter for index in range(len(longer)))
