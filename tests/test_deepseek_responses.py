@@ -27,6 +27,11 @@ from jgrad_admission_rag.generation import (
     generate_checked,
 )
 from jgrad_admission_rag.generation.config import GenerationRuntimeConfiguration
+from jgrad_admission_rag.generation.deepseek_schema import (
+    DeepSeekSchemaProjectionError,
+    DeepSeekSchemaProjectionErrorCode,
+)
+from jgrad_admission_rag.generation import deepseek_responses as deepseek_module
 from jgrad_admission_rag.demo_cli import _parser as demo_parser
 from jgrad_admission_rag.manual_deepseek_evaluation import main as manual_deepseek_main
 
@@ -156,6 +161,27 @@ def test_deepseek_uses_only_its_key_and_fixed_base_url(monkeypatch: pytest.Monke
         "timeout": 30.0,
         "max_retries": 1,
     }
+
+
+def test_deepseek_projection_error_context_is_detached(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "deepseek-test-key")
+
+    def fail_projection(_: object) -> object:
+        try:
+            raise RuntimeError("PRIVATE-SCHEMA-CONTEXT")
+        except RuntimeError:
+            raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA)
+
+    monkeypatch.setattr(deepseek_module, "build_deepseek_schema_projection", fail_projection)
+    with pytest.raises(GenerationError) as caught:
+        DeepSeekResponsesGenerationProvider(
+            DeepSeekResponsesConfig(model="deepseek-flash"),
+            _client_factory=lambda **_: FakeClient(FakeResponses()),
+        )
+    assert caught.value.code is GenerationErrorCode.PROVIDER_UNAVAILABLE
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert "PRIVATE-SCHEMA-CONTEXT" not in str(caught.value)
 
 
 def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(

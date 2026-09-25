@@ -108,10 +108,15 @@ class _ProjectionState:
 def project_deepseek_strict_schema(schema: Mapping[str, Any]) -> dict[str, Any]:
     """Return a deterministic DeepSeek wire schema without mutating ``schema``."""
 
+    invalid_source = False
+    source: dict[str, Any] = {}
+    encoded = b""
     try:
         source = copy.deepcopy(dict(schema))
         encoded = _canonical_json(source)
     except Exception:
+        invalid_source = True
+    if invalid_source:
         raise DeepSeekSchemaProjectionError(
             DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA
         ) from None
@@ -233,7 +238,7 @@ def _project_node(
         ]
 
     if "items" in node:
-        if node_type not in {None, "array"}:
+        if node_type != "array":
             raise DeepSeekSchemaProjectionError(
                 DeepSeekSchemaProjectionErrorCode.CONFLICTING_CONSTRAINT
             )
@@ -245,7 +250,7 @@ def _project_node(
         )
 
     if "properties" in node:
-        if node_type not in {None, "object"}:
+        if node_type != "object":
             raise DeepSeekSchemaProjectionError(
                 DeepSeekSchemaProjectionErrorCode.CONFLICTING_CONSTRAINT
             )
@@ -293,7 +298,7 @@ def _project_node(
     elif "required" in node or "additionalProperties" in node:
         raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA)
 
-    if not projected:
+    if not projected or set(projected) == {"description"}:
         raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA)
     return projected
 
@@ -304,6 +309,14 @@ def _local_definition_name(reference: object) -> str:
     encoded = reference.removeprefix("#/$defs/")
     if not encoded or "/" in encoded:
         raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_REFERENCE)
+    index = 0
+    while index < len(encoded):
+        if encoded[index] != "~":
+            index += 1
+            continue
+        if index + 1 >= len(encoded) or encoded[index + 1] not in {"0", "1"}:
+            raise DeepSeekSchemaProjectionError(DeepSeekSchemaProjectionErrorCode.INVALID_REFERENCE)
+        index += 2
     return encoded.replace("~1", "/").replace("~0", "~")
 
 

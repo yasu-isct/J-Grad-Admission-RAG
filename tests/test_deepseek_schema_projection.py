@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+from collections.abc import Iterator, Mapping
 
 import pytest
 from pydantic import ValidationError
@@ -192,6 +193,14 @@ def test_local_references_are_inlined() -> None:
             DeepSeekSchemaProjectionErrorCode.UNRESOLVED_REFERENCE,
         ),
         (
+            {"$defs": {"~2bad": {"type": "string"}}, "$ref": "#/$defs/~2bad"},
+            DeepSeekSchemaProjectionErrorCode.INVALID_REFERENCE,
+        ),
+        (
+            {"$defs": {"bad~": {"type": "string"}}, "$ref": "#/$defs/bad~"},
+            DeepSeekSchemaProjectionErrorCode.INVALID_REFERENCE,
+        ),
+        (
             {"$defs": {"Loop": {"$ref": "#/$defs/Loop"}}, "$ref": "#/$defs/Loop"},
             DeepSeekSchemaProjectionErrorCode.CYCLIC_REFERENCE,
         ),
@@ -211,6 +220,18 @@ def test_local_references_are_inlined() -> None:
             {"type": "object", "properties": {}, "additionalProperties": True},
             DeepSeekSchemaProjectionErrorCode.CONFLICTING_CONSTRAINT,
         ),
+        (
+            {"properties": {"value": {"type": "string"}}},
+            DeepSeekSchemaProjectionErrorCode.CONFLICTING_CONSTRAINT,
+        ),
+        (
+            {"items": {"type": "string"}},
+            DeepSeekSchemaProjectionErrorCode.CONFLICTING_CONSTRAINT,
+        ),
+        (
+            {"description": "unconstrained"},
+            DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA,
+        ),
     ],
 )
 def test_unsafe_or_unsupported_schema_fails_closed(
@@ -221,6 +242,28 @@ def test_unsafe_or_unsupported_schema_fails_closed(
     assert caught.value.code is code
     assert caught.value.__cause__ is None
     assert "attacker.invalid" not in str(caught.value)
+
+
+def test_invalid_mapping_exception_context_is_detached() -> None:
+    secret = "PRIVATE-SCHEMA-PAYLOAD"
+
+    class SensitiveMapping(Mapping[str, object]):
+        def __getitem__(self, key: str) -> object:
+            raise KeyError(key)
+
+        def __iter__(self) -> Iterator[str]:
+            raise RuntimeError(secret)
+
+        def __len__(self) -> int:
+            return 1
+
+    with pytest.raises(DeepSeekSchemaProjectionError) as caught:
+        project_deepseek_strict_schema(SensitiveMapping())
+    assert caught.value.code is DeepSeekSchemaProjectionErrorCode.INVALID_SCHEMA
+    assert caught.value.args == ("DeepSeek schema is invalid",)
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert secret not in str(caught.value)
 
 
 def test_projection_depth_and_size_are_bounded() -> None:

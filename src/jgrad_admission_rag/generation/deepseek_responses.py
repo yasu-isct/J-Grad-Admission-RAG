@@ -254,10 +254,14 @@ def _request_structured_output(
 
 
 def _projection_for(schema: type[BaseModel]) -> DeepSeekSchemaProjection:
+    projection: DeepSeekSchemaProjection | None = None
     try:
-        return build_deepseek_schema_projection(schema.model_json_schema())
+        projection = build_deepseek_schema_projection(schema.model_json_schema())
     except DeepSeekSchemaProjectionError:
+        pass
+    if projection is None:
         raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
+    return projection
 
 
 __all__ = [
