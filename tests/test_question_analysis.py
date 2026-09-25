@@ -368,6 +368,8 @@ def test_online_analysis_cannot_overwrite_an_existing_exam_alias(monkeypatch) ->
     [
         ("test可以吗？", "test"),
         ("contest可以吗？", "test"),
+        ("jest可以吗？", "jest"),
+        ("jest, 可以吗？", "jest"),
     ],
 )
 def test_online_analysis_cannot_redirect_plain_test_text_to_jtest(

@@ -172,6 +172,7 @@ _ALIASES: tuple[tuple[re.Pattern[str], str, ExamType | None], ...] = (
     (re.compile(r"日语能力考试|日本語能力試験|jlpt", re.I), "JLPT", ExamType.JLPT),
     (re.compile(r"j[.-]?\s*test", re.I), "J.TEST", ExamType.J_TEST),
 )
+_ALLOWED_CANONICAL_TERMS = tuple(sorted({replacement for _, replacement, _ in _ALIASES}))
 _CANONICAL_TYPO_TARGETS: dict[str, tuple[str, ...]] = {
     "TOEIC L&R": ("toeic", "toeiclr"),
     "TOEIC IP": ("toeicip",),
@@ -179,7 +180,6 @@ _CANONICAL_TYPO_TARGETS: dict[str, tuple[str, ...]] = {
     "TOEFL iBT Home Edition": ("toeflibthomeedition", "toeflhomeedition"),
     "TOEFL ITP": ("toeflitp",),
     "JLPT": ("jlpt",),
-    "J.TEST": ("jtest",),
 }
 
 
@@ -317,7 +317,7 @@ class OpenAIResponsesQuestionUnderstandingProvider:
         payload = json.dumps(
             {
                 "question": question,
-                "allowed_canonical_terms": tuple(sorted(_CANONICAL_TYPO_TARGETS)),
+                "allowed_canonical_terms": _ALLOWED_CANONICAL_TERMS,
                 "server_constraints": anchor.model_dump(mode="json"),
             },
             ensure_ascii=False,
