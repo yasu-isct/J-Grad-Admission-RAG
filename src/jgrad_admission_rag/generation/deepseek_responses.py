@@ -17,7 +17,6 @@ from .contracts import (
 )
 from .deepseek_schema import (
     DeepSeekSchemaProjection,
-    DeepSeekSchemaProjectionError,
     build_deepseek_schema_projection,
 )
 from .provider import GenerationError, GenerationErrorCode
@@ -257,7 +256,7 @@ def _projection_for(schema: type[BaseModel]) -> DeepSeekSchemaProjection:
     projection: DeepSeekSchemaProjection | None = None
     try:
         projection = build_deepseek_schema_projection(schema.model_json_schema())
-    except DeepSeekSchemaProjectionError:
+    except Exception:
         pass
     if projection is None:
         raise GenerationError(GenerationErrorCode.PROVIDER_UNAVAILABLE) from None
