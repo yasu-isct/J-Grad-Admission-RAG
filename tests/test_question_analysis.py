@@ -14,6 +14,7 @@ from jgrad_admission_rag.generation import (
     OpenAIResponsesConfig,
     OpenAIResponsesQuestionUnderstandingProvider,
     QuestionAnalysis,
+    QuestionCorrection,
 )
 from jgrad_admission_rag.generation.config import GenerationRuntimeConfiguration
 from jgrad_admission_rag.demo_cli import _parser as demo_parser
@@ -280,6 +281,84 @@ def test_online_analysis_cannot_replace_user_facing_subquestion(monkeypatch) -> 
     )
     with pytest.raises(GenerationError) as captured:
         provider.analyze(FORMAL_QUESTION)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+
+
+def test_online_analysis_accepts_bounded_transposition_correction(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    question = "toiec 840可以吗？"
+    corrected = DeterministicQuestionUnderstandingProvider().analyze("TOEIC L&R 840可以吗？")
+    expected = corrected.model_copy(
+        update={"corrections": (QuestionCorrection(original="toiec", normalized="TOEIC L&R"),)}
+    )
+    expected = QuestionAnalysis.model_validate(expected.model_dump(mode="json"))
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=expected)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    result = provider.analyze(question)
+
+    assert result == expected
+    assert result.mentioned_exam_types == (ExamType.TOEIC_LR,)
+
+
+def test_online_analysis_rejects_substitution_that_redirects_an_unrelated_word(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    question = "topic 840可以吗？"
+    redirected = DeterministicQuestionUnderstandingProvider().analyze("TOEIC L&R 840可以吗？")
+    redirected = redirected.model_copy(
+        update={"corrections": (QuestionCorrection(original="topic", normalized="TOEIC L&R"),)}
+    )
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=redirected)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(question)
+
+    assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
+
+
+def test_online_analysis_cannot_overwrite_an_existing_exam_alias(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    question = "TOEIC IP可以吗？"
+    redirected = DeterministicQuestionUnderstandingProvider().analyze("TOEIC L&R IP可以吗？")
+    redirected = redirected.model_copy(
+        update={"corrections": (QuestionCorrection(original="TOEIC", normalized="TOEIC L&R"),)}
+    )
+
+    class Responses:
+        def parse(self, **_kwargs):
+            return SimpleNamespace(status="completed", output_parsed=redirected)
+
+    class Client:
+        responses = Responses()
+
+    provider = OpenAIResponsesQuestionUnderstandingProvider(
+        OpenAIResponsesConfig(model="test-model"),
+        _client_factory=lambda **_kwargs: Client(),
+    )
+    with pytest.raises(GenerationError) as captured:
+        provider.analyze(question)
 
     assert captured.value.code is GenerationErrorCode.MALFORMED_OUTPUT
 

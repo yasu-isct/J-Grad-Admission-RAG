@@ -30,12 +30,16 @@ queries, mentioned exam types/scores, target-scope mentions, missing context, an
 parts. Subquestion IDs are contiguous and all lists are bounded and canonical.
 
 Before an online call, the server builds a request-local semantic constraint from its deterministic
-normalizer and sends it beside the untrusted question. The Structured Output must preserve the
-detected language, corrections, exam types/scores, intents, subquestions, clarification state, and
-retrieval queries exactly. A schema-valid response that changes the exam, language, user-facing
-subquestion, or retrieval topic is rejected as malformed before retrieval. SDK and validation
-exceptions are converted only after leaving their handlers, so private provider payloads cannot
-remain reachable through an exposed exception context.
+normalizer and sends it beside the untrusted question. The Structured Output must preserve that
+minimum constraint, but it may quote an exact source token and correct it to a closed canonical exam
+term. Additional corrections accept only an existing alias, a single insertion/deletion, or an
+adjacent transposition such as `toiec` → `TOEIC L&R`; substitutions such as `topic` → `TOEIC` and
+changes to an already recognized exam are rejected. The server reapplies accepted corrections,
+rebuilds every dependent field and subquestion, and requires the model result to match that derived
+constraint exactly. A schema-valid response that otherwise changes the exam, language,
+user-facing subquestion, or retrieval topic is rejected as malformed before retrieval. SDK and
+validation exceptions are converted only after leaving their handlers, so private provider
+payloads cannot remain reachable through an exposed exception context.
 
 The deterministic fallback recognizes Chinese, Japanese, and mixed forms of TOEIC L&R, TOEFL iBT
 and Home Edition, JLPT, and J.TEST. It decomposes the formal M10 acceptance question into alias
