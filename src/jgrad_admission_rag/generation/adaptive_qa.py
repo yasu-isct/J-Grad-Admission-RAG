@@ -18,7 +18,7 @@ from .simple_qa import (
 _Model = TypeVar("_Model", bound=BaseModel)
 
 ADAPTIVE_QA_SCHEMA_VERSION = "1.0"
-ADAPTIVE_QA_PLANNING_PROMPT_VERSION = "adaptive-qa-planning-v1"
+ADAPTIVE_QA_PLANNING_PROMPT_VERSION = "adaptive-qa-planning-v2"
 ADAPTIVE_QA_FINAL_PROMPT_VERSION = "adaptive-qa-final-v1"
 MAX_ADAPTIVE_SEARCH_QUERIES = 6
 MAX_ADAPTIVE_SEARCH_QUERY_CHARACTERS = 500
@@ -29,7 +29,10 @@ Set needs_local_lookup=true whenever the question asks about the selected univer
 year, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any
 other official admission-specific conclusion. In that case provide a small set of focused search
 queries for the selected local admission document. General definitions and general comparisons may
-use needs_local_lookup=false and an empty search_queries array. Do not claim that an institution
+use needs_local_lookup=false and an empty search_queries array. Decide from the user's requested
+meaning, not merely from the presence of a selected target label. A pure definition such as
+"What is [an exam or acronym]?" MUST use needs_local_lookup=false; it does not ask what the selected
+institution accepts or requires. Do not claim that an institution
 accepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not
 mention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only
 the required schema."""

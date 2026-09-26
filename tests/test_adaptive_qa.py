@@ -4,6 +4,8 @@ import pytest
 from pydantic import ValidationError
 
 from jgrad_admission_rag.generation.adaptive_qa import (
+    ADAPTIVE_QA_PLANNING_PROMPT_VERSION,
+    ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
     MAX_ADAPTIVE_SEARCH_QUERIES,
     AdaptiveQaFinalRequest,
     AdaptiveQaPlanDraft,
@@ -56,6 +58,13 @@ def test_general_plan_requires_empty_queries_and_one_checked_call() -> None:
     assert result.needs_local_lookup is False
     assert result.search_queries == ()
     assert provider.plan_calls == 1
+
+
+def test_planning_prompt_routes_pure_definitions_without_target_lookup() -> None:
+    assert ADAPTIVE_QA_PLANNING_PROMPT_VERSION == "adaptive-qa-planning-v2"
+    assert "presence of a selected target label" in ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT
+    assert '"What is [an exam or acronym]?"' in ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT
+    assert "MUST use needs_local_lookup=false" in ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT
 
 
 def test_school_plan_accepts_multiple_bounded_queries_without_wording_rules() -> None:
