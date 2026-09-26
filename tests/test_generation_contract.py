@@ -151,7 +151,7 @@ def test_checked_fake_is_deterministic_and_canonical() -> None:
     assert canonical_generation_result_bytes(first).endswith(b"\n")
     assert json.loads(canonical_generation_result_bytes(first))["provider"] == {
         "model": "grounded-static-v1",
-        "prompt_version": "grounded-answer-v4",
+        "prompt_version": "grounded-answer-v5",
         "provider": "deterministic-fake",
         "revision": None,
     }

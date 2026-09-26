@@ -16,17 +16,13 @@ Every proposition is an answer obligation. The provider output must contain exac
 claim for every finding, and `answer` must be the exact ordered projection of those claim texts.
 This reconciles all generated prose to validated spans and makes omission fail closed.
 
-The server validates claim meaning through predicate-specific subjects, relations, protected
-numbers/dates/exam names, polarity and modality guards. It accepts materially different Chinese,
-Japanese, or English phrasing only inside that semantic envelope. Affirmative facts retain complete
-server-restored citations. Dispositions cannot carry citations or become official rejection,
-acceptance, exemption, eligibility, completeness, or admission conclusions.
-
-Necessary-slot matching is not sufficient on its own. After those checks, the validator must
-consume the complete claim surface using only server-owned subjects, values, protected literals,
-punctuation, and the predicate's bounded multilingual grammar. Any remaining semantic character
-represents an untyped span and rejects the whole claim. Therefore a supported maximum-points or
-listed-exam clause cannot lend its citation to an appended interview, submission, or other fact.
+The server deterministically validates claim/finding/evidence IDs, claim kind, obligation coverage,
+scope, complete citation sets, and unchanged protected subjects, numbers, dates, and explicit exam
+entities. It does not use a phrase list or local parser to claim proof of arbitrary free-text
+semantics. Each claim is prompted to express exactly one supplied AnswerFact without implications
+or background facts; compliance with that natural-language requirement belongs to formal effect
+evaluation and independent review. Affirmative facts retain complete server-restored citations,
+while disposition claims cannot carry citations.
 
 The browser presents the validated consolidated answer before citation controls. Verbatim official
 text remains exclusively in the evidence drawer; user-facing prose is not required to copy it.
@@ -36,8 +32,8 @@ text remains exclusively in the evidence drawer; user-facing prose is not requir
 - A cache miss still uses at most one analysis and one generation call; an exact hit uses zero.
 - JLPT/J.TEST and score-conversion gaps are generated as required, validated answer content rather
   than fixed UI prose.
-- Unknown references, omitted obligations, changed protected literals, unsupported conjunctions,
-  and cross-scope evidence continue to fail closed.
+- Unknown references, omitted obligations, changed protected literals, and cross-scope evidence
+  continue to fail closed.
 - Cache key versioning includes the updated pipeline and semantic-validator versions; existing
   cache privacy, TTL/LRU, single-flight, and invalidation guarantees remain unchanged.
 - M9's grounded-RAG release boundary is unchanged; the new disposition kind is used by the M10

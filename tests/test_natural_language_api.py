@@ -383,7 +383,7 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
         )
         generator.identity = generator.identity.model_copy(update={"revision": "test-v2"})
         changed_model = client.post("/v1/natural-language-answers", json=payload)
-        monkeypatch.setattr(service_app, "CLAIM_SEMANTICS_VERSION", "typed-claim-semantics-v4")
+        monkeypatch.setattr(service_app, "CLAIM_SEMANTICS_VERSION", "protected-literal-claims-v5")
         changed_validator = client.post("/v1/natural-language-answers", json=payload)
         cached_values_repr = repr(
             tuple(entry.value for entry in state.natural_answer_cache._entries.values())

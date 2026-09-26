@@ -87,20 +87,18 @@ rather than being misrepresented as missing knowledge.
 Alias interpretation is labelled separately and explicitly says that normalization is not an
 official acceptance conclusion. Affirmative claims must match a server-owned typed proposition.
 Semantic predicates cover confirmed maximum points, listed exams, protected date ranges, exam-name
-normalization, unpublished score conversion, and scoped no-reviewed-evidence states. Validators
-require the expected subject, relation, protected literal values, polarity, and modality while
-allowing ordinary Chinese/Japanese paraphrases. Changed numbers/dates/exams, admission outcomes,
-negative requirements, unsupported conjunctions, and extra facts are rejected. Confirmed facts
-must carry their complete evidence set; disposition claims carry a server-owned finding ID but no
-citation and cannot present themselves as official rules. Official Japanese excerpts remain
-separate evidence and are not forced into the user-facing prose. Pending, not-applicable,
-cross-scope, and partially retrieved findings do not become affirmative claims. After
-validation, server-owned document, Fact and page provenance is restored for the public evidence
-drawer; hashes and internal finding/rule identifiers are not part of the public natural answer.
-The validator also performs full semantic-surface consumption: after removing server-owned
-subjects, values, protected literals, and the predicate's bounded multilingual grammar, no
-word-like characters may remain. This makes an otherwise valid proposition followed by an
-uncited second fact fail closed instead of inheriting the first proposition's citation.
+normalization, unpublished score conversion, and scoped no-reviewed-evidence states. Deterministic
+validation covers claim/finding/evidence IDs, claim kind, complete evidence sets, obligation
+coverage, target/source scope, and unchanged server-owned subjects, numbers, dates, and explicit
+exam entities. It deliberately does not parse arbitrary Chinese or Japanese prose to prove a full
+subject-predicate relation, polarity, modality, or absence of an appended clause. Those free-text
+risks are constrained by an atomic-claim prompt and evaluated with the formal questions and an
+independent product review. Confirmed facts carry their complete evidence set; disposition claims
+carry a server-owned finding ID but no citation. Official Japanese excerpts remain separate
+evidence and are not forced into the user-facing prose. Pending, not-applicable, cross-scope, and
+partially retrieved findings do not become affirmative facts. After validation, server-owned
+document, Fact and page provenance is restored for the public evidence drawer; hashes and internal
+finding/rule identifiers are not part of the public natural answer.
 
 ## Exact validated response cache
 
