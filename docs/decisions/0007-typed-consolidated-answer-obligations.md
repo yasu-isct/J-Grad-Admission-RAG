@@ -22,6 +22,12 @@ Japanese, or English phrasing only inside that semantic envelope. Affirmative fa
 server-restored citations. Dispositions cannot carry citations or become official rejection,
 acceptance, exemption, eligibility, completeness, or admission conclusions.
 
+Necessary-slot matching is not sufficient on its own. After those checks, the validator must
+consume the complete claim surface using only server-owned subjects, values, protected literals,
+punctuation, and the predicate's bounded multilingual grammar. Any remaining semantic character
+represents an untyped span and rejects the whole claim. Therefore a supported maximum-points or
+listed-exam clause cannot lend its citation to an appended interview, submission, or other fact.
+
 The browser presents the validated consolidated answer before citation controls. Verbatim official
 text remains exclusively in the evidence drawer; user-facing prose is not required to copy it.
 

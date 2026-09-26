@@ -13,7 +13,8 @@ applicant fact paths. A reviewed-disposition claim represents an interpreted, no
 needs-review, or needs-information finding: it must cite exactly that finding ID and no evidence,
 and it must never be presented as an official rule. The answer must equal claim texts joined in
 order with one newline and contain
-no other text. Write each claim naturally in the language requested by the question. Claim text is
+no other text. Each claim must be one short atomic proposition and must not append a second fact,
+even if it is in the same sentence. Write each claim naturally in the language requested by the question. Claim text is
 retained only on natural-answer requests whose server-owned typed proposition validates every
 subject, relation, number, date, exam name, and polarity; other callers still receive a conservative
 server projection. Never turn missing coverage into a negative school rule. If there are no

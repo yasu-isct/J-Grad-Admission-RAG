@@ -97,6 +97,10 @@ separate evidence and are not forced into the user-facing prose. Pending, not-ap
 cross-scope, and partially retrieved findings do not become affirmative claims. After
 validation, server-owned document, Fact and page provenance is restored for the public evidence
 drawer; hashes and internal finding/rule identifiers are not part of the public natural answer.
+The validator also performs full semantic-surface consumption: after removing server-owned
+subjects, values, protected literals, and the predicate's bounded multilingual grammar, no
+word-like characters may remain. This makes an otherwise valid proposition followed by an
+uncited second fact fail closed instead of inheriting the first proposition's citation.
 
 ## Exact validated response cache
 

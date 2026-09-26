@@ -23,14 +23,15 @@ from .contracts import (
 from .grounded_rag import GroundedCitation, GroundedModel
 from .provider import GenerationProvider, generate_checked
 
-CONSOLIDATED_PIPELINE_VERSION = "consolidated-natural-answer-v2"
-CLAIM_SEMANTICS_VERSION = "typed-claim-semantics-v2"
+CONSOLIDATED_PIPELINE_VERSION = "consolidated-natural-answer-v3"
+CLAIM_SEMANTICS_VERSION = "typed-claim-semantics-v3"
 MAX_CONSOLIDATED_EVIDENCE_RECORDS = 16
 MAX_CONSOLIDATED_EVIDENCE_CHARACTERS = 60_000
 _CHARACTER_NORMALIZATION = str.maketrans(
     {"資": "资", "報": "报", "語": "语", "滿": "满", "點": "点", "錄": "录"}
 )
 _NUMBER_TOKEN = re.compile(r"(?<![A-Za-z])\d+(?:[./:-]\d+)*(?![A-Za-z])")
+_SEMANTIC_CHARACTER = re.compile(r"[\w\u3040-\u30ff\u3400-\u9fff]", re.UNICODE)
 
 
 class PropositionPredicate(str, Enum):
@@ -339,7 +340,11 @@ def _claim_matches_proposition(
     expected_kind = (
         ClaimKind.REVIEWED_RULE if proposition.evidence_ids else ClaimKind.REVIEWED_DISPOSITION
     )
-    if claim.kind is not expected_kind or not _has_safe_surface(claim.text):
+    if (
+        claim.kind is not expected_kind
+        or not _has_safe_surface(claim.text)
+        or not _has_closed_semantic_surface(claim.text, proposition)
+    ):
         return False
     if proposition.predicate is PropositionPredicate.EXAM_LISTED:
         return _matches_exam_listed(claim.text, proposition)
@@ -500,6 +505,10 @@ def _contains_any(value: str, candidates: tuple[str, ...]) -> bool:
 
 
 def _contains_subject(value: str, subject: str) -> bool:
+    return any(alias in value for alias in _subject_aliases(subject))
+
+
+def _subject_aliases(subject: str) -> frozenset[str]:
     normalized = _normalize(subject)
     aliases = {normalized}
     if normalized == "信息工学系":
@@ -508,7 +517,207 @@ def _contains_subject(value: str, subject: str) -> bool:
         aliases.update(("申请期间", "申請受付期間", "出願期間", "申请期限"))
     if normalized == "toeic l&r":
         aliases.update(("toeic", "托业", "トーイック"))
-    return any(alias in value for alias in aliases)
+    return frozenset(aliases)
+
+
+def _has_closed_semantic_surface(text: str, proposition: ClaimableProposition) -> bool:
+    """Require every semantic character to belong to the one typed proposition.
+
+    Predicate checks prove that required slots are present. This complementary full-consumption
+    check proves that the same claim does not carry an untyped second fact. Punctuation and spacing
+    are free, but every word-like Chinese, Japanese, or Latin fragment must be a server-owned
+    literal or part of the predicate's bounded multilingual surface grammar.
+    """
+
+    residual = _normalize(text)
+    literals = set(_subject_aliases(proposition.subject))
+    if proposition.object is not None:
+        literals.update(_subject_aliases(proposition.object))
+    literals.update(_normalize(item) for item in proposition.protected_literals)
+    if proposition.numeric_value is not None:
+        literals.add(str(proposition.numeric_value))
+    fragments = literals.union(_surface_lexemes(proposition.predicate))
+    for fragment in sorted(fragments, key=len, reverse=True):
+        residual = residual.replace(_normalize(fragment), "")
+    return _SEMANTIC_CHARACTER.search(residual) is None
+
+
+def _surface_lexemes(predicate: PropositionPredicate) -> frozenset[str]:
+    lexemes = {
+        PropositionPredicate.MAXIMUM_POINTS: (
+            "根据当前审核资料",
+            "根据审核资料",
+            "审核资料表明",
+            "英语科目",
+            "英语",
+            "的",
+            "满分",
+            "为",
+            "分",
+            "上限",
+            "是",
+            "では",
+            "英語評価",
+            "英語",
+            "を",
+            "点",
+            "満点",
+            "で",
+            "評価します",
+            "の",
+            "は",
+            "となっています",
+            "the",
+            "maximum",
+            "english",
+            "score",
+            "for",
+            "is",
+            "points",
+        ),
+        PropositionPredicate.EXAM_LISTED: (
+            "当前募集要项",
+            "根据审核资料",
+            "将",
+            "被",
+            "列为",
+            "英语外部考试",
+            "英语",
+            "外部考试",
+            "之一",
+            "現在の募集要項では",
+            "確認済み資料には",
+            "英語外部試験",
+            "英語試験",
+            "の一つとして",
+            "として",
+            "記載されています",
+            "が",
+            "the",
+            "current",
+            "admission",
+            "guidelines",
+            "list",
+            "as",
+            "an",
+            "external",
+            "english",
+            "test",
+        ),
+        PropositionPredicate.DATE_RANGE: (
+            "的申请期间为",
+            "申请期间",
+            "申请期限",
+            "从",
+            "至",
+            "请在",
+            "到",
+            "这一",
+            "内提交",
+            "审核资料记载的",
+            "是",
+            "出願期間は",
+            "申請受付期間です",
+            "から",
+            "までです",
+            "が",
+            "です",
+            "application",
+            "period",
+            "from",
+            "to",
+            "between",
+            "and",
+        ),
+        PropositionPredicate.EXAM_NORMALIZATION: (
+            "这里的",
+            "按",
+            "理解",
+            "规范",
+            "正規化",
+            "指",
+            "即",
+            "として扱います",
+            "として扱う",
+            "means",
+            "is understood as",
+        ),
+        PropositionPredicate.UNPUBLISHED_SCORE_CONVERSION: (
+            "当前审核资料",
+            "未公开",
+            "没有公开",
+            "未公表",
+            "公表されていません",
+            "確認できません",
+            "找不到",
+            "到最终英语配点的",
+            "最终英语配点",
+            "分",
+            "换算关系",
+            "换算",
+            "換算",
+            "折算",
+            "对应",
+            "対応",
+            "conversion",
+            "is not published",
+            "not published",
+            "to the final english allocation",
+        ),
+        PropositionPredicate.NO_REVIEWED_EVIDENCE: (
+            "当前审核资料中",
+            "在现有审核范围内",
+            "目前的审核资料",
+            "確認済み資料では",
+            "現在の確認範囲では",
+            "未找到",
+            "没有找到",
+            "未确认",
+            "確認できません",
+            "見当たりません",
+            "的",
+            "の",
+            "を",
+            "が",
+            "成绩要求",
+            "要求",
+            "要件",
+            "或",
+            "や",
+            "または",
+            "替代规定",
+            "替代规则",
+            "代替規則",
+            "代替ルール",
+            "规则",
+            "規則",
+            "reviewed",
+            "scope",
+            "did not contain",
+            "requirements",
+            "or",
+            "alternative rules",
+        ),
+        PropositionPredicate.MISSING_APPLICANT_INFORMATION: (
+            "还需要补充",
+            "信息",
+            "才能继续判断",
+            "需要补充",
+            "还需",
+            "缺少",
+            "必要",
+            "不足",
+            "判断",
+            "确认",
+            "判定",
+            "確認",
+            "回答",
+            "need",
+            "missing",
+            "to answer",
+        ),
+    }
+    return frozenset(_normalize(item) for item in lexemes[predicate])
 
 
 def _has_safe_surface(text: str) -> bool:
