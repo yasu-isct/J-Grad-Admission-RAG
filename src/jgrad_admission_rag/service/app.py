@@ -2095,8 +2095,8 @@ def _natural_qa_outcome(
 def _adaptive_final_fallback(draft_answer: str, selected: tuple[Any, ...], language: str) -> str:
     status = _localized_message(
         language,
-        "在线最终整理未完成。以下一般说明来自第一阶段模型：",
-        "オンラインでの最終整理が完了しませんでした。以下は第一段階モデルの一般説明です：",
+        "在线最终整理未完成。下面依次列出本地检索状态和第一阶段模型的一般说明：",
+        "オンラインでの最終整理が完了しませんでした。以下にローカル検索の状態と第一段階モデルの一般説明を順に示します：",
     )
     if selected:
         retrieval = _localized_message(

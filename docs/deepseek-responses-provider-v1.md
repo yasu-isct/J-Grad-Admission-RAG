@@ -68,9 +68,10 @@ prompt, evidence, profile, and raw response are not default-log fields.
 The projection is an API compatibility layer, not a trust boundary. DeepSeek output is decoded and
 validated again with the original full Pydantic model. Constraints omitted from the wire schema,
 including text length, patterns, numeric bounds, and array sizes, remain authoritative locally.
-Question analysis must still reconcile with the deterministic server anchor, and answer generation
-must still pass the existing citation and claim closure checks. A wire-valid but locally invalid
-response fails closed.
+When the older grounded interfaces are used, question analysis must still reconcile with the
+deterministic server anchor and grounded answer generation must pass the existing citation and
+claim closure checks. Adaptive reference-only QA does not claim citation closure. A wire-valid but
+locally invalid response fails closed in every interface.
 
 The current adaptive product route validates a bounded planning object locally. It returns either a
 user-readable general draft with no retrieval, or a draft plus at most six bounded local queries.
