@@ -1,5 +1,9 @@
 # Natural-language grounded RAG API and page v1
 
+> The M9 grounded endpoint described here remains authoritative and unchanged. The optional M10
+> product assistant now follows [Simple local QA v1](simple-local-qa-v1.md): local analysis plus
+> retrieval and at most one `{answer}` generation call.
+
 `POST /v1/grounded-answers` is the local end-to-end boundary for a natural-language question. It accepts a strict question, the target already selected in the four-step page, and the applicant fields currently held by that page. The endpoint never accepts caller-supplied evidence, rule findings, document hashes, citation provenance, provider identity, or source links.
 
 ## Server trust path
@@ -14,12 +18,13 @@ bundle, and invokes one consolidated generation boundary over server-owned typed
 Every consolidated evidence record carries its authoritative scope metadata. Unknown scope or a
 nonmatching college/department/program is rejected before the provider call; global and university
 records must not carry narrower scope metadata.
-Validated model wording is retained only when every typed answer obligation reconciles its
-predicate, protected literals, polarity/modality, scope, opaque IDs, and (for affirmative facts)
-complete citation set. Normalization and scoped knowledge-gap dispositions are also model-visible
-obligations, so one consolidated answer covers supported and unsupported siblings without fixed UI
-prose. Missing one obligation, adding an uncited fact, or changing a protected number/date/exam
-fails the request closed. See
+Validated model wording is retained only when every typed answer obligation reconciles its kind,
+protected subject/value literals, scope, opaque IDs, and (for affirmative facts) complete citation
+set. Normalization and scoped knowledge-gap dispositions are also model-visible obligations, so one
+consolidated answer covers supported and unsupported siblings without fixed UI prose. Missing one
+obligation or changing a protected number, date, or explicit exam entity fails the request closed.
+The deterministic boundary does not claim to prove the complete meaning of arbitrary free text;
+atomicity and no-extra-fact behavior are prompt and acceptance-evaluation requirements. See
 [Natural-language RAG productization v1](natural-language-productization-v1.md).
 
 The response includes the immutable `GroundedAnswer`, a cited-evidence presentation inventory, a verified local-PDF route when configured, and the separately labelled official webpage URL. Provider output is data, not markup.

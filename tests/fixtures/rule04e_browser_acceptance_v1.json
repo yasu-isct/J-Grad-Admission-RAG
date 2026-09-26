@@ -21,7 +21,7 @@
     },
     "limitation_statement": "英語筆答試験の合格は本選抜合格の必要条件です。英語筆答試験合格者については、数学筆答試験と口頭試問により最終合格者を決定します。本システムは受験者の英語試験結果、数学筆答試験・口頭試問の結果、または最終合否を判定しません。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "desktop",
@@ -38,7 +38,7 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "desktop",
@@ -55,7 +55,7 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "desktop",
@@ -72,7 +72,7 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "mobile",
@@ -96,7 +96,7 @@
     },
     "limitation_statement": "英語筆答試験の合格は本選抜合格の必要条件です。英語筆答試験合格者については、数学筆答試験と口頭試問により最終合格者を決定します。本システムは受験者の英語試験結果、数学筆答試験・口頭試問の結果、または最終合否を判定しません。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "mobile",
@@ -113,7 +113,7 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "mobile",
@@ -130,7 +130,7 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   },
   {
     "viewport": "mobile",
@@ -147,6 +147,6 @@
     "evidence": null,
     "limitation_statement": "指定された系と学院の組合せには、この審査済み非数値英語評価規則を適用しません。対象系の公式規則は別途確認が必要です。",
     "horizontal_overflow": false,
-    "audited_app_js_sha256": "740b22e32c14ed93bb8115b09e7d7b050c279ee476a622720423466e42941276"
+    "audited_app_js_sha256": "d3152c215e3064ded59581d50f0c41ad0757f0ddd10237656c3bc3084afce665"
   }
 ]

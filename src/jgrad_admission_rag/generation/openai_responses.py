@@ -15,6 +15,7 @@ from .contracts import (
 )
 from .provider import GenerationError, GenerationErrorCode
 from .responses_common import GROUNDING_SYSTEM_PROMPT, contains_refusal
+from .simple_qa import SIMPLE_QA_SYSTEM_PROMPT, SimpleQaDraft, SimpleQaRequest
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,3 +147,46 @@ class OpenAIResponsesGenerationProvider:
         if draft is None:
             raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
         return draft
+
+    def answer_simple(self, request: SimpleQaRequest) -> SimpleQaDraft:
+        payload = json.dumps(
+            request.model_dump(mode="json"),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        try:
+            response = self._client.responses.parse(
+                model=self._config.model,
+                input=[
+                    {"role": "system", "content": SIMPLE_QA_SYSTEM_PROMPT},
+                    {"role": "user", "content": payload},
+                ],
+                text_format=SimpleQaDraft,
+                max_output_tokens=self._config.max_output_tokens,
+                store=False,
+            )
+        except Exception as error:
+            name = type(error).__name__
+            if name in {"APITimeoutError", "TimeoutException", "ReadTimeout", "ConnectTimeout"}:
+                code = GenerationErrorCode.PROVIDER_TIMEOUT
+            elif name == "LengthFinishReasonError":
+                code = GenerationErrorCode.INCOMPLETE_RESPONSE
+            elif name == "ContentFilterFinishReasonError":
+                code = GenerationErrorCode.PROVIDER_REFUSAL
+            elif name in {"ValidationError", "JSONDecodeError"}:
+                code = GenerationErrorCode.MALFORMED_OUTPUT
+            else:
+                code = GenerationErrorCode.PROVIDER_UNAVAILABLE
+            raise GenerationError(code) from None
+        if contains_refusal(response):
+            raise GenerationError(GenerationErrorCode.PROVIDER_REFUSAL)
+        if getattr(response, "status", None) != "completed":
+            raise GenerationError(GenerationErrorCode.INCOMPLETE_RESPONSE)
+        parsed = getattr(response, "output_parsed", None)
+        try:
+            return SimpleQaDraft.model_validate(
+                parsed.model_dump(mode="json") if hasattr(parsed, "model_dump") else parsed
+            )
+        except Exception:
+            raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None

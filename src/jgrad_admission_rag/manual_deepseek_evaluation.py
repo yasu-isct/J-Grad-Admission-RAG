@@ -31,6 +31,7 @@ from .generation import (
     generate_checked,
 )
 from .generation.provider import GenerationError
+from .generation.simple_qa import SimpleQaDraft
 
 _QUESTIONS = (
     ("formal-multipart", "托业840按官方的标准是多少英语配点，还有没有jlpt成绩,j-test可以吗"),
@@ -335,7 +336,13 @@ def _safe_structured_output_diagnostic(
         decoded = json.loads(raw_output)
     except Exception:
         return "invalid_json", []
-    schema = QuestionAnalysis if phase == "question-analysis" else GenerationDraft
+    schema = (
+        QuestionAnalysis
+        if phase == "question-analysis"
+        else SimpleQaDraft
+        if phase == "simple-answer"
+        else GenerationDraft
+    )
     try:
         schema.model_validate(decoded)
     except ValidationError as error:

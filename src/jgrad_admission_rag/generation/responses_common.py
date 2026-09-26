@@ -14,10 +14,13 @@ needs-review, or needs-information finding: it must cite exactly that finding ID
 and it must never be presented as an official rule. The answer must equal claim texts joined in
 order with one newline and contain
 no other text. Each claim must be one short atomic proposition and must not append a second fact,
-even if it is in the same sentence. Write each claim naturally in the language requested by the question. Claim text is
-retained only on natural-answer requests whose server-owned typed proposition validates every
-subject, relation, number, date, exam name, and polarity; other callers still receive a conservative
-server projection. Never turn missing coverage into a negative school rule. If there are no
+even if it is in the same sentence. Every permitted fact is already enumerated by the supplied
+findings; do not add background knowledge or implications. Write each claim naturally in the
+language requested by the question. On natural-answer requests the server validates opaque IDs,
+claim kind, evidence closure, answer obligations, and unchanged protected subjects, numbers,
+dates, and exam names; it does not infer the complete meaning of your prose. You must therefore
+preserve each supplied proposition's relation, polarity, modality, and knowledge-gap status without
+adding any clause. Other callers still receive a conservative server projection. Never turn missing coverage into a negative school rule. If there are no
 supportable claims, return an empty answer, set needs_review, and explain the abstention under
 missing_information or limitations. Include exactly one reviewed-rule or reviewed-disposition
 claim for every supplied finding, using reviewed-rule only for confirmed findings with evidence,

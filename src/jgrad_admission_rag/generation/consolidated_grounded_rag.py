@@ -23,15 +23,23 @@ from .contracts import (
 from .grounded_rag import GroundedCitation, GroundedModel
 from .provider import GenerationProvider, generate_checked
 
-CONSOLIDATED_PIPELINE_VERSION = "consolidated-natural-answer-v3"
-CLAIM_SEMANTICS_VERSION = "typed-claim-semantics-v3"
+CONSOLIDATED_PIPELINE_VERSION = "consolidated-natural-answer-v4"
+CLAIM_SEMANTICS_VERSION = "protected-literal-claims-v4"
 MAX_CONSOLIDATED_EVIDENCE_RECORDS = 16
 MAX_CONSOLIDATED_EVIDENCE_CHARACTERS = 60_000
 _CHARACTER_NORMALIZATION = str.maketrans(
     {"資": "资", "報": "报", "語": "语", "滿": "满", "點": "点", "錄": "录"}
 )
 _NUMBER_TOKEN = re.compile(r"(?<![A-Za-z])\d+(?:[./:-]\d+)*(?![A-Za-z])")
-_SEMANTIC_CHARACTER = re.compile(r"[\w\u3040-\u30ff\u3400-\u9fff]", re.UNICODE)
+_EXAM_ENTITY_ALIASES = {
+    "toeic_lr": ("toeic l&r", "toeic", "托业", "トーイック"),
+    "toefl_ibt_home_edition": ("toefl ibt home edition", "toefl home edition"),
+    "toefl_ibt": ("toefl ibt",),
+    "toefl_itp": ("toefl itp",),
+    "toeic_ip": ("toeic ip", "toeic-ip", "托业ip", "托业 ip", "トーイックip", "トーイック ip"),
+    "jlpt": ("jlpt", "日本语能力考试", "日本語能力試験"),
+    "j_test": ("j.test", "j-test", "j test"),
+}
 
 
 class PropositionPredicate(str, Enum):
@@ -340,156 +348,52 @@ def _claim_matches_proposition(
     expected_kind = (
         ClaimKind.REVIEWED_RULE if proposition.evidence_ids else ClaimKind.REVIEWED_DISPOSITION
     )
-    if (
-        claim.kind is not expected_kind
-        or not _has_safe_surface(claim.text)
-        or not _has_closed_semantic_surface(claim.text, proposition)
+    if claim.kind is not expected_kind:
+        return False
+    return _preserves_protected_literals(claim.text, proposition)
+
+
+def _preserves_protected_literals(text: str, proposition: ClaimableProposition) -> bool:
+    """Check only server-owned literals; free-text semantics remain a generation/eval concern."""
+
+    normalized = _normalize(text)
+    expected_numbers = tuple(
+        token
+        for value in (
+            *proposition.protected_literals,
+            *((str(proposition.numeric_value),) if proposition.numeric_value is not None else ()),
+        )
+        for token in _numbers(_normalize(value))
+    )
+    if _numbers(normalized) != expected_numbers:
+        return False
+    required_literal_groups: list[frozenset[str]] = []
+    if proposition.predicate in {
+        PropositionPredicate.MAXIMUM_POINTS,
+        PropositionPredicate.EXAM_LISTED,
+        PropositionPredicate.EXAM_NORMALIZATION,
+        PropositionPredicate.NO_REVIEWED_EVIDENCE,
+        PropositionPredicate.MISSING_APPLICANT_INFORMATION,
+    }:
+        required_literal_groups.append(_subject_aliases(proposition.subject))
+    if proposition.object is not None:
+        required_literal_groups.append(_subject_aliases(proposition.object))
+    required_literal_groups.extend(
+        frozenset({_normalize(literal)}) for literal in proposition.protected_literals
+    )
+    if any(
+        not any(literal in normalized for literal in group) for group in required_literal_groups
     ):
         return False
-    if proposition.predicate is PropositionPredicate.EXAM_LISTED:
-        return _matches_exam_listed(claim.text, proposition)
-    if proposition.predicate is PropositionPredicate.MAXIMUM_POINTS:
-        return _matches_maximum_points(claim.text, proposition)
-    if proposition.predicate is PropositionPredicate.DATE_RANGE:
-        return _matches_date_range(claim.text, proposition)
-    if proposition.predicate is PropositionPredicate.EXAM_NORMALIZATION:
-        return _matches_exam_normalization(claim.text, proposition)
-    if proposition.predicate is PropositionPredicate.UNPUBLISHED_SCORE_CONVERSION:
-        return _matches_unpublished_conversion(claim.text, proposition)
-    if proposition.predicate is PropositionPredicate.MISSING_APPLICANT_INFORMATION:
-        return _matches_missing_information(claim.text, proposition)
-    return _matches_no_reviewed_evidence(claim.text, proposition)
-
-
-def _matches_maximum_points(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_any(normalized, ("英语", "英語", "english"))
-        and _contains_any(normalized, ("满分", "満点", "上限", "maximum", "max"))
-        and _numbers(normalized) == (str(proposition.numeric_value),)
-        and not _contains_any(
-            normalized,
-            (
-                "最低",
-                "minimum",
-                "换算为",
-                "換算",
-                "相当于",
-                "不满",
-                "不是",
-                "ではない",
-                "不需要",
-                "无需",
-                "不要",
-                "必要ない",
-            ),
+    expected_exams = _exam_entities(
+        " ".join(
+            item
+            for item in (proposition.subject, proposition.object, *proposition.protected_literals)
+            if item is not None
         )
     )
-
-
-def _matches_exam_listed(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_any(
-            normalized, ("募集要项", "募集要項", "审核资料", "確認済み資料", "guideline")
-        )
-        and _contains_any(
-            normalized,
-            ("列为", "记载", "記載", "列挙", "list", "listed", "included"),
-        )
-        and _contains_any(normalized, ("英语", "英語", "english"))
-        and not _contains_any(normalized, ("必须", "必須", "保证", "必ず受理", "guarantee"))
-        and not _numbers(normalized)
-    )
-
-
-def _matches_date_range(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    expected = tuple(_normalize(item) for item in proposition.protected_literals)
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_any(normalized, ("申请", "出愿", "出願", "提交", "受付", "application"))
-        and _contains_any(normalized, ("期间", "期間", "期限", "至", "から", "between"))
-        and all(item in normalized for item in expected)
-        and _numbers(normalized) == tuple(token for item in expected for token in _numbers(item))
-        and not _contains_any(normalized, ("延期", "延长", "延長", "保证", "guarantee"))
-    )
-
-
-def _matches_exam_normalization(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    assert proposition.object is not None
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_subject(normalized, proposition.object)
-        and _contains_any(normalized, ("理解", "规范", "正規化", "指", "即", "として扱", "means"))
-        and not _contains_any(normalized, ("受理", "接受", "认可", "認め", "eligible"))
-        and not _numbers(normalized)
-    )
-
-
-def _matches_unpublished_conversion(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    assert proposition.object is not None
-    expected_numbers = (
-        () if proposition.numeric_value is None else (str(proposition.numeric_value),)
-    )
-    return (
-        _contains_subject(normalized, proposition.object)
-        and _contains_any(normalized, ("换算", "換算", "折算", "对应", "対応", "conversion"))
-        and _contains_any(
-            normalized,
-            ("未公开", "没有公开", "未公表", "公表されてい", "確認でき", "找不到", "not published"),
-        )
-        and _numbers(normalized) == expected_numbers
-        and not _contains_any(normalized, ("不接受", "不能用", "不要", "不需要", "受理されない"))
-    )
-
-
-def _matches_no_reviewed_evidence(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_any(
-            normalized, ("审核资料", "审核范围", "確認済み資料", "確認範囲", "reviewed")
-        )
-        and _contains_any(
-            normalized,
-            (
-                "未找到",
-                "没有找到",
-                "未确认",
-                "確認でき",
-                "見当たら",
-                "見当たり",
-                "not found",
-            ),
-        )
-        and _contains_any(normalized, ("要求", "要件", "替代", "代替", "规则", "規則", "rule"))
-        and not _contains_any(
-            normalized,
-            ("不接受", "不能用", "不要", "不需要", "无需", "受理されない", "認められない"),
-        )
-        and not _numbers(normalized)
-    )
-
-
-def _matches_missing_information(text: str, proposition: ClaimableProposition) -> bool:
-    normalized = _normalize(text)
-    return (
-        _contains_subject(normalized, proposition.subject)
-        and _contains_any(
-            normalized,
-            ("需要补充", "还需", "缺少", "必要", "不足", "need", "missing"),
-        )
-        and _contains_any(
-            normalized,
-            ("判断", "确认", "判定", "確認", "回答", "answer"),
-        )
-        and not _contains_any(normalized, ("符合", "合格", "录取", "eligible", "guarantee"))
-    )
+    mentioned_exams = _exam_entities(text)
+    return mentioned_exams == expected_exams
 
 
 def _normalize(value: str) -> str:
@@ -498,14 +402,6 @@ def _normalize(value: str) -> str:
 
 def _numbers(value: str) -> tuple[str, ...]:
     return tuple(_NUMBER_TOKEN.findall(value))
-
-
-def _contains_any(value: str, candidates: tuple[str, ...]) -> bool:
-    return any(_normalize(candidate) in value for candidate in candidates)
-
-
-def _contains_subject(value: str, subject: str) -> bool:
-    return any(alias in value for alias in _subject_aliases(subject))
 
 
 def _subject_aliases(subject: str) -> frozenset[str]:
@@ -517,223 +413,25 @@ def _subject_aliases(subject: str) -> frozenset[str]:
         aliases.update(("申请期间", "申請受付期間", "出願期間", "申请期限"))
     if normalized == "toeic l&r":
         aliases.update(("toeic", "托业", "トーイック"))
+    if normalized == "toeic ip":
+        aliases.update(("toeic-ip", "托业ip", "托业 ip", "トーイックip", "トーイック ip"))
     return frozenset(aliases)
 
 
-def _has_closed_semantic_surface(text: str, proposition: ClaimableProposition) -> bool:
-    """Require every semantic character to belong to the one typed proposition.
-
-    Predicate checks prove that required slots are present. This complementary full-consumption
-    check proves that the same claim does not carry an untyped second fact. Punctuation and spacing
-    are free, but every word-like Chinese, Japanese, or Latin fragment must be a server-owned
-    literal or part of the predicate's bounded multilingual surface grammar.
-    """
-
-    residual = _normalize(text)
-    literals = set(_subject_aliases(proposition.subject))
-    if proposition.object is not None:
-        literals.update(_subject_aliases(proposition.object))
-    literals.update(_normalize(item) for item in proposition.protected_literals)
-    if proposition.numeric_value is not None:
-        literals.add(str(proposition.numeric_value))
-    fragments = literals.union(_surface_lexemes(proposition.predicate))
-    for fragment in sorted(fragments, key=len, reverse=True):
-        residual = residual.replace(_normalize(fragment), "")
-    return _SEMANTIC_CHARACTER.search(residual) is None
-
-
-def _surface_lexemes(predicate: PropositionPredicate) -> frozenset[str]:
-    lexemes = {
-        PropositionPredicate.MAXIMUM_POINTS: (
-            "根据当前审核资料",
-            "根据审核资料",
-            "审核资料表明",
-            "英语科目",
-            "英语",
-            "的",
-            "满分",
-            "为",
-            "分",
-            "上限",
-            "是",
-            "では",
-            "英語評価",
-            "英語",
-            "を",
-            "点",
-            "満点",
-            "で",
-            "評価します",
-            "の",
-            "は",
-            "となっています",
-            "the",
-            "maximum",
-            "english",
-            "score",
-            "for",
-            "is",
-            "points",
-        ),
-        PropositionPredicate.EXAM_LISTED: (
-            "当前募集要项",
-            "根据审核资料",
-            "将",
-            "被",
-            "列为",
-            "英语外部考试",
-            "英语",
-            "外部考试",
-            "之一",
-            "現在の募集要項では",
-            "確認済み資料には",
-            "英語外部試験",
-            "英語試験",
-            "の一つとして",
-            "として",
-            "記載されています",
-            "が",
-            "the",
-            "current",
-            "admission",
-            "guidelines",
-            "list",
-            "as",
-            "an",
-            "external",
-            "english",
-            "test",
-        ),
-        PropositionPredicate.DATE_RANGE: (
-            "的申请期间为",
-            "申请期间",
-            "申请期限",
-            "从",
-            "至",
-            "请在",
-            "到",
-            "这一",
-            "内提交",
-            "审核资料记载的",
-            "是",
-            "出願期間は",
-            "申請受付期間です",
-            "から",
-            "までです",
-            "が",
-            "です",
-            "application",
-            "period",
-            "from",
-            "to",
-            "between",
-            "and",
-        ),
-        PropositionPredicate.EXAM_NORMALIZATION: (
-            "这里的",
-            "按",
-            "理解",
-            "规范",
-            "正規化",
-            "指",
-            "即",
-            "として扱います",
-            "として扱う",
-            "means",
-            "is understood as",
-        ),
-        PropositionPredicate.UNPUBLISHED_SCORE_CONVERSION: (
-            "当前审核资料",
-            "未公开",
-            "没有公开",
-            "未公表",
-            "公表されていません",
-            "確認できません",
-            "找不到",
-            "到最终英语配点的",
-            "最终英语配点",
-            "分",
-            "换算关系",
-            "换算",
-            "換算",
-            "折算",
-            "对应",
-            "対応",
-            "conversion",
-            "is not published",
-            "not published",
-            "to the final english allocation",
-        ),
-        PropositionPredicate.NO_REVIEWED_EVIDENCE: (
-            "当前审核资料中",
-            "在现有审核范围内",
-            "目前的审核资料",
-            "確認済み資料では",
-            "現在の確認範囲では",
-            "未找到",
-            "没有找到",
-            "未确认",
-            "確認できません",
-            "見当たりません",
-            "的",
-            "の",
-            "を",
-            "が",
-            "成绩要求",
-            "要求",
-            "要件",
-            "或",
-            "や",
-            "または",
-            "替代规定",
-            "替代规则",
-            "代替規則",
-            "代替ルール",
-            "规则",
-            "規則",
-            "reviewed",
-            "scope",
-            "did not contain",
-            "requirements",
-            "or",
-            "alternative rules",
-        ),
-        PropositionPredicate.MISSING_APPLICANT_INFORMATION: (
-            "还需要补充",
-            "信息",
-            "才能继续判断",
-            "需要补充",
-            "还需",
-            "缺少",
-            "必要",
-            "不足",
-            "判断",
-            "确认",
-            "判定",
-            "確認",
-            "回答",
-            "need",
-            "missing",
-            "to answer",
-        ),
+def _exam_entities(value: str) -> frozenset[str]:
+    normalized = _normalize(value)
+    entities = {
+        entity
+        for entity, aliases in _EXAM_ENTITY_ALIASES.items()
+        if any(_normalize(alias) in normalized for alias in aliases)
     }
-    return frozenset(_normalize(item) for item in lexemes[predicate])
-
-
-def _has_safe_surface(text: str) -> bool:
-    normalized = _normalize(text)
-    return not _contains_any(
-        normalized,
-        (
-            "保证录取",
-            "必定录取",
-            "合格を保証",
-            "admission guaranteed",
-            "而且学校",
-            "并且学校",
-            "学校很好",
-        ),
-    )
+    if "toefl_ibt_home_edition" in entities:
+        entities.discard("toefl_ibt")
+    if "toefl_itp" in entities:
+        entities.discard("toefl_ibt")
+    if "toeic_ip" in entities:
+        entities.discard("toeic_lr")
+    return frozenset(entities)
 
 
 def _disposition_status(proposition: ClaimableProposition) -> str:

@@ -77,7 +77,23 @@ class NaturalLanguageSubanswer(DemoModel):
         "answered", "interpreted", "no_clear_evidence", "needs_clarification", "unsupported"
     ]
     message: str = Field(min_length=1, max_length=1_000)
-    claim_ids: tuple[str, ...] = ()
+
+
+class PublicReferenceAnswer(DemoModel):
+    kind: Literal["reference_answer"] = "reference_answer"
+    answer: str = Field(min_length=1, max_length=25_000)
+    assurance: Literal["reference_only"] = "reference_only"
+    needs_review: Literal[True] = True
+    missing_information: tuple[str, ...] = ()
+    limitations: tuple[str, ...] = ()
+
+
+class PublicReferenceResult(DemoModel):
+    target: DemoTargetSummary
+    local_scope_statement: str = Field(min_length=1, max_length=500)
+    official_source_url: str
+    local_pdf_url: str | None = None
+    answer: PublicReferenceAnswer
 
 
 class PublicGroundedCitation(DemoModel):
@@ -143,7 +159,7 @@ class PublicGroundedResult(DemoModel):
 
 
 class NaturalLanguageDeliveryMetadata(DemoModel):
-    source: Literal["live", "cache_hit", "offline"]
+    source: Literal["live", "cache_hit", "offline", "fallback"]
     generation_ms: int | None = Field(default=None, ge=0, strict=True)
     validation_ms: int = Field(ge=0, strict=True)
     knowledge_base_version: str = Field(pattern=r"^kb-[0-9a-f]{12}$")
@@ -158,7 +174,7 @@ class NaturalLanguageAnswerResponse(DemoModel):
     analysis: QuestionAnalysis
     summary: str = Field(min_length=1, max_length=1_000)
     subanswers: tuple[NaturalLanguageSubanswer, ...]
-    result: PublicGroundedResult | None = None
+    result: PublicReferenceResult | None = None
     delivery: NaturalLanguageDeliveryMetadata
     missing_context: tuple[str, ...] = ()
     unsupported_parts: tuple[str, ...] = ()
@@ -171,16 +187,6 @@ class NaturalLanguageAnswerResponse(DemoModel):
             raise ValueError("missing context must be analysis-owned")
         if self.unsupported_parts != self.analysis.unsupported_parts:
             raise ValueError("unsupported parts must be analysis-owned")
-        answered_claims = {claim_id for item in self.subanswers for claim_id in item.claim_ids}
-        result_claims = (
-            {claim.claim_id for claim in self.result.answer.claims}
-            if self.result is not None
-            else set()
-        )
-        if answered_claims != result_claims:
-            raise ValueError("subanswer claim mapping must cover the public result")
-        if (self.result is not None) != bool(result_claims):
-            raise ValueError("a public result must contain at least one claim")
         return self
 
 
@@ -191,6 +197,8 @@ __all__ = [
     "NaturalLanguageAnswerResponse",
     "NaturalLanguageDeliveryMetadata",
     "NaturalLanguageSubanswer",
+    "PublicReferenceAnswer",
+    "PublicReferenceResult",
     "PublicGroundedAnswer",
     "PublicGroundedCitation",
     "PublicGroundedClaim",
