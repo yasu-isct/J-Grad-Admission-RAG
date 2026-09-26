@@ -75,20 +75,44 @@ class _CountingNaturalGenerationProvider:
 
     def generate(self, request):
         self.calls += 1
-        finding = request.rule_findings[0]
-        fields = dict(item.split("=", 1) for item in finding.statement.split("; ") if "=" in item)
-        text = f"{fields['subject']}的英语满分为{fields['value']}分。"
-        claim = GeneratedClaim(
-            claim_id="claim:0001",
-            kind=ClaimKind.REVIEWED_RULE,
-            text=text,
-            evidence_ids=finding.evidence_ids,
-            finding_ids=(finding.finding_id,),
-        )
+        claims = []
+        for index, finding in enumerate(request.rule_findings, start=1):
+            fields = dict(
+                item.split("=", 1) for item in finding.statement.split("; ") if "=" in item
+            )
+            predicate = fields["predicate"]
+            if predicate == "exam_normalization":
+                text = f"这里的“{fields['source']}”按{fields['canonical']}理解。"
+            elif predicate == "unpublished_score_conversion":
+                text = f"当前审核资料未公开{fields['exam']} {fields['score']} 分到最终英语配点的换算关系。"
+            elif predicate == "no_reviewed_evidence":
+                text = f"当前审核资料中未找到{fields['subject']}的要求或替代规则。"
+            elif predicate == "missing_applicant_information":
+                text = f"还需要补充{fields['subject']}信息，才能继续判断。"
+            else:
+                text = f"{fields['subject']}的英语满分为{fields['value']}分。"
+            claims.append(
+                GeneratedClaim(
+                    claim_id=f"claim:{index:04d}",
+                    kind=(
+                        ClaimKind.REVIEWED_RULE
+                        if finding.evidence_ids
+                        else ClaimKind.REVIEWED_DISPOSITION
+                    ),
+                    text=text,
+                    evidence_ids=finding.evidence_ids,
+                    finding_ids=(finding.finding_id,),
+                )
+            )
         return GenerationDraft(
-            answer=text,
-            claims=(claim,),
-            needs_review=False,
+            answer="\n".join(item.text for item in claims),
+            claims=tuple(claims),
+            missing_information=tuple(
+                sorted(
+                    field for finding in request.rule_findings for field in finding.missing_fields
+                )
+            ),
+            needs_review=any(not item.evidence_ids for item in request.rule_findings),
             refused=False,
         )
 
@@ -152,6 +176,96 @@ def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestCl
     )
 
 
+@pytest.mark.real_pdf
+def test_formal_question_uses_real_reviewed_rules_with_mock_retrieval(
+    tmp_path, real_pdf_path, monkeypatch
+) -> None:
+    runtime = prepare_demo(real_pdf_path, (tmp_path / "real-workspace").resolve())
+    embedding = create_demo_embedding_provider(resolve_demo_embedding_configuration())
+    settings = ServiceSettings(
+        corpus_root=runtime.corpus_root,
+        manifest_path=runtime.manifest_path,
+        policy_path=runtime.policy_path,
+        report_plan_paths=(runtime.report_plan_path,),
+        page_scope_manifest_paths=(runtime.page_scope_manifest_path,),
+        query_intent_catalog_path=runtime.query_intent_catalog_path,
+        date_presentation_paths=(runtime.date_presentation_path,),
+        source_pdf_path=runtime.source_pdf_path,
+        source_pdf_document_id=runtime.identity.document_id,
+        source_pdf_sha256=runtime.identity.source_pdf_sha256,
+    )
+    client = TestClient(
+        create_app(
+            settings,
+            ServiceDependencies(
+                provider_factory=lambda: embedding,
+                generation_provider_factory=ReviewedStateGenerationProvider,
+                question_understanding_provider_factory=(
+                    DeterministicQuestionUnderstandingProvider
+                ),
+            ),
+        )
+    )
+    with client:
+        catalog = client.get("/v1/target-catalog").json()
+        school = catalog["schools"][0]
+        degree = school["degrees"][0]
+        intake = next(item for item in degree["intakes"] if item["year"] == 2027)
+        college = next(item for item in intake["colleges"] if item["college_id"] == "情報理工学院")
+        department = next(
+            item for item in college["departments"] if item["department_id"] == "情報工学系"
+        )
+        route = department["application_routes"][0]
+        target = {
+            "school_id": school["school_id"],
+            "document_id": intake["document_id"],
+            "degree_id": degree["degree_id"],
+            "intake": {"year": 2027, "month": 4},
+            "college_id": college["college_id"],
+            "department_id": department["department_id"],
+            "application_route": route["route_id"],
+        }
+        request_target = service_app.DemoTargetRequest.model_validate(target)
+        state = client.app.state.service_state
+        plan, bundle, _ = service_app._load_demo_context(request_target, settings, state)
+        allocation = next(
+            item for item in plan.language_score_allocation.entries if item.target == "情報工学系"
+        )
+        selected = tuple(
+            item
+            for item in bundle.evidence_records
+            if item.fact_id == allocation.evidence_binding.fact_id
+        )
+        assert len(selected) == 1
+        monkeypatch.setattr(
+            service_app,
+            "_select_consolidated_evidence",
+            lambda *_args, **_kwargs: selected,
+        )
+        monkeypatch.setattr(
+            service_app,
+            "_project_reviewed_answer_to_records",
+            lambda *_args, **_kwargs: None,
+        )
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={
+                "question": "托业840按官方的标准是多少英语配点，还有没有jlpt成绩，j-test可以吗",
+                "target": target,
+                "applicant": {"english_test_kind": "toeic_lr", "english_score": 840},
+            },
+        )
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    answer = body["result"]["answer"]
+    assert all(token in answer["answer"] for token in ("TOEIC L&R", "840", "100", "JLPT", "J.TEST"))
+    cited = [claim for claim in answer["claims"] if claim["citations"]]
+    assert len(cited) == 1
+    assert cited[0]["citations"][0]["fact_id"] == allocation.evidence_binding.fact_id
+    assert all("finding" not in claim["text"] for claim in answer["claims"])
+
+
 def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(tmp_path) -> None:
     client = _client(tmp_path)
     with client:
@@ -172,8 +286,11 @@ def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(
     assert len(body["subanswers"]) == 2
     assert body["subanswers"][0]["status"] == "interpreted"
     assert any(item["status"] == "no_clear_evidence" for item in body["subanswers"])
-    assert body["result"] is None
-    assert all(item["claim_ids"] == [] for item in body["subanswers"])
+    assert body["result"] is not None
+    assert len(body["result"]["answer"]["claims"]) == 2
+    assert all(item["claim_ids"] for item in body["subanswers"])
+    assert "TOEIC L&R" in body["result"]["answer"]["answer"]
+    assert "J.TEST" in body["result"]["answer"]["answer"]
     assert body["delivery"]["source"] == "offline"
 
 
@@ -266,7 +383,7 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
         )
         generator.identity = generator.identity.model_copy(update={"revision": "test-v2"})
         changed_model = client.post("/v1/natural-language-answers", json=payload)
-        monkeypatch.setattr(service_app, "CLAIM_SEMANTICS_VERSION", "typed-claim-semantics-v2")
+        monkeypatch.setattr(service_app, "CLAIM_SEMANTICS_VERSION", "typed-claim-semantics-v3")
         changed_validator = client.post("/v1/natural-language-answers", json=payload)
         cached_values_repr = repr(
             tuple(entry.value for entry in state.natural_answer_cache._entries.values())
@@ -284,15 +401,38 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     parsed_first = service_app.NaturalLanguageAnswerResponse.model_validate(first_body)
     assert parsed_first.result is not None
     official_text = parsed_first.result.evidence[0].official_text
-    exact_claim = parsed_first.result.answer.claims[0].model_copy(update={"text": official_text})
+    cited_index = next(
+        index for index, claim in enumerate(parsed_first.result.answer.claims) if claim.citations
+    )
+    exact_claim = parsed_first.result.answer.claims[cited_index].model_copy(
+        update={"text": official_text}
+    )
+    exact_claims = list(parsed_first.result.answer.claims)
+    exact_claims[cited_index] = exact_claim
     exact_answer = parsed_first.result.answer.model_copy(
-        update={"answer": official_text, "claims": (exact_claim,)}
+        update={"answer": "\n".join(item.text for item in exact_claims), "claims": exact_claims}
     )
     exact_response = parsed_first.model_copy(
         update={"result": parsed_first.result.model_copy(update={"answer": exact_answer})}
     )
     exact_cache_core = service_app._project_natural_answer_for_cache(exact_response)
-    assert first_body["result"]["answer"]["claims"][0]["text"].endswith("英语满分为100分。")
+    assert any(
+        item["text"].endswith("英语满分为100分。")
+        for item in first_body["result"]["answer"]["claims"]
+    )
+    consolidated_text = first_body["result"]["answer"]["answer"]
+    assert all(
+        token in consolidated_text
+        for token in ("TOEIC L&R", "840", "未公开", "JLPT", "J.TEST", "100")
+    )
+    affirmative = [item for item in first_body["result"]["answer"]["claims"] if item["citations"]]
+    dispositions = [
+        item for item in first_body["result"]["answer"]["claims"] if not item["citations"]
+    ]
+    assert len(affirmative) == 1
+    assert len(dispositions) == 5
+    assert all(item["kind"] == "reviewed_disposition" for item in dispositions)
+    assert first_body["result"]["answer"]["missing_information"] == ["exam_date"]
     assert second_body["delivery"]["source"] == "cache_hit"
     assert second_body["result"] == first_body["result"]
     assert "finding:" not in first.text
@@ -304,12 +444,16 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     assert "777" not in cached_values_repr
     assert "Synthetic Department English maximum 100 points." not in cached_values_repr
     assert official_text not in repr(exact_cache_core)
-    assert exact_cache_core.claims[0].text is None
-    assert exact_cache_core.claims[0].exact_text_citation_key is not None
+    assert exact_cache_core.claims[cited_index].text is None
+    assert exact_cache_core.claims[cited_index].exact_text_citation_key is not None
     assert (
         service_app._restore_cached_claim_text(
-            exact_cache_core.claims[0],
-            {exact_cache_core.claims[0].exact_text_citation_key: "authoritative text reloaded"},
+            exact_cache_core.claims[cited_index],
+            {
+                exact_cache_core.claims[cited_index].exact_text_citation_key: (
+                    "authoritative text reloaded"
+                )
+            },
         )
         == "authoritative text reloaded"
     )
@@ -454,13 +598,39 @@ def test_reviewed_evidence_conflict_is_not_downgraded_to_missing_coverage(
             "reviewed report preparation failed",
         )
 
-    monkeypatch.setattr(service_app, "_build_grounded_answer_response", fail_closed)
+    monkeypatch.setattr(service_app, "_load_demo_context", fail_closed)
     with client:
         target = _target(client.get("/v1/target-catalog").json())
         response = client.post(
             "/v1/natural-language-answers",
             json={
                 "question": "TOEFL Home Edition可以吗？",
+                "target": target,
+                "applicant": {},
+            },
+        )
+
+    assert response.status_code == 409
+    assert response.json()["code"] == "report_preparation_failed"
+
+
+def test_report_evidence_conflict_is_not_hidden_by_disposition_answer(
+    tmp_path, monkeypatch
+) -> None:
+    client = _client(tmp_path)
+
+    def fail_closed(*_args, **_kwargs):
+        raise service_app.ApplicantReportError(
+            service_app.ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH
+        )
+
+    monkeypatch.setattr(service_app, "build_applicant_report", fail_closed)
+    with client:
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={
+                "question": "托业840按官方标准是多少英语配点，还有没有jlpt成绩，j-test可以吗",
                 "target": target,
                 "applicant": {},
             },

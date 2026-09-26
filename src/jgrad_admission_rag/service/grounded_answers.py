@@ -127,9 +127,14 @@ class PublicGroundedResult(DemoModel):
         document_ids = {key[0] for key in citation_keys}
         if (
             citation_keys != evidence_keys
-            or len(document_ids) != 1
+            or (citation_keys and len(document_ids) != 1)
             or any(
-                claim.kind is not ClaimKind.APPLICANT_STATEMENT and not claim.citations
+                claim.kind not in {ClaimKind.APPLICANT_STATEMENT, ClaimKind.REVIEWED_DISPOSITION}
+                and not claim.citations
+                for claim in self.answer.claims
+            )
+            or any(
+                claim.kind is ClaimKind.REVIEWED_DISPOSITION and claim.citations
                 for claim in self.answer.claims
             )
         ):

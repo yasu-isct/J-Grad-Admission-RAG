@@ -258,7 +258,7 @@ def test_reviewed_answer_projection_is_bound_to_requested_intent_category() -> N
     assert _project_reviewed_answer_to_retrieval(_pack(), answer, dates) is None
 
 
-def test_reviewed_finding_becomes_exact_evidence_proposition_for_generic_intent() -> None:
+def test_generic_reviewed_finding_is_not_exposed_as_unvalidated_free_text() -> None:
     catalog = load_query_intent_catalog(
         Path(__file__).parents[1] / "src/jgrad_admission_rag/demo_config/query_intent_catalog.json"
     )
@@ -294,10 +294,7 @@ def test_reviewed_finding_becomes_exact_evidence_proposition_for_generic_intent(
         suppress_language=False,
     )
 
-    assert len(propositions) == 1
-    assert propositions[0].predicate.value == "exact_evidence"
-    assert propositions[0].obligation_ids == ("subquestion:01",)
-    assert propositions[0].exact_evidence_text in {record.text for record in records}
+    assert propositions == ()
 
 
 def test_language_finding_binds_only_matching_exam_subquestion() -> None:
