@@ -13,6 +13,7 @@ from jgrad_admission_rag.demo_embedding import (
     resolve_demo_embedding_configuration,
 )
 from jgrad_admission_rag.generation import (
+    AdaptiveQaPlanDraft,
     ClaimKind,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
@@ -68,9 +69,30 @@ class _CountingNaturalGenerationProvider:
         revision="test",
     )
 
-    def __init__(self) -> None:
+    def __init__(self, *, needs_local_lookup: bool = True) -> None:
         self.calls = 0
         self.requests = []
+        self.needs_local_lookup = needs_local_lookup
+
+    def plan_adaptive(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        return AdaptiveQaPlanDraft(
+            draft_answer="一般说明。",
+            needs_local_lookup=self.needs_local_lookup,
+            search_queries=("score conversion accepted tests",) if self.needs_local_lookup else (),
+        )
+
+    def answer_adaptive(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        if request.retrieval_status == "no_hits":
+            return SimpleQaDraft(
+                answer="一般说明。当前选择的本地募集要项没有确认相关学校规则，请查看官方原文。"
+            )
+        return SimpleQaDraft(
+            answer=f"已根据 {len(request.sources)} 条本地记录回答：{request.question}"
+        )
 
     def answer_simple(self, request):
         self.calls += 1
@@ -130,8 +152,15 @@ class _FailingSimpleGenerationProvider:
         revision="test",
     )
 
-    def answer_simple(self, _request):
+    def plan_adaptive(self, _request):
         raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT)
+
+
+class _FailingFinalGenerationProvider(_CountingNaturalGenerationProvider):
+    def answer_adaptive(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        raise GenerationError(GenerationErrorCode.PROVIDER_TIMEOUT)
 
 
 def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestClient:
@@ -313,9 +342,64 @@ def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(
     assert all(item["status"] in {"answered", "no_clear_evidence"} for item in body["subanswers"])
 
 
-def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
+@pytest.mark.parametrize(
+    "question",
+    (
+        "托业是什么意思？",
+        "JLPT是什么？",
+        "TOEFL Home Edition和普通TOEFL有什么区别？",
+    ),
+)
+def test_general_questions_use_one_planning_call_without_local_retrieval(
+    tmp_path, monkeypatch, question
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    generator = _CountingNaturalGenerationProvider(needs_local_lookup=False)
+
+    def unexpected_retrieval(*_args, **_kwargs):
+        raise AssertionError("general question must not perform local retrieval")
+
+    monkeypatch.setattr(service_app, "_retrieve_natural_answer_evidence", unexpected_retrieval)
+    with client:
+        client.app.state.service_state.generation_provider = generator
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": question, "target": target, "applicant": {}},
+        )
+
+    assert response.status_code == 200, response.text
+    assert generator.calls == 1
+    assert response.json()["delivery"]["source"] == "live"
+    assert response.json()["result"]["answer"]["answer"] == "一般说明。"
+    assert "未查询本地募集要项" in response.json()["summary"]
+
+
+def test_school_rule_zero_hits_still_uses_final_call_and_marks_local_gap(
     tmp_path, monkeypatch
 ) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    generator = _CountingNaturalGenerationProvider()
+    monkeypatch.setattr(service_app, "_select_consolidated_evidence", lambda *_args: ())
+    with client:
+        client.app.state.service_state.generation_provider = generator
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "这个专业接受一种全新的考试吗？", "target": target, "applicant": {}},
+        )
+
+    assert response.status_code == 200, response.text
+    assert generator.calls == 2
+    assert generator.requests[1].retrieval_status == "no_hits"
+    assert generator.requests[1].sources == ()
+    assert "没有确认" in response.json()["result"]["answer"]["answer"]
+    assert response.json()["subanswers"][0]["status"] == "no_clear_evidence"
+
+
+def test_adaptive_natural_answer_is_two_calls_then_exact_cache_hit(tmp_path, monkeypatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
     client = _client(tmp_path, online=True)
     analyzer = _CountingQuestionUnderstandingProvider()
@@ -397,32 +481,45 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     assert changed.status_code == 200, changed.text
     assert changed_model.status_code == 200, changed_model.text
     assert analyzer.calls == 0
-    assert generator.calls == 3, first.text
-    assert "777" not in generator.requests[0].model_dump_json()
-    assert "fact:" not in generator.requests[0].model_dump_json()
+    assert generator.calls == 6, first.text
+    assert all("777" not in item.model_dump_json() for item in generator.requests)
+    assert all("fact:" not in item.model_dump_json() for item in generator.requests)
+    for forbidden in ("synthetic-demo-2027", "source_pages", "pdf_sha256", "rule_ids"):
+        assert all(forbidden not in item.model_dump_json() for item in generator.requests)
+    assert not hasattr(generator.requests[0], "sources")
+    assert len(generator.requests[1].sources) == 1
     first_body = first.json()
     second_body = second.json()
     assert first_body["delivery"]["source"] == "live"
     assert first_body["result"]["answer"]["kind"] == "reference_answer"
     assert first_body["result"]["answer"]["assurance"] == "reference_only"
     assert "claims" not in first_body["result"]["answer"]
+    assert '"draft_answer"' not in first.text
+    assert '"search_queries"' not in first.text
     assert first_body["result"]["answer"]["missing_information"] == ["exam_date"]
     assert second_body["delivery"]["source"] == "cache_hit"
     assert second_body["summary"] == first_body["summary"]
     assert "已校验依据" not in second_body["summary"]
     assert second_body["result"] == first_body["result"]
     assert changed_page_scope_key != original_key
-    assert question not in cached_values_repr
     assert "777" not in cached_values_repr
     assert "Synthetic Department English maximum 100 points." not in cached_values_repr
 
 
-def test_arbitrary_admission_question_uses_original_question_as_local_query(
+def test_arbitrary_admission_question_reaches_model_planning_and_local_retrieval(
     tmp_path, monkeypatch
 ) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
     client = _client(tmp_path, online=True)
     generator = _CountingNaturalGenerationProvider()
+    captured_queries = []
+    real_retrieval = service_app._retrieve_natural_answer_evidence
+
+    def capture_retrieval(queries, *args, **kwargs):
+        captured_queries.append(queries)
+        return real_retrieval(queries, *args, **kwargs)
+
+    monkeypatch.setattr(service_app, "_retrieve_natural_answer_evidence", capture_retrieval)
     with client:
         client.app.state.service_state.generation_provider = generator
         target = _target(client.get("/v1/target-catalog").json())
@@ -436,7 +533,10 @@ def test_arbitrary_admission_question_uses_original_question_as_local_query(
     assert response.json()["analysis"]["subquestions"][0]["retrieval_query"] == (
         "面试时需要准备哪些材料？"
     )
-    assert generator.calls <= 1
+    assert generator.calls == 2
+    assert generator.requests[0].question == "面试时需要准备哪些材料？"
+    assert captured_queries == [("score conversion accepted tests",)]
+    assert generator.requests[1].retrieval_status in {"hits", "no_hits"}
 
 
 def test_missing_online_key_keeps_structured_service_ready_and_labels_nl_unconfigured(
@@ -483,7 +583,7 @@ def test_missing_deepseek_key_keeps_readiness_and_identifies_provider(
         "mode": "online_model",
         "configured": False,
         "label": "DeepSeek 在线生成服务未配置",
-        "request_timeout_seconds": 195,
+        "request_timeout_seconds": 375,
     }
     assert response.status_code == 503
     assert response.json()["code"] == "online_generation_not_configured"
@@ -518,6 +618,38 @@ def test_online_generation_failure_falls_back_to_local_retrieval(tmp_path, monke
     assert cache_entries == 0
 
 
+def test_final_generation_failure_keeps_draft_and_bounded_local_status(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    generator = _FailingFinalGenerationProvider()
+    with client:
+        client.app.state.service_state.generation_provider = generator
+        monkeypatch.setattr(
+            service_app,
+            "_select_consolidated_evidence",
+            lambda *_args, **_kwargs: (
+                SimpleNamespace(text="Synthetic local record.", section_path=("Synthetic",)),
+            ),
+        )
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "学校规则是什么？", "target": target, "applicant": {}},
+        )
+        cache_entries = len(client.app.state.service_state.natural_answer_cache._entries)
+
+    assert response.status_code == 200, response.text
+    assert generator.calls == 2
+    assert response.json()["delivery"]["source"] == "fallback"
+    answer = response.json()["result"]["answer"]["answer"]
+    assert "一般说明" in answer
+    assert "Synthetic local record." in answer
+    assert "最终整理未完成" in answer
+    assert cache_entries == 0
+
+
 def test_configured_deepseek_status_shows_actual_model_name() -> None:
     settings = ServiceSettings(
         generation_provider_name="deepseek-responses",
@@ -535,7 +667,7 @@ def test_configured_deepseek_status_shows_actual_model_name() -> None:
     assert status.configured is True
     assert status.model == "deepseek-v4-pro"
     assert status.label == "DeepSeek 在线模型 · deepseek-v4-pro"
-    assert status.request_timeout_seconds == 195
+    assert status.request_timeout_seconds == 375
 
 
 def test_generation_request_timeout_budget_tracks_provider_configuration() -> None:
@@ -556,7 +688,7 @@ def test_generation_request_timeout_budget_tracks_provider_configuration() -> No
 
     status = service_app._generation_status_response(settings, state)
 
-    assert status.request_timeout_seconds == 60
+    assert status.request_timeout_seconds == 105
 
 
 def test_simple_qa_does_not_invoke_reviewed_report_pipeline(tmp_path, monkeypatch) -> None:

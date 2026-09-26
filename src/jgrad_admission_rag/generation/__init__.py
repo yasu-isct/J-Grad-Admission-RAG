@@ -1,5 +1,23 @@
 """Provider-neutral grounded-generation boundary."""
 
+from .adaptive_qa import (
+    ADAPTIVE_QA_FINAL_PROMPT_VERSION,
+    ADAPTIVE_QA_FINAL_SYSTEM_PROMPT,
+    ADAPTIVE_QA_PLANNING_PROMPT_VERSION,
+    ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
+    ADAPTIVE_QA_SCHEMA_VERSION,
+    MAX_ADAPTIVE_SEARCH_QUERIES,
+    MAX_ADAPTIVE_SEARCH_QUERY_CHARACTERS,
+    AdaptiveQaAnswerResult,
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanDraft,
+    AdaptiveQaPlanResult,
+    AdaptiveQaPlanningRequest,
+    AdaptiveQaProvider,
+    answer_adaptive_checked,
+    plan_adaptive_checked,
+)
+
 from .contracts import (
     GENERATION_PROMPT_VERSION,
     GENERATION_SCHEMA_VERSION,
@@ -82,10 +100,21 @@ from .question_analysis import (
 )
 
 __all__ = [
+    "ADAPTIVE_QA_FINAL_PROMPT_VERSION",
+    "ADAPTIVE_QA_FINAL_SYSTEM_PROMPT",
+    "ADAPTIVE_QA_PLANNING_PROMPT_VERSION",
+    "ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT",
+    "ADAPTIVE_QA_SCHEMA_VERSION",
     "GENERATION_PROMPT_VERSION",
     "GENERATION_SCHEMA_VERSION",
     "GROUNDED_RAG_SCHEMA_VERSION",
     "ApplicantFact",
+    "AdaptiveQaAnswerResult",
+    "AdaptiveQaFinalRequest",
+    "AdaptiveQaPlanDraft",
+    "AdaptiveQaPlanResult",
+    "AdaptiveQaPlanningRequest",
+    "AdaptiveQaProvider",
     "CLAIM_SEMANTICS_VERSION",
     "ClaimKind",
     "ClaimableProposition",
@@ -133,6 +162,8 @@ __all__ = [
     "OpenAIResponsesGenerationProvider",
     "OpenAIResponsesQuestionUnderstandingProvider",
     "MentionedScore",
+    "MAX_ADAPTIVE_SEARCH_QUERIES",
+    "MAX_ADAPTIVE_SEARCH_QUERY_CHARACTERS",
     "MAX_CONSOLIDATED_EVIDENCE_CHARACTERS",
     "MAX_CONSOLIDATED_EVIDENCE_RECORDS",
     "PropositionPredicate",
@@ -141,11 +172,13 @@ __all__ = [
     "QuestionSubquestion",
     "QuestionUnderstandingProvider",
     "assign_generation_evidence_ids",
+    "answer_adaptive_checked",
     "build_deepseek_schema_projection",
     "assemble_generation_answer",
     "canonical_generation_result_bytes",
     "canonical_grounded_answer_bytes",
     "generate_checked",
+    "plan_adaptive_checked",
     "project_deepseek_strict_schema",
     "run_grounded_rag",
     "run_consolidated_grounded_rag",

@@ -14,6 +14,7 @@ from typing import Any, Callable, Sequence
 from pydantic import ValidationError
 
 from .generation import (
+    AdaptiveQaPlanDraft,
     ClaimKind,
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
     DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
@@ -339,8 +340,10 @@ def _safe_structured_output_diagnostic(
     schema = (
         QuestionAnalysis
         if phase == "question-analysis"
+        else AdaptiveQaPlanDraft
+        if phase == "adaptive-planning"
         else SimpleQaDraft
-        if phase == "simple-answer"
+        if phase in {"simple-answer", "adaptive-final"}
         else GenerationDraft
     )
     try:
@@ -385,20 +388,24 @@ def _emit_report(
     *,
     error_code: str | None,
     success: bool,
+    extra: dict[str, object] | None = None,
 ) -> None:
+    report = {
+        "calls": ledger.calls,
+        "error_code": error_code,
+        "max_calls": ledger.max_calls,
+        "model": ledger.model,
+        "observations": ledger.observations,
+        "provider": "deepseek-responses",
+        "raw_responses_persisted": False,
+        "success": success,
+        "synthetic_only": True,
+    }
+    if extra:
+        report.update(extra)
     print(
         json.dumps(
-            {
-                "calls": ledger.calls,
-                "error_code": error_code,
-                "max_calls": ledger.max_calls,
-                "model": ledger.model,
-                "observations": ledger.observations,
-                "provider": "deepseek-responses",
-                "raw_responses_persisted": False,
-                "success": success,
-                "synthetic_only": True,
-            },
+            report,
             ensure_ascii=True,
             separators=(",", ":"),
             sort_keys=True,

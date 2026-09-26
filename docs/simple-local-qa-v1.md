@@ -1,5 +1,9 @@
 # Simple local QA v1
 
+> Historical M10-08 design. M10-09 keeps this reference-only assurance boundary and fallback, but
+> replaces the online one-call retrieval-first path with the adaptive flow in
+> `adaptive-local-qa-v1.md`.
+
 The natural-language assistant is an optional presentation layer above locally extracted and
 indexed admission material. It is not an admission-decision engine and does not extend the
 authority of the M9 reviewed report, rule, or cited-answer paths.

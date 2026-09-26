@@ -9,6 +9,13 @@ from typing import Any, Callable, TypeVar
 
 from pydantic import BaseModel
 
+from .adaptive_qa import (
+    ADAPTIVE_QA_FINAL_SYSTEM_PROMPT,
+    ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanDraft,
+    AdaptiveQaPlanningRequest,
+)
 from .contracts import (
     GENERATION_PROMPT_VERSION,
     GenerationDraft,
@@ -105,6 +112,7 @@ class DeepSeekResponsesGenerationProvider:
         )
         self._schema_projection = _projection_for(GenerationDraft)
         self._simple_qa_projection = _projection_for(SimpleQaDraft)
+        self._adaptive_plan_projection = _projection_for(AdaptiveQaPlanDraft)
         self._client = _create_client(config, _client_factory)
 
     @property
@@ -143,6 +151,42 @@ class DeepSeekResponsesGenerationProvider:
             payload=payload,
             schema=SimpleQaDraft,
             schema_name="simple_qa_answer",
+            projection=self._simple_qa_projection,
+            reasoning_effort="none",
+        )
+
+    def plan_adaptive(self, request: AdaptiveQaPlanningRequest) -> AdaptiveQaPlanDraft:
+        payload = json.dumps(
+            request.model_dump(mode="json"),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return _request_structured_output(
+            self._client,
+            config=self._config,
+            system_prompt=ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
+            payload=payload,
+            schema=AdaptiveQaPlanDraft,
+            schema_name="adaptive_qa_plan",
+            projection=self._adaptive_plan_projection,
+            reasoning_effort="none",
+        )
+
+    def answer_adaptive(self, request: AdaptiveQaFinalRequest) -> SimpleQaDraft:
+        payload = json.dumps(
+            request.model_dump(mode="json"),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return _request_structured_output(
+            self._client,
+            config=self._config,
+            system_prompt=ADAPTIVE_QA_FINAL_SYSTEM_PROMPT,
+            payload=payload,
+            schema=SimpleQaDraft,
+            schema_name="adaptive_qa_answer",
             projection=self._simple_qa_projection,
             reasoning_effort="none",
         )
