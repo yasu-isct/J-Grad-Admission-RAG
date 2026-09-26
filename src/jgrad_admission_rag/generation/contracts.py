@@ -10,7 +10,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, StrictBool, field_validator, model_validator
 
 GENERATION_SCHEMA_VERSION = "1.1"
-GENERATION_PROMPT_VERSION = "grounded-answer-v3"
+GENERATION_PROMPT_VERSION = "grounded-answer-v4"
 
 _SAFE_ID = re.compile(r"^[^\W][\w.:/-]*$", re.UNICODE)
 _EVIDENCE_ID = re.compile(r"^evidence:[0-9]{4}$")
@@ -343,7 +343,7 @@ class GenerationProviderIdentity(GenerationModel):
     provider: str
     model: str
     revision: str | None = None
-    prompt_version: Literal["grounded-answer-v3"] = GENERATION_PROMPT_VERSION
+    prompt_version: Literal["grounded-answer-v4"] = GENERATION_PROMPT_VERSION
 
     @field_validator("provider", "model")
     @classmethod

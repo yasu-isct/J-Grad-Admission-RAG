@@ -127,6 +127,13 @@ def test_consolidated_generation_rejects_changed_relation_number_exam_or_polarit
     assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
 
 
+def test_maximum_points_rejects_an_appended_uncited_fact() -> None:
+    with pytest.raises(GenerationError) as caught:
+        _run("情報工学系的英语满分为100分，面试采用线上形式。")
+
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
 @pytest.mark.parametrize(
     "text",
     (
@@ -245,6 +252,35 @@ def test_exam_listed_rejects_new_acceptance_semantics() -> None:
             DeterministicFakeGenerationProvider(_draft("TOEICは必ず受理されます。")),
             request_id="request:test",
             question="TOEICは使えますか。",
+            target=GenerationTarget(
+                application_label="Science Tokyo / 情報工学系",
+                scope_targets=("情報工学系",),
+                parent_college="情報理工学院",
+            ),
+            evidence=(evidence,),
+            propositions=(proposition,),
+        )
+
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
+def test_exam_listed_rejects_an_appended_uncited_requirement() -> None:
+    evidence = _evidence("英語外部試験としてTOEIC L&Rを利用できる。")
+    proposition = ClaimableProposition(
+        proposition_id="proposition:0001",
+        obligation_ids=("subquestion:01",),
+        predicate=PropositionPredicate.EXAM_LISTED,
+        subject="TOEIC L&R",
+        evidence_ids=("evidence:0001",),
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        run_consolidated_grounded_rag(
+            DeterministicFakeGenerationProvider(
+                _draft("当前募集要项将TOEIC L&R列为英语外部考试之一，且无需提交成绩。")
+            ),
+            request_id="request:test",
+            question="TOEIC L&R可以吗？",
             target=GenerationTarget(
                 application_label="Science Tokyo / 情報工学系",
                 scope_targets=("情報工学系",),
