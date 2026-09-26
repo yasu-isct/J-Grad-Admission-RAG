@@ -36,7 +36,7 @@ _EXAM_ENTITY_ALIASES = {
     "toefl_ibt_home_edition": ("toefl ibt home edition", "toefl home edition"),
     "toefl_ibt": ("toefl ibt",),
     "toefl_itp": ("toefl itp",),
-    "toeic_ip": ("toeic ip",),
+    "toeic_ip": ("toeic ip", "toeic-ip", "托业ip", "托业 ip", "トーイックip", "トーイック ip"),
     "jlpt": ("jlpt", "日本语能力考试", "日本語能力試験"),
     "j_test": ("j.test", "j-test", "j test"),
 }
@@ -413,6 +413,8 @@ def _subject_aliases(subject: str) -> frozenset[str]:
         aliases.update(("申请期间", "申請受付期間", "出願期間", "申请期限"))
     if normalized == "toeic l&r":
         aliases.update(("toeic", "托业", "トーイック"))
+    if normalized == "toeic ip":
+        aliases.update(("toeic-ip", "托业ip", "托业 ip", "トーイックip", "トーイック ip"))
     return frozenset(aliases)
 
 
@@ -425,6 +427,10 @@ def _exam_entities(value: str) -> frozenset[str]:
     }
     if "toefl_ibt_home_edition" in entities:
         entities.discard("toefl_ibt")
+    if "toefl_itp" in entities:
+        entities.discard("toefl_ibt")
+    if "toeic_ip" in entities:
+        entities.discard("toeic_lr")
     return frozenset(entities)
 
 

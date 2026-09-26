@@ -121,6 +121,35 @@ def test_consolidated_generation_rejects_changed_protected_number_or_exam(text: 
     assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
 
 
+def test_exam_proposition_rejects_toeic_lr_changed_to_toeic_ip() -> None:
+    evidence = _evidence("英語外部試験としてTOEIC L&Rを利用できる。")
+    proposition = ClaimableProposition(
+        proposition_id="proposition:0001",
+        obligation_ids=("subquestion:01",),
+        predicate=PropositionPredicate.EXAM_LISTED,
+        subject="TOEIC L&R",
+        evidence_ids=("evidence:0001",),
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        run_consolidated_grounded_rag(
+            DeterministicFakeGenerationProvider(
+                _draft("当前募集要项将托业IP列为英语外部考试之一。")
+            ),
+            request_id="request:test",
+            question="托业可以使用吗？",
+            target=GenerationTarget(
+                application_label="target",
+                scope_targets=("情報工学系",),
+                parent_college="情報理工学院",
+            ),
+            evidence=(evidence,),
+            propositions=(proposition,),
+        )
+
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
 @pytest.mark.parametrize(
     "text",
     (
