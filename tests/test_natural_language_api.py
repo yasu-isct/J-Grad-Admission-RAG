@@ -408,6 +408,8 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     assert "claims" not in first_body["result"]["answer"]
     assert first_body["result"]["answer"]["missing_information"] == ["exam_date"]
     assert second_body["delivery"]["source"] == "cache_hit"
+    assert second_body["summary"] == first_body["summary"]
+    assert "已校验依据" not in second_body["summary"]
     assert second_body["result"] == first_body["result"]
     assert changed_page_scope_key != original_key
     assert question not in cached_values_repr

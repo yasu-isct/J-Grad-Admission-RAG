@@ -213,6 +213,7 @@ class _CachedSubanswerState:
 @dataclass(frozen=True, slots=True)
 class _CachedNaturalAnswerCore:
     answer: str
+    summary: str
     missing_information: tuple[str, ...]
     limitations: tuple[str, ...]
     subanswers: tuple[_CachedSubanswerState, ...]
@@ -1586,6 +1587,7 @@ def _project_natural_answer_for_cache(
         raise ApiProblem(500, "grounded_cache_failed", "reference answer cache is invalid")
     return _CachedNaturalAnswerCore(
         answer=answer.answer,
+        summary=response.summary,
         missing_information=answer.missing_information,
         limitations=answer.limitations,
         subanswers=tuple(
@@ -1642,17 +1644,10 @@ def _rebuild_cached_natural_answer_response(
             limitations=cached.limitations,
         ),
     )
-    answered = sum(item.status in {"answered", "interpreted"} for item in subanswers)
-    unavailable = len(subanswers) - answered
-    summary = (
-        f"{len(subanswers)}件に分解し、{answered}件に根拠を確認しました。{unavailable}件は確認が必要です。"
-        if analysis.detected_language.value == "ja"
-        else f"已拆分为 {len(subanswers)} 个子问题：{answered} 个找到已校验依据，{unavailable} 个仍需补充或未找到明确依据。"
-    )
     return NaturalLanguageAnswerResponse(
         mode=_generation_status_response(settings, state),
         analysis=analysis,
-        summary=summary,
+        summary=cached.summary,
         subanswers=subanswers,
         result=result,
         delivery=NaturalLanguageDeliveryMetadata(
