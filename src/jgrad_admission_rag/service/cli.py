@@ -18,6 +18,7 @@ from ..generation.config import (
     create_generation_providers,
     resolve_generation_configuration,
 )
+from ..generation.question_analysis import DeterministicQuestionUnderstandingProvider
 from .app import create_app
 from .runtime import ServiceDependencies, ServiceSettings
 
@@ -115,9 +116,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             generation_provider_factory=lambda: create_generation_providers(
                 generation_configuration
             )[0],
-            question_understanding_provider_factory=lambda: create_generation_providers(
-                generation_configuration
-            )[1],
+            question_understanding_provider_factory=(DeterministicQuestionUnderstandingProvider),
         ),
     )
     import uvicorn

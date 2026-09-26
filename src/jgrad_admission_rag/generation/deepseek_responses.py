@@ -28,6 +28,11 @@ from .question_analysis import (
     analysis_matches_server_constraints,
 )
 from .responses_common import GROUNDING_SYSTEM_PROMPT, contains_refusal
+from .simple_qa import (
+    SIMPLE_QA_SYSTEM_PROMPT,
+    SimpleQaDraft,
+    SimpleQaRequest,
+)
 
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEEPSEEK_MODEL_NAMES = ("deepseek-flash", "deepseek-v4-pro")
@@ -99,6 +104,7 @@ class DeepSeekResponsesGenerationProvider:
             prompt_version=GENERATION_PROMPT_VERSION,
         )
         self._schema_projection = _projection_for(GenerationDraft)
+        self._simple_qa_projection = _projection_for(SimpleQaDraft)
         self._client = _create_client(config, _client_factory)
 
     @property
@@ -120,6 +126,24 @@ class DeepSeekResponsesGenerationProvider:
             schema=GenerationDraft,
             schema_name="generation_draft",
             projection=self._schema_projection,
+            reasoning_effort="none",
+        )
+
+    def answer_simple(self, request: SimpleQaRequest) -> SimpleQaDraft:
+        payload = json.dumps(
+            request.model_dump(mode="json"),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return _request_structured_output(
+            self._client,
+            config=self._config,
+            system_prompt=SIMPLE_QA_SYSTEM_PROMPT,
+            payload=payload,
+            schema=SimpleQaDraft,
+            schema_name="simple_qa_answer",
+            projection=self._simple_qa_projection,
             reasoning_effort="none",
         )
 

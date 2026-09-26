@@ -143,7 +143,7 @@ class PublicGroundedResult(DemoModel):
 
 
 class NaturalLanguageDeliveryMetadata(DemoModel):
-    source: Literal["live", "cache_hit", "offline"]
+    source: Literal["live", "cache_hit", "offline", "fallback"]
     generation_ms: int | None = Field(default=None, ge=0, strict=True)
     validation_ms: int = Field(ge=0, strict=True)
     knowledge_base_version: str = Field(pattern=r"^kb-[0-9a-f]{12}$")

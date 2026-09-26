@@ -1,5 +1,9 @@
 # ADR 0007: Typed consolidated answer obligations
 
+Status note: superseded for the optional product assistant by
+[Simple local QA v1](../simple-local-qa-v1.md). The contracts remain available for historical and
+strict grounded-generation tests, but the natural-language product route no longer invokes them.
+
 ## Status
 
 Accepted for M10-08.

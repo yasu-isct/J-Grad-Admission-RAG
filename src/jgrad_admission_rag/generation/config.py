@@ -11,13 +11,11 @@ from .deepseek_responses import (
     DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
-    DeepSeekResponsesQuestionUnderstandingProvider,
 )
 from .openai_responses import OpenAIResponsesConfig, OpenAIResponsesGenerationProvider
 from .provider import GenerationProvider, ReviewedStateGenerationProvider
 from .question_analysis import (
     DeterministicQuestionUnderstandingProvider,
-    OpenAIResponsesQuestionUnderstandingProvider,
     QuestionUnderstandingProvider,
 )
 
@@ -124,7 +122,7 @@ def create_generation_providers(
         )
         return (
             DeepSeekResponsesGenerationProvider(deepseek_config),
-            DeepSeekResponsesQuestionUnderstandingProvider(deepseek_config),
+            DeterministicQuestionUnderstandingProvider(),
         )
     config = OpenAIResponsesConfig(
         model=configuration.model or "",
@@ -134,7 +132,7 @@ def create_generation_providers(
     )
     return (
         OpenAIResponsesGenerationProvider(config),
-        OpenAIResponsesQuestionUnderstandingProvider(config),
+        DeterministicQuestionUnderstandingProvider(),
     )
 
 

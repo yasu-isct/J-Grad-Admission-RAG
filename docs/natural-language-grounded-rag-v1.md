@@ -1,5 +1,9 @@
 # Natural-language grounded RAG API and page v1
 
+> The M9 grounded endpoint described here remains authoritative and unchanged. The optional M10
+> product assistant now follows [Simple local QA v1](simple-local-qa-v1.md): local analysis plus
+> retrieval and at most one `{answer}` generation call.
+
 `POST /v1/grounded-answers` is the local end-to-end boundary for a natural-language question. It accepts a strict question, the target already selected in the four-step page, and the applicant fields currently held by that page. The endpoint never accepts caller-supplied evidence, rule findings, document hashes, citation provenance, provider identity, or source links.
 
 ## Server trust path

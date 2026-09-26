@@ -16,7 +16,6 @@ from jgrad_admission_rag.generation import (
     ClaimKind,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
-    DeepSeekResponsesQuestionUnderstandingProvider,
     DeterministicQuestionUnderstandingProvider,
     GenerationError,
     GenerationErrorCode,
@@ -25,12 +24,11 @@ from jgrad_admission_rag.generation import (
     GenerationProviderIdentity,
     OpenAIResponsesConfig,
     OpenAIResponsesGenerationProvider,
-    OpenAIResponsesQuestionUnderstandingProvider,
     ReviewedStateGenerationProvider,
 )
+from jgrad_admission_rag.generation.simple_qa import SimpleQaDraft
 from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
 from jgrad_admission_rag.service.runtime import ServiceState
-from jgrad_admission_rag.reasoning.language_score_allocation import LanguageScoreAllocationStatus
 from jgrad_admission_rag.reasoning.reviewed_report_evidence import (
     ReviewedReportEvidenceBundle,
     ReviewedReportEvidenceCounts,
@@ -72,6 +70,14 @@ class _CountingNaturalGenerationProvider:
 
     def __init__(self) -> None:
         self.calls = 0
+        self.requests = []
+
+    def answer_simple(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        return SimpleQaDraft(
+            answer=f"已根据 {len(request.sources)} 条本地记录回答：{request.question}"
+        )
 
     def generate(self, request):
         self.calls += 1
@@ -117,6 +123,17 @@ class _CountingNaturalGenerationProvider:
         )
 
 
+class _FailingSimpleGenerationProvider:
+    identity = GenerationProviderIdentity(
+        provider="fake-online",
+        model="fake-natural-v1",
+        revision="test",
+    )
+
+    def answer_simple(self, _request):
+        raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT)
+
+
 def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestClient:
     pdf, config, _ = _synthetic_config(tmp_path)
     runtime = prepare_demo(pdf, (tmp_path / "workspace").resolve(), config_dir=config)
@@ -147,19 +164,25 @@ def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestCl
         deepseek_config = DeepSeekResponsesConfig(model=model or "")
 
         def generation_factory():
-            return DeepSeekResponsesGenerationProvider(deepseek_config)
+            return DeepSeekResponsesGenerationProvider(
+                deepseek_config,
+                _client_factory=lambda **_: SimpleNamespace(responses=SimpleNamespace()),
+            )
 
         def analysis_factory():
-            return DeepSeekResponsesQuestionUnderstandingProvider(deepseek_config)
+            return DeterministicQuestionUnderstandingProvider()
 
     elif online:
         openai_config = OpenAIResponsesConfig(model=model or "")
 
         def generation_factory():
-            return OpenAIResponsesGenerationProvider(openai_config)
+            return OpenAIResponsesGenerationProvider(
+                openai_config,
+                _client_factory=lambda **_: SimpleNamespace(responses=SimpleNamespace()),
+            )
 
         def analysis_factory():
-            return OpenAIResponsesQuestionUnderstandingProvider(openai_config)
+            return DeterministicQuestionUnderstandingProvider()
 
     else:
         generation_factory = ReviewedStateGenerationProvider
@@ -259,11 +282,11 @@ def test_formal_question_uses_real_reviewed_rules_with_mock_retrieval(
     assert response.status_code == 200, response.text
     body = response.json()
     answer = body["result"]["answer"]
-    assert all(token in answer["answer"] for token in ("TOEIC L&R", "840", "100", "JLPT", "J.TEST"))
-    cited = [claim for claim in answer["claims"] if claim["citations"]]
-    assert len(cited) == 1
-    assert cited[0]["citations"][0]["fact_id"] == allocation.evidence_binding.fact_id
-    assert all("finding" not in claim["text"] for claim in answer["claims"])
+    assert "100" in answer["answer"]
+    assert len(answer["claims"]) == 1
+    assert answer["claims"][0]["citations"] == []
+    assert answer["needs_review"] is True
+    assert body["delivery"]["source"] == "offline"
 
 
 def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(tmp_path) -> None:
@@ -284,20 +307,15 @@ def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(
     assert body["mode"]["label"] == "离线规则结果"
     assert len(body["analysis"]["subquestions"]) == 2
     assert len(body["subanswers"]) == 2
-    assert body["subanswers"][0]["status"] == "interpreted"
-    assert any(item["status"] == "no_clear_evidence" for item in body["subanswers"])
-    assert body["result"] is not None
-    assert len(body["result"]["answer"]["claims"]) == 2
-    assert all(item["claim_ids"] for item in body["subanswers"])
-    assert "TOEIC L&R" in body["result"]["answer"]["answer"]
-    assert "J.TEST" in body["result"]["answer"]["answer"]
     assert body["delivery"]["source"] == "offline"
+    assert all(item["status"] in {"answered", "no_clear_evidence"} for item in body["subanswers"])
 
 
 def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     tmp_path, monkeypatch
 ) -> None:
-    client = _client(tmp_path)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
     analyzer = _CountingQuestionUnderstandingProvider()
     generator = _CountingNaturalGenerationProvider()
     question = "托业840按官方的标准是多少英语配点，还有没有jlpt成绩，j-test可以吗"
@@ -331,21 +349,6 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
                 ),
             ),
             counts=ReviewedReportEvidenceCounts(record_count=1, rule_count=1, source_page_count=1),
-        )
-        allocation = SimpleNamespace(
-            status=LanguageScoreAllocationStatus.CONFIRMED,
-            evidence=SimpleNamespace(fact_id=fact.fact_id),
-            maximum_points=100,
-        )
-        monkeypatch.setattr(
-            service_app,
-            "_load_demo_context",
-            lambda *_args, **_kwargs: (plan, bundle, None),
-        )
-        monkeypatch.setattr(
-            service_app,
-            "build_applicant_report",
-            lambda *_args, **_kwargs: SimpleNamespace(language_score_allocation=allocation),
         )
         monkeypatch.setattr(
             service_app,
@@ -383,8 +386,6 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
         )
         generator.identity = generator.identity.model_copy(update={"revision": "test-v2"})
         changed_model = client.post("/v1/natural-language-answers", json=payload)
-        monkeypatch.setattr(service_app, "CLAIM_SEMANTICS_VERSION", "protected-literal-claims-v5")
-        changed_validator = client.post("/v1/natural-language-answers", json=payload)
         cached_values_repr = repr(
             tuple(entry.value for entry in state.natural_answer_cache._entries.values())
         )
@@ -393,70 +394,43 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     assert second.status_code == 200, second.text
     assert changed.status_code == 200, changed.text
     assert changed_model.status_code == 200, changed_model.text
-    assert changed_validator.status_code == 200, changed_validator.text
-    assert analyzer.calls == 4
-    assert generator.calls == 4, first.text
+    assert analyzer.calls == 0
+    assert generator.calls == 3, first.text
+    assert "777" not in generator.requests[0].model_dump_json()
+    assert "fact:" not in generator.requests[0].model_dump_json()
     first_body = first.json()
     second_body = second.json()
-    parsed_first = service_app.NaturalLanguageAnswerResponse.model_validate(first_body)
-    assert parsed_first.result is not None
-    official_text = parsed_first.result.evidence[0].official_text
-    cited_index = next(
-        index for index, claim in enumerate(parsed_first.result.answer.claims) if claim.citations
-    )
-    exact_claim = parsed_first.result.answer.claims[cited_index].model_copy(
-        update={"text": official_text}
-    )
-    exact_claims = list(parsed_first.result.answer.claims)
-    exact_claims[cited_index] = exact_claim
-    exact_answer = parsed_first.result.answer.model_copy(
-        update={"answer": "\n".join(item.text for item in exact_claims), "claims": exact_claims}
-    )
-    exact_response = parsed_first.model_copy(
-        update={"result": parsed_first.result.model_copy(update={"answer": exact_answer})}
-    )
-    exact_cache_core = service_app._project_natural_answer_for_cache(exact_response)
-    assert any(
-        item["text"].endswith("英语满分为100分。")
-        for item in first_body["result"]["answer"]["claims"]
-    )
-    consolidated_text = first_body["result"]["answer"]["answer"]
-    assert all(
-        token in consolidated_text
-        for token in ("TOEIC L&R", "840", "未公开", "JLPT", "J.TEST", "100")
-    )
-    affirmative = [item for item in first_body["result"]["answer"]["claims"] if item["citations"]]
-    dispositions = [
-        item for item in first_body["result"]["answer"]["claims"] if not item["citations"]
-    ]
-    assert len(affirmative) == 1
-    assert len(dispositions) == 5
-    assert all(item["kind"] == "reviewed_disposition" for item in dispositions)
+    assert first_body["delivery"]["source"] == "live"
+    assert first_body["result"]["answer"]["claims"][0]["citations"] == []
     assert first_body["result"]["answer"]["missing_information"] == ["exam_date"]
     assert second_body["delivery"]["source"] == "cache_hit"
     assert second_body["result"] == first_body["result"]
-    assert "finding:" not in first.text
-    assert "rule_id" not in first.text
-    statuses = [item["status"] for item in first_body["subanswers"]]
-    assert statuses == ["interpreted", "answered", "no_clear_evidence", "no_clear_evidence"]
     assert changed_page_scope_key != original_key
     assert question not in cached_values_repr
     assert "777" not in cached_values_repr
     assert "Synthetic Department English maximum 100 points." not in cached_values_repr
-    assert official_text not in repr(exact_cache_core)
-    assert exact_cache_core.claims[cited_index].text is None
-    assert exact_cache_core.claims[cited_index].exact_text_citation_key is not None
-    assert (
-        service_app._restore_cached_claim_text(
-            exact_cache_core.claims[cited_index],
-            {
-                exact_cache_core.claims[cited_index].exact_text_citation_key: (
-                    "authoritative text reloaded"
-                )
-            },
+
+
+def test_arbitrary_admission_question_uses_original_question_as_local_query(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    generator = _CountingNaturalGenerationProvider()
+    with client:
+        client.app.state.service_state.generation_provider = generator
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "面试时需要准备哪些材料？", "target": target, "applicant": {}},
         )
-        == "authoritative text reloaded"
+
+    assert response.status_code == 200
+    assert response.json()["analysis"]["requested_intents"] == ["general"]
+    assert response.json()["analysis"]["subquestions"][0]["retrieval_query"] == (
+        "面试时需要准备哪些材料？"
     )
+    assert generator.calls <= 1
 
 
 def test_missing_online_key_keeps_structured_service_ready_and_labels_nl_unconfigured(
@@ -503,29 +477,23 @@ def test_missing_deepseek_key_keeps_readiness_and_identifies_provider(
         "mode": "online_model",
         "configured": False,
         "label": "DeepSeek 在线生成服务未配置",
-        "request_timeout_seconds": 375,
+        "request_timeout_seconds": 195,
     }
     assert response.status_code == 503
     assert response.json()["code"] == "online_generation_not_configured"
 
 
-@pytest.mark.parametrize(
-    ("provider_code", "expected_status", "expected_code"),
-    (
-        (GenerationErrorCode.PROVIDER_UNAVAILABLE, 503, "generation_provider_unavailable"),
-        (GenerationErrorCode.PROVIDER_TIMEOUT, 504, "generation_provider_timeout"),
-        (GenerationErrorCode.PROVIDER_REFUSAL, 502, "generation_provider_refusal"),
-        (GenerationErrorCode.INCOMPLETE_RESPONSE, 502, "incomplete_response"),
-        (GenerationErrorCode.MALFORMED_OUTPUT, 502, "malformed_output"),
-    ),
-)
-def test_question_analysis_failures_have_distinct_safe_error_codes(
-    tmp_path, provider_code, expected_status, expected_code
-) -> None:
-    client = _client(tmp_path)
+def test_online_generation_failure_falls_back_to_local_retrieval(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
     with client:
-        client.app.state.service_state.question_understanding_provider = (
-            _FailingQuestionUnderstandingProvider(provider_code)
+        client.app.state.service_state.generation_provider = _FailingSimpleGenerationProvider()
+        monkeypatch.setattr(
+            service_app,
+            "_select_consolidated_evidence",
+            lambda *_args, **_kwargs: (
+                SimpleNamespace(text="Synthetic local record.", section_path=("Synthetic",)),
+            ),
         )
         target = _target(client.get("/v1/target-catalog").json())
         response = client.post(
@@ -536,13 +504,12 @@ def test_question_analysis_failures_have_distinct_safe_error_codes(
                 "applicant": {"english_test_kind": "toeic_lr", "english_score": 840},
             },
         )
+        cache_entries = len(client.app.state.service_state.natural_answer_cache._entries)
 
-    assert (response.status_code, response.json()["code"]) == (
-        expected_status,
-        expected_code,
-    )
-    assert "private question marker" not in response.text
-    assert "840" not in response.text
+    assert response.status_code == 200
+    assert response.json()["delivery"]["source"] == "fallback"
+    assert "在线自然语言整理暂时不可用" in response.json()["result"]["answer"]["answer"]
+    assert cache_entries == 0
 
 
 def test_configured_deepseek_status_shows_actual_model_name() -> None:
@@ -562,7 +529,7 @@ def test_configured_deepseek_status_shows_actual_model_name() -> None:
     assert status.configured is True
     assert status.model == "deepseek-v4-pro"
     assert status.label == "DeepSeek 在线模型 · deepseek-v4-pro"
-    assert status.request_timeout_seconds == 375
+    assert status.request_timeout_seconds == 195
 
 
 def test_generation_request_timeout_budget_tracks_provider_configuration() -> None:
@@ -583,22 +550,17 @@ def test_generation_request_timeout_budget_tracks_provider_configuration() -> No
 
     status = service_app._generation_status_response(settings, state)
 
-    assert status.request_timeout_seconds == 105
+    assert status.request_timeout_seconds == 60
 
 
-def test_reviewed_evidence_conflict_is_not_downgraded_to_missing_coverage(
-    tmp_path, monkeypatch
-) -> None:
+def test_simple_qa_does_not_invoke_reviewed_report_pipeline(tmp_path, monkeypatch) -> None:
     client = _client(tmp_path)
 
-    def fail_closed(*_args, **_kwargs):
-        raise service_app.ApiProblem(
-            409,
-            "report_preparation_failed",
-            "reviewed report preparation failed",
-        )
+    def must_not_run(*_args, **_kwargs):
+        raise AssertionError("simple QA must not invoke reviewed report preparation")
 
-    monkeypatch.setattr(service_app, "_load_demo_context", fail_closed)
+    monkeypatch.setattr(service_app, "_load_demo_context", must_not_run)
+    monkeypatch.setattr(service_app, "build_applicant_report", must_not_run)
     with client:
         target = _target(client.get("/v1/target-catalog").json())
         response = client.post(
@@ -610,31 +572,4 @@ def test_reviewed_evidence_conflict_is_not_downgraded_to_missing_coverage(
             },
         )
 
-    assert response.status_code == 409
-    assert response.json()["code"] == "report_preparation_failed"
-
-
-def test_report_evidence_conflict_is_not_hidden_by_disposition_answer(
-    tmp_path, monkeypatch
-) -> None:
-    client = _client(tmp_path)
-
-    def fail_closed(*_args, **_kwargs):
-        raise service_app.ApplicantReportError(
-            service_app.ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH
-        )
-
-    monkeypatch.setattr(service_app, "build_applicant_report", fail_closed)
-    with client:
-        target = _target(client.get("/v1/target-catalog").json())
-        response = client.post(
-            "/v1/natural-language-answers",
-            json={
-                "question": "托业840按官方标准是多少英语配点，还有没有jlpt成绩，j-test可以吗",
-                "target": target,
-                "applicant": {},
-            },
-        )
-
-    assert response.status_code == 409
-    assert response.json()["code"] == "report_preparation_failed"
+    assert response.status_code == 200

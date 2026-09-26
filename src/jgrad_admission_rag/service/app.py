@@ -26,10 +26,6 @@ from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..generation import (
-    CLAIM_SEMANTICS_VERSION,
-    CONSOLIDATED_PIPELINE_VERSION,
-    GENERATION_PROMPT_VERSION,
-    GENERATION_SCHEMA_VERSION,
     MAX_CONSOLIDATED_EVIDENCE_CHARACTERS,
     MAX_CONSOLIDATED_EVIDENCE_RECORDS,
     ClaimKind,
@@ -51,6 +47,13 @@ from ..generation.question_analysis import (
     QUESTION_ANALYSIS_PROMPT_VERSION,
     QUESTION_ANALYSIS_SCHEMA_VERSION,
     DeterministicQuestionUnderstandingProvider,
+)
+from ..generation.simple_qa import (
+    SIMPLE_QA_PROMPT_VERSION,
+    SIMPLE_QA_SCHEMA_VERSION,
+    SimpleQaRequest,
+    SimpleQaSource,
+    answer_simple_checked,
 )
 from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
@@ -1499,11 +1502,7 @@ def _grounded_answer_service_ready(state: ServiceState) -> bool:
 
 
 def _natural_language_service_ready(state: ServiceState) -> bool:
-    return (
-        _grounded_answer_service_ready(state)
-        and state.question_understanding_provider is not None
-        and not state.question_understanding_initialization_failed
-    )
+    return _grounded_answer_service_ready(state)
 
 
 def _generation_status_response(
@@ -1541,7 +1540,7 @@ def _generation_request_timeout_seconds(settings: ServiceSettings) -> int:
         provider_timeout = (
             90.0 if settings.generation_provider_name == "deepseek-responses" else 30.0
         )
-    maximum_provider_calls = 2
+    maximum_provider_calls = 1
     sdk_attempts = settings.generation_max_retries + 1
     transport_grace_seconds = 15
     return math.ceil(provider_timeout * sdk_attempts * maximum_provider_calls) + (
@@ -1573,7 +1572,9 @@ def _build_natural_language_answer_response(
         key,
         lambda: _build_uncached_natural_language_answer_response(request, settings, state),
         project=_project_natural_answer_for_cache,
-        should_cache=lambda item: item.analysis == local_analysis,
+        should_cache=lambda item: (
+            item.analysis == local_analysis and item.delivery.source == "live"
+        ),
     )
     if not hit:
         return response
@@ -1657,7 +1658,17 @@ def _rebuild_cached_natural_answer_response(
     analysis: Any,
     cached: _CachedNaturalAnswerCore,
 ) -> NaturalLanguageAnswerResponse:
-    plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
+    matching_plans = tuple(
+        item
+        for item in state.report_plans
+        if item.document_identity.document_id == request.target.document_id
+    )
+    if len(matching_plans) != 1:
+        raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
+    plan = matching_plans[0]
+    reviewed_evidence = None
+    if cached.cited_fact_ids:
+        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
     cached_by_id = {item.subquestion_id: item for item in cached.subanswers}
     if set(cached_by_id) != {item.subquestion_id for item in analysis.subquestions}:
         raise ApiProblem(409, "grounded_cache_mismatch", "grounded answer cache is stale")
@@ -1673,14 +1684,18 @@ def _rebuild_cached_natural_answer_response(
     target_summary = build_demo_target_summary(state.report_plans, request.target)
     result = None
     if cached.claims:
-        evidence = build_demo_evidence_inventory(
-            plan,
-            reviewed_evidence,
-            request.target,
-            cached.cited_fact_ids,
-            source_pdf_document_id=(
-                state.source_document.document_id if state.source_document is not None else None
-            ),
+        evidence = (
+            build_demo_evidence_inventory(
+                plan,
+                reviewed_evidence,
+                request.target,
+                cached.cited_fact_ids,
+                source_pdf_document_id=(
+                    state.source_document.document_id if state.source_document is not None else None
+                ),
+            )
+            if reviewed_evidence is not None and cached.cited_fact_ids
+            else ()
         )
         evidence_text_by_key = {
             (item.document_id, item.fact_id, item.pages): item.official_text for item in evidence
@@ -1774,7 +1789,6 @@ def _natural_answer_cache_key(
             "model": settings.generation_model_name,
         }
     )
-    analyzer = state.question_understanding_provider
     embedding_identity = getattr(state.provider, "identity", None)
     embedding_payload = (
         {
@@ -1811,14 +1825,13 @@ def _natural_answer_cache_key(
         "question_analysis": {
             "schema": QUESTION_ANALYSIS_SCHEMA_VERSION,
             "prompt": QUESTION_ANALYSIS_PROMPT_VERSION,
-            "provider": getattr(analyzer, "provider_name", type(analyzer).__name__),
-            "model": getattr(analyzer, "model_name", None),
+            "provider": "reviewed-state-offline",
+            "model": "multilingual-lexicon-v1",
         },
         "generation": {
-            "schema": GENERATION_SCHEMA_VERSION,
-            "prompt": GENERATION_PROMPT_VERSION,
-            "pipeline": CONSOLIDATED_PIPELINE_VERSION,
-            "claim_semantics": CLAIM_SEMANTICS_VERSION,
+            "schema": SIMPLE_QA_SCHEMA_VERSION,
+            "prompt": SIMPLE_QA_PROMPT_VERSION,
+            "pipeline": "simple-local-qa-v1",
             "provider_identity": generation_payload,
             "reviewed_evidence_projection": REVIEWED_EVIDENCE_PROJECTION_VERSION,
         },
@@ -1847,132 +1860,62 @@ def _build_uncached_natural_language_answer_response(
     settings: ServiceSettings,
     state: ServiceState,
 ) -> NaturalLanguageAnswerResponse:
-    analyzer = state.question_understanding_provider
-    if analyzer is None:
-        raise ApiProblem(
-            503, "grounded_service_unavailable", "grounded answer service is unavailable"
-        )
     try:
-        with state.question_understanding_provider_lock:
-            analysis = analyzer.analyze(request.question)
-    except GenerationError as error:
-        status, public_code = {
-            GenerationErrorCode.INVALID_INPUT: (422, "invalid_request"),
-            GenerationErrorCode.MISSING_API_KEY: (503, "online_generation_not_configured"),
-            GenerationErrorCode.PROVIDER_UNAVAILABLE: (
-                503,
-                "generation_provider_unavailable",
-            ),
-            GenerationErrorCode.PROVIDER_TIMEOUT: (504, "generation_provider_timeout"),
-            GenerationErrorCode.PROVIDER_REFUSAL: (502, "generation_provider_refusal"),
-            GenerationErrorCode.INCOMPLETE_RESPONSE: (502, "incomplete_response"),
-            GenerationErrorCode.MALFORMED_OUTPUT: (502, "malformed_output"),
-            GenerationErrorCode.UNKNOWN_REFERENCE: (502, "invalid_citation"),
-            GenerationErrorCode.UNSUPPORTED_CLAIM: (502, "unsupported_claim"),
-            GenerationErrorCode.STATE_MISMATCH: (409, "rule_state_mismatch"),
-        }[error.code]
-        raise ApiProblem(status, public_code, "question analysis failed") from None
-    except Exception:
-        raise ApiProblem(502, "question_analysis_failed", "question analysis failed") from None
+        analysis = DeterministicQuestionUnderstandingProvider().analyze(request.question)
+    except GenerationError:
+        raise ApiProblem(422, "invalid_request", "question analysis failed") from None
 
     language = analysis.detected_language.value
     packs = _retrieve_natural_answer_evidence(analysis, request, settings, state)
-    requires_reviewed_context = any(
-        item.requested_intent != "exam_identity"
-        and not (
-            item.requested_intent == "language_test_acceptance"
-            and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
+    matching_plans = tuple(
+        item
+        for item in state.report_plans
+        if item.document_identity.document_id == request.target.document_id
+    )
+    if len(matching_plans) != 1:
+        raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
+    plan = matching_plans[0]
+    selected = _select_consolidated_evidence(packs, None, request.target)
+    result, generation_ms, validation_ms, delivery_source = _build_simple_qa_result(
+        request, analysis, plan, selected, settings, state
+    )
+    claim_ids = ("claim:0001",) if result is not None else ()
+    subanswers = tuple(
+        NaturalLanguageSubanswer(
+            subquestion=item,
+            status=(
+                "answered"
+                if selected
+                else "needs_clarification"
+                if item.needs_clarification
+                else "no_clear_evidence"
+            ),
+            message=_localized_message(
+                language,
+                "已使用本地募集要项检索结果生成回答。"
+                if selected
+                else "当前本地资料中没有检索到足够内容。",
+                "ローカルの募集要項検索結果から回答しました。"
+                if selected
+                else "現在のローカル資料では十分な内容を検索できませんでした。",
+            ),
+            claim_ids=claim_ids,
         )
         for item in analysis.subquestions
     )
-    if requires_reviewed_context:
-        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
-    else:
-        matching_plans = tuple(
-            item
-            for item in state.report_plans
-            if item.document_identity.document_id == request.target.document_id
-        )
-        if len(matching_plans) != 1:
-            raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
-        plan, reviewed_evidence = matching_plans[0], None
-    result, claims_by_obligation, generation_ms, validation_ms = _consolidate_natural_answer(
-        request,
-        analysis,
-        plan,
-        reviewed_evidence,
-        packs,
-        state,
+    summary = _localized_message(
+        language,
+        f"已在所选募集要项中检索 {len(selected)} 条本地记录。",
+        f"選択した募集要項からローカル記録を{len(selected)}件検索しました。",
     )
-    subanswers: list[NaturalLanguageSubanswer] = []
-    for subquestion in analysis.subquestions:
-        claim_ids = claims_by_obligation.get(subquestion.subquestion_id, ())
-        if subquestion.requested_intent == "exam_identity":
-            status = "interpreted"
-            message = _localized_message(
-                language,
-                "术语解释已纳入综合回答。",
-                "用語の解釈を総合回答に含めました。",
-            )
-        elif subquestion.requested_intent == "language_score_conversion" and claim_ids:
-            status = "answered"
-            message = _localized_message(
-                language,
-                "已在综合回答中同时说明可确认事实与资料限制。",
-                "確認できる事実と資料上の制約を総合回答に含めました。",
-            )
-        elif subquestion.requested_intent == "language_test_acceptance" and re.search(
-            r"\bJLPT\b|\bJ\.TEST\b", subquestion.retrieval_query, re.IGNORECASE
-        ):
-            status = "no_clear_evidence"
-            message = _localized_message(
-                language,
-                "当前证据状态已纳入综合回答。",
-                "現在の証拠状態を総合回答に含めました。",
-            )
-        elif claim_ids:
-            status = "answered"
-            message = _localized_message(
-                language,
-                "已找到并通过服务器引用与内容校验的官方依据。",
-                "サーバー側の引用・内容検証を通過した公式根拠を確認しました。",
-            )
-        else:
-            status = (
-                "needs_clarification" if subquestion.needs_clarification else "no_clear_evidence"
-            )
-            message = _localized_message(
-                language,
-                "当前审核资料中未找到足以确定回答的明确依据。",
-                "現在の確認済み資料では、確定的に回答できる明確な根拠を確認できませんでした。",
-            )
-        subanswers.append(
-            NaturalLanguageSubanswer(
-                subquestion=subquestion,
-                status=status,
-                message=message,
-                claim_ids=claim_ids,
-            )
-        )
-
-    answered = sum(item.status in {"answered", "interpreted"} for item in subanswers)
-    unavailable = len(subanswers) - answered
-    if language == "ja":
-        summary = f"{len(subanswers)}件に分解し、{answered}件に根拠を確認しました。{unavailable}件は確認が必要です。"
-    else:
-        summary = f"已拆分为 {len(subanswers)} 个子问题：{answered} 个找到已校验依据，{unavailable} 个仍需补充或未找到明确依据。"
     return NaturalLanguageAnswerResponse(
         mode=_generation_status_response(settings, state),
         analysis=analysis,
         summary=summary,
-        subanswers=tuple(subanswers),
+        subanswers=subanswers,
         result=result,
         delivery=NaturalLanguageDeliveryMetadata(
-            source=(
-                "offline"
-                if settings.generation_provider_name == "reviewed-state-offline"
-                else "live"
-            ),
+            source=delivery_source,
             generation_ms=generation_ms,
             validation_ms=validation_ms,
             knowledge_base_version=f"kb-{plan.source_kb_sha256[:12]}",
@@ -2050,6 +1993,116 @@ def _retrieve_natural_answer_evidence(
         raise ApiProblem(
             503, "grounded_service_unavailable", "grounded service is unavailable"
         ) from None
+
+
+def _build_simple_qa_result(
+    request: GroundedAnswerRequest,
+    analysis: Any,
+    plan: ReviewedReportPlan,
+    selected: tuple[Any, ...],
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> tuple[PublicGroundedResult | None, int, int, str]:
+    """Present bounded local retrieval without model-owned provenance or rule decisions."""
+
+    target_summary = build_demo_target_summary(state.report_plans, request.target)
+    language = analysis.detected_language.value
+    limitation = _localized_message(
+        language,
+        "这是基于本地募集要项检索片段生成的参考回答；资格判断请以基础结构化结果和官方原文为准。",
+        "ローカル募集要項の検索断片に基づく参考回答です。資格判断は基本の構造化結果と公式原文を確認してください。",
+    )
+    answer_text: str
+    generation_ms = 0
+    validation_ms = 0
+    delivery_source = "offline"
+    provider = state.generation_provider
+    online = settings.generation_provider_name != "reviewed-state-offline"
+    if not selected:
+        answer_text = _localized_message(
+            language,
+            "当前所选募集要项的本地检索结果中，没有找到足以回答该问题的相关内容。",
+            "選択した募集要項のローカル検索結果では、この質問に回答できる関連内容を確認できませんでした。",
+        )
+    elif online and provider is not None and hasattr(provider, "answer_simple"):
+        simple_request = SimpleQaRequest(
+            question=analysis.normalized_question,
+            target_label=" / ".join(
+                (
+                    target_summary.school_name,
+                    target_summary.degree_name,
+                    target_summary.intake_name,
+                    target_summary.college_name,
+                    target_summary.department_name,
+                )
+            ),
+            sources=tuple(
+                SimpleQaSource(
+                    source_id=f"source:{index:04d}",
+                    text=record.text,
+                    scope_label=" / ".join(record.section_path),
+                )
+                for index, record in enumerate(selected, start=1)
+            ),
+        )
+        timed_provider = _TimedGenerationProvider(provider)
+        started = perf_counter()
+        try:
+            with state.generation_provider_lock:
+                generated = answer_simple_checked(timed_provider, simple_request)
+            answer_text = generated.answer
+            delivery_source = "live"
+        except GenerationError:
+            answer_text = _offline_simple_qa_answer(selected, language, unavailable=True)
+            delivery_source = "fallback"
+        total_ms = max(0, round((perf_counter() - started) * 1000))
+        generation_ms = timed_provider.elapsed_ms
+        validation_ms = max(0, total_ms - generation_ms)
+    else:
+        answer_text = _offline_simple_qa_answer(selected, language, unavailable=False)
+
+    claim = PublicGroundedClaim(
+        claim_id="claim:0001",
+        kind=ClaimKind.REVIEWED_DISPOSITION,
+        text=answer_text,
+        citations=(),
+    )
+    result = PublicGroundedResult(
+        target=target_summary,
+        reviewed_scope_statement=plan.reviewed_coverage_statement,
+        official_source_url=plan.document_identity.official_source_url,
+        local_pdf_url=(
+            f"/documents/{request.target.document_id}/source.pdf"
+            if state.source_document is not None
+            and state.source_document.document_id == request.target.document_id
+            else None
+        ),
+        answer=PublicGroundedAnswer(
+            answer=answer_text,
+            claims=(claim,),
+            needs_review=True,
+            missing_information=analysis.missing_context,
+            limitations=(limitation,),
+        ),
+        evidence=(),
+    )
+    return result, generation_ms, validation_ms, delivery_source
+
+
+def _offline_simple_qa_answer(
+    selected: tuple[Any, ...], language: str, *, unavailable: bool
+) -> str:
+    prefix = _localized_message(
+        language,
+        "在线自然语言整理暂时不可用；本地检索到以下相关内容："
+        if unavailable
+        else "本地检索到以下相关内容：",
+        "オンラインでの文章整理を利用できません。ローカル検索では次の関連内容が見つかりました："
+        if unavailable
+        else "ローカル検索では次の関連内容が見つかりました：",
+    )
+    excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
+    return "\n".join((prefix, *excerpts))
 
 
 def _consolidate_natural_answer(
@@ -2572,6 +2625,13 @@ class _TimedGenerationProvider:
         started = perf_counter()
         try:
             return self._provider.generate(request)
+        finally:
+            self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
+
+    def answer_simple(self, request: Any) -> Any:
+        started = perf_counter()
+        try:
+            return self._provider.answer_simple(request)
         finally:
             self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
 

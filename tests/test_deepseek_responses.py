@@ -27,12 +27,20 @@ from jgrad_admission_rag.generation import (
     QuestionCorrection,
     generate_checked,
 )
-from jgrad_admission_rag.generation.config import GenerationRuntimeConfiguration
+from jgrad_admission_rag.generation.config import (
+    GenerationRuntimeConfiguration,
+    create_generation_providers,
+)
 from jgrad_admission_rag.generation.deepseek_schema import (
     DeepSeekSchemaProjectionError,
     DeepSeekSchemaProjectionErrorCode,
 )
 from jgrad_admission_rag.generation import deepseek_responses as deepseek_module
+from jgrad_admission_rag.generation.simple_qa import (
+    SimpleQaDraft,
+    SimpleQaRequest,
+    SimpleQaSource,
+)
 from jgrad_admission_rag.demo_cli import _parser as demo_parser
 from jgrad_admission_rag.manual_deepseek_evaluation import (
     _CallBudgetExceeded,
@@ -42,6 +50,7 @@ from jgrad_admission_rag.manual_deepseek_evaluation import (
     _safe_structured_output_diagnostic,
     main as manual_deepseek_main,
 )
+from jgrad_admission_rag.manual_simple_qa_evaluation import main as manual_simple_qa_main
 
 
 FORMAL_QUESTION = "托业840按官方的标准是多少英语配点，还有没有jlpt成绩,j-test可以吗"
@@ -294,6 +303,49 @@ def test_deepseek_generation_uses_non_streaming_json_schema_and_bounded_output(
     assert "reasoning_content" not in sent
 
 
+def test_deepseek_simple_qa_uses_minimal_schema_and_one_request(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    draft = SimpleQaDraft(answer="当前本地资料显示英语满分为100分。")
+    responses = FakeResponses(
+        SimpleNamespace(status="completed", output=(), output_text=draft.model_dump_json())
+    )
+    provider, _ = _provider(monkeypatch, responses)
+    request = SimpleQaRequest(
+        question="英语满分是多少？",
+        target_label="情報工学系",
+        sources=(
+            SimpleQaSource(
+                source_id="source:0001",
+                text="英語は100点満点。",
+                scope_label="情報工学系",
+            ),
+        ),
+    )
+
+    assert provider.answer_simple(request) == draft
+    assert responses.calls == 1
+    assert responses.kwargs["reasoning"] == {"effort": "none"}
+    wire_schema = responses.kwargs["text"]["format"]["schema"]  # type: ignore[index]
+    assert set(wire_schema["properties"]) == {"answer"}
+    assert responses.kwargs["text"]["format"]["name"] == "simple_qa_answer"  # type: ignore[index]
+    assert "英語は100点満点" in responses.kwargs["input"][1]["content"]  # type: ignore[index]
+
+
+def test_deepseek_runtime_uses_local_question_analysis(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "deepseek-test-key")
+    monkeypatch.setattr(
+        deepseek_module,
+        "_create_client",
+        lambda *_args, **_kwargs: FakeClient(FakeResponses()),
+    )
+    _, analyzer = create_generation_providers(
+        GenerationRuntimeConfiguration(provider="deepseek-responses", model="deepseek-flash")
+    )
+
+    assert isinstance(analyzer, DeterministicQuestionUnderstandingProvider)
+
+
 @pytest.mark.parametrize(
     ("response", "expected"),
     [
@@ -465,6 +517,17 @@ def test_deepseek_live_evaluation_refuses_before_provider_without_exact_guard(
     monkeypatch.delenv("JGRAD_ALLOW_DEEPSEEK_LIVE", raising=False)
     with pytest.raises(SystemExit) as stopped:
         manual_deepseek_main(["--model", "deepseek-flash", "--max-calls", "2", "--synthetic-only"])
+    assert stopped.value.code == 2
+    assert "exact one-run call authorization" in capsys.readouterr().err
+
+
+def test_simple_qa_live_evaluation_refuses_before_provider_without_exact_guard(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "not-used")
+    monkeypatch.delenv("JGRAD_ALLOW_DEEPSEEK_LIVE", raising=False)
+    with pytest.raises(SystemExit) as stopped:
+        manual_simple_qa_main(["--model", "deepseek-flash", "--synthetic-only"])
     assert stopped.value.code == 2
     assert "exact one-run call authorization" in capsys.readouterr().err
 

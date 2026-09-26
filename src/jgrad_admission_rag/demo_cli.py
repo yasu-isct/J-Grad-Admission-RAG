@@ -25,6 +25,7 @@ from .generation.config import (
     create_generation_providers,
     resolve_generation_configuration,
 )
+from .generation.question_analysis import DeterministicQuestionUnderstandingProvider
 
 _HOST = "127.0.0.1"
 
@@ -162,9 +163,9 @@ def _serve(
             ServiceDependencies(
                 provider_factory=lambda: provider,
                 generation_provider_factory=lambda: create_generation_providers(generation)[0],
-                question_understanding_provider_factory=lambda: create_generation_providers(
-                    generation
-                )[1],
+                question_understanding_provider_factory=(
+                    DeterministicQuestionUnderstandingProvider
+                ),
             ),
         )
     except EmbeddingProviderError as error:

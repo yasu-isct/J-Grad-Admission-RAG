@@ -1,5 +1,9 @@
 # Natural-language RAG productization v1
 
+> Superseded for the product assistant by [Simple local QA v1](simple-local-qa-v1.md). The typed
+> proposition/claim path below remains historical design context and is no longer invoked by
+> `POST /v1/natural-language-answers`.
+
 M10-01 adds a product-facing boundary above the M9 grounded-answer endpoint. It preserves M9 as
 the citation authority rather than weakening its whole-answer validation.
 

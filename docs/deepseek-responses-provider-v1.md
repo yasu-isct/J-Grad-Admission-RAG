@@ -1,5 +1,9 @@
 # DeepSeek Responses provider v1
 
+> The current product assistant uses the provider's minimal one-call
+> [Simple local QA](simple-local-qa-v1.md) path. The two-call question-analysis and claim-closure
+> material below is retained as historical provider-development context, not current routing.
+
 M10-02 adds `deepseek-responses` as an explicit first-party online mode. It implements both
 `QuestionUnderstandingProvider` and `GenerationProvider`; it does not impersonate OpenAI by
 changing a key or endpoint.
