@@ -143,6 +143,13 @@ def generate_checked(
             if claim.evidence_ids != finding.evidence_ids:
                 raise GenerationError(GenerationErrorCode.UNSUPPORTED_CLAIM)
             cited_finding_ids.extend(claim.finding_ids)
+        if claim.kind is ClaimKind.REVIEWED_DISPOSITION:
+            if len(claim.finding_ids) != 1:
+                raise GenerationError(GenerationErrorCode.UNSUPPORTED_CLAIM)
+            finding = findings_by_id[claim.finding_ids[0]]
+            if finding.status == "confirmed" or finding.evidence_ids:
+                raise GenerationError(GenerationErrorCode.UNSUPPORTED_CLAIM)
+            cited_finding_ids.extend(claim.finding_ids)
 
     if output.claims and tuple(sorted(cited_finding_ids)) != tuple(sorted(known_findings)):
         raise GenerationError(GenerationErrorCode.STATE_MISMATCH)
@@ -277,7 +284,11 @@ class ReviewedStateGenerationProvider:
         claims = tuple(
             GeneratedClaim(
                 claim_id=f"claim:{index:04d}",
-                kind=ClaimKind.REVIEWED_RULE,
+                kind=(
+                    ClaimKind.REVIEWED_RULE
+                    if finding.evidence_ids
+                    else ClaimKind.REVIEWED_DISPOSITION
+                ),
                 text="reviewed finding",
                 evidence_ids=finding.evidence_ids,
                 finding_ids=(finding.finding_id,),
@@ -326,7 +337,7 @@ def _render_claim_text(
             f"Official evidence {evidence_id}: {evidence_by_id[evidence_id].text}"
             for evidence_id in claim.evidence_ids
         )
-    if claim.kind is ClaimKind.REVIEWED_RULE:
+    if claim.kind in {ClaimKind.REVIEWED_RULE, ClaimKind.REVIEWED_DISPOSITION}:
         finding = findings_by_id[claim.finding_ids[0]]
         return f"Reviewed finding {finding.finding_id} [{finding.status}]: {finding.statement}"
     return "\n".join(

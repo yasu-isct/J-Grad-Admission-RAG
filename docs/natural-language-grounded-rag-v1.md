@@ -14,10 +14,12 @@ bundle, and invokes one consolidated generation boundary over server-owned typed
 Every consolidated evidence record carries its authoritative scope metadata. Unknown scope or a
 nonmatching college/department/program is rejected before the provider call; global and university
 records must not carry narrower scope metadata.
-Validated model wording is retained only when the proposition predicate, values, scope, opaque IDs,
-and complete citation set reconcile. An insufficient sibling receives an explicit
-no-clear-evidence/clarification state without deleting supported results. Provider/citation or
-semantic-validation failures still fail the request closed. See
+Validated model wording is retained only when every typed answer obligation reconciles its
+predicate, protected literals, polarity/modality, scope, opaque IDs, and (for affirmative facts)
+complete citation set. Normalization and scoped knowledge-gap dispositions are also model-visible
+obligations, so one consolidated answer covers supported and unsupported siblings without fixed UI
+prose. Missing one obligation, adding an uncited fact, or changing a protected number/date/exam
+fails the request closed. See
 [Natural-language RAG productization v1](natural-language-productization-v1.md).
 
 The response includes the immutable `GroundedAnswer`, a cited-evidence presentation inventory, a verified local-PDF route when configured, and the separately labelled official webpage URL. Provider output is data, not markup.
@@ -46,4 +48,8 @@ The in-memory value contains only validated claims, safe citation keys and dispo
 question/profile/retrieval/evidence text and raw provider output are not stored. Evidence display
 objects are rebuilt from authoritative state on each hit.
 
-Generated claims are inserted with `textContent`. The page does not use HTML/Markdown rendering, `innerHTML`, `insertAdjacentHTML`, cookies, `localStorage`, or `sessionStorage`. Each official or reviewed claim has citation buttons opening the existing evidence drawer; the drawer exposes verified PDF page links and the official webpage as separate actions. Question, answer, retry, and applicant state are memory-only, so reload clears them.
+The consolidated answer is inserted once with `textContent` before evidence controls. The page does
+not use HTML/Markdown rendering, `innerHTML`, `insertAdjacentHTML`, cookies, `localStorage`, or
+`sessionStorage`. Citation buttons for affirmative official facts open the existing evidence drawer;
+the separate drawer exposes the verbatim official excerpt, verified PDF page links, and official
+webpage. Question, answer, retry, and applicant state are memory-only, so reload clears them.

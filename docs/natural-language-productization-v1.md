@@ -77,22 +77,24 @@ generation call. The consolidated boundary permits at most 16 evidence records a
 evidence/scope characters. It assigns new request-local opaque evidence and proposition IDs; the
 model never receives Fact IDs, pages, hashes, paths, names, contacts, or the complete PDF.
 
-An unsupported or insufficiently evidenced subquestion becomes `no_clear_evidence` with the fixed
-message `当前审核资料中未找到明确依据。`; a clarification-dependent one becomes
-`needs_clarification`. Other validated siblings remain visible. Provider outages, malformed
-outputs, citation failures, and unexpected server conflicts still fail closed rather than being
-misrepresented as missing knowledge.
+Unsupported or insufficiently evidenced subquestions become typed `not_covered` answer
+obligations. The generator must state each scoped knowledge gap inside the same consolidated
+answer; it may not turn missing coverage into rejection, exemption, or another school rule. A
+clarification-dependent obligation remains explicitly reviewable. Provider outages, malformed
+outputs, citation failures, omitted obligations, and unexpected server conflicts still fail closed
+rather than being misrepresented as missing knowledge.
 
 Alias interpretation is labelled separately and explicitly says that normalization is not an
 official acceptance conclusion. Affirmative claims must match a server-owned typed proposition.
-The first controlled semantic predicate permits a natural statement of an exact department English
-maximum only when its subject and sole numeric value match reviewed state and its complete evidence
-set. Conversion relations, admission outcomes, negative requirements, named-exam inferences, and
-extra numbers are rejected. Active, confirmed reviewed findings for dates, eligibility, fees,
-contacts, and other supported categories may use exact-evidence propositions only when their
-complete citation set is present in this request's bounded retrieval; the official evidence text
-must remain verbatim. Pending, not-applicable, cross-scope, and partially retrieved findings do not
-become affirmative claims. After
+Semantic predicates cover confirmed maximum points, listed exams, protected date ranges, exam-name
+normalization, unpublished score conversion, and scoped no-reviewed-evidence states. Validators
+require the expected subject, relation, protected literal values, polarity, and modality while
+allowing ordinary Chinese/Japanese paraphrases. Changed numbers/dates/exams, admission outcomes,
+negative requirements, unsupported conjunctions, and extra facts are rejected. Confirmed facts
+must carry their complete evidence set; disposition claims carry a server-owned finding ID but no
+citation and cannot present themselves as official rules. Official Japanese excerpts remain
+separate evidence and are not forced into the user-facing prose. Pending, not-applicable,
+cross-scope, and partially retrieved findings do not become affirmative claims. After
 validation, server-owned document, Fact and page provenance is restored for the public evidence
 drawer; hashes and internal finding/rule identifiers are not part of the public natural answer.
 
@@ -117,10 +119,14 @@ evidence text, and raw provider response. On a hit the evidence drawer is recons
 current authoritative reviewed state. A response whose online analysis differs from the local
 key-time analysis is deliberately not inserted.
 
+The obligation and disposition split is recorded in
+[ADR 0007](decisions/0007-typed-consolidated-answer-obligations.md).
+
 ## Browser boundary
 
 The browser fetches the actual generation status and never derives the label from marketing text.
-It renders one consolidated natural answer, then the ordered subquestion dispositions. It shows
+It renders the consolidated natural answer before any citation controls. Ordered subquestion
+dispositions remain transport/audit metadata and are not rendered as competing fixed answers. It shows
 `DeepSeek 实时生成`, `已验证缓存回答`, or the explicit offline label together with provider/model,
 timing, and a short KB version. Missing evidence and missing context are prominent. Reviewed scope,
 missing fields, and limitations remain in collapsed `技术详情 / 审计信息`. Factual strings still use
@@ -135,7 +141,7 @@ CI and ordinary local verification use fake/offline providers only. A real reque
 operator action that requires a locally set key, an explicit model, synthetic applicant data, and
 advance authorization of an exact maximum call count. One new multi-intent request can consume at
 most one analysis plus one consolidated generation call; an exact validated repeat consumes zero.
-Authorization must still count every SDK attempt before transmission. M10-07 development does not
+Authorization must still count every SDK attempt before transmission. M10-08 development does not
 inherit any earlier live-call authorization.
 
 The planned first manual acceptance model is the explicit snapshot

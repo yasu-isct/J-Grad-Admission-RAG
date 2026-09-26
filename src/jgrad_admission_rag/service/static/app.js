@@ -239,6 +239,14 @@ function appendGroundedList(container, title, values) {
 function appendGroundedResult(container, payload, delivery, mode) {
   const answer = payload.answer;
   const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
+  const response = document.createElement("section");
+  response.className = "grounded-response";
+  response.append(heading(3, "综合回答"));
+  const responseText = document.createElement("p");
+  responseText.className = "grounded-response-text";
+  responseText.textContent = answer.answer;
+  response.append(responseText);
+  container.append(response);
   if (!Array.isArray(answer.claims) || !answer.claims.length) {
     const empty = document.createElement("p");
     empty.className = "grounded-boundary";
@@ -246,12 +254,10 @@ function appendGroundedResult(container, payload, delivery, mode) {
     container.append(empty);
   }
   for (const claim of answer.claims || []) {
+    if (!Array.isArray(claim.citations) || !claim.citations.length) continue;
     const card = document.createElement("article");
     card.className = "grounded-claim";
     card.dataset.kind = claim.kind;
-    const text = document.createElement("p");
-    text.textContent = claim.text;
-    card.append(text);
     const controls = document.createElement("div");
     controls.className = "grounded-citations";
     for (const citation of claim.citations || []) {
@@ -303,24 +309,14 @@ function renderGroundedAnswer(payload) {
     meta.append(badge);
   }
   groundedOutput.append(meta);
+  if (payload.result) appendGroundedResult(groundedOutput, payload.result, payload.delivery, payload.mode);
   const scope = document.createElement("section");
   scope.className = "grounded-boundary";
-  scope.append(heading(3, "直接回答"));
+  scope.append(heading(3, "处理概况"));
   const summary = document.createElement("p");
   summary.textContent = payload.summary;
   scope.append(summary);
   groundedOutput.append(scope);
-  if (payload.result) appendGroundedResult(groundedOutput, payload.result, payload.delivery, payload.mode);
-  for (const item of payload.subanswers || []) {
-    const section = document.createElement("section");
-    section.className = "grounded-subanswer";
-    section.append(heading(3, item.subquestion.question));
-    const disposition = document.createElement("p");
-    disposition.className = item.status === "answered" ? "grounded-supported" : "grounded-missing";
-    disposition.textContent = item.message;
-    section.append(disposition);
-    groundedOutput.append(section);
-  }
   const cacheNote = document.createElement("p");
   cacheNote.className = "grounded-boundary";
   cacheNote.textContent = "精确缓存仅保存在当前服务进程中，服务重启后会清除。";

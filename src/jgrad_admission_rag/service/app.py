@@ -1877,16 +1877,16 @@ def _build_uncached_natural_language_answer_response(
 
     language = analysis.detected_language.value
     packs = _retrieve_natural_answer_evidence(analysis, request, settings, state)
-    if packs:
-        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
-        result, claims_by_obligation, generation_ms, validation_ms = _consolidate_natural_answer(
-            request,
-            analysis,
-            plan,
-            reviewed_evidence,
-            packs,
-            state,
+    requires_reviewed_context = any(
+        item.requested_intent != "exam_identity"
+        and not (
+            item.requested_intent == "language_test_acceptance"
+            and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
         )
+        for item in analysis.subquestions
+    )
+    if requires_reviewed_context:
+        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
     else:
         matching_plans = tuple(
             item
@@ -1895,8 +1895,15 @@ def _build_uncached_natural_language_answer_response(
         )
         if len(matching_plans) != 1:
             raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
-        plan = matching_plans[0]
-        result, claims_by_obligation, generation_ms, validation_ms = None, {}, 0, 0
+        plan, reviewed_evidence = matching_plans[0], None
+    result, claims_by_obligation, generation_ms, validation_ms = _consolidate_natural_answer(
+        request,
+        analysis,
+        plan,
+        reviewed_evidence,
+        packs,
+        state,
+    )
     subanswers: list[NaturalLanguageSubanswer] = []
     for subquestion in analysis.subquestions:
         claim_ids = claims_by_obligation.get(subquestion.subquestion_id, ())
@@ -1904,15 +1911,15 @@ def _build_uncached_natural_language_answer_response(
             status = "interpreted"
             message = _localized_message(
                 language,
-                "已将“托业”规范化为 TOEIC L&R；这只是问题理解，不代表官方受理结论。",
-                "「托业／トーイック」を TOEIC L&R として正規化しました。これは質問理解であり、公式の受理可否ではありません。",
+                "术语解释已纳入综合回答。",
+                "用語の解釈を総合回答に含めました。",
             )
         elif subquestion.requested_intent == "language_score_conversion" and claim_ids:
             status = "answered"
             message = _localized_message(
                 language,
-                "审核资料确认了英语部分的满分/上限，但没有公开 TOEIC 分数到最终英语配点的换算关系，因此不能仅凭现有资料换算该成绩。",
-                "確認済み資料には英語部分の満点・上限がありますが、TOEIC 得点から最終配点への換算関係は公開されていないため、現資料だけでは換算できません。",
+                "已在综合回答中同时说明可确认事实与资料限制。",
+                "確認できる事実と資料上の制約を総合回答に含めました。",
             )
         elif subquestion.requested_intent == "language_test_acceptance" and re.search(
             r"\bJLPT\b|\bJ\.TEST\b", subquestion.retrieval_query, re.IGNORECASE
@@ -1920,8 +1927,8 @@ def _build_uncached_natural_language_answer_response(
             status = "no_clear_evidence"
             message = _localized_message(
                 language,
-                "当前审核资料中未找到 JLPT/J.TEST 要求或替代规则；这不等于“不需要”或“不接受”。",
-                "現在の確認済み資料では JLPT/J.TEST の要件または代替規則を確認できませんでした。「不要」または「不受理」という意味ではありません。",
+                "当前证据状态已纳入综合回答。",
+                "現在の証拠状態を総合回答に含めました。",
             )
         elif claim_ids:
             status = "answered"
@@ -1993,10 +2000,6 @@ def _retrieve_natural_answer_evidence(
         item.retrieval_query
         for item in analysis.subquestions
         if item.requested_intent != "exam_identity"
-        and not (
-            item.requested_intent == "language_test_acceptance"
-            and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
-        )
     )
     if not queries:
         return ()
@@ -2053,61 +2056,77 @@ def _consolidate_natural_answer(
     request: GroundedAnswerRequest,
     analysis: Any,
     plan: ReviewedReportPlan,
-    reviewed_evidence: ReviewedReportEvidenceBundle,
+    reviewed_evidence: ReviewedReportEvidenceBundle | None,
     packs: tuple[EvidencePack, ...],
     state: ServiceState,
 ) -> tuple[PublicGroundedResult | None, dict[str, tuple[str, ...]], int, int]:
-    if not packs or state.generation_provider is None or state.query_intent_catalog is None:
+    if state.generation_provider is None or state.query_intent_catalog is None:
         return None, {}, 0, 0
-    try:
-        reasoning_query = next(
-            (
-                item.retrieval_query
-                for item in analysis.subquestions
-                if item.requested_intent not in {"exam_identity", "language_test_acceptance"}
-            ),
-            next(
+    target_summary = build_demo_target_summary(state.report_plans, request.target)
+    propositions = list(_disposition_propositions(analysis))
+    report = None
+    intent = None
+    if reviewed_evidence is not None:
+        try:
+            reasoning_query = next(
                 (
                     item.retrieval_query
                     for item in analysis.subquestions
-                    if item.requested_intent != "exam_identity"
+                    if item.requested_intent not in {"exam_identity", "language_test_acceptance"}
                 ),
-                request.question,
-            ),
-        )
-        intent = parse_query_intent(reasoning_query, state.query_intent_catalog)
-        if {
-            DiagnosticCode.NO_RECOGNIZED_INTENT,
-            DiagnosticCode.AMBIGUOUS_ALIAS,
-        }.intersection(intent.diagnostics):
-            raise ValueError
-        profile = build_demo_applicant_profile(request.target, request.applicant)
-        report = build_applicant_report(
-            f"natural-{uuid4().hex}", profile, intent, plan, reviewed_evidence
-        )
-        target_summary = build_demo_target_summary(state.report_plans, request.target)
-    except ApplicantReportError as error:
-        if error.code is ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH:
+                next(
+                    (
+                        item.retrieval_query
+                        for item in analysis.subquestions
+                        if item.requested_intent != "exam_identity"
+                    ),
+                    request.question,
+                ),
+            )
+            intent = parse_query_intent(reasoning_query, state.query_intent_catalog)
+            if {
+                DiagnosticCode.NO_RECOGNIZED_INTENT,
+                DiagnosticCode.AMBIGUOUS_ALIAS,
+            }.intersection(intent.diagnostics):
+                intent = None
+            else:
+                profile = build_demo_applicant_profile(request.target, request.applicant)
+                report = build_applicant_report(
+                    f"natural-{uuid4().hex}", profile, intent, plan, reviewed_evidence
+                )
+        except ApplicantReportError as error:
+            if error.code is ApplicantReportFailure.PLAN_EVIDENCE_MISMATCH:
+                raise ApiProblem(
+                    409, "report_preparation_failed", "reviewed report preparation failed"
+                ) from None
+            if error.code in {
+                ApplicantReportFailure.INVALID_INPUT,
+                ApplicantReportFailure.UNSUPPORTED_INTENT,
+            }:
+                if not propositions:
+                    return None, {}, 0, 0
+                report = None
+                intent = None
+            else:
+                raise ApiProblem(
+                    500, "grounded_preparation_failed", "grounded preparation failed"
+                ) from None
+        except QueryIntentError:
+            if not propositions:
+                return None, {}, 0, 0
+            report = None
+            intent = None
+        except (ValidationError, ValueError):
             raise ApiProblem(
-                409, "report_preparation_failed", "reviewed report preparation failed"
+                500, "grounded_preparation_failed", "grounded preparation failed"
             ) from None
-        if error.code in {
-            ApplicantReportFailure.INVALID_INPUT,
-            ApplicantReportFailure.UNSUPPORTED_INTENT,
-        }:
-            return None, {}, 0, 0
-        raise ApiProblem(
-            500, "grounded_preparation_failed", "grounded preparation failed"
-        ) from None
-    except (QueryIntentError, ValidationError, ValueError):
-        return None, {}, 0, 0
 
     conversion_obligations = tuple(
         item.subquestion_id
         for item in analysis.subquestions
         if item.requested_intent == "language_score_conversion"
     )
-    allocation = report.language_score_allocation
+    allocation = getattr(report, "language_score_allocation", None)
     mandatory_fact_id = (
         allocation.evidence.fact_id
         if conversion_obligations
@@ -2116,8 +2135,12 @@ def _consolidate_natural_answer(
         and allocation.evidence is not None
         else None
     )
-    selected = _select_consolidated_evidence(packs, mandatory_fact_id, request.target)
-    if not selected:
+    selected = (
+        _select_consolidated_evidence(packs, mandatory_fact_id, request.target)
+        if report is not None
+        else ()
+    )
+    if mandatory_fact_id is not None and not selected:
         return None, {}, 0, 0
     source_kb_sha256 = plan.source_kb_sha256
     source_pdf_sha256 = plan.document_identity.source_pdf_sha256
@@ -2145,7 +2168,6 @@ def _consolidate_natural_answer(
         for index, record in enumerate(selected, start=1)
     )
     evidence_id_by_fact = {item.fact_id: item.evidence.evidence_id for item in evidence}
-    propositions = []
     if (
         mandatory_fact_id is not None
         and allocation is not None
@@ -2159,7 +2181,7 @@ def _consolidate_natural_answer(
         )
         propositions.append(
             ClaimableProposition(
-                proposition_id="proposition:0001",
+                proposition_id=f"proposition:{len(propositions) + 1:04d}",
                 obligation_ids=tuple(sorted(conversion_obligations)),
                 predicate=PropositionPredicate.MAXIMUM_POINTS,
                 subject=subject,
@@ -2169,7 +2191,7 @@ def _consolidate_natural_answer(
         )
     projected_reviewed = (
         _project_reviewed_answer_to_records(selected, report.cited_answer, intent)
-        if isinstance(getattr(report, "cited_answer", None), CitedAnswer)
+        if isinstance(getattr(report, "cited_answer", None), CitedAnswer) and intent is not None
         else None
     )
     if projected_reviewed is not None:
@@ -2243,20 +2265,27 @@ def _consolidate_natural_answer(
     cited_fact_ids = tuple(
         citation.fact_id for claim in answer.claims for citation in claim.citations
     )
-    evidence_inventory = build_demo_evidence_inventory(
-        plan,
-        reviewed_evidence,
-        request.target,
-        cited_fact_ids,
-        source_pdf_document_id=(
-            state.source_document.document_id if state.source_document is not None else None
-        ),
+    evidence_inventory = (
+        build_demo_evidence_inventory(
+            plan,
+            reviewed_evidence,
+            request.target,
+            cited_fact_ids,
+            source_pdf_document_id=(
+                state.source_document.document_id if state.source_document is not None else None
+            ),
+        )
+        if reviewed_evidence is not None and cited_fact_ids
+        else ()
     )
     gaps = tuple(
-        item.subquestion_id
-        for item in analysis.subquestions
-        if item.requested_intent == "language_test_acceptance"
-        and re.search(r"\bJLPT\b|\bJ\.TEST\b", item.retrieval_query, re.IGNORECASE)
+        proposition.proposition_id
+        for proposition in propositions
+        if proposition.predicate
+        in {
+            PropositionPredicate.NO_REVIEWED_EVIDENCE,
+            PropositionPredicate.UNPUBLISHED_SCORE_CONVERSION,
+        }
     )
     result = PublicGroundedResult(
         target=target_summary,
@@ -2271,8 +2300,9 @@ def _consolidate_natural_answer(
         answer=PublicGroundedAnswer(
             answer="\n".join(item.text for item in public_claims),
             claims=public_claims,
-            needs_review=bool(gaps),
-            limitations=("部分子问题在当前审核资料中没有明确依据。",) if gaps else (),
+            needs_review=answer.needs_review or bool(gaps),
+            missing_information=answer.missing_information,
+            limitations=(),
         ),
         evidence=evidence_inventory,
     )
@@ -2345,6 +2375,75 @@ def _reviewed_language_exam_matcher(subject_key: str) -> Callable[[str], bool] |
     return None
 
 
+def _disposition_propositions(analysis: Any) -> tuple[ClaimableProposition, ...]:
+    """Project every non-evidentiary answer obligation into a typed model-visible finding."""
+
+    propositions: list[ClaimableProposition] = []
+    toeic_score = next(
+        (
+            item.score
+            for item in analysis.mentioned_scores
+            if item.exam_type.value == "toeic_lr" and item.score is not None
+        ),
+        None,
+    )
+    toeic_correction = next(
+        (item for item in analysis.corrections if item.normalized == "TOEIC L&R"),
+        None,
+    )
+    for subquestion in analysis.subquestions:
+        predicate: PropositionPredicate | None = None
+        subject = ""
+        object_value = None
+        numeric_value = None
+        if subquestion.requested_intent == "exam_identity" and toeic_correction is not None:
+            predicate = PropositionPredicate.EXAM_NORMALIZATION
+            subject = toeic_correction.original
+            object_value = toeic_correction.normalized
+        elif subquestion.requested_intent == "language_score_conversion" and re.search(
+            r"\bTOEIC\b", subquestion.retrieval_query, re.IGNORECASE
+        ):
+            predicate = PropositionPredicate.UNPUBLISHED_SCORE_CONVERSION
+            subject = "英语配点换算"
+            object_value = "TOEIC L&R"
+            numeric_value = toeic_score
+        elif subquestion.requested_intent == "language_test_acceptance":
+            exam = re.search(r"\b(JLPT|J\.TEST)\b", subquestion.retrieval_query, re.IGNORECASE)
+            if exam is not None:
+                predicate = PropositionPredicate.NO_REVIEWED_EVIDENCE
+                subject = "JLPT" if exam.group(1).upper() == "JLPT" else "J.TEST"
+        if predicate is None:
+            continue
+        propositions.append(
+            ClaimableProposition(
+                proposition_id=f"proposition:{len(propositions) + 1:04d}",
+                obligation_ids=(subquestion.subquestion_id,),
+                predicate=predicate,
+                subject=subject,
+                object=object_value,
+                numeric_value=numeric_value,
+            )
+        )
+    clarification_obligations = tuple(
+        item.subquestion_id for item in analysis.subquestions if item.needs_clarification
+    ) or (analysis.subquestions[0].subquestion_id,)
+    missing_labels = {
+        "exam_date": "考试日期" if analysis.detected_language.value != "ja" else "受験日",
+        "exam_type": "考试种类" if analysis.detected_language.value != "ja" else "試験種別",
+    }
+    for field_path in analysis.missing_context:
+        propositions.append(
+            ClaimableProposition(
+                proposition_id=f"proposition:{len(propositions) + 1:04d}",
+                obligation_ids=tuple(sorted(clarification_obligations)),
+                predicate=PropositionPredicate.MISSING_APPLICANT_INFORMATION,
+                subject=missing_labels.get(field_path, "申请信息"),
+                missing_fields=(field_path,),
+            )
+        )
+    return tuple(propositions)
+
+
 def _reviewed_exact_evidence_propositions(
     reviewed_answer: CitedAnswer,
     analysis: Any,
@@ -2372,13 +2471,27 @@ def _reviewed_exact_evidence_propositions(
             or any(fact_id not in selected_by_fact for fact_id in citation_facts)
         ):
             continue
+        if not finding.subject_key.startswith("application_dates."):
+            continue
+        date_literals = tuple(
+            sorted(
+                set(
+                    re.findall(
+                        r"(?:20\d{2}[年./-])?\d{1,2}[月./-]\d{1,2}日?",
+                        selected_by_fact[citation_facts[0]].text,
+                    )
+                )
+            )
+        )
+        if len(date_literals) < 2:
+            continue
         propositions.append(
             ClaimableProposition(
                 proposition_id=f"proposition:{start_index + len(propositions):04d}",
                 obligation_ids=obligation_ids,
-                predicate=PropositionPredicate.EXACT_EVIDENCE,
-                subject=finding.subject_key,
-                exact_evidence_text=selected_by_fact[citation_facts[0]].text,
+                predicate=PropositionPredicate.DATE_RANGE,
+                subject="申请期间" if analysis.detected_language.value != "ja" else "出願期間",
+                protected_literals=date_literals,
                 evidence_ids=tuple(
                     sorted(evidence_id_by_fact[fact_id] for fact_id in citation_facts)
                 ),

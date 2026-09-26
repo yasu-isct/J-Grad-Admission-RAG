@@ -38,7 +38,10 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
         "document.cookie",
     ):
         assert forbidden not in javascript
-    assert "textContent = claim.text" in javascript
+    assert "responseText.textContent = answer.answer" in javascript
+    assert javascript.index("responseText.textContent = answer.answer") < javascript.index(
+        "for (const claim of answer.claims"
+    )
     assert "groundedController.abort" in javascript
     assert 'abort("timeout")' in javascript
     assert "15000" not in javascript
@@ -49,7 +52,7 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "insufficient_evidence" in javascript
     assert "openDemoEvidence" in javascript
     assert "verifiedLocalPdfHref" in javascript
-    assert "payload.subanswers" in javascript
+    assert "payload.subanswers" not in javascript
     assert "已验证缓存回答" in javascript
     assert "DeepSeek 实时生成" in javascript
     assert "在线模型实时生成" in javascript
@@ -57,7 +60,7 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "服务重启后会清除" in javascript
     assert "if (payload.result) appendGroundedResult" in javascript
     assert "item.result" not in javascript
-    assert 'item.status === "answered"' in javascript
+    assert 'item.status === "answered"' not in javascript
 
 
 def test_grounded_answer_layout_has_mobile_overflow_guards() -> None:

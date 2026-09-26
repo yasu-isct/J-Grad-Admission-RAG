@@ -92,6 +92,8 @@ def _run(text: str):
         "情報工学系的英语满分为100分。",
         "根据当前审核资料，情報工学系的英语满分为100分。",
         "情報工学系では英語を100点満点で評価します。",
+        "审核资料表明，情報工学系英语科目的上限是100分。",
+        "情報工学系の英語評価は上限100点となっています。",
         "The maximum English score for 情報工学系 is 100 points.",
     ),
 )
@@ -125,17 +127,27 @@ def test_consolidated_generation_rejects_changed_relation_number_exam_or_polarit
     assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
 
 
-def test_exact_evidence_proposition_requires_verbatim_authoritative_text() -> None:
+@pytest.mark.parametrize(
+    "text",
+    (
+        "申请期间从2026年6月1日至6月5日。",
+        "请在2026年6月1日到6月5日这一申请期间内提交。",
+        "审核资料记载的申请期限是2026年6月1日至6月5日。",
+        "出願期間は2026年6月1日から6月5日までです。",
+        "2026年6月1日から6月5日が申請受付期間です。",
+    ),
+)
+def test_date_proposition_accepts_natural_non_verbatim_summaries(text: str) -> None:
     evidence = _evidence("提出期間は2026年6月1日から6月5日まで。")
     proposition = ClaimableProposition(
         proposition_id="proposition:0001",
         obligation_ids=("subquestion:01",),
-        predicate=PropositionPredicate.EXACT_EVIDENCE,
-        subject="application_dates",
-        exact_evidence_text=evidence.evidence.text,
+        predicate=PropositionPredicate.DATE_RANGE,
+        subject="申请期间",
+        protected_literals=("2026年6月1日", "6月5日"),
         evidence_ids=("evidence:0001",),
     )
-    draft = _draft(evidence.evidence.text)
+    draft = _draft(text)
 
     result = run_consolidated_grounded_rag(
         DeterministicFakeGenerationProvider(draft),
@@ -150,18 +162,49 @@ def test_exact_evidence_proposition_requires_verbatim_authoritative_text() -> No
         propositions=(proposition,),
     )
 
-    assert result.answer == evidence.evidence.text
+    assert result.answer == text
+    assert result.answer != evidence.evidence.text
+
+
+def test_date_proposition_rejects_an_altered_date() -> None:
+    evidence = _evidence("提出期間は2026年6月1日から6月5日まで。")
+    proposition = ClaimableProposition(
+        proposition_id="proposition:0001",
+        obligation_ids=("subquestion:01",),
+        predicate=PropositionPredicate.DATE_RANGE,
+        subject="申请期间",
+        protected_literals=("2026年6月1日", "6月5日"),
+        evidence_ids=("evidence:0001",),
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        run_consolidated_grounded_rag(
+            DeterministicFakeGenerationProvider(_draft("申请期间从2026年6月1日至6月6日。")),
+            request_id="request:test",
+            question="申请期间？",
+            target=GenerationTarget(
+                application_label="target",
+                scope_targets=("情報工学系",),
+                parent_college="情報理工学院",
+            ),
+            evidence=(evidence,),
+            propositions=(proposition,),
+        )
+
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
 
 
 @pytest.mark.parametrize(
     "text",
     (
         "当前募集要项将TOEIC列为英语外部考试之一。",
+        "根据审核资料，TOEIC被列为英语外部考试。",
         "現在の募集要項では、TOEICが英語外部試験の一つとして記載されています。",
+        "確認済み資料にはTOEICが英語試験として記載されています。",
         "The current admission guidelines list TOEIC as an external English test.",
     ),
 )
-def test_exam_listed_accepts_only_closed_natural_templates(text: str) -> None:
+def test_exam_listed_accepts_materially_different_paraphrases(text: str) -> None:
     evidence = _evidence("英語外部試験としてTOEICを利用できる。")
     proposition = ClaimableProposition(
         proposition_id="proposition:0001",
@@ -208,6 +251,124 @@ def test_exam_listed_rejects_new_acceptance_semantics() -> None:
                 parent_college="情報理工学院",
             ),
             evidence=(evidence,),
+            propositions=(proposition,),
+        )
+
+    assert caught.value.code is GenerationErrorCode.UNSUPPORTED_CLAIM
+
+
+def test_missing_answer_obligation_fails_closed() -> None:
+    propositions = (
+        ClaimableProposition(
+            proposition_id="proposition:0001",
+            obligation_ids=("subquestion:01",),
+            predicate=PropositionPredicate.EXAM_NORMALIZATION,
+            subject="托业",
+            object="TOEIC L&R",
+        ),
+        ClaimableProposition(
+            proposition_id="proposition:0002",
+            obligation_ids=("subquestion:02",),
+            predicate=PropositionPredicate.NO_REVIEWED_EVIDENCE,
+            subject="JLPT",
+        ),
+    )
+    claim = GeneratedClaim(
+        claim_id="claim:0001",
+        kind=ClaimKind.REVIEWED_DISPOSITION,
+        text="这里的“托业”按TOEIC L&R理解。",
+        finding_ids=("proposition:0001",),
+    )
+    draft = GenerationDraft(
+        answer=claim.text,
+        claims=(claim,),
+        needs_review=True,
+        refused=False,
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        run_consolidated_grounded_rag(
+            DeterministicFakeGenerationProvider(draft),
+            request_id="request:test",
+            question="托业和JLPT？",
+            target=GenerationTarget(application_label="target"),
+            evidence=(),
+            propositions=propositions,
+        )
+
+    assert caught.value.code is GenerationErrorCode.STATE_MISMATCH
+
+
+@pytest.mark.parametrize(
+    "text",
+    (
+        "当前审核资料中未找到JLPT的要求或替代规则。",
+        "在现有审核范围内，没有找到JLPT成绩要求或替代规定。",
+        "目前的审核资料未确认JLPT要件或替代规则。",
+        "確認済み資料ではJLPTの要件や代替規則を確認できません。",
+        "現在の確認範囲ではJLPT要件または代替ルールが見当たりません。",
+    ),
+)
+def test_no_reviewed_evidence_accepts_scoped_abstention_paraphrases(text: str) -> None:
+    proposition = ClaimableProposition(
+        proposition_id="proposition:0001",
+        obligation_ids=("subquestion:01",),
+        predicate=PropositionPredicate.NO_REVIEWED_EVIDENCE,
+        subject="JLPT",
+    )
+    claim = GeneratedClaim(
+        claim_id="claim:0001",
+        kind=ClaimKind.REVIEWED_DISPOSITION,
+        text=text,
+        finding_ids=("proposition:0001",),
+    )
+    draft = GenerationDraft(
+        answer=text,
+        claims=(claim,),
+        needs_review=True,
+        refused=False,
+    )
+
+    result = run_consolidated_grounded_rag(
+        DeterministicFakeGenerationProvider(draft),
+        request_id="request:test",
+        question="JLPT有要求吗？",
+        target=GenerationTarget(application_label="target"),
+        evidence=(),
+        propositions=(proposition,),
+    )
+
+    assert result.answer == text
+    assert result.claims[0].citations == ()
+
+
+def test_no_reviewed_evidence_rejects_negative_school_rule_inference() -> None:
+    proposition = ClaimableProposition(
+        proposition_id="proposition:0001",
+        obligation_ids=("subquestion:01",),
+        predicate=PropositionPredicate.NO_REVIEWED_EVIDENCE,
+        subject="JLPT",
+    )
+    claim = GeneratedClaim(
+        claim_id="claim:0001",
+        kind=ClaimKind.REVIEWED_DISPOSITION,
+        text="当前审核资料中未找到JLPT规则，所以不需要JLPT。",
+        finding_ids=("proposition:0001",),
+    )
+    draft = GenerationDraft(
+        answer=claim.text,
+        claims=(claim,),
+        needs_review=True,
+        refused=False,
+    )
+
+    with pytest.raises(GenerationError) as caught:
+        run_consolidated_grounded_rag(
+            DeterministicFakeGenerationProvider(draft),
+            request_id="request:test",
+            question="JLPT有要求吗？",
+            target=GenerationTarget(application_label="target"),
+            evidence=(),
             propositions=(proposition,),
         )
 

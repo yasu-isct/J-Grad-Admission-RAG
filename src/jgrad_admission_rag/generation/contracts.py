@@ -28,6 +28,7 @@ class EvidenceRole(str, Enum):
 class ClaimKind(str, Enum):
     OFFICIAL_FACT = "official_fact"
     REVIEWED_RULE = "reviewed_rule"
+    REVIEWED_DISPOSITION = "reviewed_disposition"
     APPLICANT_STATEMENT = "applicant_statement"
 
 
@@ -145,7 +146,12 @@ class GenerationRuleFinding(GenerationModel):
 
     finding_id: str
     status: Literal[
-        "confirmed", "not_applicable", "needs_information", "needs_review", "not_covered"
+        "confirmed",
+        "interpreted",
+        "not_applicable",
+        "needs_information",
+        "needs_review",
+        "not_covered",
     ]
     statement: str = Field(min_length=1, max_length=4_000)
     evidence_ids: tuple[str, ...]
@@ -272,6 +278,9 @@ class GeneratedClaim(GenerationModel):
         elif self.kind is ClaimKind.REVIEWED_RULE:
             if not self.evidence_ids or not self.finding_ids or self.applicant_fact_paths:
                 raise ValueError("reviewed-rule claims require only evidence and finding IDs")
+        elif self.kind is ClaimKind.REVIEWED_DISPOSITION:
+            if self.evidence_ids or not self.finding_ids or self.applicant_fact_paths:
+                raise ValueError("reviewed-disposition claims require only finding IDs")
         elif self.kind is ClaimKind.APPLICANT_STATEMENT and (
             not self.applicant_fact_paths or self.evidence_ids or self.finding_ids
         ):

@@ -42,7 +42,8 @@ exact official PDF
   -> pinned semantic retrieval + BM25 + RRF
   -> EvidencePack candidates
   -> Applicant Profile + human-reviewed rules
-  -> typed server-owned propositions + replaceable Generation provider
+  -> typed server-owned facts, limitations, and knowledge-gap obligations
+  -> replaceable Generation provider
   -> validated natural answer + page-linked citations + exact TTL/LRU cache
 ```
 
