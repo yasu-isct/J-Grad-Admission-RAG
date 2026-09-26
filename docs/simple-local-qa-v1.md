@@ -24,6 +24,10 @@ guarantee. Unlike M9, this optional layer does not require claim, citation, prop
 closure. Every answer is marked as a reference that must be checked against structured local
 results and the official source.
 
+The public response uses a separate `reference_answer` contract with `assurance=reference_only`.
+It contains no Claim IDs, claim kinds, citations, or evidence inventory, so generated prose cannot
+be mistaken for an M9 reviewed disposition by API consumers.
+
 Provider refusal, timeout, or malformed output returns a labelled local fallback containing at
 most three retrieved excerpts instead of a blank 502 response. No retrieval hit returns a direct
 “not found in the selected local material” answer without a paid call.

@@ -28,7 +28,6 @@ from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..generation import (
     MAX_CONSOLIDATED_EVIDENCE_CHARACTERS,
     MAX_CONSOLIDATED_EVIDENCE_RECORDS,
-    ClaimKind,
     ClaimableProposition,
     ConsolidatedEvidenceRecord,
     EvidenceRole as GenerationEvidenceRole,
@@ -172,6 +171,8 @@ from .grounded_answers import (
     PublicGroundedCitation,
     PublicGroundedClaim,
     PublicGroundedResult,
+    PublicReferenceAnswer,
+    PublicReferenceResult,
 )
 from .date_presentation import (
     ReviewedDatePresentation,
@@ -207,23 +208,11 @@ class _CachedSubanswerState:
     subquestion_id: str
     status: str
     message: str
-    claim_ids: tuple[str, ...]
-
-
-@dataclass(frozen=True, slots=True)
-class _CachedPublicClaim:
-    claim_id: str
-    kind: ClaimKind
-    text: str | None
-    exact_text_citation_key: tuple[str, str, tuple[int, ...]] | None
-    citations: tuple[PublicGroundedCitation, ...]
 
 
 @dataclass(frozen=True, slots=True)
 class _CachedNaturalAnswerCore:
-    claims: tuple[_CachedPublicClaim, ...]
-    cited_fact_ids: tuple[str, ...]
-    needs_review: bool
+    answer: str
     missing_information: tuple[str, ...]
     limitations: tuple[str, ...]
     subanswers: tuple[_CachedSubanswerState, ...]
@@ -1593,61 +1582,20 @@ def _project_natural_answer_for_cache(
     response: NaturalLanguageAnswerResponse,
 ) -> _CachedNaturalAnswerCore:
     answer = response.result.answer if response.result is not None else None
-    evidence_text_by_key = (
-        {
-            (item.document_id, item.fact_id, item.pages): item.official_text
-            for item in response.result.evidence
-        }
-        if response.result is not None
-        else {}
-    )
-    cited_fact_ids = tuple(
-        sorted({citation.fact_id for claim in answer.claims for citation in claim.citations})
-        if answer is not None
-        else ()
-    )
+    if answer is None:
+        raise ApiProblem(500, "grounded_cache_failed", "reference answer cache is invalid")
     return _CachedNaturalAnswerCore(
-        claims=tuple(
-            _project_public_claim_for_cache(claim, evidence_text_by_key)
-            for claim in (answer.claims if answer is not None else ())
-        ),
-        cited_fact_ids=cited_fact_ids,
-        needs_review=answer.needs_review if answer is not None else False,
-        missing_information=answer.missing_information if answer is not None else (),
-        limitations=answer.limitations if answer is not None else (),
+        answer=answer.answer,
+        missing_information=answer.missing_information,
+        limitations=answer.limitations,
         subanswers=tuple(
             _CachedSubanswerState(
                 subquestion_id=item.subquestion.subquestion_id,
                 status=item.status,
                 message=item.message,
-                claim_ids=item.claim_ids,
             )
             for item in response.subanswers
         ),
-    )
-
-
-def _project_public_claim_for_cache(
-    claim: PublicGroundedClaim,
-    evidence_text_by_key: dict[tuple[str, str, tuple[int, ...]], str],
-) -> _CachedPublicClaim:
-    exact_key = next(
-        (
-            (citation.document_id, citation.fact_id, citation.source_pages)
-            for citation in claim.citations
-            if evidence_text_by_key.get(
-                (citation.document_id, citation.fact_id, citation.source_pages)
-            )
-            == claim.text
-        ),
-        None,
-    )
-    return _CachedPublicClaim(
-        claim_id=claim.claim_id,
-        kind=claim.kind,
-        text=None if exact_key is not None else claim.text,
-        exact_text_citation_key=exact_key,
-        citations=claim.citations,
     )
 
 
@@ -1666,9 +1614,6 @@ def _rebuild_cached_natural_answer_response(
     if len(matching_plans) != 1:
         raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
     plan = matching_plans[0]
-    reviewed_evidence = None
-    if cached.cited_fact_ids:
-        plan, reviewed_evidence, _ = _load_demo_context(request.target, settings, state)
     cached_by_id = {item.subquestion_id: item for item in cached.subanswers}
     if set(cached_by_id) != {item.subquestion_id for item in analysis.subquestions}:
         raise ApiProblem(409, "grounded_cache_mismatch", "grounded answer cache is stale")
@@ -1677,58 +1622,26 @@ def _rebuild_cached_natural_answer_response(
             subquestion=item,
             status=cached_by_id[item.subquestion_id].status,
             message=cached_by_id[item.subquestion_id].message,
-            claim_ids=cached_by_id[item.subquestion_id].claim_ids,
         )
         for item in analysis.subquestions
     )
     target_summary = build_demo_target_summary(state.report_plans, request.target)
-    result = None
-    if cached.claims:
-        evidence = (
-            build_demo_evidence_inventory(
-                plan,
-                reviewed_evidence,
-                request.target,
-                cached.cited_fact_ids,
-                source_pdf_document_id=(
-                    state.source_document.document_id if state.source_document is not None else None
-                ),
-            )
-            if reviewed_evidence is not None and cached.cited_fact_ids
-            else ()
-        )
-        evidence_text_by_key = {
-            (item.document_id, item.fact_id, item.pages): item.official_text for item in evidence
-        }
-        claims = tuple(
-            PublicGroundedClaim(
-                claim_id=item.claim_id,
-                kind=item.kind,
-                text=_restore_cached_claim_text(item, evidence_text_by_key),
-                citations=item.citations,
-            )
-            for item in cached.claims
-        )
-        answer = PublicGroundedAnswer(
-            answer="\n".join(item.text for item in claims),
-            claims=claims,
-            needs_review=cached.needs_review,
+    result = PublicReferenceResult(
+        target=target_summary,
+        local_scope_statement=plan.reviewed_coverage_statement,
+        official_source_url=plan.document_identity.official_source_url,
+        local_pdf_url=(
+            f"/documents/{request.target.document_id}/source.pdf"
+            if state.source_document is not None
+            and state.source_document.document_id == request.target.document_id
+            else None
+        ),
+        answer=PublicReferenceAnswer(
+            answer=cached.answer,
             missing_information=cached.missing_information,
             limitations=cached.limitations,
-        )
-        result = PublicGroundedResult(
-            target=target_summary,
-            reviewed_scope_statement=plan.reviewed_coverage_statement,
-            official_source_url=plan.document_identity.official_source_url,
-            local_pdf_url=(
-                f"/documents/{request.target.document_id}/source.pdf"
-                if state.source_document is not None
-                and state.source_document.document_id == request.target.document_id
-                else None
-            ),
-            answer=answer,
-            evidence=evidence,
-        )
+        ),
+    )
     answered = sum(item.status in {"answered", "interpreted"} for item in subanswers)
     unavailable = len(subanswers) - answered
     summary = (
@@ -1752,20 +1665,6 @@ def _rebuild_cached_natural_answer_response(
         missing_context=analysis.missing_context,
         unsupported_parts=analysis.unsupported_parts,
     )
-
-
-def _restore_cached_claim_text(
-    claim: _CachedPublicClaim,
-    evidence_text_by_key: dict[tuple[str, str, tuple[int, ...]], str],
-) -> str:
-    if claim.text is not None:
-        return claim.text
-    if (
-        claim.exact_text_citation_key is None
-        or claim.exact_text_citation_key not in evidence_text_by_key
-    ):
-        raise ApiProblem(409, "grounded_cache_mismatch", "grounded answer cache is stale")
-    return evidence_text_by_key[claim.exact_text_citation_key]
 
 
 def _natural_answer_cache_key(
@@ -1879,7 +1778,6 @@ def _build_uncached_natural_language_answer_response(
     result, generation_ms, validation_ms, delivery_source = _build_simple_qa_result(
         request, analysis, plan, selected, settings, state
     )
-    claim_ids = ("claim:0001",) if result is not None else ()
     subanswers = tuple(
         NaturalLanguageSubanswer(
             subquestion=item,
@@ -1899,7 +1797,6 @@ def _build_uncached_natural_language_answer_response(
                 if selected
                 else "現在のローカル資料では十分な内容を検索できませんでした。",
             ),
-            claim_ids=claim_ids,
         )
         for item in analysis.subquestions
     )
@@ -2002,7 +1899,7 @@ def _build_simple_qa_result(
     selected: tuple[Any, ...],
     settings: ServiceSettings,
     state: ServiceState,
-) -> tuple[PublicGroundedResult | None, int, int, str]:
+) -> tuple[PublicReferenceResult, int, int, str]:
     """Present bounded local retrieval without model-owned provenance or rule decisions."""
 
     target_summary = build_demo_target_summary(state.report_plans, request.target)
@@ -2061,15 +1958,9 @@ def _build_simple_qa_result(
     else:
         answer_text = _offline_simple_qa_answer(selected, language, unavailable=False)
 
-    claim = PublicGroundedClaim(
-        claim_id="claim:0001",
-        kind=ClaimKind.REVIEWED_DISPOSITION,
-        text=answer_text,
-        citations=(),
-    )
-    result = PublicGroundedResult(
+    result = PublicReferenceResult(
         target=target_summary,
-        reviewed_scope_statement=plan.reviewed_coverage_statement,
+        local_scope_statement=plan.reviewed_coverage_statement,
         official_source_url=plan.document_identity.official_source_url,
         local_pdf_url=(
             f"/documents/{request.target.document_id}/source.pdf"
@@ -2077,14 +1968,11 @@ def _build_simple_qa_result(
             and state.source_document.document_id == request.target.document_id
             else None
         ),
-        answer=PublicGroundedAnswer(
+        answer=PublicReferenceAnswer(
             answer=answer_text,
-            claims=(claim,),
-            needs_review=True,
             missing_information=analysis.missing_context,
             limitations=(limitation,),
         ),
-        evidence=(),
     )
     return result, generation_ms, validation_ms, delivery_source
 

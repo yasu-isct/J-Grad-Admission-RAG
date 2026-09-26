@@ -283,8 +283,10 @@ def test_formal_question_uses_real_reviewed_rules_with_mock_retrieval(
     body = response.json()
     answer = body["result"]["answer"]
     assert "100" in answer["answer"]
-    assert len(answer["claims"]) == 1
-    assert answer["claims"][0]["citations"] == []
+    assert answer["kind"] == "reference_answer"
+    assert answer["assurance"] == "reference_only"
+    assert "claims" not in answer
+    assert "evidence" not in body["result"]
     assert answer["needs_review"] is True
     assert body["delivery"]["source"] == "offline"
 
@@ -401,7 +403,9 @@ def test_consolidated_natural_answer_is_one_generation_then_exact_cache_hit(
     first_body = first.json()
     second_body = second.json()
     assert first_body["delivery"]["source"] == "live"
-    assert first_body["result"]["answer"]["claims"][0]["citations"] == []
+    assert first_body["result"]["answer"]["kind"] == "reference_answer"
+    assert first_body["result"]["answer"]["assurance"] == "reference_only"
+    assert "claims" not in first_body["result"]["answer"]
     assert first_body["result"]["answer"]["missing_information"] == ["exam_date"]
     assert second_body["delivery"]["source"] == "cache_hit"
     assert second_body["result"] == first_body["result"]

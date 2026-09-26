@@ -53,7 +53,9 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "openDemoEvidence" in javascript
     assert "verifiedLocalPdfHref" in javascript
     assert "payload.subanswers" not in javascript
-    assert "已验证缓存回答" in javascript
+    assert "缓存的参考回答" in javascript
+    assert "在线整理不可用 · 本地检索片段" in javascript
+    assert 'answer.kind === "reference_answer"' in javascript
     assert "DeepSeek 实时生成" in javascript
     assert "在线模型实时生成" in javascript
     assert 'payload.mode.provider === "deepseek-responses"' in javascript

@@ -238,16 +238,17 @@ function appendGroundedList(container, title, values) {
 
 function appendGroundedResult(container, payload, delivery, mode) {
   const answer = payload.answer;
+  const referenceOnly = answer.kind === "reference_answer";
   const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
   const response = document.createElement("section");
   response.className = "grounded-response";
-  response.append(heading(3, "综合回答"));
+  response.append(heading(3, referenceOnly ? "参考回答" : "综合回答"));
   const responseText = document.createElement("p");
   responseText.className = "grounded-response-text";
   responseText.textContent = answer.answer;
   response.append(responseText);
   container.append(response);
-  if (!Array.isArray(answer.claims) || !answer.claims.length) {
+  if (!referenceOnly && (!Array.isArray(answer.claims) || !answer.claims.length)) {
     const empty = document.createElement("p");
     empty.className = "grounded-boundary";
     empty.textContent = "已完成检索，但没有可安全展示的肯定性结论。";
@@ -281,7 +282,11 @@ function appendGroundedResult(container, payload, delivery, mode) {
   const generationTiming = delivery.generation_ms === null ? "cache" : `${delivery.generation_ms} ms`;
   meta.textContent = `provider=${mode.provider} · model=${mode.model} · generation=${generationTiming} · validation=${delivery.validation_ms} ms · ${delivery.knowledge_base_version}`;
   audit.append(meta);
-  appendGroundedList(audit, "审核范围", [payload.reviewed_scope_statement]);
+  appendGroundedList(
+    audit,
+    referenceOnly ? "本地检索范围" : "审核范围",
+    [payload.local_scope_statement || payload.reviewed_scope_statement]
+  );
   appendGroundedList(audit, "仍缺少的信息", answer.missing_information);
   appendGroundedList(audit, "限制", answer.limitations);
   container.append(audit);
@@ -294,12 +299,14 @@ function renderGroundedAnswer(payload) {
   for (const text of [
     payload.mode.label,
     payload.delivery.source === "cache_hit"
-      ? "已验证缓存回答"
+      ? "缓存的参考回答"
       : payload.delivery.source === "live"
         ? payload.mode.provider === "deepseek-responses"
           ? "DeepSeek 实时生成"
           : "在线模型实时生成"
-        : "离线规则回答",
+        : payload.delivery.source === "fallback"
+          ? "在线整理不可用 · 本地检索片段"
+          : "本地检索回答",
     `provider · ${payload.mode.provider}`,
     `模型 · ${payload.mode.model}`,
     `知识库 · ${payload.delivery.knowledge_base_version}`
