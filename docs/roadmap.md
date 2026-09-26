@@ -37,18 +37,31 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 | M7 Reviewed rule coverage | v1.1 | Reviewed dates, eligibility, language, page scope, and common materials cover the current guideline | Every enabled rule remains evidence-bound and conditional content fails closed |
 | M8 Interactive applicant demo | v1.2 | A Chinese-speaking applicant can operate a local target-to-checklist workflow | Desktop and mobile flows preserve official evidence, unknowns, and conclusion boundaries |
 | M9 Evidence-grounded End-to-End RAG | v1.3 | Chinese or Japanese questions produce structured answers over scoped evidence and reviewed rule results | Pinned semantic retrieval, citation validation, refusal behavior, and real end-to-end acceptance pass |
-| M10 Natural-language RAG Productization | v1.4 | Multilingual, conversational questions are normalized and split into independently grounded subanswers | Explicit online/offline mode, partial answers, server-validated citations, and knowledge-gap disclosure pass |
+| M10 Natural-language RAG Productization | v1.4 | A reference-only assistant answers general questions and adaptively checks school-specific points against bounded local material | One- or two-call routing, explicit zero-hit disclosure, exact zero-call cache reuse, privacy boundaries, and real DeepSeek acceptance pass |
 
-## Active M10
+## Completed M10 Summary
 
-M10-01 connected explicit Responses question understanding, M10-02–06 added and stabilized the
-first-party DeepSeek provider, M10-07 consolidated the product path and added the exact cache, and
-M10-08 makes the consolidated answer itself cover supported facts and typed knowledge gaps. A cache miss uses at
-most one analysis call and one final generation call after all local retrieval and reviewed-rule
-work. Validated natural claim text is retained behind typed server-owned semantic propositions; an exact,
-bounded process-local cache makes an identical valid repeat use zero provider calls. Knowledge
-coverage remains explicit: missing JLPT/J.TEST and score-to-final-points authority is never supplied
-by a model or turned into a negative rule.
+M10 is complete. M10-01 established explicit online question understanding; M10-02 and M10-04–06
+added and stabilized the first-party DeepSeek provider; M10-07 introduced the bounded exact cache;
+M10-08 corrected the product boundary to a visibly lower-assurance `reference_only` assistant; and
+M10-09 completed adaptive one- or two-call routing. A real DeepSeek acceptance run demonstrated one
+call for general questions, two calls for school-specific questions, and zero calls for an identical
+cached repeat.
+
+The assistant never replaces the M9 grounded endpoint or the reviewed eligibility/report path.
+Applicant Profile values are not sent to the provider, zero local hits are disclosed, and provider
+failures are not cached. Missing JLPT, J.TEST, and score-conversion authority has moved to
+[COVERAGE-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/163) as post-M10 knowledge
+coverage work; absence from the current corpus must not be presented as a negative admission rule.
+
+| ID | Task | Status |
+| --- | --- | --- |
+| M10-01 | Add explicit online question understanding | Complete |
+| M10-02 | Add the first-party DeepSeek provider path | Complete |
+| M10-04–06 | Stabilize provider configuration, failures, and product integration | Complete |
+| M10-07 | Add bounded exact caching | Complete |
+| M10-08 | Establish the simplified reference-only answer contract | Complete |
+| M10-09 | Add adaptive local retrieval and one-/two-call routing | Complete |
 
 ## Completed M9 Summary
 

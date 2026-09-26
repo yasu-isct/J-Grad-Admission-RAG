@@ -6,11 +6,12 @@ retrieval and page-linked official sources.
 面向日本大学院募集要项的可信混合 RAG 系统，通过语义检索、BM25、申请者规则推理和官方页码引用，
 生成有证据约束的申请回答。
 
-> **Current status:** M1–M9 are complete and M10 productization is active. The local Demo now
-> normalizes and splits Japanese, Chinese, or mixed questions, retrieves all bounded subquestions
-> with the configured hybrid index, combines reviewed rule state into one bounded bundle, and
-> retains natural wording only after typed claim and citation validation. Exact validated repeats
-> use a bounded process-local cache while missing evidence remains explicit.
+> **Current status:** M1–M10 are complete. The local Demo combines the authoritative M9 structured
+> and citation-closed workflow with an optional M10 `reference_only` assistant. DeepSeek first
+> decides whether a question needs school-specific confirmation: a general definition can return
+> after one planning call, while an admission-rule question uses bounded target-scoped BM25/BGE-M3
+> retrieval and one final answer call. Exact successful repeats use a bounded process-local cache;
+> missing local coverage remains explicit and never becomes a qualification decision.
 
 ## What Applicants Can Verify Today
 
@@ -23,8 +24,8 @@ fixed official Science Tokyo master's guideline:
 - compare those reviewed requirements with an in-memory Applicant Profile;
 - see a conservative gap summary and session-only preparation checklist;
 - open the exact Japanese official text, physical PDF page, local PDF viewer, and official webpage.
-- ask a Japanese or Chinese question within the reviewed eligibility, language, date, fee, or
-  contact scope and inspect the server-validated answer citations.
+- ask a Japanese or Chinese question through the optional reference assistant, which separates
+  general background from school-specific points found—or not found—in the selected local material.
 
 ![Real M9 Demo showing a grounded date answer with two page-9 citations](docs/assets/m9-grounded-rag-1440.png)
 
@@ -42,15 +43,19 @@ exact official PDF
   -> pinned semantic retrieval + BM25 + RRF
   -> EvidencePack candidates
   -> Applicant Profile + human-reviewed rules
-  -> typed server-owned facts, limitations, and knowledge-gap obligations
-  -> replaceable Generation provider
-  -> validated natural answer + page-linked citations + exact TTL/LRU cache
+  -> authoritative structured report + page-linked citations
+  -> optional reference-only assistant
+       -> model retrieval plan
+       -> bounded target-scoped local search when needed
+       -> natural reference answer + exact TTL/LRU cache
 ```
 
 `ScopedFact` remains the authority for official text and pages. Retrieval proposes evidence; it does
-not decide whether a rule applies. Reviewed rules compare explicit Applicant Profile fields. The
-generator may organize only those inputs, while the server owns evidence IDs and validates every
-citation. No vector database is used: the current index is a rebuildable local NumPy artifact.
+not decide whether a rule applies. Reviewed rules compare explicit Applicant Profile fields, and
+the M9 grounded path retains server-owned citation closure. The optional M10 assistant has a lower
+assurance boundary: it organizes general background and bounded local excerpts into a natural
+reference answer, but does not produce eligibility decisions or model-owned citations. No vector
+database is used: the current index is a rebuildable local NumPy artifact.
 
 The repository already includes a pinned BGE-M3 identity, a Sentence Transformers adapter, BM25,
 RRF, a 42-query mixed-language retrieval benchmark, and offline semantic and grounded-RAG release
@@ -145,12 +150,16 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
 受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。
 
-自然语言区域先以严格结构分析中文、日文或混合问题，再在本地为全部子问题执行受限检索与规则
-判断，最后最多调用一次生成模型形成综合回答。服务器只保留通过类型化命题、数字、适用范围和
-引用闭合校验的自然措辞；它仍不是任意 PDF 或互联网聊天。完全相同且版本仍有效的成功结果可
-命中进程内有界 TTL/LRU cache，此时不再调用问题理解或生成模型；cache 不写磁盘，服务重启即
-失效。默认生成器 `reviewed-state-offline` 完全离线，并明确显示“离线规则结果”。可选 OpenAI
-Responses provider 仍受同一结构化输出和引用校验边界约束：
+自然语言区域是本地结构化功能之上的低保证参考层，不替代资格判断、材料核对或 M9 的引用闭合
+回答。在线模式先让模型给出一般说明和有界检索计划：纯概念问题可在一次 planning call 后返回；
+涉及当前学校、专业、日期、材料、费用、分数换算或考试受理规则的问题，会在当前选定文档和目标
+范围内执行 BM25/BGE-M3 检索，再以第二次也是最后一次调用整理回答。零命中仍会给出一般背景，
+但必须明确说明当前本地募集要项没有确认学校规则。公开结果固定标记为 `reference_only` 和
+`needs_review=true`，不包含模型生成的 Claim ID、Evidence ID、页码或 hash。
+
+完全相同且版本仍有效的成功结果可命中进程内有界 TTL/LRU cache，此时不再调用模型；cache 不写
+磁盘，服务重启即失效。失败或回退结果不缓存。默认生成器 `reviewed-state-offline` 完全离线并显示
+有界本地检索片段；可选 OpenAI Responses provider 使用同一自适应规划和参考回答边界：
 
 ```powershell
 $env:OPENAI_API_KEY = "<set-locally; never commit>"
@@ -177,26 +186,25 @@ jgrad-demo `
 ```
 
 DeepSeek provider 固定使用 `https://api.deepseek.com` 的非流式 Responses API，只允许
-`deepseek-flash` 或 `deepseek-v4-pro`，并通过 `text.format` JSON Schema 与本地 Pydantic、引用
-闭合校验双重验证输出。页面会显示实际模型；缺少密钥时显示“DeepSeek 在线生成服务未配置”，
-不会改用离线文本后继续标成 AI 生成。
+`deepseek-flash` 或 `deepseek-v4-pro`，并通过 `text.format` JSON Schema 与本地 Pydantic 验证
+内部 planning 对象和最小 `{answer}` 输出。页面会显示实际模型；缺少密钥时显示“DeepSeek 在线
+生成服务未配置”，不会改用离线文本后继续标成 AI 生成。
 DeepSeek 的默认单次请求超时为 90 秒（OpenAI 保持 30 秒）；可以通过
 `--generation-timeout-seconds` 显式收紧，但现有 120 秒硬上限保持不变。
-有据回答固定关闭 DeepSeek 思考输出，避免隐藏推理占用结构化输出预算；多语言问题分析保留模型
-默认思考能力。服务器仍执行完整 Pydantic、语义约束、审核状态和引用闭合校验。
-新问题最多使用一次问题理解和一次综合生成调用；页面显示实时生成或已验证缓存、生成/校验耗时
-和知识库短版本。cache key 覆盖问题、目标、相关申请信息、KB/PDF、索引、规则、prompt、schema、
-provider、model、revision、page-scope 和投影器版本，任何一项变化都会 miss。缓存值只含已校验
-claim、安全引用键和子问题 disposition，不含问题正文、Applicant Profile、检索词、证据正文或原始
-模型响应；命中时由当前审核状态重建证据抽屉。失败、拒绝或未通过校验的结果不会缓存。
+自适应 planning 和最终回答均关闭 DeepSeek 思考输出，避免隐藏推理占用结构化输出预算。一般问题
+最多一次调用，学校规则问题最多一次 planning 加一次 final call；页面显示实时生成或缓存、耗时和
+知识库短版本。cache key 覆盖完整请求、目标、KB/PDF、索引、规则、planning/final prompt、schema、
+provider、model、revision 和 page-scope，任何一项变化都会 miss。缓存核心不保存问题正文、
+Applicant Profile、检索词、证据正文或原始模型响应。Applicant Profile 也不会发送给任一 M10
+模型调用。失败、拒绝或回退结果不会缓存。
 
 未设置密钥时，普通结构化流程和服务 readiness 不受影响，页面显示“在线生成服务未配置”，不会
 伪装成联网 AI 或静默降级。代码不提供任意 Base URL，使用 SDK 默认官方地址；请求固定
 `store=False` 并限制 timeout、输出 token 与 SDK retry。仓库和默认 CI 不调用付费 API，真实请求
-必须另外获得精确调用次数授权。参见
-[Natural-language RAG productization v1](docs/natural-language-productization-v1.md) 与
-[DeepSeek Responses provider v1](docs/deepseek-responses-provider-v1.md)、
-[M10 language/score coverage audit](docs/evaluation/m10-language-coverage-audit.md)。
+必须另外获得精确调用次数授权。参见 [Adaptive local QA v1](docs/adaptive-local-qa-v1.md)、
+[DeepSeek Responses provider v1](docs/deepseek-responses-provider-v1.md) 与
+[Natural-language RAG productization v1](docs/natural-language-productization-v1.md)。JLPT、J.TEST
+和 TOEIC 分数到最终配点的权威资料缺口由后续 `COVERAGE-01` 跟踪，不阻塞 M10 的参考问答层。
 
 ## M9 Release Evidence
 
@@ -296,10 +304,10 @@ The strict report and fixed Japanese Markdown remain visibly partial, include a 
 appendix, and never claim overall eligibility or admission. See
 [Applicant Report v1](docs/reasoning/applicant-report-v1.md).
 
-The local service also exposes a fail-closed natural-language grounded answer endpoint and an
-independent page area that reuse the current reviewed target and in-memory applicant profile. The
-packaged provider is deterministic and offline; every displayed factual claim is closed against
-server-owned reviewed evidence before it reaches the browser. See
+The local service keeps the fail-closed M9 grounded endpoint for authoritative, citation-closed
+answers and exposes a separate M10 `reference_only` assistant in the page. The assistant reuses the
+selected target, but does not send Applicant Profile values to a model or present generated prose as
+an eligibility decision. See [Adaptive local QA v1](docs/adaptive-local-qa-v1.md) and
 [Natural-language grounded RAG API and page v1](docs/natural-language-grounded-rag-v1.md).
 
 The current RULE-05A plan also projects the five p.10 common application materials from one

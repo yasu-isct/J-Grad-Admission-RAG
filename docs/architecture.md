@@ -279,7 +279,7 @@ construct the runtime provider; vector search still rechecks the actual runtime 
 Stale indexes are rebuilt to a new absent directory and activated by switching the caller path;
 automatic overwrite, deletion, and directory swapping are outside the supported safety contract.
 
-## Current System (M1–M9 Complete, M10 Active)
+## Current System (M1–M10 Complete)
 
 The current local system spans the full deterministic path from one exact, hash-verified official
 PDF to an applicant-facing reviewed report. It builds traceable `ScopedFact` records, validates a
@@ -299,14 +299,21 @@ document, Fact, page, PDF-hash, and KB-hash provenance. See
 [Grounded RAG orchestration v1](grounded-rag-v1.md) and
 [ADR 0005](decisions/0005-grounded-generation-citation-boundary.md). The browser reuses the selected
 target and in-memory Applicant Profile, displays provider metadata and limitations, and opens each
-validated citation in the existing evidence drawer. M10 adds a strict multilingual
-question-analysis layer and a consolidated final-generation boundary. Local retrieval and reviewed
-reasoning finish before the one final call. The server retains model wording only for typed
-propositions whose values, scope and request-local opaque citations validate, then restores public
-page evidence. A bounded single-flight exact cache sits before online analysis, so an identical
-valid repeat makes zero provider calls; version or source changes miss. Unsupported siblings remain
-explicit without discarding validated claims. See
-[Natural-language RAG productization v1](natural-language-productization-v1.md) and
+validated citation in the existing evidence drawer.
+
+M10 adds a separate, lower-assurance `reference_only` assistant rather than changing that M9
+authority boundary. On an exact-cache miss, the provider returns a preliminary answer and a bounded
+search plan. A general-knowledge question ends after that one call. A school-specific question runs
+the plan against the selected document and target with local BM25/BGE-M3 retrieval, then makes one
+final provider call with explicit `hits` or `no_hits`. The public response is always marked
+`reference_only` and `needs_review`; it contains no model-authored Claim/Evidence IDs, source pages,
+PDF hashes, or eligibility decision. Applicant Profile values are not sent to the provider.
+
+Only successful live results enter the bounded exact cache, so an identical repeat makes zero
+provider calls while source, target, prompt, provider, or retrieval-version changes miss. Provider
+failures return a bounded fallback and are not cached. See
+[Adaptive local QA v1](adaptive-local-qa-v1.md),
+[Natural-language RAG productization v1](natural-language-productization-v1.md), and
 [ADR 0006](decisions/0006-validated-natural-language-and-exact-cache.md).
 
 ## Main Boundaries
@@ -317,8 +324,9 @@ explicit without discarding validated claims. See
   immutable `EvidencePack` output.
 - `reasoning`: strict applicant/query inputs, reviewed-rule applicability, interaction policies,
   cited traces, and deterministic report presentation.
-- `generation` (M9): provider-neutral structured language generation over verified evidence and rule
-  results; it never owns Fact IDs, source pages, or rule applicability.
+- `generation`: M9 provides strict structured generation over verified evidence and reviewed rule
+  results; M10 adds bounded reference-only planning and wording without owning Fact IDs, pages,
+  rule applicability, or eligibility decisions.
 - `cli`: command-line entry points.
 - `service`: optional versioned HTTP transport, lifecycle, and runtime configuration.
 
