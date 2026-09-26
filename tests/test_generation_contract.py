@@ -11,6 +11,9 @@ import pytest
 from pydantic import ValidationError
 
 from jgrad_admission_rag.generation import (
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanDraft,
+    AdaptiveQaPlanningRequest,
     ApplicantFact,
     ClaimKind,
     DeterministicFakeGenerationProvider,
@@ -668,6 +671,45 @@ def test_openai_adapter_supports_minimal_simple_qa_schema(
     assert responses.kwargs is not None
     assert responses.kwargs["text_format"] is SimpleQaDraft
     assert responses.kwargs["store"] is False
+
+
+def test_openai_adapter_supports_adaptive_planning_and_final_schema(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    plan = AdaptiveQaPlanDraft(
+        draft_answer="general",
+        needs_local_lookup=True,
+        search_queries=("programme deadline",),
+    )
+    responses = _FakeResponses(SimpleNamespace(status="completed", output=(), output_parsed=plan))
+    provider, _ = _provider(monkeypatch, responses)
+
+    assert (
+        provider.plan_adaptive(
+            AdaptiveQaPlanningRequest(question="締切は？", target_label="target")
+        )
+        == plan
+    )
+    assert responses.kwargs is not None
+    assert responses.kwargs["text_format"] is AdaptiveQaPlanDraft
+    planning_payload = json.loads(responses.kwargs["input"][1]["content"])
+    assert set(planning_payload) == {"schema_version", "question", "target_label"}
+
+    answer = SimpleQaDraft(answer="final reference answer")
+    responses.response = SimpleNamespace(status="completed", output=(), output_parsed=answer)
+    assert (
+        provider.answer_adaptive(
+            AdaptiveQaFinalRequest(
+                question="締切は？",
+                target_label="target",
+                draft_answer="general",
+                retrieval_status="no_hits",
+                sources=(),
+            )
+        )
+        == answer
+    )
+    assert responses.kwargs["text_format"] is SimpleQaDraft
 
 
 @pytest.mark.parametrize(

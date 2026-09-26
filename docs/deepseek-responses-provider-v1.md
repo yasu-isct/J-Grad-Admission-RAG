@@ -1,8 +1,10 @@
 # DeepSeek Responses provider v1
 
-> The current product assistant uses the provider's minimal one-call
-> [Simple local QA](simple-local-qa-v1.md) path. The two-call question-analysis and claim-closure
-> material below is retained as historical provider-development context, not current routing.
+> The current product assistant uses [Adaptive local QA](adaptive-local-qa-v1.md): one planning
+> call for general questions, or planning plus bounded local retrieval and one final call for
+> admission-specific questions. The older question-analysis and claim-closure material below is
+> retained as provider-development context for the separate grounded adapters, not current product
+> routing.
 
 M10-02 adds `deepseek-responses` as an explicit first-party online mode. It implements both
 `QuestionUnderstandingProvider` and `GenerationProvider`; it does not impersonate OpenAI by
@@ -66,29 +68,34 @@ prompt, evidence, profile, and raw response are not default-log fields.
 The projection is an API compatibility layer, not a trust boundary. DeepSeek output is decoded and
 validated again with the original full Pydantic model. Constraints omitted from the wire schema,
 including text length, patterns, numeric bounds, and array sizes, remain authoritative locally.
-Question analysis must still reconcile with the deterministic server anchor, and answer generation
-must still pass the existing citation and claim closure checks. A wire-valid but locally invalid
-response fails closed.
+When the older grounded interfaces are used, question analysis must still reconcile with the
+deterministic server anchor and grounded answer generation must pass the existing citation and
+claim closure checks. Adaptive reference-only QA does not claim citation closure. A wire-valid but
+locally invalid response fails closed in every interface.
 
-The question-analysis result is parsed locally and must exactly reconcile with the deterministic
-server constraint after only bounded alias/typo correction. A model cannot redirect an exam,
-retrieval topic, or user-facing subquestion.
+The current adaptive product route validates a bounded planning object locally. It returns either a
+user-readable general draft with no retrieval, or a draft plus at most six bounded local queries.
+The planning object is never a browser response. The older question-analysis adapter is still
+parsed locally and reconciled with its deterministic server constraint when that separate interface
+is used; it cannot redirect an exam, retrieval topic, or user-facing subquestion.
 
-The answer call receives only the consolidated bounded evidence projection (at most 16 records and
-60,000 evidence characters), request-local `evidence:NNNN` IDs, typed proposition transport data,
-and any explicitly selected non-identifying applicant facts. The current product route sends no
-Applicant Profile facts to generation. It never sends document IDs, Fact IDs, pages, hashes,
-filesystem paths, a complete PDF, names, contacts, or credentials.
+The adaptive final call receives only the question, a non-identifying target label, the preliminary
+draft, explicit hit/no-hit state, and the bounded local source projection (at most 16 records and
+60,000 source characters). The current product route sends no Applicant Profile facts. It never
+sends document IDs, Fact IDs, pages, hashes, filesystem paths, a complete PDF, names, contacts, or
+credentials. The older grounded adapter additionally uses request-local opaque evidence and typed
+proposition IDs for its independent citation-closure interface.
 
-The model output is not authoritative. Local schema validation rejects empty, incomplete, refusal,
-or malformed responses. `generate_checked` then rejects unknown evidence/proposition IDs and
-unsupported claims. The consolidated validator additionally checks typed subject/value semantics
-and exact evidence closure before it retains model claim text. Only server code maps opaque IDs back
-to document, Fact and page provenance. The original `/v1/grounded-answers` hydration path and M9
-release-gate semantics remain unchanged.
+Adaptive output is low-assurance `reference_only`, always needs review, and is not authoritative.
+Its local schema rejects empty, incomplete, or malformed responses; provider failure returns an
+explicit bounded fallback that is never cached. The independent grounded adapter still applies
+`generate_checked`, typed subject/value validation, and exact evidence closure. Only server code
+maps its opaque IDs back to document, Fact and page provenance. The original
+`/v1/grounded-answers` hydration path and M9 release-gate semantics remain unchanged.
 
-The product route places a bounded exact cache before online analysis. A valid miss uses at most one
-question-analysis and one consolidated-answer call; an exact hit uses neither. The digest includes
+The product route places a bounded exact cache before adaptive planning. A valid miss uses one
+planning call and, only when local confirmation is needed, one final-answer call; an exact hit uses
+neither. The digest includes
 source/index/rule/prompt/schema/provider/model/revision identity, and failed validation or provider
 operations are never cached. The cache is process-memory-only and is cleared by restart.
 

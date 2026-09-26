@@ -26,6 +26,9 @@ from starlette.datastructures import FormData, UploadFile
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb
 from ..generation import (
+    ADAPTIVE_QA_FINAL_PROMPT_VERSION,
+    ADAPTIVE_QA_PLANNING_PROMPT_VERSION,
+    ADAPTIVE_QA_SCHEMA_VERSION,
     MAX_CONSOLIDATED_EVIDENCE_CHARACTERS,
     MAX_CONSOLIDATED_EVIDENCE_RECORDS,
     ClaimableProposition,
@@ -39,6 +42,10 @@ from ..generation import (
     GroundedRagErrorCode,
     GroundedRagTarget,
     PropositionPredicate,
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanningRequest,
+    answer_adaptive_checked,
+    plan_adaptive_checked,
     run_consolidated_grounded_rag,
     run_grounded_rag,
 )
@@ -50,9 +57,7 @@ from ..generation.question_analysis import (
 from ..generation.simple_qa import (
     SIMPLE_QA_PROMPT_VERSION,
     SIMPLE_QA_SCHEMA_VERSION,
-    SimpleQaRequest,
     SimpleQaSource,
-    answer_simple_checked,
 )
 from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
@@ -167,6 +172,7 @@ from .grounded_answers import (
     NaturalLanguageAnswerResponse,
     NaturalLanguageDeliveryMetadata,
     NaturalLanguageSubanswer,
+    PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS,
     PublicGroundedAnswer,
     PublicGroundedCitation,
     PublicGroundedClaim,
@@ -217,6 +223,16 @@ class _CachedNaturalAnswerCore:
     missing_information: tuple[str, ...]
     limitations: tuple[str, ...]
     subanswers: tuple[_CachedSubanswerState, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class _NaturalQaOutcome:
+    result: PublicReferenceResult
+    generation_ms: int
+    validation_ms: int
+    delivery_source: str
+    local_record_count: int
+    local_lookup_performed: bool
 
 
 BUILD_OPENAPI_EXTRA = {
@@ -1530,7 +1546,7 @@ def _generation_request_timeout_seconds(settings: ServiceSettings) -> int:
         provider_timeout = (
             90.0 if settings.generation_provider_name == "deepseek-responses" else 30.0
         )
-    maximum_provider_calls = 1
+    maximum_provider_calls = 2
     sdk_attempts = settings.generation_max_retries + 1
     transport_grace_seconds = 15
     return math.ceil(provider_timeout * sdk_attempts * maximum_provider_calls) + (
@@ -1723,9 +1739,12 @@ def _natural_answer_cache_key(
             "model": "multilingual-lexicon-v1",
         },
         "generation": {
-            "schema": SIMPLE_QA_SCHEMA_VERSION,
-            "prompt": SIMPLE_QA_PROMPT_VERSION,
-            "pipeline": "simple-local-qa-v1",
+            "schema": ADAPTIVE_QA_SCHEMA_VERSION,
+            "planning_prompt": ADAPTIVE_QA_PLANNING_PROMPT_VERSION,
+            "final_prompt": ADAPTIVE_QA_FINAL_PROMPT_VERSION,
+            "fallback_schema": SIMPLE_QA_SCHEMA_VERSION,
+            "fallback_prompt": SIMPLE_QA_PROMPT_VERSION,
+            "pipeline": "adaptive-local-qa-v1",
             "provider_identity": generation_payload,
             "reviewed_evidence_projection": REVIEWED_EVIDENCE_PROJECTION_VERSION,
         },
@@ -1759,8 +1778,6 @@ def _build_uncached_natural_language_answer_response(
     except GenerationError:
         raise ApiProblem(422, "invalid_request", "question analysis failed") from None
 
-    language = analysis.detected_language.value
-    packs = _retrieve_natural_answer_evidence(analysis, request, settings, state)
     matching_plans = tuple(
         item
         for item in state.report_plans
@@ -1769,47 +1786,51 @@ def _build_uncached_natural_language_answer_response(
     if len(matching_plans) != 1:
         raise ApiProblem(404, "report_plan_not_found", "reviewed target was not found")
     plan = matching_plans[0]
-    selected = _select_consolidated_evidence(packs, None, request.target)
-    result, generation_ms, validation_ms, delivery_source = _build_simple_qa_result(
-        request, analysis, plan, selected, settings, state
-    )
+    language = analysis.detected_language.value
+    outcome = _run_natural_qa(request, analysis, plan, settings, state)
     subanswers = tuple(
         NaturalLanguageSubanswer(
             subquestion=item,
             status=(
                 "answered"
-                if selected
-                else "needs_clarification"
-                if item.needs_clarification
+                if not outcome.local_lookup_performed or outcome.local_record_count
                 else "no_clear_evidence"
             ),
             message=_localized_message(
                 language,
-                "已使用本地募集要项检索结果生成回答。"
-                if selected
-                else "当前本地资料中没有检索到足够内容。",
-                "ローカルの募集要項検索結果から回答しました。"
-                if selected
-                else "現在のローカル資料では十分な内容を検索できませんでした。",
+                "已提供一般知识参考说明；该问题未要求查询学校规则。"
+                if not outcome.local_lookup_performed
+                else "已结合本地募集要项检索结果生成参考回答。"
+                if outcome.local_record_count
+                else "已提供一般说明，但当前本地资料没有确认相关学校规则。",
+                "一般知識として参考説明を提供し、学校規則の検索は行いませんでした。"
+                if not outcome.local_lookup_performed
+                else "ローカル募集要項の検索結果を含む参考回答です。"
+                if outcome.local_record_count
+                else "一般説明を提供しましたが、現在のローカル資料では学校固有の規則を確認できませんでした。",
             ),
         )
         for item in analysis.subquestions
     )
     summary = _localized_message(
         language,
-        f"已在所选募集要项中检索 {len(selected)} 条本地记录。",
-        f"選択した募集要項からローカル記録を{len(selected)}件検索しました。",
+        "该问题作为一般知识参考回答处理，未查询本地募集要项。"
+        if not outcome.local_lookup_performed
+        else f"已按模型规划在所选募集要项中检索 {outcome.local_record_count} 条本地记录。",
+        "一般知識の参考回答として処理し、ローカル募集要項は検索しませんでした。"
+        if not outcome.local_lookup_performed
+        else f"モデルの計画に基づき、選択した募集要項からローカル記録を{outcome.local_record_count}件検索しました。",
     )
     return NaturalLanguageAnswerResponse(
         mode=_generation_status_response(settings, state),
         analysis=analysis,
         summary=summary,
         subanswers=subanswers,
-        result=result,
+        result=outcome.result,
         delivery=NaturalLanguageDeliveryMetadata(
-            source=delivery_source,
-            generation_ms=generation_ms,
-            validation_ms=validation_ms,
+            source=outcome.delivery_source,
+            generation_ms=outcome.generation_ms,
+            validation_ms=outcome.validation_ms,
             knowledge_base_version=f"kb-{plan.source_kb_sha256[:12]}",
             cache_ttl_seconds=settings.natural_answer_cache_ttl_seconds,
         ),
@@ -1819,7 +1840,7 @@ def _build_uncached_natural_language_answer_response(
 
 
 def _retrieve_natural_answer_evidence(
-    analysis: Any,
+    queries: tuple[str, ...],
     request: GroundedAnswerRequest,
     settings: ServiceSettings,
     state: ServiceState,
@@ -1831,11 +1852,6 @@ def _retrieve_natural_answer_evidence(
         or state.provider is None
     ):
         raise ApiProblem(503, "grounded_service_unavailable", "grounded service is unavailable")
-    queries = tuple(
-        item.retrieval_query
-        for item in analysis.subquestions
-        if item.requested_intent != "exam_identity"
-    )
     if not queries:
         return ()
     try:
@@ -1887,47 +1903,86 @@ def _retrieve_natural_answer_evidence(
         ) from None
 
 
-def _build_simple_qa_result(
+def _run_natural_qa(
     request: GroundedAnswerRequest,
     analysis: Any,
     plan: ReviewedReportPlan,
-    selected: tuple[Any, ...],
     settings: ServiceSettings,
     state: ServiceState,
-) -> tuple[PublicReferenceResult, int, int, str]:
-    """Present bounded local retrieval without model-owned provenance or rule decisions."""
-
+) -> _NaturalQaOutcome:
     target_summary = build_demo_target_summary(state.report_plans, request.target)
     language = analysis.detected_language.value
+    target_label = " / ".join(
+        (
+            target_summary.school_name,
+            target_summary.degree_name,
+            target_summary.intake_name,
+            target_summary.college_name,
+            target_summary.department_name,
+        )
+    )
     limitation = _localized_message(
         language,
-        "这是基于本地募集要项检索片段生成的参考回答；资格判断请以基础结构化结果和官方原文为准。",
-        "ローカル募集要項の検索断片に基づく参考回答です。資格判断は基本の構造化結果と公式原文を確認してください。",
+        "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。",
+        "これは低保証の参考回答です。学校規則や資格判断は基本の構造化結果と公式原文を確認してください。",
     )
-    answer_text: str
-    generation_ms = 0
-    validation_ms = 0
-    delivery_source = "offline"
     provider = state.generation_provider
     online = settings.generation_provider_name != "reviewed-state-offline"
-    if not selected:
-        answer_text = _localized_message(
-            language,
-            "当前所选募集要项的本地检索结果中，没有找到足以回答该问题的相关内容。",
-            "選択した募集要項のローカル検索結果では、この質問に回答できる関連内容を確認できませんでした。",
-        )
-    elif online and provider is not None and hasattr(provider, "answer_simple"):
-        simple_request = SimpleQaRequest(
-            question=analysis.normalized_question,
-            target_label=" / ".join(
-                (
-                    target_summary.school_name,
-                    target_summary.degree_name,
-                    target_summary.intake_name,
-                    target_summary.college_name,
-                    target_summary.department_name,
+    started = perf_counter()
+    generation_ms = 0
+
+    if online and provider is not None and hasattr(provider, "plan_adaptive"):
+        planning_provider = _TimedGenerationProvider(provider)
+        try:
+            with state.generation_provider_lock:
+                planned = plan_adaptive_checked(
+                    planning_provider,
+                    AdaptiveQaPlanningRequest(
+                        question=request.question,
+                        target_label=target_label,
+                    ),
                 )
-            ),
+            generation_ms += planning_provider.elapsed_ms
+        except GenerationError:
+            generation_ms += planning_provider.elapsed_ms
+            selected = _retrieve_deterministic_fallback(request, analysis, settings, state)
+            answer_text = _offline_simple_qa_answer(selected, language, unavailable=True)
+            return _natural_qa_outcome(
+                request,
+                analysis,
+                plan,
+                state,
+                answer_text=answer_text,
+                limitation=limitation,
+                generation_ms=generation_ms,
+                started=started,
+                delivery_source="fallback",
+                selected=selected,
+                local_lookup_performed=True,
+            )
+
+        if not planned.needs_local_lookup:
+            return _natural_qa_outcome(
+                request,
+                analysis,
+                plan,
+                state,
+                answer_text=planned.draft_answer,
+                limitation=limitation,
+                generation_ms=generation_ms,
+                started=started,
+                delivery_source="live",
+                selected=(),
+                local_lookup_performed=False,
+            )
+
+        packs = _retrieve_natural_answer_evidence(planned.search_queries, request, settings, state)
+        selected = _select_consolidated_evidence(packs, None, request.target)
+        final_request = AdaptiveQaFinalRequest(
+            question=request.question,
+            target_label=target_label,
+            draft_answer=planned.draft_answer,
+            retrieval_status="hits" if selected else "no_hits",
             sources=tuple(
                 SimpleQaSource(
                     source_id=f"source:{index:04d}",
@@ -1937,21 +1992,79 @@ def _build_simple_qa_result(
                 for index, record in enumerate(selected, start=1)
             ),
         )
-        timed_provider = _TimedGenerationProvider(provider)
-        started = perf_counter()
+        final_provider = _TimedGenerationProvider(provider)
         try:
             with state.generation_provider_lock:
-                generated = answer_simple_checked(timed_provider, simple_request)
+                generated = answer_adaptive_checked(final_provider, final_request)
             answer_text = generated.answer
             delivery_source = "live"
         except GenerationError:
-            answer_text = _offline_simple_qa_answer(selected, language, unavailable=True)
+            answer_text = _adaptive_final_fallback(planned.draft_answer, selected, language)
             delivery_source = "fallback"
-        total_ms = max(0, round((perf_counter() - started) * 1000))
-        generation_ms = timed_provider.elapsed_ms
-        validation_ms = max(0, total_ms - generation_ms)
-    else:
-        answer_text = _offline_simple_qa_answer(selected, language, unavailable=False)
+        generation_ms += final_provider.elapsed_ms
+        return _natural_qa_outcome(
+            request,
+            analysis,
+            plan,
+            state,
+            answer_text=answer_text,
+            limitation=limitation,
+            generation_ms=generation_ms,
+            started=started,
+            delivery_source=delivery_source,
+            selected=selected,
+            local_lookup_performed=True,
+        )
+
+    selected = _retrieve_deterministic_fallback(request, analysis, settings, state)
+    answer_text = _offline_simple_qa_answer(selected, language, unavailable=False)
+    return _natural_qa_outcome(
+        request,
+        analysis,
+        plan,
+        state,
+        answer_text=answer_text,
+        limitation=limitation,
+        generation_ms=0,
+        started=started,
+        delivery_source="offline",
+        selected=selected,
+        local_lookup_performed=True,
+    )
+
+
+def _retrieve_deterministic_fallback(
+    request: GroundedAnswerRequest,
+    analysis: Any,
+    settings: ServiceSettings,
+    state: ServiceState,
+) -> tuple[Any, ...]:
+    queries = tuple(
+        item.retrieval_query
+        for item in analysis.subquestions
+        if item.requested_intent != "exam_identity"
+    )
+    packs = _retrieve_natural_answer_evidence(queries, request, settings, state)
+    return _select_consolidated_evidence(packs, None, request.target)
+
+
+def _natural_qa_outcome(
+    request: GroundedAnswerRequest,
+    analysis: Any,
+    plan: ReviewedReportPlan,
+    state: ServiceState,
+    *,
+    answer_text: str,
+    limitation: str,
+    generation_ms: int,
+    started: float,
+    delivery_source: str,
+    selected: tuple[Any, ...],
+    local_lookup_performed: bool,
+) -> _NaturalQaOutcome:
+    target_summary = build_demo_target_summary(state.report_plans, request.target)
+    total_ms = max(0, round((perf_counter() - started) * 1000))
+    validation_ms = max(0, total_ms - generation_ms)
 
     result = PublicReferenceResult(
         target=target_summary,
@@ -1969,12 +2082,52 @@ def _build_simple_qa_result(
             limitations=(limitation,),
         ),
     )
-    return result, generation_ms, validation_ms, delivery_source
+    return _NaturalQaOutcome(
+        result=result,
+        generation_ms=generation_ms,
+        validation_ms=validation_ms,
+        delivery_source=delivery_source,
+        local_record_count=len(selected),
+        local_lookup_performed=local_lookup_performed,
+    )
+
+
+def _adaptive_final_fallback(draft_answer: str, selected: tuple[Any, ...], language: str) -> str:
+    status = _localized_message(
+        language,
+        "在线最终整理未完成。下面依次列出本地检索状态和第一阶段模型的一般说明：",
+        "オンラインでの最終整理が完了しませんでした。以下にローカル検索の状態と第一段階モデルの一般説明を順に示します：",
+    )
+    if selected:
+        retrieval = _localized_message(
+            language,
+            "本地募集要项检索到了以下相关片段，但尚未由最终模型整合：",
+            "ローカル募集要項では次の関連断片が見つかりましたが、最終モデルでは統合されていません：",
+        )
+        excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
+    else:
+        retrieval = _localized_message(
+            language,
+            "当前选择的本地募集要项没有确认相关学校规则，请查看结构化功能、官方原文或向学校确认。",
+            "選択したローカル募集要項では学校固有の規則を確認できませんでした。構造化機能、公式原文、または学校への確認が必要です。",
+        )
+        excerpts = ()
+    return _bounded_reference_answer((status, retrieval, draft_answer, *excerpts))
 
 
 def _offline_simple_qa_answer(
     selected: tuple[Any, ...], language: str, *, unavailable: bool
 ) -> str:
+    if not selected:
+        return _localized_message(
+            language,
+            "在线自然语言整理暂时不可用；当前选择的本地募集要项也没有检索到相关内容。请查看结构化功能、官方原文或向学校确认。"
+            if unavailable
+            else "当前选择的本地募集要项没有检索到相关内容。请查看结构化功能、官方原文或向学校确认。",
+            "オンラインでの文章整理を利用できず、選択したローカル募集要項にも関連内容が見つかりませんでした。構造化機能、公式原文、または学校への確認が必要です。"
+            if unavailable
+            else "選択したローカル募集要項に関連内容が見つかりませんでした。構造化機能、公式原文、または学校への確認が必要です。",
+        )
     prefix = _localized_message(
         language,
         "在线自然语言整理暂时不可用；本地检索到以下相关内容："
@@ -1985,7 +2138,23 @@ def _offline_simple_qa_answer(
         else "ローカル検索では次の関連内容が見つかりました：",
     )
     excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
-    return "\n".join((prefix, *excerpts))
+    return _bounded_reference_answer((prefix, *excerpts))
+
+
+def _bounded_reference_answer(parts: tuple[str, ...]) -> str:
+    retained: list[str] = []
+    remaining = PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS
+    for part in parts:
+        text = part.strip()
+        if not text:
+            continue
+        separator_cost = 1 if retained else 0
+        available = remaining - separator_cost
+        if available <= 0:
+            break
+        retained.append(text[:available])
+        remaining -= separator_cost + len(retained[-1])
+    return "\n".join(retained)
 
 
 def _consolidate_natural_answer(
@@ -2515,6 +2684,20 @@ class _TimedGenerationProvider:
         started = perf_counter()
         try:
             return self._provider.answer_simple(request)
+        finally:
+            self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
+
+    def plan_adaptive(self, request: Any) -> Any:
+        started = perf_counter()
+        try:
+            return self._provider.plan_adaptive(request)
+        finally:
+            self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
+
+    def answer_adaptive(self, request: Any) -> Any:
+        started = perf_counter()
+        try:
+            return self._provider.answer_adaptive(request)
         finally:
             self.elapsed_ms = max(0, round((perf_counter() - started) * 1000))
 

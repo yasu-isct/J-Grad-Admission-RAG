@@ -7,6 +7,9 @@ from types import SimpleNamespace
 import pytest
 
 from jgrad_admission_rag.generation import (
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanDraft,
+    AdaptiveQaPlanningRequest,
     DEEPSEEK_BASE_URL,
     DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
     ApplicantFact,
@@ -51,6 +54,7 @@ from jgrad_admission_rag.manual_deepseek_evaluation import (
     main as manual_deepseek_main,
 )
 from jgrad_admission_rag.manual_simple_qa_evaluation import main as manual_simple_qa_main
+from jgrad_admission_rag.manual_adaptive_qa_evaluation import main as manual_adaptive_qa_main
 
 
 FORMAL_QUESTION = "托业840按官方的标准是多少英语配点，还有没有jlpt成绩,j-test可以吗"
@@ -330,6 +334,65 @@ def test_deepseek_simple_qa_uses_minimal_schema_and_one_request(
     assert set(wire_schema["properties"]) == {"answer"}
     assert responses.kwargs["text"]["format"]["name"] == "simple_qa_answer"  # type: ignore[index]
     assert "英語は100点満点" in responses.kwargs["input"][1]["content"]  # type: ignore[index]
+
+
+def test_deepseek_adaptive_planning_uses_small_schema_without_private_fields(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    draft = AdaptiveQaPlanDraft(
+        draft_answer="一般说明。",
+        needs_local_lookup=True,
+        search_queries=("TOEIC score conversion",),
+    )
+    responses = FakeResponses(
+        SimpleNamespace(status="completed", output=(), output_text=draft.model_dump_json())
+    )
+    provider, _ = _provider(monkeypatch, responses)
+
+    assert (
+        provider.plan_adaptive(
+            AdaptiveQaPlanningRequest(question="学校规则是什么？", target_label="Synthetic target")
+        )
+        == draft
+    )
+    assert responses.calls == 1
+    assert responses.kwargs["reasoning"] == {"effort": "none"}
+    assert responses.kwargs["text"]["format"]["name"] == "adaptive_qa_plan"  # type: ignore[index]
+    wire_schema = responses.kwargs["text"]["format"]["schema"]  # type: ignore[index]
+    assert set(wire_schema["properties"]) == {
+        "draft_answer",
+        "needs_local_lookup",
+        "search_queries",
+    }
+    sent = responses.kwargs["input"][1]["content"]  # type: ignore[index]
+    for forbidden in ("applicant", "fact_id", "document_id", "source_pages", "pdf_sha256"):
+        assert forbidden not in sent
+
+
+def test_deepseek_adaptive_final_supports_explicit_zero_hit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    draft = SimpleQaDraft(answer="一般说明；当前本地资料没有确认该学校规则。")
+    responses = FakeResponses(
+        SimpleNamespace(status="completed", output=(), output_text=draft.model_dump_json())
+    )
+    provider, _ = _provider(monkeypatch, responses)
+
+    assert (
+        provider.answer_adaptive(
+            AdaptiveQaFinalRequest(
+                question="学校接受这个考试吗？",
+                target_label="Synthetic target",
+                draft_answer="一般说明。",
+                retrieval_status="no_hits",
+                sources=(),
+            )
+        )
+        == draft
+    )
+    assert responses.calls == 1
+    assert responses.kwargs["text"]["format"]["name"] == "adaptive_qa_answer"  # type: ignore[index]
+    assert set(responses.kwargs["text"]["format"]["schema"]["properties"]) == {"answer"}  # type: ignore[index]
 
 
 def test_deepseek_runtime_uses_local_question_analysis(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -665,6 +728,41 @@ def test_live_report_contains_only_safe_bounded_observations(
     assert report["success"] is False
     assert report["observations"][0]["citation_validation"] == "failed"
     assert "PRIVATE-RAW" not in json.dumps(report)
+
+
+def test_adaptive_live_harness_requires_exact_two_call_guard(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "test-only-key")
+    monkeypatch.delenv("JGRAD_ALLOW_DEEPSEEK_LIVE", raising=False)
+    with pytest.raises(SystemExit) as caught:
+        manual_adaptive_qa_main(
+            [
+                "--pdf",
+                "D:/synthetic.pdf",
+                "--workspace",
+                "D:/synthetic-workspace",
+                "--embedding-cache",
+                "D:/synthetic-cache",
+                "--model",
+                "deepseek-flash",
+                "--synthetic-applicant-only",
+            ]
+        )
+    assert caught.value.code == 2
+
+
+def test_live_diagnostic_recognizes_adaptive_planning_schema() -> None:
+    plan = AdaptiveQaPlanDraft(
+        draft_answer="general",
+        needs_local_lookup=True,
+        search_queries=("deadline",),
+    )
+    diagnostic, errors = _safe_structured_output_diagnostic(
+        SimpleNamespace(output_text=plan.model_dump_json()), "adaptive-planning"
+    )
+    assert diagnostic == "pydantic_valid"
+    assert errors == []
 
 
 def test_deepseek_live_evaluation_source_does_not_emit_raw_questions_or_responses() -> None:

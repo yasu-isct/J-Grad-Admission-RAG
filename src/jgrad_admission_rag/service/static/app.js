@@ -362,7 +362,7 @@ async function submitGroundedAnswer() {
   groundedRetry.hidden = true;
   groundedOutput.hidden = true;
   groundedCanRetry = false;
-  setMessage(groundedStatus, "loading", "正在检索本地募集要项并生成参考回答。");
+  setMessage(groundedStatus, "loading", "正在理解问题；需要学校规则时会检索本地募集要项。");
   try {
     const response = await fetch(GROUNDED_ANSWER_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: snapshot, cache: "no-store", credentials: "same-origin", signal: groundedController.signal });
     const body = await response.json().catch(() => ({}));
@@ -375,7 +375,7 @@ async function submitGroundedAnswer() {
     }
     if (!body.mode || !body.analysis || !Array.isArray(body.subanswers)) throw new Error("invalid response");
     renderGroundedAnswer(body);
-    setMessage(groundedStatus, "success", "已生成基于本地检索结果的参考回答；请结合结构化结果和官方原文核对。", true);
+    setMessage(groundedStatus, "success", "已生成低保证参考回答；学校规则请结合结构化结果和官方原文核对。", true);
   } catch (error) {
     if (requestId !== groundedRequestId) return;
     const timedOut = groundedController && groundedController.signal.reason === "timeout";

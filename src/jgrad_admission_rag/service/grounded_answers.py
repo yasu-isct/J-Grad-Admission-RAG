@@ -17,6 +17,8 @@ from .demo_requirements import (
     DemoTargetSummary,
 )
 
+PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS = 25_000
+
 
 class GroundedAnswerRequest(DemoModel):
     schema_version: Literal["1.0"] = "1.0"
@@ -81,7 +83,7 @@ class NaturalLanguageSubanswer(DemoModel):
 
 class PublicReferenceAnswer(DemoModel):
     kind: Literal["reference_answer"] = "reference_answer"
-    answer: str = Field(min_length=1, max_length=25_000)
+    answer: str = Field(min_length=1, max_length=PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS)
     assurance: Literal["reference_only"] = "reference_only"
     needs_review: Literal[True] = True
     missing_information: tuple[str, ...] = ()
@@ -197,6 +199,7 @@ __all__ = [
     "NaturalLanguageAnswerResponse",
     "NaturalLanguageDeliveryMetadata",
     "NaturalLanguageSubanswer",
+    "PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS",
     "PublicReferenceAnswer",
     "PublicReferenceResult",
     "PublicGroundedAnswer",

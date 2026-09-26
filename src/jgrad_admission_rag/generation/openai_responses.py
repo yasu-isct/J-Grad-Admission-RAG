@@ -5,8 +5,17 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any, Callable, TypeVar
 
+from pydantic import BaseModel
+
+from .adaptive_qa import (
+    ADAPTIVE_QA_FINAL_SYSTEM_PROMPT,
+    ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
+    AdaptiveQaFinalRequest,
+    AdaptiveQaPlanDraft,
+    AdaptiveQaPlanningRequest,
+)
 from .contracts import (
     GENERATION_PROMPT_VERSION,
     GenerationDraft,
@@ -16,6 +25,8 @@ from .contracts import (
 from .provider import GenerationError, GenerationErrorCode
 from .responses_common import GROUNDING_SYSTEM_PROMPT, contains_refusal
 from .simple_qa import SIMPLE_QA_SYSTEM_PROMPT, SimpleQaDraft, SimpleQaRequest
+
+_SchemaModel = TypeVar("_SchemaModel", bound=BaseModel)
 
 
 @dataclass(frozen=True, slots=True)
@@ -190,3 +201,72 @@ class OpenAIResponsesGenerationProvider:
             )
         except Exception:
             raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
+
+    def plan_adaptive(self, request: AdaptiveQaPlanningRequest) -> AdaptiveQaPlanDraft:
+        return _request_typed_output(
+            self._client,
+            self._config,
+            system_prompt=ADAPTIVE_QA_PLANNING_SYSTEM_PROMPT,
+            payload=request.model_dump(mode="json"),
+            schema=AdaptiveQaPlanDraft,
+        )
+
+    def answer_adaptive(self, request: AdaptiveQaFinalRequest) -> SimpleQaDraft:
+        return _request_typed_output(
+            self._client,
+            self._config,
+            system_prompt=ADAPTIVE_QA_FINAL_SYSTEM_PROMPT,
+            payload=request.model_dump(mode="json"),
+            schema=SimpleQaDraft,
+        )
+
+
+def _request_typed_output(
+    client: Any,
+    config: OpenAIResponsesConfig,
+    *,
+    system_prompt: str,
+    payload: dict[str, object],
+    schema: type[_SchemaModel],
+) -> _SchemaModel:
+    serialized = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    try:
+        response = client.responses.parse(
+            model=config.model,
+            input=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": serialized},
+            ],
+            text_format=schema,
+            max_output_tokens=config.max_output_tokens,
+            store=False,
+        )
+    except Exception as error:
+        name = type(error).__name__
+        if name in {"APITimeoutError", "TimeoutException", "ReadTimeout", "ConnectTimeout"}:
+            code = GenerationErrorCode.PROVIDER_TIMEOUT
+        elif name == "LengthFinishReasonError":
+            code = GenerationErrorCode.INCOMPLETE_RESPONSE
+        elif name == "ContentFilterFinishReasonError":
+            code = GenerationErrorCode.PROVIDER_REFUSAL
+        elif name in {"ValidationError", "JSONDecodeError"}:
+            code = GenerationErrorCode.MALFORMED_OUTPUT
+        else:
+            code = GenerationErrorCode.PROVIDER_UNAVAILABLE
+        raise GenerationError(code) from None
+    if contains_refusal(response):
+        raise GenerationError(GenerationErrorCode.PROVIDER_REFUSAL)
+    if getattr(response, "status", None) != "completed":
+        raise GenerationError(GenerationErrorCode.INCOMPLETE_RESPONSE)
+    parsed = getattr(response, "output_parsed", None)
+    try:
+        return schema.model_validate(
+            parsed.model_dump(mode="json") if hasattr(parsed, "model_dump") else parsed
+        )
+    except Exception:
+        raise GenerationError(GenerationErrorCode.MALFORMED_OUTPUT) from None
