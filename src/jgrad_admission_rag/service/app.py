@@ -172,6 +172,7 @@ from .grounded_answers import (
     NaturalLanguageAnswerResponse,
     NaturalLanguageDeliveryMetadata,
     NaturalLanguageSubanswer,
+    PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS,
     PublicGroundedAnswer,
     PublicGroundedCitation,
     PublicGroundedClaim,
@@ -2111,7 +2112,7 @@ def _adaptive_final_fallback(draft_answer: str, selected: tuple[Any, ...], langu
             "選択したローカル募集要項では学校固有の規則を確認できませんでした。構造化機能、公式原文、または学校への確認が必要です。",
         )
         excerpts = ()
-    return "\n".join((status, draft_answer, retrieval, *excerpts))
+    return _bounded_reference_answer((status, retrieval, draft_answer, *excerpts))
 
 
 def _offline_simple_qa_answer(
@@ -2137,7 +2138,23 @@ def _offline_simple_qa_answer(
         else "ローカル検索では次の関連内容が見つかりました：",
     )
     excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
-    return "\n".join((prefix, *excerpts))
+    return _bounded_reference_answer((prefix, *excerpts))
+
+
+def _bounded_reference_answer(parts: tuple[str, ...]) -> str:
+    retained: list[str] = []
+    remaining = PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS
+    for part in parts:
+        text = part.strip()
+        if not text:
+            continue
+        separator_cost = 1 if retained else 0
+        available = remaining - separator_cost
+        if available <= 0:
+            break
+        retained.append(text[:available])
+        remaining -= separator_cost + len(retained[-1])
+    return "\n".join(retained)
 
 
 def _consolidate_natural_answer(

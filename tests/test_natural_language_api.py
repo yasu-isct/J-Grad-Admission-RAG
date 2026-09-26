@@ -163,6 +163,17 @@ class _FailingFinalGenerationProvider(_CountingNaturalGenerationProvider):
         raise GenerationError(GenerationErrorCode.PROVIDER_TIMEOUT)
 
 
+class _LongDraftFailingFinalGenerationProvider(_FailingFinalGenerationProvider):
+    def plan_adaptive(self, request):
+        self.calls += 1
+        self.requests.append(request)
+        return AdaptiveQaPlanDraft(
+            draft_answer="D" * 25_000,
+            needs_local_lookup=True,
+            search_queries=("school rule",),
+        )
+
+
 def _client(tmp_path, *, online: bool = False, deepseek: bool = False) -> TestClient:
     pdf, config, _ = _synthetic_config(tmp_path)
     runtime = prepare_demo(pdf, (tmp_path / "workspace").resolve(), config_dir=config)
@@ -647,6 +658,72 @@ def test_final_generation_failure_keeps_draft_and_bounded_local_status(
     assert "一般说明" in answer
     assert "Synthetic local record." in answer
     assert "最终整理未完成" in answer
+    assert cache_entries == 0
+
+
+def test_final_failure_with_maximum_draft_and_long_evidence_stays_within_public_contract(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    generator = _LongDraftFailingFinalGenerationProvider()
+    with client:
+        client.app.state.service_state.generation_provider = generator
+        monkeypatch.setattr(
+            service_app,
+            "_select_consolidated_evidence",
+            lambda *_args, **_kwargs: (
+                SimpleNamespace(text="E" * 20_000, section_path=("Synthetic",)),
+                SimpleNamespace(text="F" * 20_000, section_path=("Synthetic",)),
+                SimpleNamespace(text="G" * 20_000, section_path=("Synthetic",)),
+            ),
+        )
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "学校规则是什么？", "target": target, "applicant": {}},
+        )
+        cache_entries = len(client.app.state.service_state.natural_answer_cache._entries)
+
+    assert response.status_code == 200, response.text
+    answer = response.json()["result"]["answer"]["answer"]
+    assert len(answer) == 25_000
+    assert "最终整理未完成" in answer
+    assert "尚未由最终模型整合" in answer
+    assert "D" in answer
+    assert response.json()["delivery"]["source"] == "fallback"
+    assert cache_entries == 0
+
+
+def test_planning_failure_with_long_local_evidence_stays_within_public_contract(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
+    client = _client(tmp_path, online=True)
+    with client:
+        client.app.state.service_state.generation_provider = _FailingSimpleGenerationProvider()
+        monkeypatch.setattr(
+            service_app,
+            "_select_consolidated_evidence",
+            lambda *_args, **_kwargs: (
+                SimpleNamespace(text="E" * 20_000, section_path=("Synthetic",)),
+                SimpleNamespace(text="F" * 20_000, section_path=("Synthetic",)),
+                SimpleNamespace(text="G" * 20_000, section_path=("Synthetic",)),
+            ),
+        )
+        target = _target(client.get("/v1/target-catalog").json())
+        response = client.post(
+            "/v1/natural-language-answers",
+            json={"question": "学校规则是什么？", "target": target, "applicant": {}},
+        )
+        cache_entries = len(client.app.state.service_state.natural_answer_cache._entries)
+
+    assert response.status_code == 200, response.text
+    answer = response.json()["result"]["answer"]["answer"]
+    assert len(answer) == 25_000
+    assert "在线自然语言整理暂时不可用" in answer
+    assert "E" in answer
+    assert response.json()["delivery"]["source"] == "fallback"
     assert cache_entries == 0
 
 
