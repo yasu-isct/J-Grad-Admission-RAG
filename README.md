@@ -74,7 +74,7 @@ cd J-Grad-Admission-RAG
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[service]"
-jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf
+jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf --allow-runtime-build
 ```
 
 Open `http://127.0.0.1:8000/app`. The PDF path must be absolute and its SHA-256 must match the
@@ -89,11 +89,12 @@ Run `jgrad-demo --help` to inspect the supported local options.
 
 ```powershell
 python -m pip install -e ".[service]"
-jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf
+jgrad-demo --pdf D:\path\to\isct_2027_4_2026_9_master.pdf --allow-runtime-build
 ```
 
-`--pdf` 必须是显式绝对路径。启动器会在解析前使用打包的唯一审核身份核对 SHA-256，并在成功时
-打印已核对值；也可先用 `Get-FileHash <path> -Algorithm SHA256` 查看本地值。匹配后，首次启动在
+`--pdf` 必须是显式绝对路径。启动器会使用打包的唯一审核身份核对 SHA-256，并在成功时打印已
+核对值；也可先用 `Get-FileHash <path> -Algorithm SHA256` 查看本地值。首次 provisioning 必须
+显式使用 `--allow-runtime-build`，才会在
 `./outputs/demo/isct_2027_4_2026_9_master` 中生成 KB、离线兼容索引、corpus manifest 和 active
 policy，随后以正式 `jgrad-serve` 所用的 FastAPI 装配在 `http://127.0.0.1:8000/app` 提供页面。
 首次 PDF 解析和索引可能需要一些时间；看到 Uvicorn 的 application startup complete 后即可打开
@@ -106,8 +107,10 @@ policy，随后以正式 `jgrad-serve` 所用的 FastAPI 装配在 `http://127.0
 审核身份、最终 reviewed plan、page-scope 和 query-intent 配置随包位于
 `src/jgrad_admission_rag/demo_config`；启动路径不会读取 `tests/fixtures` 或 pytest 输出。
 
-重复启动会重新审计 PDF 身份、审核配置、KB/index、manifest、policy、reviewed plan 和 page-scope，
-仅复用完全匹配的 workspace。需要明确重建时运行：
+后续启动不带 build/rebuild 参数：它会只读审计 PDF 身份、审核配置、KB/index、manifest、policy、
+reviewed plan 和 page-scope，并且只复用完全匹配的 workspace。runtime 缺失、不可读、过期或不
+兼容都会直接失败，不会解析 PDF、建立 KB、调用 embedding provider 或切换到其他路径。需要明确
+重建时运行：
 
 ```powershell
 jgrad-demo `
@@ -130,7 +133,8 @@ jgrad-demo `
   --pdf D:\path\to\isct_2027_4_2026_9_master.pdf `
   --workspace D:\jgrad-demo-bge-m3 `
   --embedding-provider bge-m3 `
-  --embedding-cache D:\path\to\reviewed-cache
+  --embedding-cache D:\path\to\reviewed-cache `
+  --allow-runtime-build
 ```
 
 Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
@@ -144,8 +148,21 @@ Demo 将 BGE-M3 固定为 `BAAI/bge-m3` revision
 - PDF 缺失或哈希不符：从上面的官方页面重新下载指定版本，不要改名推断或选择“最新文件”。
 - 端口占用：增加 `--port 8010` 等未占用 loopback 端口。
 - 缺少 FastAPI/Uvicorn：重新运行 `python -m pip install -e ".[service]"`。
-- workspace 过期、损坏或工件不兼容：核对目录后显式增加 `--rebuild`。
-- 目录无写权限：用 `--workspace` 指向一个明确、绝对且可写的窄目录。
+- runtime 缺失：核对路径；只有确需首次 provisioning 时才增加 `--allow-runtime-build`。
+- runtime 过期、损坏或工件不兼容：核对目录后显式增加 `--rebuild`。
+- Access Denied：修正现有 runtime 的读取权限；不要换新 workspace 绕过并触发新构建。
+
+可以对明确列出的本地路径执行只读资产盘点；该命令不会扫描磁盘、构建或删除文件：
+
+```powershell
+python -m jgrad_admission_rag.operations.artifact_inventory `
+  --artifact production=D:\J-Grad-Admission-RAG\outputs\m10-deepseek-live `
+  --artifact release-baseline=D:\J-Grad-Admission-RAG\outputs\m9-01\index-bge-m3-5617a9f6
+```
+
+完整兼容身份相同的记录只会标记为 `duplicate_candidate`，不代表可以自动删除。当前 334-vector
+`b24f85ec...` 索引是冻结的语义 release baseline；391-vector `7fa46e49...` 索引才是当前产品
+runtime。两者职责不同，不能因为使用同一 PDF 和 BGE-M3 revision 而相互替换。
 
 该 Demo 无账户、无上传、无 Applicant Profile 持久化、无遥测，也不生成最终资格、材料完整性、
 受理或录取结论。申请人输入仅留在当前浏览器页面和请求生命周期内。

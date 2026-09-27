@@ -9,7 +9,14 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from .demo import DemoError, DemoRuntime, default_workspace, load_demo_config, prepare_demo
+from .demo import (
+    DemoError,
+    DemoRuntime,
+    default_workspace,
+    load_demo_config,
+    load_demo_runtime,
+    prepare_demo,
+)
 from .demo_embedding import (
     DEMO_PROVIDER_NAMES,
     DemoEmbeddingConfiguration,
@@ -43,7 +50,9 @@ def _port(value: str) -> int:
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="jgrad-demo",
-        description="Build and run the reviewed J-Grad applicant demo on this computer.",
+        description=(
+            "Audit and run an existing reviewed Demo runtime; building requires explicit opt-in."
+        ),
     )
     parser.add_argument(
         "--pdf",
@@ -68,7 +77,13 @@ def _parser() -> argparse.ArgumentParser:
         metavar="ABSOLUTE_PATH",
         help="Canonical absolute cache directory for the fixed cache-only BGE-M3 path.",
     )
-    parser.add_argument(
+    lifecycle = parser.add_mutually_exclusive_group()
+    lifecycle.add_argument(
+        "--allow-runtime-build",
+        action="store_true",
+        help="Explicitly allow creation when runtime-v1 is absent; normal startup is read-only.",
+    )
+    lifecycle.add_argument(
         "--rebuild",
         action="store_true",
         help="Safely replace this demo's generated runtime after an audit failure or upgrade.",
@@ -93,13 +108,21 @@ def main(
         generation = resolve_generation_configuration(args)
         workspace = Path(args.workspace) if args.workspace else default_workspace(bundle.identity)
         _require_available_port(args.port)
-        runtime = prepare_demo(
-            Path(args.pdf),
-            workspace,
-            rebuild=args.rebuild,
-            config_dir=config_dir,
-            embedding_configuration=embedding,
-        )
+        if args.allow_runtime_build or args.rebuild:
+            runtime = prepare_demo(
+                Path(args.pdf),
+                workspace,
+                rebuild=args.rebuild,
+                config_dir=config_dir,
+                embedding_configuration=embedding,
+            )
+        else:
+            runtime = load_demo_runtime(
+                Path(args.pdf),
+                workspace,
+                config_dir=config_dir,
+                embedding_configuration=embedding,
+            )
         if generation == GenerationRuntimeConfiguration():
             _serve(runtime, args.port, embedding)
         else:
@@ -174,11 +197,14 @@ def _serve(
         raise DemoError("formal service configuration is unavailable or incompatible") from None
 
     url = f"http://{_HOST}:{port}/app"
-    action = "reused audited" if runtime.reused else "built and audited"
     print(f"J-Grad Demo data: {runtime.identity.document_id}")
     print(f"Official PDF SHA-256: {runtime.identity.source_pdf_sha256}")
     print(f"Workspace: {runtime.workspace}")
-    print(f"Artifacts: {action}")
+    print(
+        "Runtime: "
+        f"mode={runtime.lifecycle_mode} kb={runtime.source_kb_sha256[:12]} "
+        f"payloads={runtime.payload_count} vectors={runtime.vector_count}"
+    )
     identity = runtime.embedding_identity
     print(
         "Retrieval: "
