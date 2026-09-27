@@ -50,7 +50,9 @@ class ParseRequest(PilotModel):
             return self
         if not self.pages:
             raise ValueError("pages selection must be non-empty")
-        if any(not isinstance(page, int) or isinstance(page, bool) or page <= 0 for page in self.pages):
+        if any(
+            not isinstance(page, int) or isinstance(page, bool) or page <= 0 for page in self.pages
+        ):
             raise ValueError("physical pages must be positive integers")
         if tuple(sorted(set(self.pages))) != self.pages:
             raise ValueError("physical pages must be sorted and unique")
@@ -64,7 +66,10 @@ class SourceBinding(PilotModel):
 
     @model_validator(mode="after")
     def validate_identity(self) -> SourceBinding:
-        if _SAFE_ID.fullmatch(self.source_id) is None or _SHA256.fullmatch(self.source_pdf_sha256) is None:
+        if (
+            _SAFE_ID.fullmatch(self.source_id) is None
+            or _SHA256.fullmatch(self.source_pdf_sha256) is None
+        ):
             raise ValueError("source binding identity is invalid")
         return self
 
@@ -137,9 +142,7 @@ class NormalizedBlock(PilotModel):
 class NormalizedPage(PilotModel):
     physical_page: int = Field(gt=0, strict=True)
     printed_page_label: None = None
-    extraction_status: Literal[
-        "text_extracted", "blank_or_unreadable", "scanned_without_ocr"
-    ]
+    extraction_status: Literal["text_extracted", "blank_or_unreadable", "scanned_without_ocr"]
     blocks: tuple[NormalizedBlock, ...] = Field(min_length=1, max_length=1)
     diagnostics: tuple[str, ...]
 

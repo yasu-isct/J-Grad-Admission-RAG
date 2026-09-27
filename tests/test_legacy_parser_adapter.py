@@ -177,7 +177,9 @@ def test_source_identity_mismatch_fails_before_extraction(
 
     monkeypatch.setattr(
         "jgrad_admission_rag.parsing.legacy_adapter.extract_pdf",
-        lambda *args, **kwargs: pytest.fail("extractor must not run for mismatched source identity"),
+        lambda *args, **kwargs: pytest.fail(
+            "extractor must not run for mismatched source identity"
+        ),
     )
     with pytest.raises(LegacyAdapterError) as raised:
         parse_legacy_pdf(source, ParseRequest(selection="all"))
