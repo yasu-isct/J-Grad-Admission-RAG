@@ -41,6 +41,7 @@ jgrad-evaluate-retrieval = "jgrad_admission_rag.cli.evaluate_retrieval:main"
 jgrad-check-retrieval-gate = "jgrad_admission_rag.cli.check_retrieval_gate:main"
 jgrad-check-grounded-rag-gate = "jgrad_admission_rag.cli.check_grounded_rag_gate:main"
 jgrad-update-corpus = "jgrad_admission_rag.cli.update_corpus:main"
+jgrad-parse-legacy-pilot = "jgrad_admission_rag.cli.parse_legacy_pilot:main"
 jgrad-serve = "jgrad_admission_rag.service.cli:main"
 jgrad-demo = "jgrad_admission_rag.demo_cli:main"
 
