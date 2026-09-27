@@ -8,7 +8,8 @@ Date: 2026-09-27. Production schemas, runtime and parser behavior are unchanged.
 The [audit](../audits/single-school-coupling-2026-09-27.md) finds reusable multi-document retrieval
 and evidence infrastructure, with school-specific builder/policy assumptions in generic entry
 points. The user selected University of Tokyo / Graduate School of Frontier Sciences (GSFS) /
-Complexity Science and Engineering as the first new target and authorized downloads. The
+Complexity Science and Engineering as the first new target and authorized downloads. The user
+confirmed the fixed 2027 master's ordinary general-selection A / April 2027 intake slice. The
 [source lock](../onboarding/utokyo-gsfs-complex-2027.md) supplies real design inputs.
 
 The first journey is deliberately small: select one reviewed target, inspect dates, ordinary

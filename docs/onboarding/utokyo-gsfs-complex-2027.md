@@ -6,12 +6,11 @@ design evidence, not an enabled product target, reviewed rulebook or parser A/B 
 
 ## User decision and bounded working slice
 
-The user selected 東京大学 / 新領域創成科学研究科 / 複雑理工学専攻 and authorized downloads.
-The working slice is 2027 admission cycle, master's ordinary general selection, examination
-schedule A, normal April 2027 intake. This degree/route/intake is a design assumption proposed to
-the user, not an additional explicit user decision. A later correction changes the proposed
-target binding without changing the identities of acquired PDFs. Do not enable a production
-selection until the target contract is settled.
+The user selected 東京大学 / 新領域創成科学研究科 / 複雑理工学専攻, authorized downloads, and
+explicitly confirmed the fixed slice: 2027 admission cycle, master's ordinary general selection,
+examination schedule A, April 2027 intake. This is the agreed first regression/onboarding target.
+Production activation still requires the source-set contract, reviewed coverage and acceptance;
+the target decision alone does not enable a new school in the current Demo.
 
 This is a fixed historical examination sample, not an open application window. Doctoral,
 special oral, fusion-program and October-intake content remains available as negative/conditional
