@@ -66,6 +66,20 @@ duplicate candidates, but deletion requires a reference audit, dry run and expli
 - On milestone closeout, reconcile README, architecture, roadmap, checkpoints, Issues and Project
   state. Preserve historical evidence but label it as historical.
 
+## M14 execution lessons
+
+- Keep one cumulative budget across retries, directories and agent handoffs; a fresh ledger never
+  resets consumption. Bind each scorecard to one explicit execution generation.
+- Validate the supervisor before long real runs, including verbose stdout/stderr and child cleanup.
+  Process existence and a live monitoring loop are not evidence of parsing progress. Diagnose
+  harness faults before attributing timeouts to parser performance.
+- Keep one milestone chat, with compact checkpoints between harness validation, real evaluation
+  and final scoring. Do not repeatedly rerun complete experiments while fixing report plumbing.
+- Configured providers, cache occupancy and zero Python-hook network attempts do not establish
+  measured providers, cumulative download bytes or OS-wide network isolation.
+- A failed experiment can close honestly without parser authorization. See the
+  [rejected pilot report](onboarding/mineru-4.0.7-pilot-report.md); evidence gaps remain explicit.
+
 ## Reconciled since the notebook
 
 ART-01 / PR #184 made normal Demo startup reuse-only and added explicit-path inventory. M10-09 /

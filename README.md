@@ -19,8 +19,8 @@ capabilities, artifact roles, golden user journeys, and limitations are frozen i
 work is deferred after its architecture study. Future multi-school design starts from
 [GitHub #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191) and the compact
 [design handoff](docs/checkpoints/post-single-school-design-handoff.md), while the MinerU 4.x
-experiment remains the bounded future
-[issue #177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177).
+experiment [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) is closed as a
+[rejected execution](docs/onboarding/mineru-4.0.7-pilot-report.md); no new parser is activated.
 
 ## What Applicants Can Verify Today
 
@@ -620,10 +620,12 @@ Frontier Sciences, Department of Complexity Science and Engineering. The shipped
 the completed Science Tokyo local Demo; the new school is not yet supported. See the
 [multi-school ADR](docs/decisions/0008-multi-school-compatibility.md) and
 [source lock](docs/onboarding/utokyo-gsfs-complex-2027.md). MS-01 defines the
-[target/source-set contract](docs/onboarding/gsfs-source-set-contract-v0.1.md); the sole next development
-task in [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) is the
-[#177 bounded parser comparison](docs/onboarding/mineru-4.0.7-pilot-plan.md), following the accepted
-[MS-02 isolated adapter](docs/onboarding/ms02-baseline-adapter-spec.md). M13 remains paused.
+[target/source-set contract](docs/onboarding/gsfs-source-set-contract-v0.1.md), and MS-02 provides the
+[isolated adapter](docs/onboarding/ms02-baseline-adapter-spec.md).
+[M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) closes with PR #200's accepted
+failed-experiment audit and reject decision. Next is design-main review of the remaining evidence
+gaps and minimal ingestion contract; no new implementation or candidate run is released.
+See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
 workflow.

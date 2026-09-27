@@ -83,11 +83,10 @@ including reviewed research/publicity labels for department pp.3-4; it is not ex
 Keep the complete originals for physical-page reference; never renumber a sample
 PDF as if it were the source. Missing web/form details remain explicit coverage limits.
 
-## Unique next action
+## Current handoff
 
-MS-01 has specified the [target/source-set and compatibility contract](gsfs-source-set-contract-v0.1.md)
-under the [multi-school ADR](../decisions/0008-multi-school-compatibility.md). The unique next
-implementation is now [#177's pinned parser comparison](mineru-4.0.7-pilot-plan.md), assigned by
-the user to a development agent in M14. [MS-02](ms02-baseline-adapter-spec.md) is accepted in PR #198;
-the 15-page plan is now backed by frozen 41-unit manual gold. No MinerU candidate has run yet.
-Do not activate another program or resume M13.
+MS-01's source-set contract and MS-02's baseline adapter remain accepted. #177 closed in PR #200
+as an accepted [failed-experiment / reject decision](mineru-4.0.7-pilot-report.md). The 15-page,
+41-unit gold remains frozen; no candidate is approved for production or fallback use. Design main
+next assesses evidence gaps and the minimal ingestion contract. No new implementation or parser
+rerun is released, and M13 remains paused.

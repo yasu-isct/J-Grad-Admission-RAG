@@ -2,7 +2,9 @@
 
 Design owner: #191. Execution Issue: [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177).
 Milestone: [M14 - Multi-school Foundations and Parser Pilot](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14).
-Status: approved execution specification after this document merges; no candidate has run yet.
+Status: closed after PR #200, accepted as a failed experiment / reject decision.
+This is the historical execution specification, not permission to resume. See the
+[report](mineru-4.0.7-pilot-report.md) for the budget breach and evidence limitations.
 The user assigns the development agent and may reuse the current M14 development chat.
 
 ## Goal, dependencies and non-goals
@@ -188,4 +190,5 @@ regression build is required locally; normal CI remains required. Do not upload 
 Failure leaves outputs experimental and records the gate that failed. Revert only new pilot code or
 configuration; remove nothing automatically and mutate no existing runtime pointers. Design main
 reviews before merge and marks M14 complete only after the decision and handoff are accepted.
-Until then, the sole released development task is #177; future KB/rule/UI tasks remain unissued.
+Historical release point: #177 was the sole released development task. It is now closed;
+future KB/rule/UI tasks and any new candidate experiment require a separate reviewed Spec.
