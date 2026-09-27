@@ -624,8 +624,10 @@ the completed Science Tokyo local Demo; the new school is not yet supported. See
 [isolated adapter](docs/onboarding/ms02-baseline-adapter-spec.md).
 [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) closes with PR #200's accepted
 failed-experiment audit and reject decision. [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15)
-starts with [#202](docs/onboarding/reviewed-source-evidence-spec.md), the sole next development
-task: inspect reviewed official excerpts for three materials topics with exact source/page binding.
+has completed [#202](docs/onboarding/evid01-operator-preview.md): inspect reviewed official excerpts
+for three materials topics with exact source/page binding (accepted PR #204). Next is design of
+explicit builder-profile isolation and mapping into existing KB/Fact evidence; no new development
+task is released yet.
 No new parser experiment or GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
 

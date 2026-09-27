@@ -88,6 +88,7 @@ PDF as if it were the source. Missing web/form details remain explicit coverage 
 MS-01's source-set contract and MS-02's baseline adapter remain accepted. #177 closed in PR #200
 as an accepted [failed-experiment / reject decision](mineru-4.0.7-pilot-report.md). The 15-page,
 41-unit gold remains frozen; no candidate is approved for production or fallback use. Design main
-has completed the [evidence-gap assessment](gsfs-evidence-gaps-and-next-slice.md) and releases
-only [EVID-01 #202](reviewed-source-evidence-spec.md) for three materials topics. No parser rerun
+has completed the [evidence-gap assessment](gsfs-evidence-gaps-and-next-slice.md) and accepted
+[EVID-01 #202](reviewed-source-evidence-spec.md) in PR #204 for three materials topics. No dependent
+implementation is released. No parser rerun
 is authorized, and M13 remains paused.
