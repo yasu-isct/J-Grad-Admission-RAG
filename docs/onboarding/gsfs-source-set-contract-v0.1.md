@@ -188,5 +188,5 @@ remain Proposed. No incompatible schema or assistant-authority decision is made 
 
 MS-02 [baseline adapter](ms02-baseline-adapter-spec.md) is accepted in PR #198. #177 closed
 in PR #200 with an accepted [reject decision](mineru-4.0.7-pilot-report.md). No production parser
-is selected. Design main next assesses evidence gaps and the minimal ingestion contract before
-releasing another implementation. Deployment stays paused. Documentation rollback changes no assets.
+is selected. [EVID-01 #202](reviewed-source-evidence-spec.md) is now the sole released
+implementation for pre-KB source evidence inspection, under ADR 0010. Deployment stays paused. Documentation rollback changes no assets.

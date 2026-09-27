@@ -101,10 +101,22 @@ Design main independently verified 130 historical files, all 41 Flash locators, 
 established identities; historical pre/post and provider/network/resource evidence gaps remain.
 No new-school runtime, fallback routing or candidate rerun is authorized.
 
-The unique next step is design-main assessment of remaining evidence gaps and the minimal
-reviewed ingestion/provenance contract. Distinguish text loss, table/diagram relations and rule
-scope before choosing implementation. No new developer Issue is released. Any further parser
-experiment needs a separate bounded Spec/budget; do not reopen the closed runner automatically.
-Legacy builder-profile isolation remains mandatory before any GSFS KB. Keep one development chat
-per milestone with checkpoints between harness validation, real runs and scoring. Preserve the
-existing 334/391 assets, reference-only assistant and paused M13.
+## M15 current release point
+
+The [evidence-gap assessment](../onboarding/gsfs-evidence-gaps-and-next-slice.md) is complete for
+the first bounded materials slice. [ADR 0010](../decisions/0010-reviewed-source-evidence.md)
+defines pre-KB reviewed excerpts, not a second rule engine or direct applicant-answer store.
+Design main visually rechecked common p6, department pp28/40 and additional p1, then recorded
+[eight design-reviewed excerpts](../onboarding/gsfs-material-evidence-seed-v1.json) across three topics.
+Reviewer kind is Agent, not human; manual transcription has no fabricated parser locator/bbox.
+
+The sole next development task is [EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md)
+in [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15): strict generic evidence
+loading/audit and operator previews for English score sheets, checklist submission and work/study
+plan conditions. Exact target/source-set/PDF/review identities gate output. No production KB,
+rules, API/UI, model/parser calls or downloads are needed. The user assigns the development Agent.
+
+Later profile isolation, existing-KB lineage mapping, reusable material conditions and local
+presentation remain dependent planning slices, not released tasks. #202 does not complete M15.
+Reuse one M15 chat, with checkpoints between contract/tests, real previews and PR handoff.
+Keep #177 closed, 334/391 assets unchanged, assistant reference-only, and M13 paused.
