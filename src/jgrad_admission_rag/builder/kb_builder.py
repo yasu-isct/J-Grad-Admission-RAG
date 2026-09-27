@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
-import re
 
 from pydantic import ValidationError
 
@@ -15,7 +14,6 @@ from ..schemas.document_kb import (
     BuildDiagnostics,
     BuildQualityThresholds,
     DocumentKnowledgeBase,
-    KnowledgeEntity,
     KnowledgeManifest,
     QualityGateResult,
     QualityGateViolation,
@@ -27,43 +25,93 @@ from ..schemas.document_identity import DocumentIdentity
 from ..retrieval.embedding_text import EMBEDDING_TEXT_VERSION, build_embedding_text
 from ..utils import ensure_dir, sha256_file, write_json
 
-COLLEGE_DEPARTMENTS = {
-    "理学院": ["数学系", "物理学系", "化学系", "地球惑星科学系"],
-    "工学院": ["機械系", "システム制御系", "電気電子系", "情報通信系", "経営工学系"],
-    "物質理工学院": ["材料系", "応用化学系"],
-    "情報理工学院": ["数理・計算科学系", "情報工学系"],
-    "生命理工学院": ["生命理工学系"],
-    "環境・社会理工学院": [
-        "建築学系",
-        "土木・環境工学系",
-        "融合理工学系",
-        "社会・人間科学系",
-        "技術経営専門職学位課程",
-    ],
-}
-PROGRAMS = {"技術経営専門職学位課程"}
-TSINGHUA_JOINT_PROGRAM = "東京科学大学・清華大学 大学院合同プログラム"
-DEPARTMENT_CONTEXT_RE = re.compile(r"^(?P<college>\S+学院)\s+(?P<unit>.+(?:系|専門職学位課程))$")
-TSINGHUA_PROGRAM_COVER_RE = re.compile(
-    r"Ⅲ\s+清華大学（中国）との大学院\s*合同プログラム入学試験案内"
+# Historical helper imports remain available to existing callers and tests.
+# All three policy functions and constants have one implementation in legacy_isct_v1.
+from .legacy_isct_v1 import (
+    APPENDIX_CONVERSION_HEADING_RE as APPENDIX_CONVERSION_HEADING_RE,
+    COLLEGE_DEPARTMENTS as COLLEGE_DEPARTMENTS,
+    DEPARTMENT_CONTEXT_END_RE as DEPARTMENT_CONTEXT_END_RE,
+    DEPARTMENT_CONTEXT_RE as DEPARTMENT_CONTEXT_RE,
+    PAGE_MARKER_RE as PAGE_MARKER_RE,
+    PATH10_ELIGIBILITY_RE as PATH10_ELIGIBILITY_RE,
+    PATH9_UNIVERSITY_REQUIREMENT_RE as PATH9_UNIVERSITY_REQUIREMENT_RE,
+    PROGRAMS as PROGRAMS,
+    TSINGHUA_JOINT_PROGRAM as TSINGHUA_JOINT_PROGRAM,
+    TSINGHUA_PROGRAM_COVER_RE as TSINGHUA_PROGRAM_COVER_RE,
+    _is_tsinghua_program_cover as _is_tsinghua_program_cover,
+    build_entities as build_entities,
+    infer_scope as infer_scope,
+    propagate_department_context as propagate_department_context,
 )
-APPENDIX_CONVERSION_HEADING_RE = re.compile(
-    r"^附録[0-9０-９一二三四五六七八九十]+[\.．、][^\n]*英語外部試験[^\n]*換算基準"
-)
-
-PATH9_UNIVERSITY_REQUIREMENT_RE = re.compile(
-    r"^[１２３]\．(?:2027年3月31日において、大学在学期間|本学に2年間在学した時点|本学大学院入学までに)"
-)
-PATH10_ELIGIBILITY_RE = re.compile(r"^★（10）本学大学院において、個別の出願資格審査により、")
-DEPARTMENT_CONTEXT_END_RE = re.compile(
-    r"^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\s+|附録|入学者受入れの方針|"
-    r"東京科学大学「教育理念」|■\s*東京科学大学)"
-)
-PAGE_MARKER_RE = re.compile(r"^## Page \d+$")
 
 
 class DocumentBuildError(Exception):
     """Raised when reviewed identity and source PDF cannot be bound safely."""
+
+
+class DocumentBuildProfileError(DocumentBuildError):
+    """Stable, path-free diagnosis for an explicit profile selection failure."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__(code)
+
+
+LEGACY_ISCT_PROFILE_ID = "legacy-isct-v1"
+_LEGACY_ISCT_IDENTITY = (
+    "isct",
+    "isct-master-admission-guidelines",
+    "2027-april-2026-september",
+    "isct_2027_4_2026_9_master",
+    ("master",),
+    ((2026, 9), (2027, 4)),
+)
+
+
+def build_document_kb_with_profile(
+    pdf_path: str | Path,
+    identity: DocumentIdentity,
+    *,
+    profile_id: str,
+    max_chars: int = 6000,
+    source_pdf_label: str | None = None,
+    short_fact_threshold: int = 100,
+    reference_ambiguity_margin: float = 0.1,
+    quality_thresholds: BuildQualityThresholds | None = None,
+) -> DocumentKnowledgeBase:
+    """Guard a selected legacy profile before any PDF I/O or extraction.
+
+    New onboarding code must use this explicit entry. The old entry below keeps
+    historical behavior for CLI, Demo, service and existing synthetic callers.
+    """
+
+    if type(profile_id) is not str or profile_id != LEGACY_ISCT_PROFILE_ID:
+        raise DocumentBuildProfileError("unknown_profile")
+    try:
+        if not isinstance(identity, DocumentIdentity):
+            raise TypeError
+        validated_identity = DocumentIdentity.model_validate(identity.model_dump(mode="json"))
+    except (AttributeError, TypeError, ValidationError, ValueError):
+        raise DocumentBuildProfileError("invalid_identity") from None
+    identity_key = (
+        validated_identity.institution_id,
+        validated_identity.document_family_id,
+        validated_identity.edition_id,
+        validated_identity.document_id,
+        tuple(level.value for level in validated_identity.degree_levels),
+        tuple((term.year, term.month) for term in validated_identity.intake_terms),
+    )
+    if identity_key != _LEGACY_ISCT_IDENTITY:
+        raise DocumentBuildProfileError("profile_identity_mismatch")
+    return build_document_kb(
+        pdf_path,
+        validated_identity,
+        max_chars=max_chars,
+        source_pdf_label=source_pdf_label,
+        short_fact_threshold=short_fact_threshold,
+        reference_ambiguity_margin=reference_ambiguity_margin,
+        quality_thresholds=quality_thresholds,
+    )
 
 
 def pages_to_markdown(pages: list) -> str:
@@ -78,194 +126,6 @@ def pages_to_source_pages(pages: list) -> list[SourcePage]:
         )
         for page in pages
     ]
-
-
-def build_entities(index: list[IndexedChunk]) -> list[KnowledgeEntity]:
-    page_map: dict[str, set[int]] = {college: set() for college in COLLEGE_DEPARTMENTS}
-    for departments in COLLEGE_DEPARTMENTS.values():
-        for department in departments:
-            page_map[department] = set()
-
-    for item in index:
-        haystack = f"{item.title}\n{item.text}"
-        for name in page_map:
-            if name in haystack:
-                page_map[name].update(item.pages)
-
-    program_page_map = {
-        TSINGHUA_JOINT_PROGRAM: {
-            page
-            for item in index
-            if TSINGHUA_JOINT_PROGRAM in item.section_path
-            for page in item.pages
-        }
-    }
-
-    entities: list[KnowledgeEntity] = []
-    for college, departments in COLLEGE_DEPARTMENTS.items():
-        college_id = f"college:{college}"
-        entities.append(
-            KnowledgeEntity(
-                entity_id=college_id,
-                name=college,
-                entity_type="college",
-                source_pages=sorted(page_map[college]),
-            )
-        )
-        for department in departments:
-            entity_type = "program" if department in PROGRAMS else "department"
-            entities.append(
-                KnowledgeEntity(
-                    entity_id=f"{entity_type}:{department}",
-                    name=department,
-                    entity_type=entity_type,
-                    parent_id=college_id,
-                    source_pages=sorted(page_map[department]),
-                )
-            )
-    for program, pages in program_page_map.items():
-        if not pages:
-            continue
-        entities.append(
-            KnowledgeEntity(
-                entity_id=f"program:{program}",
-                name=program,
-                entity_type="program",
-                source_pages=sorted(pages),
-            )
-        )
-    return entities
-
-
-def infer_scope(item: IndexedChunk) -> tuple[str, list[str], str | None, float]:
-    haystack = f"{item.title}\n{item.text}"
-    if (
-        item.section_path
-        and APPENDIX_CONVERSION_HEADING_RE.match(item.section_path[0])
-        and item.text.lstrip().startswith(item.section_path[0])
-    ):
-        return "global", [], None, 0.7
-
-    if TSINGHUA_JOINT_PROGRAM in item.section_path or _is_tsinghua_program_cover(item):
-        return "program", [TSINGHUA_JOINT_PROGRAM], None, 0.9
-    if item.pages == [7] and PATH10_ELIGIBILITY_RE.match(item.text):
-        return "global", [], None, 0.7
-
-    if item.section_path and item.section_path[-1].startswith(
-        (
-            "（３）受験上の特別な配慮が必要な場合の対応",
-            "（６）外国籍および海外在住の志願者への注意",
-            "（１）出願時に日本に在住していること",
-            "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること",
-            "（１）英語試験（Ａ日程及びＢ日程どちらも必須）",
-        )
-    ):
-        return "global", [], None, 0.7
-
-    if (
-        item.section_path
-        and item.section_path[-1].startswith("【外国籍の志願者のみ提出する書類】")
-        and item.title
-        and item.text.lstrip().startswith(item.title)
-    ):
-        return "global", [], None, 0.7
-
-    for heading in item.section_path:
-        context = DEPARTMENT_CONTEXT_RE.fullmatch(heading.strip())
-        if context is None:
-            continue
-        college = context.group("college")
-        unit = context.group("unit")
-        if unit in COLLEGE_DEPARTMENTS.get(college, []):
-            scope_type = "program" if unit in PROGRAMS else "department"
-            return scope_type, [unit], college, 0.9
-
-    matched_departments: list[str] = []
-    occupied_spans: list[tuple[int, int]] = []
-    departments = sorted(
-        (department for values in COLLEGE_DEPARTMENTS.values() for department in values),
-        key=len,
-        reverse=True,
-    )
-    for department in departments:
-        if haystack.count(department) <= haystack.count(f"{department}以外"):
-            continue
-        matches = list(re.finditer(re.escape(department), haystack))
-        unoccupied_matches = [
-            match
-            for match in matches
-            if all(match.end() <= start or end <= match.start() for start, end in occupied_spans)
-        ]
-        if not unoccupied_matches:
-            continue
-        matched_departments.append(department)
-        occupied_spans.extend(match.span() for match in unoccupied_matches)
-    if matched_departments:
-        parent = next(
-            college
-            for college, departments in COLLEGE_DEPARTMENTS.items()
-            if matched_departments[0] in departments
-        )
-        scope_type = (
-            "program"
-            if len(matched_departments) == 1 and matched_departments[0] in PROGRAMS
-            else "department"
-        )
-        return scope_type, matched_departments, parent, 0.75
-
-    matched_colleges = [college for college in COLLEGE_DEPARTMENTS if college in haystack]
-    if matched_colleges:
-        return "college", matched_colleges, None, 0.7
-
-    if item.section_path and item.section_path[0].startswith(
-        ("２．入学時期", "３．出願資格", "４．出願手続")
-    ):
-        return "global", [], None, 0.7
-
-    if item.pages == [8] and PATH9_UNIVERSITY_REQUIREMENT_RE.match(item.text):
-        return "global", [], None, 0.7
-
-    if any(token in haystack for token in ["全学院", "全系", "共通", "全志願者"]):
-        return "global", [], None, 0.65
-
-    return "unknown", [], None, 0.45
-
-
-def propagate_department_context(index: list[IndexedChunk]) -> None:
-    """Carry reviewed department or program banners to an explicit top-level boundary."""
-
-    active_context: str | None = None
-    for item in index:
-        lines = (line.strip() for line in item.text.splitlines())
-        first_line = next(
-            (line for line in lines if line and not PAGE_MARKER_RE.fullmatch(line)), ""
-        )
-        if DEPARTMENT_CONTEXT_END_RE.match(first_line):
-            active_context = None
-        explicit_program = TSINGHUA_JOINT_PROGRAM if _is_tsinghua_program_cover(item) else None
-        explicit_context = next(
-            (
-                heading
-                for heading in item.section_path
-                if DEPARTMENT_CONTEXT_RE.fullmatch(heading.strip())
-            ),
-            None,
-        )
-        if explicit_program is not None:
-            active_context = explicit_program
-            if explicit_program not in item.section_path:
-                item.section_path = [explicit_program, *item.section_path]
-        elif explicit_context is not None:
-            active_context = explicit_context
-        elif active_context is not None and not DEPARTMENT_CONTEXT_END_RE.match(first_line):
-            if active_context not in item.section_path:
-                item.section_path = [active_context, *item.section_path]
-
-
-def _is_tsinghua_program_cover(item: IndexedChunk) -> bool:
-    """Recognize the reviewed cover without treating earlier contents mentions as a banner."""
-
-    return item.pages == [75] and TSINGHUA_PROGRAM_COVER_RE.search(item.text) is not None
 
 
 def indexed_chunk_to_fact(item: IndexedChunk) -> ScopedFact:
