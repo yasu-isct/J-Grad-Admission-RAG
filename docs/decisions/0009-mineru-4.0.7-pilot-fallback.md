@@ -1,38 +1,40 @@
-# ADR 0009: Keep MinerU 4.0.7 Flash as a reviewed checklist fallback only
+# ADR 0009: Reject the MinerU 4.0.7 pilot execution
 
 - Status: Proposed pending design-main review
 - Date: 2026-09-27
 - Issue: #177
-- Decision: fallback
+- Decision: reject (supersedes the earlier fallback proposal)
 
-## Context
+## Context and decision
 
-The locked University of Tokyo pilot compared the existing MS02 legacy adapter with MinerU 4.0.7
-Flash/native text and Basic/ONNX/CPU over four exact PDFs. Adoption required 33/33 critical,
-39/41 overall, 90% table/structure, reproducibility/resource compliance, and recovery of D13 and
-D14. A hybrid required a reviewed explicit page map meeting the same gate.
+The main-linked PARSE-01 Spec permits rejection for operational or reproducibility
+failure. A retrospective audit found 388 attempted candidate page-passes across
+three generations, exceeding the shared 168-page cap. The previous report counted
+only generation one and mixed it with generation-three provenance.
 
-## Decision
+Reject this pilot as a basis for adoption, hybrid routing **or fallback authorization**.
+Freeze all real candidate entry points; retain historical artifacts and their hashes.
+Do not rerun to repair exhausted-budget evidence or relax the locked gold.
 
-Do not adopt MinerU and do not create a production hybrid map. Retain Flash only as experimental
-evidence for a future, human-reviewed fallback on complex-guide physical p40 checklist recovery.
-It recovered D13-D16 and was byte-identical on the locked repeat sample, but scored 35/41,
-28/33 critical, and 15/20 table/structure. The flowchart relations F01-F02 and schedule table
-D03-D05 remain critical blockers. Basic is rejected as a candidate for this pilot because the
-45-page guide exceeded the locked 1,800-second per-PDF limit, leaving the tier incomplete.
-
-No production parser selection, dependency, runtime pointer, KB, vector, fact, rule, API or UI is
-changed. The MS02 contract is not loosened. There is deliberately no production page-to-adapter
-map; creating one would require a separate reviewed change.
+Flash's observational score is 33/41 overall, 28/33 critical and 13/20 table/structure,
+below the locked gates. D13–D16 checklist recovery is a real observed benefit, but
+does not override the failed execution gate. C10 and C13 both fail for unproven
+cross-page table ownership. Basic remains unscored: supervisor PIPE starvation may
+have contributed to its timeout, so CPU/MinerU performance cannot be blamed conclusively.
 
 ## Consequences
 
-The next onboarding stage may use the p40 evidence to design a narrowly reviewed fallback while
-preserving exact source/page provenance. It must not treat raw parser output as reviewed rules or
-claim GSFS answer readiness. Diagram edges, visual-table date order, multi-column order, OCR and
-bbox accuracy remain unresolved. Standard/Advanced, VLM, CUDA and scanned-source OCR are untested,
-not disproven.
+No production parser selection, page map, dependency, runtime pointer, KB, vector,
+fact, rule, API or UI is changed. MS02 is not loosened. The evidence is not GSFS
+answer readiness and does not authorize the next onboarding stage automatically.
 
-The full execution/resource record is in
-`docs/onboarding/mineru-4.0.7-pilot-report.md`; the immutable unit record is in
-`docs/onboarding/mineru-4.0.7-pilot-scorecard.json`.
+Provider values were not measured per session; short-run RSS, cumulative network
+transfer, complete network denial and historical protected pre/post state have
+evidence gaps. A separately authorized future experiment may investigate these,
+but this pilot is closed without additional downloads or candidate parsing.
+Scanned OCR, bbox accuracy, Standard/Advanced, VLM and CUDA remain unvalidated.
+
+See the [report](../onboarding/mineru-4.0.7-pilot-report.md),
+[audit](../onboarding/mineru-4.0.7-pilot-audit.json) and
+[scorecard](../onboarding/mineru-4.0.7-pilot-scorecard.json).
+The existing filename is retained to preserve links; it no longer recommends fallback.
