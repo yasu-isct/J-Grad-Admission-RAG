@@ -1,0 +1,20 @@
+{
+  "source_set": {
+    "revision": 1,
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1"
+  },
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {
+      "month": 4,
+      "year": 2027
+    },
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  }
+}
