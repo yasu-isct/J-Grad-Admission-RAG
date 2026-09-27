@@ -2,7 +2,7 @@
 
 Status: implementable experimental contract under MS-01; not a production KB/schema migration.
 Inputs and meanings come from the [GSFS source-set contract](gsfs-source-set-contract-v0.1.md).
-The first implementation is [MS-02](ms02-baseline-adapter-spec.md). Final block/table contract is
+The first implementation [MS-02](ms02-baseline-adapter-spec.md) is accepted in PR #198. Final block/table contract is
 reviewed after [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177).
 
 ## Input and output boundary
@@ -75,8 +75,10 @@ production entry points retain their path, schemas and behavior. No parser winne
 
 ## Manual sample plan
 
-Freeze the following initial 15-page evaluation selection in #177 before running its candidates.
-MS-01 has checked key meanings; a complete block/table gold dataset is **not** claimed to exist.
+The following 15-page evaluation selection is frozen for #177. The later
+[M14 pilot plan](mineru-4.0.7-pilot-plan.md) and [41-unit gold](mineru-4.0.7-pilot-gold-v1.json) provide
+bounded manual acceptance criteria. An exhaustive block/table transcription or bbox gold dataset
+is **not** claimed to exist.
 
 | Source alias | Physical pages | Required gold review |
 | --- | --- | --- |

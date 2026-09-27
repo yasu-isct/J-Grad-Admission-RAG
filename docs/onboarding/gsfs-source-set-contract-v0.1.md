@@ -186,8 +186,8 @@ Candidate pilot details are in [parser contract v0.1](parser-pilot-contract-v0.1
 normalization schema, multi-source wire format/executor, registry storage layout and MinerU choice
 remain Proposed. No incompatible schema or assistant-authority decision is made here.
 
-The sole next implementation is [MS-02 baseline adapter](ms02-baseline-adapter-spec.md), assigned
-by the user to a separate development agent. Design main reviews the PR; it does not implement it.
-[#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) remains blocked until MS-02
-acceptance plus its own fixed version/resource plan and reviewed sample gold. Its final result must
-be adopt/hybrid/fallback/reject. Deployment stays paused. Documentation rollback changes no assets.
+MS-02 [baseline adapter](ms02-baseline-adapter-spec.md) is accepted in PR #198. The sole next
+development task is [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177), with the
+[M14 pinned resource/gold plan](mineru-4.0.7-pilot-plan.md), assigned by the user to a development
+agent. Design main reviews the PR; it does not implement it. Its final result must be
+adopt/hybrid/fallback/reject. Deployment stays paused. Documentation rollback changes no assets.

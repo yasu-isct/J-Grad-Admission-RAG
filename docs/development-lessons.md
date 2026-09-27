@@ -50,7 +50,10 @@ duplicate candidates, but deletion requires a reference audit, dry run and expli
 
 ## Evidence and workflow
 
-- One executable Issue, one bounded context and one observable state transition. Release only one
+- One executable Issue, one bounded current-task context and one observable state transition.
+  Reuse one development agent/chat per milestone; a new Issue does not require a new chat. Refresh
+  the compact task packet after each acceptance. Start a replacement chat with a checkpoint when
+  scope changes substantially or context confusion repeatedly loses constraints. Release only one
   dependency-ready implementation at a time; use independent review for high-risk changes.
 - Each Spec contains background, product goal, scope/non-goals, invariants, compatibility and asset
   impact, dependencies, acceptance, focused tests, real-data evidence, failure and rollback.

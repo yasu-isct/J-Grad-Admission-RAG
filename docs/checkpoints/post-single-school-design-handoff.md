@@ -76,16 +76,22 @@ high-risk review. Use a workhorse coding agent for one bounded implementation Is
 Durable decisions belong in GitHub and versioned ADR/docs. Each PR needs real data and architecture
 evidence in addition to tests. Never release multiple dependent implementation Issues at once.
 
-## MS-01 handoff and unique next implementation
+## M14 handoff and unique next implementation
 
 The [read-only coupling audit](../audits/single-school-coupling-2026-09-27.md) is complete and
 [ADR 0008](../decisions/0008-multi-school-compatibility.md) has partially accepted design boundaries. The
 [development lessons](../development-lessons.md) retain the user's retrospective without relying
 on private notebook access. MS-01 / #195 provides the
 [fixed target/source-set contract](../onboarding/gsfs-source-set-contract-v0.1.md), concrete examples,
-compatibility matrix and candidate parser contract. The sole next implementation is
-[MS-02 baseline adapter](../onboarding/ms02-baseline-adapter-spec.md), assigned by the user to a
-separate development agent; design main reviews it. #177 still needs adapter acceptance, manual gold
-and a pinned parser/resource plan. Legacy profile isolation is mandatory before any new-school KB,
-not part of this parser-only task. User-authorized downloads are no longer blocked, but existing
-production assets, paid calls and M13 remain protected. No new-school product runtime is enabled.
+compatibility matrix and candidate parser contract. MS-02 #197 / PR #198 is accepted: 83 real pages
+preserved, 61 focused tests and CI passing, exact source/report identities independently verified.
+Baseline checklist omissions/duplication remain disclosed comparison findings.
+
+These tasks and #177 now belong to [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14),
+Multi-school Foundations and Parser Pilot. The sole next development task is
+[#177's execution plan](../onboarding/mineru-4.0.7-pilot-plan.md): fixed MinerU 4.0.7 Flash/ONNX Basic,
+separate environment, fixed model revision and 41 manually reviewed units across 15 pages.
+No candidate result exists yet; M14 ends at an accepted parser decision and onboarding handoff.
+Reuse the current M14 development chat with one active Issue at a time; design main reviews it.
+Legacy profile isolation remains mandatory before later new-school KB construction. Existing
+production assets, paid calls and paused M13 remain protected. No new-school runtime is enabled.
