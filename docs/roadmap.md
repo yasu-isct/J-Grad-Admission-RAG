@@ -228,12 +228,29 @@ downloads do not activate a school or authorize production artifact mutation.
 The [compatibility ADR](decisions/0008-multi-school-compatibility.md) has partially accepted MS-01
 boundaries under #191; production schema details and parser choice remain Proposed. The
 [GSFS contract](onboarding/gsfs-source-set-contract-v0.1.md) is the #195 design deliverable.
-The sole next implementation is [MS-02](onboarding/ms02-baseline-adapter-spec.md), an isolated legacy
-parser adapter, to be assigned by the user to a development agent. It does not build a GSFS KB.
-Full legacy builder-profile isolation remains mandatory before the later new-school KB task.
-Follow the [development lessons](development-lessons.md): deliver one narrow user journey before
-expanding coverage. #177 remains the sole parser pilot, blocked on adapter acceptance plus fixed
-version/resource planning and reviewed gold. M13 remains paused.
+MS-02 #197 is accepted in PR #198: the isolated legacy parser adapter preserves 83 real source
+pages without creating a GSFS KB. Full legacy builder-profile isolation remains mandatory before
+the later new-school KB task. Follow the [development lessons](development-lessons.md): deliver one
+narrow user journey before expanding coverage. M13 remains paused.
+
+### M14 Multi-school Foundations and Parser Pilot
+
+[GitHub M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) groups the bounded first
+phase, previously unassigned to a milestone. It does not mean that the new school is product-ready.
+
+| Issue | State | Exit evidence |
+| --- | --- | --- |
+| MS-01 #195 | Complete, PR #196 | Fixed GSFS target/source-set and additive v1 compatibility contract |
+| MS-02 #197 | Complete, PR #198 | Isolated legacy adapter, 83-page real comparison and honest baseline weaknesses |
+| PARSE-01 #177 | Sole next development task | Pinned MinerU 4.0.7 Flash/ONNX Basic comparison, frozen 41-unit gold, decision ADR and parser/onboarding handoff |
+
+The [pilot execution Spec](onboarding/mineru-4.0.7-pilot-plan.md) locks software/model/source/gold
+identities and budgets before candidate outputs. No candidate result is claimed yet. M14 closes only
+after an accepted adopt/hybrid/fallback/reject decision and handoff, including unresolved limitations.
+The following stage covers GSFS KB/profile isolation, rule/retrieval integration and then user-facing
+acceptance; its Issues are released later, not concurrently. #191 remains cross-milestone governance.
+Reuse one development chat through M14, one active Issue at a time. Replace it with a checkpoint only
+when context quality or scope requires; there is no one-new-chat-per-Issue requirement.
 
 ### M2 Local Vector Retrieval
 

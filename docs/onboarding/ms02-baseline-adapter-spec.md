@@ -2,8 +2,9 @@
 
 ## Status, owner and dependencies
 
-Sole next implementation after MS-01 / #195 design acceptance. The user assigns a separate
-development agent; design main provides architectural review. No agent is dispatched by this Spec.
+Completed as #197 / merged PR #198 with design-main acceptance and exact-head Quality passing.
+This file preserves the accepted implementation Spec. The user assigns a separate development
+agent; design main provides architectural review. No agent is dispatched by this Spec.
 Scope should fit within two focused development days. #177 remains the only MinerU A/B Issue.
 
 Read [source-set contract](gsfs-source-set-contract-v0.1.md),
@@ -109,5 +110,6 @@ legacy behavior, retain experimental status and report the concrete reason. Reve
 adapter/model/tool code; existing assets and production routing need no migration or rebuilding.
 
 After acceptance, design main checks #177's version/resource/gold readiness before releasing it.
+That preparation is recorded in the [M14 pilot plan](mineru-4.0.7-pilot-plan.md).
 Full legacy builder-profile isolation remains mandatory before any new-school KB build, but is
 not bundled into this adapter-only task. No dependent implementation starts in parallel.

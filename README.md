@@ -621,8 +621,9 @@ the completed Science Tokyo local Demo; the new school is not yet supported. See
 [multi-school ADR](docs/decisions/0008-multi-school-compatibility.md) and
 [source lock](docs/onboarding/utokyo-gsfs-complex-2027.md). MS-01 defines the
 [target/source-set contract](docs/onboarding/gsfs-source-set-contract-v0.1.md); the sole next development
-task is the [MS-02 isolated parser adapter](docs/onboarding/ms02-baseline-adapter-spec.md).
-M13 remains paused.
+task in [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) is the
+[#177 bounded parser comparison](docs/onboarding/mineru-4.0.7-pilot-plan.md), following the accepted
+[MS-02 isolated adapter](docs/onboarding/ms02-baseline-adapter-spec.md). M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
 workflow.

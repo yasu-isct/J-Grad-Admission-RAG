@@ -65,27 +65,29 @@ These are source-grounded design examples, not activated applicant advice.
 ## Candidate pilot pages and acceptance cases
 
 The first prototype should expose useful evidence from core pages before parsing all low-value
-material into reviewed rules. Suggested sample, to freeze with manual gold before #177 execution:
+material into reviewed rules. The following sample is frozen in the M14 manual gold before #177 execution:
 
 | Source | Physical pages | Evaluation purpose |
 | --- | --- | --- |
 | Common guideline | 2-6 | Intake, eligibility, route tables, cross-page submission tables, department-conditioned language rules |
 | Department guide | 27-30 | Mixed schedule/degree/route context; master's general versus special oral and doctoral boundaries |
 | Department guide | 40 | Checklist layout; physical versus printed page mapping |
-| Department guide | 3-4 | Research/publicity or directory-like content as exclusion samples; detailed classification still required |
+| Department guide | 3-4 | Reviewed research/publicity and faculty/research content; preserve distinguishing context without treating it as admission rules |
 | Additional-material table | 1 | Landscape table, merged cells and conditional addressee relationships |
-| Intake flowchart | 1,5 | Diagram branches and referenced qualifications/notes; gold review still required |
+| Intake flowchart | 1,5 | Reviewed diagram branches and referenced qualifications/notes; conditional intake context |
 
 Do not fabricate an OCR comparison from text PDFs. Determine whether any selected source page is
-actually scanned; otherwise mark OCR benefit untested. No whole-PDF page-purpose map or gold
-labels have been completed yet. Hash-lock the sample and quality/cost criteria before running
-both adapters. Keep the complete originals for physical-page reference; never renumber a sample
+actually scanned; otherwise mark OCR benefit untested. No whole-PDF page-purpose map is complete.
+The later [M14 gold](mineru-4.0.7-pilot-gold-v1.json) freezes bounded checks for these 15 pages,
+including reviewed research/publicity labels for department pp.3-4; it is not exhaustive coverage.
+Keep the complete originals for physical-page reference; never renumber a sample
 PDF as if it were the source. Missing web/form details remain explicit coverage limits.
 
 ## Unique next action
 
 MS-01 has specified the [target/source-set and compatibility contract](gsfs-source-set-contract-v0.1.md)
 under the [multi-school ADR](../decisions/0008-multi-school-compatibility.md). The unique next
-implementation is [MS-02, an isolated baseline adapter](ms02-baseline-adapter-spec.md), assigned by
-the user to a development agent. #177 remains blocked on adapter acceptance, reviewed gold and a
-pinned parser/resource plan, not on download permission. Do not activate another program or resume M13.
+implementation is now [#177's pinned parser comparison](mineru-4.0.7-pilot-plan.md), assigned by
+the user to a development agent in M14. [MS-02](ms02-baseline-adapter-spec.md) is accepted in PR #198;
+the 15-page plan is now backed by frozen 41-unit manual gold. No MinerU candidate has run yet.
+Do not activate another program or resume M13.
