@@ -1,7 +1,7 @@
 # BUILD-01：隔离东科大构建规则，建立显式构建入口
 
 执行：[Issue #206](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/206)。
-状态：设计合并后唯一 Ready；不是整个 M15 的开发任务。
+状态：已在 PR #208 独立验收并合并，#206 已关闭；不是整个 M15 的完成。
 归属：[M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15)，治理 #191。
 依赖：#195、#197、#177 收尾及 #202 / PR #204 均已完成。
 设计：[ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)。
