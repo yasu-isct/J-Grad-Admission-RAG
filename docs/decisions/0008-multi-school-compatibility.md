@@ -150,7 +150,7 @@ These are slices, not an authorization to start all tasks or new milestones.
 | --- | --- | --- |
 | 1 | MS-01: freeze target/source-set and v1 compatibility contract | Completed design: concrete GSFS mappings, conflict/unknown examples and next Spec |
 | 2 | MS-02: isolated baseline parser adapter, complete in PR #198 | 83 real pages preserved; GSFS never enters the ISCT KB builder |
-| 3 | Existing #177 bounded experiment, sole next task in M14 | Pinned 4.0.7 Flash/ONNX Basic and 41-unit gold; real A/B decision still pending |
+| 3 | #177 complete in PR #200 | Rejected execution: cumulative budget exceeded; observations retained, no parser authorization |
 | 4 | Freeze provenance contract and minimal build registration | Correct document/block/page lineage and duplicate-build prevention |
 | 5 | Legacy build-profile isolation, then thin first-target backend slices | Explicit profile before any GSFS KB; scoped selection, minimal reviewed rules and multi-source evidence |
 | 6 | First-target API/UI journey and real acceptance | Correct selection, requirement/profile behavior, PDF navigation and ISCT non-regression |
@@ -158,10 +158,11 @@ These are slices, not an authorization to start all tasks or new milestones.
 Split each implementation slice into no-more-than-two-day Issues when its prerequisites are known;
 do not pre-release a large backend/UI task. Each Issue needs product/non-goals, asset inventory and
 impact, focused behavior/real-data evidence and rollback. Broader generalization follows the first
-accepted journey. The unique next implementation is
-[#177's M14 pilot](../onboarding/mineru-4.0.7-pilot-plan.md), after MS-02 acceptance and version,
-resource and gold preparation. M14 groups orders 1-3 and the parser-contract/onboarding handoff;
-registry implementation and new-school KB/rule/UI activation remain later work.
+accepted journey. M14 groups orders 1-3 and closes with the
+[rejected-execution handoff](0009-mineru-4.0.7-pilot-fallback.md), not a production parser contract.
+The unique next step is design-main assessment of remaining evidence gaps and minimal ingestion
+contract before order 4. No new implementation or rerun is released. Registry implementation
+and new-school KB/rule/UI activation remain later work.
 MS-01 deliberately separates the parser-only seam from legacy builder-profile isolation. The latter
 is still mandatory before new-school KB construction; it is not needed to compare parser output.
 

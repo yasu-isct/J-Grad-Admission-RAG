@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-Verified 2026-09-27 against GitHub `main` at merge commit `2fd0786e` (REL-01 PR #193).
+Updated 2026-09-27 after merged PR #200 (`1d3b3e8`); original release audit was PR #193.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
@@ -28,7 +28,8 @@ Do not load the full historical chat as the primary specification.
 - M13 implementation issues #187-#190 are open but explicitly paused by the user pending external
   consultation. They are not Ready and authorize no cloud resource or asset upload.
 - #163 remains open for missing official language/score-conversion coverage.
-- #177 remains open as the future MinerU 4.x Tokyo University A/B experiment.
+- #177 / PR #200 are closed as an accepted failed-experiment audit with a reject decision.
+  M14 ends with explicit unresolved handoff; no candidate parser is approved.
 - #191 is the durable design authority/workflow entry for the next design-main agent.
 - #192 is closed; documentation-only closeout PR #193 is merged and main Quality passed.
 - No open PR existed at the post-closeout audit. This snapshot does not describe later design PRs.
@@ -76,7 +77,7 @@ high-risk review. Use a workhorse coding agent for one bounded implementation Is
 Durable decisions belong in GitHub and versioned ADR/docs. Each PR needs real data and architecture
 evidence in addition to tests. Never release multiple dependent implementation Issues at once.
 
-## M14 handoff and unique next implementation
+## M14 closeout and unique next design step
 
 The [read-only coupling audit](../audits/single-school-coupling-2026-09-27.md) is complete and
 [ADR 0008](../decisions/0008-multi-school-compatibility.md) has partially accepted design boundaries. The
@@ -87,11 +88,23 @@ compatibility matrix and candidate parser contract. MS-02 #197 / PR #198 is acce
 preserved, 61 focused tests and CI passing, exact source/report identities independently verified.
 Baseline checklist omissions/duplication remain disclosed comparison findings.
 
-These tasks and #177 now belong to [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14),
-Multi-school Foundations and Parser Pilot. The sole next development task is
-[#177's execution plan](../onboarding/mineru-4.0.7-pilot-plan.md): fixed MinerU 4.0.7 Flash/ONNX Basic,
-separate environment, fixed model revision and 41 manually reviewed units across 15 pages.
-No candidate result exists yet; M14 ends at an accepted parser decision and onboarding handoff.
-Reuse the current M14 development chat with one active Issue at a time; design main reviews it.
-Legacy profile isolation remains mandatory before later new-school KB construction. Existing
-production assets, paid calls and paused M13 remain protected. No new-school runtime is enabled.
+These tasks and #177 belong to [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14),
+now closed with [ADR 0009](../decisions/0009-mineru-4.0.7-pilot-fallback.md) and the
+[rejected-execution report](../onboarding/mineru-4.0.7-pilot-report.md). The audit establishes
+21 retained runs / 388 attempted page-passes against 168 allowed, with 3813.905 recorded worker
+seconds. Legacy scores 30/41 and Flash 33/41 observationally; Basic is incomplete/unscored.
+Undrained PIPEs may have stalled Basic, so no inherent MinerU/CPU latency conclusion is justified.
+Runner/worker execution is closed. No fresh ledger, output directory or model switch resets budgets.
+
+Design main independently verified 130 historical files, all 41 Flash locators, four MS02 reports,
+55 focused tests and exact-head CI. Current 334/391 vectors/payloads and product KB hashes match
+established identities; historical pre/post and provider/network/resource evidence gaps remain.
+No new-school runtime, fallback routing or candidate rerun is authorized.
+
+The unique next step is design-main assessment of remaining evidence gaps and the minimal
+reviewed ingestion/provenance contract. Distinguish text loss, table/diagram relations and rule
+scope before choosing implementation. No new developer Issue is released. Any further parser
+experiment needs a separate bounded Spec/budget; do not reopen the closed runner automatically.
+Legacy builder-profile isolation remains mandatory before any GSFS KB. Keep one development chat
+per milestone with checkpoints between harness validation, real runs and scoring. Preserve the
+existing 334/391 assets, reference-only assistant and paused M13.

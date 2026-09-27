@@ -242,11 +242,15 @@ phase, previously unassigned to a milestone. It does not mean that the new schoo
 | --- | --- | --- |
 | MS-01 #195 | Complete, PR #196 | Fixed GSFS target/source-set and additive v1 compatibility contract |
 | MS-02 #197 | Complete, PR #198 | Isolated legacy adapter, 83-page real comparison and honest baseline weaknesses |
-| PARSE-01 #177 | Sole next development task | Pinned MinerU 4.0.7 Flash/ONNX Basic comparison, frozen 41-unit gold, decision ADR and parser/onboarding handoff |
+| PARSE-01 #177 | Closed, PR #200 | Accepted failed-experiment audit / reject decision; no parser activation |
 
 The [pilot execution Spec](onboarding/mineru-4.0.7-pilot-plan.md) locks software/model/source/gold
-identities and budgets before candidate outputs. No candidate result is claimed yet. M14 closes only
-after an accepted adopt/hybrid/fallback/reject decision and handoff, including unresolved limitations.
+identities and budgets before candidate outputs. M14 closes with an accepted
+[reject decision](decisions/0009-mineru-4.0.7-pilot-fallback.md): 388 attempted page-passes exceeded
+the shared 168-page budget; Basic timeout attribution is inconclusive because the historical
+supervisor could block on undrained pipes. Flash gains are observations, not fallback approval.
+The unique next activity is design-main assessment of remaining evidence gaps and the minimal
+ingestion/provenance contract. No new implementation, rerun or subsequent milestone is released.
 The following stage covers GSFS KB/profile isolation, rule/retrieval integration and then user-facing
 acceptance; its Issues are released later, not concurrently. #191 remains cross-milestone governance.
 Reuse one development chat through M14, one active Issue at a time. Replace it with a checkpoint only

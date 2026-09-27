@@ -1,6 +1,6 @@
 # ADR 0009: Reject the MinerU 4.0.7 pilot execution
 
-- Status: Proposed pending design-main review
+- Status: Accepted as failed-experiment / reject closeout in PR #200; no parser adoption authorization
 - Date: 2026-09-27
 - Issue: #177
 - Decision: reject (supersedes the earlier fallback proposal)

@@ -1,6 +1,6 @@
 # MinerU 4.0.7 isolated parser pilot: rejected execution
 
-Issue: #177. Date: 2026-09-27. Decision: **reject**, pending design-main review.
+Issue: #177. Date: 2026-09-27. Decision: **reject**, accepted by design main in merged PR #200.
 This closes an isolated comparison as an operational failure; it does not authorize
 adoption, hybrid routing, a fallback, or GSFS answer readiness.
 
@@ -163,8 +163,9 @@ VLM, CUDA and cloud parsing were not validated.
 
 The scope is a failed isolated experiment and decision report, which the Spec permits
 to close without a successful parser. [ADR 0009](../decisions/0009-mineru-4.0.7-pilot-fallback.md)
-supersedes its earlier fallback proposal. PR #200 is submitted to the design-main
-Agent for review, not merged by this implementation agent.
+supersedes its earlier fallback proposal. Design main independently reviewed and merged PR #200. Acceptance is for failed-experiment
+closeout; the experimental adapter/supervisor is not an approved production integration or reusable
+execution harness.
 
 ## Takeover verification
 
@@ -178,3 +179,13 @@ Agent for review, not merged by this implementation agent.
 - Independent design-review Agent rehashed all **130 inventoried files**, finding
   no hash/size mismatch, and approved submission as a failed experiment/reject report.
   This is a design review outcome, not a claim of GitHub platform approval or merge.
+
+## Independent design-main acceptance
+
+[PR #200 acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/200#issuecomment-5855818419)
+records 55 passing focused tests, a separate rehash of 130 historical files / three execution
+locks / four MS02 reports, resolution of all 41 Flash locators and inspection of real p27/p40
+outputs. Exact-head CI passed. Current 334/391 vectors and payloads and the product KB were
+independently hashed against established identities and matched. This present-state check does
+not fill the historical pre/post measurement gap. No new parsing, model download or asset mutation
+was performed by the reviewer. Incomplete provider/network/resource evidence remains disclosed.
