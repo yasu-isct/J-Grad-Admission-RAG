@@ -144,8 +144,10 @@ def adapt_raw_result(
                 raise ValueError("each MinerU block must be an object")
             bbox_raw = block.get("bbox")
             bbox: tuple[float, float, float, float] | None = None
-            if isinstance(bbox_raw, list) and len(bbox_raw) == 4 and all(
-                isinstance(number, (int, float)) for number in bbox_raw
+            if (
+                isinstance(bbox_raw, list)
+                and len(bbox_raw) == 4
+                and all(isinstance(number, (int, float)) for number in bbox_raw)
             ):
                 bbox = tuple(float(number) for number in bbox_raw)
             blocks.append(
@@ -257,7 +259,9 @@ def supervise_worker(
         "stdout": stdout,
         "stderr": stderr,
     }
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    report_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     if stop_reason or process.returncode != 0:
         raise RuntimeError(f"candidate worker failed: {stop_reason or process.returncode}")
     return report

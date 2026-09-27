@@ -36,9 +36,7 @@ def _raw(pages: list[int] | None = None, *, full: bool = True) -> dict:
         "pages": [
             {
                 "page_idx": index,
-                "blocks": [
-                    {"index": 0, "type": "text", "bbox": [1, 2, 3, 4], "content": "ok"}
-                ],
+                "blocks": [{"index": 0, "type": "text", "bbox": [1, 2, 3, 4], "content": "ok"}],
             }
             for index in (pages if pages is not None else [0, 1])
         ],
@@ -48,7 +46,11 @@ def _raw(pages: list[int] | None = None, *, full: bool = True) -> dict:
 def test_adapts_zero_based_pages_once_and_preserves_source_identity(tmp_path: Path) -> None:
     pdf = _pdf(tmp_path / "source.pdf")
     view = adapt_raw_result(
-        _raw(), source_id="locked", source_pdf=pdf, expected_source_sha256=sha256_file(pdf), tier="flash"
+        _raw(),
+        source_id="locked",
+        source_pdf=pdf,
+        expected_source_sha256=sha256_file(pdf),
+        tier="flash",
     )
     assert [page.physical_page for page in view.pages] == [1, 2]
     assert view.source_pdf_sha256
@@ -58,7 +60,11 @@ def test_rejects_wrong_source_identity_at_call_boundary(tmp_path: Path) -> None:
     pdf = _pdf(tmp_path / "source.pdf")
     with pytest.raises(ValueError, match="locked run identity"):
         adapt_raw_result(
-            _raw(), source_id="locked", source_pdf=pdf, expected_source_sha256="0" * 64, tier="flash"
+            _raw(),
+            source_id="locked",
+            source_pdf=pdf,
+            expected_source_sha256="0" * 64,
+            tier="flash",
         )
 
 
@@ -107,7 +113,9 @@ def test_unknown_bbox_is_explicit(tmp_path: Path) -> None:
     assert view.pages[0].blocks[0].bbox_status == "unknown"
 
 
-def test_supervisor_timeout_kills_worker_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_supervisor_timeout_kills_worker_tree(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     fake_process = lambda pid: SimpleNamespace(  # noqa: E731
         memory_info=lambda: SimpleNamespace(rss=0), children=lambda recursive: []
     )
@@ -172,4 +180,7 @@ def test_cancel_stops_worker() -> None:
 def test_contract_is_separate_from_ms02() -> None:
     from jgrad_admission_rag.parsing import contracts
 
-    assert "mineru-pilot-comparison-view" not in contracts.NormalizedDocument.model_json_schema().__repr__()
+    assert (
+        "mineru-pilot-comparison-view"
+        not in contracts.NormalizedDocument.model_json_schema().__repr__()
+    )

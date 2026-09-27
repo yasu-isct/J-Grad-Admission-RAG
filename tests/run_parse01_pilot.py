@@ -47,7 +47,11 @@ def _freeze() -> None:
     model_files = []
     for expected in resource["model"]["files"]:
         path = model_root / expected["path"]
-        actual = {"path": expected["path"], "bytes": path.stat().st_size, "sha256": sha256_file(path)}
+        actual = {
+            "path": expected["path"],
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+        }
         if actual != expected:
             raise ValueError(f"model lock mismatch: {actual!r} != {expected!r}")
         model_files.append(actual)
@@ -65,14 +69,21 @@ def _freeze() -> None:
             raise ValueError(f"source lock mismatch: {expected['source_id']}")
         source_files.append(actual)
     distributions = sorted(
-        ({"name": item.metadata["Name"], "version": item.version} for item in importlib.metadata.distributions()),
+        (
+            {"name": item.metadata["Name"], "version": item.version}
+            for item in importlib.metadata.distributions()
+        ),
         key=lambda item: item["name"].lower(),
     )
     acquisition_files = []
     for name in ("pip-report.json", "psutil-pip-report.json"):
         path = PILOT / "acquisition" / name
         acquisition_files.append(
-            {"path": path.relative_to(ROOT).as_posix(), "bytes": path.stat().st_size, "sha256": sha256_file(path)}
+            {
+                "path": path.relative_to(ROOT).as_posix(),
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
         )
     check_environment = dict(os.environ)
     check_environment.pop("PYTHONPATH", None)
@@ -89,17 +100,30 @@ def _freeze() -> None:
     baseline_files = []
     for path in sorted((ROOT / "outputs" / "parser-pilot" / "ms02").glob("*.json")):
         baseline_files.append(
-            {"path": path.relative_to(ROOT).as_posix(), "bytes": path.stat().st_size, "sha256": sha256_file(path)}
+            {
+                "path": path.relative_to(ROOT).as_posix(),
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
         )
     lock = {
         "artifact_kind": "parse-01-execution-lock",
         "production_enabled": False,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "python": {"executable": str(Path(sys.executable).resolve()), "version": platform.python_version()},
+        "python": {
+            "executable": str(Path(sys.executable).resolve()),
+            "version": platform.python_version(),
+        },
         "platform": platform.platform(),
-        "resource_lock": {"path": RESOURCE_LOCK.relative_to(ROOT).as_posix(), "sha256": sha256_file(RESOURCE_LOCK)},
+        "resource_lock": {
+            "path": RESOURCE_LOCK.relative_to(ROOT).as_posix(),
+            "sha256": sha256_file(RESOURCE_LOCK),
+        },
         "gold": {"path": GOLD.relative_to(ROOT).as_posix(), "sha256": sha256_file(GOLD)},
-        "config": {"path": "outputs/parser-pilot/mineru-4.0.7/config.yaml", "sha256": sha256_file(PILOT / "config.yaml")},
+        "config": {
+            "path": "outputs/parser-pilot/mineru-4.0.7/config.yaml",
+            "sha256": sha256_file(PILOT / "config.yaml"),
+        },
         "model": {
             "repo": resource["model"]["repo"],
             "revision": resource["model"]["revision"],
@@ -113,8 +137,12 @@ def _freeze() -> None:
         "candidate_network_policy": "socket connect/create_connection denied; HF/transformers/modelscope offline",
         "limits": resource["limits"],
     }
-    EXECUTION_LOCK.write_text(json.dumps(lock, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"execution_lock": str(EXECUTION_LOCK), "sha256": sha256_file(EXECUTION_LOCK)}))
+    EXECUTION_LOCK.write_text(
+        json.dumps(lock, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps({"execution_lock": str(EXECUTION_LOCK), "sha256": sha256_file(EXECUTION_LOCK)})
+    )
 
 
 def _offline_environment() -> dict[str, str]:
@@ -145,7 +173,9 @@ def _offline_environment() -> dict[str, str]:
 def _run(source_id: str, tier: str, repetition: int) -> None:
     if not EXECUTION_LOCK.exists():
         raise FileNotFoundError("freeze execution-lock.json before any parse")
-    source = next(item for item in _json(SOURCE_MANIFEST)["sources"] if item["source_id"] == source_id)
+    source = next(
+        item for item in _json(SOURCE_MANIFEST)["sources"] if item["source_id"] == source_id
+    )
     pdf = SOURCE_ROOT / f"{source['sha256']}.pdf"
     run_dir = PILOT / "runs" / tier / source_id / f"run-{repetition}"
     if run_dir.exists():
