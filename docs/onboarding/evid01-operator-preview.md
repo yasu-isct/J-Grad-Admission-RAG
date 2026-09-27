@@ -9,8 +9,9 @@ it does not decide applicant eligibility or produce a complete material checklis
 The unchanged `gsfs-material-evidence-seed-v1.json` is the only excerpt bundle. No generated
 production copy is created. `evid01-review-pin.json` explicitly pins its **exact file bytes**,
 bundle ID and revision independently of its self-described review status. This pin is a
-candidate for independent design-main acceptance in the implementation PR, not an assertion
-that the developer has granted acceptance. Reviewer kind remains `agent`.
+repository pin independently accepted in [PR #204](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/204#issuecomment-5856769317).
+Acceptance covers this exact revision for operator inspection, not production advice. Reviewer
+kind remains `agent`; the seed retains its original design-review metadata.
 
 Do not compute a new pin from a changed input as part of a query. A change to text, context,
 relations, notes, target or source-set requires a new reviewed revision and repository review.

@@ -2,7 +2,7 @@
 
 Owner: design main #191. Execution: [#202](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/202),
 [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15). Development: user-assigned
-milestone Agent. One active Issue only. Ready after this design merges.
+milestone Agent. Accepted and complete in PR #204; no dependent implementation is released.
 Dependencies: accepted MS-01 #195, MS02 #197 and M14 reject closeout #177 / PR #200.
 Design authority: [ADR 0010](../decisions/0010-reviewed-source-evidence.md).
 

@@ -3,8 +3,12 @@
 Issue: [#202](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/202).
 Authority: main `870dc28`, [Spec](reviewed-source-evidence-spec.md), ADR 0010.
 Development reviewer: `evid01-development-agent`, kind **agent**, 2026-09-27.
-**Independent design-main acceptance is pending.** The design reviewer must record the exact
-accepted digest in the implementation PR; this document is the developer's evidence, not that acceptance.
+**Independent design-main acceptance completed in merged PR #204.** The original developer
+evidence below remains historical; the [acceptance record](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/204#issuecomment-5856769317)
+binds the exact revision-1 file and canonical digests listed below. Design main independently
+ran 96 focused tests, reproduced all six real previews, checked three source hashes and four page
+images, and exercised uncovered-target/topic and missing-source failures. No production activation
+or subsequent implementation is approved.
 
 ## Checkpoint 1: contract and tests
 

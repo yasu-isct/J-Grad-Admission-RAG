@@ -110,13 +110,19 @@ Design main visually rechecked common p6, department pp28/40 and additional p1, 
 [eight design-reviewed excerpts](../onboarding/gsfs-material-evidence-seed-v1.json) across three topics.
 Reviewer kind is Agent, not human; manual transcription has no fabricated parser locator/bbox.
 
-The sole next development task is [EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md)
+Completed and independently accepted: [EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md)
 in [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15): strict generic evidence
 loading/audit and operator previews for English score sheets, checklist submission and work/study
 plan conditions. Exact target/source-set/PDF/review identities gate output. No production KB,
-rules, API/UI, model/parser calls or downloads are needed. The user assigns the development Agent.
+rules, API/UI, model/parser calls or downloads were introduced. PR #204 is merged; 96 focused
+tests passed, all six real previews were independently reproduced, three source hashes and four
+page images checked. [Exact-digest acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/204#issuecomment-5856769317)
+covers only revision 1 operator evidence inspection. M15 remains open.
 
 Later profile isolation, existing-KB lineage mapping, reusable material conditions and local
 presentation remain dependent planning slices, not released tasks. #202 does not complete M15.
 Reuse one M15 chat, with checkpoints between contract/tests, real previews and PR handoff.
 Keep #177 closed, 334/391 assets unchanged, assistant reference-only, and M13 paused.
+
+The unique next step is design-main preparation of explicit builder-profile isolation and mapping
+reviewed excerpts into the existing KB/Fact/citation chain. No new implementation Issue is Ready.

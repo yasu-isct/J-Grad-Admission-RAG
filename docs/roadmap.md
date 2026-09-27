@@ -265,7 +265,7 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 
 | Order | Task boundary | Release state |
 | --- | --- | --- |
-| 1 | [EVID-01 #202](onboarding/reviewed-source-evidence-spec.md): eight reviewed excerpts, exact target/source audit, three readable operator previews | Sole Ready task after design merge |
+| 1 | [EVID-01 #202](onboarding/reviewed-source-evidence-spec.md): eight reviewed excerpts, exact target/source audit, three readable operator previews | Complete, accepted PR #204 |
 | 2 | Isolate legacy builder profile and map accepted excerpts into existing KB/Fact lineage | Not released; Spec follows #202 acceptance |
 | 3 | Reusable scoped material conditions and multi-source report evidence | Not released; depends on accepted KB/profile boundary |
 | 4 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
@@ -274,7 +274,10 @@ Do not activate the full GSFS source set or claim complete eligibility, dates or
 No new models/PDFs, MinerU reruns, paid calls, index migration or M13 work are part of #202.
 Keep one M15 development chat and checkpoints at contract/tests, real previews and PR handoff.
 M15 is not complete merely because #202's operator tool works; downstream integration requires
-its own reviewed Specs and actual user-facing acceptance. No other implementation Issue is Ready.
+its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
+in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
+next activity is design of the explicit builder profile and existing KB/Fact lineage mapping;
+no implementation Issue is currently Ready. M15 remains open.
 
 ### M2 Local Vector Retrieval
 
