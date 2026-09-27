@@ -351,6 +351,13 @@ adapter; the MinerU 4.x work in
 [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) is an evidence-producing A/B
 experiment and cannot replace the current parser by assumption.
 
+The [2026-09-27 coupling audit](audits/single-school-coupling-2026-09-27.md) distinguishes these
+target requirements from current behavior: the M10 path selects the document before ranking,
+but uses soft target preferences and post-retrieval filtering rather than page/route eligibility
+before both ranking channels. The [proposed compatibility ADR](decisions/0008-multi-school-compatibility.md)
+defines the extension boundary. The first target is GSFS Complexity Science and Engineering;
+its [locked source set](onboarding/utokyo-gsfs-complex-2027.md) contains complementary PDFs.
+
 ## Main Boundaries
 
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.

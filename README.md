@@ -490,9 +490,10 @@ Exit code `0` means the frozen baseline satisfies policy, `1` means a measured p
 and Transformers to offline mode. See
 [ADR 0003](docs/decisions/0003-semantic-retrieval-regression-gate.md).
 
-Hybrid retrieval is opt-in while evaluation thresholds are still being established. It combines
-vector and lexical ranks with fixed Reciprocal Rank Fusion and leaves the default vector response
-unchanged:
+The standalone search CLI enables hybrid retrieval explicitly; the product already uses hybrid
+retrieval. It combines vector and lexical ranks with fixed Reciprocal Rank Fusion and leaves the
+standalone CLI's default vector response unchanged. Semantic acceptance uses the frozen gates
+described above:
 
 ```powershell
 jgrad-search outputs\index\sample-bge-m3 `
@@ -578,10 +579,10 @@ adapter requires an explicit model name, an exact 40-character revision commit, 
 dimension. It is CPU-only, uses `trust_remote_code=False`, and defaults to cache-only loading; model
 downloads occur only when a caller explicitly sets `allow_download=True`.
 
-`BAAI/bge-m3` is the provisional M2 baseline because its official model card describes multilingual
-1,024-dimensional embeddings and an 8,192-token input length. It is comparatively resource-heavy
-and has not yet been proven best for Japanese admission retrieval; M3 evaluation will revisit the
-choice. BGE-M3 receives the canonical text unchanged, with no query/document prefix or prompt.
+`BAAI/bge-m3` is the pinned, evaluated semantic baseline used by the M3 and M9 release gates.
+Its adapter uses 1,024-dimensional embeddings and checks the model's token limit before encoding.
+The existing evaluation does not establish that it is the best model for every new school or PDF.
+BGE-M3 receives the canonical text unchanged, with no query/document prefix or prompt.
 
 Sentence Transformers normally truncates text beyond the model limit. This adapter tokenizes every
 input with truncation disabled before encoding and raises `EmbeddingInputError` if any row is too
@@ -597,8 +598,8 @@ Constructor and encode options are documented in the
 src/jgrad_admission_rag/
   builder/      PDF extraction, chunking, document index, reference links, KB builder
   schemas/      Durable JSON contracts such as DocumentKnowledgeBase
-  retrieval/    Embedding providers, local vector indexes, and future retrieval services
-  reasoning/    Applicant/query contracts, reviewed applicability rules, later reasoning
+  retrieval/    Embedding providers, local vector indexes, hybrid retrieval, and evidence packs
+  reasoning/    Applicant/query contracts, reviewed rules, cited reports, and applicability
   generation/   Provider-neutral structured drafts and optional generation adapters
   cli/          Command-line entry points
 docs/           Architecture and migration notes
@@ -614,8 +615,11 @@ tests/          Focused unit tests
 ## Roadmap
 
 Development is organized as small, verifiable GitHub issues grouped by milestones. The current
-priority is to make `document_kb.json` traceable and diagnostically reliable before adding vector
-indexing.
+priority is the compatibility design for the first University of Tokyo slice: Graduate School of
+Frontier Sciences, Department of Complexity Science and Engineering. The shipped product remains
+the completed Science Tokyo local Demo; the new school is not yet supported. See the
+[multi-school ADR](docs/decisions/0008-multi-school-compatibility.md) and
+[source lock](docs/onboarding/utokyo-gsfs-complex-2027.md). M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
 workflow.

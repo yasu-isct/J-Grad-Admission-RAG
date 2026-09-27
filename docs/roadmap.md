@@ -1,8 +1,8 @@
 # Project Roadmap
 
 This document is the planning source of truth for J-Grad Admission RAG. GitHub Issues represent
-work that is ready or active; future work stays here until the preceding milestone is close to
-completion.
+executable tasks and explicitly blocked planning records; an open Issue is not permission to
+start it. Future work stays here until its dependencies and acceptance scope are defined.
 
 ## Product Goal
 
@@ -19,7 +19,9 @@ PDF -> document_kb.json -> local indexes -> evidence pack -> applicability reaso
 - `ScopedFact` is the authoritative domain fact and must remain source-traceable.
 - `DocumentIdentity` is reviewed input and the sole authority for document and exact-PDF identity.
 - `RetrievalUnit` is a rebuildable search projection, not the source of truth.
-- Index artifacts are derived from `document_kb.json` and may be deleted and rebuilt safely.
+- Index artifacts are derived from `document_kb.json`, but rebuildability does not authorize
+  deletion or replacement. Protect the 334-vector frozen baseline and 391-vector product runtime;
+  migration or cleanup requires a reference audit, dry run, and explicit approval.
 - Retrieval returns evidence; reasoning determines applicability; output code formats the result.
 - External embedding and storage implementations sit behind small interfaces.
 - Complexity is added only after a regression test or evaluation demonstrates the need.
@@ -156,10 +158,11 @@ sentence requires exact Fact/page evidence, while pending inputs, missing eviden
 interactions remain explicit. This completes M4's reasoning-to-presentation slice without adding a
 final eligibility verdict or model-generated prose.
 
-The current 85-page real-PDF baseline produces 298 traceable, informative, size-bounded Facts and
-RetrievalUnits. KB-11 observes 141 unique reference claims: 7 resolved, 6 ambiguous, and 128
-unresolved. These known scope/reference debts are reported by default and can be promoted to
-enforced thresholds when the project is ready to require them.
+The historical M1/M4 85-page real-PDF baseline produced 298 Facts and RetrievalUnits, with 141
+reference claims (7 resolved, 6 ambiguous, 128 unresolved). It is not the current product baseline.
+The 2026-09-27 read-only product audit found 391 Facts, all with physical pages, and 130 reference
+claims (10 resolved, 5 ambiguous, 115 unresolved). The distinct 334-vector semantic release
+baseline remains frozen. See the [coupling audit](audits/single-school-coupling-2026-09-27.md).
 
 | ID | Task | Acceptance signal | Size | Dependency |
 | --- | --- | --- | --- | --- |
@@ -207,7 +210,7 @@ resumes M13.
 
 ### Post-single-school Closeout And Design Handoff
 
-REL-01 freezes the truthful local single-school portfolio boundary in
+REL-01 is complete (#192 closed by merged PR #193). It freezes the local single-school boundary in
 [Single-school Portfolio Release v1](releases/single-school-portfolio-v1.md) and the compact
 [Post-single-school Design Handoff](checkpoints/post-single-school-design-handoff.md). The long-lived
 cross-milestone design authority is
@@ -217,9 +220,15 @@ Tokyo University experiment in
 [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177), not an assumed replacement
 parser.
 
-No multi-school implementation issue becomes Ready until REL-01 is merged and #191 has defined the
-identity, parser-adapter, artifact ownership, pre-retrieval scope, rule-portability, and evaluation
-boundaries.
+The first new target is University of Tokyo / Graduate School of Frontier Sciences / Complexity
+Science and Engineering, selected by the user on 2026-09-27. Source downloads are authorized.
+The [source lock](onboarding/utokyo-gsfs-complex-2027.md) records the bounded acquired set;
+downloads do not activate a school or authorize production artifact mutation.
+
+The [compatibility ADR](decisions/0008-multi-school-compatibility.md) is proposed under #191.
+Follow its dependency sequence and the [development lessons](development-lessons.md): deliver
+one narrow user journey before expanding coverage. No production implementation is Ready until
+its contract and compatibility acceptance are settled. #177 remains the sole parser pilot.
 
 ### M2 Local Vector Retrieval
 
@@ -295,9 +304,12 @@ tolerances and CI policy only after reviewing that evidence.
 
 ## GitHub Workflow
 
-Use the project states `Backlog`, `Ready`, `In Progress`, `Review`, and `Done`.
+The intended workflow is `Backlog`, `Ready`, `In Progress`, `Review`, and `Done`. The audited
+GitHub Project currently exposes `Todo` for #163, while the other open design/deployment records
+have no project membership. Until those fields are explicitly aligned, record release/blocking
+decisions in the Issue body; neither `Todo`, priority, nor an open milestone means Ready.
 
-- Keep no more than two implementation issues in `In Progress`.
+- Release only one dependency-ready implementation issue at a time, as required by #191.
 - Split work larger than two focused development days before moving it to `Ready`.
 - Create issues for the next milestone only when the current milestone approaches its exit gate.
 - Use dependencies in issue bodies instead of relying on issue order.

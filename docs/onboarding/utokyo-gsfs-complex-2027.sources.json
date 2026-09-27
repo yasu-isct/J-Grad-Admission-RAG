@@ -1,0 +1,51 @@
+{
+  "manifest_kind": "source-acquisition-record",
+  "schema_status": "design-evidence-not-production-schema",
+  "recorded_on": "2026-09-27",
+  "institution": "The University of Tokyo",
+  "graduate_school": "Graduate School of Frontier Sciences",
+  "program": "Department of Complexity Science and Engineering",
+  "production_enabled": false,
+  "sources": [
+    {
+      "source_id": "gsfs-master-2027",
+      "official_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.392145+00:00",
+      "sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "bytes": 941862,
+      "http_last_modified": "Mon, 23 Mar 2026 02:43:57 GMT",
+      "physical_page_count": 22
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "official_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.665616+00:00",
+      "sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "bytes": 9053105,
+      "http_last_modified": "Wed, 01 Apr 2026 13:26:42 GMT",
+      "physical_page_count": 45
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "official_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.751887+00:00",
+      "sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "bytes": 491374,
+      "http_last_modified": "Tue, 21 Apr 2026 00:34:57 GMT",
+      "physical_page_count": 1
+    },
+    {
+      "source_id": "gsfs-overseas-intake-a-20260305",
+      "official_url": "https://www.k.u-tokyo.ac.jp/assets/files/Flowchart_FAQ_Enrollment_Timing_for_Overseas_Applicants_Examination%20A_20260305.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/assets/files/Flowchart_FAQ_Enrollment_Timing_for_Overseas_Applicants_Examination%20A_20260305.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.843345+00:00",
+      "sha256": "ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0",
+      "bytes": 1520466,
+      "http_last_modified": "Thu, 05 Mar 2026 07:14:53 GMT",
+      "physical_page_count": 15
+    }
+  ]
+}

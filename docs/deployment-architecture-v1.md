@@ -1,6 +1,8 @@
 # Public Demo Deployment Architecture v1
 
-Status: proposed for M13, pending the operator's provider and monthly-cost approval.
+Status: M13 implementation paused by user decision on 2026-09-27 after DEPLOY-01.
+The provider/cost study below is retained as a historical proposal, not an active deployment task.
+Only an explicit user decision to resume M13 can reopen provider and budget approval.
 
 As-of date: 2026-09-27.
 
