@@ -301,6 +301,17 @@ document, Fact, page, PDF-hash, and KB-hash provenance. See
 target and in-memory Applicant Profile, displays provider metadata and limitations, and opens each
 validated citation in the existing evidence drawer.
 
+Demo startup is reuse-only by default. It validates an existing `runtime-v1` without creating a
+workspace, staging files, rebuilding the KB, or invoking an embedding provider. Initial provisioning
+requires explicit `--allow-runtime-build`; replacement requires explicit `--rebuild` and retains the
+owned-runtime safety checks. Missing, access-denied, and stale/incompatible states fail separately
+and never fall through to another path. The
+`python -m jgrad_admission_rag.operations.artifact_inventory` operator command inventories only
+operator-named runtime or
+index paths and reports complete compatibility identities and duplicate candidates without mutation
+or deletion. The frozen 334-vector semantic release baseline remains distinct from the current
+391-vector product runtime.
+
 M10 adds a separate, lower-assurance `reference_only` assistant rather than changing that M9
 authority boundary. On an exact-cache miss, the provider returns a preliminary answer and a bounded
 search plan. A general-knowledge question ends after that one call. A school-specific question runs

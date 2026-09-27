@@ -16,7 +16,12 @@ import fitz
 import pytest
 
 from jgrad_admission_rag.builder.kb_builder import DocumentBuildError, build_document_kb
-from jgrad_admission_rag.demo import DemoError, load_demo_config, prepare_demo
+from jgrad_admission_rag.demo import (
+    DemoError,
+    load_demo_config,
+    load_demo_runtime,
+    prepare_demo,
+)
 from jgrad_admission_rag.demo_embedding import (
     BGE_M3_DEMO_PROVIDER,
     BGE_M3_DIMENSION,
@@ -212,6 +217,8 @@ def test_demo_builds_and_reuses_a_fully_audited_workspace(tmp_path: Path) -> Non
         "deterministic-fake", "sha256-counter-v1", None, 8
     )
     assert reused.semantic is False
+    assert built.lifecycle_mode == "built-explicitly"
+    assert reused.lifecycle_mode == "reused-read-only"
     assert reused.report_plan_path.is_relative_to(workspace)
     assert str(pdf) not in reused.report_plan_path.read_text(encoding="utf-8")
     assert (
@@ -233,6 +240,116 @@ def test_demo_rejects_bad_pdf_before_creating_workspace(tmp_path: Path) -> None:
         prepare_demo(pdf, workspace, config_dir=config)
 
     assert not workspace.exists()
+
+
+def test_read_only_loader_requires_existing_runtime_without_creating_workspace(
+    tmp_path: Path,
+) -> None:
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "must-not-exist").resolve()
+
+    with pytest.raises(DemoError, match="runtime is missing"):
+        load_demo_runtime(pdf, workspace, config_dir=config)
+
+    assert not workspace.exists()
+
+
+def test_read_only_loader_reuses_runtime_without_writes_or_build_calls(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    prepare_demo(pdf, workspace, config_dir=config)
+    before = {
+        path.relative_to(workspace): (path.read_bytes(), path.stat().st_mtime_ns)
+        for path in workspace.rglob("*")
+        if path.is_file()
+    }
+    monkeypatch.setattr(
+        demo,
+        "_build_runtime",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("must not build")),
+    )
+
+    loaded = load_demo_runtime(pdf, workspace, config_dir=config)
+    after = {
+        path.relative_to(workspace): (path.read_bytes(), path.stat().st_mtime_ns)
+        for path in workspace.rglob("*")
+        if path.is_file()
+    }
+
+    assert loaded.lifecycle_mode == "reused-read-only"
+    assert loaded.reused is True
+    assert after == before
+
+
+def test_read_only_loader_reports_access_denied_without_building(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    workspace.mkdir()
+    monkeypatch.setattr(
+        demo.os,
+        "scandir",
+        lambda _path: (_ for _ in ()).throw(PermissionError("denied")),
+    )
+
+    with pytest.raises(DemoError, match="access denied"):
+        load_demo_runtime(pdf, workspace, config_dir=config)
+
+    assert list(workspace.iterdir()) == []
+
+
+def test_read_only_loader_rejects_stale_runtime_without_rebuild(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    runtime = prepare_demo(pdf, workspace, config_dir=config)
+    runtime.manifest_path.write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(
+        demo,
+        "_build_runtime",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("must not build")),
+    )
+
+    with pytest.raises(DemoError, match="stale, corrupt, or incompatible"):
+        load_demo_runtime(pdf, workspace, config_dir=config)
+
+    assert runtime.manifest_path.read_text(encoding="utf-8") == "{}"
+
+
+def test_read_only_loader_rejects_provider_mismatch_without_building(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    runtime = prepare_demo(pdf, workspace, config_dir=config)
+    bge = resolve_demo_embedding_configuration(BGE_M3_DEMO_PROVIDER)
+    monkeypatch.setattr(
+        demo,
+        "_build_runtime",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("must not build")),
+    )
+
+    with pytest.raises(DemoError, match="stale, corrupt, or incompatible"):
+        load_demo_runtime(
+            pdf,
+            workspace,
+            config_dir=config,
+            embedding_configuration=bge,
+        )
+
+    assert runtime.manifest_path.is_file()
 
 
 def test_demo_rejects_relative_pdf_and_unsafe_source_label(tmp_path: Path) -> None:
@@ -273,6 +390,7 @@ def test_demo_rejects_corrupt_reuse_and_recovers_only_with_rebuild(
     monkeypatch.undo()
     rebuilt = prepare_demo(pdf, workspace, rebuild=True, config_dir=config)
     assert rebuilt.reused is False
+    assert rebuilt.lifecycle_mode == "rebuilt-explicitly"
 
 
 def test_rebuild_refuses_an_unowned_runtime_directory(tmp_path: Path) -> None:
@@ -319,6 +437,7 @@ def test_installed_console_entry_point_is_available() -> None:
     assert "--pdf ABSOLUTE_PATH" in result.stdout
     assert "--embedding-provider {deterministic-fake,bge-m3}" in result.stdout
     assert "--embedding-cache ABSOLUTE_PATH" in result.stdout
+    assert "--allow-runtime-build" in result.stdout
 
 
 def test_demo_embedding_selection_is_narrow_pinned_and_cache_only(tmp_path: Path) -> None:
@@ -417,6 +536,7 @@ def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Pa
         str(pdf),
         "--workspace",
         str(workspace),
+        "--allow-runtime-build",
         "--port",
         str(port),
     ]
@@ -520,11 +640,56 @@ def test_cli_reports_clean_interrupt(monkeypatch, capsys, tmp_path: Path) -> Non
             str(pdf),
             "--workspace",
             str(workspace),
+            "--allow-runtime-build",
         ],
         config_dir=config,
     )
 
     assert "J-Grad Demo stopped." in capsys.readouterr().out
+
+
+def test_cli_defaults_to_reuse_only_and_explicit_build_is_required(
+    monkeypatch, capsys, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo_cli
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    monkeypatch.setattr(demo_cli, "_require_available_port", lambda _port: None)
+    monkeypatch.setattr(demo_cli, "_serve", lambda *_args, **_kwargs: None)
+
+    with pytest.raises(SystemExit) as captured:
+        demo_cli.main(["--pdf", str(pdf), "--workspace", str(workspace)], config_dir=config)
+    assert captured.value.code == 2
+    assert "runtime is missing" in capsys.readouterr().err
+    assert not workspace.exists()
+
+    demo_cli.main(
+        [
+            "--pdf",
+            str(pdf),
+            "--workspace",
+            str(workspace),
+            "--allow-runtime-build",
+        ],
+        config_dir=config,
+    )
+    assert (workspace / "runtime-v1").is_dir()
+
+
+def test_cli_rejects_build_and_rebuild_together() -> None:
+    from jgrad_admission_rag.demo_cli import _parser
+
+    with pytest.raises(SystemExit) as captured:
+        _parser().parse_args(
+            [
+                "--pdf",
+                "C:\\reviewed.pdf",
+                "--allow-runtime-build",
+                "--rebuild",
+            ]
+        )
+    assert captured.value.code == 2
 
 
 def test_cli_reports_missing_service_extra_without_a_traceback(

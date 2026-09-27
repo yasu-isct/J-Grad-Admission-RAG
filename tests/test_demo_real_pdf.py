@@ -30,6 +30,7 @@ def test_real_pdf_starts_the_formal_demo_service(
             str(real_pdf_path.resolve()),
             "--workspace",
             str(workspace),
+            "--allow-runtime-build",
             "--port",
             str(port),
         ],

@@ -10,6 +10,7 @@ import tempfile
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
+from typing import Literal
 
 from .builder.kb_builder import DocumentBuildError, build_document_kb
 from .corpus import (
@@ -125,8 +126,11 @@ class DemoRuntime:
     identity: DocumentIdentity
     source_kb_sha256: str
     embedding_identity: EmbeddingIdentity
+    payload_count: int
+    vector_count: int
     semantic: bool
     reused: bool
+    lifecycle_mode: Literal["reused-read-only", "built-explicitly", "rebuilt-explicitly"]
 
 
 def load_demo_config(config_dir: Path | None = None) -> DemoConfigBundle:
@@ -179,6 +183,39 @@ def default_workspace(identity: DocumentIdentity, cwd: Path | None = None) -> Pa
     return root / "outputs" / "demo" / identity.document_id
 
 
+def load_demo_runtime(
+    pdf_path: Path,
+    workspace: Path,
+    *,
+    config_dir: Path | None = None,
+    embedding_configuration: DemoEmbeddingConfiguration | None = None,
+) -> DemoRuntime:
+    """Audit and load one existing Demo runtime without writing to its workspace."""
+
+    bundle = load_demo_config(config_dir)
+    embedding = embedding_configuration or resolve_demo_embedding_configuration()
+    pdf = _validate_pdf(pdf_path, bundle.identity)
+    root = _load_existing_workspace(workspace)
+    runtime_root = root / _RUNTIME_DIRECTORY
+    try:
+        if not runtime_root.exists() and not runtime_root.is_symlink():
+            raise DemoError(
+                "demo runtime is missing; provision it explicitly with --allow-runtime-build"
+            )
+    except PermissionError:
+        raise DemoError("demo runtime access denied; check permissions and retry") from None
+    _assert_readable_tree(runtime_root)
+    return _validate_runtime(
+        root,
+        runtime_root,
+        bundle,
+        embedding,
+        source_pdf_path=pdf,
+        reused=True,
+        lifecycle_mode="reused-read-only",
+    )
+
+
 def prepare_demo(
     pdf_path: Path,
     workspace: Path,
@@ -206,6 +243,7 @@ def prepare_demo(
                     embedding,
                     source_pdf_path=pdf,
                     reused=True,
+                    lifecycle_mode="reused-read-only",
                 )
             except DemoError:
                 raise DemoError(
@@ -222,7 +260,13 @@ def prepare_demo(
     try:
         _build_runtime(pdf, stage, bundle, embedding)
         validated = _validate_runtime(
-            root, stage, bundle, embedding, source_pdf_path=pdf, reused=False
+            root,
+            stage,
+            bundle,
+            embedding,
+            source_pdf_path=pdf,
+            reused=False,
+            lifecycle_mode=("rebuilt-explicitly" if replace_runtime else "built-explicitly"),
         )
         _activate_runtime(root, stage, runtime_root, replace=replace_runtime)
         return DemoRuntime(
@@ -251,8 +295,11 @@ def prepare_demo(
             identity=validated.identity,
             source_kb_sha256=validated.source_kb_sha256,
             embedding_identity=validated.embedding_identity,
+            payload_count=validated.payload_count,
+            vector_count=validated.vector_count,
             semantic=validated.semantic,
             reused=False,
+            lifecycle_mode=("rebuilt-explicitly" if replace_runtime else "built-explicitly"),
         )
     except DemoError:
         _remove_owned_stage(root, stage, prefix)
@@ -340,6 +387,7 @@ def _validate_runtime(
     *,
     source_pdf_path: Path,
     reused: bool,
+    lifecycle_mode: Literal["reused-read-only", "built-explicitly", "rebuilt-explicitly"],
 ) -> DemoRuntime:
     try:
         if runtime_root.is_symlink() or not runtime_root.is_dir():
@@ -449,9 +497,14 @@ def _validate_runtime(
             identity=bundle.identity,
             source_kb_sha256=source.sha256,
             embedding_identity=embedding_identity,
+            payload_count=entry.index_manifest.payload_count,
+            vector_count=entry.index_manifest.vector_count,
             semantic=embedding.semantic,
             reused=reused,
+            lifecycle_mode=lifecycle_mode,
         )
+    except PermissionError:
+        raise DemoError("demo runtime access denied; check permissions and retry") from None
     except (
         CorpusAuditError,
         CorpusManifestError,
@@ -466,7 +519,7 @@ def _validate_runtime(
         TypeError,
         ValueError,
     ):
-        raise DemoError("demo workspace audit failed") from None
+        raise DemoError("demo runtime is stale, corrupt, or incompatible") from None
 
 
 def _validate_pdf(path_value: Path, identity: DocumentIdentity) -> Path:
@@ -503,6 +556,55 @@ def _prepare_workspace(path_value: Path) -> Path:
         return resolved
     except (OSError, RuntimeError, TypeError, ValueError):
         raise DemoError("--workspace must be an absolute writable directory") from None
+
+
+def _load_existing_workspace(path_value: Path) -> Path:
+    try:
+        requested = Path(path_value)
+        if not requested.is_absolute() or requested == Path(requested.anchor):
+            raise DemoError("--workspace must name an existing absolute directory")
+        if _has_symlink_component(requested):
+            raise DemoError("--workspace must not contain symbolic links")
+        if not requested.exists():
+            raise DemoError(
+                "demo runtime is missing; provision it explicitly with --allow-runtime-build"
+            )
+        if requested.is_symlink() or not requested.is_dir():
+            raise DemoError("--workspace must name an existing absolute directory")
+        resolved = requested.resolve(strict=True)
+        with os.scandir(resolved) as entries:
+            next(entries, None)
+        return resolved
+    except DemoError:
+        raise
+    except PermissionError:
+        raise DemoError("demo runtime access denied; check permissions and retry") from None
+    except (OSError, RuntimeError, TypeError, ValueError):
+        raise DemoError("demo runtime is unavailable; check its path and permissions") from None
+
+
+def _assert_readable_tree(root: Path) -> None:
+    pending = [root]
+    try:
+        while pending:
+            current = pending.pop()
+            with os.scandir(current) as entries:
+                for entry in entries:
+                    if entry.is_symlink():
+                        raise DemoError("demo runtime is stale, corrupt, or incompatible")
+                    if entry.is_dir(follow_symlinks=False):
+                        pending.append(Path(entry.path))
+                    elif entry.is_file(follow_symlinks=False):
+                        with open(entry.path, "rb") as handle:
+                            handle.read(1)
+                    else:
+                        raise DemoError("demo runtime is stale, corrupt, or incompatible")
+    except DemoError:
+        raise
+    except PermissionError:
+        raise DemoError("demo runtime access denied; check permissions and retry") from None
+    except OSError:
+        raise DemoError("demo runtime is unavailable; check its path and permissions") from None
 
 
 def _read_config_bytes(filename: str, config_dir: Path | None) -> bytes:
@@ -655,6 +757,7 @@ __all__ = [
     "DemoRuntime",
     "default_workspace",
     "load_demo_config",
+    "load_demo_runtime",
     "prepare_demo",
     "runtime_fingerprint",
 ]
