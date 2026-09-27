@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-27 after merged PR #200 (`1d3b3e8`); original release audit was PR #193.
+Updated 2026-09-28 after accepted PR #208 (`cca4efa7`), with the next import design; original release audit was PR #193.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
@@ -68,7 +68,7 @@ paths are intentionally omitted.
   isolation is required;
 - browser-dependent PDF fragment navigation;
 - process-local answer cache;
-- no assumption that MinerU 4.x improves real data until #177 produces comparative evidence.
+- MinerU #177 is closed with a rejected-execution audit; no parser adoption or rerun is authorized.
 
 ## Design-main workflow
 
@@ -119,15 +119,25 @@ tests passed, all six real previews were independently reproduced, three source 
 page images checked. [Exact-digest acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/204#issuecomment-5856769317)
 covers only revision 1 operator evidence inspection. M15 remains open.
 
-#202 does not complete M15. The sole next implementation is
-[BUILD-01 #206](../onboarding/build-profile-isolation-spec.md), under
-[ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md): isolate the three
-legacy ISCT policy seams and guard a new explicit build entry. Preserve old build API behavior
-and canonical ISCT outputs; old wrappers remain legacy-only and are not new-school entry points.
-Extractor/chunker heuristics remain in the legacy pipeline. No GSFS KB is built in this task.
+BUILD-01 #206 is complete in PR #208. Independent review passed 179 focused tests, checked
+unchanged legacy function/constant ASTs, retained canonical KB parity and actual protected assets.
+The initial developer report confused an old 298 index with the frozen 334 baseline; the merged
+[asset-binding correction](../onboarding/build01-implementation-review.md#independent-design-review-correct-asset-bindings)
+records the verified paths/hashes and evidence limits. The reviewer did not run another real build.
 
-The later reviewed import will map eight records / 23 separate fragments into existing per-document
-Facts with bound lineage and required-context closure. Its exact wire/publication contract, scoped
-material conditions and local presentation remain unreleased. No production Schema change is chosen.
-Reuse one M15 chat: baseline/refactor/guard tests, then bounded real parity and PR handoff.
+The sole next implementation is [IMPORT-01](../onboarding/reviewed-fragment-import-spec.md), under
+[ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md). It maps eight records /
+23 exact fragments into three existing-schema candidate KBs (2/12/9 Facts), with document-qualified
+lineage, complete required context, immutable publication and verified reuse. Mixed-degree source
+identity remains truthful; Fact scope stays unknown and production quality gates remain failed.
+No parser, index, registry, rule or API/UI activation is released. The Spec includes reviewed source
+identities, input pins, deterministic field/ID rules, publication contract and shared real-run budget.
+Reuse one M15 Main chat, first contract/tests and then bounded real candidate evidence/PR handoff.
+Scoped material conditions and multi-source report binding require a later Spec after acceptance.
+
+The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
+GitHub, avoid overlapping work and release only one Ready task. Previous overnight authorization
+was bounded to 2026-09-28 07:00 JST, not permission to implement all future tasks. Do not claim
+direct cross-chat delivery: GitHub remains the shared handoff board. At M15 completion stop its
+progression automation; M16 is not automatically released.
 Keep #177 closed, 334/391 assets unchanged, assistant reference-only, and M13 paused.

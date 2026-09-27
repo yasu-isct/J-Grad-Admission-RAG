@@ -625,11 +625,12 @@ the completed Science Tokyo local Demo; the new school is not yet supported. See
 [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) closes with PR #200's accepted
 failed-experiment audit and reject decision. [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15)
 has completed [#202](docs/onboarding/evid01-operator-preview.md): inspect reviewed official excerpts
-for three materials topics with exact source/page binding (accepted PR #204). The sole next task is
-[BUILD-01 #206](docs/onboarding/build-profile-isolation-spec.md): isolate the legacy ISCT build profile
-and add an explicit guarded entry while preserving existing outputs. Reviewed import and KB/Fact
-lineage follow its acceptance; [ADR 0011](docs/decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
-records that boundary.
+for three materials topics with exact source/page binding (accepted PR #204).
+[BUILD-01 #206](docs/onboarding/build-profile-isolation-spec.md) is accepted in PR #208: the legacy
+ISCT profile and guarded entry preserve existing outputs. The sole next implementation is
+[IMPORT-01](docs/onboarding/reviewed-fragment-import-spec.md): map the 23 reviewed fragments into
+three isolated candidate KBs with bound lineage. Rules and applicant presentation remain later gates;
+[ADR 0011](docs/decisions/0011-explicit-build-profiles-and-reviewed-lineage.md) records the boundary.
 No new parser experiment or GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
 

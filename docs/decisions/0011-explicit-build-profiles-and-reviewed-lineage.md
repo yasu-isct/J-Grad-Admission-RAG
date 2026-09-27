@@ -1,7 +1,8 @@
 # ADR 0011: Explicit build profiles and reviewed excerpt lineage
 
-Status: Accepted design boundary on merge. Only BUILD-01 is released by this ADR;
-reviewed import, artifact publication and report integration require later Specs.
+Status: Accepted design boundary. BUILD-01 is complete in PR #208. The subsequent
+[IMPORT-01 Spec](../onboarding/reviewed-fragment-import-spec.md) resolves the candidate import and
+publication contract; report integration still requires a later Spec.
 Owner: [#191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191).
 Baseline: main `e46721a31f642564536a6c1d92a58417335f2364`, after accepted EVID-01 #202 / PR #204.
 
@@ -54,7 +55,7 @@ external acceptance report, without changing existing KB bytes or runtime pointe
 
 ## Decision 2: destination and granularity of the later reviewed import
 
-This is the next design boundary, not an executable import Spec yet:
+The original next-step boundaries below are now made executable by the IMPORT-01 Spec:
 
 - Keep one `DocumentKnowledgeBase` 0.6 per exact source document; never merge the three PDFs
   under one synthetic document identity. Future import builds only the reviewed subset and
@@ -87,7 +88,9 @@ Unknown scope and partial coverage cannot authorize public retrieval or rule exe
 later import Spec must define truthful diagnostics for manually captured fragments (including
 headers), source identities with genuine document coverage, deterministic labels/sections,
 context-closure validation, and canonical bytes. A default quality pass is not production approval.
-These unresolved implementation details block import release, not BUILD-01.
+IMPORT-01 resolves these details: empty official section paths, technical titles, complete
+contextual headers and unknown scope remain explicit; missing-section and unknown-scope quality
+gates fail truthfully. Candidate validation is distinct from production approval.
 
 ## Decision 3: artifact and downstream boundaries
 
@@ -105,9 +108,9 @@ report, and do not route these records through the five-item ISCT material polic
 ## Sequence, consequences and rollback
 
 1. [BUILD-01 #206](../onboarding/build-profile-isolation-spec.md): isolate the legacy profile, add the
-   explicit guard and prove canonical ISCT parity. The sole released implementation.
-2. Design and accept a reviewed-source import Spec, then implement the bounded 23-fragment
-   candidate KB/lineage conversion. No new parser or full-document reconstruction is implied.
+   explicit guard and prove canonical ISCT parity. Complete in PR #208.
+2. [IMPORT-01](../onboarding/reviewed-fragment-import-spec.md): the sole next implementation,
+   bounded to 23-fragment candidate KB/lineage conversion. No new parser or full-document reconstruction.
 3. Reviewed material applicability and multi-source report evidence.
 4. Bounded API/UI materials journey and real user acceptance. M15 closes only then.
 
