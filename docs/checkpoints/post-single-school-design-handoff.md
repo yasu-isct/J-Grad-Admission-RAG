@@ -1,6 +1,8 @@
 # Post-single-school Design Handoff
 
-Verified 2026-09-27 against GitHub `main` at merge commit `744d9dd`. Always re-read current GitHub
+Verified 2026-09-27 against GitHub `main` at merge commit `2fd0786e` (REL-01 PR #193).
+Design continuation below was recorded after the user's GSFS target/download decision.
+Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
 
 ## Required read order
@@ -28,8 +30,11 @@ Do not load the full historical chat as the primary specification.
 - #163 remains open for missing official language/score-conversion coverage.
 - #177 remains open as the future MinerU 4.x Tokyo University A/B experiment.
 - #191 is the durable design authority/workflow entry for the next design-main agent.
-- #192 is the documentation-only single-school closeout that produced this checkpoint.
-- No open PR existed when #192 began.
+- #192 is closed; documentation-only closeout PR #193 is merged and main Quality passed.
+- No open PR existed at the post-closeout audit. This snapshot does not describe later design PRs.
+- The user selected GSFS Complexity Science and Engineering as the first new program and
+  authorized downloads. Four exact official PDFs are locally acquired; see the
+  [source lock](../onboarding/utokyo-gsfs-complex-2027.md). No new-school runtime is enabled.
 
 ## Product and authority boundary
 
@@ -73,7 +78,10 @@ evidence in addition to tests. Never release multiple dependent implementation I
 
 ## Unique next design action
 
-After #192 merges, start #191 in a fresh design-main thread and perform a read-only audit of every
-single-school assumption across identity schemas, parser/builder, reviewed configuration, rules,
-corpus/index selection, APIs, UI, and tests. Produce the multi-school compatibility ADR before
-downloading MinerU, acquiring a new PDF, changing schemas, or implementing Tokyo University support.
+The [read-only coupling audit](../audits/single-school-coupling-2026-09-27.md) is complete and
+[ADR 0008](../decisions/0008-multi-school-compatibility.md) is proposed. The
+[development lessons](../development-lessons.md) retain the user's retrospective without relying
+on private notebook access. The unique next task is to freeze the first target/source-set and v1
+compatibility contract, with a bounded implementation Spec. Release only that task; #177 still
+needs the baseline adapter seam and a pinned parser/resource plan. User-authorized source
+downloads are no longer blocked, but existing production assets, paid calls and M13 remain protected.
