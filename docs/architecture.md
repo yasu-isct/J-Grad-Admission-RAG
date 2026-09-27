@@ -327,6 +327,15 @@ failures return a bounded fallback and are not cached. See
 [Natural-language RAG productization v1](natural-language-productization-v1.md), and
 [ADR 0006](decisions/0006-validated-natural-language-and-exact-cache.md).
 
+## M13 Public Deployment Boundary (Proposed)
+
+M13 keeps build-time and public query-time concerns physically separate. The public process may
+only audit and read an operator-provisioned PDF, reviewed runtime, 391-vector BGE-M3 index, and
+cache-only model directory. It may never parse a PDF, construct a KB, build embeddings, download a
+model, or expose the existing build/job management routes. Deployment provider selection and paid
+resource creation remain gated on explicit operator approval. See
+[Public Demo Deployment Architecture v1](deployment-architecture-v1.md).
+
 ## Main Boundaries
 
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.

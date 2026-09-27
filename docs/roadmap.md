@@ -181,6 +181,25 @@ M1 is complete when:
 
 ## Planned Backlog
 
+### M13 Public Demo Deployment
+
+M13 publishes the existing single-school Demo through a bounded HTTPS entry point. It preserves the
+391-vector product runtime as a private read-only deployment asset, leaves the 334-vector semantic
+release baseline frozen, and adds a public-only route surface, abuse/cost controls, reproducible
+packaging, real staging acceptance, and operator recovery documentation.
+
+| ID | Task | Output |
+| --- | --- | --- |
+| DEPLOY-01 | Establish deployment architecture and cost baseline | Measured asset/resource inventory, current provider comparison, recommendation, and approval gate |
+| DEPLOY-02 | Build a reproducible production package | Non-root container and fail-closed read-only startup contract |
+| DEPLOY-03 | Add public security and cost protection | Public route allowlist, proxy/origin policy, limits, budgets, redacted errors/logs |
+| DEPLOY-04 | Deploy and accept public staging | HTTPS browser evidence, restart/runtime audit, cache and protection verification |
+| DEPLOY-05 | Finalize access and operations | Domain decision, upgrade/rollback/recovery/key-rotation/runbook, final docs |
+
+DEPLOY-02 starts only after the operator approves the provider and monthly ceiling recorded by
+[Public Demo Deployment Architecture v1](deployment-architecture-v1.md). Paid resources and private
+asset upload are not authorized by roadmap or issue creation.
+
 ### M2 Local Vector Retrieval
 
 | ID | Task | Output |
