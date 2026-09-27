@@ -1,0 +1,829 @@
+{
+  "artifact_kind": "parse-01-manual-scorecard",
+  "scorecard_version": "1.1",
+  "production_enabled": false,
+  "gold_sha256": "14f46f4ebbf87641e78f7d50d1f10473f705ab02e81dfa99f063298747f391f2",
+  "scored_on": "2026-09-27",
+  "method": "Manual atomic pass/fail against locked PDF text and rendered-page gold; no LLM grader and no fractional credit.",
+  "execution_lock_sha256": "6165ad4a179f6a37c6f34b875b1caa1c987e5ec0aa7ce7ccbc49ebef30191cba",
+  "model_revision": "358310b4f64b95f9fefc372ad899356e4111f376",
+  "locator_syntax": "source alias:p<physical-page>:b<block index>; resolve the alias in the row's candidate-specific run_bindings map. MinerU block IDs are <run_id>:p<physical-page, 5 digits>:b<block index, 5 digits>.",
+  "run_bindings": {
+    "legacy_ms02": {
+      "complex-guide-2027-revised": {
+        "run_id": "935a5b3bf35e12dd021af9293e6cdb1acbc6f8b41f163c4d2e524678d1aeac67",
+        "output_digest": "5f60a017153f049db4eb94a5fc01f7c7fe6666b0d0d7ad39871782b58b18a1cb",
+        "file_sha256": "7c9fa1acf1b847c74fca8a6475a65ac3d1d722c089397da9c1296f0ebf9b43b3"
+      },
+      "complex-master-a-additional": {
+        "run_id": "7b14a22d90cd2495cf69f1061d986cc7b82082ab21370fc74fbc8a72ea2977ed",
+        "output_digest": "76f0751025e3850d9938f4b480093a9a2f00195b94d53ae76180a3151bfc6cf9",
+        "file_sha256": "9f98e46a958319353bf2e0f223f922f58ed1725e970fb66bf3a09f14a1ee58db"
+      },
+      "gsfs-master-2027": {
+        "run_id": "86e1fa88c08336ceb47d92d0b30aca4e204d6b557a1a7ef7240f1162eddd886e",
+        "output_digest": "78042b34a7677c08c5ef6403f50c09592a83fe2b9f0c4735ef6f025504edbd84",
+        "file_sha256": "271ffaded5276d037629cb1049461039a2222f70b21b9d6446c9a83ad585e953"
+      },
+      "gsfs-overseas-intake-a-20260305": {
+        "run_id": "9ec9915281789a9738e1a3acb70eb17515ef14587111f4d7c6269e543265ec20",
+        "output_digest": "8cdb7868623aa81e6ca0d57216023f0cc84f217cea4787773f6c617a7424ab30",
+        "file_sha256": "5940ede3024754771ced8a24d470b5d29a233bb37cebae6417e0ea849616ae14"
+      }
+    },
+    "flash": {
+      "complex-guide-2027-revised": {
+        "run_id": "7357670a4bad44b800b05fede01161a1158ce3e77d88581e4d4a26c55febe066",
+        "raw_sha256": "ce1025ff44bab75dcf677dba4c86684a4e9de674cb16239c3421a01fb30e366c",
+        "comparison_view_sha256": "58062c84652a665164c4464ac11aa542e04e3230c1f73cc75f070e8856f9ed35"
+      },
+      "complex-master-a-additional": {
+        "run_id": "7191ec65d6716d15e9ef16ae084ccd14ad96057de99f65c7bc76a356902e8eb2",
+        "raw_sha256": "0ad2a4a54502b2ce13518a12f1de2f9dfcf345d5409a5c2c82734df0f3410282",
+        "comparison_view_sha256": "fcf472e2a42117232c8d9369ab7b8ec4803a6b8688390a5bf35e92f5880c516d"
+      },
+      "gsfs-master-2027": {
+        "run_id": "5511a549abe6a59d05694d083681d7446920c4e6ab9ed36e36bb669e993198e3",
+        "raw_sha256": "f605d7f6cbbd3c0c95e8d4dcd88b1002a5ed17ae1cbb446ed5738c294d3705ff",
+        "comparison_view_sha256": "2f83e060df53ba0d4c8019bf325e0859045a5cc53d2d47033c8aa618a93c028f"
+      },
+      "gsfs-overseas-intake-a-20260305": {
+        "run_id": "3950f1c2e9731761108b86fab5a0b6a1f4e462e96edf94897face1975bfd5bb6",
+        "raw_sha256": "8dd16bb56a122ae09ac41dfab89bb1049a104aca33881d7f1030ced8f074b28d",
+        "comparison_view_sha256": "b6550bb69ec7900c959f7da523689fb6fd2777b2d5a66e4e6dc9ab6ccc8bb16c"
+      }
+    }
+  },
+  "summary": {
+    "legacy_ms02": {
+      "completed": true,
+      "passed": 30,
+      "total": 41,
+      "critical_passed": 26,
+      "critical_total": 33,
+      "table_structure_passed": 13,
+      "table_structure_total": 20
+    },
+    "flash": {
+      "completed": true,
+      "passed": 33,
+      "total": 41,
+      "critical_passed": 28,
+      "critical_total": 33,
+      "table_structure_passed": 13,
+      "table_structure_total": 20
+    },
+    "basic": {
+      "completed": false,
+      "passed": null,
+      "total": 41,
+      "critical_passed": null,
+      "critical_total": 33,
+      "table_structure_passed": null,
+      "table_structure_total": 20,
+      "failure": "Incomplete after timeout; undrained supervisor pipes may have stalled the worker, so CPU/MinerU latency attribution is inconclusive."
+    }
+  },
+  "rows": [
+    {
+      "unit_id": "C01",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b0",
+        "reason": "Delegation to department guide/site survives."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b2",
+        "reason": "Purpose and supplemental-detail qualifier survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C02",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b0",
+        "reason": "April intake, COE condition, A-only qualifier and flowchart pointer survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b3-b4",
+        "reason": "Conditional intake and flowchart reference remain together."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C03",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b0",
+        "reason": "Review approval, age, enrolled-student exclusion and notes survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p2:b6",
+        "reason": "All eligibility qualifiers and note pointers survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C04",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p3:b0",
+        "reason": "Prior review and section 11(5) pointer survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p3:b13-b14",
+        "reason": "Approval-before-acceptance and pointer survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C05",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p3:b0",
+        "reason": "Foreign-special heading and numbered notes remain distinguishable."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p3:b0-b15",
+        "reason": "Route heading, requirements and shared numbered notes remain separated."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C06",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b0",
+        "reason": "Ordinary A row retains June dates and Japan-time close."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b3",
+        "reason": "Ordinary A row is a distinct block with exact dates/time."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C07",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b0",
+        "reason": "Special-oral May row remains separate."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b2",
+        "reason": "Special-oral label, May dates and time remain together."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C08",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b0",
+        "reason": "Table row retains department, 25, no special recruitment and note."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b6",
+        "reason": "Native table preserves headers, row cells and note pointer."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C09",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b0",
+        "reason": "B row retains both no-recruitment cells."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p4:b10-b11",
+        "reason": "B heading and native row preserve both no-recruitment cells."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C10",
+      "legacy": {
+        "status": "fail",
+        "locator": "gsfs-master-2027:p4:b0,p5:b0",
+        "reason": "Coarse page aggregates do not express the cross-page table continuation."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "gsfs-master-2027:p4:b11,p5:b0",
+        "reason": "The page-local native tables are adjacent, but expose no explicit cross-page ownership edge; continuation cannot be proven."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C11",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p5:b0",
+        "reason": "Fee amount and scholarship/program exceptions survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p5:b4",
+        "reason": "Single native row retains amount, exception and proof condition."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C12",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p5:b0",
+        "reason": "Graduate condition, expected-graduation exemption and both certificates survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p5:b4",
+        "reason": "Submitter and detail cells remain attached in one native row."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C13",
+      "legacy": {
+        "status": "fail",
+        "locator": "gsfs-master-2027:p5:b0,p6:b0",
+        "reason": "Text and repeated headers survive, but explicit cross-page table ownership is unproven; same conservative structural standard as C10."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "gsfs-master-2027:p5:b4,p6:b0",
+        "reason": "Text and repeated headers survive, but explicit cross-page table ownership is unproven; same conservative structural standard as C10."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C14",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p6:b0",
+        "reason": "Department-dependent score requirements/deadlines survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p6:b4-b5",
+        "reason": "Conditional framing and guide delegation survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "C15",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p6:b0",
+        "reason": "A/B score-date conditions survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-master-2027:p6:b5-b6",
+        "reason": "Both dates remain subordinate to the conditional score section."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D01",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p3:b0",
+        "reason": "Two-column introduction and module bodies are interleaved and duplicated."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p3:b2-b11",
+        "reason": "Introduction order is garbled and module text is merged into a footer aggregate."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D02",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p4:b0",
+        "reason": "Three columns are interleaved in the coarse page aggregate."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p4:b2-b26",
+        "reason": "Lab heading, topic, sequential body blocks and captions remain distinguishable."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D03",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p27:b0",
+        "reason": "Ordinary masters dates and venue/time notification qualifiers survive."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p27:b3-b4",
+        "reason": "Visual table serialization reverses/scrambles year, month and day tokens, so complete dates do not survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D04",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p27:b0",
+        "reason": "Special-oral May/June schedule remains separate."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p27:b4",
+        "reason": "Route label remains but its May/June date tokens are not semantically readable."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D05",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p27:b0",
+        "reason": "Doctoral A/B rows and November/January dates survive."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p27:b4,b7-b12",
+        "reason": "Doctoral headings survive but B/January date relationships are scrambled."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D06",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p27:b0",
+        "reason": "Fusion-program context remains conditional."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p27:b14-b19",
+        "reason": "Program heading, participation condition and advisor limitation survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D07",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b0",
+        "reason": "Negation and masters ordinary scope survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b61",
+        "reason": "Negation remains attached to masters ordinary selection."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D08",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b0",
+        "reason": "A/B prompts, format, online submission and questionnaire survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b14-b24,b61-b66",
+        "reason": "All required essay and questionnaire elements survive despite fragmented blocks."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D09",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b0",
+        "reason": "April/October condition and no-switch consequence survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b53-b59",
+        "reason": "All intake alternatives and failure consequence remain recoverable together."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D10",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b0",
+        "reason": "Employment condition and enrollment-stage consent remain separate."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p28:b58-b59",
+        "reason": "Conditional plan and later employer consent survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D11",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p29:b0",
+        "reason": "Special-oral route and checked-form carryover survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p29:b2-b45",
+        "reason": "Route heading, no-second-application rule and checkbox condition survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D12",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p30:b0",
+        "reason": "Doctoral heading, plan and 20-minute presentation survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p30:b7-b32",
+        "reason": "Degree scope, research plan and presentation context survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D13",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p40:b0",
+        "reason": "Upper page, including the non-submission notice, is missing."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p40:b0",
+        "reason": "Explicit checklist non-submission notice is recovered."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D14",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p40:b0",
+        "reason": "Upper checklist items are missing and lower content is duplicated."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p40:b7-b8",
+        "reason": "Online application, photo, fee, proof exception, scholarship exception and transcript each occur once."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D15",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p40:b0",
+        "reason": "Graduation certificate item and conditions are missing."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p40:b9",
+        "reason": "Already-graduated condition and both-certificate rule are recovered."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "D16",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-guide-2027-revised:p40:b0",
+        "reason": "Lower checklist is duplicated, violating once-only preservation."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-guide-2027-revised:p40:b9-b10",
+        "reason": "Essay, questionnaire, advisor choice and employment-conditioned plan occur once."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "A01",
+      "legacy": {
+        "status": "fail",
+        "locator": "complex-master-a-additional:p1:b0",
+        "reason": "Flattened page text preserves labels but not native spanning-cell ownership, so the two header groups and empty right cells cannot be proven."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b4",
+        "reason": "Native colspan/rowspan HTML preserves group ownership and empty right cells."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "A02",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b0",
+        "reason": "Questionnaire, all-applicant condition and upload group survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b4",
+        "reason": "Questionnaire row retains all-applicant cell and left-group ownership."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "A03",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b0",
+        "reason": "Essay row and language/site details survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b4",
+        "reason": "Essay row retains all conditions."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "A04",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b0",
+        "reason": "Employment-only condition survives."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b4",
+        "reason": "Employment-only row is not contaminated by preceding all-applicant rows."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "A05",
+      "legacy": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b0",
+        "reason": "English-score text remains a footer/reference."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "complex-master-a-additional:p1:b4",
+        "reason": "Footer referral remains outside table submission rows."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "F01",
+      "legacy": {
+        "status": "fail",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b0",
+        "reason": "Node text survives but nationality yes/no edges are absent."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b4-b21",
+        "reason": "Separate labels lack explicit edges; branch ownership cannot be established."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "F02",
+      "legacy": {
+        "status": "fail",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b0",
+        "reason": "Residence/scholarship/status nodes survive without graph relations."
+      },
+      "flash": {
+        "status": "fail",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b4-b21",
+        "reason": "Yes/no labels and outcomes are unbound, so final-no versus qualifying paths cannot be proven."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "F03",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b0",
+        "reason": "Physical-page-5 note pointer survives."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p1:b22",
+        "reason": "Notes 1-4 and physical p5 pointer survive."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "F04",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p5:b0",
+        "reason": "Caution, status-change contact and notes 1-3 survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p5:b0-b7",
+        "reason": "All cautions and referrals survive as separate blocks."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    },
+    {
+      "unit_id": "F05",
+      "legacy": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p5:b0",
+        "reason": "Program/degree-specific notes 4 and 5 survive."
+      },
+      "flash": {
+        "status": "pass",
+        "locator": "gsfs-overseas-intake-a-20260305:p5:b8-b11",
+        "reason": "Both exceptions remain bound to their named programs, degrees and intakes."
+      },
+      "basic": {
+        "status": "not_scored",
+        "locator": null,
+        "reason": "tier_incomplete_timeout"
+      }
+    }
+  ],
+  "decision": "reject",
+  "evidence_status": "observational_only_execution_budget_violated"
+}

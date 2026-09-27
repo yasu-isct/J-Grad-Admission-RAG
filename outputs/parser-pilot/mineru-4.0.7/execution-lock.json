@@ -1,0 +1,634 @@
+{
+  "artifact_kind": "parse-01-execution-lock",
+  "production_enabled": false,
+  "created_at": "2026-09-27T09:45:45.536816+00:00",
+  "python": {
+    "executable": "D:\\J-Grad-Admission-RAG\\outputs\\parser-pilot\\mineru-4.0.7\\env\\Scripts\\python.exe",
+    "version": "3.12.14"
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "resource_lock": {
+    "path": "docs/onboarding/mineru-4.0.7-pilot-lock.json",
+    "sha256": "41faf137300898f3faa1e54d16600edb8a9004eac4dc6a053bdf7868f84daaa7"
+  },
+  "gold": {
+    "path": "docs/onboarding/mineru-4.0.7-pilot-gold-v1.json",
+    "sha256": "14f46f4ebbf87641e78f7d50d1f10473f705ab02e81dfa99f063298747f391f2"
+  },
+  "config": {
+    "path": "outputs/parser-pilot/mineru-4.0.7/config.yaml",
+    "sha256": "22d5d6b0c3bdd43fe6dc9411e4e380a219ae0069dcae74ee991a560f02303e3a"
+  },
+  "model": {
+    "repo": "opendatalab/MinerU-4_models_onnx",
+    "revision": "358310b4f64b95f9fefc372ad899356e4111f376",
+    "verified_files": [
+      {
+        "path": "Layout/PP-DocLayoutV2/inference.onnx",
+        "bytes": 213963712,
+        "sha256": "cd540dc296ff3115fe78efa65b68501e6a8dc74b198acc9834a725ffaa095aac"
+      },
+      {
+        "path": "Layout/PP-DocLayoutV2/inference.yml",
+        "bytes": 1482,
+        "sha256": "93100e0fb2cd76b9d246a853deea85e191d8333b2cfca7be76e82e4c4ebfa819"
+      },
+      {
+        "path": "MFR/pp_formulanet_plus_m/PP-FormulaNet_plus-M.onnx",
+        "bytes": 591263297,
+        "sha256": "20a32595c2b30282dcd069e6295e9fad96115697beb66acb9b681b814006d193"
+      },
+      {
+        "path": "MFR/pp_formulanet_plus_m/PP-FormulaNet_plus-M_inference.yml",
+        "bytes": 2244564,
+        "sha256": "87b5f3d7f2b2fe553627d77b37f496608ca150ebd0ef62d362591edca47b5538"
+      },
+      {
+        "path": "OCR/paddleocr/ch_PP-OCRv6_small_rec_infer.onnx",
+        "bytes": 21159378,
+        "sha256": "5435fd747c9e0efe15a96d0b378d5bd157e9492ed8fd80edf08f30d02fa24634"
+      },
+      {
+        "path": "OCR/paddleocr/ch_PP-OCRv6_small_rec_inference.yml",
+        "bytes": 150752,
+        "sha256": "c0541b06832948d7d3052e9ac6b572c6063d79ecd800493f4ec14d1b901c16d7"
+      },
+      {
+        "path": "OCR/paddleocr/ch_PP-OCRv6_tiny_det_infer.onnx",
+        "bytes": 1780590,
+        "sha256": "193bab7a04fca699a6c82e6abb5b81bdb28177f0abd4062552b04908dafb19f8"
+      },
+      {
+        "path": "OCR/paddleocr/ch_PP-OCRv6_tiny_det_inference.yml",
+        "bytes": 1068,
+        "sha256": "a1fa68ab31e29252936328e728633180908f997023d9eacb81f175e326676554"
+      },
+      {
+        "path": "OCR/paddleocr/seal_PP-OCRv4_det_infer.onnx",
+        "bytes": 4769171,
+        "sha256": "3e190df84542c2756975febe8f73603b587a23c7f7badfdd3fc8a986540d5bc0"
+      },
+      {
+        "path": "OCR/paddleocr/seal_PP-OCRv4_det_inference.yml",
+        "bytes": 711,
+        "sha256": "e5b8dd5a727602bdd526d9db152cc767bc761198c453460df7c8f7ae59d2ea3c"
+      },
+      {
+        "path": "Table/PP-LCNet_x1_0_table_cls.onnx",
+        "bytes": 6776877,
+        "sha256": "c84bf1d79c1c74d534b5b12adb14dd12151c42f7ae3e4be4f1042b830f80b949"
+      },
+      {
+        "path": "Table/slanet-plus.onnx",
+        "bytes": 7758305,
+        "sha256": "d57a942af6a2f57d6a4a0372573c696a2379bf5857c45e2ac69993f3b334514b"
+      },
+      {
+        "path": "Table/unet.onnx",
+        "bytes": 8335007,
+        "sha256": "0ea48d3a17e35ef5c2e498a5e799566073234d39b1079ca21d9f4fafe73c6d20"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "gsfs-master-2027",
+      "path": "outputs/source-documents/utokyo-gsfs/2027/a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026.pdf",
+      "bytes": 941862,
+      "sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "physical_page_count": 22
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "path": "outputs/source-documents/utokyo-gsfs/2027/6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab.pdf",
+      "bytes": 9053105,
+      "sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page_count": 45
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "path": "outputs/source-documents/utokyo-gsfs/2027/3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae.pdf",
+      "bytes": 491374,
+      "sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page_count": 1
+    },
+    {
+      "source_id": "gsfs-overseas-intake-a-20260305",
+      "path": "outputs/source-documents/utokyo-gsfs/2027/ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0.pdf",
+      "bytes": 1520466,
+      "sha256": "ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0",
+      "physical_page_count": 15
+    }
+  ],
+  "baseline_reports": [
+    {
+      "path": "outputs/parser-pilot/ms02/complex-guide-2027-revised.json",
+      "bytes": 305277,
+      "sha256": "7c9fa1acf1b847c74fca8a6475a65ac3d1d722c089397da9c1296f0ebf9b43b3"
+    },
+    {
+      "path": "outputs/parser-pilot/ms02/complex-master-a-additional.json",
+      "bytes": 7428,
+      "sha256": "9f98e46a958319353bf2e0f223f922f58ed1725e970fb66bf3a09f14a1ee58db"
+    },
+    {
+      "path": "outputs/parser-pilot/ms02/evidence-summary.json",
+      "bytes": 5413,
+      "sha256": "244352c5e9f5d566a6d493f7e81f50772d421065f6d9be7ae07c2f94586f0334"
+    },
+    {
+      "path": "outputs/parser-pilot/ms02/gsfs-master-2027.json",
+      "bytes": 166773,
+      "sha256": "271ffaded5276d037629cb1049461039a2222f70b21b9d6446c9a83ad585e953"
+    },
+    {
+      "path": "outputs/parser-pilot/ms02/gsfs-overseas-intake-a-20260305.json",
+      "bytes": 70664,
+      "sha256": "5940ede3024754771ced8a24d470b5d29a233bb37cebae6417e0ea849616ae14"
+    }
+  ],
+  "acquisition_reports": [
+    {
+      "path": "outputs/parser-pilot/mineru-4.0.7/acquisition/pip-report.json",
+      "bytes": 1525870,
+      "sha256": "d78fb64e4798d6edd0c0ff2eaa25ccd1561b96fd0fbc550adf965c6500657266"
+    },
+    {
+      "path": "outputs/parser-pilot/mineru-4.0.7/acquisition/psutil-pip-report.json",
+      "bytes": 26407,
+      "sha256": "e7d917721a97ca8ac4ac8f8ae19c3ff9c49391f2d3c5505d3ba4e27b35303ccf"
+    }
+  ],
+  "distributions": [
+    {
+      "name": "aiofiles",
+      "version": "25.1.0"
+    },
+    {
+      "name": "aiosqlite",
+      "version": "0.22.1"
+    },
+    {
+      "name": "annotated-doc",
+      "version": "0.0.5"
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0"
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1"
+    },
+    {
+      "name": "beautifulsoup4",
+      "version": "4.15.0"
+    },
+    {
+      "name": "brotli",
+      "version": "1.2.0"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.7.22"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.1"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "cobble",
+      "version": "0.1.4"
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.1"
+    },
+    {
+      "name": "distro",
+      "version": "1.9.0"
+    },
+    {
+      "name": "docvortex",
+      "version": "0.5.1"
+    },
+    {
+      "name": "et_xmlfile",
+      "version": "2.0.0"
+    },
+    {
+      "name": "fastapi",
+      "version": "0.141.1"
+    },
+    {
+      "name": "filelock",
+      "version": "4.0.4"
+    },
+    {
+      "name": "flatbuffers",
+      "version": "25.12.19"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.66.0"
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.9.0"
+    },
+    {
+      "name": "ftfy",
+      "version": "6.3.1"
+    },
+    {
+      "name": "gradio",
+      "version": "6.28.0"
+    },
+    {
+      "name": "gradio_client",
+      "version": "2.7.1"
+    },
+    {
+      "name": "groovy",
+      "version": "0.1.2"
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0"
+    },
+    {
+      "name": "hf-gradio",
+      "version": "0.4.1"
+    },
+    {
+      "name": "hf-xet",
+      "version": "1.6.0"
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9"
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1"
+    },
+    {
+      "name": "httpx-retries",
+      "version": "0.6.0"
+    },
+    {
+      "name": "huggingface_hub",
+      "version": "1.33.0"
+    },
+    {
+      "name": "idna",
+      "version": "3.20"
+    },
+    {
+      "name": "jgrad-admission-rag",
+      "version": "0.1.0"
+    },
+    {
+      "name": "jieba",
+      "version": "0.42.1"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "name": "jiter",
+      "version": "0.17.0"
+    },
+    {
+      "name": "json_repair",
+      "version": "0.63.5"
+    },
+    {
+      "name": "latex2mathml",
+      "version": "3.81.1"
+    },
+    {
+      "name": "loguru",
+      "version": "0.7.3"
+    },
+    {
+      "name": "lxml",
+      "version": "6.1.3"
+    },
+    {
+      "name": "magika",
+      "version": "1.0.3"
+    },
+    {
+      "name": "mammoth",
+      "version": "1.13.0"
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.2.0"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3"
+    },
+    {
+      "name": "mathml2omml",
+      "version": "0.0.2"
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2"
+    },
+    {
+      "name": "metafile-render",
+      "version": "0.3.0"
+    },
+    {
+      "name": "mineru",
+      "version": "4.0.7"
+    },
+    {
+      "name": "mineru-llama-cpp",
+      "version": "0.1.2"
+    },
+    {
+      "name": "mineru_vl_utils",
+      "version": "2.0.5"
+    },
+    {
+      "name": "modelscope",
+      "version": "1.40.1"
+    },
+    {
+      "name": "modelscope-hub",
+      "version": "0.4.5"
+    },
+    {
+      "name": "nh3",
+      "version": "0.3.7"
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.3"
+    },
+    {
+      "name": "olefile",
+      "version": "0.47"
+    },
+    {
+      "name": "onnxruntime",
+      "version": "1.30.0"
+    },
+    {
+      "name": "openai",
+      "version": "2.54.0"
+    },
+    {
+      "name": "opencv-python",
+      "version": "5.0.0.93"
+    },
+    {
+      "name": "openpyxl",
+      "version": "3.1.5"
+    },
+    {
+      "name": "orjson",
+      "version": "3.12.0"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pandas",
+      "version": "3.0.6"
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0"
+    },
+    {
+      "name": "pip",
+      "version": "25.0.1"
+    },
+    {
+      "name": "protobuf",
+      "version": "7.36.2"
+    },
+    {
+      "name": "psutil",
+      "version": "7.1.3"
+    },
+    {
+      "name": "pyclipper",
+      "version": "1.4.0"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.0"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.5"
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.46.5"
+    },
+    {
+      "name": "pydub",
+      "version": "0.25.1"
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0"
+    },
+    {
+      "name": "pylatexenc",
+      "version": "2.11"
+    },
+    {
+      "name": "pypdf",
+      "version": "6.19.0"
+    },
+    {
+      "name": "pypdfium2",
+      "version": "5.13.0"
+    },
+    {
+      "name": "pypptx-with-oxml",
+      "version": "1.0.3"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0"
+    },
+    {
+      "name": "python-docx",
+      "version": "1.2.0"
+    },
+    {
+      "name": "python-multipart",
+      "version": "0.0.32"
+    },
+    {
+      "name": "pytz",
+      "version": "2026.4"
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3"
+    },
+    {
+      "name": "reportlab",
+      "version": "5.0.1"
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2"
+    },
+    {
+      "name": "resvg_py",
+      "version": "0.5.0"
+    },
+    {
+      "name": "rich",
+      "version": "15.0.0"
+    },
+    {
+      "name": "rl_accel",
+      "version": "0.9.1"
+    },
+    {
+      "name": "safehttpx",
+      "version": "0.1.7"
+    },
+    {
+      "name": "semantic-version",
+      "version": "2.10.0"
+    },
+    {
+      "name": "setuptools",
+      "version": "84.0.0"
+    },
+    {
+      "name": "shapely",
+      "version": "2.1.2"
+    },
+    {
+      "name": "shellingham",
+      "version": "1.5.4"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    },
+    {
+      "name": "sniffio",
+      "version": "1.3.1"
+    },
+    {
+      "name": "soupsieve",
+      "version": "2.10"
+    },
+    {
+      "name": "starlette",
+      "version": "1.7.0"
+    },
+    {
+      "name": "tinycss2",
+      "version": "1.5.1"
+    },
+    {
+      "name": "tokenizers",
+      "version": "0.23.2"
+    },
+    {
+      "name": "tomlkit",
+      "version": "0.14.0"
+    },
+    {
+      "name": "tqdm",
+      "version": "4.70.1"
+    },
+    {
+      "name": "typer",
+      "version": "0.27.2"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.4"
+    },
+    {
+      "name": "urllib3",
+      "version": "2.8.0"
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0"
+    },
+    {
+      "name": "watchfiles",
+      "version": "1.3.0"
+    },
+    {
+      "name": "wcwidth",
+      "version": "0.9.1"
+    },
+    {
+      "name": "webencodings",
+      "version": "0.6.1"
+    },
+    {
+      "name": "win32_setctime",
+      "version": "1.2.0"
+    },
+    {
+      "name": "xlsxwriter",
+      "version": "3.2.9"
+    },
+    {
+      "name": "ziafont",
+      "version": "0.11"
+    },
+    {
+      "name": "ziamath",
+      "version": "0.13"
+    }
+  ],
+  "pip_check": "No broken requirements found.",
+  "candidate_network_policy": "socket connect/create_connection denied; HF/transformers/modelscope offline",
+  "limits": {
+    "download_bytes": 3221225472,
+    "pilot_disk_bytes": 8589934592,
+    "report_bytes": 536870912,
+    "process_tree_rss_bytes": 12884901888,
+    "minimum_free_ram_bytes": 4294967296,
+    "flash_seconds_per_pdf": 600,
+    "basic_seconds_per_pdf": 1800,
+    "candidate_parse_wall_seconds": 7200,
+    "concurrent_documents": 1,
+    "cpu_threads_target": 8
+  }
+}
