@@ -1,0 +1,326 @@
+{
+  "artifact_kind": "ms01-design-examples",
+  "contract_version": "0.1",
+  "production_enabled": false,
+  "runtime_schema": false,
+  "target": {
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704",
+    "institution_id": "utokyo",
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "degree_level": "master",
+    "admission_cycle": 2027,
+    "selection_route_id": "general-ordinary",
+    "examination_schedule_id": "A",
+    "intake": {
+      "year": 2027,
+      "month": 4
+    }
+  },
+  "source_set": {
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1",
+    "revision": 1,
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704",
+    "members": [
+      {
+        "source_id": "gsfs-master-2027",
+        "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+        "document_family_id": "utokyo-gsfs-master-guidelines",
+        "edition_id": "2027",
+        "revision_date": null,
+        "role": "common_guideline",
+        "requirement": "core",
+        "physical_page_count": 22
+      },
+      {
+        "source_id": "complex-guide-2027-revised",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "document_family_id": "utokyo-gsfs-complex-guide",
+        "edition_id": "2027",
+        "revision_date": null,
+        "role": "program_guide",
+        "requirement": "core",
+        "physical_page_count": 45
+      },
+      {
+        "source_id": "complex-master-a-additional",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "document_family_id": "utokyo-gsfs-complex-master-a-additional",
+        "edition_id": "2027",
+        "revision_date": null,
+        "role": "additional_materials",
+        "requirement": "core",
+        "physical_page_count": 1
+      },
+      {
+        "source_id": "gsfs-overseas-intake-a-20260305",
+        "source_pdf_sha256": "ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0",
+        "document_family_id": "utokyo-gsfs-intake-a-flowchart",
+        "edition_id": "2027",
+        "revision_date": null,
+        "role": "conditional_intake_reference",
+        "requirement": "conditional",
+        "physical_page_count": 15
+      }
+    ],
+    "activation": "design_only"
+  },
+  "evidence_examples": {
+    "common-language-delegation": {
+      "source_id": "gsfs-master-2027",
+      "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "physical_page": 6,
+      "printed_page_label": "6",
+      "manual_anchor": "section 7 opening paragraph",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "department-language": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "manual_anchor": "masters general selection, final notes, first bullet",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "additional-language-reference": {
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "manual_anchor": "English-score footer below table",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "checklist-use": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "manual_anchor": "masters general selection, final checklist bullet",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "checklist-no-submission": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 40,
+      "printed_page_label": "38",
+      "manual_anchor": "notice above checklist heading",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "conditional-work-plan": {
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "manual_anchor": "work-study plan row and its applicant cell",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "ordinary-schedule": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 27,
+      "printed_page_label": "25",
+      "manual_anchor": "masters general selection schedule block",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "special-oral-negative": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 29,
+      "printed_page_label": "27",
+      "manual_anchor": "masters special oral selection heading",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "doctoral-negative": {
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 30,
+      "printed_page_label": "28",
+      "manual_anchor": "doctoral heading",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "intake-flowchart": {
+      "source_id": "gsfs-overseas-intake-a-20260305",
+      "source_pdf_sha256": "ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0",
+      "physical_page": 1,
+      "printed_page_label": "1",
+      "manual_anchor": "masters A flowchart and notes pointer",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    },
+    "intake-footnotes": {
+      "source_id": "gsfs-overseas-intake-a-20260305",
+      "source_pdf_sha256": "ed10dd87c87fe151d31598ea7b2beccae104223794f43d34b62601e10ecdafc0",
+      "physical_page": 5,
+      "printed_page_label": "5",
+      "manual_anchor": "notes; eligibility direction; program-specific exceptions",
+      "parser_locator": null,
+      "source_kb_sha256": null,
+      "fact_id": null,
+      "bbox": null,
+      "status": "manual_design_reference_not_runtime_evidence"
+    }
+  },
+  "reviewed_design_relations": [
+    {
+      "kind": "delegates_to",
+      "from": "common-language-delegation",
+      "to": "department-language"
+    },
+    {
+      "kind": "reference_only",
+      "from": "additional-language-reference",
+      "to": "common-language-delegation"
+    },
+    {
+      "kind": "supplements",
+      "from": "checklist-no-submission",
+      "to": "checklist-use"
+    },
+    {
+      "kind": "requires_notes",
+      "from": "intake-flowchart",
+      "to": "intake-footnotes"
+    }
+  ],
+  "candidate_conclusion": {
+    "subject": "english_score_sheet_submission",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704",
+    "design_interpretation": "not_required_for_selected_masters_ordinary_general_selection",
+    "evidence_ids": [
+      "common-language-delegation",
+      "department-language"
+    ],
+    "not_inferred": [
+      "all_english_assessment_exempt",
+      "all_programs_exempt",
+      "applicant_eligible"
+    ],
+    "activation": "requires_reviewed_runtime_fact_bindings"
+  },
+  "synthetic_target_cases": [
+    {
+      "change": {},
+      "expected": "design_target_resolves_runtime_disabled"
+    },
+    {
+      "change": {
+        "institution_id": "synthetic-other-school"
+      },
+      "same_display_name": true,
+      "expected": "unsupported_target"
+    },
+    {
+      "change": {
+        "selection_route_id": "special-oral"
+      },
+      "expected": "not_covered"
+    },
+    {
+      "change": {
+        "degree_level": "doctoral"
+      },
+      "expected": "unsupported_target"
+    },
+    {
+      "change": {
+        "examination_schedule_id": "B"
+      },
+      "expected": "unsupported_target"
+    },
+    {
+      "change": {
+        "intake": {
+          "year": 2026,
+          "month": 10
+        }
+      },
+      "expected": "not_covered"
+    },
+    {
+      "change": {
+        "intake": {
+          "year": 2027,
+          "month": 10
+        }
+      },
+      "expected": "not_covered"
+    },
+    {
+      "change": {
+        "admission_cycle": 2028
+      },
+      "expected": "unsupported_target"
+    },
+    {
+      "change": {
+        "selection_route_id": null
+      },
+      "expected": "needs_selection"
+    }
+  ],
+  "pilot_sample": {
+    "gsfs-master-2027": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "complex-guide-2027-revised": [
+      3,
+      4,
+      27,
+      28,
+      29,
+      30,
+      40
+    ],
+    "complex-master-a-additional": [
+      1
+    ],
+    "gsfs-overseas-intake-a-20260305": [
+      1,
+      5
+    ]
+  },
+  "gold_status": "sample_plan_only_full_block_table_gold_pending"
+}

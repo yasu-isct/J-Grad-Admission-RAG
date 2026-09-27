@@ -1,7 +1,15 @@
 # ADR 0008: Multi-school compatibility and source-set ownership
 
-Status: Proposed. Design under [ARCH-01 #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191).
+Status: Partially accepted under MS-01; implementation details remain Proposed. Design under
+[ARCH-01 #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191).
 Date: 2026-09-27. Production schemas, runtime and parser behavior are unchanged.
+
+MS-01 [contract](../onboarding/gsfs-source-set-contract-v0.1.md) accepts the fixed target/source-set,
+scope and failure semantics, qualified evidence, additive compatibility, asset protection and
+single-task release. The experimental [parser v0.1](../onboarding/parser-pilot-contract-v0.1.md)
+is implementable for comparison. Production schema/wire layout, cross-source report executor,
+registry storage, native block/table details and parser choice remain Proposed pending their
+implementation/pilot evidence. Acceptance of these boundaries does not authorize migration.
 
 ## Context and product contract
 
@@ -140,22 +148,26 @@ These are slices, not an authorization to start all tasks or new milestones.
 
 | Order | Work | Exit evidence |
 | --- | --- | --- |
-| 1 | Freeze target/source-set and v1 compatibility contract | Concrete GSFS source mappings, conflict/unknown examples and bounded next implementation Spec |
-| 2 | Isolate legacy build profile and introduce baseline adapter seam | ISCT structure/pages unchanged; foreign identity cannot inherit ISCT entities |
+| 1 | MS-01: freeze target/source-set and v1 compatibility contract | Completed design: concrete GSFS mappings, conflict/unknown examples and next Spec |
+| 2 | MS-02: isolated baseline parser adapter | Legacy extracted pages preserved; GSFS never enters the ISCT KB builder |
 | 3 | Existing #177 bounded experiment | Locked parser/model/config and real A/B decision |
 | 4 | Freeze provenance contract and minimal build registration | Correct document/block/page lineage and duplicate-build prevention |
-| 5 | Thin first-target backend slice | Scoped source selection before ranking, minimal reviewed core rules and correct multi-source evidence |
+| 5 | Legacy build-profile isolation, then thin first-target backend slices | Explicit profile before any GSFS KB; scoped selection, minimal reviewed rules and multi-source evidence |
 | 6 | First-target API/UI journey and real acceptance | Correct selection, requirement/profile behavior, PDF navigation and ISCT non-regression |
 
 Split each implementation slice into no-more-than-two-day Issues when its prerequisites are known;
 do not pre-release a large backend/UI task. Each Issue needs product/non-goals, asset inventory and
 impact, focused behavior/real-data evidence and rollback. Broader generalization follows the first
-accepted journey. The unique next task is order 1; #177 is not yet Ready for execution.
+accepted journey. The unique next implementation is
+[MS-02](../onboarding/ms02-baseline-adapter-spec.md); #177 is not yet Ready for execution.
+MS-01 deliberately separates the parser-only seam from legacy builder-profile isolation. The latter
+is still mandatory before new-school KB construction; it is not needed to compare parser output.
 
 ## Consequences, unresolved details and rollback
 
-Multi-source rule composition is an explicit gap in current one-document reports and must be
-specified before implementation. This ADR does not choose a production schema migration, parser
+Multi-source rule composition is an explicit gap in current one-document reports. MS-01 specifies
+an additive envelope and failure boundaries; its wire/executor details need review before backend
+implementation. This ADR does not choose a production schema migration, parser
 winner, model patch, or new physical registry layout. It records the invariants and a bounded path
 to test them. M13 is paused; cloud upload, paid calls and destructive asset changes remain outside
 scope. Documentation can be reverted independently. Future activation changes must restore the

@@ -84,7 +84,8 @@ PDF as if it were the source. Missing web/form details remain explicit coverage 
 
 ## Unique next action
 
-Freeze the target/source-set, page/route scope and v1 compatibility contract under the
-[multi-school ADR](../decisions/0008-multi-school-compatibility.md), then release one baseline
-adapter implementation Spec. #177 remains blocked on that seam and a pinned parser/resource plan,
-not on download permission. Do not activate another program or resume M13.
+MS-01 has specified the [target/source-set and compatibility contract](gsfs-source-set-contract-v0.1.md)
+under the [multi-school ADR](../decisions/0008-multi-school-compatibility.md). The unique next
+implementation is [MS-02, an isolated baseline adapter](ms02-baseline-adapter-spec.md), assigned by
+the user to a development agent. #177 remains blocked on adapter acceptance, reviewed gold and a
+pinned parser/resource plan, not on download permission. Do not activate another program or resume M13.
