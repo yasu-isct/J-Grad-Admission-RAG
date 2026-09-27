@@ -3,6 +3,7 @@ from __future__ import annotations
 from hashlib import sha256
 import json
 from pathlib import Path
+import sys
 
 import fitz
 import pytest
@@ -10,9 +11,10 @@ from pydantic import ValidationError
 
 import jgrad_admission_rag.parsing.legacy_adapter as legacy_adapter
 from jgrad_admission_rag.builder.extractor import extract_pdf
-from jgrad_admission_rag.cli.parse_legacy_pilot import (
+from jgrad_admission_rag.parsing.cli import (
     _load_source_lock_entry,
     _publish_new_file,
+    main as cli_main,
 )
 from jgrad_admission_rag.parsing import (
     ExactSource,
@@ -232,6 +234,56 @@ def test_publish_rejects_missing_parent_without_partial_output(tmp_path: Path) -
     with pytest.raises(FileNotFoundError, match="parent"):
         _publish_new_file(output, b"payload")
     assert not output.exists()
+
+
+@pytest.mark.parametrize("conflict", [True, False])
+def test_cli_rejects_unpublishable_output_before_extraction(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    conflict: bool,
+) -> None:
+    source = _write_pdf(tmp_path / "source.pdf", ["content"])
+    lock = tmp_path / "sources.json"
+    lock.write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "source_id": source.source_id,
+                        "sha256": source.expected_sha256,
+                        "physical_page_count": source.expected_physical_page_count,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "result.json" if conflict else tmp_path / "missing" / "result.json"
+    if conflict:
+        output.write_text("existing", encoding="utf-8")
+    monkeypatch.setattr(
+        "jgrad_admission_rag.parsing.cli.parse_legacy_pdf",
+        lambda *args, **kwargs: pytest.fail("extractor must not run for an unpublishable output"),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "parse-legacy-pilot",
+            "--source-lock",
+            str(lock),
+            "--source-id",
+            source.source_id,
+            "--pdf",
+            str(source.path),
+            "--output",
+            str(output),
+        ],
+    )
+
+    with pytest.raises(SystemExit) as raised:
+        cli_main()
+    assert raised.value.code == 2
 
 
 def test_source_lock_requires_one_well_formed_matching_entry(tmp_path: Path) -> None:

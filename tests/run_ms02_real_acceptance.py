@@ -9,7 +9,7 @@ from pathlib import Path
 import time
 
 from jgrad_admission_rag.builder.extractor import extract_pdf
-from jgrad_admission_rag.cli.parse_legacy_pilot import _publish_new_file
+from jgrad_admission_rag.parsing.cli import _publish_new_file
 from jgrad_admission_rag.parsing import (
     ExactSource,
     ParseRequest,

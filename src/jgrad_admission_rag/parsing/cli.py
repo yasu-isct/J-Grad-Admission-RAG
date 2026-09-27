@@ -44,6 +44,7 @@ def main() -> None:
             expected_sha256=lock_entry["sha256"],
             expected_physical_page_count=lock_entry["physical_page_count"],
         )
+        _preflight_output(args.output)
         started = time.perf_counter()
         document = parse_legacy_pdf(source, request)
         payload = canonical_normalized_document_bytes(document)
@@ -92,11 +93,8 @@ def _load_source_lock_entry(path: Path, source_id: str) -> dict[str, object]:
 def _publish_new_file(output: Path, payload: bytes) -> None:
     """Publish complete bytes without overwriting an existing path."""
 
+    _preflight_output(output)
     parent = output.parent
-    if output.is_symlink() or output.exists():
-        raise FileExistsError("output path already exists; refusing to overwrite")
-    if not parent.is_dir():
-        raise FileNotFoundError("output parent directory must already exist")
     temporary: Path | None = None
     try:
         descriptor, name = tempfile.mkstemp(prefix=f".{output.name}.", suffix=".tmp", dir=parent)
@@ -109,6 +107,15 @@ def _publish_new_file(output: Path, payload: bytes) -> None:
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
+
+
+def _preflight_output(output: Path) -> None:
+    """Reject known output conflicts before any PDF extraction starts."""
+
+    if output.is_symlink() or output.exists():
+        raise FileExistsError("output path already exists; refusing to overwrite")
+    if not output.parent.is_dir():
+        raise FileNotFoundError("output parent directory must already exist")
 
 
 if __name__ == "__main__":

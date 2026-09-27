@@ -14,7 +14,7 @@ Create an ignored destination explicitly, then run against one entry in the revi
 
 ```powershell
 New-Item -ItemType Directory -Force outputs/parser-pilot/ms02 | Out-Null
-python -m jgrad_admission_rag.cli.parse_legacy_pilot `
+python -m jgrad_admission_rag.parsing.cli `
   --source-lock docs/onboarding/utokyo-gsfs-complex-2027.sources.json `
   --source-id complex-guide-2027-revised `
   --pdf outputs/source-documents/utokyo-gsfs/2027/6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab.pdf `
