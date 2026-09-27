@@ -389,3 +389,13 @@ hidden behind a sorting tie-break.
 The old profile-guided pipeline is useful for single-applicant extraction. This repository is for a
 maintainable admission knowledge base: build once per guideline PDF, index the facts, and answer many
 different student queries against the same prepared knowledge.
+
+## Reviewed new-school source evidence (M15)
+
+[ADR 0010](decisions/0010-reviewed-source-evidence.md) defines an additive pre-KB artifact for
+exact page-bound excerpts with explicit manual/Agent review provenance. EVID-01 #202 implements
+only structural loading, exact-source audit and operator inspection; it does not activate GSFS
+or bypass the current document/KB/Fact/text/page checks in reviewed reports. The later import
+must first isolate the ISCT build profile and preserve excerpt-to-Fact lineage in the existing
+knowledge/retrieval/rule/citation pipeline. School-specific content belongs in reviewed data,
+not a parallel engine. See the [first slice Spec](onboarding/reviewed-source-evidence-spec.md).

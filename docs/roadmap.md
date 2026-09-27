@@ -249,12 +249,32 @@ identities and budgets before candidate outputs. M14 closes with an accepted
 [reject decision](decisions/0009-mineru-4.0.7-pilot-fallback.md): 388 attempted page-passes exceeded
 the shared 168-page budget; Basic timeout attribution is inconclusive because the historical
 supervisor could block on undrained pipes. Flash gains are observations, not fallback approval.
-The unique next activity is design-main assessment of remaining evidence gaps and the minimal
-ingestion/provenance contract. No new implementation, rerun or subsequent milestone is released.
+The subsequent [evidence-gap assessment](onboarding/gsfs-evidence-gaps-and-next-slice.md) defines
+M15 below. The reject decision still authorizes no parser rerun or production activation.
 The following stage covers GSFS KB/profile isolation, rule/retrieval integration and then user-facing
 acceptance; its Issues are released later, not concurrently. #191 remains cross-milestone governance.
 Reuse one development chat through M14, one active Issue at a time. Replace it with a checkpoint only
 when context quality or scope requires; there is no one-new-chat-per-Issue requirement.
+
+### M15 Reviewed GSFS Materials Slice
+
+[M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15) targets a bounded materials
+journey, starting with English score sheets, checklist submission and employment-related plan
+context. [ADR 0010](decisions/0010-reviewed-source-evidence.md) adds reviewed source excerpts as
+pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual provenance.
+
+| Order | Task boundary | Release state |
+| --- | --- | --- |
+| 1 | [EVID-01 #202](onboarding/reviewed-source-evidence-spec.md): eight reviewed excerpts, exact target/source audit, three readable operator previews | Sole Ready task after design merge |
+| 2 | Isolate legacy builder profile and map accepted excerpts into existing KB/Fact lineage | Not released; Spec follows #202 acceptance |
+| 3 | Reusable scoped material conditions and multi-source report evidence | Not released; depends on accepted KB/profile boundary |
+| 4 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
+
+Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
+No new models/PDFs, MinerU reruns, paid calls, index migration or M13 work are part of #202.
+Keep one M15 development chat and checkpoints at contract/tests, real previews and PR handoff.
+M15 is not complete merely because #202's operator tool works; downstream integration requires
+its own reviewed Specs and actual user-facing acceptance. No other implementation Issue is Ready.
 
 ### M2 Local Vector Retrieval
 

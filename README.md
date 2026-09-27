@@ -623,8 +623,10 @@ the completed Science Tokyo local Demo; the new school is not yet supported. See
 [target/source-set contract](docs/onboarding/gsfs-source-set-contract-v0.1.md), and MS-02 provides the
 [isolated adapter](docs/onboarding/ms02-baseline-adapter-spec.md).
 [M14](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/14) closes with PR #200's accepted
-failed-experiment audit and reject decision. Next is design-main review of the remaining evidence
-gaps and minimal ingestion contract; no new implementation or candidate run is released.
+failed-experiment audit and reject decision. [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15)
+starts with [#202](docs/onboarding/reviewed-source-evidence-spec.md), the sole next development
+task: inspect reviewed official excerpts for three materials topics with exact source/page binding.
+No new parser experiment or GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
