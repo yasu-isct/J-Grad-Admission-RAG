@@ -200,6 +200,27 @@ DEPLOY-02 starts only after the operator approves the provider and monthly ceili
 [Public Demo Deployment Architecture v1](deployment-architecture-v1.md). Paid resources and private
 asset upload are not authorized by roadmap or issue creation.
 
+**Current decision (2026-09-27): deferred after DEPLOY-01.** DEPLOY-02 through DEPLOY-05 remain
+open planning records but are not Ready while the user completes external consultation. Do not
+create cloud resources, upload private assets, or continue implementation until the user explicitly
+resumes M13.
+
+### Post-single-school Closeout And Design Handoff
+
+REL-01 freezes the truthful local single-school portfolio boundary in
+[Single-school Portfolio Release v1](releases/single-school-portfolio-v1.md) and the compact
+[Post-single-school Design Handoff](checkpoints/post-single-school-design-handoff.md). The long-lived
+cross-milestone design authority is
+[GitHub #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191); it must begin with a
+read-only audit of single-school coupling and a compatibility ADR. MinerU 4.x remains the bounded
+Tokyo University experiment in
+[#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177), not an assumed replacement
+parser.
+
+No multi-school implementation issue becomes Ready until REL-01 is merged and #191 has defined the
+identity, parser-adapter, artifact ownership, pre-retrieval scope, rule-portability, and evaluation
+boundaries.
+
 ### M2 Local Vector Retrieval
 
 | ID | Task | Output |

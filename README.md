@@ -13,6 +13,15 @@ retrieval and page-linked official sources.
 > retrieval and one final answer call. Exact successful repeats use a bounded process-local cache;
 > missing local coverage remains explicit and never becomes a qualification decision.
 
+The current portfolio release is local and single-school; it is not publicly hosted. Its exact
+capabilities, artifact roles, golden user journeys, and limitations are frozen in the
+[Single-school Portfolio Release v1](docs/releases/single-school-portfolio-v1.md). Public deployment
+work is deferred after its architecture study. Future multi-school design starts from
+[GitHub #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191) and the compact
+[design handoff](docs/checkpoints/post-single-school-design-handoff.md), while the MinerU 4.x
+experiment remains the bounded future
+[issue #177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177).
+
 ## What Applicants Can Verify Today
 
 The local Chinese-language Demo guides an applicant through a reviewed four-step workflow for one
