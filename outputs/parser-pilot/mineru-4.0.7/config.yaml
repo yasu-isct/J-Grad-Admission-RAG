@@ -1,0 +1,13 @@
+model:
+  source: local
+  base_dir: D:/J-Grad-Admission-RAG/outputs/parser-pilot/mineru-4.0.7/models
+  small_backend: onnx
+  vlm:
+    engine: auto
+    server_url: ""
+    api_key: ""
+    model: ""
+llm_aided:
+  features:
+    title_leveling: false
+    cross_page_table_cell_merge: false
