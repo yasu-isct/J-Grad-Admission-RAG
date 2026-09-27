@@ -225,10 +225,15 @@ Science and Engineering, selected by the user on 2026-09-27. Source downloads ar
 The [source lock](onboarding/utokyo-gsfs-complex-2027.md) records the bounded acquired set;
 downloads do not activate a school or authorize production artifact mutation.
 
-The [compatibility ADR](decisions/0008-multi-school-compatibility.md) is proposed under #191.
-Follow its dependency sequence and the [development lessons](development-lessons.md): deliver
-one narrow user journey before expanding coverage. No production implementation is Ready until
-its contract and compatibility acceptance are settled. #177 remains the sole parser pilot.
+The [compatibility ADR](decisions/0008-multi-school-compatibility.md) has partially accepted MS-01
+boundaries under #191; production schema details and parser choice remain Proposed. The
+[GSFS contract](onboarding/gsfs-source-set-contract-v0.1.md) is the #195 design deliverable.
+The sole next implementation is [MS-02](onboarding/ms02-baseline-adapter-spec.md), an isolated legacy
+parser adapter, to be assigned by the user to a development agent. It does not build a GSFS KB.
+Full legacy builder-profile isolation remains mandatory before the later new-school KB task.
+Follow the [development lessons](development-lessons.md): deliver one narrow user journey before
+expanding coverage. #177 remains the sole parser pilot, blocked on adapter acceptance plus fixed
+version/resource planning and reviewed gold. M13 remains paused.
 
 ### M2 Local Vector Retrieval
 

@@ -619,7 +619,10 @@ priority is the compatibility design for the first University of Tokyo slice: Gr
 Frontier Sciences, Department of Complexity Science and Engineering. The shipped product remains
 the completed Science Tokyo local Demo; the new school is not yet supported. See the
 [multi-school ADR](docs/decisions/0008-multi-school-compatibility.md) and
-[source lock](docs/onboarding/utokyo-gsfs-complex-2027.md). M13 remains paused.
+[source lock](docs/onboarding/utokyo-gsfs-complex-2027.md). MS-01 defines the
+[target/source-set contract](docs/onboarding/gsfs-source-set-contract-v0.1.md); the sole next development
+task is the [MS-02 isolated parser adapter](docs/onboarding/ms02-baseline-adapter-spec.md).
+M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project
 workflow.

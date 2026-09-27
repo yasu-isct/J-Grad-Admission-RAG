@@ -354,8 +354,9 @@ experiment and cannot replace the current parser by assumption.
 The [2026-09-27 coupling audit](audits/single-school-coupling-2026-09-27.md) distinguishes these
 target requirements from current behavior: the M10 path selects the document before ranking,
 but uses soft target preferences and post-retrieval filtering rather than page/route eligibility
-before both ranking channels. The [proposed compatibility ADR](decisions/0008-multi-school-compatibility.md)
-defines the extension boundary. The first target is GSFS Complexity Science and Engineering;
+before both ranking channels. The [partially accepted compatibility ADR](decisions/0008-multi-school-compatibility.md)
+and [MS-01 contract](onboarding/gsfs-source-set-contract-v0.1.md) define the extension boundary;
+production schema details remain Proposed. The first target is GSFS Complexity Science and Engineering;
 its [locked source set](onboarding/utokyo-gsfs-complex-2027.md) contains complementary PDFs.
 
 ## Main Boundaries

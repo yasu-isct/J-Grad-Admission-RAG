@@ -76,12 +76,16 @@ high-risk review. Use a workhorse coding agent for one bounded implementation Is
 Durable decisions belong in GitHub and versioned ADR/docs. Each PR needs real data and architecture
 evidence in addition to tests. Never release multiple dependent implementation Issues at once.
 
-## Unique next design action
+## MS-01 handoff and unique next implementation
 
 The [read-only coupling audit](../audits/single-school-coupling-2026-09-27.md) is complete and
-[ADR 0008](../decisions/0008-multi-school-compatibility.md) is proposed. The
+[ADR 0008](../decisions/0008-multi-school-compatibility.md) has partially accepted design boundaries. The
 [development lessons](../development-lessons.md) retain the user's retrospective without relying
-on private notebook access. The unique next task is to freeze the first target/source-set and v1
-compatibility contract, with a bounded implementation Spec. Release only that task; #177 still
-needs the baseline adapter seam and a pinned parser/resource plan. User-authorized source
-downloads are no longer blocked, but existing production assets, paid calls and M13 remain protected.
+on private notebook access. MS-01 / #195 provides the
+[fixed target/source-set contract](../onboarding/gsfs-source-set-contract-v0.1.md), concrete examples,
+compatibility matrix and candidate parser contract. The sole next implementation is
+[MS-02 baseline adapter](../onboarding/ms02-baseline-adapter-spec.md), assigned by the user to a
+separate development agent; design main reviews it. #177 still needs adapter acceptance, manual gold
+and a pinned parser/resource plan. Legacy profile isolation is mandatory before any new-school KB,
+not part of this parser-only task. User-authorized downloads are no longer blocked, but existing
+production assets, paid calls and M13 remain protected. No new-school product runtime is enabled.
