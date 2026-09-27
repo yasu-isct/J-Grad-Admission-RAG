@@ -336,6 +336,21 @@ model, or expose the existing build/job management routes. Deployment provider s
 resource creation remain gated on explicit operator approval. See
 [Public Demo Deployment Architecture v1](deployment-architecture-v1.md).
 
+M13 implementation is currently deferred by user decision after DEPLOY-01. This proposed boundary
+therefore records a future option, not a deployed environment or current product capability. The
+truthful local release boundary and next design handoff are recorded in
+[Single-school Portfolio Release v1](releases/single-school-portfolio-v1.md) and
+[Post-single-school Design Handoff](checkpoints/post-single-school-design-handoff.md).
+
+Future multi-school work is governed by
+[GitHub #191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191) rather than by adding
+school-specific branches to the current Demo. One logical Corpus may reference multiple immutable
+per-document indexes, but institution, graduate school, program, route, intake, and edition must
+constrain the eligible documents before ranking. Parser evolution sits behind a normalized document
+adapter; the MinerU 4.x work in
+[#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) is an evidence-producing A/B
+experiment and cannot replace the current parser by assumption.
+
 ## Main Boundaries
 
 - `builder`: PDF extraction, chunking, index construction, reference links, and KB building.
