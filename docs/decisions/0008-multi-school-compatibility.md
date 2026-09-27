@@ -161,9 +161,12 @@ impact, focused behavior/real-data evidence and rollback. Broader generalization
 accepted journey. M14 groups orders 1-3 and closes with the
 [rejected-execution handoff](0009-mineru-4.0.7-pilot-fallback.md), not a production parser contract.
 The follow-up [ADR 0010](0010-reviewed-source-evidence.md) and
-[EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md) defined the pre-KB evidence tool, now accepted in PR #204. The unique next activity is design
-of builder-profile isolation and existing-KB lineage mapping before order 4. No parser rerun is released. Registry
-implementation and new-school KB/rule/UI activation remain later work.
+[EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md) defined the pre-KB evidence tool,
+now accepted in PR #204. [ADR 0011](0011-explicit-build-profiles-and-reviewed-lineage.md) releases
+only [BUILD-01 #206](../onboarding/build-profile-isolation-spec.md) for legacy profile isolation before
+reviewed import. This refines the coarse orders 4-5 above: profile isolation first, then a reviewed
+KB/lineage/publication Spec. No parser rerun is released. Registry implementation and new-school
+KB/rule/UI activation remain later work.
 MS-01 deliberately separates the parser-only seam from legacy builder-profile isolation. The latter
 is still mandatory before new-school KB construction; it is not needed to compare parser output.
 

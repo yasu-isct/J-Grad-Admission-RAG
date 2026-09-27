@@ -56,19 +56,17 @@ codes and exception behavior. Do not insert GSFS into these defaults or broaden 
 
 ## Dependency order
 
-1. **Only Ready implementation:** a generic reviewed-source-evidence loader/auditor and an operator
-   preview for these three topics, using eight fixed source excerpts. See
-   [EVID-01 Spec](reviewed-source-evidence-spec.md). No production integration.
-2. After acceptance, specify explicit school build-profile isolation and conversion of accepted
-   excerpts into the existing KB/Fact/citation chain with complete lineage. An identity change
-   creates a new artifact; it never updates an existing index in place.
-3. Then design the smallest reusable material/condition rule representation and multi-source
-   report binding; reuse current evaluation machinery without the five-item ISCT assumption.
-4. Only after evidence and rule acceptance, expose a bounded read-only materials journey through
-   existing API/UI; unsupported topics/routes and incomplete coverage remain visible.
+1. **Complete in PR #204:** [EVID-01](reviewed-source-evidence-spec.md), the generic source auditor
+   and three-topic operator preview. Eight reviewed records contain 23 distinct source fragments.
+2. **Only Ready implementation after design merge:** [BUILD-01 #206](build-profile-isolation-spec.md),
+   isolate the legacy ISCT profile and guard an explicit entry; preserve current behavior/bytes.
+3. After profile acceptance, release a precise reviewed-import/KB-lineage Spec under
+   [ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md). A new identity
+   creates a distinct candidate; it never updates an existing index in place.
+4. Then design reusable material/condition rules and multi-source report binding, without the
+   five-item ISCT assumption; only after that expose the bounded existing API/UI journey.
 
-Orders 2-4 are planning boundaries, not released Issues. Do not create a long queue of framework
-tasks before inspecting step 1's real preview. The milestone objective is the bounded materials
+Orders 3-4 remain planning boundaries, not released Issues. Do not pre-release a long framework queue. The milestone objective is the bounded materials
 journey; date/eligibility completeness, additional schools, MinerU reruns and M13 are excluded.
 
 ## What the first task will visibly demonstrate
