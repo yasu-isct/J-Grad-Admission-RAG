@@ -399,3 +399,12 @@ or bypass the current document/KB/Fact/text/page checks in reviewed reports. The
 must first isolate the ISCT build profile and preserve excerpt-to-Fact lineage in the existing
 knowledge/retrieval/rule/citation pipeline. School-specific content belongs in reviewed data,
 not a parallel engine. See the [first slice Spec](onboarding/reviewed-source-evidence-spec.md).
+
+
+EVID-01 is accepted in PR #204. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
+releases only [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): explicit legacy build-profile
+selection and policy isolation, preserving existing build APIs/bytes. The old compatibility entry
+still runs the legacy pipeline; it is not a safe onboarding entry for new schools. The future
+reviewed-source mapper will bypass legacy extraction/chunk heuristics and preserve each fragment,
+required context and document-qualified lineage. Import/publication and multi-source rule/report
+contracts remain later work, not current production capability.

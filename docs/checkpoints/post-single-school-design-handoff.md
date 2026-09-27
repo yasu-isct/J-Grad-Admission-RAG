@@ -119,10 +119,15 @@ tests passed, all six real previews were independently reproduced, three source 
 page images checked. [Exact-digest acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/204#issuecomment-5856769317)
 covers only revision 1 operator evidence inspection. M15 remains open.
 
-Later profile isolation, existing-KB lineage mapping, reusable material conditions and local
-presentation remain dependent planning slices, not released tasks. #202 does not complete M15.
-Reuse one M15 chat, with checkpoints between contract/tests, real previews and PR handoff.
-Keep #177 closed, 334/391 assets unchanged, assistant reference-only, and M13 paused.
+#202 does not complete M15. The sole next implementation is
+[BUILD-01 #206](../onboarding/build-profile-isolation-spec.md), under
+[ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md): isolate the three
+legacy ISCT policy seams and guard a new explicit build entry. Preserve old build API behavior
+and canonical ISCT outputs; old wrappers remain legacy-only and are not new-school entry points.
+Extractor/chunker heuristics remain in the legacy pipeline. No GSFS KB is built in this task.
 
-The unique next step is design-main preparation of explicit builder-profile isolation and mapping
-reviewed excerpts into the existing KB/Fact/citation chain. No new implementation Issue is Ready.
+The later reviewed import will map eight records / 23 separate fragments into existing per-document
+Facts with bound lineage and required-context closure. Its exact wire/publication contract, scoped
+material conditions and local presentation remain unreleased. No production Schema change is chosen.
+Reuse one M15 chat: baseline/refactor/guard tests, then bounded real parity and PR handoff.
+Keep #177 closed, 334/391 assets unchanged, assistant reference-only, and M13 paused.
