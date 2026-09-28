@@ -270,7 +270,7 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
 | 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Complete, independently accepted PR #215; condition-only, no official report |
 | 5 | [RPT-01 #217](onboarding/material-slice-report-spec.md): reviewed multi-source evidence and teacher reference report | Complete, independently accepted PR #219; JSON/Markdown only |
-| 6 | Bounded local API/UI materials journey with official citations | Next design task; implementation not released |
+| 6 | [DISPLAY-01 #221](onboarding/optional-reference-workspace-spec.md): shared entry, evidence browsing and optional report/copy | Sole next implementation after ADR0014 design merge; two checkpoints |
 
 Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
 No new models/PDFs, MinerU reruns, paid calls, index migration or M13 work are part of #202.
@@ -278,11 +278,11 @@ Keep one M15 development chat and checkpoints at contract/tests, real previews a
 M15 is not complete merely because #202's operator tool works; downstream integration requires
 its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
-next design step is the bounded local presentation contract, following accepted
+next task is the bounded local presentation contract in [ADR0014](decisions/0014-optional-reference-workspace.md), following accepted
 [RPT-01 #217](onboarding/material-slice-report-spec.md) in PR #219. Its independent review
 resolved the public assembly/render trust-boundary defect at head `a72989e`, passed 406 focused
 tests (nine local Windows symlink skips), and reproduced all three real reports byte-for-byte.
-The report CLI budget is 3/3 exhausted; no new implementation is Ready.
+The report CLI budget is 3/3 exhausted; DISPLAY-01 #221 alone becomes Ready after its design merge.
 [ADR0013](decisions/0013-reviewed-material-report-slice.md) specifies a reviewed
 partial projection over immutable Facts, not whole-KB quality approval. The user prioritizes a
 credible internal demonstration by2026-09-29: a copyable report, then dual-school UI and optional
@@ -290,8 +290,11 @@ page highlighting. This is a planning checkpoint, not a promised production dead
 [ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) separates condition matches from
 material obligations and preserves strict report/evidence gates. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
 and the import Spec pin deterministic candidate mapping, unknown scope and failed production
-quality gates. Only the RPT-01 report boundary is released by its design; API/UI and highlighting
-remain dependent and unreleased. M15 remains open.
+quality gates. DISPLAY-01 releases only a local capability-aware entry and optional report action:
+school selection and evidence browsing generate no report; an explicit button does. Users are not
+restricted to teachers or students. ISCT retains its original workflow; GSFS advertises its actual
+historical three-topic coverage. Highlighting, GSFS search/QA and full admissions coverage remain
+unreleased. The new bounded HTTP/browser budget does not reset any older experiment. M15 remains open.
 
 ### M2 Local Vector Retrieval
 
