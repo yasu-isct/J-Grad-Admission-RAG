@@ -28,6 +28,7 @@ from pydantic import (
 
 from ..schemas.evidence_pack import EvidencePack
 from .applicant_profile import ApplicantProfile
+from .condition_core import combine as combine_condition_values, compare as compare_condition_values
 from .query_intent import QueryIntent
 
 APPLICABILITY_RULE_SCHEMA_VERSION = "1.0"
@@ -984,36 +985,28 @@ def _predicate_status(value: Any, predicate: ApplicabilityPredicate) -> Applicab
     expected: Any = predicate.expected_value
     if _FIELD_SPECS[predicate.field_path].kind == "date":
         expected = date.fromisoformat(str(expected))
-    operator = predicate.operator
-    checks = {
-        PredicateOperator.EQUALS: lambda: value == expected,
-        PredicateOperator.NOT_EQUALS: lambda: value != expected,
-        PredicateOperator.CONTAINS: lambda: expected in value,
-        PredicateOperator.MINIMUM: lambda: value >= expected,
-        PredicateOperator.MAXIMUM: lambda: value <= expected,
-        PredicateOperator.ON_OR_BEFORE: lambda: value <= expected,
-        PredicateOperator.ON_OR_AFTER: lambda: value >= expected,
-        PredicateOperator.IS_EMPTY: lambda: len(value) == 0,
-        PredicateOperator.IS_NON_EMPTY: lambda: len(value) > 0,
-    }
     return (
-        ApplicabilityStatus.CONFIRMED if checks[operator]() else ApplicabilityStatus.NOT_APPLICABLE
+        ApplicabilityStatus.CONFIRMED
+        if compare_condition_values(value, predicate.operator.value, expected)
+        else ApplicabilityStatus.NOT_APPLICABLE
     )
 
 
 def _combine_predicates(
     mode: LogicalMode, outcomes: tuple[PredicateOutcome, ...]
 ) -> ApplicabilityStatus:
-    statuses = tuple(outcome.status for outcome in outcomes)
-    if mode is LogicalMode.ALL:
-        if ApplicabilityStatus.NOT_APPLICABLE in statuses:
-            return ApplicabilityStatus.NOT_APPLICABLE
-        if all(status is ApplicabilityStatus.CONFIRMED for status in statuses):
-            return ApplicabilityStatus.CONFIRMED
-        return ApplicabilityStatus.NEEDS_INFORMATION
-    if ApplicabilityStatus.CONFIRMED in statuses:
+    values = tuple(
+        True
+        if outcome.status is ApplicabilityStatus.CONFIRMED
+        else False
+        if outcome.status is ApplicabilityStatus.NOT_APPLICABLE
+        else None
+        for outcome in outcomes
+    )
+    combined = combine_condition_values(mode.value, values)
+    if combined is True:
         return ApplicabilityStatus.CONFIRMED
-    if all(status is ApplicabilityStatus.NOT_APPLICABLE for status in statuses):
+    if combined is False:
         return ApplicabilityStatus.NOT_APPLICABLE
     return ApplicabilityStatus.NEEDS_INFORMATION
 
