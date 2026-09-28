@@ -11,6 +11,7 @@ let selected = null;
 let evidence = null;
 let currentReport = null;
 let generation = 0;
+let evidenceGeneration = 0;
 let pending = null;
 let browsing = null;
 
@@ -56,6 +57,7 @@ function invalidate() {
 
 function resetSelection() {
   invalidate();
+  evidenceGeneration += 1;
   if (browsing) browsing.abort();
   browsing = null;
   evidence = null;
@@ -67,10 +69,14 @@ function resetSelection() {
   element("report-panel").hidden = true;
   element("capability-detail").replaceChildren();
   element("evidence-topics").replaceChildren();
-  if (!selected) return;
+  if (!selected) {
+    element("reference-status").textContent = "请选择一个可用的学校能力。";
+    return;
+  }
   const detail = element("capability-detail");
   detail.append(node("p", description(selected)));
   if (selected.kind === "legacy_applicant") {
+    element("reference-status").textContent = "已选择原申请检查流程。";
     detail.append(node("p", "已审核的申请检查流程可在原入口使用；此页不会自动运行对照或报告。"));
     const link = node("a", "打开申请检查");
     link.href = selected.href === "/app" ? "/app" : "/app";
@@ -78,6 +84,7 @@ function resetSelection() {
     return;
   }
   if (selected.availability !== "ready") {
+    element("reference-status").textContent = "此审核切片当前不可用。";
     detail.append(node("p", "此审核切片当前不可用。", "reference-limit"));
     return;
   }
@@ -88,21 +95,23 @@ function resetSelection() {
 }
 
 async function loadEvidence(item) {
-  const sequence = generation;
+  const sequence = evidenceGeneration;
   const controller = new AbortController();
   browsing = controller;
+  const isCurrent = () => sequence === evidenceGeneration && browsing === controller && item === selected;
   element("reference-status").textContent = "正在读取已审核的官方依据";
   try {
     const response = await fetch(`/v1/reference-slices/${encodeURIComponent(item.entry_id)}/evidence`, {signal: controller.signal});
     if (!response.ok) throw new Error("evidence unavailable");
     const payload = await response.json();
-    if (sequence !== generation || item !== selected || payload.snapshot_id !== item.snapshot_id) return;
+    if (!isCurrent()) return;
+    if (payload.snapshot_id !== item.snapshot_id) throw new Error("evidence snapshot mismatch");
     evidence = payload;
     renderEvidence(payload);
     element("evidence-panel").hidden = false;
     element("reference-status").textContent = `已加载 ${payload.topics.length} 个材料主题的官方依据；浏览不会生成报告。`;
-  } catch (error) {
-    if (error.name !== "AbortError" && sequence === generation) element("reference-status").textContent = "官方依据暂时不可用。";
+  } catch {
+    if (isCurrent()) element("reference-status").textContent = "官方依据暂时不可用。";
   } finally { if (browsing === controller) browsing = null; }
 }
 
