@@ -3,6 +3,11 @@
 Status: Accepted when this design PR merges; implementation requires the linked DISPLAY-01 Issue
 to be Ready. Owner: #191. Base main: `9f88d7271722be1b84de694a6d77f770e511c95a`.
 
+2026-09-29: **presentation decisions partially superseded by [ADR0015](0015-unified-admissions-workspace.md)**
+after the user rejected the split entry and approved the unified-page prototype. Separate
+page/legacy-link/no-common-presentation decisions below describe historical M15 scope, not the
+next product design. Evidence validation, snapshot/privacy and protected-asset boundaries remain.
+
 ## Product decision
 
 The user clarified on2026-09-28 that a reference report is an optional button action. The product

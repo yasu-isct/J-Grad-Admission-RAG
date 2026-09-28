@@ -13,7 +13,7 @@ retrieval and page-linked official sources.
 > retrieval and one final answer call. Exact successful repeats use a bounded process-local cache;
 > missing local coverage remains explicit and never becomes a qualification decision.
 
-The current portfolio release is local and single-school; it is not publicly hosted. Its exact
+The frozen portfolio release is local and single-school; it is not publicly hosted. Its exact
 capabilities, artifact roles, golden user journeys, and limitations are frozen in the
 [Single-school Portfolio Release v1](docs/releases/single-school-portfolio-v1.md). Public deployment
 work is deferred after its architecture study. Future multi-school design starts from
@@ -21,6 +21,12 @@ work is deferred after its architecture study. Future multi-school design starts
 [design handoff](docs/checkpoints/post-single-school-design-handoff.md), while the MinerU 4.x
 experiment [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) is closed as a
 [rejected execution](docs/onboarding/mineru-4.0.7-pilot-report.md); no new parser is activated.
+
+M15 adds a [bounded GSFS materials preview](docs/releases/m15-reviewed-materials-preview.md),
+with three historical materials topics and optional cited reports. It does not add general GSFS
+search/QA or complete admissions coverage. The user-approved next increment is the
+[M16 unified main page](docs/onboarding/unified-workspace-spec.md), following this
+[interactive design](docs/ui-prototypes/unified-workspace-v1.html); implementation is not yet delivered.
 
 ## What Applicants Can Verify Today
 
@@ -40,9 +46,10 @@ fixed official Science Tokyo master's guideline:
 
 The current packaged Demo is intentionally narrow: it covers the hash-verified `2027 April / 2026
 September Master's Program Admission Guidelines` for Science Tokyo and the reviewed target/rule
-scope shipped in `src/jgrad_admission_rag/demo_config`. It does not support other schools, accounts,
-cloud persistence, public deployment, or final eligibility, receipt, completeness, or admission
-decisions.
+scope shipped in `src/jgrad_admission_rag/demo_config`. That applicant/search workflow does not
+support other schools; the optional GSFS preview above is a separate bounded capability. Neither
+supports accounts, cloud persistence, public deployment, or final eligibility, receipt,
+completeness, or admission decisions.
 
 ## Trust Architecture
 

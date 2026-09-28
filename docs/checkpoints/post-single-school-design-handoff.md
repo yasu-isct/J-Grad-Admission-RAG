@@ -1,9 +1,33 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-28 after accepted PR #223 (`3da2964e`), completing the bounded M15 local journey; original release audit was PR #193.
+Updated 2026-09-29 after user approval of the unified-page prototype. M15 was technically closed
+in PR #224 (`5fb98c4`); its split-entry product design is superseded for the next implementation.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
+
+## Latest decision: implement the approved unified page
+
+The user rejected the separate `/app/reference` journey and approved
+[this interactive prototype](../ui-prototypes/unified-workspace-v1.html), then explicitly asked
+to build it. Read [ADR0015](../decisions/0015-unified-admissions-workspace.md) and the full
+[UI-01 Spec](../onboarding/unified-workspace-spec.md). M16 is one bounded implementation, with
+data/report mapping and UI/browser checkpoints in one development context. Only
+[UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) is eligible
+for Ready after design merge; obtain its live Issue state from #191, not historical Ready sections.
+
+The main page has both schools in one dropdown; GSFS offers only the existing Complex Science
+scope. Reports are optional for both. Preserve all supported ISCT functions; its common report
+exports reviewed base/comparison results, while GSFS retains its byte-bound report endpoint.
+No profile is required for browsing or general reference export. Follow prototype layout, replace
+all sample data with actual responses, preserve official evidence and show real coverage limits.
+No GSFS QA, new sources, core schema/gate changes, asset builds or M13 work. The prototype's two
+ISCT fields and one example program do not authorize reducing existing functionality.
+
+M15 remains closed. Its budgets stay exhausted; UI-01 has its own bounded read-only integration
+ledger, including independent-review reserves. The user's live preview process is separate;
+never stop/reuse it as an acceptance service without checking ownership. No production code was
+changed during this design phase. Historical handoffs below are retained for traceability.
 
 ## Required read order
 

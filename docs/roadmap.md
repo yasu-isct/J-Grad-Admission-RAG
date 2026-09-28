@@ -4,6 +4,26 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
+## Current next increment: M16 unified admissions workspace
+
+On2026-09-29 the user explicitly approved the [interactive page prototype](ui-prototypes/unified-workspace-v1.html)
+and instructed implementation. This supersedes M15's separate-entry product design, not its
+accepted evidence/report machinery. [ADR0015](decisions/0015-unified-admissions-workspace.md) and
+[UI-01 Spec](onboarding/unified-workspace-spec.md) define one task with two checkpoints: map existing
+capabilities/results/reports, then integrate the complete `/app` page and supply real visual proof.
+
+Both schools share selectors, results/evidence and an optional report button. Retain every existing
+supported ISCT target and comparison/search/QA feature; GSFS remains the three-topic fixed slice.
+Main-page ISCT report is a cited presentation export of existing base/comparison responses; GSFS
+uses its accepted report endpoint. No new rule engine, index, school coverage or paid generation.
+
+Only [UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) may be released after
+design merge and the #191 handoff. No parallel implementation or
+downstream highlighter is Ready. M16 exit requires actual same-page school selection, reports for
+both capabilities and desktop/mobile fidelity to the approved prototype, not only backend tests.
+Older paragraphs recording no M16 release describe the M15 closeout before this user decision.
+M13 remains paused; #177 remains closed and334/391 remain protected.
+
 ## Product Goal
 
 Given a Japanese graduate admission guideline PDF, the system should build a maintainable knowledge

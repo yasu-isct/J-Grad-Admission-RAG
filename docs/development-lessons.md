@@ -50,6 +50,13 @@ duplicate candidates, but deletion requires a reference audit, dry run and expli
 
 ## Evidence and workflow
 
+- Freeze an inspectable interaction prototype before a major UI integration. Technical data
+  isolation does not require separate user journeys. The M15 split entry passed its implementation
+  Spec but missed the user's single-page school selector and common report action; design-main
+  owns that mismatch. Actual desktop/mobile layout, navigation and optional-report behavior are
+  acceptance criteria alongside API correctness. Preserve historical acceptance while recording
+  the superseding product decision; do not blame development for faithfully following the Spec.
+
 - One executable Issue, one bounded current-task context and one observable state transition.
   Reuse one development agent/chat per milestone; a new Issue does not require a new chat. Refresh
   the compact task packet after each acceptance. Start a replacement chat with a checkpoint when
