@@ -281,6 +281,37 @@ def test_policy_graph_rejects_unsafe_mutations(source, mutation):
         load_policy(changed, synthetic_trust)
 
 
+@pytest.mark.parametrize(
+    "mutation",
+    ["same", "source_pages", "authoritative_fact_text_sha256", "record_revision", "fact_id"],
+)
+def test_reused_context_record_requires_identical_complete_bindings(source, mutation):
+    raw, trust, _, _ = source
+    payload = parse_json(raw)
+    duplicate = deepcopy(payload["rules"][0]["required_context_records"][0])
+    binding = duplicate["required_bindings"][0]
+    if mutation == "source_pages":
+        binding["source_pages"] = [999]
+    elif mutation == "authoritative_fact_text_sha256":
+        binding["authoritative_fact_text_sha256"] = "0" * 64
+    elif mutation == "record_revision":
+        duplicate["record_revision"] += 1
+        binding["fact_id"] = binding["fact_id"].replace(":r1:", ":r2:")
+    elif mutation == "fact_id":
+        binding["fact_id"] = binding["fact_id"].replace(":E01-1", ":E01-2")
+    payload["rules"][1]["required_context_records"].append(duplicate)
+    changed = canonical_json_bytes(payload)
+    synthetic_trust = trust.model_copy(update={"policy_sha256": sha256(changed).hexdigest()})
+    if mutation == "same":
+        assert (
+            load_policy(changed, synthetic_trust).rules[1].required_context_records[-1].record_id
+            == (duplicate["record_id"])
+        )
+    else:
+        with pytest.raises(MaterialConditionError):
+            load_policy(changed, synthetic_trust)
+
+
 def test_other_school_uses_same_policy_algorithm_and_is_isolated(source):
     raw, trust, _, requests = source
     payload = parse_json(raw)

@@ -205,8 +205,11 @@ class MaterialConditionPolicy(ClosedModel):
                     keys.append((binding.document_id, binding.fact_id))
                 if len(keys) != len(set(keys)):
                     raise ValueError("duplicate context binding")
-                prior = seen.setdefault(record.record_id, (record.record_revision, tuple(keys)))
-                if prior != (record.record_revision, tuple(keys)):
+                # Reused evidence records must agree on every normalized binding field.
+                # Matching only Fact keys would permit conflicting pages or text digests.
+                record_bytes = canonical_json_bytes(record.model_dump(mode="json"))
+                prior = seen.setdefault(record.record_id, record_bytes)
+                if prior != record_bytes:
                     raise ValueError("inconsistent context record across rules")
         return self
 
