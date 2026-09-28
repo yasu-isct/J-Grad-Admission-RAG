@@ -109,7 +109,7 @@ report, and do not route these records through the five-item ISCT material polic
 
 1. [BUILD-01 #206](../onboarding/build-profile-isolation-spec.md): isolate the legacy profile, add the
    explicit guard and prove canonical ISCT parity. Complete in PR #208.
-2. [IMPORT-01](../onboarding/reviewed-fragment-import-spec.md): the sole next implementation,
+2. [IMPORT-01 #209](../onboarding/reviewed-fragment-import-spec.md): complete in PR #211,
    bounded to 23-fragment candidate KB/lineage conversion. No new parser or full-document reconstruction.
 3. Reviewed material applicability and multi-source report evidence.
 4. Bounded API/UI materials journey and real user acceptance. M15 closes only then.

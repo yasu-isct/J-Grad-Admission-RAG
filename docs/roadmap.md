@@ -267,8 +267,8 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | --- | --- | --- |
 | 1 | [EVID-01 #202](onboarding/reviewed-source-evidence-spec.md): eight reviewed excerpts, exact target/source audit, three readable operator previews | Complete, accepted PR #204 |
 | 2 | [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): isolate legacy ISCT policy and guard explicit build entry | Complete, accepted PR #208; no GSFS KB |
-| 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Sole next implementation after this design merge; no production activation |
-| 4 | Reusable scoped material conditions and multi-source report evidence | Not released; depends on accepted KB/profile boundary |
+| 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
+| 4 | Reusable scoped material conditions and multi-source report evidence | Unique next design step; implementation not yet released |
 | 5 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
 
 Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
@@ -277,8 +277,8 @@ Keep one M15 development chat and checkpoints at contract/tests, real previews a
 M15 is not complete merely because #202's operator tool works; downstream integration requires
 its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
-next implementation is [IMPORT-01](onboarding/reviewed-fragment-import-spec.md), after BUILD-01
-acceptance in PR #208. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
+next design step follows accepted [IMPORT-01 #209](onboarding/reviewed-fragment-import-spec.md)
+in PR #211: scoped material conditions and multi-source report binding. No implementation is Ready. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
 and the import Spec pin deterministic candidate mapping, unknown scope and failed production
 quality gates. Scoped rules and presentation remain dependent and unreleased. M15 remains open.
 

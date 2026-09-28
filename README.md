@@ -627,9 +627,10 @@ failed-experiment audit and reject decision. [M15](https://github.com/yasu-isct/
 has completed [#202](docs/onboarding/evid01-operator-preview.md): inspect reviewed official excerpts
 for three materials topics with exact source/page binding (accepted PR #204).
 [BUILD-01 #206](docs/onboarding/build-profile-isolation-spec.md) is accepted in PR #208: the legacy
-ISCT profile and guarded entry preserve existing outputs. The sole next implementation is
-[IMPORT-01](docs/onboarding/reviewed-fragment-import-spec.md): map the 23 reviewed fragments into
-three isolated candidate KBs with bound lineage. Rules and applicant presentation remain later gates;
+ISCT profile and guarded entry preserve existing outputs.
+[IMPORT-01 #209](docs/onboarding/reviewed-fragment-import-spec.md) is accepted in PR #211: 23 reviewed
+fragments now form three isolated candidate KBs with bound lineage. No next implementation is Ready;
+scoped material rules and multi-source report binding are the next design step, before presentation;
 [ADR 0011](docs/decisions/0011-explicit-build-profiles-and-reviewed-lineage.md) records the boundary.
 No new parser experiment or GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
