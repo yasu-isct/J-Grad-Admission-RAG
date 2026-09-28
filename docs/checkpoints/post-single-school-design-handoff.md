@@ -150,15 +150,26 @@ skips and green Linux CI. The full-binding consistency defect was fixed; three p
 were reproduced byte-for-byte in 0.4182928s (4801 bytes, SHA-256
 `4ed106a8b6bf2511b127e4ef52c093be2ac8348b334868d88421ea25df1e46c5`).
 [Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/215#issuecomment-5863028868).
-The next design is [ADR0013](../decisions/0013-reviewed-material-report-slice.md) and
-[RPT-01 #217](../onboarding/material-slice-report-spec.md), the sole next implementation after
-its design merges. It validates a separately reviewed partial multi-source evidence projection
+The accepted report boundary is [ADR0013](../decisions/0013-reviewed-material-report-slice.md) and
+[RPT-01 #217](../onboarding/material-slice-report-spec.md), merged in PR #219
+(`d7f7b2934c140bd332e9e3c9e7beea4c6ef3ffa3`). It validates a separately reviewed partial multi-source evidence projection
 and emits a teacher report in JSON/Markdown. Raw candidate scope and failed full-KB quality gates
 remain unchanged; this is not whole-KB production approval. No old report validator is relaxed.
 [Design evidence](../onboarding/material-slice-report-design-review.md) records four retained-page
 visual checks and one existing candidate/source audit:23 bindings,8 records,5 relations.
-RPT-01 report budget0/3 (developer2, reviewer1); design audit1/1 consumed. IMPORT-01 remains4/4
-and MAT-01 preview3/3. After design merge, M15 Main owns #217 only.
+Independent review accepted head `a72989ee95e76646da00e344835786a09aee7c08`, resolving the
+public assembly/render trust-boundary P1. External pinned bytes are revalidated; modified
+evidence DTOs cannot enter public assembly and altered reports fail recomputation before rendering.
+406 focused tests passed, nine Windows symlink skips, exact-head CI green. The final reserved
+real call reproduced three reports byte-for-byte in0.6774364s,137963 bytes, SHA-256
+`ee27b3be0669fe05576542bc5c9b123ff91e4732884f888f00b4cf52613fa956`.
+Five candidate files, three PDFs and the developer's retained output had unchanged hashes/mtimes.
+[Acceptance and original resolved finding](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/219#issuecomment-5866299464).
+RPT-01 report budget3/3 exhausted (developer2, reviewer1), total2.1609334s; design audit1/1 consumed.
+IMPORT-01 remains4/4 and MAT-01 preview3/3. The existing391 fixed-ranking diagnostic is disclosed,
+not repaired by changing protected assets; this acceptance does not claim a fully green local suite.
+Next owner: design Agent prepares the bounded local API/UI presentation and copy contract.
+No next implementation is Ready; M15 Main waits for the next complete Spec. M15 remains open.
 The user approved prioritizing a credible internal demonstration by2026-09-29: teacher reports
 first, then dual-school UI/copy and optional coordinate highlighting under later bounded Specs.
 No new admissions coverage, source downloads, API/UI/highlighting implementation or M13 work

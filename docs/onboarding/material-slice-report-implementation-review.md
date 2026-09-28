@@ -59,4 +59,40 @@ The public `assemble_report` and `assemble_reports` now accept exact external pl
 
 Synthetic regressions verify that altered post-audit quote text, removed records and changed binding cannot enter public assembly, that a changed candidate byte fails the source audit, and that forged quote, missing citation, binding and disposition are rejected by public rendering. A counted two-request batch calls the source audit exactly once. These checks use only the one-page synthetic PDF and candidate fixture. No third developer real report call was made: RPT-01 remains **2/3 shared**, **2/2 developer**, **0/1 design used**. The retained real output and sample above document the earlier successful head, while the design-reserved call is needed to reproduce the final PR head independently.
 
-Post-repair targeted report/policy/source/import tests: **174 passed, 4 skipped**; Ruff check/format on the three changed Python files and `git diff --check` pass. A broader local non-model suite stopped at **1292 passed, 13 skipped, 1 failed**: the unrelated `test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli` expected fixed index ranking `[172, 390, 322, 336, 309]` but observed `[172, 390, 347, 322, 336]`, while its independently recomputed ranking and score assertions had passed. This test concerns the existing 391-row vector index, not RPT-01; no baseline or protected index was changed. Whole-tree Ruff was also blocked by the pre-existing untracked `tmp/` scripts and access-denied entries, so the changed-file checks are the local lint evidence. Final-head CI remains to be observed.
+Post-repair targeted report/policy/source/import tests: **174 passed, 4 skipped**; Ruff check/format on the three changed Python files and `git diff --check` pass. A broader local non-model suite stopped at **1292 passed, 13 skipped, 1 failed**: the unrelated `test_real_pdf_vector_search_matches_independent_numpy_ranking_and_cli` expected fixed index ranking `[172, 390, 322, 336, 309]` but observed `[172, 390, 347, 322, 336]`, while its independently recomputed ranking and score assertions had passed. This test concerns the existing 391-row vector index, not RPT-01; no baseline or protected index was changed. Whole-tree Ruff was also blocked by the pre-existing untracked `tmp/` scripts and access-denied entries, so the changed-file checks are the local lint evidence. Final-head CI subsequently passed, as verified below.
+
+## Independent design acceptance (2026-09-28)
+
+Accepted exact head `a72989ee95e76646da00e344835786a09aee7c08`, merged in PR #219 as
+`d7f7b2934c140bd332e9e3c9e7beea4c6ef3ffa3`.
+The [single review record](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/219#issuecomment-5866299464)
+preserves the resolved initial P1 and the final acceptance. Public assembly now requires pinned
+external source bytes, and public rendering recomputes from those inputs; private projection and
+formatting are only used within the trusted flow. The reviewer independently rejected changed
+post-audit evidence DTOs and six report mutations: quote, missing citation, document binding,
+disposition, explanation and target. The batch audit count test confirms one source audit.
+
+Independent focused regression: **406 passed,9 skipped** (Windows symlink creation unavailable),
+changed-file Ruff check/format and diff check passed. Exact-head Quality/test passed in
+[CI run36400279603](https://github.com/yasu-isct/J-Grad-Admission-RAG/actions/runs/36400279603).
+The existing391 row-order issue is already disclosed in base-main's checkpoint; retrieval code
+and its test are unchanged by this PR. No new vector diagnostic was run during design review.
+This is bounded task acceptance, not a claim of a fully green local full suite.
+
+The final reserved real invocation started at `2026-09-28T09:31:33.087211Z`, using the separate
+design worktree at the accepted head, its `src` explicitly selected by `PYTHONPATH`, and original
+asset paths. The command uses the same flags and three versioned requests as above; interpreter
+`D:/J-Grad-Admission-RAG/.venv/Scripts/python.exe -X utf8`, plan/policy/seed/request paths from
+the design worktree, candidate/PDF paths from the shared root. A60-second subprocess timeout
+was enforced. It returned0 with empty stderr in **0.6774364s**. Output **137963bytes** and all
+three line hashes equal the earlier developer output exactly; the Chinese sample is unchanged.
+Five candidate files, three PDFs and the retained developer output had identical SHA/size/mtime
+before and after. There was no extraction/OCR/rendering, import, model or index operation.
+
+Ignored independent artifacts: `outputs/review219-final/review-ledger.json` contains the exact
+command, source module path, request hashes, per-line hashes, timing and before/after fingerprints;
+`outputs/review219-final/three-reports.jsonl` retains the reproduced output without overwriting
+developer evidence. RPT-01 is now **3/3 exhausted** (developer2/2, reviewer1/1), cumulative
+**2.1609334s**. Source design audit1/1, IMPORT-01 4/4 and MAT-01 3/3 remain consumed.
+Do not rerun these commands under a new session. API/UI/highlighting require a separate Spec;
+M15 stays open, M13 paused, MinerU #177 closed and the assistant reference-only.

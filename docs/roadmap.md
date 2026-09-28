@@ -269,8 +269,8 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | 2 | [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): isolate legacy ISCT policy and guard explicit build entry | Complete, accepted PR #208; no GSFS KB |
 | 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
 | 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Complete, independently accepted PR #215; condition-only, no official report |
-| 5 | [RPT-01 #217](onboarding/material-slice-report-spec.md): reviewed multi-source evidence and teacher reference report | Sole next implementation after design merge; JSON/Markdown only |
-| 6 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
+| 5 | [RPT-01 #217](onboarding/material-slice-report-spec.md): reviewed multi-source evidence and teacher reference report | Complete, independently accepted PR #219; JSON/Markdown only |
+| 6 | Bounded local API/UI materials journey with official citations | Next design task; implementation not released |
 
 Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
 No new models/PDFs, MinerU reruns, paid calls, index migration or M13 work are part of #202.
@@ -278,9 +278,12 @@ Keep one M15 development chat and checkpoints at contract/tests, real previews a
 M15 is not complete merely because #202's operator tool works; downstream integration requires
 its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
-next design step follows accepted [MAT-01 #213](onboarding/material-condition-spec.md) in PR #215:
-[RPT-01 #217](onboarding/material-slice-report-spec.md), the sole next implementation after
-its design merges. [ADR0013](decisions/0013-reviewed-material-report-slice.md) specifies a reviewed
+next design step is the bounded local presentation contract, following accepted
+[RPT-01 #217](onboarding/material-slice-report-spec.md) in PR #219. Its independent review
+resolved the public assembly/render trust-boundary defect at head `a72989e`, passed 406 focused
+tests (nine local Windows symlink skips), and reproduced all three real reports byte-for-byte.
+The report CLI budget is 3/3 exhausted; no new implementation is Ready.
+[ADR0013](decisions/0013-reviewed-material-report-slice.md) specifies a reviewed
 partial projection over immutable Facts, not whole-KB quality approval. The user prioritizes a
 credible internal demonstration by2026-09-29: a copyable report, then dual-school UI and optional
 page highlighting. This is a planning checkpoint, not a promised production deadline.
