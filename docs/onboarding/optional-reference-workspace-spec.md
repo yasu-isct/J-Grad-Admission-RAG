@@ -1,5 +1,9 @@
 # DISPLAY-01: Local evidence browsing and optional reference reports
 
+Historical completed M15 Spec. On2026-09-29 the user approved a unified main page instead of
+this split entry. [UI-01](unified-workspace-spec.md) and [ADR0015](../decisions/0015-unified-admissions-workspace.md)
+govern the next implementation. Do not reopen this Issue or reset its exhausted validation budget.
+
 Governance: #191. Implementation: [#221](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/221).
 Milestone: M15. Depends on accepted #217 / PR #219 and documentation PR #220.
 Base main `9f88d7271722be1b84de694a6d77f770e511c95a`.

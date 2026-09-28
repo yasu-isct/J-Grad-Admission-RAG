@@ -392,6 +392,11 @@ different student queries against the same prepared knowledge.
 
 ## Reviewed new-school source evidence (M15)
 
+The subsequent user-approved [ADR0015](decisions/0015-unified-admissions-workspace.md) unifies the
+main-page presentation over existing capability adapters. Legacy base/comparison responses can
+be exported as a cited reference document; GSFS uses its existing report gate. Shared UI does not
+merge authoritative schemas, invent a source identity or activate a new-school search index.
+
 [ADR 0010](decisions/0010-reviewed-source-evidence.md) defines an additive pre-KB artifact for
 exact page-bound excerpts with explicit manual/Agent review provenance. EVID-01 #202 implements
 only structural loading, exact-source audit and operator inspection; it does not activate GSFS
