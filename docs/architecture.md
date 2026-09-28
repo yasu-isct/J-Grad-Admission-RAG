@@ -412,3 +412,8 @@ fragments, required context and document-qualified lineage in isolated candidate
 compatible profile envelope, accepted in PR #215. Condition matching does not approve a material obligation. The old
 five-item policy and single-document evidence/report validators remain unchanged. Candidate scope
 and quality gates require a separately reviewed integration contract before authoritative reports.
+[ADR0013](decisions/0013-reviewed-material-report-slice.md) and
+[RPT-01](onboarding/material-slice-report-spec.md) now define that bounded manual-review slice:
+a distinct evidence projection binds existing Facts to explicit target/section reviews without
+mutating or approving the whole source KB. A deterministic teacher report reuses MAT-01 logic
+and retains partial/historical coverage. The old v1 evidence/report validators remain unchanged.

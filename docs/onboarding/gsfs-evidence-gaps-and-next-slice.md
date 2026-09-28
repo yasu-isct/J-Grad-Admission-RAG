@@ -62,9 +62,12 @@ codes and exception behavior. Do not insert GSFS into these defaults or broaden 
 3. **Complete in PR #211:** [IMPORT-01 #209](reviewed-fragment-import-spec.md), exact candidate KB/lineage.
 4. **Complete in accepted PR #215:** [MAT-01](material-condition-spec.md), shared
    three-valued conditions and compatible applicant facts, under [ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md).
-5. Reviewed scope/evidence and multi-source report binding, then local API/UI. Neither is released.
+5. **Sole next implementation after design merge:** [RPT-01 #217](material-slice-report-spec.md),
+   reviewed multi-source evidence and a teacher reference report in JSON/Markdown.
+6. Dual-school API/UI and copyable presentation after report acceptance; not released.
+   Coordinate highlighting is a separate optional locator proof, not a report dependency.
 
-Orders 1-4 are complete; order 5 is the next design task, with no next implementation released. Do not pre-release a long framework queue. The milestone objective is the bounded materials
+Orders1-4 are complete; order5 alone is released after its design merges. Do not pre-release a long framework queue. The milestone objective is the bounded materials
 journey; date/eligibility completeness, additional schools, MinerU reruns and M13 are excluded.
 
 ## What the first task will visibly demonstrate

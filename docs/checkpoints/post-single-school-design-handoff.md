@@ -150,9 +150,19 @@ skips and green Linux CI. The full-binding consistency defect was fixed; three p
 were reproduced byte-for-byte in 0.4182928s (4801 bytes, SHA-256
 `4ed106a8b6bf2511b127e4ef52c093be2ac8348b334868d88421ea25df1e46c5`).
 [Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/215#issuecomment-5863028868).
-No next implementation is Ready; the next owner is design main.
-Reviewed scope/evidence and multi-source report binding remain a later, unreleased Spec; unknown
-Fact scope and failed KB quality gates must not be bypassed to activate reports.
+The next design is [ADR0013](../decisions/0013-reviewed-material-report-slice.md) and
+[RPT-01 #217](../onboarding/material-slice-report-spec.md), the sole next implementation after
+its design merges. It validates a separately reviewed partial multi-source evidence projection
+and emits a teacher report in JSON/Markdown. Raw candidate scope and failed full-KB quality gates
+remain unchanged; this is not whole-KB production approval. No old report validator is relaxed.
+[Design evidence](../onboarding/material-slice-report-design-review.md) records four retained-page
+visual checks and one existing candidate/source audit:23 bindings,8 records,5 relations.
+RPT-01 report budget0/3 (developer2, reviewer1); design audit1/1 consumed. IMPORT-01 remains4/4
+and MAT-01 preview3/3. After design merge, M15 Main owns #217 only.
+The user approved prioritizing a credible internal demonstration by2026-09-29: teacher reports
+first, then dual-school UI/copy and optional coordinate highlighting under later bounded Specs.
+No new admissions coverage, source downloads, API/UI/highlighting implementation or M13 work
+is released here. Real winter-trial schools/editions remain a later teaching-team selection.
 
 The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
 GitHub, avoid overlapping work and release only one Ready task. Previous overnight authorization
