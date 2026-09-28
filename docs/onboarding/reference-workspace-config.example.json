@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "slices": [
+    {
+      "slice_id": "gsfs-complex-2027-a",
+      "institution_name": "东京大学",
+      "organization_name": "新领域创成科学研究科",
+      "program_name": "複雑理工学专攻",
+      "plan_path": "D:/ABSOLUTE/PROJECT/docs/onboarding/material-slice-report-plan-v1.json",
+      "trust_path": "D:/ABSOLUTE/PROJECT/docs/onboarding/material-slice-report-trust-v1.json",
+      "policy_path": "D:/ABSOLUTE/PROJECT/docs/onboarding/material-condition-policy-v1.json",
+      "policy_trust_path": "D:/ABSOLUTE/PROJECT/docs/onboarding/material-condition-trust-v1.json",
+      "seed_path": "D:/ABSOLUTE/PROJECT/docs/onboarding/gsfs-material-evidence-seed-v1.json",
+      "candidate_root": "D:/ABSOLUTE/PROJECT/outputs/reviewed-source-candidates/REVIEWED_BUILD_ID",
+      "pdf_dir": "D:/ABSOLUTE/PROJECT/outputs/source-documents/utokyo-gsfs/2027"
+    }
+  ]
+}

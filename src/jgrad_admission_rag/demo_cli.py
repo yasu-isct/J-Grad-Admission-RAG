@@ -67,6 +67,12 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--port", type=_port, default=8000)
     parser.add_argument(
+        "--reference-workspace-config",
+        type=Path,
+        metavar="ABSOLUTE_PATH",
+        help="Optional local, server-owned reviewed reference slice configuration.",
+    )
+    parser.add_argument(
         "--embedding-provider",
         choices=DEMO_PROVIDER_NAMES,
         default="deterministic-fake",
@@ -123,10 +129,13 @@ def main(
                 config_dir=config_dir,
                 embedding_configuration=embedding,
             )
-        if generation == GenerationRuntimeConfiguration():
+        if (
+            generation == GenerationRuntimeConfiguration()
+            and args.reference_workspace_config is None
+        ):
             _serve(runtime, args.port, embedding)
         else:
-            _serve(runtime, args.port, embedding, generation)
+            _serve(runtime, args.port, embedding, generation, args.reference_workspace_config)
     except (DemoEmbeddingConfigurationError, DemoError, ValueError) as error:
         print(f"jgrad-demo: {error}", file=sys.stderr)
         raise SystemExit(2) from None
@@ -154,8 +163,9 @@ def _serve(
     port: int,
     embedding: DemoEmbeddingConfiguration,
     generation: GenerationRuntimeConfiguration | None = None,
+    reference_workspace_config_path: Path | None = None,
 ) -> None:
-    from .service.app import create_app
+    from .service import create_app
     from .service.runtime import ServiceDependencies, ServiceSettings
 
     try:
@@ -176,6 +186,7 @@ def _serve(
             source_pdf_path=runtime.source_pdf_path,
             source_pdf_document_id=runtime.identity.document_id,
             source_pdf_sha256=runtime.identity.source_pdf_sha256,
+            reference_workspace_config_path=reference_workspace_config_path,
             generation_provider_name=generation.provider,
             generation_model_name=generation.model,
             generation_timeout_seconds=generation.timeout_seconds,
