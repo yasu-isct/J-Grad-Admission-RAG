@@ -356,7 +356,11 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
     "募集要项参考报告", scopeLabel(scope),
     "历史资料、部分材料范围；请核对报告中的条件、未知事项和完整官方出处。",
     `本次自报：目前受雇 ${conditionName[employment.current]}；入学后继续在职 ${conditionName[employment.retain]}。`,
-    "", payload.markdown
+    "", payload.markdown, "", "已加载原文引文（与预览一致）",
+    ...topics.flatMap((topic) => [topic.title, ...topic.citations.flatMap((cite) => [
+      `${cite.source_title} · 物理页 ${cite.physical_pages.join("、")}${cite.printed_page_label ? ` · 印刷页 ${cite.printed_page_label}` : ""}`,
+      cite.quote_text
+    ])])
   ].join("\n");
   return {kind: "reviewed_material_slice", scope, topics, employment, text: wrapper,
     canonicalMarkdown: payload.markdown, raw: payload.report};

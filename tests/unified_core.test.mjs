@@ -134,6 +134,7 @@ test("slice evidence and canonical report keep unknown status, citation and raw 
   const result = sliceReport(scope, mapped, report);
   assert.equal(result.topics[0].status_code, "needs_information");
   assert.match(result.text, /# Canonical/);
+  assert.match(result.text, /提出が必要/);
   assert.equal(result.canonicalMarkdown, report.markdown);
   assert.throws(() => mapSliceEvidence(scope, {...evidence, snapshot_id: "b".repeat(64)}));
   assert.throws(() => sliceReport(scope, mapped, {...report, report: {...report.report, evidence_inventory: []}}));
