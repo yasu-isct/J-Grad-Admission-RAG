@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>募集要项参考 · J-Grad</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="stylesheet" href="/assets/reference.css">
+    <script src="/assets/reference.js" defer></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <p class="product-mark" aria-hidden="true">J</p>
+        <div class="header-copy"><h1>募集要项参考</h1><p>先浏览已审核范围，需要时再生成参考报告</p></div>
+      </div>
+    </header>
+    <main class="reference-workspace">
+      <nav aria-label="应用导航"><a href="/app">返回申请检查</a></nav>
+      <section class="reference-panel" aria-labelledby="selector-heading">
+        <h2 id="selector-heading">选择学校与可用功能</h2>
+        <label for="reference-select">学校与审核范围</label>
+        <select id="reference-select" disabled><option value="">正在读取能力目录</option></select>
+        <p id="reference-status" role="status" aria-live="polite"></p>
+      </section>
+      <section id="capability-panel" class="reference-panel" hidden aria-labelledby="capability-heading">
+        <h2 id="capability-heading">当前可用范围</h2>
+        <div id="capability-detail"></div>
+      </section>
+      <section id="evidence-panel" class="reference-panel" hidden aria-labelledby="evidence-heading">
+        <h2 id="evidence-heading">已审核的官方依据</h2>
+        <p>引用为日文官方原文；中文说明标识审核范围。原网页的页码跳转效果取决于浏览器。</p>
+        <div id="evidence-topics"></div>
+      </section>
+      <section id="report-panel" class="reference-panel" hidden aria-labelledby="report-heading">
+        <h2 id="report-heading">可选的参考报告</h2>
+        <p>以下两项指被检查申请人的实际情况；未知可保持未填写。修改后需重新生成。</p>
+        <div class="reference-fields">
+          <div><label for="employment-select">目前是否受雇于单位</label><select id="employment-select"><option value="unknown">未知</option><option value="yes">是</option><option value="no">否</option></select></div>
+          <div><label for="retain-select">入学后是否继续在该单位任职</label><select id="retain-select"><option value="unknown">未知</option><option value="yes">是</option><option value="no">否</option></select></div>
+        </div>
+        <button id="generate-report" type="button">生成参考报告</button>
+        <p id="report-status" role="status" aria-live="polite"></p>
+        <div id="report-output" hidden>
+          <div id="report-summary"></div>
+          <button id="copy-report" type="button">复制报告</button>
+          <p id="copy-status" role="status" aria-live="polite"></p>
+          <label id="copy-fallback-label" for="copy-fallback" hidden>可手动选择复制的报告文本</label>
+          <textarea id="copy-fallback" readonly hidden></textarea>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

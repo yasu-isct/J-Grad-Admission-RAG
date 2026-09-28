@@ -36,6 +36,7 @@ class ServiceSettings(BaseModel):
         pattern=r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$",
     )
     source_pdf_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    reference_workspace_config_path: Path | None = None
     max_pdf_bytes: int = Field(default=25 * 1024 * 1024, gt=0, strict=True)
     max_metadata_bytes: int = Field(default=256 * 1024, gt=0, strict=True)
     upload_chunk_bytes: int = Field(default=64 * 1024, gt=0, strict=True)
@@ -90,6 +91,12 @@ class ServiceSettings(BaseModel):
             not self.job_root.is_absolute() or self.job_root.resolve(strict=False) != self.job_root
         ):
             raise ValueError("job repository root must be canonical and absolute")
+        if self.reference_workspace_config_path is not None and (
+            not self.reference_workspace_config_path.is_absolute()
+            or self.reference_workspace_config_path.resolve(strict=False)
+            != self.reference_workspace_config_path
+        ):
+            raise ValueError("reference workspace config path must be canonical and absolute")
         if (self.generation_provider_name != "reviewed-state-offline") != bool(
             self.generation_model_name
         ):
@@ -139,6 +146,10 @@ class ServiceState:
     date_presentation_initialization_failed: bool = False
     source_document: VerifiedSourceDocument | None = None
     source_document_initialization_failed: bool = False
+    reference_slices: tuple[Any, ...] = ()
+    reference_initialization_failed: bool = False
+    reference_report_lock: Lock = field(default_factory=Lock)
+    reference_legacy_catalog: Any | None = None
 
 
 __all__ = [
