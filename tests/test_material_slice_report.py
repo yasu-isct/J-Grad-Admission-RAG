@@ -28,10 +28,13 @@ from jgrad_admission_rag.reasoning.material_slice_report import (
     ReviewedFact,
     ReviewedMaterialSliceEvidence,
     ReviewedRecord,
-    assemble_report,
+    _assemble_report as assemble_report,
+    _render_markdown as render_markdown,
+    assemble_report as assemble_bound_report,
+    assemble_reports,
     load_plan,
     load_report,
-    render_markdown,
+    render_markdown as render_bound_markdown,
     read_candidate_files,
     read_pdf_bytes,
     verify_evidence_bytes,
@@ -710,6 +713,115 @@ def test_bound_report_loader_recomputes_synthetic_source(tiny_synthetic_slice, r
             candidate_files=candidate_files,
             pdf_bytes=pdf_bytes,
         )
+
+
+def test_public_assembly_reaudits_after_snapshot_mutation(tiny_synthetic_slice, reviewed_inputs):
+    raws, plan, policy, seed, plan_sha, policy_sha, candidate_files, pdf_bytes = (
+        tiny_synthetic_slice
+    )
+    request_raw = canonical_json_bytes(reviewed_inputs[-1][0]["request"])
+    evidence = verify_evidence_bytes(
+        plan,
+        policy,
+        seed,
+        plan_sha256=plan_sha,
+        policy_sha256=policy_sha,
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )
+    record = evidence.records[0]
+    forged_fact = record.facts[-1].model_copy(update={"text": "伪造官方原文"})
+    forged_quote = evidence.model_copy(
+        update={
+            "records": (record.model_copy(update={"facts": (*record.facts[:-1], forged_fact)}),)
+        }
+    )
+    forged_missing = evidence.model_copy(
+        update={"records": (record.model_copy(update={"facts": record.facts[1:]}),)}
+    )
+    forged_context = evidence.model_copy(update={"records": ()})
+    forged_binding = evidence.model_copy(
+        update={"records": (record.model_copy(update={"source_id": "forged-source"}),)}
+    )
+    bound = dict(
+        plan_raw=raws[0],
+        trust_raw=raws[1],
+        policy_raw=raws[2],
+        policy_trust_raw=raws[3],
+        seed_raw=raws[4],
+        request_raw=request_raw,
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )
+    expected = assemble_bound_report(**bound)
+    assert expected.evidence_inventory[0].quote_text == record.facts[0].text
+    assert len(expected.evidence_inventory) == len(record.facts)
+    for forged in (forged_quote, forged_missing, forged_context, forged_binding):
+        with pytest.raises(TypeError):
+            assemble_bound_report(**bound, evidence=forged)
+    altered_candidate = dict(candidate_files)
+    kb_name = next(name for name in altered_candidate if name.endswith("document_kb.json"))
+    altered_candidate[kb_name] += b" "
+    with pytest.raises(MaterialSliceError):
+        assemble_bound_report(**(bound | {"candidate_files": altered_candidate}))
+
+
+@pytest.mark.parametrize("mutation", ["quote", "missing_citation", "binding", "disposition"])
+def test_public_renderer_rejects_forged_report(tiny_synthetic_slice, reviewed_inputs, mutation):
+    raws, _, _, _, _, _, candidate_files, pdf_bytes = tiny_synthetic_slice
+    request_raw = canonical_json_bytes(reviewed_inputs[-1][0]["request"])
+    bound = dict(
+        plan_raw=raws[0],
+        trust_raw=raws[1],
+        policy_raw=raws[2],
+        policy_trust_raw=raws[3],
+        seed_raw=raws[4],
+        request_raw=request_raw,
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )
+    report = assemble_bound_report(**bound)
+    raw = canonical_json_bytes(report.model_dump(mode="json"))
+    assert "日文官方原文" in render_bound_markdown(raw, **bound)
+    forged = report.model_dump(mode="json")
+    if mutation == "quote":
+        forged["evidence_inventory"][0]["quote_text"] = "伪造官方原文"
+    elif mutation == "missing_citation":
+        forged["evidence_inventory"].pop()
+    elif mutation == "binding":
+        forged["evidence_inventory"][0]["document_id"] = "forged-source"
+    else:
+        forged["topic_results"][0]["disposition"] = "submission_required"
+    with pytest.raises(MaterialSliceError):
+        render_bound_markdown(canonical_json_bytes(forged), **bound)
+
+
+def test_public_batch_audits_once(tiny_synthetic_slice, reviewed_inputs, monkeypatch):
+    from jgrad_admission_rag.reasoning import material_slice_report as module
+
+    raws, _, _, _, _, _, candidate_files, pdf_bytes = tiny_synthetic_slice
+    request_raw = canonical_json_bytes(reviewed_inputs[-1][0]["request"])
+    audits = 0
+    original = module.verify_evidence_bytes
+
+    def counted(*args, **kwargs):
+        nonlocal audits
+        audits += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(module, "verify_evidence_bytes", counted)
+    reports = assemble_reports(
+        plan_raw=raws[0],
+        trust_raw=raws[1],
+        policy_raw=raws[2],
+        policy_trust_raw=raws[3],
+        seed_raw=raws[4],
+        request_raws=(request_raw, request_raw),
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )
+    assert len(reports) == 2 and reports[0] == reports[1]
+    assert audits == 1
 
 
 def test_second_institution_one_topic_has_no_school_branch(reviewed_inputs):

@@ -885,7 +885,7 @@ def _citation_inventory(evidence: ReviewedMaterialSliceEvidence) -> tuple[Citati
     return tuple(citations)
 
 
-def assemble_report(
+def _assemble_report(
     plan: MaterialSlicePlan,
     policy: MaterialConditionPolicy,
     request: MaterialConditionRequest,
@@ -894,7 +894,7 @@ def assemble_report(
     policy_sha256: str,
     evidence: ReviewedMaterialSliceEvidence | None,
 ) -> ReviewedMaterialSliceReport:
-    """Deterministic assembly; trusted-input loaders own all evidence verification."""
+    """Internal projection of inputs already bound by the public byte gate."""
     from .material_conditions import canonical_request_bytes
 
     plan = MaterialSlicePlan.model_validate(plan.model_dump(mode="json", by_alias=True))
@@ -997,6 +997,75 @@ def assemble_report(
     )
 
 
+def assemble_reports(
+    *,
+    plan_raw: bytes,
+    trust_raw: bytes,
+    policy_raw: bytes,
+    policy_trust_raw: bytes,
+    seed_raw: bytes,
+    request_raws: tuple[bytes, ...],
+    candidate_files: Mapping[str, bytes] | None,
+    pdf_bytes: Mapping[str, bytes] | None,
+) -> tuple[ReviewedMaterialSliceReport, ...]:
+    """Bind every report to external pinned bytes; audit a covered batch only once."""
+    plan, policy, seed, plan_sha, policy_sha = load_plan(
+        plan_raw, trust_raw, policy_raw, policy_trust_raw, seed_raw
+    )
+    requests = tuple(load_request(raw) for raw in request_raws)
+    covered = any(
+        evaluate(policy, request, policy_sha).status == "evaluated" for request in requests
+    )
+    evidence = (
+        verify_evidence_bytes(
+            plan,
+            policy,
+            seed,
+            plan_sha256=plan_sha,
+            policy_sha256=policy_sha,
+            candidate_files=candidate_files or {},
+            pdf_bytes=pdf_bytes or {},
+        )
+        if covered
+        else None
+    )
+    return tuple(
+        _assemble_report(
+            plan,
+            policy,
+            request,
+            plan_sha256=plan_sha,
+            policy_sha256=policy_sha,
+            evidence=evidence,
+        )
+        for request in requests
+    )
+
+
+def assemble_report(
+    *,
+    plan_raw: bytes,
+    trust_raw: bytes,
+    policy_raw: bytes,
+    policy_trust_raw: bytes,
+    seed_raw: bytes,
+    request_raw: bytes,
+    candidate_files: Mapping[str, bytes] | None,
+    pdf_bytes: Mapping[str, bytes] | None,
+) -> ReviewedMaterialSliceReport:
+    """Public single-report entrypoint with no caller-supplied evidence snapshot."""
+    return assemble_reports(
+        plan_raw=plan_raw,
+        trust_raw=trust_raw,
+        policy_raw=policy_raw,
+        policy_trust_raw=policy_trust_raw,
+        seed_raw=seed_raw,
+        request_raws=(request_raw,),
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )[0]
+
+
 def load_report(
     raw: bytes,
     *,
@@ -1011,31 +1080,15 @@ def load_report(
 ) -> ReviewedMaterialSliceReport:
     """Reject forged reports by recomputing from external pinned bytes."""
     try:
-        plan, policy, seed, plan_sha, policy_sha = load_plan(
-            plan_raw, trust_raw, policy_raw, policy_trust_raw, seed_raw
-        )
-        request = load_request(request_raw)
-        status = evaluate(policy, request, policy_sha).status
-        evidence = (
-            verify_evidence_bytes(
-                plan,
-                policy,
-                seed,
-                plan_sha256=plan_sha,
-                policy_sha256=policy_sha,
-                candidate_files=candidate_files or {},
-                pdf_bytes=pdf_bytes or {},
-            )
-            if status == "evaluated"
-            else None
-        )
         expected = assemble_report(
-            plan,
-            policy,
-            request,
-            plan_sha256=plan_sha,
-            policy_sha256=policy_sha,
-            evidence=evidence,
+            plan_raw=plan_raw,
+            trust_raw=trust_raw,
+            policy_raw=policy_raw,
+            policy_trust_raw=policy_trust_raw,
+            seed_raw=seed_raw,
+            request_raw=request_raw,
+            candidate_files=candidate_files,
+            pdf_bytes=pdf_bytes,
         )
         supplied = ReviewedMaterialSliceReport.model_validate(parse_json(raw))
         if raw != _normalized(supplied) or _normalized(expected) != _normalized(supplied):
@@ -1056,8 +1109,8 @@ def _markdown_text(value: str) -> str:
     )
 
 
-def render_markdown(report: ReviewedMaterialSliceReport) -> str:
-    """Render only a validated, partial teacher-facing report, never a full checklist."""
+def _render_markdown(report: ReviewedMaterialSliceReport) -> str:
+    """Internal formatter; callers must first use a byte-bound public entrypoint."""
     report = ReviewedMaterialSliceReport.model_validate(report.model_dump(mode="json"))
     target = report.target
     lines = [
@@ -1149,3 +1202,30 @@ def render_markdown(report: ReviewedMaterialSliceReport) -> str:
     lines.extend(["## 覆盖范围与限制", ""])
     lines.extend("- " + _markdown_text(value) for value in report.limitations_zh)
     return "\n".join(lines) + "\n"
+
+
+def render_markdown(
+    raw: bytes,
+    *,
+    plan_raw: bytes,
+    trust_raw: bytes,
+    policy_raw: bytes,
+    policy_trust_raw: bytes,
+    seed_raw: bytes,
+    request_raw: bytes,
+    candidate_files: Mapping[str, bytes] | None,
+    pdf_bytes: Mapping[str, bytes] | None,
+) -> str:
+    """Render only after recomputing the supplied report from pinned external bytes."""
+    report = load_report(
+        raw,
+        plan_raw=plan_raw,
+        trust_raw=trust_raw,
+        policy_raw=policy_raw,
+        policy_trust_raw=policy_trust_raw,
+        seed_raw=seed_raw,
+        request_raw=request_raw,
+        candidate_files=candidate_files,
+        pdf_bytes=pdf_bytes,
+    )
+    return _render_markdown(report)

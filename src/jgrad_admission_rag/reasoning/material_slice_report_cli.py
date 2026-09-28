@@ -11,12 +11,11 @@ from ..reviewed_source_evidence import canonical_json_bytes
 from .material_conditions import evaluate, load_request
 from .material_slice_report import (
     MaterialSliceError,
-    assemble_report,
+    _render_markdown,
+    assemble_reports,
     load_plan,
     read_candidate_files,
     read_pdf_bytes,
-    render_markdown,
-    verify_evidence_bytes,
 )
 
 
@@ -46,41 +45,31 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.format == "markdown" and len(args.request) != 1:
             raise MaterialSliceError("markdown accepts one request")
-        plan, policy, seed, plan_sha, policy_sha = load_plan(
-            _read_explicit_file(args.plan),
-            _read_explicit_file(args.trust),
-            _read_explicit_file(args.policy),
-            _read_explicit_file(args.policy_trust),
-            _read_explicit_file(args.seed),
+        plan_raw, trust_raw, policy_raw, policy_trust_raw, seed_raw = (
+            _read_explicit_file(path)
+            for path in (args.plan, args.trust, args.policy, args.policy_trust, args.seed)
         )
-        requests = [load_request(_read_explicit_file(path)) for path in args.request]
+        plan, policy, _, _, policy_sha = load_plan(
+            plan_raw, trust_raw, policy_raw, policy_trust_raw, seed_raw
+        )
+        request_raws = tuple(_read_explicit_file(path) for path in args.request)
+        requests = [load_request(raw) for raw in request_raws]
         covered = any(
             evaluate(policy, request, policy_sha).status == "evaluated" for request in requests
         )
-        evidence = (
-            verify_evidence_bytes(
-                plan,
-                policy,
-                seed,
-                plan_sha256=plan_sha,
-                policy_sha256=policy_sha,
-                candidate_files=read_candidate_files(args.candidate_root, plan),
-                pdf_bytes=read_pdf_bytes(args.pdf_dir, plan),
-            )
-            if covered
-            else None
+        reports = assemble_reports(
+            plan_raw=plan_raw,
+            trust_raw=trust_raw,
+            policy_raw=policy_raw,
+            policy_trust_raw=policy_trust_raw,
+            seed_raw=seed_raw,
+            request_raws=request_raws,
+            candidate_files=read_candidate_files(args.candidate_root, plan) if covered else None,
+            pdf_bytes=read_pdf_bytes(args.pdf_dir, plan) if covered else None,
         )
         encoded = []
-        for request in requests:
-            report = assemble_report(
-                plan,
-                policy,
-                request,
-                plan_sha256=plan_sha,
-                policy_sha256=policy_sha,
-                evidence=evidence,
-            )
-            markdown = render_markdown(report)
+        for report in reports:
+            markdown = _render_markdown(report)
             raw = (
                 markdown.encode("utf-8")
                 if args.format == "markdown"
