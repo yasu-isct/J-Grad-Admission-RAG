@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-28 after accepted PR #211 (`f520c7bc`), with candidate import complete; original release audit was PR #193.
+Updated 2026-09-28 after accepted PR #215 (`10b5948a`), with condition previews complete; original release audit was PR #193.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
@@ -138,13 +138,19 @@ hashes, five candidate files,23 exact fragments and complete E02 context passed 
 bytes/mtime. All four real calls are consumed; final review peak89,714,688 bytes and0.4473403s.
 Developer historical unmeasured RSS and the unrelated local391 row-order diagnostic remain disclosed.
 [Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/211#issuecomment-5862212992).
-The next design is now [ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md).
-Only [MAT-01](../onboarding/material-condition-spec.md) is released after its design merge: extract
-a shared predicate/tri-state core and add a compatible profile envelope with two employment facts.
+[ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md) defines
+[MAT-01 #213](../onboarding/material-condition-spec.md), accepted in PR #215: a shared
+predicate/tri-state core and a compatible profile envelope with two employment facts.
 Pinned policy data covers three topics, while previews expose conditions only, not obligations.
 Existing profile/rule/report schemas and the ISCT five-item behavior stay unchanged. No PDF/KB reads
-or IMPORT-01 calls; its exhausted budget stays closed. MAT-01 has a separate three-command budget
-for small JSON previews (developer two, reviewer one). Reuse the same M15 Main chat.
+or IMPORT-01 calls; its exhausted budget stays closed. MAT-01 preview budget is now 3/3 exhausted
+(developer 2/2, reviewer 1/1). Reuse the same M15 Main chat after a new Spec is released.
+Independent final-head review (`573caa4f`) passed 339 focused tests, with six local Windows symlink
+skips and green Linux CI. The full-binding consistency defect was fixed; three preview lines
+were reproduced byte-for-byte in 0.4182928s (4801 bytes, SHA-256
+`4ed106a8b6bf2511b127e4ef52c093be2ac8348b334868d88421ea25df1e46c5`).
+[Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/215#issuecomment-5863028868).
+No next implementation is Ready; the next owner is design main.
 Reviewed scope/evidence and multi-source report binding remain a later, unreleased Spec; unknown
 Fact scope and failed KB quality gates must not be bypassed to activate reports.
 
