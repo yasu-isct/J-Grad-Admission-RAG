@@ -1,5 +1,8 @@
 # DISPLAY-01 implementation checkpoint and evidence
 
+Final status: independently accepted in merged PR #223 at head `67e572757d7b055122799bdf7d95aea6d38cb912`.
+Earlier checkpoints and budgets below are historical; the final independent record at the end controls.
+
 Issue [#221](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/221), based on main `0b4d1c87424846cf30eca4b741f99098a0e10b4c`. Branch `codex/display-01-optional-reference`.
 
 ## Checkpoint 1: service binding and API
@@ -45,3 +48,28 @@ Independent review of head `8eaab3f18ce8c0d89d5d14a5d4adfaddd5020251` found that
 The repair in `service/static/reference.js` separates evidence-selection lifetime from report/condition lifetime. Only a target change increments the evidence token and aborts its request; condition edits and explicit report generation invalidate only report state. An evidence response must still match the current request/controller, selected entry and snapshot. A current-slice snapshot mismatch or fetch failure now ends loading with an unavailable status. The old report-generation token continues to reject late reports. No API, source binding, report content, protected asset or legacy app code changed.
 
 Browser-executed synthetic regressions delay the evidence GET while (1) editing employment, with **zero report POSTs**, and (2) explicitly generating a report, with **one report POST**. Both assert the delayed quotation becomes visible and loading ends. A separate A→B→A test verifies that old evidence responses do not overwrite the current selection and that a current snapshot mismatch shows an error. The existing stale-report, copy, refresh and synthetic live-HTTP tests also passed: **5 browser tests passed**. Related service/API/demo launcher/report/source tests: **179 passed, 2 skipped**. Whole-tree Ruff check/format, `node --check` on the changed JavaScript and `git diff --check` passed. The earlier real browser run and all its fingerprints remain evidence for the prior head only; the developer made **no new real service start or covered POST** after this code change. Cumulative DISPLAY-01 usage remains **2/3 starts and 4/7 covered POSTs**, with the design Agent's 1 start/3 POST reserve intact for final-head independent verification. Exact-head CI and design acceptance remain pending at this checkpoint.
+
+### Final independent design acceptance
+
+[Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/223#issuecomment-5869795291)
+binds exact head `67e572757d7b055122799bdf7d95aea6d38cb912`, merge `3da2964e45046ee736936dee1751425458b6a29c`.
+Independent selected tests:179 passed,3 Windows symlink skips; all5 browser tests executed locally.
+The original independent race probe now returns visible evidence/loaded status for both triggers,
+with0/1 POSTs as required. Exact-head CI and diff checks passed; the original P2 is resolved.
+
+The reviewer used its one reserved real start and three covered POSTs, using the original runtime
+and sources, explicit independent-worktree imports and head assertions. Script:
+`outputs/review223-final-real-runner.py`; command: shared `.venv/Scripts/python.exe -B -X utf8`
+plus that script. The reviewed developer harness was adapted to separate output/workspace,
+normalized clipboard comparison and a one-shot directory guard; no developer artifacts overwritten.
+Proof: `outputs/review223-real/real-journal.json`, before/after fingerprint files, three report JSONs
+and seven real screenshots. Startup0.485s, three POSTs0.047/0.031/0.046s, browser3.250s.
+Both capabilities were ready; oldapp/base-requirements200; new evidence3 topics/8 records/23fragments.
+Page traffic17GET/3coveredPOST/0otherPOST (separate legacy base-requirements request disclosed).
+All three inner reports/Markdown matched retained RPT-01 bytes, desktop/mobile copy passed,
+22 input-file hashes/sizes/mtimes stayed equal, and the service stopped. No model/build/download.
+
+Final DISPLAY-01 cumulative budget:3/3 starts and7/7 coveredPOSTs, exhausted (developer2/4,
+reviewer1/3), about1.689s startup/report work and9.109s browser observation. All older budgets stay
+closed. M15's scoped local materials journey meets its exit boundary; no M16/highlighting release.
+See the [release record](../releases/m15-reviewed-materials-preview.md) for the precise product limits.

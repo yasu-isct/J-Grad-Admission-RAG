@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-28 after accepted PR #215 (`10b5948a`), with condition previews complete; original release audit was PR #193.
+Updated 2026-09-28 after accepted PR #223 (`3da2964e`), completing the bounded M15 local journey; original release audit was PR #193.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
@@ -20,6 +20,9 @@ Do not load the full historical chat as the primary specification.
 
 ## Current GitHub state
 
+- M15 is complete after #221 / PR #223; [release boundary](../releases/m15-reviewed-materials-preview.md).
+  No next implementation is Ready; M16 and highlighting are not automatically released.
+
 - M1 through M10 are complete; the documented local portfolio release is v1.4 plus ART-01 runtime
   lifecycle hardening.
 - #183 / PR #184 are complete: normal Demo startup is reuse-only and explicit paths can be
@@ -35,7 +38,8 @@ Do not load the full historical chat as the primary specification.
 - No open PR existed at the post-closeout audit. This snapshot does not describe later design PRs.
 - The user selected GSFS Complexity Science and Engineering as the first new program and
   authorized downloads. Four exact official PDFs are locally acquired; see the
-  [source lock](../onboarding/utokyo-gsfs-complex-2027.md). No new-school runtime is enabled.
+  [source lock](../onboarding/utokyo-gsfs-complex-2027.md). GSFS's bounded reference preview is now
+  available through optional local configuration; no full production KB/index activation is enabled.
 
 ## Product and authority boundary
 
@@ -168,20 +172,27 @@ Five candidate files, three PDFs and the developer's retained output had unchang
 RPT-01 report budget3/3 exhausted (developer2, reviewer1), total2.1609334s; design audit1/1 consumed.
 IMPORT-01 remains4/4 and MAT-01 preview3/3. The existing391 fixed-ranking diagnostic is disclosed,
 not repaired by changing protected assets; this acceptance does not claim a fully green local suite.
-The next complete contract is [DISPLAY-01 #221](../onboarding/optional-reference-workspace-spec.md)
-under [ADR0014](../decisions/0014-optional-reference-workspace.md). After design merge it is the
-sole Ready implementation for M15 Main, with service/API and UI/browser checkpoints in one PR.
+The accepted presentation contract is [DISPLAY-01 #221](../onboarding/optional-reference-workspace-spec.md)
+under [ADR0014](../decisions/0014-optional-reference-workspace.md), independently accepted and merged
+in PR #223 at head `67e572757d7b055122799bdf7d95aea6d38cb912` (merge `3da2964e45046ee736936dee1751425458b6a29c`).
 The new common entry links to the existing ISCT workflow and provides actual GSFS evidence browsing;
 reports are optional explicit button actions, never a prerequisite of browsing. No teacher/student
 role gate. Changed selections/conditions invalidate report/copy and late responses.
 Pinned `teacher_preview` artifacts remain unchanged; neutral UI wording is a compatible presentation.
-DISPLAY-01 alone permits two new real service starts and six report HTTP POSTs (developer1/3,
-reviewer1/3); old exhausted CLI/import/source-audit budgets stay closed. No new parser/model,
-GSFS index/QA, local PDF serving/highlighting or production promotion. M15 remains open.
+The delayed-evidence P2 is fixed and preserved in the [single review record](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/223#issuecomment-5869795291).
+Independent179 focused tests passed,3 local symlink skips, CI green. Final real browser verification
+covered two ready capabilities,3 topics/8 records/23 fragments,3 byte-identical reports, zero automatic
+report POSTs and desktop/mobile copy, with22 input files unchanged. Old app/catalog/base-requirements
+were exercised; embedding/QA were deliberately not exercised by the metadata-only provider.
+After a user-authorized developer supplement, DISPLAY-01 is **3/3 service starts and7/7 covered
+POSTs exhausted** (developer2/4, reviewer1/3). Final reviewer work0.609s, browser3.250s; cumulative
+work about1.689s and browser9.109s. Evidence lives in `outputs/review223-real/`, without overwriting
+developer artifacts. Old exhausted budgets stay closed. M15 is complete; no next task is Ready.
+No new parser/model, GSFS index/QA, local PDF serving/highlighting or production promotion.
 The user approved prioritizing a credible internal demonstration by2026-09-29: teacher reports
 first, then dual-school UI/copy and optional coordinate highlighting under later bounded Specs.
 No new admissions coverage, source downloads, highlighting or M13 work is released here.
-Only DISPLAY-01's bounded local API/UI is released after design merge. Real winter-trial
+DISPLAY-01's bounded local API/UI is accepted. Real winter-trial
 schools/editions remain a later teaching-team selection.
 
 The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
