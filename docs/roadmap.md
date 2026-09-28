@@ -258,6 +258,10 @@ when context quality or scope requires; there is no one-new-chat-per-Issue requi
 
 ### M15 Reviewed GSFS Materials Slice
 
+Completed on2026-09-28 after independent acceptance of PR #223 at `67e5727`.
+The bounded journey is reviewed excerpts -> candidate Facts -> scoped conditions -> cited report ->
+local optional presentation. This does not complete general multi-school admissions support.
+
 [M15](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/15) targets a bounded materials
 journey, starting with English score sheets, checklist submission and employment-related plan
 context. [ADR 0010](decisions/0010-reviewed-source-evidence.md) adds reviewed source excerpts as
@@ -270,19 +274,20 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
 | 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Complete, independently accepted PR #215; condition-only, no official report |
 | 5 | [RPT-01 #217](onboarding/material-slice-report-spec.md): reviewed multi-source evidence and teacher reference report | Complete, independently accepted PR #219; JSON/Markdown only |
-| 6 | [DISPLAY-01 #221](onboarding/optional-reference-workspace-spec.md): shared entry, evidence browsing and optional report/copy | Sole next implementation after ADR0014 design merge; two checkpoints |
+| 6 | [DISPLAY-01 #221](onboarding/optional-reference-workspace-spec.md): shared entry, evidence browsing and optional report/copy | Complete, independently accepted PR #223; bounded local journey verified |
 
 Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
 No new models/PDFs, MinerU reruns, paid calls, index migration or M13 work are part of #202.
 Keep one M15 development chat and checkpoints at contract/tests, real previews and PR handoff.
-M15 is not complete merely because #202's operator tool works; downstream integration requires
-its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
+M15 completion includes downstream integration under its own reviewed Specs and actual user-facing
+acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
-next task is the bounded local presentation contract in [ADR0014](decisions/0014-optional-reference-workspace.md), following accepted
+local presentation contract in [ADR0014](decisions/0014-optional-reference-workspace.md) is accepted in PR #223, following accepted
 [RPT-01 #217](onboarding/material-slice-report-spec.md) in PR #219. Its independent review
 resolved the public assembly/render trust-boundary defect at head `a72989e`, passed 406 focused
 tests (nine local Windows symlink skips), and reproduced all three real reports byte-for-byte.
-The report CLI budget is 3/3 exhausted; DISPLAY-01 #221 alone becomes Ready after its design merge.
+The report CLI budget is 3/3 exhausted; DISPLAY-01 validation is also exhausted at3/3 starts and7/7
+covered POSTs, including the user-authorized developer supplement. No next implementation is Ready.
 [ADR0013](decisions/0013-reviewed-material-report-slice.md) specifies a reviewed
 partial projection over immutable Facts, not whole-KB quality approval. The user prioritizes a
 credible internal demonstration by2026-09-29: a copyable report, then dual-school UI and optional
@@ -294,7 +299,13 @@ quality gates. DISPLAY-01 releases only a local capability-aware entry and optio
 school selection and evidence browsing generate no report; an explicit button does. Users are not
 restricted to teachers or students. ISCT retains its original workflow; GSFS advertises its actual
 historical three-topic coverage. Highlighting, GSFS search/QA and full admissions coverage remain
-unreleased. The new bounded HTTP/browser budget does not reset any older experiment. M15 remains open.
+unreleased. The new bounded HTTP/browser budget does not reset any older experiment. M15 is complete.
+Independent final validation:179 focused tests passed,3 Windows symlink skips, exact-head CI green;
+the evidence-loading race is fixed. A real final-head browser run verified both capabilities,
+zero automatic report POSTs, three byte-identical reports, desktop/mobile copy and22 unchanged
+input files. See the [acceptance record](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/223#issuecomment-5869795291)
+and [release boundary](releases/m15-reviewed-materials-preview.md). Stop M15 progression monitoring;
+M16, highlighting and expanded admissions coverage need a separate decision and Spec.
 
 ### M2 Local Vector Retrieval
 
