@@ -168,12 +168,21 @@ Five candidate files, three PDFs and the developer's retained output had unchang
 RPT-01 report budget3/3 exhausted (developer2, reviewer1), total2.1609334s; design audit1/1 consumed.
 IMPORT-01 remains4/4 and MAT-01 preview3/3. The existing391 fixed-ranking diagnostic is disclosed,
 not repaired by changing protected assets; this acceptance does not claim a fully green local suite.
-Next owner: design Agent prepares the bounded local API/UI presentation and copy contract.
-No next implementation is Ready; M15 Main waits for the next complete Spec. M15 remains open.
+The next complete contract is [DISPLAY-01 #221](../onboarding/optional-reference-workspace-spec.md)
+under [ADR0014](../decisions/0014-optional-reference-workspace.md). After design merge it is the
+sole Ready implementation for M15 Main, with service/API and UI/browser checkpoints in one PR.
+The new common entry links to the existing ISCT workflow and provides actual GSFS evidence browsing;
+reports are optional explicit button actions, never a prerequisite of browsing. No teacher/student
+role gate. Changed selections/conditions invalidate report/copy and late responses.
+Pinned `teacher_preview` artifacts remain unchanged; neutral UI wording is a compatible presentation.
+DISPLAY-01 alone permits two new real service starts and six report HTTP POSTs (developer1/3,
+reviewer1/3); old exhausted CLI/import/source-audit budgets stay closed. No new parser/model,
+GSFS index/QA, local PDF serving/highlighting or production promotion. M15 remains open.
 The user approved prioritizing a credible internal demonstration by2026-09-29: teacher reports
 first, then dual-school UI/copy and optional coordinate highlighting under later bounded Specs.
-No new admissions coverage, source downloads, API/UI/highlighting implementation or M13 work
-is released here. Real winter-trial schools/editions remain a later teaching-team selection.
+No new admissions coverage, source downloads, highlighting or M13 work is released here.
+Only DISPLAY-01's bounded local API/UI is released after design merge. Real winter-trial
+schools/editions remain a later teaching-team selection.
 
 The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
 GitHub, avoid overlapping work and release only one Ready task. Previous overnight authorization
