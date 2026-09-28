@@ -57,6 +57,10 @@ candidate; existing 334/391 assets and candidate files are never migrated or ove
 existing Fact/hash/text/page checks and deterministic applicability core. Preserve the single-document
 v1 validators and do not generate fake component rules just to satisfy their cardinality.
 
+[ADR0013](0013-reviewed-material-report-slice.md) and [RPT-01](../onboarding/material-slice-report-spec.md)
+choose the additive reviewed-artifact boundary for the next implementation. They do not promote
+the failed full candidate KB or weaken existing report materialization checks.
+
 ## Sequence and rollback
 
 1. MAT-01 only: shared condition logic, additive operator envelope, pinned draft material policy and

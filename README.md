@@ -634,7 +634,10 @@ fragments now form three isolated candidate KBs with bound lineage. Accepted PR 
 applicant-facts envelope. It emits condition previews, not official material advice. Reviewed scope,
 multi-source evidence/report integration and presentation remain subsequent gates;
 [ADR 0011](docs/decisions/0011-explicit-build-profiles-and-reviewed-lineage.md) records the boundary.
-No new parser experiment or GSFS production activation is authorized.
+[RPT-01 #217](docs/onboarding/material-slice-report-spec.md) is the next bounded task after its
+design merges: a three-topic teacher reference report with reviewed multi-source evidence.
+It remains a historical, partial slice; dual-school UI/copy and optional page highlighting follow
+separately. No new parser experiment or full GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.
 
 See [docs/roadmap.md](docs/roadmap.md) for milestones, task IDs, acceptance gates, and the project

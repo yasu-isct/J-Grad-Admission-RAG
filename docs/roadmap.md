@@ -269,7 +269,7 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | 2 | [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): isolate legacy ISCT policy and guard explicit build entry | Complete, accepted PR #208; no GSFS KB |
 | 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
 | 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Complete, independently accepted PR #215; condition-only, no official report |
-| 5 | Reviewed scope/evidence and multi-source report binding | Not released; requires its own Spec after MAT-01 |
+| 5 | [RPT-01 #217](onboarding/material-slice-report-spec.md): reviewed multi-source evidence and teacher reference report | Sole next implementation after design merge; JSON/Markdown only |
 | 6 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
 
 Do not activate the full GSFS source set or claim complete eligibility, dates or materials coverage.
@@ -279,11 +279,16 @@ M15 is not complete merely because #202's operator tool works; downstream integr
 its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
 next design step follows accepted [MAT-01 #213](onboarding/material-condition-spec.md) in PR #215:
-reviewed scope/evidence and multi-source report binding. No next implementation is Ready until its Spec is reviewed.
+[RPT-01 #217](onboarding/material-slice-report-spec.md), the sole next implementation after
+its design merges. [ADR0013](decisions/0013-reviewed-material-report-slice.md) specifies a reviewed
+partial projection over immutable Facts, not whole-KB quality approval. The user prioritizes a
+credible internal demonstration by2026-09-29: a copyable report, then dual-school UI and optional
+page highlighting. This is a planning checkpoint, not a promised production deadline.
 [ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) separates condition matches from
 material obligations and preserves strict report/evidence gates. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
 and the import Spec pin deterministic candidate mapping, unknown scope and failed production
-quality gates. Scoped rules and presentation remain dependent and unreleased. M15 remains open.
+quality gates. Only the RPT-01 report boundary is released by its design; API/UI and highlighting
+remain dependent and unreleased. M15 remains open.
 
 ### M2 Local Vector Retrieval
 
