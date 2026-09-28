@@ -49,6 +49,34 @@ def inputs():
     return raws, trust, evidence, config
 
 
+@pytest.fixture
+def small_context_inputs(inputs):
+    """Three records and two relation edges; no real PDF or candidate is read."""
+    raws, _, _, _ = inputs
+    seed = parse_json(raws[0])
+    seed["bundle_id"] = "small-context-fixture"
+    kept = {"E01", "E02", "E03"}
+    seed["records"] = [row for row in seed["records"] if row["record_id"] in kept]
+    seed["topics"] = [row for row in seed["topics"] if row["topic_id"] == "english-score-sheets"]
+    seed["relations"] = [
+        row for row in seed["relations"] if row["from"] in kept and row["to"] in kept
+    ]
+    bundle_raw = canonical_json_bytes(seed)
+    config_payload = parse_json(raws[3])
+    config_payload["bundle_id"] = seed["bundle_id"]
+    config_payload["bundle_sha256"] = sha256(bundle_raw).hexdigest()
+    config_raw = canonical_json_bytes(config_payload)
+    trust = ImportTrust(
+        bundle_id=seed["bundle_id"],
+        revision=seed["revision"],
+        bundle_sha256=sha256(bundle_raw).hexdigest(),
+        import_config_sha256=sha256(config_raw).hexdigest(),
+    )
+    small_raws = (bundle_raw, raws[1], raws[2], config_raw)
+    evidence, config = load_inputs(*small_raws, trust)
+    return small_raws, trust, evidence, config
+
+
 def test_real_seed_maps_exact_fragments_and_context_without_pdf_io(inputs, monkeypatch):
     raws, _, evidence, config = inputs
 
@@ -187,7 +215,7 @@ def test_metadata_change_changes_build_identity_and_lineage_rejects_forgery(inpu
 
 
 def test_candidate_validation_and_bidirectional_context(inputs, tmp_path, monkeypatch):
-    raws, _, evidence, config = inputs
+    raws, trust, evidence, config = inputs
     monkeypatch.setattr(
         "jgrad_admission_rag.reviewed_fragment_import.audit_sources", lambda *_args: []
     )
@@ -204,10 +232,17 @@ def test_candidate_validation_and_bidirectional_context(inputs, tmp_path, monkey
     assert mtimes == {name: (root / name).stat().st_mtime_ns for name in hashes}
     lineage = Lineage.model_validate(parse_json((root / "lineage.json").read_bytes()))
     relation = lineage.relations[0]
-    left = read_context(root, lineage, relation.from_id)
-    right = read_context(root, lineage, relation.to)
+    binding = dict(
+        bundle_raw=raws[0],
+        manifest_raw=raws[1],
+        contract_raw=raws[2],
+        config_raw=raws[3],
+        trust=trust,
+    )
+    left = read_context(root, lineage, relation.from_id, **binding)
+    right = read_context(root, lineage, relation.to, **binding)
     assert {fact.fact_id for fact in left} == {fact.fact_id for fact in right}
-    by_fact = read_context(root, lineage, relation.from_facts[0])
+    by_fact = read_context(root, lineage, relation.from_facts[0], **binding)
     assert {fact.fact_id for fact in by_fact} == {fact.fact_id for fact in left}
     extra = root / "unlisted.txt"
     extra.write_text("x")
@@ -239,6 +274,105 @@ def test_candidate_rejects_symlink(inputs, tmp_path, monkeypatch):
         pytest.skip("this Windows host cannot create test symlinks")
     with pytest.raises(ImportError):
         validate_candidate(root, evidence, config, *raws[1:])
+
+
+def test_context_requires_trusted_lineage_and_complete_candidate(
+    small_context_inputs, tmp_path, monkeypatch
+):
+    raws, trust, evidence, config = small_context_inputs
+    monkeypatch.setattr(
+        "jgrad_admission_rag.reviewed_fragment_import.audit_sources", lambda *_args: []
+    )
+    paths = {source_id: tmp_path / source_id for source_id in evidence.bundle.required_source_ids}
+    root, _, _ = publish_candidate(tmp_path / "candidates", evidence, config, *raws[1:], paths)
+    binding = dict(
+        bundle_raw=raws[0],
+        manifest_raw=raws[1],
+        contract_raw=raws[2],
+        config_raw=raws[3],
+        trust=trust,
+    )
+    raw_lineage = (root / "lineage.json").read_bytes()
+    lineage = Lineage.model_validate(parse_json(raw_lineage))
+    left = read_context(root, lineage, "E02", **binding)
+    right = read_context(root, lineage, "E03", **binding)
+    assert [fact.metadata["fragment_id"] for fact in left] == [
+        "E02-1",
+        "E02-2",
+        "E01-1",
+        "E01-2",
+        "E03-1",
+        "E03-2",
+    ]
+    assert {fact.fact_id for fact in left} == {fact.fact_id for fact in right}
+    assert [fact.metadata["fragment_id"] for fact in right[:2]] == ["E03-1", "E03-2"]
+    assert {
+        fact.fact_id
+        for fact in read_context(root, lineage, lineage.relations[0].from_facts[0], **binding)
+    } == {fact.fact_id for fact in left}
+
+    for change in ("relations", "role", "page", "metadata"):
+        payload = parse_json(raw_lineage)
+        if change == "relations":
+            payload["relations"] = []
+        elif change == "role":
+            payload["records"][0]["fragments"][0]["role"] = "clause"
+        elif change == "page":
+            payload["records"][0]["physical_page"] += 1
+        else:
+            payload["records"][0]["manual_anchor"] = "forged locator"
+        altered = Lineage.model_validate(payload)
+        with pytest.raises(ImportError, match="lineage is not bound"):
+            read_context(root, altered, "E02", **binding)
+
+    wrong_fact = lineage.relations[0].from_facts[0].model_copy(update={"fact_id": "fact:forged"})
+    with pytest.raises(ImportError, match="qualified fact"):
+        read_context(root, lineage, wrong_fact, **binding)
+
+    candidate_path = root / "candidate.json"
+    original_candidate = candidate_path.read_bytes()
+    payload = parse_json(raw_lineage)
+    payload["relations"] = []
+    forged_lineage = canonical_json_bytes(payload)
+    (root / "lineage.json").write_bytes(forged_lineage)
+    candidate_payload = parse_json(original_candidate)
+    candidate_payload["lineage_sha256"] = sha256(forged_lineage).hexdigest()
+    candidate_path.write_bytes(canonical_json_bytes(candidate_payload))
+    with pytest.raises(ImportError, match="candidate validation failed"):
+        read_context(root, lineage, "E02", **binding)
+
+    (root / "lineage.json").write_bytes(raw_lineage)
+    candidate_path.write_bytes(original_candidate)
+    kb = root / "documents" / "gsfs-master-2027" / "document_kb.json"
+    kb.unlink()
+    with pytest.raises(ImportError, match="candidate validation failed"):
+        read_context(root, lineage, "E02", **binding)
+
+
+def test_context_rejects_parent_directory_link(small_context_inputs, tmp_path, monkeypatch):
+    raws, trust, evidence, config = small_context_inputs
+    monkeypatch.setattr(
+        "jgrad_admission_rag.reviewed_fragment_import.audit_sources", lambda *_args: []
+    )
+    paths = {source_id: tmp_path / source_id for source_id in evidence.bundle.required_source_ids}
+    root, _, _ = publish_candidate(tmp_path / "candidates", evidence, config, *raws[1:], paths)
+    link = tmp_path / "parent-link"
+    try:
+        link.symlink_to(root.parent, target_is_directory=True)
+    except OSError:
+        pytest.skip("this Windows host cannot create test directory symlinks")
+    lineage = Lineage.model_validate(parse_json((root / "lineage.json").read_bytes()))
+    with pytest.raises(ImportError):
+        read_context(
+            link / root.name,
+            lineage,
+            "E02",
+            bundle_raw=raws[0],
+            manifest_raw=raws[1],
+            contract_raw=raws[2],
+            config_raw=raws[3],
+            trust=trust,
+        )
 
 
 def test_concurrent_publish_is_single_immutable_result(inputs, tmp_path, monkeypatch):

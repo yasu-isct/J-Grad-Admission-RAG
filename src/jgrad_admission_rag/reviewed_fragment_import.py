@@ -682,9 +682,33 @@ def publish_candidate(
 
 
 def read_context(
-    root: Path, lineage: Lineage, start: str | QualifiedFact
+    root: Path,
+    lineage: Lineage,
+    start: str | QualifiedFact,
+    *,
+    bundle_raw: bytes,
+    manifest_raw: bytes,
+    contract_raw: bytes,
+    config_raw: bytes,
+    trust: ImportTrust,
 ) -> tuple[ScopedFact, ...]:
-    """Read complete required context over relation edges in both directions."""
+    """Read only a complete context bound to reviewed inputs and an exact candidate tree.
+
+    A caller-supplied lineage is never authority by itself. Revalidate the input pins,
+    deterministic mapping, every candidate file and its ancestors at this boundary.
+    Use verified bytes for reading after the tree check, so a later file replacement
+    cannot silently shrink the returned context.
+    """
+    evidence, config = load_inputs(bundle_raw, manifest_raw, contract_raw, config_raw, trust)
+    expected = map_candidate(evidence, config, manifest_raw, contract_raw, config_raw)
+    validate_candidate(root, evidence, config, manifest_raw, contract_raw, config_raw)
+    try:
+        supplied = canonical_json_bytes(lineage.model_dump(mode="json", by_alias=True))
+    except (AttributeError, TypeError, ValidationError, ValueError) as exc:
+        raise ImportError("lineage is invalid") from exc
+    if supplied != expected["lineage.json"]:
+        raise ImportError("lineage is not bound to the reviewed candidate")
+    lineage = Lineage.model_validate(parse_json(expected["lineage.json"]))
     records = {record.record_id: record for record in lineage.records}
     if isinstance(start, QualifiedFact):
         matches = [
@@ -718,15 +742,7 @@ def read_context(
     kb_by_id = {}
     for document in lineage.documents:
         document_id = document.identity.document_id
-        path = root / "documents" / document_id / "document_kb.json"
-        try:
-            if _is_reparse(path) or not path.is_file():
-                raise OSError
-            raw = path.read_bytes()
-        except OSError as exc:
-            raise ImportError("context KB unavailable") from exc
-        if _digest(raw) != document.kb_sha256:
-            raise ImportError("context KB digest mismatch")
+        raw = expected[f"documents/{document_id}/document_kb.json"]
         kb = load_document_kb_bytes(raw)
         kb_by_id[document_id] = {fact.fact_id: fact for fact in kb.facts}
     result = []
