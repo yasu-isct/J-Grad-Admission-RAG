@@ -58,15 +58,13 @@ codes and exception behavior. Do not insert GSFS into these defaults or broaden 
 
 1. **Complete in PR #204:** [EVID-01](reviewed-source-evidence-spec.md), the generic source auditor
    and three-topic operator preview. Eight reviewed records contain 23 distinct source fragments.
-2. **Only Ready implementation after design merge:** [BUILD-01 #206](build-profile-isolation-spec.md),
-   isolate the legacy ISCT profile and guard an explicit entry; preserve current behavior/bytes.
-3. After profile acceptance, release a precise reviewed-import/KB-lineage Spec under
-   [ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md). A new identity
-   creates a distinct candidate; it never updates an existing index in place.
-4. Then design reusable material/condition rules and multi-source report binding, without the
-   five-item ISCT assumption; only after that expose the bounded existing API/UI journey.
+2. **Complete in PR #208:** [BUILD-01 #206](build-profile-isolation-spec.md), preserving legacy behavior.
+3. **Complete in PR #211:** [IMPORT-01 #209](reviewed-fragment-import-spec.md), exact candidate KB/lineage.
+4. **Only next implementation after design merge:** [MAT-01](material-condition-spec.md), shared
+   three-valued conditions and compatible applicant facts, under [ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md).
+5. Reviewed scope/evidence and multi-source report binding, then local API/UI. Neither is released.
 
-Orders 3-4 remain planning boundaries, not released Issues. Do not pre-release a long framework queue. The milestone objective is the bounded materials
+Only order 4 is released by the current design. Do not pre-release a long framework queue. The milestone objective is the bounded materials
 journey; date/eligibility completeness, additional schools, MinerU reruns and M13 are excluded.
 
 ## What the first task will visibly demonstrate

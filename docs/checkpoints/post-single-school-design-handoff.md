@@ -138,8 +138,15 @@ hashes, five candidate files,23 exact fragments and complete E02 context passed 
 bytes/mtime. All four real calls are consumed; final review peak89,714,688 bytes and0.4473403s.
 Developer historical unmeasured RSS and the unrelated local391 row-order diagnostic remain disclosed.
 [Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/211#issuecomment-5862212992).
-The unique next design is scoped material conditions and multi-source report binding; no next
-implementation is Ready. Keep the existing M15 Main chat waiting for that separately reviewed Spec.
+The next design is now [ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md).
+Only [MAT-01](../onboarding/material-condition-spec.md) is released after its design merge: extract
+a shared predicate/tri-state core and add a compatible profile envelope with two employment facts.
+Pinned policy data covers three topics, while previews expose conditions only, not obligations.
+Existing profile/rule/report schemas and the ISCT five-item behavior stay unchanged. No PDF/KB reads
+or IMPORT-01 calls; its exhausted budget stays closed. MAT-01 has a separate three-command budget
+for small JSON previews (developer two, reviewer one). Reuse the same M15 Main chat.
+Reviewed scope/evidence and multi-source report binding remain a later, unreleased Spec; unknown
+Fact scope and failed KB quality gates must not be bypassed to activate reports.
 
 The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
 GitHub, avoid overlapping work and release only one Ready task. Previous overnight authorization

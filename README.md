@@ -629,8 +629,10 @@ for three materials topics with exact source/page binding (accepted PR #204).
 [BUILD-01 #206](docs/onboarding/build-profile-isolation-spec.md) is accepted in PR #208: the legacy
 ISCT profile and guarded entry preserve existing outputs.
 [IMPORT-01 #209](docs/onboarding/reviewed-fragment-import-spec.md) is accepted in PR #211: 23 reviewed
-fragments now form three isolated candidate KBs with bound lineage. No next implementation is Ready;
-scoped material rules and multi-source report binding are the next design step, before presentation;
+fragments now form three isolated candidate KBs with bound lineage. The sole next implementation is
+[MAT-01](docs/onboarding/material-condition-spec.md): shared tri-state condition logic and a compatible
+applicant-facts envelope. It emits condition previews, not official material advice. Reviewed scope,
+multi-source evidence/report integration and presentation remain subsequent gates;
 [ADR 0011](docs/decisions/0011-explicit-build-profiles-and-reviewed-lineage.md) records the boundary.
 No new parser experiment or GSFS production activation is authorized.
 See the [current handoff](docs/checkpoints/post-single-school-design-handoff.md). M13 remains paused.

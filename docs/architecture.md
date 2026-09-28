@@ -402,9 +402,13 @@ not a parallel engine. See the [first slice Spec](onboarding/reviewed-source-evi
 
 
 EVID-01 is accepted in PR #204. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
-releases only [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): explicit legacy build-profile
-selection and policy isolation, preserving existing build APIs/bytes. The old compatibility entry
-still runs the legacy pipeline; it is not a safe onboarding entry for new schools. The future
-reviewed-source mapper will bypass legacy extraction/chunk heuristics and preserve each fragment,
-required context and document-qualified lineage. Import/publication and multi-source rule/report
-contracts remain later work, not current production capability.
+led to completed [BUILD-01 #206](onboarding/build-profile-isolation-spec.md) / PR #208 and
+[IMPORT-01 #209](onboarding/reviewed-fragment-import-spec.md) / PR #211. The old compatibility entry
+remains legacy-only; reviewed import bypasses its extraction/chunk heuristics and preserves exact
+fragments, required context and document-qualified lineage in isolated candidates.
+
+[ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) releases only
+[MAT-01](onboarding/material-condition-spec.md): reuse one predicate/tri-state core through a new
+compatible profile envelope. Condition matching does not approve a material obligation. The old
+five-item policy and single-document evidence/report validators remain unchanged. Candidate scope
+and quality gates require a separately reviewed integration contract before authoritative reports.
