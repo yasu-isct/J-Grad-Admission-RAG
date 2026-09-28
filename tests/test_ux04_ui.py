@@ -5,7 +5,7 @@ STATIC_ROOT = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "servi
 
 
 def test_step_three_uses_four_native_keyboard_groups_with_text_states() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
     css = (STATIC_ROOT / "app.css").read_text(encoding="utf-8")
 
@@ -22,7 +22,7 @@ def test_step_three_uses_four_native_keyboard_groups_with_text_states() -> None:
 
 
 def test_unknown_and_not_applicable_are_ui_only_and_submission_contract_is_unchanged() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     for state in ("未填写", "不知道", "不适用", "尚未取得"):
@@ -40,7 +40,7 @@ def test_unknown_and_not_applicable_are_ui_only_and_submission_contract_is_uncha
 
 
 def test_linked_english_help_and_evidence_limits_are_not_rule_judgments() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     assert 'id="english-link-hint"' in html

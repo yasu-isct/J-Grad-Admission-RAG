@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>J-Grad 申请检查向导</title>
+    <link rel="stylesheet" href="/assets/app.css">
+    <script src="/assets/overview.js" defer></script>
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <p class="product-mark" aria-hidden="true">J</p>
+        <div class="header-copy">
+          <h1>J-Grad 申请检查向导</h1>
+          <p>依据审核过的募集要项，分四步整理你的申请准备</p>
+        </div>
+        <span class="runtime-boundary">本地运行 · 不保存个人资料</span>
+      </div>
+    </header>
+
+    <main class="workspace" aria-labelledby="workspace-heading">
+      <nav aria-label="参考入口"><a href="/app">返回统一工作台</a></nav>
+      <section class="intro" aria-labelledby="workspace-heading">
+        <p class="eyebrow">申请准备检查</p>
+        <h2 id="workspace-heading">先选定申请目标，再逐步核对官方要求</h2>
+        <p>每次只处理当前一步。你可以随时返回修改，后续旧结果会按现有安全规则清除。</p>
+        <p class="essential-boundary"><strong>本工具不是最终资格判断。</strong> 信息不足不会被解释为符合要求。</p>
+        <details class="scope-details">
+          <summary>使用范围</summary>
+          <p>本工具只整理已人工审核的部分规则，不保证出愿资格、材料受理或录取结果。个人输入不保存到浏览器或服务器，最终请以学校官方说明和招生部门确认为准。</p>
+        </details>
+      </section>
+
+      <nav class="stepper" aria-label="申请检查步骤">
+        <ol>
+          <li id="step-nav-1" data-state="current" aria-current="step"><span class="step-number">1</span><span><strong>选择目标</strong><small>当前</small></span></li>
+          <li id="step-nav-2" data-state="locked"><span class="step-number">2</span><span><strong>官方要求</strong><small>未开始</small></span></li>
+          <li id="step-nav-3" data-state="locked"><span class="step-number">3</span><span><strong>个人情况</strong><small>未开始</small></span></li>
+          <li id="step-nav-4" data-state="locked"><span class="step-number">4</span><span><strong>准备清单</strong><small>未开始</small></span></li>
+        </ol>
+      </nav>
+
+      <section class="demo-shell application-flow" aria-label="四步申请检查">
+        <section id="step-1-panel" class="flow-step" data-step-state="current" aria-labelledby="demo-heading">
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 1 · 申请目标</p><h2 id="demo-heading" tabindex="-1">你准备申请什么？</h2></div>
+            <span id="step-1-badge" class="step-state-badge">当前</span>
+          </header>
+          <div id="step-1-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已选择的目标</p><p id="step-1-summary-text"></p></div>
+            <button id="edit-target" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-1-content" class="flow-step-content">
+          <p class="field-detail">选项来自服务端审核目录。全部选完后，按钮会变为可用。</p>
+          <form id="target-form" novalidate>
+            <div class="target-grid">
+              <div><label for="school-select">学校</label><select id="school-select" required disabled><option value="">正在读取审核目录</option></select></div>
+              <div><label for="demo-degree-select">学位</label><select id="demo-degree-select" required disabled><option value="">请先选择学校</option></select></div>
+              <div><label for="intake-select">入学时间</label><select id="intake-select" required disabled><option value="">请先选择学位</option></select></div>
+              <div><label for="college-select">学院</label><select id="college-select" required disabled><option value="">请先选择入学时间</option></select></div>
+              <div><label for="department-select">系／专业</label><select id="department-select" required disabled><option value="">请先选择学院</option></select></div>
+              <div id="route-field" hidden><label for="route-select">出愿日程／方式</label><select id="route-select" disabled><option value="">请选择日程或方式</option></select></div>
+            </div>
+            <div class="actions">
+              <button id="requirements-submit" type="submit" disabled>查看基础出愿要求</button>
+              <button id="requirements-retry" class="secondary" type="button" hidden>重试</button>
+            </div>
+            <p id="target-completion-hint" class="action-hint">请完成申请目标选择，按钮随后会变为可用。</p>
+          </form>
+          <div id="target-status" class="status-message" role="status" aria-live="polite" tabindex="-1">正在读取审核目录。</div>
+          </div>
+        </section>
+
+        <section id="step-2-panel" class="flow-step requirements-panel" data-step-state="locked" aria-labelledby="requirements-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 2 · 官方要求</p><h2 id="requirements-heading" tabindex="-1">基础出愿要求</h2></div>
+            <span id="step-2-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-2-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已加载的要求</p><p id="step-2-summary-text"></p></div>
+            <button id="edit-requirements" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-2-content" class="flow-step-content">
+          <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
+          <div id="requirements-output" class="requirements-output"></div>
+          <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button></div>
+          </div>
+        </section>
+
+        <section id="applicant-panel" class="flow-step applicant-panel" data-step-state="locked" aria-labelledby="applicant-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 3 · 个人情况</p><h2 id="applicant-heading" tabindex="-1">填写最少信息并对照</h2></div>
+            <span id="step-3-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-3-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">信息提供情况</p><p id="step-3-summary-text"></p></div>
+            <button id="edit-applicant" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-3-content" class="flow-step-content">
+          <p class="field-detail profile-intro">只填写用于本次页面对照的信息，不会保存到浏览器或服务器。可以暂时留空或选择“不知道”；空值不会被判为不符合。</p>
+          <p class="profile-state-guide"><strong>状态怎么理解：</strong>“未填写”是尚未作答；“不知道”是主动标记待确认；“不适用”仅是个人判断，不代表官方豁免；“尚未取得”表示目前没有相应成绩单或材料。最终仍以官方适用性和学校确认结果为准。</p>
+          <form id="applicant-form" novalidate>
+            <div class="profile-grid">
+              <details class="profile-group" data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility" open>
+                <summary><span class="profile-group-title"><strong>1 · 学历与毕业情况</strong><small>用于对照已审核的学历路径；不能替代学校资格认定。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>学历</legend>
+                <label for="demo-credential-basis">最接近的学历路径</label>
+                <p id="credential-help" class="field-help">选择与你最接近的路径，帮助服务端找对应的已审核条件；选不准可以标记不知道。</p>
+                <select id="demo-credential-basis" aria-describedby="credential-help">
+                  <option value="">未填写</option>
+                  <option value="ui_unknown">不知道／需要确认</option>
+                  <option value="university_graduation">日本大学毕业或预计毕业</option>
+                  <option value="foreign_16_year_bachelor_equivalent">外国 16 年教育／学士相当</option>
+                  <option value="foreign_15_year_education">外国 15 年教育（需个别资格审查）</option>
+                  <option value="university_three_year_enrollment">大学在学满 3 年等（需个别资格审查）</option>
+                </select>
+                <label for="demo-completion-state">毕业状态</label>
+                <p id="completion-help" class="field-help">记录你是否已毕业或预计毕业；此处不要求填写毕业日期，也不会自动认定资格。</p>
+                <select id="demo-completion-state" aria-describedby="completion-help"><option value="">未填写</option><option value="ui_unknown">不知道／需要确认</option><option value="ui_not_applicable">目前不适用／暂无毕业状态</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>2 · 英语考试与成绩单</strong><small>记录考试信息；成绩有效性与提交方式仍需核对。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>英语</legend>
+                <label for="demo-english-kind">考试类型</label>
+                <p id="english-kind-help" class="field-help">若填写成绩或考试日期，服务端也需要知道考试类型；未参加可选择“目前不适用”。</p>
+                <select id="demo-english-kind" aria-describedby="english-kind-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道考试类型</option><option value="ui_not_applicable">未参加／目前不适用</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="other">其他</option></select>
+                <label for="demo-english-score">成绩</label>
+                <p id="english-score-help" class="field-help">有成绩时填写数字；没有或不知道可留空。填写分数不会自动判定成绩有效。</p>
+                <input id="demo-english-score" type="number" min="0" max="10000" step="0.01" inputmode="decimal" aria-describedby="english-score-help english-link-hint">
+                <label for="demo-english-date">考试日期</label>
+                <p id="english-date-help" class="field-help">用于之后核对有效期；日期不确定可以留空，不会被当作不符合。</p>
+                <input id="demo-english-date" type="date" aria-describedby="english-date-help english-link-hint">
+                <label for="demo-english-report">官方成绩单</label>
+                <p id="english-report-help" class="field-help">这里只记录你是否已取得官方成绩单；“已取得”不代表学校已收到或受理。</p>
+                <select id="demo-english-report" aria-describedby="english-report-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用／未参加考试</option><option value="true">已取得官方成绩单</option><option value="false">尚未取得官方成绩单</option></select>
+                <p id="english-link-hint" class="linked-field-hint" role="status" aria-live="polite">成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="japanese" data-profile-label="日语学习或证明情况" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>3 · 日语学习或证明</strong><small>仅记录你的情况，证据不足时不生成满足结论。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>日语</legend>
+                <label for="demo-japanese-background">学习或证明情况</label>
+                <p id="japanese-help" class="field-help">有学习经历或证明可记录；不知道、暂不适用或尚无证明都不会被判为不符合。</p>
+                <select id="demo-japanese-background" aria-describedby="japanese-help japanese-limit"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用</option><option value="studied">学过日语</option><option value="certificate_available">有日语能力证明</option><option value="not_studied">未学过／尚无证明</option></select>
+                <p id="japanese-limit" class="profile-limit">日语信息目前只记录。现有审核证据不足时，不会给出“已满足日语要求”的结论。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group materials-fieldset" data-profile-group="materials" data-profile-label="已有材料的准备状态" data-requirement-categories="materials">
+                <summary><span class="profile-group-title"><strong>4 · 材料准备状态</strong><small>只记录你手中是否已有；官方适用性在结果中单独显示。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>材料准备</legend>
+                <p id="material-help" class="field-help">“我已准备”仅表示你自报已有材料，不代表内容有效、学校已收到或受理。认为不适用时仍需查看官方适用性。</p>
+                <div class="material-inputs">
+                  <label>宛名标签<select data-material-code="address_label" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>入学志愿票<select data-material-code="application_form" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>志望理由书<select data-material-code="statement_of_purpose" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>学士课程成绩证明书<select data-material-code="bachelor_transcript" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>毕业（预计）证明书<select data-material-code="graduation_or_expected_graduation_certificate" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                </div>
+                </fieldset>
+              </details>
+            </div>
+            <p class="profile-submit-help">不必填完所有项目也可以对照。未填写／不知道会保留为未知，不会自动判为不符合；个别资格审查仍需学校确认。</p>
+            <div class="actions"><button id="comparison-submit" type="submit" disabled>对照个人情况</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
+          </form>
+          <div id="comparison-status" class="status-message" role="status" aria-live="polite">请先加载基础要求。</div>
+          </div>
+        </section>
+
+        <section id="readiness-panel" class="flow-step applicant-panel readiness-panel" data-step-state="locked" aria-labelledby="readiness-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 4 · 当前准备视图</p><h2 id="readiness-heading" tabindex="-1">接下来需要做什么？</h2></div>
+            <span id="step-4-badge" class="step-state-badge">未开始</span>
+          </header>
+          <p id="readiness-target" class="target-summary"></p>
+          <section class="action-summary" aria-labelledby="action-summary-heading">
+            <div class="action-summary-heading"><div><p class="section-label">先看下一步</p><h3 id="action-summary-heading">当前行动摘要</h3></div><p class="action-summary-total">本次对照 <span id="count-total">0</span> 项</p></div>
+            <dl class="readiness-counts" aria-label="系统对照状态统计">
+              <div data-group="action_required"><dt>需要补充</dt><dd id="count-action">0</dd></div>
+              <div data-group="review_required"><dt>需学校／人工确认</dt><dd id="count-review">0</dd></div>
+              <div data-group="recorded"><dt>已记录／可能匹配</dt><dd id="count-recorded">0</dd></div>
+            </dl>
+            <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
+          </section>
+          <p id="partial-checklist-statement" class="final-notice"></p>
+          <p class="progress-boundary">“系统对照状态”来自当前人工审核覆盖范围内的规则；“我的处理进度”只是此页面会话中的自我标记。刷新、修改目标、返回修改个人情况或重新对照都会清空勾选。材料实际到达、最终资格、申请完整性和录取均未由此验证。</p>
+          <fieldset id="readiness-filters" class="readiness-filters">
+            <legend>筛选显示</legend>
+            <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
+            <label><input type="radio" name="readiness-filter" value="action_required"> 需要补充</label>
+            <label><input type="radio" name="readiness-filter" value="recorded"> 已记录</label>
+            <label><input type="radio" name="readiness-filter" value="review_required"> 需审核／未覆盖</label>
+          </fieldset>
+          <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
+          <div id="comparison-output" class="comparison-output"></div>
+        </section>
+      </section>
+
+      <section id="grounded-answer-panel" class="grounded-answer-panel" aria-labelledby="grounded-answer-heading">
+        <header class="grounded-answer-header">
+          <div>
+            <p class="section-label">NATURAL-LANGUAGE RAG · 独立功能</p>
+            <h2 id="grounded-answer-heading">向当前审核范围提问</h2>
+          </div>
+          <span id="generation-mode-label" class="ai-badge">正在核对生成模式</span>
+        </header>
+        <p class="field-detail">自动复用上方已选择的学校、项目、入学时间与本页内个人情况；会拆分多项问题，并分别标记有依据、缺少依据或需要补充的信息。</p>
+        <p id="grounded-context" class="target-summary">请先完成目标选择并加载基础要求。</p>
+        <form id="grounded-answer-form" novalidate>
+          <label for="grounded-question">问题</label>
+          <textarea id="grounded-question" rows="4" maxlength="1000" disabled aria-describedby="grounded-question-help grounded-question-count" placeholder="例如：托业840按官方标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗？"></textarea>
+          <div class="input-meta"><p id="grounded-question-help">支持中文、日文和混合表达。有依据部分继续回答，未找到明确依据的部分会单独标记。</p><p id="grounded-question-count">0 / 1000</p></div>
+          <div class="actions"><button id="grounded-answer-submit" type="submit" disabled>生成有依据的回答</button><button id="grounded-answer-retry" class="secondary" type="button" hidden>重试</button></div>
+        </form>
+        <div id="grounded-answer-status" class="status-message" role="status" aria-live="polite">加载基础要求后即可提问。</div>
+        <section id="grounded-answer-output" class="grounded-answer-output" aria-live="polite" hidden></section>
+      </section>
+
+      <dialog id="evidence-drawer" class="evidence-drawer" aria-labelledby="drawer-title">
+        <div class="drawer-header">
+          <div><p class="section-label">OFFICIAL EVIDENCE</p><h2 id="drawer-title">官方依据</h2></div>
+          <button id="drawer-close" class="quiet" type="button" aria-label="关闭官方依据">关闭</button>
+        </div>
+        <div id="drawer-content" class="drawer-content"></div>
+      </dialog>
+
+      <details id="advanced-tools" class="advanced-tools">
+        <summary><span><strong>高级工具</strong><small>证据检索与旧版详细报告</small></span></summary>
+        <div class="advanced-tools-content">
+      <section class="secondary-heading" aria-labelledby="secondary-heading">
+        <p class="section-label">辅助工具</p>
+        <h2 id="secondary-heading">证据检索与旧版详细报告</h2>
+        <p class="field-detail">需要核对其他原文时，可继续使用既有检索和详细报告功能。</p>
+      </section>
+
+      <section class="document-bar" aria-labelledby="document-heading">
+        <div class="field-group document-field">
+          <label for="document-select">募集要項</label>
+          <select id="document-select" name="document" required disabled>
+            <option value="">読み込み中</option>
+          </select>
+        </div>
+        <p id="document-detail" class="field-detail"></p>
+      </section>
+
+      <div class="tabs" role="tablist" aria-label="確認方法">
+        <button id="evidence-tab" class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="evidence-view">根拠検索</button>
+        <button id="report-tab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="report-view" tabindex="-1">申請条件レポート</button>
+      </div>
+
+      <section id="evidence-view" class="tab-view" role="tabpanel" aria-labelledby="evidence-tab">
+        <div class="workspace-grid">
+          <section class="search-panel" aria-labelledby="search-heading">
+            <h2 id="search-heading">検索条件</h2>
+            <form id="evidence-form" novalidate>
+              <div class="field-group">
+                <label for="query-input">確認したい内容</label>
+                <textarea id="query-input" name="query" rows="5" maxlength="1000" required placeholder="例：個別入学資格審査の年齢要件"></textarea>
+                <div class="input-meta"><span>日本語で入力</span><output id="query-count" for="query-input">0 / 1000</output></div>
+              </div>
+              <div class="actions">
+                <button id="submit-button" type="submit" disabled>証拠を検索</button>
+                <button id="retry-button" class="secondary" type="button" hidden>再試行</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="results-panel" aria-labelledby="results-heading">
+            <div class="results-header">
+              <div><p class="section-label">Evidence candidates</p><h2 id="results-heading">検索結果</h2></div>
+              <p id="result-count" class="result-count" hidden></p>
+            </div>
+            <div id="status-message" class="status-message" role="status" aria-live="polite" tabindex="-1">募集要項を読み込んでいます。</div>
+            <ol id="evidence-list" class="evidence-list"></ol>
+          </section>
+        </div>
+      </section>
+
+      <section id="report-view" class="tab-view" role="tabpanel" aria-labelledby="report-tab" hidden>
+        <div class="coverage-notice" aria-labelledby="coverage-heading">
+          <h2 id="coverage-heading">審査済み範囲</h2>
+          <p><strong>部分的な規則範囲です。</strong></p>
+          <p id="report-coverage"></p>
+          <p id="report-limitation"></p>
+        </div>
+        <div class="report-grid">
+          <section class="report-form-panel" aria-labelledby="report-form-heading">
+            <h2 id="report-form-heading">申請条件を入力</h2>
+            <form id="report-form" novalidate>
+              <fieldset>
+                <legend>質問</legend>
+                <label for="report-query">確認したい出願資格</label>
+                <textarea id="report-query" rows="4" maxlength="1000" required placeholder="例：情報理工学院の個別出願資格審査"></textarea>
+                <p class="field-detail">氏名、連絡先、IDなど、不要な個人情報は入力しないでください。</p>
+                <output id="report-query-count" for="report-query">0 / 1000</output>
+              </fieldset>
+
+              <fieldset>
+                <legend>対象の出願</legend>
+                <div class="form-grid">
+                  <div><label for="graduate-school">学院・研究科</label><input id="graduate-school" maxlength="200" autocomplete="off"></div>
+                  <div><label for="department-program">系・専攻・プログラム</label><input id="department-program" maxlength="200" autocomplete="off"></div>
+                  <div><label for="degree-level">課程</label><select id="degree-level"><option value="">不明</option><option value="bachelor">学士</option><option value="master">修士</option><option value="doctorate">博士</option><option value="professional">専門職学位</option><option value="other">その他</option></select></div>
+                  <div><label for="intake-year">入学年度</label><input id="intake-year" type="number" min="1" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="intake-month">入学月</label><select id="intake-month"><option value="">不明</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></div>
+                  <div><label for="application-route">出願区分・ルート</label><input id="application-route" maxlength="200" autocomplete="off"></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>学歴と修了時期</legend>
+                <p class="field-detail">現在は一度に1件の学歴だけを安全に確認します。複数の学歴がある場合は、完全な資料による確認が必要です。</p>
+                <div class="form-grid">
+                  <div><label for="credential-country">学校・授与機関の国</label><input id="credential-country" maxlength="2" pattern="[A-Z]{2}" placeholder="JP" autocomplete="off"></div>
+                  <div><label for="credential-degree-level">取得学位の水準</label><select id="credential-degree-level"><option value="">不明</option><option value="bachelor">学士・学士相当</option><option value="master">修士</option><option value="doctorate">博士</option><option value="professional">専門職学位</option><option value="other">その他</option></select></div>
+                  <div><label for="credential-basis">学歴の区分</label><select id="credential-basis"><option value="">不明</option><option value="university_graduation">大学卒業</option><option value="niad_qe_bachelor_award">大学改革支援・学位授与機構による学士授与</option><option value="foreign_16_year_bachelor_equivalent">外国の16年課程・学士相当学位</option><option value="foreign_distance_education_in_japan">外国学校の通信教育を日本で履修</option><option value="foreign_university_program_in_japan">日本国内の外国大学課程</option><option value="recognized_foreign_three_year_bachelor">認証された外国学校の3年以上課程・学士相当</option><option value="designated_specialized_training_college">指定された専修学校専門課程</option><option value="minister_designated_person">文部科学大臣指定者</option><option value="university_three_year_enrollment">大学に3年以上在学</option><option value="foreign_15_year_education">外国の15年課程を修了</option><option value="designated_foreign_15_year_program_in_japan">指定された在日外国大学の15年課程</option><option value="review_path10_sixteen_year_equivalent">個別審査（10）16年相当教育</option><option value="review_path10_four_year_specialized_course">個別審査（10）4年制専門課程</option><option value="review_path10_mot_professional_experience">個別審査（10）MOT職務経験</option><option value="review_path11_under_sixteen_year_bachelor">個別審査（11）16年未満の学士相当</option></select></div>
+                  <div><label for="completion-state">修了状態</label><select id="completion-state"><option value="">不明</option><option value="completed">修了済み</option><option value="expected">修了見込み</option><option value="not_completed">未修了・見込み日なし</option></select></div>
+                  <div><label for="completion-date">修了・学位授与日</label><input id="completion-date" type="date"></div>
+                  <div><label for="expected-completion-date">修了・学位授与見込日</label><input id="expected-completion-date" type="date"></div>
+                  <div><label for="years-of-education">学校教育の年数</label><input id="years-of-education" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="coursework-in-japan">日本国内で履修</label><select id="coursework-in-japan"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="program-duration-years">課程の修業年限</label><input id="program-duration-years" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="institution-recognition-status">外国学校の認証・指定</label><select id="institution-recognition-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公的資料で確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="program-designation-status">課程・教育施設の指定</label><select id="program-designation-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公的資料で確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="completion-timing-verification-status">修了時点の告示基準確認</label><select id="completion-timing-verification-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公的資料で確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="person-designation-status">指定者としての根拠</label><select id="person-designation-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公的資料で確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="years-enrolled-at-eligibility-cutoff">資格基準日時点の大学在学年数</label><input id="years-enrolled-at-eligibility-cutoff" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="prescribed-credits-excellence-status">規定学分・優秀成績の大学認定</label><select id="prescribed-credits-excellence-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">大学が確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="institution-is-target-university">東京科学大学に在学</label><select id="institution-is-target-university"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="gpt-after-two-years">2年在学時点のGPT</label><input id="gpt-after-two-years" type="number" min="0" step="0.01" inputmode="decimal"></div>
+                  <div><label for="credits-after-two-years">2年在学時点の修得単位</label><input id="credits-after-two-years" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="required-specialization-courses-status">必修・選択必修科目の修得見込</label><select id="required-specialization-courses-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">大学が確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="expected-specialist-credits">専門科目群の修得見込単位</label><input id="expected-specialist-credits" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="liberal-arts-requirements-status">教養科目群の要件充足見込</label><select id="liberal-arts-requirements-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">大学が確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="prior-education-category">（10）の教育機関・学歴区分</label><select id="prior-education-category"><option value="">不明</option><option value="technical_college_advanced_course">高専専攻科</option><option value="junior_college_advanced_course">短大専攻科</option><option value="korea_university">朝鮮大学校</option><option value="non_designated_foreign_university_japan_campus">非指定の外国大学日本校</option><option value="specialized_training_college">専修学校専門課程</option><option value="technical_college">高等専門学校</option><option value="junior_college">短期大学</option><option value="university_withdrawal">大学2年以上在学後の退学</option></select></div>
+                  <div><label for="sixteen-year-equivalence-status">16年課程相当の公式認定</label><select id="sixteen-year-equivalence-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公式確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="ministerial-course-standard-status">4年制専門課程の大臣基準</label><select id="ministerial-course-standard-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公式確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="ministerial-completion-deadline-status">大臣指定日以前の修了</label><select id="ministerial-completion-deadline-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公式確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="years-enrolled-before-withdrawal">退学前の大学在学年数</label><input id="years-enrolled-before-withdrawal" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="under-sixteen-year-country-status">16年未満で学士相当となる国・対象</label><select id="under-sixteen-year-country-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公式確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="university-education-completion-status">大学教育の修了</label><select id="university-education-completion-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">公式確認済み</option><option value="not_confirmed">確認できない</option></select></div>
+                  <div><label for="post-university-research-months-at-eligibility-cutoff">資格基準日までに見込む、大学教育修了後の研究機関での研究（月）</label><input id="post-university-research-months-at-eligibility-cutoff" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="graduate-equivalent-recognition-status">大学卒業同等以上の学力認定</label><select id="graduate-equivalent-recognition-status"><option value="">不明</option><option value="applicant_claimed">申告のみ</option><option value="officially_confirmed">本学が正式認定</option><option value="not_confirmed">認定されていない</option></select></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>現在確認できる申請者情報</legend>
+                <p class="field-detail">不明な項目は「不明」または空欄のままにしてください。空欄は「いいえ」や 0 ではありません。</p>
+                <div class="form-grid">
+                  <div><label for="age-at-enrollment">入学時年齢</label><input id="age-at-enrollment" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="professional-months">実務経験（月）</label><input id="professional-months" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="research-months">研究経験（月）</label><input id="research-months" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                  <div><label for="review-status">個別資格審査の状態</label><select id="review-status"><option value="">不明</option><option value="not_requested">未申請</option><option value="requested">申請済み</option><option value="completed">完了</option></select></div>
+                  <div><label for="review-requested">個別資格審査を申請したか</label><select id="review-requested"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="review-completed">個別資格審査が完了したか</label><select id="review-completed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="age-at-eligibility-cutoff">入学日前日・資格基準日時点の年齢</label><input id="age-at-eligibility-cutoff" type="number" min="0" max="9007199254740991" step="1" inputmode="numeric"></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>出願手続の進捗</legend>
+                <p class="field-detail">発送日は到着日ではありません。不明な項目は空欄のままにしてください。</p>
+                <div class="form-grid">
+                  <div><label for="materials-arrival-date">出願書類が大学へ実際に到着した日</label><input id="materials-arrival-date" type="date"></div>
+                  <div><label for="materials-dispatched-date">出願書類を発送した日</label><input id="materials-dispatched-date" type="date"></div>
+                  <div><label for="online-steps-completed">出願情報・写真・検定料のオンライン手続</label><select id="online-steps-completed"><option value="">不明</option><option value="true">完了</option><option value="false">未完了</option></select></div>
+                  <div><label for="a-schedule-oral-participation">A日程口述試験への参加予定</label><select id="a-schedule-oral-participation"><option value="">不明</option><option value="true">参加する</option><option value="false">参加しない</option></select></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>条件に応じた出願前の確認</legend>
+                <p class="field-detail">連絡先ごとに目的を区別します。ある目的で連絡済みでも、別の目的の連絡済みとは扱いません。</p>
+                <div class="form-grid">
+                  <div><label for="special-accommodation-needed">受験上の特別な配慮が必要か</label><select id="special-accommodation-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="special-accommodation-contacted">特別配慮について入試課へ連絡したか</label><select id="special-accommodation-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="foreign-national-rule-applies">外国籍志願者の注意事項の対象か</label><select id="foreign-national-rule-applies"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="current-residence-country">出願時の居住国コード</label><input id="current-residence-country" maxlength="2" placeholder="JP" autocomplete="country"></div>
+                  <div><label for="residence-status-valid-until">在留資格の有効期限</label><input id="residence-status-valid-until" type="date"></div>
+                  <div><label for="long-term-stay-allowed">長期滞在が可能な在留資格か</label><select id="long-term-stay-allowed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="residence-status-contacted">在留資格について入試課へ連絡したか</label><select id="residence-status-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="visa-arrangements-needed">COE・ビザの準備が必要か</label><select id="visa-arrangements-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="visa-advisor-consulted">ビザ所要時間を志望指導教員へ相談したか</label><select id="visa-advisor-consulted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="transcript-unavailable-reason">成績証明書を発行できない理由</label><select id="transcript-unavailable-reason"><option value="">不明</option><option value="none">発行できる</option><option value="retention_expired">保存期間経過</option><option value="institution_closed">学校閉鎖</option><option value="disaster">被災</option><option value="other">その他</option></select></div>
+                  <div><label for="transcript-contacted">証明書について入試課へ相談したか</label><select id="transcript-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="disaster-fee-consultation-needed">被災による検定料相談が必要か</label><select id="disaster-fee-consultation-needed"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="disaster-fee-contacted">被災検定料について入試課へ相談したか</label><select id="disaster-fee-contacted"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="scholarship-status">奨学金の区分</label><select id="scholarship-status"><option value="">不明</option><option value="none">いずれでもない</option><option value="mext">文部科学省国費</option><option value="japan_korea_joint">日韓共同理工系</option><option value="foreign_government">外国政府奨学金</option></select></div>
+                  <div><label for="scholarship-copy-emailed-date">証明書の写しをメール提出した日</label><input id="scholarship-copy-emailed-date" type="date"></div>
+                  <div><label for="scholarship-method-received">入試課から出願方法の案内を受けたか</label><select id="scholarship-method-received"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>提出する英語外部試験</legend>
+                <p class="field-detail">複数の成績がある場合は、今回提出する一つを選んで入力してください。点数だけでは提出可否を判定しません。</p>
+                <div class="form-grid">
+                  <div><label for="language-test-kind">試験種別</label><select id="language-test-kind"><option value="">不明</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="toefl_itp">TOEFL-ITP</option><option value="toeic_ip">TOEIC-IP</option><option value="other">その他・未確認</option></select></div>
+                  <div><label for="language-test-date">受験日</label><input id="language-test-date" type="date"></div>
+                  <div><label for="language-test-score">スコア</label><input id="language-test-score" type="number" min="0" step="0.01" inputmode="decimal"></div>
+                  <div><label for="language-test-selected">この結果を提出用に選択</label><select id="language-test-selected"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-score-submission-method">スコアシートの提出方法</label><select id="language-score-submission-method"><option value="">不明</option><option value="with_application">出願書類と同時に提出</option><option value="department_later_by_mail">系へ後日郵送</option><option value="written_exam_day_carry">筆答試験当日に持参</option><option value="no_external_submission">外部試験スコアを提出しない</option><option value="other">その他</option></select></div>
+                  <div><label for="language-score-expected-arrival-date">後日郵送するスコアシートの到着予定日</label><input id="language-score-expected-arrival-date" type="date"></div>
+                  <div><label for="language-score-registered-mail">書留郵便で送付する予定</label><select id="language-score-registered-mail"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-score-replacement-after-deadline">出願期限後にスコアを差し替える予定</label><select id="language-score-replacement-after-deadline"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="language-online-pdf">オンラインで取得した PDF</label><select id="language-online-pdf"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="toeic-qr-present">TOEIC 確認用 QR コード</label><select id="toeic-qr-present"><option value="">不明</option><option value="true">あり</option><option value="false">なし</option></select></div>
+                  <div><label for="toeic-digital-certificate">Digital Official Score Certificate</label><select id="toeic-digital-certificate"><option value="">不明</option><option value="true">該当</option><option value="false">非該当</option></select></div>
+                  <div><label for="toefl-score-report">TOEFL Test Taker Score Report PDF</label><select id="toefl-score-report"><option value="">不明</option><option value="true">あり</option><option value="false">なし</option></select></div>
+                  <div><label for="toefl-g179">TOEFL DI code G179</label><select id="toefl-g179"><option value="">不明</option><option value="true">登録済み</option><option value="false">未登録</option></select></div>
+                  <div><label for="ets-paper-applicant">ETS から本人へ紙で送付</label><select id="ets-paper-applicant"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                  <div><label for="ets-paper-institution">ETS から大学へ直接送付</label><select id="ets-paper-institution"><option value="">不明</option><option value="true">はい</option><option value="false">いいえ</option></select></div>
+                </div>
+              </fieldset>
+
+              <div class="actions">
+                <button id="report-submit" type="submit" disabled>レポートを作成</button>
+                <button id="report-retry" class="secondary" type="button" hidden>再試行</button>
+                <button id="report-clear" class="quiet" type="button">入力と結果を消去</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="report-results-panel" aria-labelledby="report-results-heading">
+            <div class="results-header"><div><p class="section-label">Reviewed rule report</p><h2 id="report-results-heading">レポート</h2></div></div>
+            <div id="report-status" class="status-message" role="status" aria-live="polite" tabindex="-1">質問と分かる範囲の条件を入力してください。</div>
+            <div id="report-output" class="report-output"></div>
+          </section>
+        </div>
+      </section>
+        </div>
+      </details>
+    </main>
+  </body>
+</html>

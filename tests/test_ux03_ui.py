@@ -190,7 +190,7 @@ def test_real_response_shape_separates_unhandled_date_from_profile_comparison() 
 
 
 def test_result_hierarchy_cta_profile_schema_and_reset_are_explicit() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
     css = (STATIC_ROOT / "app.css").read_text(encoding="utf-8")
 

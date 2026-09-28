@@ -5,7 +5,7 @@ STATIC_ROOT = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "servi
 
 
 def test_progressive_flow_has_four_stateful_steps_and_safe_summaries() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     for number in range(1, 5):
@@ -32,7 +32,7 @@ def test_progressive_flow_has_four_stateful_steps_and_safe_summaries() -> None:
 
 
 def test_advanced_tools_are_native_collapsed_and_existing_functions_remain() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     assert '<details id="advanced-tools" class="advanced-tools">' in html

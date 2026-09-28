@@ -12,6 +12,7 @@ from jgrad_admission_rag.reasoning.material_slice_report import load_plan
 from jgrad_admission_rag.reviewed_source_evidence import canonical_json_bytes, parse_json
 from jgrad_admission_rag.service import create_app
 from jgrad_admission_rag.service.runtime import ServiceSettings
+from jgrad_admission_rag.service.demo_requirements import DemoTargetCatalogResponse
 from tests.test_material_slice_report import make_tiny_synthetic_slice
 from tests.test_applicant_report_api import _runtime as legacy_runtime
 
@@ -96,6 +97,8 @@ def test_synthetic_reference_catalog_evidence_and_explicit_report(local_slice, m
         assert item["kind"] == "reviewed_material_slice"
         assert item["availability"] == "ready"
         assert item["target"] == plan.target.model_dump(mode="json")
+        assert item["program_alias"] == "CBMS"
+        assert item["program_display_name"] == "複雑理工学専攻"
         assert reads == 1
         evidence = client.get(f"/v1/reference-slices/{item['entry_id']}/evidence")
         assert evidence.status_code == 200
@@ -180,6 +183,7 @@ def test_second_institution_uses_same_adapter(tmp_path):
         assert item["availability"] == "ready"
         assert item["target"]["institution_id"] == "second"
         assert item["target"] == plan.target.model_dump(mode="json")
+        assert item["program_alias"] is None
         assert (
             len(client.get(f"/v1/reference-slices/{item['entry_id']}/evidence").json()["topics"])
             == 1
@@ -201,6 +205,61 @@ def test_old_runtime_without_selectable_targets_is_not_advertised(tmp_path):
         assert {item["kind"] for item in items} == {"reviewed_material_slice"}
         assert client.get("/v1/target-catalog").json()["schools"] == []
         assert client.get("/v1/health/ready").json()["ready"] is True
+
+
+def test_legacy_catalog_advertises_current_export_without_gsfs_config(tmp_path, monkeypatch):
+    from jgrad_admission_rag.service import reference_app
+
+    _, settings, dependencies, _ = legacy_runtime(tmp_path)
+    catalog = DemoTargetCatalogResponse.model_validate(
+        {
+            "schema_version": "1.0",
+            "schools": [
+                {
+                    "school_id": "synthetic-school",
+                    "school_name": "合成大学",
+                    "degrees": [
+                        {
+                            "degree_id": "master",
+                            "degree_name": "修士课程",
+                            "intakes": [
+                                {
+                                    "document_id": "synthetic-doc",
+                                    "year": 2027,
+                                    "month": 4,
+                                    "intake_name": "2027 年 4 月",
+                                    "colleges": [
+                                        {
+                                            "college_id": "college",
+                                            "college_name": "合成学院",
+                                            "departments": [
+                                                {
+                                                    "department_id": "department",
+                                                    "department_name": "合成专攻",
+                                                    "application_routes": [],
+                                                }
+                                            ],
+                                        }
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+    )
+    monkeypatch.setattr(reference_app, "_build_demo_target_catalog_response", lambda *_: catalog)
+    with TestClient(create_app(settings, dependencies)) as client:
+        entries = client.get("/v1/reference-targets").json()["items"]
+        assert len(entries) == 1
+        assert entries[0]["kind"] == "legacy_applicant"
+        assert entries[0]["capabilities"] == {
+            "applicant_check": True,
+            "evidence_browse": True,
+            "reference_report": True,
+        }
+        assert entries[0]["legacy_catalog"] == catalog.schools[0].model_dump(mode="json")
 
 
 @pytest.mark.parametrize("mutation", ["extra", "relative", "oversize", "bad_pin", "missing_source"])

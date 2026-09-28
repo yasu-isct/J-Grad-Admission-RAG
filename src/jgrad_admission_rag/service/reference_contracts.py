@@ -35,8 +35,11 @@ class ReferenceTargetItem(_Closed):
     capabilities: ReferenceCapabilities
     organization_name: str | None = None
     program_name: str | None = None
+    program_display_name: str | None = None
+    program_alias: str | None = None
     href: Literal["/app"] | None = None
     legacy_catalog: DemoSchool | None = None
+    legacy_edition_labels: dict[str, str] = Field(default_factory=dict)
     target: Target | None = None
     request_profile_target: ReferenceProfileTarget | None = None
     snapshot_id: Digest | None = None

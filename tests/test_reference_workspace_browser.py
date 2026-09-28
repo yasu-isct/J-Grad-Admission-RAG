@@ -206,17 +206,22 @@ def test_browser_reaches_synthetic_http_backend(tmp_path):
                 lambda request: posts.append(request) if request.method == "POST" else None,
             )
             page.goto(f"http://127.0.0.1:{port}/app/reference")
-            page.locator("#reference-select").select_option(row["slice_id"])
-            page.locator("#evidence-panel").wait_for(state="visible")
-            assert page.locator("#evidence-topics blockquote").count() == 2
+            assert page.url.endswith("/app")
+            page.locator("#uw-school option").first.wait_for(state="attached")
+            page.locator("#uw-load").click()
+            page.locator(".uw-topic").wait_for(state="visible")
+            page.locator(".uw-topic .uw-link-button").click()
+            assert page.locator("#uw-evidence blockquote").count() >= 1
+            assert "TOEFL iBT" in page.locator("#uw-evidence blockquote").first.inner_text()
+            page.locator("#uw-evidence [data-close]").click()
             page.screenshot(path=str(tmp_path / "synthetic-desktop.png"), full_page=True)
             assert not posts
-            page.locator("#generate-report").click()
-            page.locator("#report-output").wait_for(state="visible")
+            page.locator("#uw-generate").click()
+            page.locator("#uw-report").wait_for(state="visible")
             assert len(posts) == 1
-            assert page.locator("#report-summary h4").count() == 1
-            assert page.locator("#report-summary pre").count() == 1
-            page.locator("#copy-report").click()
+            assert page.locator("#uw-report-body h3").count() >= 1
+            assert page.locator("#uw-report-body pre").count() == 1
+            page.locator("#uw-copy").click()
             page.wait_for_function("window.copied !== undefined")
             assert "合成大学" in page.evaluate("window.copied")
             page.screenshot(path=str(tmp_path / "synthetic-report.png"), full_page=True)

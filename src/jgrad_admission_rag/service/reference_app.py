@@ -9,7 +9,7 @@ from pathlib import Path
 
 from anyio import to_thread
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 from ..reasoning.material_conditions import load_request as load_material_request
 from ..reasoning.material_slice_report import MaterialSliceError
@@ -28,6 +28,7 @@ from .reference_contracts import (
     ReferenceReportResponse,
     ReferenceTargetsResponse,
 )
+from .reference_display import PROGRAM_LABELS
 from .reference_workspace import load_reference_workspace
 from .runtime import ServiceDependencies, ServiceSettings
 
@@ -45,6 +46,7 @@ def create_app(
     @asynccontextmanager
     async def reference_lifespan(application: FastAPI):
         async with legacy_lifespan(application):
+            state.reference_legacy_catalog = None
             if selected_settings.reference_workspace_config_path is not None:
                 try:
                     state.reference_slices = await to_thread.run_sync(
@@ -56,32 +58,27 @@ def create_app(
                 except Exception:
                     state.reference_initialization_failed = True
                     state.reference_slices = ()
-                if (
-                    _report_service_ready(state)
-                    and state.provider is not None
-                    and not state.initialization_failed
+            if (
+                _report_service_ready(state)
+                and state.provider is not None
+                and not state.initialization_failed
+            ):
+                try:
+                    state.reference_legacy_catalog = await to_thread.run_sync(
+                        partial(_build_demo_target_catalog_response, selected_settings, state)
+                    )
+                except Exception:
+                    state.reference_legacy_catalog = None
+            if state.reference_legacy_catalog is not None:
+                legacy_ids = {
+                    f"legacy-{school.school_id}"
+                    for school in state.reference_legacy_catalog.schools
+                }
+                if any(
+                    snapshot.config.slice_id in legacy_ids for snapshot in state.reference_slices
                 ):
-                    try:
-                        state.reference_legacy_catalog = await to_thread.run_sync(
-                            partial(
-                                _build_demo_target_catalog_response,
-                                selected_settings,
-                                state,
-                            )
-                        )
-                    except Exception:
-                        state.reference_legacy_catalog = None
-                if state.reference_legacy_catalog is not None:
-                    legacy_ids = {
-                        f"legacy-{school.school_id}"
-                        for school in state.reference_legacy_catalog.schools
-                    }
-                    if any(
-                        snapshot.config.slice_id in legacy_ids
-                        for snapshot in state.reference_slices
-                    ):
-                        state.reference_initialization_failed = True
-                        state.reference_slices = ()
+                    state.reference_initialization_failed = True
+                    state.reference_slices = ()
             try:
                 yield
             finally:
@@ -105,7 +102,7 @@ def create_app(
                     ),
                 )
         response = await call_next(request)
-        if request.url.path == "/app/reference":
+        if request.url.path in {"/app/reference", "/app/advanced"}:
             response.headers["X-Content-Type-Options"] = "nosniff"
             response.headers["Referrer-Policy"] = "no-referrer"
             response.headers["Cache-Control"] = "no-store"
@@ -124,8 +121,26 @@ def create_app(
     static = Path(__file__).with_name("static")
 
     @app.get("/app/reference", include_in_schema=False)
-    def reference_app() -> FileResponse:
-        return FileResponse(static / "reference.html", media_type="text/html; charset=utf-8")
+    def reference_app() -> RedirectResponse:
+        return RedirectResponse("/app", status_code=307)
+
+    @app.get("/app/advanced", include_in_schema=False)
+    def advanced_app() -> FileResponse:
+        return FileResponse(static / "advanced.html", media_type="text/html; charset=utf-8")
+
+    @app.get("/assets/unified.js", include_in_schema=False)
+    def unified_js() -> FileResponse:
+        return FileResponse(static / "unified.js", media_type="text/javascript; charset=utf-8")
+
+    @app.get("/assets/unified-core.mjs", include_in_schema=False)
+    def unified_core_js() -> FileResponse:
+        return FileResponse(
+            static / "unified-core.mjs", media_type="text/javascript; charset=utf-8"
+        )
+
+    @app.get("/assets/unified.css", include_in_schema=False)
+    def unified_css() -> FileResponse:
+        return FileResponse(static / "unified.css", media_type="text/css; charset=utf-8")
 
     @app.get("/assets/reference.js", include_in_schema=False)
     def reference_app_js() -> FileResponse:
@@ -154,11 +169,16 @@ def create_app(
                         "availability": "ready",
                         "capabilities": {
                             "applicant_check": True,
-                            "evidence_browse": False,
-                            "reference_report": False,
+                            "evidence_browse": True,
+                            "reference_report": True,
                         },
                         "href": "/app",
                         "legacy_catalog": school.model_dump(mode="json"),
+                        "legacy_edition_labels": {
+                            plan.document_identity.document_id: plan.document_identity.official_title
+                            for plan in state.report_plans
+                            if plan.document_identity.institution_id == school.school_id
+                        },
                     }
                 )
         for snapshot in state.reference_slices:
@@ -169,6 +189,20 @@ def create_app(
                     "institution_name": snapshot.config.institution_name,
                     "organization_name": snapshot.config.organization_name,
                     "program_name": snapshot.config.program_name,
+                    "program_display_name": PROGRAM_LABELS.get(
+                        (
+                            snapshot.plan.target.institution_id,
+                            snapshot.plan.target.program_id,
+                        ),
+                        {},
+                    ).get("official_name"),
+                    "program_alias": PROGRAM_LABELS.get(
+                        (
+                            snapshot.plan.target.institution_id,
+                            snapshot.plan.target.program_id,
+                        ),
+                        {},
+                    ).get("alias"),
                     "availability": "ready",
                     "capabilities": {
                         "applicant_check": False,

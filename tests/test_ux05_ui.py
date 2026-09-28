@@ -5,7 +5,7 @@ STATIC = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "service" /
 
 
 def test_step_four_separates_system_counts_from_personal_progress() -> None:
-    html = (STATIC / "app.html").read_text(encoding="utf-8")
+    html = (STATIC / "advanced.html").read_text(encoding="utf-8")
     js = (STATIC / "app.js").read_text(encoding="utf-8")
 
     assert 'id="action-summary-heading"' in html
@@ -55,7 +55,7 @@ def test_checkmarks_are_ephemeral_and_do_not_enter_api_payload() -> None:
 
 
 def test_limitations_are_visible_without_conflating_recorded_with_satisfied() -> None:
-    html = (STATIC / "app.html").read_text(encoding="utf-8")
+    html = (STATIC / "advanced.html").read_text(encoding="utf-8")
     js = (STATIC / "app.js").read_text(encoding="utf-8")
 
     assert "材料实际到达、最终资格、申请完整性和录取均未由此验证" in html
