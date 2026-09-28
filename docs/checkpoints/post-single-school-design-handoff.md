@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-28 after accepted PR #208 (`cca4efa7`), with the next import design; original release audit was PR #193.
+Updated 2026-09-28 after accepted PR #211 (`f520c7bc`), with candidate import complete; original release audit was PR #193.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
@@ -125,15 +125,21 @@ The initial developer report confused an old 298 index with the frozen 334 basel
 [asset-binding correction](../onboarding/build01-implementation-review.md#independent-design-review-correct-asset-bindings)
 records the verified paths/hashes and evidence limits. The reviewer did not run another real build.
 
-The sole next implementation is [IMPORT-01](../onboarding/reviewed-fragment-import-spec.md), under
+[IMPORT-01 #209](../onboarding/reviewed-fragment-import-spec.md) is accepted in PR #211, under
 [ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md). It maps eight records /
 23 exact fragments into three existing-schema candidate KBs (2/12/9 Facts), with document-qualified
 lineage, complete required context, immutable publication and verified reuse. Mixed-degree source
 identity remains truthful; Fact scope stays unknown and production quality gates remain failed.
 No parser, index, registry, rule or API/UI activation is released. The Spec includes reviewed source
 identities, input pins, deterministic field/ID rules, publication contract and shared real-run budget.
-Reuse one M15 Main chat, first contract/tests and then bounded real candidate evidence/PR handoff.
-Scoped material conditions and multi-source report binding require a later Spec after acceptance.
+Independent re-review accepted final head 5e0412e: 153 focused tests passed, three Windows symlink
+skips covered by Linux CI; both context-binding and CI-fingerprint findings resolved. Actual source
+hashes, five candidate files,23 exact fragments and complete E02 context passed with unchanged
+bytes/mtime. All four real calls are consumed; final review peak89,714,688 bytes and0.4473403s.
+Developer historical unmeasured RSS and the unrelated local391 row-order diagnostic remain disclosed.
+[Acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/211#issuecomment-5862212992).
+The unique next design is scoped material conditions and multi-source report binding; no next
+implementation is Ready. Keep the existing M15 Main chat waiting for that separately reviewed Spec.
 
 The user configured heartbeat gpt6-agent for this existing design chat; each wakeup must re-read
 GitHub, avoid overlapping work and release only one Ready task. Previous overnight authorization

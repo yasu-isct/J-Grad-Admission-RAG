@@ -1,7 +1,7 @@
 # IMPORT-01：将审核摘录接入现有 KB / Fact 与证据链
 
 执行：[Issue #209](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/209)。
-状态：设计合并后唯一 Ready；当前交接同时记录于 #191。
+状态：已在 PR #211 独立验收并合并，#209 完成；真实调用额度4/4已用完，不可重置。
 归属：M15；依赖 #202 / PR #204、#206 / PR #208 已验收。
 基线：main `cca4efa7f65a19e1c12b7b601048137d9ac6b350`。
 依据：[ADR 0011](../decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)。

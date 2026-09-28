@@ -1,6 +1,6 @@
 # IMPORT-01 implementation evidence
 
-Issue: [#209](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/209). The candidate is local, isolated, and non-production. Independent design acceptance remains pending.
+Issue: [#209](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/209). The candidate is local, isolated, and non-production. Independent design acceptance completed in merged PR #211; see the final record below.
 
 ## Checkpoint 1: strict contract and pure mapping
 
@@ -96,3 +96,15 @@ Design reviewed the initial head `b0aed8cc05eb0a585ad2d2fb3a8a612665197536` and 
 Post-fix focused/importer/semantic-gate validation: **123 passed, 2 skipped**. Ruff check and format on `src tests` passed. The earlier local whole-suite ISCT 391 hard-coded ranking mismatch remains a separate Windows result; it is not the PR's original CI failure.
 
 Design's first independent real audit used call **3/4**, UTC 2026-09-28 01:54:55.574490–01:54:56.005897, 0.4331884 s supervised wall time and Windows peak working set 89,731,072 bytes. It rechecked the three PDF identities and existing five files without altering them. Total shared calls used: **3/4** (developer 2, design 1); **1/4 remains exclusively for final design acceptance**. The two developer peak RSS values remain unmeasured; the design measurement does not retroactively prove them.
+
+
+## Independent acceptance on 2026-09-28
+
+Accepted head `5e0412e68fe86ba3353fcc799013d6014b58f562`, merged as `f520c7bc39f2bc697fa3ac7cfc0ff03e8f49aca4`.
+[Final review](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/211#issuecomment-5862212992) supersedes the earlier Changes requested finding. Context reads now bind trusted inputs and complete candidate bytes; optional console registration was removed, preserving frozen gates.
+
+Independent focused tests:153 passed /3 skipped (Windows symlink capability); Linux Quality passed. Final real call4/4 audited three source PDFs and unchanged five-file candidate,23 exact fragments and E02's six-fragment closure. UTC2026-09-28T02:28:18.554208 to02:28:19.001426,0.4473403 seconds,89,714,688-byte peak working set. Full local rows/hashes are in `outputs/review211-final-real-audit.json`; candidate bytes and mtime remained unchanged. No new parse/build/index.
+
+Budget is exhausted:4/4 used,0 remain. Recorded cumulative wall time is about0.9325 seconds; developer timing and historical RSS limitations remain as originally reported. The existing local391 row-order assertion mismatch remains an unclassified diagnostic, not a reason to change frozen assets/gold. This acceptance does not assert that unmeasured historical RSS was below the ceiling.
+
+#209 is complete. M15 remains open with no next Ready implementation; design must specify scoped material conditions and multi-source report binding before releasing development. Candidate coverage/unknown scope/failed production quality gates remain deliberate and do not permit applicant advice or corpus activation.
