@@ -407,8 +407,8 @@ led to completed [BUILD-01 #206](onboarding/build-profile-isolation-spec.md) / P
 remains legacy-only; reviewed import bypasses its extraction/chunk heuristics and preserves exact
 fragments, required context and document-qualified lineage in isolated candidates.
 
-[ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) releases only
+[ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) defines completed
 [MAT-01](onboarding/material-condition-spec.md): reuse one predicate/tri-state core through a new
-compatible profile envelope. Condition matching does not approve a material obligation. The old
+compatible profile envelope, accepted in PR #215. Condition matching does not approve a material obligation. The old
 five-item policy and single-document evidence/report validators remain unchanged. Candidate scope
 and quality gates require a separately reviewed integration contract before authoritative reports.

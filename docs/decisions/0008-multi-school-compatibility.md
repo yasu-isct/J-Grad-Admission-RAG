@@ -164,7 +164,7 @@ The follow-up [ADR 0010](0010-reviewed-source-evidence.md) and
 [EVID-01 #202](../onboarding/reviewed-source-evidence-spec.md) defined the pre-KB evidence tool,
 now accepted in PR #204. [ADR 0011](0011-explicit-build-profiles-and-reviewed-lineage.md) led to
 BUILD-01 #206 / PR #208 and IMPORT-01 #209 / PR #211, both complete.
-[ADR 0012](0012-material-conditions-and-report-boundaries.md) releases MAT-01 alone: shared
+[ADR 0012](0012-material-conditions-and-report-boundaries.md) defines MAT-01 (accepted in PR #215): shared
 condition logic and a compatible applicant envelope. This refines the coarse orders 4-5 without
 activating the accepted candidates. Reviewed scope, multi-source report and UI remain later gates.
 No parser rerun or registry activation is released.

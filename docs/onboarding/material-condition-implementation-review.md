@@ -39,3 +39,24 @@ Final focused verification before PR: `295 passed, 5 skipped` across new conditi
 The design Agent found that the first PR head compared only `(document_id, fact_id)` keys when one context record appeared in multiple rules. A duplicate could therefore change `source_pages` or `authoritative_fact_text_sha256` and still pass structural policy validation. The revised graph check compares the complete normalized `ContextRecord` bytes (all binding fields, record ID and revision) for every reused record ID, after the existing source/Fact and duplicate-binding checks. Identical reuse remains valid; changed pages, text fingerprint, revision or Fact key fail in synthetic policy/trust tests. The pinned policy bytes, trust file and preview computation did not change.
 
 Review-fix verification used only pure/synthetic tests: `339 passed, 6 skipped` with the design-focused test selection and `not real_pdf and not model_integration` marker exclusion; Ruff check/format and diff checks passed. No additional real preview command was run. MAT-01 remains **2/3** total, developer **2/2**, design **0/1**. The original three-line output hash above is unchanged; its independent reproduction remains for design review.
+
+## Independent acceptance and final budget
+
+Design main independently accepted final head `573caa4fe1a6f0b046736049ee4e2959466c099e`,
+merged as `10b5948abd055734a55573c2dfddfb5a2a18b848` in PR #215.
+[The single updated review record](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/215#issuecomment-5863028868)
+preserves the resolved P2 and full commands/hashes. Final independent results: 339 passed,
+six local Windows symlink skips, final-head Linux CI SUCCESS; 242 earlier base/head tri-state
+comparisons remain valid because the shared core was unchanged by the fix.
+
+The reviewer used the reserved third CLI call on the final head at 2026-09-28T04:05:45.485982Z,
+with a 60-second subprocess timeout. It completed in 0.4182928s, exit0, and reproduced the
+4801-byte JSONL and all three request/output hashes above. Each line was revalidated against
+the pinned policy/request. Inputs and retained output bytes/mtime stayed unchanged. Only the
+audit summary was newly saved; no duplicate preview asset was created.
+
+Final MAT-01 budget: **3/3 exhausted** (developer2/2, reviewer1/1), conservative combined duration
+less than2.419s. IMPORT-01 remains4/4. No real PDF/KB/index/model was read or built. This review
+does not claim fresh hashes for protected assets; preservation rests on the bounded no-asset-I/O
+scope and unchanged asset-related implementation. Scope/evidence/report/API/UI activation
+requires a later Spec. M15 remains open, with no next implementation Ready.

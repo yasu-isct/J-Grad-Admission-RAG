@@ -1,7 +1,7 @@
 # MAT-01：复用现有判断逻辑，补齐材料条件与申请人补充信息
 
 执行：[Issue #213](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/213)。
-状态：设计合并后唯一 Ready，当前交接同时记录于 #191。
+状态：#213 已在 PR #215 独立验收并合并；当前没有下一项 Ready 实现，交接记录于 #191。
 M15；依赖 #209 / PR #211 已验收，基线 main `595e6998ed8dcba0f565d732ba09180e605078cd`。
 [ADR 0012](../decisions/0012-material-conditions-and-report-boundaries.md) 是本任务边界。
 

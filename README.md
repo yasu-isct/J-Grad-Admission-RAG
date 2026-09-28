@@ -629,7 +629,7 @@ for three materials topics with exact source/page binding (accepted PR #204).
 [BUILD-01 #206](docs/onboarding/build-profile-isolation-spec.md) is accepted in PR #208: the legacy
 ISCT profile and guarded entry preserve existing outputs.
 [IMPORT-01 #209](docs/onboarding/reviewed-fragment-import-spec.md) is accepted in PR #211: 23 reviewed
-fragments now form three isolated candidate KBs with bound lineage. The sole next implementation is
+fragments now form three isolated candidate KBs with bound lineage. Accepted PR #215 completes
 [MAT-01](docs/onboarding/material-condition-spec.md): shared tri-state condition logic and a compatible
 applicant-facts envelope. It emits condition previews, not official material advice. Reviewed scope,
 multi-source evidence/report integration and presentation remain subsequent gates;

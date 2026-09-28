@@ -268,7 +268,7 @@ pre-KB inputs, preserving the existing KB/rule/citation path and explicit manual
 | 1 | [EVID-01 #202](onboarding/reviewed-source-evidence-spec.md): eight reviewed excerpts, exact target/source audit, three readable operator previews | Complete, accepted PR #204 |
 | 2 | [BUILD-01 #206](onboarding/build-profile-isolation-spec.md): isolate legacy ISCT policy and guard explicit build entry | Complete, accepted PR #208; no GSFS KB |
 | 3 | [IMPORT-01](onboarding/reviewed-fragment-import-spec.md): 23 fragments to three candidate KBs and bound lineage | Complete, accepted PR #211; no production activation |
-| 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Sole next implementation after this design merge; no official report |
+| 4 | [MAT-01](onboarding/material-condition-spec.md): shared condition core, compatible profile envelope and pinned policy previews | Complete, independently accepted PR #215; condition-only, no official report |
 | 5 | Reviewed scope/evidence and multi-source report binding | Not released; requires its own Spec after MAT-01 |
 | 6 | Bounded local API/UI materials journey with official citations | Not released; depends on evidence/rule acceptance |
 
@@ -278,8 +278,8 @@ Keep one M15 development chat and checkpoints at contract/tests, real previews a
 M15 is not complete merely because #202's operator tool works; downstream integration requires
 its own reviewed Specs and actual user-facing acceptance. EVID-01 passed independent acceptance
 in PR #204 (96 focused tests, six reproduced real previews and exact-digest approval). The unique
-next design step follows accepted [IMPORT-01 #209](onboarding/reviewed-fragment-import-spec.md)
-in PR #211: [MAT-01](onboarding/material-condition-spec.md) is the only released prerequisite after design merge.
+next design step follows accepted [MAT-01 #213](onboarding/material-condition-spec.md) in PR #215:
+reviewed scope/evidence and multi-source report binding. No next implementation is Ready until its Spec is reviewed.
 [ADR 0012](decisions/0012-material-conditions-and-report-boundaries.md) separates condition matches from
 material obligations and preserves strict report/evidence gates. [ADR 0011](decisions/0011-explicit-build-profiles-and-reviewed-lineage.md)
 and the import Spec pin deterministic candidate mapping, unknown scope and failed production

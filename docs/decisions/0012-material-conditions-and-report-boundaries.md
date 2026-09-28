@@ -1,6 +1,6 @@
 # ADR 0012: Reusable material conditions before multi-source reports
 
-Status: Accepted for the MAT-01 boundary on merge; report activation remains gated by a later Spec.
+Status: Accepted for MAT-01; implementation independently accepted in PR #215. Report activation remains gated by a later Spec.
 Owner: #191. Baseline: main `595e6998ed8dcba0f565d732ba09180e605078cd`, after IMPORT-01 #209 / PR #211.
 
 ## Evidence
