@@ -478,7 +478,7 @@ export function readerReport(report, selected) {
       seen.add(key);
       dates.push({label: names[kind] || date.label, value: date.display,
         note: kind === "recommended_arrival" ? "建议时间不等于强制截止" : ""});
-      if (date.unknown.includes("end_time") && !dateNote)
+      if (date.unknown.some((field) => field === "start_time" || field === "end_time") && !dateNote)
         dateNote = "官方未明确的具体时刻不作推测；请按已审核日期和官方原文核对。";
     }
   }

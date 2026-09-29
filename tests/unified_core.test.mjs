@@ -155,7 +155,9 @@ test("reader projection separates missing, self-reported ready, unfilled, and co
   const scope = scopesFor(legacy)[0];
   const required = (id, title) => ({...base.requirements[0], requirement_id: id,
     category: "materials", title, official_status: "required", date_events: []});
-  const mapped = mapLegacyBase(scope, {...base, requirements: [base.requirements[0],
+  const dated = {...base.requirements[0], date_events: base.requirements[0].date_events.map((event) =>
+    ({...event, unknown_fields: ["start_time"]}))};
+  const mapped = mapLegacyBase(scope, {...base, requirements: [dated,
     required("missing", "未准备材料"), required("ready", "已有材料"),
     required("unfilled", "未填材料"),
     {...required("conditional", "条件材料"), official_status: "needs_information"}]});
@@ -178,6 +180,7 @@ test("reader projection separates missing, self-reported ready, unfilled, and co
   assert.ok(view.priorities.some((line) => line.includes("未准备材料：待补材料")));
   assert.ok(!view.priorities.some((line) => line.includes("已有材料")));
   assert.match(view.text, /已准备不代表有效、已提交或学校受理/);
+  assert.match(view.dateNote, /具体时刻不作推测/);
   assert.doesNotMatch(view.text, /日文官方原文|RULE-05A|precision|record_id|物理页/);
   const onlyDates = readerReport(supplied, {dates: true, materials: false, other: false});
   assert.doesNotMatch(onlyDates.text, /未准备材料|材料准备清单/);
