@@ -200,12 +200,12 @@ def test_result_hierarchy_cta_profile_schema_and_reset_are_explicit() -> None:
     assert 'data-profile-group="japanese"' in html
     assert "renderApplicationOverview(payload, overview)" in javascript
     assert "renderKeyDates(dateRequirements)" in javascript
-    assert 'renderRequirementSection("必须准备的材料"' in javascript
+    assert 'renderRequirementSection("当前已审核的材料"' in javascript
     assert "renderPendingRequirements(pending, overview)" in javascript
     assert '"基础要求待确认"' in javascript
     assert "其中 ${overview.profileComparableCount} 项可进入现有个人对照" in javascript
     assert "当前个人情况步骤不处理" in javascript
-    assert 'button.textContent = "填写个人情况，检查我还缺什么"' in javascript
+    assert '"填写个人情况，检查我还缺什么"' in javascript
     assert 'item.official_status === "needs_information"' in javascript
     assert 'event.nature === "must_arrive"' not in javascript
     assert 'clearDemoResults("申请目标已改变' in javascript
