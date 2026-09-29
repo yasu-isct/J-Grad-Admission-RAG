@@ -131,6 +131,18 @@ AST comparison against the previous PR head identifies only `_NaturalQaOutcome`,
 The M9 policy file remains unchanged. No real service start, HTTP request or paid call was added
 for this revision; the cumulative developer ledger above still applies.
 
-Online behavior remains unverified on this head. Do not mark the Draft PR ready for final review or
-merge until design approves the M9 fingerprint step, CI is green, and a separately authorized,
-bounded real provider acceptance is complete.
+The design re-review of head `a5c2e1de5a92e6fccd95d7c32c3bca98834b9a69` approved the R1–R3
+fixes and explicitly authorized updating only the policy's `implementation_sha256` from
+`f2e73660b09c3a2374b1e674b15b31887c26686d9ba6bd604aeb4791048637c1` to
+`34a7083ddc560a595bd9afd8b9dee428e388372e2935b53b48b0e212dd1ec78e`.
+The first attempted patch was automatically rejected because it accidentally changed an unrelated
+`suite_sha256` character; that patch did not land. The corrected patch changes only the authorized
+field. The startup guide also now requires a QA-01 checkout and warns against switching a source
+directory used by the user's running previews. The policy update is an approved integrity signature
+for the unchanged reviewed implementation, not a new evaluation result or a changed threshold.
+Byte comparison with the previous policy confirmed that the authorized field is the only changed
+content. The existing M9 gate now passes all **17/17** checks, and the two previously failing
+release-gate tests pass.
+
+Online behavior remains unverified. Keep the PR Draft until Quality CI is green and separately
+authorized, bounded real provider acceptance and design's final review are complete.

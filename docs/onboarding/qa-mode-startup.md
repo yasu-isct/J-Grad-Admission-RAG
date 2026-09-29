@@ -1,6 +1,12 @@
 # QA-01 local mode check
 
-Run these commands from the repository root with the existing reviewed 391-vector runtime. Do not
+First confirm that the current checkout contains the QA-01 code in PR #236 (or the corresponding
+updated `main` after merge). Run these commands from that checkout's repository root. Do not
+switch branches in an old shared source directory used by a running preview or launch this guide
+from that old checkout. Use an isolated checkout and a free port without replacing the user's
+8000/8001/8002 services.
+
+Use the existing reviewed 391-vector runtime. Do not
 pass `--allow-runtime-build` or `--rebuild`. The workspace argument is the parent of `runtime-v1`.
 Choose an unused port; the examples use 8017. Stop only the process you started with Ctrl+C.
 
