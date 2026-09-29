@@ -200,6 +200,7 @@ export function mapLegacyBase(scope, base) {
       requireValue(eventSources.length > 0, "日期依据缺失");
       return {
         label: event.label, display: event.display_text,
+        event_type: event.event_type || null,
         precision: event.precision, unknown: array(event.unknown_fields),
         uncertainty: event.uncertainty_note || "", sources: eventSources
       };
@@ -384,6 +385,144 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
   ].join("\n");
   return {kind: "reviewed_material_slice", scope, topics, employment, text: wrapper,
     canonicalMarkdown: payload.markdown, raw: payload.report};
+}
+
+const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"};
+
+export function readerReportOptions(report) {
+  requireValue(report?.scope && Array.isArray(report.topics), "报告尚未校验");
+  return {
+    dates: report.kind === "legacy_applicant" && report.topics.some((topic) => topic.category === "dates"),
+    materials: report.topics.some((topic) => report.kind === "reviewed_material_slice" || topic.category === "materials"),
+    other: report.kind === "legacy_applicant" && report.topics.some((topic) => !["dates", "materials"].includes(topic.category))
+  };
+}
+
+function legacyMaterialState(topic, comparisonItem) {
+  const applicability = comparisonItem?.official_status || topic.status_code;
+  const preparation = comparisonItem?.preparation_status || "unknown";
+  if (applicability === "not_applicable" || comparisonItem?.comparison_status === "not_applicable")
+    return {state: "本项无需提交", action: "按当前已审核的适用条件，本项无需提交。"};
+  if (applicability === "not_covered")
+    return {state: "当前资料未覆盖", action: "当前资料不能判断这一项，请查看完整募集要项。"};
+  if (applicability !== "required")
+    return {state: "待确认适用", action: preparation === "not_yet"
+      ? "自报尚未准备；先确认适用条件，再决定是否需要补材料。"
+      : "先补充个人条件，确认这一项是否需要提交。"};
+  if (preparation === "not_yet")
+    return {state: "待补材料", action: "自报尚未准备；请准备材料并核对提交格式。"};
+  if (preparation === "available")
+    return {state: "已自报准备", action: "请核对内容、有效性和提交方式；不表示学校已审核或受理。"};
+  return {state: "待填写准备情况", action: "尚未填写准备情况，暂不能算作缺失材料。"};
+}
+
+function sliceMaterialState(topic, employment) {
+  if (topic.status_code === "submission_not_required")
+    return {state: "本项无需提交", action: topic.explanation};
+  if (topic.status_code === "rule_not_applicable")
+    return {state: "本条条件不适用", action: topic.explanation};
+  if (topic.status_code === "submission_required")
+    return {state: "需要准备，完成情况未填写", action: topic.explanation};
+  if (topic.status_code === "not_covered")
+    return {state: "当前资料未覆盖", action: "本切片未确认这一项。"};
+  const missing = [];
+  if (employment.current === "unknown") missing.push("目前是否在职");
+  if (employment.retain === "unknown") missing.push("入学后是否继续在职");
+  return {state: "待确认适用", action: `${topic.explanation}${missing.length ? `请补充${missing.join("、")}。` : "请向学校确认适用条件。"}`};
+}
+
+function readerText(view) {
+  const lines = ["出愿准备参考", `目标：${view.target}`, `本次关注：${view.selected.map((key) => readerTopicNames[key]).join("、")}`];
+  const section = (title, rows) => {
+    lines.push("", title);
+    for (const row of rows) lines.push(`- ${row}`);
+  };
+  if (view.priorityRows.length) section("接下来先做什么", view.priorityRows);
+  if (view.selected.includes("dates")) {
+    section("关键时间", view.dates.length
+      ? view.dates.map((item) => `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`)
+      : ["当前已覆盖资料尚未整理日期，请核对完整募集要项。"]);
+    if (view.dateNote) lines.push(view.dateNote);
+  }
+  if (view.selected.includes("materials"))
+    section("材料准备清单", view.materials.length
+      ? view.materials.map((item) => `${item.title}｜${item.state}。${item.action}`)
+      : ["当前所选资料没有可整理的材料主题。"]);
+  if (view.selected.includes("other"))
+    section("其他已加载要求", view.other.length
+      ? view.other.map((item) => `${item.title}：${item.summary}（${item.status}）`)
+      : ["当前已加载资料没有其他主题。"]);
+  lines.push("", `范围说明：${view.limitation}`);
+  return lines.join("\n");
+}
+
+export function readerReport(report, selected) {
+  const available = readerReportOptions(report);
+  requireValue(selected && ["dates", "materials", "other"].every((key) => typeof selected[key] === "boolean"), "报告主题选择无效");
+  requireValue(Object.keys(available).every((key) => !selected[key] || available[key]), "选中主题未加载");
+  const chosen = Object.keys(available).filter((key) => selected[key]);
+  requireValue(chosen.length > 0, "请至少选择一类报告内容");
+  const target = scopeLabel(report.scope);
+  const dates = [];
+  const materials = [];
+  const other = [];
+  const priorities = [];
+  let dateNote = "";
+  if (selected.dates) {
+    const seen = new Set();
+    const names = {registration_open: "登记开放", application_window: "出愿期间", arrival_deadline: "材料送达必着", recommended_arrival: "建议提前到达"};
+    for (const topic of report.topics) for (const date of array(topic.dates)) {
+      const kind = date.event_type || "other";
+      const key = `${kind}:${date.display}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      dates.push({label: names[kind] || date.label, value: date.display,
+        note: kind === "recommended_arrival" ? "建议时间不等于强制截止" : ""});
+      if (date.unknown.some((field) => field === "start_time" || field === "end_time") && !dateNote)
+        dateNote = "官方未明确的具体时刻不作推测；请按已审核日期和官方原文核对。";
+    }
+  }
+  if (selected.materials) {
+    const unfilled = [];
+    const conditional = [];
+    const comparison = new Map(array(report.comparison?.items)
+      .filter((item) => item.category === "materials").map((item) => [item.item_id || item.title, item]));
+    for (const topic of report.topics) {
+      if (report.kind === "legacy_applicant" && topic.category !== "materials") continue;
+      const state = report.kind === "legacy_applicant"
+        ? legacyMaterialState(topic, comparison.get(topic.id) || comparison.get(topic.title))
+        : sliceMaterialState(topic, report.employment);
+      const item = {title: topic.title, ...state};
+      materials.push(item);
+      if (["待补材料", "需要准备，完成情况未填写"].includes(state.state))
+        priorities.push(`${topic.title}：${state.state}。${state.action}`);
+      else if (state.state === "待填写准备情况") unfilled.push(topic.title);
+      else if (state.state === "待确认适用") conditional.push(item);
+    }
+    if (report.kind === "legacy_applicant" && !report.comparison)
+      priorities.unshift("未填写准备情况，暂不能判断还缺哪些材料；可先保存基础要求。");
+    else if (unfilled.length)
+      priorities.push(`${unfilled.join("、")}：待填写准备情况；不能算作缺失材料。`);
+    if (conditional.length) priorities.push(conditional.length === 1
+      ? `${conditional[0].title}：待确认适用。${conditional[0].action}`
+      : `${conditional.map((item) => item.title).join("、")}：待确认适用；请先确认这些材料的适用条件。`);
+  }
+  if (selected.other) {
+    for (const topic of report.topics.filter((item) => !["dates", "materials"].includes(item.category))) {
+      other.push({title: topic.title, summary: topic.summary, status: topic.status});
+      if (["needs_information", "needs_review", "not_covered"].includes(topic.status_code))
+        priorities.push(`${topic.title}：${topic.status}。请核对该项条件。`);
+    }
+  }
+  const limitation = report.kind === "reviewed_material_slice"
+    ? `仅整理当前已审核的 ${report.topics.length} 个材料主题，不是完整清单或资格判断；历史资料请核对官方最新信息。`
+    : selected.materials
+      ? "仅整理当前已审核资料与本次自报；已准备不代表有效、已提交或学校受理，未覆盖内容请核对完整募集要项。"
+      : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
+  const priorityRows = priorities.length ? priorities : selected.materials
+    ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
+  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, other, limitation};
+  return {...view, text: readerText(view)};
 }
 
 export {statusNames};
