@@ -1,6 +1,6 @@
 # EVID-UI-01：多文件依据关系与按需原文弹窗
 
-Issue [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240)。状态：本次收尾文档合并后唯一 Ready；前置 REPORT-02 [#239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239) 已由 PR #243 验收合并（37603cf7292f573eaf9f802421a0ea82fe22725f）。M17 Main 从最新main实施，保留已验收简洁报告；不依赖恢复QA-01，不并行修改app.js。
+Issue [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240)。状态：Accepted/merged，PR #245，审查 head `fdf702cffd6ea50c582e49e294bdc01b27135655`，合并 `eb7eb89b9dc8f10df5c03c54c5ab08dc359d5c19`。前置 REPORT-02 #239 已完成。见[独立验收及累计预算](evidui01-design-acceptance.md)。以下保留实施时的范围和验收要求，不构成新任务放行。
 
 ## 背景、目标和复用
 
@@ -28,4 +28,4 @@ Issue [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240)。状
 - 预算在本任务Ready时生效：开发/设计各最多2次自有服务启动、3次既有GSFS报告尝试用于条件结果对照、4次基础/个人POST；GET在会话内按需，30分钟/会话，RSS12GiB/可用4GiB。在线模型/搜索/下载/解析/构建0；不借QA剩余额度，不重置其他台账。只读既有资产、模型不必加载；前后身份核验与REPORT-02相同。
 - 缺关系时展示独立来源卡，缺原文时说明不可用，不把片段或错文档补作依据。回滚仅撤销关系展示和可选DTO字段，保留原查看器、REPORT-02简洁报告、已审核资料。
 
-完整交接与角色规则沿用#191；REPORT-02已完成，现在只放行本任务。开发/设计本任务资源初始均0，累计记录且不重置其他任务台账。完成后交独立验收，再准备演示和私塾汇报，不自动启动东大普通学生覆盖。
+完整交接与角色规则沿用 #191；REPORT-02 与本任务均已验收。下一责任方为设计 Agent 准备演示和私塾汇报，目前没有新的 Ready 实施任务。QA 继续暂停，不自动启动东大普通学生覆盖；历史资源台账不重置。
