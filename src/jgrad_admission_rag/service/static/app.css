@@ -268,6 +268,21 @@ input {
 .drawer-content dl { margin-top: 18px; }
 .drawer-content details { margin-top: 18px; padding: 12px 0; border-top: 1px solid #d5ddda; border-bottom: 1px solid #d5ddda; }
 .drawer-content summary { cursor: pointer; font-weight: 700; }
+.relationship-window { width: min(840px, calc(100vw - 32px)); height: min(780px, calc(100dvh - 32px)); margin: auto; border-radius: 16px; }
+.relationship-window .drawer-content { min-width: 0; }
+.relation-intro { line-height: 1.6; color: #425650; }
+.relation-nodes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.relation-node { min-width: 0; padding: 16px; border: 1px solid #b9d1ca; border-radius: 10px; background: #f3f8f6; }
+.relation-node h4 { margin: 0; overflow-wrap: anywhere; }
+.relation-node p { margin: 10px 0; line-height: 1.55; overflow-wrap: anywhere; }
+.relation-node button { margin-top: 4px; }
+.relation-links { margin-top: 24px; }
+.relation-links h4 { margin: 0 0 12px; }
+.relation-edge { padding: 12px; border-left: 4px solid #247267; background: #eff6f2; line-height: 1.6; overflow-wrap: anywhere; }
+.relation-edge-stage { border: 2px dashed #ad7141; background: #fff7e9; }
+.relation-unknown { padding: 12px; border: 1px dashed #8f9f99; line-height: 1.6; }
+.relation-back { margin-bottom: 18px; }
+@media (max-width: 600px) { .relation-nodes { grid-template-columns: minmax(0, 1fr); } .relationship-window .drawer-content { padding: 18px; } }
 .source-link { display: inline-block; margin-top: 18px; color: #0f5b54; font-weight: 700; }
 .secondary-heading { margin-top: 42px; padding-top: 30px; border-top: 1px solid #cbd3d1; }
 

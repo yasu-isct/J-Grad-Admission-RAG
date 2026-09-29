@@ -1,0 +1,16 @@
+{
+  "method": "saved real HTTP responses through current four-step browser code",
+  "service_startups": 0,
+  "real_posts": 0,
+  "replayed_posts": {
+    "evidence_get": 1,
+    "base_post": 1,
+    "report_post": 1
+  },
+  "screenshots": [
+    "gsfs-step4-mobile-replay-full.png",
+    "isct-step2-mobile-replay-full.png"
+  ],
+  "no_horizontal_overflow": true,
+  "browser_errors": []
+}

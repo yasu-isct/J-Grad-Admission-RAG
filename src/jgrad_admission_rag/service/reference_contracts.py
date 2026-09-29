@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ..reasoning.material_slice_report import ReviewedMaterialSliceReport
 from ..reviewed_source_evidence import Digest, Identifier, Target
@@ -76,11 +76,25 @@ class ReferenceRecord(_Closed):
     fragments: tuple[ReferenceFragment, ...] = Field(min_length=1)
 
 
+class ReferenceRelation(_Closed):
+    from_id: Identifier = Field(alias="from")
+    kind: Identifier
+    to: Identifier
+
+
 class ReferenceTopic(_Closed):
     topic_id: Identifier
     material_name_zh: str
     context_note_zh: str
     records: tuple[ReferenceRecord, ...] = Field(min_length=1)
+    relations: tuple[ReferenceRelation, ...] = ()
+
+    @model_validator(mode="after")
+    def visible_relations(self):
+        ids = {record.record_id for record in self.records}
+        if any(row.from_id not in ids or row.to not in ids for row in self.relations):
+            raise ValueError("display relation outside visible topic records")
+        return self
 
 
 class ReferenceEvidenceResponse(_Closed):

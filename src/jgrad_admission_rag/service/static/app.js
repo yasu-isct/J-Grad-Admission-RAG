@@ -95,6 +95,15 @@ let requirementsPending = false;
 let requirementsController = null;
 let requirementsRequestId = 0;
 let drawerTrigger = null;
+let drawerScopeKey = null;
+let drawerGraph = null;
+
+function discardEvidenceDrawer() {
+  drawerTrigger = null;
+  drawerGraph = null;
+  drawerScopeKey = null;
+  if (evidenceDrawer.open) evidenceDrawer.close();
+}
 let baseRequirementsLoaded = false;
 let comparisonPending = false;
 let comparisonController = null;
@@ -1505,6 +1514,7 @@ function currentReferenceScope() {
 }
 
 async function loadDemoCatalog() {
+  discardEvidenceDrawer();
   cancelPendingRequirements();
   baseRequirementsLoaded = false;
   loadedReference = null;
@@ -1637,6 +1647,19 @@ function renderDateEvent(event) {
 }
 
 function appendRequirementEvidence(card, requirement) {
+  if (requirement.graphTopic) {
+    const actions = document.createElement("div");
+    actions.className = "actions requirement-evidence-actions";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    const count = new Set(requirement.graphTopic.sources.map((source) => source.source_id || source.source_url)).size;
+    button.textContent = `查看依据关系（${count}份文件）`;
+    button.addEventListener("click", () => openEvidenceGraph(requirement, button));
+    actions.append(button);
+    card.append(actions);
+    return;
+  }
   if (!Array.isArray(requirement.evidence) || !requirement.evidence.length) return;
   const actions = document.createElement("div");
   actions.className = "actions requirement-evidence-actions";
@@ -1927,7 +1950,8 @@ function renderSliceRequirements(mapped) {
   const requirements = mapped.topics.map((topic) => ({
     category: "materials", title: topic.title, description: topic.summary,
     official_status: "needs_information", deadline: "",
-    evidence: topic.sources.map((source) => sourceAsEvidence(source, scope))
+    evidence: topic.sources.map((source) => sourceAsEvidence(source, scope)),
+    graphTopic: topic, graphScope: scope
   }));
   requirementsOutput.append(
     overview,
@@ -1979,9 +2003,105 @@ function verifiedLocalPdfHref(baseUrl, page) {
   return `${baseUrl}#page=${page}`;
 }
 
-function openDemoEvidence(requirement, evidence, trigger) {
-  drawerTrigger = trigger;
+const relationMeanings = {
+  cross_reference: "送付方法参照",
+  department_specific_detail: "具体要求按专攻确认",
+  consulting_is_distinct_from_submitting: "参照清单与提交表不同",
+  corroborates_condition_with_submission_method: "补充条件与上传方式共同说明",
+  shares_employment_context_but_separate_enrollment_stage: "入学手续相关，非本次出愿提交义务"
+};
+
+function graphNodeLabel(source) {
+  const short = source.title.length > 32 ? `${source.title.slice(0, 32)}…` : source.title;
+  return `${short} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
+}
+
+function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop = 0) {
+  if (!focusRecordId) {
+    drawerTrigger = trigger;
+    drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+    drawerGraph = {requirement, trigger};
+  }
+  const topic = requirement.graphTopic;
+  evidenceDrawer.classList.add("relationship-window");
+  byId("drawer-title").textContent = "材料依据关系";
   drawerContent.replaceChildren();
+  drawerContent.append(heading(3, requirement.title));
+  const explanation = document.createElement("p");
+  explanation.className = "relation-intro";
+  explanation.textContent = `${requirement.description} 图中箭头只说明已审核的文件关系，不表示每份文件都是出愿必交材料。`;
+  drawerContent.append(explanation);
+  const nodes = document.createElement("div");
+  nodes.className = "relation-nodes";
+  const sources = new Map(topic.sources.map((source) => [source.record_id, source]));
+  for (const source of topic.sources) {
+    const node = document.createElement("article");
+    node.className = "relation-node";
+    node.append(heading(4, graphNodeLabel(source)));
+    const role = document.createElement("p");
+    role.textContent = source.stage === "enrollment_context_only"
+      ? "入学手续相关，非本次出愿提交义务" : source.role === "basis" ? "本条直接依据" : "关联上下文";
+    const context = document.createElement("p");
+    context.textContent = source.heading || source.context || "当前审核范围内的来源";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.dataset.recordId = source.record_id;
+    button.textContent = "查看原文";
+    button.addEventListener("click", () => openDemoEvidence(requirement,
+      sourceAsEvidence(source, requirement.graphScope), button,
+      {fromGraph: true, scrollTop: evidenceDrawer.scrollTop}));
+    node.append(role, context, button);
+    nodes.append(node);
+  }
+  drawerContent.append(nodes);
+  const known = topic.relations.filter((row) => Object.hasOwn(relationMeanings, row.kind));
+  if (known.length) {
+    const relations = document.createElement("section");
+    relations.className = "relation-links";
+    relations.append(heading(4, "已审核的文件关系"));
+    for (const row of known) {
+      const edge = document.createElement("p");
+      edge.className = row.kind === "shares_employment_context_but_separate_enrollment_stage"
+        ? "relation-edge relation-edge-stage" : "relation-edge";
+      edge.textContent = `${graphNodeLabel(sources.get(row.from))} → ${relationMeanings[row.kind]} → ${graphNodeLabel(sources.get(row.to))}`;
+      relations.append(edge);
+    }
+    drawerContent.append(relations);
+  }
+  if (!topic.relations.length || topic.relations.some((row) => !Object.hasOwn(relationMeanings, row.kind))) {
+    const note = document.createElement("p");
+    note.className = "relation-unknown";
+    note.textContent = topic.relations.length ? "部分关系类型尚未展示；上方来源仍可逐项查看。"
+      : "当前没有可展示的已审核关系；以上来源独立列出。";
+    drawerContent.append(note);
+  }
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = scrollTop;
+  const focus = focusRecordId
+    ? Array.from(nodes.querySelectorAll("button")).find((button) => button.dataset.recordId === focusRecordId)
+    : null;
+  (focus || drawerClose).focus({preventScroll: true});
+}
+
+function openDemoEvidence(requirement, evidence, trigger, options = {}) {
+  if (!options.fromGraph) {
+    drawerTrigger = trigger;
+    drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+    drawerGraph = null;
+    evidenceDrawer.classList.remove("relationship-window");
+  }
+  byId("drawer-title").textContent = options.fromGraph ? "官方原文" : "官方依据";
+  drawerContent.replaceChildren();
+  if (options.fromGraph && drawerGraph) {
+    const back = document.createElement("button");
+    back.type = "button";
+    back.className = "secondary relation-back";
+    back.textContent = "返回依据关系";
+    back.addEventListener("click", () => openEvidenceGraph(drawerGraph.requirement,
+      drawerGraph.trigger, trigger.dataset.recordId, options.scrollTop));
+    drawerContent.append(back);
+  }
   drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
   const meta = document.createElement("dl");
   meta.className = "evidence-meta";
@@ -2060,8 +2180,9 @@ function openDemoEvidence(requirement, evidence, trigger) {
   drawerContent.append(meta, evidenceBody, limitation);
   if (evidence.document_id) drawerContent.append(details);
   drawerContent.append(sourceActions);
-  evidenceDrawer.showModal();
-  drawerClose.focus();
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = 0;
+  (options.fromGraph ? drawerContent.querySelector(".relation-back") : drawerClose).focus();
 }
 
 function nullableDemoValue(id) {
@@ -2322,14 +2443,16 @@ function renderSliceReadiness(report, mapped) {
   }
   priority.append(list);
   for (const topic of report.topics) {
-    const sources = mapped.topics.flatMap((entry) => entry.sources);
+    const mappedTopic = mapped.topics.find((entry) => entry.title === topic.title);
+    const sources = mappedTopic?.sources || [];
     const evidence = topic.citations.map((cite) => {
       const source = sources.find((candidate) => candidate.record_id === cite.record_id);
       return sourceAsEvidence(source, mapped.scope);
     });
     const requirement = {
       category: "materials", title: topic.title, description: topic.explanation,
-      official_status: topic.status_code, evidence
+      official_status: topic.status_code, evidence, graphTopic: mappedTopic,
+      graphScope: mapped.scope
     };
     const card = renderRequirementCard(requirement);
     for (const value of topic.missing_fields) {
@@ -2666,6 +2789,7 @@ function invalidateComparison(message) {
 
 async function submitBaseRequirements() {
   if (requirementsPending || !demoTargetComplete()) return;
+  discardEvidenceDrawer();
   const scope = currentReferenceScope();
   if (!scope) return;
   activateStep(1);
@@ -2735,6 +2859,7 @@ function cancelPendingRequirements() {
 }
 
 function handleDemoTargetChange(next) {
+  discardEvidenceDrawer();
   cancelPendingRequirements();
   baseRequirementsLoaded = false;
   loadedReference = null;
@@ -2802,7 +2927,15 @@ byId("reference-copy").addEventListener("click", copyReferenceReport);
 byId("reference-close").addEventListener("click", () => referenceDialog.close());
 referenceDialog.addEventListener("close", () => { referenceTrigger?.focus(); referenceTrigger = null; });
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
-evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
+evidenceDrawer.addEventListener("close", () => {
+  const scope = currentReferenceScope();
+  if (drawerTrigger?.isConnected && (!drawerScopeKey || (scope
+    && referenceCore.scopeKey(scope) === drawerScopeKey))) drawerTrigger.focus({preventScroll: true});
+  drawerTrigger = null;
+  drawerGraph = null;
+  drawerScopeKey = null;
+  evidenceDrawer.classList.remove("relationship-window");
+});
 
 updateFlowPresentation();
 initializeProfileGroups();

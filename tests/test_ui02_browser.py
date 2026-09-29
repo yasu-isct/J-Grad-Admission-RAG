@@ -183,6 +183,17 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         {**deepcopy(evidence["topics"][0]["records"][0]), "record_id": f"extra-record-{i}"}
         for i in range(8)
     )
+    evidence["topics"][0]["records"][3]["stage"] = "enrollment_context_only"
+    primary_record_id = evidence["topics"][0]["records"][0]["record_id"]
+    evidence["topics"][0]["relations"] = [
+        {"from": "extra-record-0", "kind": "cross_reference", "to": primary_record_id},
+        {"from": "extra-record-1", "kind": "unknown_reviewed_kind", "to": primary_record_id},
+        {
+            "from": "extra-record-2",
+            "kind": "shares_employment_context_but_separate_enrollment_stage",
+            "to": primary_record_id,
+        },
+    ]
     calls = {"base": [], "comparison": [], "reports": []}
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
@@ -340,12 +351,30 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert page.locator(".materials-section .requirement-card").count() == 3
         assert "当前资料尚未覆盖日期" in page.locator(".key-dates-section").inner_text()
         assert not calls["reports"]
-        page.locator(".materials-section .requirement-evidence-actions button").first.click()
+        graph_trigger = page.locator(
+            ".materials-section .requirement-evidence-actions button"
+        ).first
+        graph_trigger.scroll_into_view_if_needed()
+        main_scroll = page.evaluate("window.scrollY")
+        graph_trigger.click()
         drawer = page.locator("#evidence-drawer")
+        assert drawer.locator(".relation-node").count() == 9
+        assert drawer.locator(".relation-edge").count() == 2
+        assert "部分关系类型尚未展示" in drawer.inner_text()
+        assert "送付方法参照" in drawer.inner_text()
+        assert (
+            "入学手续相关，非本次出愿提交义务"
+            in drawer.locator(".relation-edge-stage").inner_text()
+        )
+        drawer.locator(".relation-node button").first.click()
         assert "PDF 物理页 8／印刷页 7" in drawer.inner_text()
         assert "提出が必要" in drawer.inner_text()
         assert "第二所学校官方文件" in drawer.inner_text()
+        drawer.locator(".relation-back").click()
+        assert drawer.locator(".relation-node").count() == 9
         page.locator("#drawer-close").click()
+        assert page.evaluate("window.scrollY") == main_scroll
+        assert graph_trigger.evaluate("button => button === document.activeElement")
         page.screenshot(path=str(tmp_path / "new-slice-materials-1440.png"), full_page=True)
         page.locator(".overview-cta").click()
         assert page.locator("#slice-profile").is_visible()
@@ -364,8 +393,11 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert "目前任职是；入学后继续任职否" in page.locator("#comparison-output").inner_text()
         assert "当前条件：需准备" in page.locator("#comparison-output").inner_text()
         page.locator("#comparison-output .requirement-evidence-actions button").first.click()
+        assert drawer.locator(".relation-node").count() == 9
+        drawer.locator(".relation-node button").first.click()
         assert "PDF 物理页 8／印刷页 7" in drawer.inner_text()
-        page.locator("#drawer-close").click()
+        drawer.press("Escape")
+        assert drawer.is_hidden()
         page.screenshot(path=str(tmp_path / "new-slice-conditions-1440.png"), full_page=True)
         page.locator("#readiness-panel .reference-generate").click()
         page.locator("#reference-report").wait_for(state="visible")
@@ -389,12 +421,16 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#edit-target").click()
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-evidence-actions button").first.click()
+        drawer.locator(".relation-node button").first.click()
         no_printed = drawer.inner_text()
         assert "PDF 物理页 8" in no_printed
         assert "印刷页" not in no_printed
-        page.locator("#drawer-close").click()
-        page.locator("#edit-target").click()
-        page.locator("#school-select").select_option("school-one")
+        page.evaluate("""() => {
+            const select = document.querySelector('#school-select');
+            select.value = 'school-one';
+            select.dispatchEvent(new Event('change', {bubbles: true}));
+        }""")
+        assert drawer.is_hidden()
         page.locator("#intake-select").select_option("doc-one:2027:4")
         page.locator("#college-select").select_option("org")
         page.locator("#department-select").select_option("program")
