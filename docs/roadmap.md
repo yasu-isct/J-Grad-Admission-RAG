@@ -4,7 +4,25 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 release: QA recovery first
+## Current M17 release: readable reports, then source relations
+
+2026-09-29 latest user decision supersedes the QA-first ordering below: **pause QA-01 #233 /
+Draft #236**, first improve reports for their readers, then show existing multi-document evidence
+relationships with on-demand original-text dialogs. Only [REPORT-02 #239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239)
+is released after this design merges; [Spec](onboarding/reader-report-spec.md).
+[EVID-UI-01 #240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) stays blocked until #239
+is accepted; [Spec](onboarding/evidence-relations-ui-spec.md). M17 Main implements one at a time,
+from main without merging/cherry-picking the paused QA Draft.
+
+Reports contain selected basic information and actionable preparation status, without citation chains
+in their preview/copy. Unknown preparation is not a missing material. Existing backend provenance,
+canonical reports, applicant rules, v1 page and two-school selectors remain authoritative and reused.
+Source graphs project the existing reviewed relations; original excerpts open in the existing dialog.
+See [reader-centered design and local interaction prototype](onboarding/reader-report-and-evidence-design.md).
+No model calls are needed; QA's remaining11/50 calls remain unused. After these presentation tasks,
+polish the demonstration and school presentation; stop before ordinary-student GSFS expansion.
+
+## Previous M17 QA-first decision and audit history
 
 On 2026-09-29 the user set the sequence **QA recovery -> readable optional reports
 -> demo polish and preparation for a presentation to the user's school**.

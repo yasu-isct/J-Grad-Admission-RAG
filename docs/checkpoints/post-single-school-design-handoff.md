@@ -1,6 +1,27 @@
 # Post-single-school Design Handoff
 
-## Current handoff: M17 QA-01 only
+## Current handoff: M17 REPORT-02, QA paused by user
+
+2026-09-29 latest instruction: pause QA fixes and prioritize reader-facing reports, followed by a
+visual explanation of GSFS multi-document evidence with original text opened only on demand.
+This explicitly supersedes the QA-only/QA-first records below; do not resume #233 / Draft #236.
+
+- Only REPORT-02 [#239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239) becomes Ready when
+  this design merges. [Spec](../onboarding/reader-report-spec.md),
+  [design/prototype](../onboarding/reader-report-and-evidence-design.md). M17 Main owns implementation;
+  design owns acceptance. Use main in an isolated worktree; don't mix in unmerged QA changes.
+- EVID-UI-01 [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) remains Planned/Blocked
+  by #239; [Spec](../onboarding/evidence-relations-ui-spec.md). No concurrent app.js implementation.
+- Reports prioritize target, selected information, next actions, dates, and materials. Keep missing
+  materials separate from missing user information. Remove evidence chains/internal fields from the
+  user report, preserving all internal validation and existing main-page source access.
+- Evidence graphs reuse verified relations; show distinct basis/context/enrollment stages and reuse
+  the existing original-text modal. No new parsing, models, indexes, graph platform or source coverage.
+- QA online budget remains39/50 used; remaining11 untouched. New non-paid presentation verification
+  budgets are explicit in each Spec; historical ledgers remain unchanged. No paid API calls released.
+- Stop before ordinary-student GSFS expansion. M13 paused, #177 closed, 334/391 separate and immutable.
+
+## Previous handoff: QA-01 audit history
 
 2026-09-29 latest user sequence: recover existing M10 QA, improve readable optional reports,
 then stop coverage expansion to polish the demo and prepare the presentation to the user's school.
