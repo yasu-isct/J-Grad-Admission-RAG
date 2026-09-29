@@ -90,6 +90,14 @@ class PublicReferenceAnswer(DemoModel):
     limitations: tuple[str, ...] = ()
 
 
+class PublicReferenceSource(DemoModel):
+    """Readable, source-bound text for an unfinished or offline reference answer."""
+
+    title: str = Field(min_length=1, max_length=500)
+    text: str = Field(min_length=1, max_length=20_000)
+    source_pages: tuple[int, ...] = ()
+
+
 class PublicReferenceResult(DemoModel):
     target: DemoTargetSummary
     local_scope_statement: str = Field(min_length=1, max_length=500)
@@ -177,6 +185,7 @@ class NaturalLanguageAnswerResponse(DemoModel):
     summary: str = Field(min_length=1, max_length=1_000)
     subanswers: tuple[NaturalLanguageSubanswer, ...]
     result: PublicReferenceResult | None = None
+    source_references: tuple[PublicReferenceSource, ...] = ()
     delivery: NaturalLanguageDeliveryMetadata
     missing_context: tuple[str, ...] = ()
     unsupported_parts: tuple[str, ...] = ()
@@ -201,6 +210,7 @@ __all__ = [
     "NaturalLanguageSubanswer",
     "PUBLIC_REFERENCE_ANSWER_MAX_CHARACTERS",
     "PublicReferenceAnswer",
+    "PublicReferenceSource",
     "PublicReferenceResult",
     "PublicGroundedAnswer",
     "PublicGroundedCitation",

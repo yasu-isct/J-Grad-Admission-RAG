@@ -380,6 +380,7 @@ def test_ui02_question_boundaries_and_school_isolation():
 
     def answer_for(question):
         no_result = question == "no safe result"
+        readable = question == "readable"
         return {
             "mode": "reference_only",
             "analysis": {},
@@ -392,7 +393,11 @@ def test_ui02_question_boundaries_and_school_isolation():
                 "official_source_url": "https://example.edu/official.pdf",
                 "answer": {
                     "kind": "reference_answer",
-                    "answer": f"参考正文 {question}",
+                    "answer": (
+                        '参考正文 readable。\n\n- **第一项**\n- 第二项\n\n<script>alert(1)</script> <a href="javascript:alert(2)">危险链接</a>'
+                        if readable
+                        else f"参考正文 {question}"
+                    ),
                     "claims": [],
                     "missing_information": ["还缺申请人的具体成绩"],
                     "limitations": [
@@ -405,6 +410,20 @@ def test_ui02_question_boundaries_and_school_isolation():
                 "院外课程要求" if question == "partial unsupported" else "暂不覆盖住宿问题"
             ],
             "subanswers": [{"status": "no_clear_evidence", "message": "该分项没有清晰依据"}],
+            "source_references": [
+                {
+                    "title": "出願書類",
+                    "source_pages": [8],
+                    "text": "対象者のみ提出。\n| 区分 | 条件 |\n| A | 必着 |\n" + "長" * 300,
+                },
+                {
+                    "title": "出願書類",
+                    "source_pages": [8],
+                    "text": "対象者のみ提出。\n| 区分 | 条件 |\n| A | 必着 |\n" + "長" * 300,
+                },
+            ]
+            if readable
+            else [],
         }
 
     with sync_playwright() as playwright:
@@ -433,6 +452,7 @@ def test_ui02_question_boundaries_and_school_isolation():
                 route.fulfill(
                     json={
                         "configured": True,
+                        "mode": "offline_rules",
                         "request_timeout_seconds": 30,
                         "label": "合成离线问答",
                     }
@@ -458,6 +478,7 @@ def test_ui02_question_boundaries_and_school_isolation():
             "normal",
             "zero hits",
             "fallback",
+            "readable",
             "partial unsupported",
             "no safe result",
         ):
@@ -476,7 +497,18 @@ def test_ui02_question_boundaries_and_school_isolation():
             if question == "zero hits":
                 assert "本地未命中可引用片段" in output
             if question == "fallback":
-                assert "在线整理不可用" in output
+                assert "在线整理失败" in output
+            if question == "readable":
+                assert page.locator(".grounded-response-text li").count() == 2
+                assert page.locator(".grounded-response-text strong").inner_text() == "第一项"
+                assert page.locator(".grounded-response-text script").count() == 0
+                assert page.locator(".grounded-response-text a").count() == 0
+                assert page.locator(".grounded-sources details").count() == 1
+                page.locator(".grounded-sources summary").click()
+                assert "対象者のみ提出。" in page.locator(".grounded-source-text").inner_text()
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert page.evaluate("document.documentElement.scrollWidth") == 390
+                page.set_viewport_size({"width": 1280, "height": 720})
             if question == "partial unsupported":
                 assert "院外课程要求" in output
         page.locator("#edit-target").click()
@@ -489,6 +521,7 @@ def test_ui02_question_boundaries_and_school_isolation():
             "normal",
             "zero hits",
             "fallback",
+            "readable",
             "partial unsupported",
             "no safe result",
         ]

@@ -322,7 +322,8 @@ def test_formal_question_uses_real_reviewed_rules_with_mock_retrieval(
     assert response.status_code == 200, response.text
     body = response.json()
     answer = body["result"]["answer"]
-    assert "100" in answer["answer"]
+    assert "100" not in answer["answer"]
+    assert "100" in " ".join(item["text"] for item in body["source_references"])
     assert answer["kind"] == "reference_answer"
     assert answer["assurance"] == "reference_only"
     assert "claims" not in answer
@@ -356,7 +357,9 @@ def test_complex_question_returns_partial_subanswers_instead_of_whole_rejection(
 @pytest.mark.parametrize(
     "question",
     (
+        "托业是什么",
         "托业是什么意思？",
+        "雅思是什么",
         "JLPT是什么？",
         "TOEFL Home Edition和普通TOEFL有什么区别？",
     ),
@@ -517,8 +520,11 @@ def test_adaptive_natural_answer_is_two_calls_then_exact_cache_hit(tmp_path, mon
     assert "Synthetic Department English maximum 100 points." not in cached_values_repr
 
 
+@pytest.mark.parametrize(
+    "question", ("面试时需要准备哪些材料？", "出願期間と書類必着日はいつですか。")
+)
 def test_arbitrary_admission_question_reaches_model_planning_and_local_retrieval(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, question
 ) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "test-only-key")
     client = _client(tmp_path, online=True)
@@ -536,16 +542,13 @@ def test_arbitrary_admission_question_reaches_model_planning_and_local_retrieval
         target = _target(client.get("/v1/target-catalog").json())
         response = client.post(
             "/v1/natural-language-answers",
-            json={"question": "面试时需要准备哪些材料？", "target": target, "applicant": {}},
+            json={"question": question, "target": target, "applicant": {}},
         )
 
     assert response.status_code == 200
-    assert response.json()["analysis"]["requested_intents"] == ["general"]
-    assert response.json()["analysis"]["subquestions"][0]["retrieval_query"] == (
-        "面试时需要准备哪些材料？"
-    )
+    assert response.json()["analysis"]["subquestions"][0]["retrieval_query"] == question
     assert generator.calls == 2
-    assert generator.requests[0].question == "面试时需要准备哪些材料？"
+    assert generator.requests[0].question == question
     assert captured_queries == [("score conversion accepted tests",)]
     assert generator.requests[1].retrieval_status in {"hits", "no_hits"}
 
@@ -629,6 +632,31 @@ def test_online_generation_failure_falls_back_to_local_retrieval(tmp_path, monke
     assert cache_entries == 0
 
 
+def test_fallback_sources_use_bound_fact_text_instead_of_index_payload(tmp_path) -> None:
+    client = _client(tmp_path)
+    with client:
+        settings = client.app.state.service_settings
+        plan = client.app.state.service_state.report_plans[0]
+        manifest = load_corpus_manifest(settings.manifest_path)
+        entry = next(item for item in manifest.entries if item.identity == plan.document_identity)
+        kb = load_document_kb(
+            resolve_registered_corpus_kb_path(settings.corpus_root, entry.kb_path)
+        )
+        fact = next(item for item in kb.facts if item.text.strip() and len(item.text) < 20_000)
+        record = SimpleNamespace(
+            document_id=plan.document_identity.document_id,
+            fact_id=fact.fact_id,
+            source_pages=tuple(fact.source_pages),
+            section_path=tuple(fact.section_path),
+            text="fact_type: internal\nscope: internal\ntext:\npoisoned index payload",
+        )
+        sources = service_app._plain_qa_references((record, record), plan, settings)
+    assert len(sources) == 1
+    assert sources[0].text == fact.text.strip()
+    assert "poisoned index payload" not in sources[0].text
+    assert sources[0].source_pages == tuple(fact.source_pages)
+
+
 def test_final_generation_failure_keeps_draft_and_bounded_local_status(
     tmp_path, monkeypatch
 ) -> None:
@@ -656,7 +684,8 @@ def test_final_generation_failure_keeps_draft_and_bounded_local_status(
     assert response.json()["delivery"]["source"] == "fallback"
     answer = response.json()["result"]["answer"]["answer"]
     assert "一般说明" in answer
-    assert "Synthetic local record." in answer
+    assert "Synthetic local record." not in answer
+    assert response.json()["source_references"] == []
     assert "最终整理未完成" in answer
     assert cache_entries == 0
 
@@ -689,8 +718,10 @@ def test_final_failure_with_maximum_draft_and_long_evidence_stays_within_public_
     answer = response.json()["result"]["answer"]["answer"]
     assert len(answer) == 25_000
     assert "最终整理未完成" in answer
-    assert "尚未由最终模型整合" in answer
+    assert "没有可核对的本地原文" in answer
     assert "D" in answer
+    assert "E" not in answer
+    assert response.json()["source_references"] == []
     assert response.json()["delivery"]["source"] == "fallback"
     assert cache_entries == 0
 
@@ -720,9 +751,9 @@ def test_planning_failure_with_long_local_evidence_stays_within_public_contract(
 
     assert response.status_code == 200, response.text
     answer = response.json()["result"]["answer"]["answer"]
-    assert len(answer) == 25_000
     assert "在线自然语言整理暂时不可用" in answer
-    assert "E" in answer
+    assert "E" not in answer
+    assert response.json()["source_references"] == []
     assert response.json()["delivery"]["source"] == "fallback"
     assert cache_entries == 0
 

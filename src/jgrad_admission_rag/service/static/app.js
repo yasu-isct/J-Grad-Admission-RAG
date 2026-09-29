@@ -76,6 +76,7 @@ const groundedStatus = byId("grounded-answer-status");
 const groundedOutput = byId("grounded-answer-output");
 const groundedContext = byId("grounded-context");
 const generationModeLabel = byId("generation-mode-label");
+const generationModeDetail = byId("generation-mode-detail");
 const flowSteps = [1, 2, 3, 4].map((number) => ({
   number,
   panel: byId(number === 3 ? "applicant-panel" : number === 4 ? "readiness-panel" : `step-${number}-panel`),
@@ -280,16 +281,79 @@ function appendGroundedList(container, title, values) {
   container.append(section);
 }
 
+function appendSafeEmphasis(container, text) {
+  for (const part of text.split(/(\*\*[^*\n]+\*\*)/g)) {
+    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+      const strong = document.createElement("strong");
+      strong.textContent = part.slice(2, -2);
+      container.append(strong);
+    } else container.append(document.createTextNode(part));
+  }
+}
+
+function appendReadableAnswer(container, text) {
+  const lines = String(text || "").replace(/\r\n?/g, "\n").split("\n");
+  let paragraph = [];
+  let list = null;
+  const flush = () => {
+    if (!paragraph.length) return;
+    const node = document.createElement("p");
+    appendSafeEmphasis(node, paragraph.join(" "));
+    container.append(node);
+    paragraph = [];
+  };
+  for (const line of lines) {
+    const bullet = line.match(/^\s*(?:[-*]|\d+[.)])\s+(.+)$/);
+    if (bullet) {
+      flush();
+      if (!list) { list = document.createElement("ul"); container.append(list); }
+      const item = document.createElement("li");
+      appendSafeEmphasis(item, bullet[1]);
+      list.append(item);
+    } else {
+      list = null;
+      if (!line.trim()) flush();
+      else paragraph.push(line.trim());
+    }
+  }
+  flush();
+}
+
+function appendSourceReferences(container, references) {
+  if (!Array.isArray(references) || !references.length) return;
+  const section = document.createElement("section");
+  section.className = "grounded-sources";
+  section.append(heading(3, "相关官方原文（未经 AI 整理）"));
+  const seen = new Set();
+  for (const reference of references) {
+    const key = JSON.stringify([reference.text, reference.source_pages]);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    const pages = Array.isArray(reference.source_pages) && reference.source_pages.length
+      ? ` · 原文第 ${reference.source_pages.join("、")} 页` : "";
+    summary.textContent = `${reference.title || "官方原文"}${pages}`;
+    const content = document.createElement("div");
+    content.className = "grounded-source-text";
+    content.textContent = reference.text || "";
+    details.append(summary, content);
+    section.append(details);
+  }
+  container.append(section);
+}
+
 function appendGroundedResult(container, payload, delivery, mode) {
   const answer = payload.answer;
   const referenceOnly = answer.kind === "reference_answer";
   const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
   const response = document.createElement("section");
   response.className = "grounded-response";
-  response.append(heading(3, referenceOnly ? "参考回答" : "综合回答"));
-  const responseText = document.createElement("p");
+  response.append(heading(3, referenceOnly && ["offline", "fallback"].includes(delivery?.source)
+    ? "当前状态与说明" : referenceOnly ? "参考回答" : "综合回答"));
+  const responseText = document.createElement("div");
   responseText.className = "grounded-response-text";
-  responseText.textContent = answer.answer;
+  appendReadableAnswer(responseText, answer.answer);
   response.append(responseText);
   container.append(response);
   if (!referenceOnly && (!Array.isArray(answer.claims) || !answer.claims.length)) {
@@ -353,8 +417,8 @@ function renderGroundedAnswer(payload) {
   groundedOutput.replaceChildren();
   const meta = document.createElement("p");
   meta.className = "grounded-answer-meta";
-  const deliveryLabels = {cache_hit: "缓存的参考回答", live: "在线整理的参考回答",
-    fallback: "在线整理不可用，已使用本地检索参考内容", offline: "本地离线参考回答"};
+  const deliveryLabels = {cache_hit: "在线回答 · 缓存命中", live: "在线整理完成",
+    fallback: "在线整理失败 · 已降级", offline: "离线模式 · 未启用 AI 整理"};
   for (const text of [deliveryLabels[payload.delivery?.source] || "当前范围的参考回答"]) {
     const badge = document.createElement("span");
     badge.textContent = text;
@@ -362,6 +426,7 @@ function renderGroundedAnswer(payload) {
   }
   groundedOutput.append(meta);
   if (payload.result) appendGroundedResult(groundedOutput, payload.result, payload.delivery, payload.mode);
+  appendSourceReferences(groundedOutput, payload.source_references);
   const scope = document.createElement("section");
   scope.className = "grounded-boundary";
   scope.append(heading(3, "处理概况"));
@@ -384,9 +449,18 @@ async function loadGenerationStatus() {
     if (!response.ok || typeof body.configured !== "boolean" || !Number.isInteger(body.request_timeout_seconds) || body.request_timeout_seconds < 1 || body.request_timeout_seconds > 3600) throw new Error("invalid generation status");
     generationStatus = body;
   } catch (_) {
-    generationStatus = { configured: false, label: "生成模式状态不可用" };
+    generationStatus = { configured: false, mode: "unknown", label: "问答模式未知" };
   }
-  generationModeLabel.textContent = generationStatus.label;
+  const online = generationStatus.mode === "online_model";
+  const offline = generationStatus.mode === "offline_rules";
+  generationModeLabel.textContent = online && generationStatus.configured ? "在线问答已配置"
+    : offline && generationStatus.configured ? "离线检索" : "问答状态未知或不可用";
+  generationModeDetail.textContent = online && generationStatus.configured
+    ? `在线问答已配置（${generationStatus.label}）；远端是否可用会在提问时确认。`
+    : offline && generationStatus.configured
+      ? "离线：仅检索本地资料，未启用 AI 整理。结果会显示状态和可核对的原文。"
+      : `${generationStatus.label}；当前不能提交问题，请查看基础要求和官方原文。`;
+  groundedSubmit.textContent = offline ? "检索本地原文" : "提交在线问题";
   clearGroundedAnswer(baseRequirementsLoaded ? "可针对当前目标和本页个人情况提问。" : "加载基础要求后即可提问。");
 }
 
@@ -419,7 +493,12 @@ async function submitGroundedAnswer() {
     }
     if (!body.mode || !body.analysis || !Array.isArray(body.subanswers)) throw new Error("invalid response");
     renderGroundedAnswer(body);
-    setMessage(groundedStatus, "success", "已生成低保证参考回答；学校规则请结合结构化结果和官方原文核对。", true);
+    const delivery = body.delivery?.source;
+    setMessage(groundedStatus, delivery === "live" || delivery === "cache_hit" ? "success" : "initial",
+      delivery === "cache_hit" ? "已显示缓存的在线参考回答，无新增模型调用。"
+        : delivery === "live" ? "在线整理完成；学校规则请核对官方原文。"
+          : delivery === "fallback" ? "在线整理未完成；下方原文未经最终整理。"
+            : "离线检索完成；下方原文未经 AI 整理。", true);
   } catch (error) {
     if (requestId !== groundedRequestId) return;
     const timedOut = groundedController && groundedController.signal.reason === "timeout";
