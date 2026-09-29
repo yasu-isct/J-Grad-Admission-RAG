@@ -43,7 +43,7 @@ def test_rule04a_browser_acceptance_record_covers_scenarios_and_viewports() -> N
 
 
 def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     assert 'role="tablist"' in html
     assert 'role="tab"' in html
     assert 'role="tabpanel"' in html
@@ -145,7 +145,7 @@ def test_report_ui_has_separate_accessible_workflow_and_explicit_unknowns() -> N
 
 
 def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     css = (STATIC_ROOT / "app.css").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
@@ -192,7 +192,7 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
 
 
 def test_demo02_ui_collects_minimal_profile_and_invalidates_stale_comparisons() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     for field_id in (

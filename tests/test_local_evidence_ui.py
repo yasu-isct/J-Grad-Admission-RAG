@@ -100,6 +100,7 @@ def test_catalog_disk_validation_is_offloaded(
     assert offloaded == [
         "_load_report_plans",
         "_load_page_scope_manifests",
+        "_build_demo_target_catalog_response",
         "_build_reviewed_document_catalog",
     ]
 
@@ -260,17 +261,26 @@ def test_local_ui_assets_are_fixed_offline_and_security_hardened(
     monkeypatch.chdir(tmp_path)
     with TestClient(create_app()) as client:
         html = client.get("/app")
-        css = client.get("/assets/app.css")
-        javascript = client.get("/assets/app.js")
+        css = client.get("/assets/unified.css")
+        javascript = client.get("/assets/unified.js")
+        adapter = client.get("/assets/unified-core.mjs")
+        advanced = client.get("/app/advanced")
         alias = client.get("/app/")
         docs = client.get("/docs")
 
-    assert html.status_code == css.status_code == javascript.status_code == 200
+    assert (
+        html.status_code
+        == css.status_code
+        == javascript.status_code
+        == adapter.status_code
+        == advanced.status_code
+        == 200
+    )
     assert alias.status_code == 404
     assert html.headers["content-type"].startswith("text/html")
     assert css.headers["content-type"].startswith("text/css")
     assert "javascript" in javascript.headers["content-type"]
-    for response in (html, css, javascript):
+    for response in (html, css, javascript, adapter, advanced):
         for name, value in SECURITY_HEADERS.items():
             assert response.headers[name] == value
         policy = response.headers["content-security-policy"]
@@ -280,15 +290,16 @@ def test_local_ui_assets_are_fixed_offline_and_security_hardened(
         assert "connect-src 'self'" in policy
         assert response.headers["x-frame-options"] == "DENY"
     assert "content-security-policy" not in docs.headers
-    assert 'href="/assets/app.css"' in html.text
-    assert 'src="/assets/app.js"' in html.text
+    assert 'href="/assets/unified.css"' in html.text
+    assert 'src="/assets/unified.js"' in html.text
+    assert 'src="/assets/app.js"' in advanced.text
     assert "http://" not in html.text
     assert "https://" not in html.text
 
 
 def test_local_ui_contract_has_accessible_states_and_safe_rendering() -> None:
     static_root = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "service" / "static"
-    html = (static_root / "app.html").read_text(encoding="utf-8")
+    html = (static_root / "advanced.html").read_text(encoding="utf-8")
     css = (static_root / "app.css").read_text(encoding="utf-8")
     javascript = (static_root / "app.js").read_text(encoding="utf-8")
 

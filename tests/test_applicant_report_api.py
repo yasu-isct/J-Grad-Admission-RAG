@@ -382,6 +382,7 @@ def test_report_route_offloads_lifespan_and_request_disk_work(
     assert offloaded == [
         "_load_report_plans",
         "_load_page_scope_manifests",
+        "_build_demo_target_catalog_response",
         "_build_applicant_report_response",
     ]
 

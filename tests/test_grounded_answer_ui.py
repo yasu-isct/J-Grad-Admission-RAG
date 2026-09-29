@@ -5,7 +5,7 @@ STATIC_ROOT = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "servi
 
 
 def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() -> None:
-    html = (STATIC_ROOT / "app.html").read_text(encoding="utf-8")
+    html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
     assert html.index('id="readiness-panel"') < html.index('id="grounded-answer-panel"')
