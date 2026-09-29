@@ -11,9 +11,12 @@ Draft #236**, first improve reports for their readers, then show existing multi-
 relationships with on-demand original-text dialogs. [REPORT-02 #239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239)
 was independently accepted and merged through [PR #243](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/243)
 at `37603cf7292f573eaf9f802421a0ea82fe22725f`; see [acceptance](onboarding/report02-design-acceptance.md).
-Only [EVID-UI-01 #240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) is Ready when this
-closeout merges; [Spec](onboarding/evidence-relations-ui-spec.md). M17 Main implements that task from
-latest main, preserving the accepted report and without merging/cherry-picking the paused QA Draft.
+[EVID-UI-01 #240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) was independently
+accepted through [PR #245](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/245), merge
+`eb7eb89b9dc8f10df5c03c54c5ab08dc359d5c19`; see [acceptance](onboarding/evidui01-design-acceptance.md).
+Both presentation tasks are complete. No new implementation task is Ready. The next responsibility
+is demonstration and school-presentation preparation; QA remains paused and GSFS coverage stays fixed.
+M17 as a whole is not declared complete by this acceptance.
 
 Reports contain selected basic information and actionable preparation status, without citation chains
 in their preview/copy. Unknown preparation is not a missing material. Existing backend provenance,

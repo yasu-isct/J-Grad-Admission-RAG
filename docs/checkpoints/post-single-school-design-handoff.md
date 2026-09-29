@@ -1,6 +1,6 @@
 # Post-single-school Design Handoff
 
-## Current handoff: REPORT-02 accepted, EVID-UI-01 uniquely Ready
+## Current handoff: REPORT-02 and EVID-UI-01 accepted; prepare the demonstration
 
 2026-09-29 latest instruction: pause QA fixes and prioritize reader-facing reports, followed by a
 visual explanation of GSFS multi-document evidence with original text opened only on demand.
@@ -10,12 +10,17 @@ This explicitly supersedes the QA-only/QA-first records below; do not resume #23
   [PR #243](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/243), reviewed head
   `b1852460f4cbb33dc445618123809f701a1219a4`, merge `37603cf7292f573eaf9f802421a0ea82fe22725f`.
   [Acceptance and cumulative ledger](../onboarding/report02-design-acceptance.md). Keep accepted report behavior.
-- Only EVID-UI-01 [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) is Ready when
-  this closeout merges; [Spec](../onboarding/evidence-relations-ui-spec.md). M17 Main owns implementation,
-  design owns independent review. No parallel app.js task. Use latest main in a free isolated worktree.
+- EVID-UI-01 [#240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) accepted through
+  [PR #245](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/245), reviewed head
+  `fdf702cffd6ea50c582e49e294bdc01b27135655`, merge `eb7eb89b9dc8f10df5c03c54c5ab08dc359d5c19`.
+  [Acceptance and cumulative ledger](../onboarding/evidui01-design-acceptance.md).
+- No newly Ready implementation. Design prepares the demo and school presentation; M17 Main has
+  no further implementation release. M17 overall remains open, QA paused, ordinary-student expansion stopped.
 - REPORT-02 developer cumulative starts/reports/base-comparison POSTs: 2/2, 2/8, 3/12;
-  design: 1/2, 8/8, 2/12. Design report budget is exhausted. EVID-UI-01 has its own explicit budget,
-  initially unused; it cannot be used to restart REPORT-02 experiments or overwrite these ledgers.
+  design: 1/2, 8/8, 2/12. Its design report budget is exhausted.
+- EVID-UI-01 developer cumulative starts/reports/base-personal POSTs: 2/2, 3/3, 1/4;
+  design: 1/2, 0/3, 0/4; paid calls 0. Final focus re-review used saved-response replay only.
+  Ledgers remain cumulative; this acceptance grants no additional experiments.
 - Reports prioritize target, selected information, next actions, dates, and materials. Keep missing
   materials separate from missing user information. Remove evidence chains/internal fields from the
   user report, preserving all internal validation and existing main-page source access.
