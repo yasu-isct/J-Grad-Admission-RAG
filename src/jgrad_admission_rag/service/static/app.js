@@ -1891,7 +1891,7 @@ function renderRequirements(payload) {
 function sourceAsEvidence(source, scope) {
   return {
     official_title: source.title, school_name: scope.school, intake_name: scope.intake,
-    pages: source.pages, official_text: source.quote, source_url: source.source_url,
+    pages: source.pages, printed: source.printed, official_text: source.quote, source_url: source.source_url,
     local_pdf_url: source.local_pdf_url, limitation: source.context,
     highlights: source.highlights || []
   };
@@ -1983,7 +1983,7 @@ function openDemoEvidence(requirement, evidence, trigger) {
   meta.className = "evidence-meta";
   appendDefinition(meta, "官方文档", evidence.official_title);
   appendDefinition(meta, "学校／入学时间", `${evidence.school_name} · ${evidence.intake_name}`);
-  appendDefinition(meta, "官方页码", `第 ${evidence.pages.join("、")} 页（来源链接不保证自动定位，请在文件中查看该页）`);
+  appendDefinition(meta, "页码", `PDF 物理页 ${evidence.pages.join("、")}${evidence.printed ? `／印刷页 ${evidence.printed}` : ""}（来源链接不保证自动定位，请在文件中查看该页）`);
   const highlights = Array.isArray(evidence.highlights) ? evidence.highlights : [];
   const evidenceBody = document.createDocumentFragment();
   if (highlights.length) {
@@ -2590,7 +2590,10 @@ async function submitApplicantComparison() {
     const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: comparisonController.signal });
     if (!response.ok) throw new Error();
     const payload = await response.json();
-    if (!payload || !Array.isArray(payload.items)) throw new Error();
+    if (!payload || !Array.isArray(payload.items) || !payload.counts
+      || payload.counts.total !== payload.items.length || !baseResponse?.target
+      || ["school_name", "degree_name", "intake_name", "college_name", "department_name", "application_route_name"]
+        .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload);
     comparisonResponse = payload;
