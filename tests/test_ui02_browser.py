@@ -390,9 +390,13 @@ def test_ui02_question_boundaries_and_school_isolation():
             if no_result
             else {
                 "local_scope_statement": "Applicant Profile / core_admission / conditional_program",
-                "target": {"school_name": "合成大学", "degree_name": "修士课程",
-                           "intake_name": "2027 年 4 月", "college_name": "合成学院",
-                           "department_name": "合成专攻"},
+                "target": {
+                    "school_name": "合成大学",
+                    "degree_name": "修士课程",
+                    "intake_name": "2027 年 4 月",
+                    "college_name": "合成学院",
+                    "department_name": "合成专攻",
+                },
                 "official_source_url": "https://example.edu/official.pdf",
                 "answer": {
                     "kind": "reference_answer",
