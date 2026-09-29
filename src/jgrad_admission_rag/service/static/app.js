@@ -111,6 +111,7 @@ let referenceCore = null;
 let referenceEntries = [];
 let loadedReference = null;
 let referenceReport = null;
+let referenceReader = null;
 let referenceReportController = null;
 let referenceReportRequestId = 0;
 let baseResponse = null;
@@ -126,7 +127,10 @@ function clearReferenceReport(message = "当前目标或个人情况已改变，
   if (referenceReportController) referenceReportController.abort();
   referenceReportController = null;
   referenceReport = null;
+  referenceReader = null;
   referenceBody.replaceChildren();
+  byId("reference-copy").disabled = true;
+  byId("reference-copy-fallback").value = "";
   byId("reference-copy-fallback").hidden = true;
   byId("reference-copy-fallback-label").hidden = true;
   byId("reference-report-status").textContent = "";
@@ -2355,99 +2359,95 @@ function sliceConditionLabel(value) {
   return labels[value] || "仍需查看完整官方条件";
 }
 
-function reportParagraphs(container, values) {
-  for (const value of values) {
-    if (!value) continue;
-    const paragraph = document.createElement("p");
-    paragraph.textContent = value;
-    container.append(paragraph);
-  }
-}
-
-function reportSources(container, sources) {
-  if (!sources.length) return;
-  const details = document.createElement("details");
-  details.className = "report-sources";
-  const summary = document.createElement("summary");
-  summary.textContent = `查看 ${sources.length} 条官方依据`;
-  details.append(summary);
-  for (const source of sources) {
-    const block = document.createElement("section");
-    block.className = "report-source";
-    block.append(heading(5, source.title));
-    reportParagraphs(block, [`物理页 ${source.pages.join("、")}${source.printed ? ` · 印刷页 ${source.printed}` : ""}`, source.context]);
-    const quote = document.createElement("blockquote");
-    quote.textContent = source.quote;
-    block.append(quote);
-    try {
-      const url = new URL(source.source_url);
-      if (url.protocol === "https:" && !url.username && !url.password) {
-        const link = document.createElement("a");
-        link.href = source.source_url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.textContent = "打开官方来源";
-        block.append(link);
-      }
-    } catch { /* The report retains the original citation in copied text. */ }
-    details.append(block);
-  }
-  container.append(details);
-}
-
 function renderReferenceReport(report) {
   referenceBody.replaceChildren();
-  const scope = report.scope;
-  referenceBody.append(heading(3, referenceCore.scopeLabel(scope)));
-  if (report.kind === "legacy_applicant") {
-    reportParagraphs(referenceBody, report.presentation.intro);
-    referenceBody.append(heading(4, "基础要求"));
-    for (const topic of report.presentation.topics) {
-      const section = document.createElement("section");
-      section.className = "report-topic";
-      section.append(heading(5, topic.heading));
-      reportParagraphs(section, topic.lines);
-      reportSources(section, topic.references);
-      referenceBody.append(section);
-    }
-    if (report.presentation.comparison) {
-      referenceBody.append(heading(4, "个人情况与规则对照（仅依据本次自报）"));
-      reportParagraphs(referenceBody, report.presentation.comparison.overview);
-      for (const item of report.presentation.comparison.items) {
-        const section = document.createElement("section");
-        section.className = "report-topic";
-        section.append(heading(5, item.heading));
-        reportParagraphs(section, item.lines);
-        reportSources(section, item.references);
-        referenceBody.append(section);
+  byId("reference-report-title").textContent = "出愿准备参考";
+  const available = referenceCore.readerReportOptions(report);
+  const selected = {...available};
+  const options = document.createElement("fieldset");
+  options.className = "reader-report-options";
+  const legend = document.createElement("legend");
+  legend.textContent = "选择报告内容";
+  options.append(legend);
+  const content = document.createElement("article");
+  content.className = "reader-report-paper";
+  const addSection = (title, rows, empty) => {
+    const section = document.createElement("section");
+    section.className = "reader-report-section";
+    section.append(heading(3, title));
+    if (rows.length) {
+      const list = document.createElement("ul");
+      for (const row of rows) {
+        const item = document.createElement("li");
+        item.textContent = row;
+        list.append(item);
       }
-      reportParagraphs(referenceBody, report.presentation.comparison.end);
-    } else reportParagraphs(referenceBody, ["未加入个人情况；不作个人适用性判断。"]);
-    reportParagraphs(referenceBody, [report.presentation.conclusion]);
-  } else {
-    const conditionName = {unknown: "未知／未填写", yes: "是", no: "否"};
-    reportParagraphs(referenceBody, ["历史资料、部分材料范围；当前日期未覆盖，也不构成完整材料清单。",
-      `目前任职：${conditionName[report.employment.current]}；入学后继续任职：${conditionName[report.employment.retain]}`]);
-    for (const topic of report.topics) {
-      const section = document.createElement("section");
-      section.className = "report-topic";
-      section.append(heading(4, topic.title));
-      reportParagraphs(section, [topic.status, topic.explanation,
-        ...topic.missing_fields.map((value) => `待确认：${sliceConditionLabel(value)}`), ...topic.limitations]);
-      const sources = loadedReference.topics.flatMap((entry) => entry.sources);
-      reportSources(section, topic.citations.map((cite) => sources.find((source) => source.record_id === cite.record_id)));
-      referenceBody.append(section);
+      section.append(list);
+    } else {
+      const note = document.createElement("p");
+      note.textContent = empty;
+      section.append(note);
     }
-    const markdown = document.createElement("details");
-    const markdownSummary = document.createElement("summary");
-    markdownSummary.textContent = "完整原始报告 Markdown";
-    markdown.append(markdownSummary);
-    const pre = document.createElement("pre");
-    pre.textContent = report.canonicalMarkdown;
-    markdown.append(pre);
-    referenceBody.append(markdown);
+    content.append(section);
+  };
+  const draw = () => {
+    referenceReader = null;
+    byId("reference-copy").disabled = true;
+    const fallback = byId("reference-copy-fallback");
+    fallback.value = "";
+    fallback.hidden = true;
+    byId("reference-copy-fallback-label").hidden = true;
+    byId("reference-report-status").textContent = "";
+    content.replaceChildren();
+    if (!Object.values(selected).some(Boolean)) {
+      content.append(heading(3, "请至少选择一类报告内容。"));
+      return;
+    }
+    const view = referenceCore.readerReport(report, selected);
+    const title = document.createElement("header");
+    title.className = "reader-report-title";
+    title.append(heading(3, view.target));
+    const focus = document.createElement("p");
+    focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"})[key]).join("、")}`;
+    title.append(focus);
+    content.append(title);
+    addSection("接下来先做什么", view.priorities,
+      "当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。");
+    if (selected.dates) {
+      addSection("关键时间", view.dates.map((item) =>
+        `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`),
+      "当前已覆盖资料尚未整理日期，请核对完整募集要项。");
+      if (view.dateNote) {
+        const dateNote = document.createElement("p");
+        dateNote.className = "reader-report-note";
+        dateNote.textContent = view.dateNote;
+        content.append(dateNote);
+      }
+    }
+    if (selected.materials) addSection("材料准备清单", view.materials.map((item) =>
+      `${item.title}｜${item.state}。${item.action}`), "当前所选资料没有可整理的材料主题。");
+    if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
+      `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
+    const limit = document.createElement("p");
+    limit.className = "reader-report-note";
+    limit.textContent = `范围说明：${view.limitation}`;
+    content.append(limit);
+    referenceReader = view;
+    byId("reference-copy").disabled = false;
+  };
+  for (const [key, label] of Object.entries({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"})) {
+    if (!available[key]) continue;
+    const wrapper = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = selected[key];
+    checkbox.addEventListener("change", () => { selected[key] = checkbox.checked; draw(); });
+    wrapper.append(checkbox, document.createTextNode(label));
+    options.append(wrapper);
   }
+  referenceBody.append(options, content);
   referenceDialog.showModal();
+  draw();
   byId("reference-close").focus();
 }
 
@@ -2541,14 +2541,14 @@ async function generateReferenceReport(event) {
 }
 
 async function copyReferenceReport() {
-  if (!referenceReport || !loadedReference
+  if (!referenceReport || !referenceReader || !loadedReference
     || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
   try {
-    await navigator.clipboard.writeText(referenceReport.text);
-    byId("reference-report-status").textContent = "已复制当前预览对应的完整报告与引用。";
+    await navigator.clipboard.writeText(referenceReader.text);
+    byId("reference-report-status").textContent = "已复制当前选中的简洁报告。";
   } catch {
     const fallback = byId("reference-copy-fallback");
-    fallback.value = referenceReport.text;
+    fallback.value = referenceReader.text;
     fallback.hidden = false;
     byId("reference-copy-fallback-label").hidden = false;
     fallback.focus();

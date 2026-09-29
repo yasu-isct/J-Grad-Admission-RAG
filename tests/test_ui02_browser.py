@@ -177,6 +177,7 @@ def _select_slice(page):
 
 def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
     catalog, base, comparison, evidence, report = _data()
+    base["requirements"][1]["reviewed_summary"] = "<img src=x onerror=window.reportXss=1>"
     evidence["topics"][0]["records"].extend(
         {**deepcopy(evidence["topics"][0]["records"][0]), "record_id": f"extra-record-{i}"}
         for i in range(8)
@@ -188,7 +189,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.add_init_script(
-            "Object.defineProperty(navigator, 'clipboard', {value: {writeText: async text => {window.copied = text}}});"
+            "Object.defineProperty(navigator, 'clipboard', {configurable: true, value: {writeText: async text => {window.copied = text}}});"
         )
 
         def route_request(route):
@@ -285,8 +286,33 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
-        for value in ("宛名标签", "available", "入学志愿票", "not_yet", "学历路径", "保守对照"):
+        for value in ("英语成绩单", "待填写准备情况", "关键时间", "材料准备清单"):
             assert value in preview and value in copied
+        for value in ("available", "not_yet", "保守对照", "官方原文", "物理页"):
+            assert value not in preview and value not in copied
+        assert page.locator("#reference-report-body img").count() == 0
+        assert not page.evaluate("window.reportXss")
+        options = page.locator(".reader-report-options input")
+        assert options.count() == 3
+        options.nth(1).uncheck()
+        page.locator("#reference-copy").click()
+        selected_copy = page.evaluate("window.copied")
+        assert "材料准备清单" not in selected_copy and "英语成绩单" not in selected_copy
+        assert len(calls["base"]) == 1 and len(calls["comparison"]) == 1
+        options.nth(0).uncheck()
+        options.nth(2).uncheck()
+        assert page.locator("#reference-copy").is_disabled()
+        assert "请至少选择一类报告内容" in page.locator("#reference-report-body").inner_text()
+        options.nth(1).check()
+        page.evaluate(
+            "Object.defineProperty(navigator, 'clipboard', {value: {writeText: async () => {throw Error('blocked')}}});"
+        )
+        page.locator("#reference-copy").click()
+        assert page.locator("#reference-copy-fallback").is_visible()
+        assert "材料准备清单" in page.locator("#reference-copy-fallback").input_value()
+        page.evaluate(
+            "Object.defineProperty(navigator, 'clipboard', {configurable: true, value: {writeText: async text => {window.copied = text}}});"
+        )
         page.locator("#reference-close").click()
         assert len(calls["base"]) == 1 and len(calls["comparison"]) == 1
         page.locator("#edit-target").click()
@@ -328,9 +354,6 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#readiness-panel .reference-generate").click()
         page.locator("#reference-report").wait_for(state="visible")
         assert len(calls["reports"]) == 1
-        page.locator("#reference-report-body details").evaluate_all(
-            "elements => elements.forEach(element => { element.open = true; })"
-        )
         page.set_viewport_size({"width": 390, "height": 844})
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         assert page.locator(
@@ -340,14 +363,10 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
-        for value in (
-            "# 原始报告",
-            "目前任职是；入学后继续任职否",
-            "物理页 8",
-            "印刷页 7",
-            "提出が必要",
-        ):
+        for value in ("计划书", "成绩单", "申请表", "需要准备，完成情况未填写"):
             assert value in preview and value in copied
+        for value in ("# 原始报告", "物理页 8", "印刷页 7", "提出が必要", "record_id"):
+            assert value not in preview and value not in copied
         page.locator("#reference-close").click()
         for topic in evidence["topics"]:
             topic["records"][0]["printed_page_label"] = None

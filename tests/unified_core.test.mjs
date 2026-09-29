@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   readyEntries, scopesFor, scopeKey, comparisonRequest, hasSuppliedProfile,
-  sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport
+  sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport,
+  readerReportOptions, readerReport
 } from "../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const legacy = {
@@ -148,4 +149,61 @@ test("slice evidence and canonical report keep unknown status, citation and raw 
   assert.throws(() => mapSliceEvidence(scope, {...evidence, snapshot_id: "b".repeat(64)}));
   assert.throws(() => sliceReport(scope, mapped, {...report, report: {...report.report, evidence_inventory: []}}));
   assert.throws(() => sliceReport(scope, mapped, {...report, snapshot_id: "b".repeat(64)}));
+});
+
+test("reader projection separates missing, self-reported ready, unfilled, and conditional materials", () => {
+  const scope = scopesFor(legacy)[0];
+  const required = (id, title) => ({...base.requirements[0], requirement_id: id,
+    category: "materials", title, official_status: "required", date_events: []});
+  const mapped = mapLegacyBase(scope, {...base, requirements: [base.requirements[0],
+    required("missing", "未准备材料"), required("ready", "已有材料"),
+    required("unfilled", "未填材料"),
+    {...required("conditional", "条件材料"), official_status: "needs_information"}]});
+  const items = [
+    ["missing", "未准备材料", "required", "not_yet"],
+    ["ready", "已有材料", "required", "available"],
+    ["unfilled", "未填材料", "required", "unknown"],
+    ["conditional", "条件材料", "needs_information", "not_yet"]
+  ].map(([item_id, title, official_status, preparation_status]) => ({
+    item_id, category: "materials", title, official_status, preparation_status,
+    comparison_status: "needs_information", evidence: [source]
+  }));
+  const supplied = legacyReport(mapped, {...comparison, items,
+    counts: {...comparison.counts, total: items.length}});
+  const options = readerReportOptions(supplied);
+  assert.deepEqual(options, {dates: true, materials: true, other: false});
+  const view = readerReport(supplied, {dates: true, materials: true, other: false});
+  assert.deepEqual(view.materials.map((item) => item.state),
+    ["待补材料", "已自报准备", "待填写准备情况", "待确认适用"]);
+  assert.ok(view.priorities.some((line) => line.includes("未准备材料：待补材料")));
+  assert.ok(!view.priorities.some((line) => line.includes("已有材料")));
+  assert.match(view.text, /已准备不代表有效、已提交或学校受理/);
+  assert.doesNotMatch(view.text, /日文官方原文|RULE-05A|precision|record_id|物理页/);
+  const onlyDates = readerReport(supplied, {dates: true, materials: false, other: false});
+  assert.doesNotMatch(onlyDates.text, /未准备材料|材料准备清单/);
+  const noProfile = readerReport(legacyReport(mapped), {dates: true, materials: true, other: false});
+  assert.match(noProfile.text, /未填写准备情况，暂不能判断还缺哪些材料/);
+  assert.ok(noProfile.materials.every((item) => item.state !== "待补材料"));
+  assert.throws(() => readerReport(supplied, {dates: false, materials: false, other: false}));
+});
+
+test("slice reader projection respects conditional and non-submission results", () => {
+  const scope = scopesFor(slice)[0];
+  const mapped = mapSliceEvidence(scope, evidence);
+  const unknown = readerReport(sliceReport(scope, mapped, report),
+    {dates: false, materials: true, other: false});
+  assert.match(unknown.text, /待确认适用/);
+  assert.doesNotMatch(unknown.text, /# Canonical|提出が必要|物理页|record_id/);
+  const requiredPayload = {...report, report: {...report.report, topic_results:
+    [{...report.report.topic_results[0], disposition: "submission_required"}]}};
+  const required = readerReport(sliceReport(scope, mapped, requiredPayload,
+    {current: "yes", retain: "yes"}), {dates: false, materials: true, other: false});
+  assert.match(required.text, /需要准备，完成情况未填写/);
+  const exemptPayload = {...report, report: {...report.report, topic_results:
+    [{...report.report.topic_results[0], disposition: "rule_not_applicable"}]}};
+  const exempt = readerReport(sliceReport(scope, mapped, exemptPayload,
+    {current: "no", retain: "unknown"}), {dates: false, materials: true, other: false});
+  assert.match(exempt.text, /本条条件不适用/);
+  assert.equal(exempt.materials[0].state, "本条条件不适用");
+  assert.equal(exempt.priorities.length, 0);
 });

@@ -906,15 +906,23 @@ legend {
 .step-primary-action .reference-generate { width: auto; }
 .slice-profile { padding: 18px; border: 1px solid var(--color-border); border-radius: 8px; background: #f7faf8; }
 .slice-profile p { margin-top: 0; }
-.reference-report { width: min(820px, calc(100vw - 24px)); }
+.reference-report { position: fixed; inset: 0 0 0 auto; width: min(820px, calc(100vw - 24px)); margin: 0; }
 .reference-report .drawer-header { gap: 16px; }
 .reference-report .drawer-content { max-height: min(68vh, 800px); overflow: auto; }
-.report-topic { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--color-border); }
-.report-topic h4, .report-topic h5 { margin: 0 0 12px; }
-.report-topic p { line-height: 1.65; }
-.report-source { margin-top: 16px; padding: 12px; background: #f7faf8; border-radius: 6px; overflow-wrap: anywhere; }
-.report-source blockquote { white-space: pre-wrap; overflow-wrap: anywhere; }
-.reference-report pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reader-report-options { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0 0 18px; padding: 12px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.reader-report-options legend { padding: 0 4px; font-weight: 800; }
+.reader-report-options label { display: inline-flex; align-items: center; gap: 7px; width: auto; margin: 0; white-space: nowrap; cursor: pointer; }
+.reader-report-options input[type="checkbox"] { flex: 0 0 auto; width: 18px; height: 18px; margin: 0; accent-color: var(--color-primary); }
+.reader-report-paper { min-width: 0; overflow-wrap: anywhere; line-height: 1.65; }
+.reader-report-title { padding: 14px 16px; border-left: 4px solid var(--color-primary); background: var(--color-primary-soft); }
+.reader-report-title h3 { font-size: 16px; line-height: 1.45; }
+.reader-report-title p { margin: 7px 0 0; }
+.reader-report-section { margin-top: 18px; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #fff; }
+.reader-report-section:first-of-type { border-color: #d5c89f; background: #fffaf0; }
+.reader-report-section h3 { margin: 0 0 10px; font-size: 17px; }
+.reader-report-section ul { margin: 0; padding-left: 21px; }
+.reader-report-section li + li { margin-top: 9px; }
+.reader-report-note { margin: 14px 0 0; color: var(--color-text-muted); font-size: 13px; }
 .reference-report textarea { width: calc(100% - 48px); margin: 0 24px 20px; min-height: 110px; }
 .requirement-evidence-actions { flex-wrap: wrap; min-width: 0; }
 .slice-readiness .comparison-output > .requirement-card { margin-top: 18px; }

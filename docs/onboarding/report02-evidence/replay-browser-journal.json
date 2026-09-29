@@ -1,0 +1,14 @@
+{
+  "method": "saved real HTTP responses through current browser code",
+  "service_startups": 0,
+  "real_posts": 0,
+  "replayed_posts": {
+    "base": 1,
+    "comparison": 1,
+    "reports": 3
+  },
+  "screenshots": 10,
+  "copy_matches_projection": true,
+  "no_horizontal_overflow": true,
+  "browser_errors": []
+}

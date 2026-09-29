@@ -228,7 +228,8 @@ def test_browser_reaches_synthetic_http_backend(tmp_path):
             page.locator("#reference-report").wait_for(state="visible")
             assert len(posts) == 1
             assert page.locator("#reference-report-body h3").count() >= 1
-            assert page.locator("#reference-report-body pre").count() == 1
+            assert page.locator("#reference-report-body pre").count() == 0
+            assert "材料准备清单" in page.locator("#reference-report-body").inner_text()
             page.locator("#reference-copy").click()
             page.wait_for_function("window.copied !== undefined")
             assert "合成大学" in page.evaluate("window.copied")

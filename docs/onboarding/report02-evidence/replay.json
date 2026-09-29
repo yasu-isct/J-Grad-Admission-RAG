@@ -1,0 +1,202 @@
+{
+  "method": "Existing real HTTP responses revalidated by unified-core, then projected before/after",
+  "cases": [
+    {
+      "name": "isct-no-profile",
+      "sources": [
+        {
+          "file": "isct-base-2027.json",
+          "sha256": "098ad23a57542437e477c08e8745184147545e730f18142f0b4bf428ba45f8f0"
+        }
+      ],
+      "beforeCopy": {
+        "sha256": "749835db55032accd2d474f0502062b7cfc23ef8eef7e774dce66a465fa93740",
+        "length": 22285,
+        "excerpt": "募集要项参考报告\n東京科学大学 · 工学院 · システム制御系 · 修士课程 · 2027 April / 2026 September Master's Program Admission Guidelines · 2027年4月入学 · 一般选拔\n\n资料性质：当前已审核结果的页面导出；不是最终资格判断。\n审核覆盖：当前只展示人工审核并与官方 Fact 绑定的部分日期、材料、资格和语言规则。\n范围限制：本报告不判断最终出愿资格、材料受理、录取结果或成功概率。\n\n基础要求\n\n1. 网上登记与出愿期间\n类别：日期；官方状态：需要提交／满足对应条件时适用\n说明：请根据下方官方日文核对网上登记开始时间与出愿期间。\n日期：网上出愿信息登记开放 · 2026年6月1日 09:00 起（JST） · 精度 minute\n未知时间字段：end_date、end_time\n日期限制：登记结束日期与时刻：官方原文未明确，不作推断。\n日期：出愿材料到达期间 · 2026年6月4日至2026年6月10日 · 精度 date\n未知时间字段：end_time、start_time\n日期限制：官方按日期说明期间，未给出每日具体时刻。\n限制：仅显示已审核的官方期间；请以官方文件与学校最新通知为准。\n出处：2027 April / 2026 September Master's Program Admission Guidelines · 物理页 9\n上下文：日期结论仅复述已审核的官方日期语义；请通过原文与 PDF 页码最终核对。\n官方原文：（１）出願期間\n2026年6月4日（木）～6月10日（水）（必着）\n"
+      },
+      "afterCopy": {
+        "sha256": "440d64f4b4dbfd8f4d6288de49c963aa4f715985419ec1d9b48a3bb40ea47be4",
+        "length": 1084,
+        "file": "isct-no-profile-after-copy.txt"
+      },
+      "materials": [
+        {
+          "title": "宛名ラベル",
+          "state": "待填写准备情况"
+        },
+        {
+          "title": "入学志願票",
+          "state": "待填写准备情况"
+        },
+        {
+          "title": "志望理由書",
+          "state": "待确认适用"
+        },
+        {
+          "title": "学士課程の成績証明書",
+          "state": "待确认适用"
+        },
+        {
+          "title": "学士課程の卒業証明書又は卒業見込み証明書",
+          "state": "待确认适用"
+        }
+      ]
+    },
+    {
+      "name": "isct-with-profile",
+      "sources": [
+        {
+          "file": "isct-base-2027.json",
+          "sha256": "098ad23a57542437e477c08e8745184147545e730f18142f0b4bf428ba45f8f0"
+        },
+        {
+          "file": "isct-comparison.json",
+          "sha256": "8e0908e8ed66b17f5f47e6da40cb6c429409f1f7fcebd6d9b10e1ee869294f52"
+        }
+      ],
+      "beforeCopy": {
+        "sha256": "92892140bf8b52e4fa56e94e2fa7f1f7ef4bcf00bc63fcb1494485711c98b28d",
+        "length": 33346,
+        "excerpt": "募集要项参考报告\n東京科学大学 · 工学院 · システム制御系 · 修士课程 · 2027 April / 2026 September Master's Program Admission Guidelines · 2027年4月入学 · 一般选拔\n\n资料性质：当前已审核结果的页面导出；不是最终资格判断。\n审核覆盖：当前只展示人工审核并与官方 Fact 绑定的部分日期、材料、资格和语言规则。\n范围限制：本报告不判断最终出愿资格、材料受理、录取结果或成功概率。\n\n基础要求\n\n1. 网上登记与出愿期间\n类别：日期；官方状态：需要提交／满足对应条件时适用\n说明：请根据下方官方日文核对网上登记开始时间与出愿期间。\n日期：网上出愿信息登记开放 · 2026年6月1日 09:00 起（JST） · 精度 minute\n未知时间字段：end_date、end_time\n日期限制：登记结束日期与时刻：官方原文未明确，不作推断。\n日期：出愿材料到达期间 · 2026年6月4日至2026年6月10日 · 精度 date\n未知时间字段：end_time、start_time\n日期限制：官方按日期说明期间，未给出每日具体时刻。\n限制：仅显示已审核的官方期间；请以官方文件与学校最新通知为准。\n出处：2027 April / 2026 September Master's Program Admission Guidelines · 物理页 9\n上下文：日期结论仅复述已审核的官方日期语义；请通过原文与 PDF 页码最终核对。\n官方原文：（１）出願期間\n2026年6月4日（木）～6月10日（水）（必着）\n"
+      },
+      "afterCopy": {
+        "sha256": "31af5c313342e8cfc6a581d3e25a3bcdaf0d7bdd01781b1a1dc81ec081b69a84",
+        "length": 1018,
+        "file": "isct-with-profile-after-copy.txt"
+      },
+      "materials": [
+        {
+          "title": "宛名ラベル",
+          "state": "已自报准备"
+        },
+        {
+          "title": "入学志願票",
+          "state": "待补材料"
+        },
+        {
+          "title": "志望理由書",
+          "state": "待确认适用"
+        },
+        {
+          "title": "学士課程の成績証明書",
+          "state": "待确认适用"
+        },
+        {
+          "title": "学士課程の卒業証明書又は卒業見込み証明書",
+          "state": "待确认适用"
+        }
+      ]
+    },
+    {
+      "name": "gsfs-unknown",
+      "sources": [
+        {
+          "file": "gsfs-evidence.json",
+          "sha256": "6d7d87684d0b8aeff13fddb7b2fea9f81a86c4901384538d39d2bc1729073164"
+        },
+        {
+          "file": "gsfs-unknown-unknown.json",
+          "sha256": "1db26d222a30deeac1c71b4c790ad87f7508692463de450ebea494354ca576b7"
+        }
+      ],
+      "beforeCopy": {
+        "sha256": "fc8b43eb934744b52e5e75fa6838b2583d78ea6c6e139b17927567e8452525fc",
+        "length": 8024,
+        "excerpt": "募集要项参考报告\n东京大学 · 新领域创成科学研究科 · CBMS / 複雑理工学専攻 · 修士 · 2027 年度 · 历史资料 · 2027 年 4 月 · 一般选拔 · A 日程\n历史资料、部分材料范围；请核对报告中的条件、未知事项和完整官方出处。\n本次自报：目前受雇 未知／待确认；入学后继续在职 未知／待确认。\n\n# 募集要项参考报告（历史固定切片／部分材料主题）\n\n选定范围：2027 年 4 月入学；master；general\\-ordinary；日程 A。\n\n## 英语成绩单\n\n审核结果：无需提交（仅此材料本身）。\n\n中文审核说明：在本报告选定的修士一般选拔范围内，无需提交英语成绩单；这不表示免除英语相关考查。\n\n关联说明：共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程一般選抜試験では、TOEFL iBTやTOEIC L&amp;Rなどの英語のスコアシートを提出する必要はない"
+      },
+      "afterCopy": {
+        "sha256": "9bc1a212d78f42c4db2aeb2662a26c84593a51a8ef9f1944951a83242040522e",
+        "length": 417,
+        "file": "gsfs-unknown-after-copy.txt"
+      },
+      "materials": [
+        {
+          "title": "英语成绩单",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "提交书类检查表本身",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "学业与职务両立计划书",
+          "state": "待确认适用"
+        }
+      ]
+    },
+    {
+      "name": "gsfs-required",
+      "sources": [
+        {
+          "file": "gsfs-evidence.json",
+          "sha256": "6d7d87684d0b8aeff13fddb7b2fea9f81a86c4901384538d39d2bc1729073164"
+        },
+        {
+          "file": "gsfs-yes-yes.json",
+          "sha256": "1b759b3a8bf9cfaebf70c772578970c5d0dfa9a19b3bcf7d928b809c676fbc19"
+        }
+      ],
+      "beforeCopy": {
+        "sha256": "39de5faeeb201013ead682dfddf9345175202ba26fdf3ae1e6dafe19770253dc",
+        "length": 7938,
+        "excerpt": "募集要项参考报告\n东京大学 · 新领域创成科学研究科 · CBMS / 複雑理工学専攻 · 修士 · 2027 年度 · 历史资料 · 2027 年 4 月 · 一般选拔 · A 日程\n历史资料、部分材料范围；请核对报告中的条件、未知事项和完整官方出处。\n本次自报：目前受雇 是；入学后继续在职 是。\n\n# 募集要项参考报告（历史固定切片／部分材料主题）\n\n选定范围：2027 年 4 月入学；master；general\\-ordinary；日程 A。\n\n## 英语成绩单\n\n审核结果：无需提交（仅此材料本身）。\n\n中文审核说明：在本报告选定的修士一般选拔范围内，无需提交英语成绩单；这不表示免除英语相关考查。\n\n关联说明：共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程一般選抜試験では、TOEFL iBTやTOEIC L&amp;Rなどの英語のスコアシートを提出する必要はない。\n  章节：修士課"
+      },
+      "afterCopy": {
+        "sha256": "056e17ee8323e3a38d732dc4775de0b0a4964d3af2865a06eab2ef9992953094",
+        "length": 429,
+        "file": "gsfs-required-after-copy.txt"
+      },
+      "materials": [
+        {
+          "title": "英语成绩单",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "提交书类检查表本身",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "学业与职务両立计划书",
+          "state": "需要准备，完成情况未填写"
+        }
+      ]
+    },
+    {
+      "name": "gsfs-inapplicable",
+      "sources": [
+        {
+          "file": "gsfs-evidence.json",
+          "sha256": "6d7d87684d0b8aeff13fddb7b2fea9f81a86c4901384538d39d2bc1729073164"
+        },
+        {
+          "file": "gsfs-no-unknown.json",
+          "sha256": "79a2a71836428e449f723ce7f5a3a5ad5d29f54c30cfc04aab8d40e3c2464351"
+        }
+      ],
+      "beforeCopy": {
+        "sha256": "c5771b5687bd96648d0b52abb883668f24be797a62be5d7ffd872687e20124fe",
+        "length": 7992,
+        "excerpt": "募集要项参考报告\n东京大学 · 新领域创成科学研究科 · CBMS / 複雑理工学専攻 · 修士 · 2027 年度 · 历史资料 · 2027 年 4 月 · 一般选拔 · A 日程\n历史资料、部分材料范围；请核对报告中的条件、未知事项和完整官方出处。\n本次自报：目前受雇 否；入学后继续在职 未知／待确认。\n\n# 募集要项参考报告（历史固定切片／部分材料主题）\n\n选定范围：2027 年 4 月入学；master；general\\-ordinary；日程 A。\n\n## 英语成绩单\n\n审核结果：无需提交（仅此材料本身）。\n\n中文审核说明：在本报告选定的修士一般选拔范围内，无需提交英语成绩单；这不表示免除英语相关考查。\n\n关联说明：共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程一般選抜試験では、TOEFL iBTやTOEIC L&amp;Rなどの英語のスコアシートを提出する必要はない。\n  章"
+      },
+      "afterCopy": {
+        "sha256": "0c6baf618fa48f17906c44bab8808d73e82704f943f8f2fe93cb5bd58b309f47",
+        "length": 373,
+        "file": "gsfs-inapplicable-after-copy.txt"
+      },
+      "materials": [
+        {
+          "title": "英语成绩单",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "提交书类检查表本身",
+          "state": "本项无需提交"
+        },
+        {
+          "title": "学业与职务両立计划书",
+          "state": "本条条件不适用"
+        }
+      ]
+    }
+  ]
+}
