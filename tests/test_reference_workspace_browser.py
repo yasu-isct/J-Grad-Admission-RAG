@@ -207,21 +207,29 @@ def test_browser_reaches_synthetic_http_backend(tmp_path):
             )
             page.goto(f"http://127.0.0.1:{port}/app/reference")
             assert page.url.endswith("/app")
-            page.locator("#uw-school option").first.wait_for(state="attached")
-            page.locator("#uw-load").click()
-            page.locator(".uw-topic").wait_for(state="visible")
-            page.locator(".uw-topic .uw-link-button").click()
-            assert page.locator("#uw-evidence blockquote").count() >= 1
-            assert "TOEFL iBT" in page.locator("#uw-evidence blockquote").first.inner_text()
-            page.locator("#uw-evidence [data-close]").click()
+            page.locator("#school-select option").nth(1).wait_for(state="attached")
+            for selector in (
+                "#intake-select",
+                "#college-select",
+                "#department-select",
+                "#route-select",
+            ):
+                page.locator(selector).select_option(index=1)
+            page.locator("#requirements-submit").click()
+            page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
+            assert "当前资料尚未覆盖日期" in page.locator(".key-dates-section").inner_text()
+            page.locator(".materials-section .requirement-card button").first.click()
+            assert page.locator("#evidence-drawer blockquote").count() >= 1
+            assert "TOEFL iBT" in page.locator("#evidence-drawer blockquote").first.inner_text()
+            page.locator("#drawer-close").click()
             page.screenshot(path=str(tmp_path / "synthetic-desktop.png"), full_page=True)
             assert not posts
-            page.locator("#uw-generate").click()
-            page.locator("#uw-report").wait_for(state="visible")
+            page.locator("#step-2-panel .reference-generate").click()
+            page.locator("#reference-report").wait_for(state="visible")
             assert len(posts) == 1
-            assert page.locator("#uw-report-body h3").count() >= 1
-            assert page.locator("#uw-report-body pre").count() == 1
-            page.locator("#uw-copy").click()
+            assert page.locator("#reference-report-body h3").count() >= 1
+            assert page.locator("#reference-report-body pre").count() == 1
+            page.locator("#reference-copy").click()
             page.wait_for_function("window.copied !== undefined")
             assert "合成大学" in page.evaluate("window.copied")
             page.screenshot(path=str(tmp_path / "synthetic-report.png"), full_page=True)

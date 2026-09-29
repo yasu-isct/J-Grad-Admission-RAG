@@ -26,13 +26,17 @@ def test_formal_serve_factory_exposes_unified_dependencies_without_slice_config(
     client = TestClient(cli.create_app(ServiceSettings()))
     html = client.get("/app")
     assert html.status_code == 200
-    assert 'id="uw-school"' in html.text
-    assert 'id="uw-generate"' in html.text
+    assert 'id="school-select"' in html.text
+    assert 'id="step-nav-4"' in html.text
+    assert 'class="secondary reference-generate"' in html.text
     assert "script-src 'self'" in html.headers["content-security-policy"]
     for path, media_type in (
         ("/assets/unified.js", "text/javascript"),
         ("/assets/unified-core.mjs", "text/javascript"),
         ("/assets/unified.css", "text/css"),
+        ("/assets/app.js", "text/javascript"),
+        ("/assets/app.css", "text/css"),
+        ("/assets/overview.js", "text/javascript"),
     ):
         response = client.get(path)
         assert response.status_code == 200
@@ -40,7 +44,7 @@ def test_formal_serve_factory_exposes_unified_dependencies_without_slice_config(
     catalog = client.get("/v1/reference-targets")
     assert catalog.status_code == 200
     assert catalog.json() == {"schema_version": "1.0", "items": []}
-    assert client.get("/app/advanced").status_code == 200
+    assert client.get("/app/advanced").text == html.text
     redirect = client.get("/app/reference", follow_redirects=False)
     assert redirect.status_code == 307 and redirect.headers["location"] == "/app"
     client.close()
@@ -125,17 +129,17 @@ def test_formal_serve_parser_accepts_optional_reference_configuration(tmp_path: 
 
 def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path) -> None:
     static = ROOT / "src/jgrad_admission_rag/service/static"
-    html = (static / "app.html").read_text(encoding="utf-8")
-    script = (static / "unified.js").read_text(encoding="utf-8")
-    resources = re.findall(r"/(assets/unified[^\"']+)", html)
-    imports = re.findall(r'from "\./([^\"]+)"', script)
+    html = (static / "advanced.html").read_text(encoding="utf-8")
+    script = (static / "app.js").read_text(encoding="utf-8")
+    resources = re.findall(r"/(assets/[^\"']+)", html)
+    imports = re.findall(r'import\("/(assets/[^\"]+)"\)', script)
     assert "recursive-include src/jgrad_admission_rag/service/static *.mjs" in (
         ROOT / "MANIFEST.in"
     ).read_text(encoding="utf-8")
     for resource in resources:
         assert (static / resource.removeprefix("assets/")).is_file()
     for imported in imports:
-        assert (static / imported).is_file()
+        assert (static / imported.removeprefix("assets/")).is_file()
     if importlib.util.find_spec("setuptools") is None:
         pytest.skip("offline wheel build requires a locally installed setuptools backend")
     result = subprocess.run(
@@ -168,4 +172,4 @@ def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path
         for resource in resources:
             assert prefix + resource.removeprefix("assets/") in names
         for imported in imports:
-            assert prefix + imported in names
+            assert prefix + imported.removeprefix("assets/") in names

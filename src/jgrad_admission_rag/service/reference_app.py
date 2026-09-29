@@ -120,6 +120,17 @@ def create_app(
 
     static = Path(__file__).with_name("static")
 
+    # The retained four-step application is the main page for UI-02. The
+    # pinned legacy factory registered its original /app route earlier; remove
+    # only that page route and keep all API and legacy asset routes intact.
+    app.router.routes[:] = [
+        route for route in app.router.routes if getattr(route, "path", None) != "/app"
+    ]
+
+    @app.get("/app", include_in_schema=False)
+    def main_app() -> FileResponse:
+        return FileResponse(static / "advanced.html", media_type="text/html; charset=utf-8")
+
     @app.get("/app/reference", include_in_schema=False)
     def reference_app() -> RedirectResponse:
         return RedirectResponse("/app", status_code=307)

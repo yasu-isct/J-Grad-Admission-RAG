@@ -4,7 +4,7 @@ const CATALOG_ENDPOINT = "/v1/reviewed-documents";
 const QUERY_ENDPOINT = "/v1/corpus/query";
 const INTENT_ENDPOINT = "/v1/query-intents/parse";
 const REPORT_ENDPOINT = "/v1/applicant-reports";
-const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog";
+const TARGET_CATALOG_ENDPOINT = "/v1/reference-targets";
 const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements";
 const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison";
 const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers";
@@ -107,6 +107,45 @@ let groundedController = null;
 let groundedRequestId = 0;
 let groundedCanRetry = false;
 let generationStatus = null;
+let referenceCore = null;
+let referenceEntries = [];
+let loadedReference = null;
+let referenceReport = null;
+let referenceReportController = null;
+let referenceReportRequestId = 0;
+let baseResponse = null;
+let comparisonResponse = null;
+let referenceTrigger = null;
+const referenceButtons = Array.from(document.querySelectorAll(".reference-generate"));
+const referenceDialog = byId("reference-report");
+const referenceBody = byId("reference-report-body");
+const referenceInlineStatus = byId("reference-inline-status");
+
+function clearReferenceReport(message = "当前目标或个人情况已改变，请按需重新生成。") {
+  referenceReportRequestId += 1;
+  if (referenceReportController) referenceReportController.abort();
+  referenceReportController = null;
+  referenceReport = null;
+  referenceBody.replaceChildren();
+  byId("reference-copy-fallback").hidden = true;
+  byId("reference-copy-fallback-label").hidden = true;
+  byId("reference-report-status").textContent = "";
+  referenceInlineStatus.textContent = message;
+  for (const button of referenceButtons) button.disabled = !baseRequirementsLoaded;
+  if (referenceDialog.open) referenceDialog.close();
+}
+
+function updateProfileCapability() {
+  const slice = currentReferenceEntry()?.kind === "reviewed_material_slice";
+  byId("legacy-profile-grid").hidden = slice;
+  byId("slice-profile").hidden = !slice;
+  byId("advanced-tools").hidden = slice;
+  comparisonSubmit.textContent = slice ? "核对已覆盖材料条件" : "对照个人情况";
+  byId("readiness-filters").hidden = slice;
+  byId("grounded-answer-panel").hidden = slice;
+  clearGroundedAnswer(slice ? "当前材料切片暂不支持问答。" : "加载基础要求后即可提问。");
+  updateGroundedContext();
+}
 
 const stepStateLabels = {
   locked: "未开始",
@@ -186,12 +225,18 @@ function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
   groundedOutput.replaceChildren();
   groundedOutput.hidden = true;
   const configured = Boolean(generationStatus && generationStatus.configured);
-  groundedQuestion.disabled = !baseRequirementsLoaded || !configured;
-  groundedSubmit.disabled = !baseRequirementsLoaded || !configured;
-  setMessage(groundedStatus, "initial", generationStatus && !configured ? generationStatus.label : message);
+  const supported = currentReferenceEntry()?.kind !== "reviewed_material_slice";
+  groundedQuestion.disabled = !baseRequirementsLoaded || !configured || !supported;
+  groundedSubmit.disabled = !baseRequirementsLoaded || !configured || !supported;
+  setMessage(groundedStatus, "initial", !supported ? "当前材料切片暂不支持检索或问答。"
+    : generationStatus && !configured ? generationStatus.label : message);
 }
 
 function updateGroundedContext() {
+  if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
+    groundedContext.textContent = "当前材料切片暂不支持检索或问答；请查看已审核主题和官方原文。";
+    return;
+  }
   if (!baseRequirementsLoaded || !demoTargetComplete()) {
     groundedContext.textContent = "请先完成目标选择并加载基础要求。";
     return;
@@ -211,8 +256,7 @@ function groundedRequestPayload() {
 }
 
 function groundedFailureMessage(code, status) {
-  if (code === "online_generation_not_configured" && generationStatus && generationStatus.provider === "deepseek-responses") return "DeepSeek 在线生成服务未配置。请在本机设置 DEEPSEEK_API_KEY 后重新启动，或切换到离线规则模式。";
-  if (code === "online_generation_not_configured") return "在线生成服务未配置。请在本机设置 OPENAI_API_KEY 后重新启动，或切换到离线规则模式。";
+  if (code === "online_generation_not_configured") return "在线问答暂时不可用；已审核要求和官方依据仍可查看。";
   if (code === "generation_provider_timeout" || status === 504) return "生成服务超时。当前选择和问题仍保留，可重试。";
   if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
   if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
@@ -273,44 +317,45 @@ function appendGroundedResult(container, payload, delivery, mode) {
     if (controls.childElementCount) card.append(controls);
     container.append(card);
   }
-  const audit = document.createElement("details");
-  audit.className = "grounded-audit";
-  const auditSummary = document.createElement("summary");
-  auditSummary.textContent = "技术详情 / 审计信息";
-  audit.append(auditSummary);
-  const meta = document.createElement("p");
-  const generationTiming = delivery.generation_ms === null ? "cache" : `${delivery.generation_ms} ms`;
-  meta.textContent = `provider=${mode.provider} · model=${mode.model} · generation=${generationTiming} · validation=${delivery.validation_ms} ms · ${delivery.knowledge_base_version}`;
-  audit.append(meta);
   appendGroundedList(
-    audit,
+    container,
     referenceOnly ? "本地检索范围" : "审核范围",
     [payload.local_scope_statement || payload.reviewed_scope_statement]
   );
-  appendGroundedList(audit, "仍缺少的信息", answer.missing_information);
-  appendGroundedList(audit, "限制", answer.limitations);
-  container.append(audit);
+  appendGroundedList(container, "仍缺少的信息", answer.missing_information);
+  appendGroundedList(container, "回答限制", answer.limitations);
+  const links = document.createElement("p");
+  links.className = "grounded-boundary";
+  try {
+    const official = new URL(payload.official_source_url);
+    if (official.protocol === "https:" && !official.username && !official.password) {
+      const link = document.createElement("a");
+      link.href = official.href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "打开官方来源";
+      links.append(link);
+    }
+  } catch { /* No verified official link was supplied. */ }
+  const local = payload.local_pdf_url;
+  if (typeof local === "string" && /^\/documents\/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?\/source\.pdf$/.test(local)) {
+    const link = document.createElement("a");
+    link.href = local;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "查看本地官方 PDF";
+    links.append(link);
+  }
+  if (links.childElementCount) container.append(links);
 }
 
 function renderGroundedAnswer(payload) {
   groundedOutput.replaceChildren();
   const meta = document.createElement("p");
   meta.className = "grounded-answer-meta";
-  for (const text of [
-    payload.mode.label,
-    payload.delivery.source === "cache_hit"
-      ? "缓存的参考回答"
-      : payload.delivery.source === "live"
-        ? payload.mode.provider === "deepseek-responses"
-          ? "DeepSeek 实时生成"
-          : "在线模型实时生成"
-        : payload.delivery.source === "fallback"
-          ? "在线整理不可用 · 本地检索片段"
-          : "本地检索回答",
-    `provider · ${payload.mode.provider}`,
-    `模型 · ${payload.mode.model}`,
-    `知识库 · ${payload.delivery.knowledge_base_version}`
-  ]) {
+  const deliveryLabels = {cache_hit: "缓存的参考回答", live: "在线整理的参考回答",
+    fallback: "在线整理不可用，已使用本地检索参考内容", offline: "本地离线参考回答"};
+  for (const text of [deliveryLabels[payload.delivery?.source] || "当前范围的参考回答"]) {
     const badge = document.createElement("span");
     badge.textContent = text;
     meta.append(badge);
@@ -324,12 +369,11 @@ function renderGroundedAnswer(payload) {
   summary.textContent = payload.summary;
   scope.append(summary);
   groundedOutput.append(scope);
-  const cacheNote = document.createElement("p");
-  cacheNote.className = "grounded-boundary";
-  cacheNote.textContent = "精确缓存仅保存在当前服务进程中，服务重启后会清除。";
-  groundedOutput.append(cacheNote);
+  if (!payload.result) appendGroundedList(groundedOutput, "回答限制", ["本次没有可安全展示的引用回答，请核对官方依据。"]);
   appendGroundedList(groundedOutput, "需要补充的信息", payload.missing_context);
   appendGroundedList(groundedOutput, "不支持的请求部分", payload.unsupported_parts);
+  appendGroundedList(groundedOutput, "分项处理说明", (payload.subanswers || [])
+    .filter((part) => part.status !== "answered").map((part) => part.message));
   groundedOutput.hidden = false;
 }
 
@@ -1197,6 +1241,7 @@ function demoTargetComplete() {
 }
 
 function targetLabel(target) {
+  if (target?.kind) return referenceCore.scopeLabel(target);
   return [
     target.school_name,
     target.degree_name,
@@ -1227,6 +1272,12 @@ function updateRequirementsStepSummary(payload) {
 }
 
 function updateApplicantStepSummary() {
+  if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
+    const current = byId("slice-current-employed").selectedOptions[0].textContent;
+    const retain = byId("slice-retain-employed").selectedOptions[0].textContent;
+    byId("step-3-summary-text").textContent = `目前任职：${current}；入学后继续任职：${retain}`;
+    return;
+  }
   const categories = [
     ["学历", profileGroupHasProvidedValue("education")],
     ["英语", profileGroupHasProvidedValue("english")],
@@ -1409,9 +1460,53 @@ function populateDemoCatalog(schools) {
   setMessage(targetStatus, schools.length ? "success" : "empty", schools.length ? "审核目录已就绪，请完成申请目标。" : "当前没有可用的审核目标。", schools.length === 0);
 }
 
+function catalogForReferenceEntry(item) {
+  if (item.kind === "legacy_applicant") return item.legacy_catalog;
+  const scope = referenceCore.scopesFor(item)[0];
+  const target = item.target;
+  // Selection-only projection. The request retains the slice target and never
+  // sends this UI shape or a fabricated legacy document ID to an API.
+  return {
+    school_id: item.entry_id, school_name: scope.school,
+    degrees: [{
+      degree_id: target.degree_level, degree_name: scope.degree,
+      intakes: [{
+        document_id: null, year: target.intake.year, month: target.intake.month,
+        intake_name: `${scope.intake} · ${scope.edition}`,
+        colleges: [{
+          college_id: target.organization_id || scope.organization, college_name: scope.organization,
+          departments: [{
+            department_id: target.program_id || scope.program, department_name: scope.program,
+            application_routes: [{route_id: target.examination_schedule_id || scope.route, route_name: scope.route}]
+          }]
+        }]
+      }]
+    }]
+  };
+}
+
+function currentReferenceEntry() {
+  return referenceEntries.find((item) => (item.kind === "legacy_applicant"
+    ? item.legacy_catalog.school_id : item.entry_id) === schoolSelect.value) || null;
+}
+
+function currentReferenceScope() {
+  if (!demoTargetComplete() || !referenceCore) return null;
+  const entry = currentReferenceEntry();
+  if (!entry) return null;
+  const scopes = referenceCore.scopesFor(entry);
+  if (entry.kind === "reviewed_material_slice") return scopes[0];
+  const request = demoTargetRequest();
+  return scopes.find((scope) => JSON.stringify(scope.request) === JSON.stringify(request)) || null;
+}
+
 async function loadDemoCatalog() {
   cancelPendingRequirements();
   baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport();
   invalidateComparison("请先加载基础要求。");
   activateStep(1);
   demoCatalog = [];
@@ -1427,8 +1522,9 @@ async function loadDemoCatalog() {
     const response = await fetch(TARGET_CATALOG_ENDPOINT, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
     if (!response.ok) throw new Error();
     const payload = await response.json();
-    if (!payload || !Array.isArray(payload.schools)) throw new Error();
-    populateDemoCatalog(payload.schools);
+    referenceEntries = referenceCore.readyEntries(payload);
+    populateDemoCatalog(referenceEntries.map(catalogForReferenceEntry));
+    updateProfileCapability();
   } catch (_error) {
     requirementsRetry.hidden = false;
     setMessage(targetStatus, "error", "审核目录暂时无法读取，请重试。", true);
@@ -1456,7 +1552,10 @@ function requirementStatusLabel(status) {
     needs_information: "官方状态：待补充信息",
     needs_review: "官方状态：需要人工确认",
     not_applicable: "官方状态：不适用",
-    not_covered: "官方状态：当前未覆盖"
+    not_covered: "官方状态：当前未覆盖",
+    submission_required: "当前条件：需准备",
+    submission_not_required: "当前条件：此材料本身无需提交",
+    rule_not_applicable: "当前条件：本条规则不适用，不能推定一般性免交"
   };
   return labels[status] || `官方状态：${status}`;
 }
@@ -1479,7 +1578,8 @@ function profileCta(className = "") {
   const button = document.createElement("button");
   button.type = "button";
   button.className = className;
-  button.textContent = "填写个人情况，检查我还缺什么";
+  button.textContent = currentReferenceEntry()?.kind === "reviewed_material_slice"
+    ? "填写在职条件，核对已覆盖材料" : "填写个人情况，检查我还缺什么";
   button.addEventListener("click", () => {
     if (baseRequirementsLoaded) activateStep(3, true);
   });
@@ -1560,7 +1660,7 @@ function renderRequirementCard(requirement, options = {}) {
   status.textContent = requirementStatusLabel(requirement.official_status);
   const description = document.createElement("p");
   description.className = "requirement-description";
-  description.textContent = requirement.description;
+  description.textContent = String(requirement.description || "").replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
   card.append(status, description);
   if (requirement.deadline) {
     const deadline = document.createElement("p");
@@ -1575,7 +1675,7 @@ function renderRequirementCard(requirement, options = {}) {
     summary.textContent = "查看审核日期摘要（日文）";
     const excerpt = document.createElement("blockquote");
     excerpt.className = "reviewed-summary";
-    excerpt.textContent = requirement.reviewed_summary;
+    excerpt.textContent = String(requirement.reviewed_summary).replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
     detail.append(summary, excerpt);
     card.append(detail);
   }
@@ -1637,13 +1737,15 @@ function renderApplicationOverview(payload, overview) {
   return section;
 }
 
-function renderKeyDates(requirements) {
+function renderKeyDates(requirements, emptyMessage = "暂无已审核数据") {
   const section = document.createElement("section");
   section.className = "result-section key-dates-section";
   section.append(heading(3, "关键时间"));
   const intro = document.createElement("p");
   intro.className = "section-intro";
-  intro.textContent = "“必着”表示材料必须在该时点前送达；“建议到达”只是降低延误风险的建议，不是另一个强制截止。";
+  intro.textContent = requirements.length
+    ? "“必着”表示材料必须在该时点前送达；“建议到达”只是降低延误风险的建议，不是另一个强制截止。"
+    : "当前资料尚未覆盖日期；请查看完整官方募集要项核对时间。";
   section.append(intro);
   const dateList = document.createElement("div");
   dateList.className = "date-event-list";
@@ -1655,7 +1757,7 @@ function renderKeyDates(requirements) {
   if (!dateList.childElementCount) {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
-    empty.textContent = "暂无已审核数据";
+    empty.textContent = emptyMessage;
     dateList.append(empty);
   }
   section.append(dateList);
@@ -1739,20 +1841,18 @@ function renderRequirements(payload) {
   const overview = applicationOverview(payload);
   const requirements = payload.requirements;
   const dateRequirements = requirements.filter((item) => item.category === "dates");
-  const requiredMaterials = requirements.filter((item) => (
-    item.category === "materials" && item.official_status === "required"
-  ));
+  const materialRequirements = requirements.filter((item) => item.category === "materials");
   const pending = requirements.filter((item) => item.official_status === "needs_information");
   const secondary = requirements.filter((item) => (
     item.category !== "dates"
-    && !(item.category === "materials" && item.official_status === "required")
+    && item.category !== "materials"
     && item.official_status !== "needs_information"
   ));
 
   requirementsOutput.append(
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
-    renderRequirementSection("必须准备的材料", requiredMaterials, "materials-section"),
+    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section"),
     renderPendingRequirements(pending, overview)
   );
 
@@ -1786,6 +1886,54 @@ function renderRequirements(payload) {
   boundary.className = "final-notice";
   boundary.textContent = `审核覆盖：${payload.coverage_statement} 限制：${payload.limitation_statement}`;
   requirementsOutput.append(boundary);
+}
+
+function sourceAsEvidence(source, scope) {
+  return {
+    official_title: source.title, school_name: scope.school, intake_name: scope.intake,
+    pages: source.pages, official_text: source.quote, source_url: source.source_url,
+    local_pdf_url: source.local_pdf_url, limitation: source.context,
+    highlights: source.highlights || []
+  };
+}
+
+function renderSliceRequirements(mapped) {
+  const scope = mapped.scope;
+  requirementsOutput.replaceChildren();
+  targetSummary.hidden = true;
+  targetSummary.textContent = referenceCore.scopeLabel(scope);
+  updateTargetStepSummary(scope);
+  byId("step-2-summary-text").textContent = `历史资料；当前已覆盖的 ${mapped.topics.length} 个材料主题；日期尚未覆盖。`;
+  const overview = document.createElement("section");
+  overview.className = "application-overview";
+  const copy = document.createElement("div");
+  copy.className = "application-overview-copy";
+  copy.append(heading(3, "当前已审核的材料范围"));
+  const label = document.createElement("p");
+  label.className = "overview-target";
+  label.textContent = referenceCore.scopeLabel(scope);
+  const limit = document.createElement("p");
+  limit.className = "final-notice";
+  limit.textContent = `${mapped.coverage}。${mapped.limitation}`;
+  copy.append(label, limit);
+  const action = document.createElement("aside");
+  action.className = "overview-action";
+  action.append(profileCta("overview-cta"));
+  overview.append(copy, action);
+  const requirements = mapped.topics.map((topic) => ({
+    category: "materials", title: topic.title, description: topic.summary,
+    official_status: "needs_information", deadline: "",
+    evidence: topic.sources.map((source) => sourceAsEvidence(source, scope))
+  }));
+  requirementsOutput.append(
+    overview,
+    renderKeyDates([], "当前资料尚未覆盖日期"),
+    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section")
+  );
+  const next = document.createElement("section");
+  next.className = "result-section next-step-section";
+  next.append(heading(3, "下一步：核对在职条件"), profileCta("next-step-cta"));
+  requirementsOutput.append(next);
 }
 
 function appendDefinition(list, term, value) {
@@ -1877,9 +2025,11 @@ function openDemoEvidence(requirement, evidence, trigger) {
   summary.textContent = "技术详情";
   const technical = document.createElement("dl");
   technical.className = "evidence-meta";
-  appendDefinition(technical, "Fact ID", evidence.fact_id);
-  appendDefinition(technical, "Document ID", evidence.document_id);
-  appendDefinition(technical, "Scope", `${evidence.scope_type}${evidence.parent_college ? ` · ${evidence.parent_college}` : ""}${evidence.scope_targets.length ? ` · ${evidence.scope_targets.join("、")}` : ""}`);
+  if (evidence.document_id) {
+    appendDefinition(technical, "Fact ID", evidence.fact_id);
+    appendDefinition(technical, "Document ID", evidence.document_id);
+    appendDefinition(technical, "Scope", `${evidence.scope_type}${evidence.parent_college ? ` · ${evidence.parent_college}` : ""}${evidence.scope_targets?.length ? ` · ${evidence.scope_targets.join("、")}` : ""}`);
+  }
   details.append(summary, technical);
   const sourceActions = document.createElement("div");
   sourceActions.className = "source-actions";
@@ -1903,7 +2053,9 @@ function openDemoEvidence(requirement, evidence, trigger) {
   source.rel = "noopener noreferrer";
   source.textContent = "打开官方招生网页";
   sourceActions.append(source);
-  drawerContent.append(meta, evidenceBody, limitation, details, sourceActions);
+  drawerContent.append(meta, evidenceBody, limitation);
+  if (evidence.document_id) drawerContent.append(details);
+  drawerContent.append(sourceActions);
   evidenceDrawer.showModal();
   drawerClose.focus();
 }
@@ -2030,6 +2182,10 @@ function renderPriorityActions(entries) {
 }
 
 function renderComparison(payload) {
+  byId("readiness-panel").classList.remove("slice-readiness");
+  byId("readiness-filters").hidden = false;
+  byId("readiness-panel").querySelector(".readiness-counts").hidden = false;
+  byId("readiness-panel").querySelector(".action-summary-total").hidden = false;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
   partialChecklistStatement.textContent = payload.partial_checklist_statement;
@@ -2143,6 +2299,264 @@ function renderComparison(payload) {
   updateApplicantStepSummary();
 }
 
+function renderSliceReadiness(report, mapped) {
+  const panel = byId("readiness-panel");
+  panel.classList.add("slice-readiness");
+  panel.querySelector(".readiness-counts").hidden = true;
+  panel.querySelector(".action-summary-total").hidden = true;
+  byId("readiness-filters").hidden = true;
+  comparisonOutput.replaceChildren();
+  readinessTarget.textContent = referenceCore.scopeLabel(mapped.scope);
+  partialChecklistStatement.textContent = "只核对当前已覆盖的 3 个材料主题；这里没有完整材料清单或准备统计。";
+  const priority = byId("priority-actions");
+  priority.replaceChildren(heading(4, "已审核条件结果"));
+  const list = document.createElement("ul");
+  for (const topic of report.topics) {
+    const item = document.createElement("li");
+    item.textContent = `${topic.title}：${topic.status}。${topic.explanation}`;
+    list.append(item);
+  }
+  priority.append(list);
+  for (const topic of report.topics) {
+    const sources = mapped.topics.flatMap((entry) => entry.sources);
+    const evidence = topic.citations.map((cite) => {
+      const source = sources.find((candidate) => candidate.record_id === cite.record_id);
+      return sourceAsEvidence(source, mapped.scope);
+    });
+    const requirement = {
+      category: "materials", title: topic.title, description: topic.explanation,
+      official_status: topic.status_code, evidence
+    };
+    const card = renderRequirementCard(requirement);
+    for (const value of topic.missing_fields) {
+      const note = document.createElement("p");
+      note.className = "comparison-reason";
+      note.textContent = `待确认条件：${sliceConditionLabel(value)}`;
+      card.append(note);
+    }
+    for (const value of topic.limitations) {
+      const note = document.createElement("p");
+      note.className = "final-notice";
+      note.textContent = value;
+      card.append(note);
+    }
+    comparisonOutput.append(card);
+  }
+  comparisonComplete = true;
+  comparisonEverLoaded = true;
+  updateApplicantStepSummary();
+}
+
+function sliceConditionLabel(value) {
+  const labels = {
+    "employment.currently_employed_in_organization": "目前是否在组织任职",
+    "employment.retain_employment_at_enrollment": "入学后是否继续任职"
+  };
+  return labels[value] || "仍需查看完整官方条件";
+}
+
+function reportParagraphs(container, values) {
+  for (const value of values) {
+    if (!value) continue;
+    const paragraph = document.createElement("p");
+    paragraph.textContent = value;
+    container.append(paragraph);
+  }
+}
+
+function reportSources(container, sources) {
+  if (!sources.length) return;
+  const details = document.createElement("details");
+  details.className = "report-sources";
+  const summary = document.createElement("summary");
+  summary.textContent = `查看 ${sources.length} 条官方依据`;
+  details.append(summary);
+  for (const source of sources) {
+    const block = document.createElement("section");
+    block.className = "report-source";
+    block.append(heading(5, source.title));
+    reportParagraphs(block, [`物理页 ${source.pages.join("、")}${source.printed ? ` · 印刷页 ${source.printed}` : ""}`, source.context]);
+    const quote = document.createElement("blockquote");
+    quote.textContent = source.quote;
+    block.append(quote);
+    try {
+      const url = new URL(source.source_url);
+      if (url.protocol === "https:" && !url.username && !url.password) {
+        const link = document.createElement("a");
+        link.href = source.source_url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "打开官方来源";
+        block.append(link);
+      }
+    } catch { /* The report retains the original citation in copied text. */ }
+    details.append(block);
+  }
+  container.append(details);
+}
+
+function renderReferenceReport(report) {
+  referenceBody.replaceChildren();
+  const scope = report.scope;
+  referenceBody.append(heading(3, referenceCore.scopeLabel(scope)));
+  if (report.kind === "legacy_applicant") {
+    reportParagraphs(referenceBody, report.presentation.intro);
+    referenceBody.append(heading(4, "基础要求"));
+    for (const topic of report.presentation.topics) {
+      const section = document.createElement("section");
+      section.className = "report-topic";
+      section.append(heading(5, topic.heading));
+      reportParagraphs(section, topic.lines);
+      reportSources(section, topic.references);
+      referenceBody.append(section);
+    }
+    if (report.presentation.comparison) {
+      referenceBody.append(heading(4, "个人情况与规则对照（仅依据本次自报）"));
+      reportParagraphs(referenceBody, report.presentation.comparison.overview);
+      for (const item of report.presentation.comparison.items) {
+        const section = document.createElement("section");
+        section.className = "report-topic";
+        section.append(heading(5, item.heading));
+        reportParagraphs(section, item.lines);
+        reportSources(section, item.references);
+        referenceBody.append(section);
+      }
+      reportParagraphs(referenceBody, report.presentation.comparison.end);
+    } else reportParagraphs(referenceBody, ["未加入个人情况；不作个人适用性判断。"]);
+    reportParagraphs(referenceBody, [report.presentation.conclusion]);
+  } else {
+    const conditionName = {unknown: "未知／未填写", yes: "是", no: "否"};
+    reportParagraphs(referenceBody, ["历史资料、部分材料范围；当前日期未覆盖，也不构成完整材料清单。",
+      `目前任职：${conditionName[report.employment.current]}；入学后继续任职：${conditionName[report.employment.retain]}`]);
+    for (const topic of report.topics) {
+      const section = document.createElement("section");
+      section.className = "report-topic";
+      section.append(heading(4, topic.title));
+      reportParagraphs(section, [topic.status, topic.explanation,
+        ...topic.missing_fields.map((value) => `待确认：${sliceConditionLabel(value)}`), ...topic.limitations]);
+      const sources = loadedReference.topics.flatMap((entry) => entry.sources);
+      reportSources(section, topic.citations.map((cite) => sources.find((source) => source.record_id === cite.record_id)));
+      referenceBody.append(section);
+    }
+    const markdown = document.createElement("details");
+    const markdownSummary = document.createElement("summary");
+    markdownSummary.textContent = "完整原始报告 Markdown";
+    markdown.append(markdownSummary);
+    const pre = document.createElement("pre");
+    pre.textContent = report.canonicalMarkdown;
+    markdown.append(pre);
+    referenceBody.append(markdown);
+  }
+  referenceDialog.showModal();
+  byId("reference-close").focus();
+}
+
+function legacyProfileDisclosure() {
+  const fields = [];
+  for (const control of byId("legacy-profile-grid").querySelectorAll("select, input")) {
+    if (!control.value) continue;
+    const label = control.closest("label")?.firstChild?.textContent?.trim()
+      || byId("legacy-profile-grid").querySelector(`label[for="${control.id}"]`)?.textContent?.trim();
+    const value = control.tagName === "SELECT"
+      ? control.selectedOptions[0].textContent.trim() : control.value;
+    if (label && value) fields.push({label, value});
+  }
+  return fields;
+}
+
+async function generateReferenceReport(event) {
+  if (!baseRequirementsLoaded || !loadedReference || referenceButtons.some((button) => button.disabled)) return;
+  const trigger = event.currentTarget;
+  referenceTrigger = trigger;
+  const scope = currentReferenceScope();
+  if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) return;
+  if (referenceReport?.kind === "reviewed_material_slice" && scope.kind === "reviewed_material_slice") {
+    renderReferenceReport(referenceReport);
+    return;
+  }
+  clearReferenceReport("正在整理当前已审核结果和官方依据。");
+  const requestId = referenceReportRequestId;
+  const profileSnapshot = scope.kind === "legacy_applicant"
+    ? JSON.stringify(demoApplicantInput())
+    : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
+  const scopeSnapshot = referenceCore.scopeKey(scope);
+  referenceReportController = new AbortController();
+  for (const button of referenceButtons) button.disabled = true;
+  const current = () => requestId === referenceReportRequestId
+    && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
+    && (scope.kind === "legacy_applicant" ? JSON.stringify(demoApplicantInput())
+      : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value])) === profileSnapshot
+    && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
+  try {
+    let report;
+    if (scope.kind === "legacy_applicant") {
+      const disclosure = legacyProfileDisclosure();
+      let comparison = comparisonResponse;
+      if (disclosure.length && !comparison) {
+        const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
+          method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+          body: JSON.stringify(referenceCore.comparisonRequest(scope, {
+            credential_basis: byId("demo-credential-basis").value,
+            completion_state: byId("demo-completion-state").value,
+            english_test_kind: byId("demo-english-kind").value,
+            english_score: byId("demo-english-score").value,
+            english_test_date: byId("demo-english-date").value,
+            english_official_report_available: byId("demo-english-report").value,
+            japanese_background: byId("demo-japanese-background").value,
+            materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({
+              code: select.dataset.materialCode, value: select.value
+            }))
+          })), cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+        });
+        if (!response.ok) throw new Error();
+        comparison = await response.json();
+      }
+      if (!current()) return;
+      report = referenceCore.legacyReport(loadedReference, disclosure.length ? comparison : null,
+        disclosure.length ? disclosure : []);
+    } else {
+      const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
+      const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+        body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+        cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+      });
+      if (!response.ok) throw new Error();
+      report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
+    }
+    if (!current()) return;
+    referenceReport = report;
+    renderReferenceReport(report);
+    referenceInlineStatus.textContent = "报告已生成，可预览和复制；修改目标或条件会清除旧报告。";
+  } catch (error) {
+    if (error?.name !== "AbortError" && current())
+      referenceInlineStatus.textContent = "报告生成失败或依据不完整，请保留当前输入并重试。";
+  } finally {
+    if (requestId === referenceReportRequestId) {
+      referenceReportController = null;
+      for (const button of referenceButtons) button.disabled = !baseRequirementsLoaded;
+      if (!referenceDialog.open) trigger.focus();
+    }
+  }
+}
+
+async function copyReferenceReport() {
+  if (!referenceReport || !loadedReference
+    || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
+  try {
+    await navigator.clipboard.writeText(referenceReport.text);
+    byId("reference-report-status").textContent = "已复制当前预览对应的完整报告与引用。";
+  } catch {
+    const fallback = byId("reference-copy-fallback");
+    fallback.value = referenceReport.text;
+    fallback.hidden = false;
+    byId("reference-copy-fallback-label").hidden = false;
+    fallback.focus();
+    fallback.select();
+    byId("reference-report-status").textContent = "无法自动复制；请按 Ctrl+C 手动复制。";
+  }
+}
+
 function applyReadinessFilter() {
   const selected = readinessFilters.querySelector('input[name="readiness-filter"]:checked').value;
   let visible = 0;
@@ -2158,6 +2572,12 @@ function applyReadinessFilter() {
 
 async function submitApplicantComparison() {
   if (comparisonPending || !baseRequirementsLoaded || !demoTargetComplete()) return;
+  clearReferenceReport("个人条件正在重新对照；旧报告已失效。");
+  const scope = currentReferenceScope();
+  if (scope?.kind === "reviewed_material_slice") {
+    await submitSliceComparison(scope);
+    return;
+  }
   const requestSnapshot = JSON.stringify(demoComparisonRequest());
   const requestId = ++comparisonRequestId;
   comparisonController = new AbortController();
@@ -2173,6 +2593,7 @@ async function submitApplicantComparison() {
     if (!payload || !Array.isArray(payload.items)) throw new Error();
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload);
+    comparisonResponse = payload;
     setMessage(comparisonStatus, "success", "个人情况已完成保守对照。");
     activateStep(4, true);
   } catch (error) {
@@ -2190,19 +2611,70 @@ async function submitApplicantComparison() {
   }
 }
 
+async function submitSliceComparison(scope) {
+  const employment = {
+    current: byId("slice-current-employed").value,
+    retain: byId("slice-retain-employed").value
+  };
+  const snapshot = JSON.stringify([referenceCore.scopeKey(scope), employment]);
+  const requestId = ++comparisonRequestId;
+  comparisonController = new AbortController();
+  comparisonPending = true;
+  comparisonSubmit.disabled = true;
+  clearComparison("正在核对已覆盖材料的在职条件。");
+  setMessage(comparisonStatus, "loading", "正在核对已覆盖材料的在职条件。");
+  try {
+    const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+      method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+      cache: "no-store", credentials: "same-origin", signal: comparisonController.signal
+    });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (requestId !== comparisonRequestId || snapshot !== JSON.stringify([
+      referenceCore.scopeKey(currentReferenceScope()),
+      {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value}
+    ])) return;
+    const report = referenceCore.sliceReport(scope, loadedReference, payload, employment);
+    renderSliceReadiness(report, loadedReference);
+    referenceReport = report;
+    referenceInlineStatus.textContent = "当前条件结果已加载；可按需预览和复制参考报告。";
+    setMessage(comparisonStatus, "success", "已核对当前 3 个材料主题；报告可按需预览和复制。");
+    activateStep(4, true);
+  } catch (error) {
+    if (error?.name === "AbortError" || requestId !== comparisonRequestId) return;
+    clearComparison("材料条件暂时无法核对，请保留输入并重试。");
+    comparisonRetry.hidden = false;
+    setMessage(comparisonStatus, "error", "材料条件暂时无法核对，请保留输入并重试。", true);
+  } finally {
+    if (requestId === comparisonRequestId) {
+      comparisonPending = false;
+      comparisonController = null;
+      comparisonSubmit.disabled = !baseRequirementsLoaded;
+    }
+  }
+}
+
 function invalidateComparison(message) {
   cancelPendingComparison();
+  comparisonResponse = null;
+  clearReferenceReport();
   clearComparison(message);
 }
 
 async function submitBaseRequirements() {
   if (requirementsPending || !demoTargetComplete()) return;
+  const scope = currentReferenceScope();
+  if (!scope) return;
   activateStep(1);
-  const requestPayload = demoTargetRequest();
-  const requestSnapshot = JSON.stringify(requestPayload);
+  const requestSnapshot = referenceCore.scopeKey(scope);
   const requestId = ++requirementsRequestId;
   requirementsController = new AbortController();
   baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport("正在加载当前目标；报告需在要求加载后按需生成。");
   clearGroundedAnswer("基础要求正在更新，请稍候。");
   updateGroundedContext();
   invalidateComparison("基础要求正在更新，请稍候。");
@@ -2212,15 +2684,23 @@ async function submitBaseRequirements() {
   requirementsRetry.hidden = true;
   setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
   try {
-    const response = await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
+    const response = scope.kind === "legacy_applicant"
+      ? await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
+      : await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/evidence`, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
     if (!response.ok) throw new Error();
     const payload = await response.json();
-    if (!payload || !Array.isArray(payload.requirements)) throw new Error();
-    if (requestId !== requirementsRequestId || !demoTargetComplete() || requestSnapshot !== JSON.stringify(demoTargetRequest())) return;
-    renderRequirements(payload);
+    const mapped = scope.kind === "legacy_applicant"
+      ? referenceCore.mapLegacyBase(scope, payload) : referenceCore.mapSliceEvidence(scope, payload);
+    if (requestId !== requirementsRequestId || referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot) return;
+    if (scope.kind === "legacy_applicant") renderRequirements(payload);
+    else renderSliceRequirements(mapped);
+    loadedReference = mapped;
+    baseResponse = payload;
     baseRequirementsLoaded = true;
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
+    for (const button of referenceButtons) button.disabled = false;
+    referenceInlineStatus.textContent = "要求已加载；可以按需生成参考报告。";
     clearComparison();
     clearGroundedAnswer("可针对当前目标和本页个人情况提问。");
     updateGroundedContext();
@@ -2230,6 +2710,9 @@ async function submitBaseRequirements() {
     if (error && error.name === "AbortError") return;
     if (requestId !== requirementsRequestId) return;
     clearDemoResults("基础要求暂时无法加载。");
+    loadedReference = null;
+    baseResponse = null;
+    clearReferenceReport("要求尚未加载，暂不能生成报告。");
     requirementsRetry.hidden = false;
     setMessage(targetStatus, "error", "无法加载基础要求，请检查选择后重试。", true);
   } finally {
@@ -2252,6 +2735,10 @@ function cancelPendingRequirements() {
 function handleDemoTargetChange(next) {
   cancelPendingRequirements();
   baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport();
   invalidateComparison("申请目标已改变，请重新加载基础要求。");
   clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
   resetApplicantInputs();
@@ -2261,6 +2748,7 @@ function handleDemoTargetChange(next) {
   setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
   activateStep(1);
   next();
+  updateProfileCapability();
 }
 
 queryInput.addEventListener("input", () => { queryCount.textContent = `${queryInput.value.length} / ${MAX_QUERY_LENGTH}`; });
@@ -2307,6 +2795,10 @@ routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequir
 requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
 groundedForm.addEventListener("submit", (event) => { event.preventDefault(); submitGroundedAnswer(); });
 groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
+referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
+byId("reference-copy").addEventListener("click", copyReferenceReport);
+byId("reference-close").addEventListener("click", () => referenceDialog.close());
+referenceDialog.addEventListener("close", () => { referenceTrigger?.focus(); referenceTrigger = null; });
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => { if (drawerTrigger) drawerTrigger.focus(); drawerTrigger = null; });
 
@@ -2316,4 +2808,7 @@ clearGroundedAnswer();
 updateGroundedContext();
 loadGenerationStatus();
 loadCatalog();
-loadDemoCatalog();
+import("/assets/unified-core.mjs").then((module) => {
+  referenceCore = module;
+  loadDemoCatalog();
+}).catch(() => setMessage(targetStatus, "error", "审核目录组件暂时无法加载，请刷新页面。"));

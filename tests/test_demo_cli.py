@@ -569,7 +569,8 @@ def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Pa
             assert response.read() == pdf.read_bytes()[:16]
             assert response.headers["Content-Range"].startswith("bytes 0-15/")
         assert catalog["schools"][0]["school_id"] == identity.institution_id
-        assert 'id="uw-school"' in app_html
+        assert 'id="school-select"' in app_html
+        assert 'id="step-nav-4"' in app_html
         assert 'id="uw-generate"' in app_html
         assert served_pdf == pdf.read_bytes()
         assert hashlib.sha256(served_pdf).hexdigest() == identity.source_pdf_sha256

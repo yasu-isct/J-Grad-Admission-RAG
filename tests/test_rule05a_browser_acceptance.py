@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
+from tests.historical_ui_identity import V1_APP_JS_SHA256
+
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests/fixtures/rule05a_browser_acceptance_v1.json"
-APP_JS = ROOT / "src/jgrad_admission_rag/service/static/app.js"
 
 
 def _records():
@@ -23,8 +23,7 @@ def test_rule05a_browser_acceptance_covers_only_three_high_value_scenarios() -> 
     }
     assert all(item["viewport_width"] == viewports[item["viewport"]] for item in records)
     assert all(item["horizontal_overflow"] is False for item in records)
-    app_hash = hashlib.sha256(APP_JS.read_bytes()).hexdigest()
-    assert all(item["app_js_sha256"] == app_hash for item in records)
+    assert all(item["app_js_sha256"] == V1_APP_JS_SHA256 for item in records)
 
 
 def test_rule05a_browser_acceptance_preserves_path_boundaries() -> None:

@@ -18,11 +18,9 @@ def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() 
     assert "applicant: demoApplicantInput()" in javascript
     assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers"' in javascript
     assert 'const GENERATION_STATUS_ENDPOINT = "/v1/generation-status"' in javascript
-    assert "在线生成服务未配置" in javascript
-    assert "DeepSeek 在线生成服务未配置" in javascript
-    assert "DEEPSEEK_API_KEY" in javascript
+    assert "在线问答暂时不可用" in javascript
     assert "generationModeLabel.textContent = generationStatus.label" in javascript
-    assert 'auditSummary.textContent = "技术详情 / 审计信息"' in javascript
+    assert 'appendGroundedList(container, "回答限制", answer.limitations)' in javascript
     assert "label.textContent = claim.kind" not in javascript
 
 
@@ -52,20 +50,18 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "insufficient_evidence" in javascript
     assert "openDemoEvidence" in javascript
     assert "verifiedLocalPdfHref" in javascript
-    assert "payload.subanswers" not in javascript
+    assert "payload.subanswers" in javascript
     assert "缓存的参考回答" in javascript
-    assert "在线整理不可用 · 本地检索片段" in javascript
+    assert "在线整理不可用，已使用本地检索参考内容" in javascript
     assert 'answer.kind === "reference_answer"' in javascript
     assert "正在理解问题；需要学校规则时会检索本地募集要项" in javascript
     assert "已生成低保证参考回答" in javascript
     assert "引用闭合校验" not in javascript
-    assert "DeepSeek 实时生成" in javascript
-    assert "在线模型实时生成" in javascript
-    assert 'payload.mode.provider === "deepseek-responses"' in javascript
-    assert "服务重启后会清除" in javascript
+    assert "本地离线参考回答" in javascript
+    assert "服务重启后会清除" not in javascript
     assert "if (payload.result) appendGroundedResult" in javascript
     assert "item.result" not in javascript
-    assert 'item.status === "answered"' not in javascript
+    assert 'part.status !== "answered"' in javascript
 
 
 def test_grounded_answer_layout_has_mobile_overflow_guards() -> None:

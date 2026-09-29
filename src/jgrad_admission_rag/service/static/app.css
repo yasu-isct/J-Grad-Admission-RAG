@@ -902,6 +902,21 @@ legend {
 .action-hint { margin: 10px 0 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.5; }
 .action-hint[data-state="ready"] { color: var(--color-success); font-weight: 700; }
 .step-primary-action { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+.step-primary-action { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.step-primary-action .reference-generate { width: auto; }
+.slice-profile { padding: 18px; border: 1px solid var(--color-border); border-radius: 8px; background: #f7faf8; }
+.slice-profile p { margin-top: 0; }
+.reference-report { width: min(820px, calc(100vw - 24px)); }
+.reference-report .drawer-header { gap: 16px; }
+.reference-report .drawer-content { max-height: min(68vh, 800px); overflow: auto; }
+.report-topic { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+.report-topic h4, .report-topic h5 { margin: 0 0 12px; }
+.report-topic p { line-height: 1.65; }
+.report-source { margin-top: 16px; padding: 12px; background: #f7faf8; border-radius: 6px; overflow-wrap: anywhere; }
+.report-source blockquote { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reference-report pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reference-report textarea { width: calc(100% - 48px); margin: 0 24px 20px; min-height: 110px; }
+.slice-readiness .comparison-output > .requirement-card { margin-top: 18px; }
 
 .requirements-output { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 .result-section { min-width: 0; scroll-margin-top: 20px; }

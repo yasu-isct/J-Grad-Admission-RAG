@@ -164,7 +164,7 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert '<dialog id="evidence-drawer"' in html
     assert 'aria-labelledby="drawer-title"' in html
     assert "技术详情" in javascript
-    assert 'const TARGET_CATALOG_ENDPOINT = "/v1/target-catalog"' in javascript
+    assert 'const TARGET_CATALOG_ENDPOINT = "/v1/reference-targets"' in javascript
     assert 'const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements"' in javascript
     assert "handleDemoTargetChange" in javascript
     assert "clearDemoResults" in javascript
@@ -172,7 +172,7 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert "drawerTrigger.focus()" in javascript
     assert "new AbortController()" in javascript
     assert "requirementsRequestId" in javascript
-    assert "requestSnapshot !== JSON.stringify(demoTargetRequest())" in javascript
+    assert "referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot" in javascript
     assert (
         'setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。")'
         in javascript

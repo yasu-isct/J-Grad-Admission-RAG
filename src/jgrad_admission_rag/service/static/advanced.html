@@ -21,7 +21,6 @@
     </header>
 
     <main class="workspace" aria-labelledby="workspace-heading">
-      <nav aria-label="参考入口"><a href="/app">返回统一工作台</a></nav>
       <section class="intro" aria-labelledby="workspace-heading">
         <p class="eyebrow">申请准备检查</p>
         <h2 id="workspace-heading">先选定申请目标，再逐步核对官方要求</h2>
@@ -85,7 +84,8 @@
           <div id="step-2-content" class="flow-step-content">
           <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
           <div id="requirements-output" class="requirements-output"></div>
-          <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button></div>
+          <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
+          <p id="reference-inline-status" class="status-message" role="status" aria-live="polite">按需生成；浏览要求不会自动生成报告。</p>
           </div>
         </section>
 
@@ -102,7 +102,7 @@
           <p class="field-detail profile-intro">只填写用于本次页面对照的信息，不会保存到浏览器或服务器。可以暂时留空或选择“不知道”；空值不会被判为不符合。</p>
           <p class="profile-state-guide"><strong>状态怎么理解：</strong>“未填写”是尚未作答；“不知道”是主动标记待确认；“不适用”仅是个人判断，不代表官方豁免；“尚未取得”表示目前没有相应成绩单或材料。最终仍以官方适用性和学校确认结果为准。</p>
           <form id="applicant-form" novalidate>
-            <div class="profile-grid">
+            <div id="legacy-profile-grid" class="profile-grid">
               <details class="profile-group" data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility" open>
                 <summary><span class="profile-group-title"><strong>1 · 学历与毕业情况</strong><small>用于对照已审核的学历路径；不能替代学校资格认定。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
                 <fieldset>
@@ -166,6 +166,13 @@
                 </fieldset>
               </details>
             </div>
+            <div id="slice-profile" class="slice-profile" hidden>
+              <p>当前只对照已覆盖的 3 个材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。</p>
+              <div class="target-grid">
+                <div><label for="slice-current-employed">现在是否在组织任职</label><select id="slice-current-employed"><option value="unknown">不知道／未填写</option><option value="yes">是</option><option value="no">否</option></select></div>
+                <div><label for="slice-retain-employed">入学后是否继续任职</label><select id="slice-retain-employed"><option value="unknown">不知道／未填写</option><option value="yes">是</option><option value="no">否</option></select></div>
+              </div>
+            </div>
             <p class="profile-submit-help">不必填完所有项目也可以对照。未填写／不知道会保留为未知，不会自动判为不符合；个别资格审查仍需学校确认。</p>
             <div class="actions"><button id="comparison-submit" type="submit" disabled>对照个人情况</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
           </form>
@@ -199,6 +206,7 @@
           </fieldset>
           <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
           <div id="comparison-output" class="comparison-output"></div>
+          <div class="step-primary-action"><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
         </section>
       </section>
 
@@ -228,6 +236,15 @@
           <button id="drawer-close" class="quiet" type="button" aria-label="关闭官方依据">关闭</button>
         </div>
         <div id="drawer-content" class="drawer-content"></div>
+      </dialog>
+
+      <dialog id="reference-report" class="evidence-drawer reference-report" aria-labelledby="reference-report-title">
+        <div class="drawer-header"><div><p class="section-label">REFERENCE REPORT</p><h2 id="reference-report-title">参考报告预览</h2></div>
+          <div class="actions"><button id="reference-copy" type="button">复制报告</button><button id="reference-close" class="quiet" type="button">关闭</button></div></div>
+        <div id="reference-report-body" class="drawer-content"></div>
+        <div id="reference-report-status" class="status-message" role="status" aria-live="polite"></div>
+        <label id="reference-copy-fallback-label" for="reference-copy-fallback" hidden>手动复制报告</label>
+        <textarea id="reference-copy-fallback" readonly hidden></textarea>
       </dialog>
 
       <details id="advanced-tools" class="advanced-tools">

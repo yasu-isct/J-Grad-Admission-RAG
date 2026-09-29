@@ -290,8 +290,9 @@ def test_local_ui_assets_are_fixed_offline_and_security_hardened(
         assert "connect-src 'self'" in policy
         assert response.headers["x-frame-options"] == "DENY"
     assert "content-security-policy" not in docs.headers
-    assert 'href="/assets/unified.css"' in html.text
-    assert 'src="/assets/unified.js"' in html.text
+    assert 'href="/assets/app.css"' in html.text
+    assert 'src="/assets/app.js"' in html.text
+    assert html.text == advanced.text
     assert 'src="/assets/app.js"' in advanced.text
     assert "http://" not in html.text
     assert "https://" not in html.text
