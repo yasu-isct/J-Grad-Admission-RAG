@@ -916,6 +916,7 @@ legend {
 .report-source blockquote { white-space: pre-wrap; overflow-wrap: anywhere; }
 .reference-report pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .reference-report textarea { width: calc(100% - 48px); margin: 0 24px 20px; min-height: 110px; }
+.requirement-evidence-actions { flex-wrap: wrap; min-width: 0; }
 .slice-readiness .comparison-output > .requirement-card { margin-top: 18px; }
 
 .requirements-output { grid-template-columns: minmax(0, 1fr); gap: 24px; }

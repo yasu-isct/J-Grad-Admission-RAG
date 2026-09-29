@@ -177,6 +177,10 @@ def _select_slice(page):
 
 def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
     catalog, base, comparison, evidence, report = _data()
+    evidence["topics"][0]["records"].extend(
+        {**deepcopy(evidence["topics"][0]["records"][0]), "record_id": f"extra-record-{i}"}
+        for i in range(8)
+    )
     calls = {"base": [], "comparison": [], "reports": []}
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
@@ -327,6 +331,9 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#reference-report-body details").evaluate_all(
             "elements => elements.forEach(element => { element.open = true; })"
         )
+        page.set_viewport_size({"width": 390, "height": 844})
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+        page.set_viewport_size({"width": 1440, "height": 900})
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
