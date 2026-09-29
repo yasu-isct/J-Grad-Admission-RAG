@@ -371,6 +371,21 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
             "入学手续相关，非本次出愿提交义务"
             in drawer.locator(".relation-edge-stage").inner_text()
         )
+        for width, height in ((1440, 900), (390, 844)):
+            page.set_viewport_size({"width": width, "height": height})
+            repeated = drawer.locator(
+                f'.relation-node[data-record-id="{primary_record_id}"] button'
+            )
+            assert repeated.count() == 2
+            for instance in range(2):
+                button = repeated.nth(instance)
+                button.scroll_into_view_if_needed()
+                before = drawer.evaluate("dialog => dialog.scrollTop")
+                button.click()
+                drawer.locator(".relation-back").click()
+                assert drawer.evaluate("dialog => dialog.scrollTop") == before
+                assert button.evaluate("node => node === document.activeElement")
+        page.set_viewport_size({"width": 1440, "height": 900})
         drawer.locator(".relation-node button").first.click()
         assert "PDF 物理页 8／印刷页 7" in drawer.inner_text()
         assert "提出が必要" in drawer.inner_text()

@@ -86,6 +86,7 @@ def main():
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
         screenshots = []
+        duplicate_focus = []
         for index, topic in enumerate(evidence["topics"], start=1):
             page.set_viewport_size({"width": 1440, "height": 900})
             trigger = page.locator(
@@ -151,6 +152,7 @@ def main():
                 )
             for width, height, name in ((1440, 900, "desktop"), (390, 844, "mobile")):
                 page.set_viewport_size({"width": width, "height": height})
+                drawer.evaluate("dialog => { dialog.scrollTop = 0; }")
                 assert drawer.evaluate(
                     "dialog => { const dialogBox = dialog.getBoundingClientRect(); "
                     "const headerBox = dialog.querySelector('.drawer-header').getBoundingClientRect(); "
@@ -160,6 +162,23 @@ def main():
                 page.screenshot(path=str(OUT / filename))
                 screenshots.append(filename)
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+                if index == 3:
+                    repeated = drawer.locator('.relation-node[data-record-id="E06"] button')
+                    assert repeated.count() == 2
+                    record = next(row for row in topic["records"] if row["record_id"] == "E06")
+                    for instance in range(2):
+                        button = repeated.nth(instance)
+                        button.scroll_into_view_if_needed()
+                        before = drawer.evaluate("dialog => dialog.scrollTop")
+                        button.click()
+                        assert record["fragments"][0]["quote_text"] in drawer.inner_text()
+                        drawer.locator(".relation-back").click()
+                        after = drawer.evaluate("dialog => dialog.scrollTop")
+                        assert after == before
+                        assert button.evaluate("node => node === document.activeElement")
+                        duplicate_focus.append(
+                            {"viewport": width, "instance": instance + 1, "scroll_restored": True}
+                        )
             node = drawer.locator(".relation-node button").first
             record_id = node.get_attribute("data-record-id")
             node.click()
@@ -188,6 +207,7 @@ def main():
         screenshots.append("isct-step2-mobile-replay-full.png")
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         assert calls == {"evidence_get": 1, "base_post": 1, "report_post": 1} and not errors
+        assert len(duplicate_focus) == 4
         browser.close()
     (OUT / "replay-journal.json").write_text(
         json.dumps(
@@ -197,6 +217,7 @@ def main():
                 "real_posts": 0,
                 "replayed_posts": calls,
                 "screenshots": screenshots,
+                "duplicate_record_focus": duplicate_focus,
                 "no_horizontal_overflow": True,
                 "browser_errors": errors,
             },

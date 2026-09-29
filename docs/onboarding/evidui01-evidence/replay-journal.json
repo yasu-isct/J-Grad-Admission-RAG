@@ -17,6 +17,28 @@
     "gsfs-step4-mobile-replay-full.png",
     "isct-step2-mobile-replay-full.png"
   ],
+  "duplicate_record_focus": [
+    {
+      "viewport": 1440,
+      "instance": 1,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 1440,
+      "instance": 2,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 390,
+      "instance": 1,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 390,
+      "instance": 2,
+      "scroll_restored": true
+    }
+  ],
   "no_horizontal_overflow": true,
   "browser_errors": []
 }

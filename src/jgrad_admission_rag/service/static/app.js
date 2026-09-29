@@ -2024,7 +2024,7 @@ function graphNodeLabel(source) {
   return `${role} · ${graphDocumentLabel(source.title)} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
 }
 
-function graphSourceCard(source, requirement) {
+function graphSourceCard(source, requirement, cardPosition) {
   const node = document.createElement("article");
   node.className = "relation-node";
   node.dataset.recordId = source.record_id;
@@ -2036,6 +2036,7 @@ function graphSourceCard(source, requirement) {
   button.type = "button";
   button.className = "secondary";
   button.dataset.recordId = source.record_id;
+  button.dataset.graphCard = String(cardPosition);
   button.textContent = "查看原文";
   button.addEventListener("click", () => openDemoEvidence(requirement,
     sourceAsEvidence(source, requirement.graphScope), button,
@@ -2066,8 +2067,8 @@ function graphPaths(relations) {
   return paths;
 }
 
-function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop = 0) {
-  if (!focusRecordId) {
+function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0) {
+  if (focusCard === null) {
     drawerTrigger = trigger;
     drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
     drawerGraph = {requirement, trigger};
@@ -2088,11 +2089,13 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
   const connected = new Set(known.flatMap((edge) => [edge.from, edge.to]));
   const graph = document.createElement("div");
   graph.className = "relation-graph";
+  let cardPosition = 0;
+  const renderCard = (source) => graphSourceCard(source, requirement, cardPosition++);
   for (const path of paths) {
     const flow = document.createElement("section");
     flow.className = "relation-path";
     if (path.length > 2) flow.classList.add("relation-path-long");
-    flow.append(graphSourceCard(sources.get(path[0].from), requirement));
+    flow.append(renderCard(sources.get(path[0].from)));
     for (const row of path) {
       const edge = document.createElement("div");
       edge.className = row.kind === "shares_employment_context_but_separate_enrollment_stage"
@@ -2101,7 +2104,7 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
       const meaning = document.createElement("span");
       meaning.textContent = relationMeanings[row.kind];
       edge.append(meaning);
-      flow.append(edge, graphSourceCard(sources.get(row.to), requirement));
+      flow.append(edge, renderCard(sources.get(row.to)));
     }
     graph.append(flow);
   }
@@ -2110,7 +2113,7 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
     const nodes = document.createElement("section");
     nodes.className = "relation-nodes";
     if (paths.length) nodes.append(heading(4, "其他可查看的来源"));
-    for (const source of independent) nodes.append(graphSourceCard(source, requirement));
+    for (const source of independent) nodes.append(renderCard(source));
     graph.append(nodes);
   }
   drawerContent.append(graph);
@@ -2123,8 +2126,8 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
   }
   if (!evidenceDrawer.open) evidenceDrawer.showModal();
   evidenceDrawer.scrollTop = scrollTop;
-  const focus = focusRecordId
-    ? Array.from(graph.querySelectorAll("button")).find((button) => button.dataset.recordId === focusRecordId)
+  const focus = focusCard !== null
+    ? Array.from(graph.querySelectorAll("button")).find((button) => button.dataset.graphCard === focusCard)
     : null;
   (focus || drawerClose).focus({preventScroll: true});
 }
@@ -2144,7 +2147,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     back.className = "secondary relation-back";
     back.textContent = "返回依据关系";
     back.addEventListener("click", () => openEvidenceGraph(drawerGraph.requirement,
-      drawerGraph.trigger, trigger.dataset.recordId, options.scrollTop));
+      drawerGraph.trigger, trigger.dataset.graphCard, options.scrollTop));
     drawerContent.append(back);
   }
   drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));

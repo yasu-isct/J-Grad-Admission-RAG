@@ -49,4 +49,10 @@ The [replay journal](evidui01-evidence/replay-journal.json) records zero service
 
 At the corrected head, 18 focused reference/API/browser tests and 5 Node projection tests passed; Ruff lint and formatting, JavaScript syntax and patch whitespace checks passed. The saved-response replay and synthetic browser tests run the current UI code. They are evidence for presentation and binding after this review correction, not a new live-service verification. The prior live-service budget and protected asset hashes remain as recorded above.
 
+## Duplicate-card focus correction
+
+The two reviewed plan-book paths both end at the same application clause. The cards share one evidence `record_id` but have separate, stable positions in the rendered graph. Opening an original excerpt now records the clicked card position; returning rebuilds the graph, restores its scroll offset and focuses that card position. The evidence binding still uses the original `record_id`.
+
+The [saved-response replay journal](evidui01-evidence/replay-journal.json) records four checks: first and second application-clause card at both 1440 and 390. Each opened the matching original excerpt and returned focus and graph scroll to its own card. The synthetic browser regression repeats both positions at both widths, including the branch with an unknown relation; the existing close/Escape and material-card focus checks still run. No service was started, and no live POST, report regeneration or paid call was used.
+
 The implementation did not alter reviewed plan, seed, trust, policy, canonical report, PDF, KB, index or model artifacts. A rollback can remove the optional DTO projection and graph UI while leaving the original source viewer and REPORT-02 report intact.
