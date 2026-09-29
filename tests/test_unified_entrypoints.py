@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
 import subprocess
 import sys
 import zipfile
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from jgrad_admission_rag.service import cli, reference_app
@@ -122,6 +124,20 @@ def test_formal_serve_parser_accepts_optional_reference_configuration(tmp_path: 
 
 
 def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path) -> None:
+    static = ROOT / "src/jgrad_admission_rag/service/static"
+    html = (static / "app.html").read_text(encoding="utf-8")
+    script = (static / "unified.js").read_text(encoding="utf-8")
+    resources = re.findall(r"/(assets/unified[^\"']+)", html)
+    imports = re.findall(r'from "\./([^\"]+)"', script)
+    assert "recursive-include src/jgrad_admission_rag/service/static *.mjs" in (
+        ROOT / "MANIFEST.in"
+    ).read_text(encoding="utf-8")
+    for resource in resources:
+        assert (static / resource.removeprefix("assets/")).is_file()
+    for imported in imports:
+        assert (static / imported).is_file()
+    if importlib.util.find_spec("setuptools") is None:
+        pytest.skip("offline wheel build requires a locally installed setuptools backend")
     result = subprocess.run(
         [
             sys.executable,
@@ -149,9 +165,7 @@ def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path
         names = set(wheel.namelist())
         for name in ("app.html", "advanced.html", "unified.css", "unified.js", "unified-core.mjs"):
             assert prefix + name in names
-        html = wheel.read(prefix + "app.html").decode("utf-8")
-        script = wheel.read(prefix + "unified.js").decode("utf-8")
-        for resource in re.findall(r"/(assets/unified[^\"']+)", html):
+        for resource in resources:
             assert prefix + resource.removeprefix("assets/") in names
-        for imported in re.findall(r'from "\./([^\"]+)"', script):
+        for imported in imports:
             assert prefix + imported in names

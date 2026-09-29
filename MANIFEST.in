@@ -1,0 +1,1 @@
+recursive-include src/jgrad_admission_rag/service/static *.mjs

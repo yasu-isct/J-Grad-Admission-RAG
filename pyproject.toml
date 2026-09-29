@@ -48,7 +48,7 @@ jgrad-demo = "jgrad_admission_rag.demo_cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"jgrad_admission_rag.service.static" = ["*.html", "*.css", "*.js", "*.mjs"]
+"jgrad_admission_rag.service.static" = ["*.html", "*.css", "*.js"]
 "jgrad_admission_rag.demo_config" = ["*.json"]
 
 [tool.pytest.ini_options]
