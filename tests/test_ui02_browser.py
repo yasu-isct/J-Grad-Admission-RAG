@@ -389,7 +389,10 @@ def test_ui02_question_boundaries_and_school_isolation():
             "result": None
             if no_result
             else {
-                "local_scope_statement": "仅覆盖本地已审核的申请材料",
+                "local_scope_statement": "Applicant Profile / core_admission / conditional_program",
+                "target": {"school_name": "合成大学", "degree_name": "修士课程",
+                           "intake_name": "2027 年 4 月", "college_name": "合成学院",
+                           "department_name": "合成专攻"},
                 "official_source_url": "https://example.edu/official.pdf",
                 "answer": {
                     "kind": "reference_answer",
@@ -491,7 +494,8 @@ def test_ui02_question_boundaries_and_school_isolation():
                 assert "参考正文 partial unsupported" not in output
                 continue
             assert f"参考正文 {question}" in output
-            assert "仅覆盖本地已审核的申请材料" in output
+            assert "合成大学 · 修士课程 · 2027 年 4 月" in output
+            assert "Applicant Profile / core_admission / conditional_program" not in output
             assert "还缺申请人的具体成绩" in output
             assert "尚待确认考试日期" in output
             if question == "zero hits":

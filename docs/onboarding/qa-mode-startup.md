@@ -10,6 +10,7 @@ $python = 'D:\J-Grad-Admission-RAG\.venv\Scripts\python.exe'
 & $python -m jgrad_admission_rag.demo_cli `
   --pdf D:\J-Grad-Admission-RAG\outputs\real_pdf\isct_2027_4_2026_9_master.pdf `
   --workspace D:\J-Grad-Admission-RAG\outputs\m10-09-deepseek-live `
+  --reference-workspace-config D:\J-Grad-Admission-RAG\outputs\display-01\real-config.json `
   --embedding-provider bge-m3 `
   --embedding-cache D:\J-Grad-Admission-RAG\outputs\model-cache `
   --generation-provider reviewed-state-offline `
@@ -17,6 +18,10 @@ $python = 'D:\J-Grad-Admission-RAG\.venv\Scripts\python.exe'
 ```
 
 Open `http://127.0.0.1:8017/app`. Before asking, check
+`http://127.0.0.1:8017/v1/reference-targets` includes the existing Science Tokyo and
+University of Tokyo entrances. The reference workspace config is an existing read-only asset;
+omit it only for a deliberately Science Tokyo-only diagnostic session.
+Then check
 `http://127.0.0.1:8017/v1/generation-status`: `provider=reviewed-state-offline` and
 `mode=offline_rules` mean local retrieval only. The page says this before a question is submitted.
 Offline results show status plus expandable official source text where a matched Fact can be

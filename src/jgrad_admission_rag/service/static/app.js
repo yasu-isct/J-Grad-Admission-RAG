@@ -381,11 +381,12 @@ function appendGroundedResult(container, payload, delivery, mode) {
     if (controls.childElementCount) card.append(controls);
     container.append(card);
   }
-  appendGroundedList(
-    container,
-    referenceOnly ? "本地检索范围" : "审核范围",
-    [payload.local_scope_statement || payload.reviewed_scope_statement]
-  );
+  const target = payload.target || {};
+  const selectedScope = [target.school_name, target.degree_name, target.intake_name,
+    target.college_name, target.department_name, target.application_route_name]
+    .filter((part) => typeof part === "string" && part.trim()).join(" · ");
+  appendGroundedList(container, referenceOnly ? "所选资料范围" : "审核范围",
+    [referenceOnly ? selectedScope : payload.reviewed_scope_statement]);
   appendGroundedList(container, "仍缺少的信息", answer.missing_information);
   appendGroundedList(container, "回答限制", answer.limitations);
   const links = document.createElement("p");
@@ -438,7 +439,8 @@ function renderGroundedAnswer(payload) {
   appendGroundedList(groundedOutput, "需要补充的信息", payload.missing_context);
   appendGroundedList(groundedOutput, "不支持的请求部分", payload.unsupported_parts);
   appendGroundedList(groundedOutput, "分项处理说明", (payload.subanswers || [])
-    .filter((part) => part.status !== "answered").map((part) => part.message));
+    .filter((part) => part.status !== "answered" && part.message !== payload.summary)
+    .map((part) => part.message));
   groundedOutput.hidden = false;
 }
 

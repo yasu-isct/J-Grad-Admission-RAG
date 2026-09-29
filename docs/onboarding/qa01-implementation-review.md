@@ -17,9 +17,34 @@ paid provider calls. The user-owned 8000/8001/8002 processes and worktrees were 
 The optional `source_references` response field contains only a readable title, complete Fact text
 and source page numbers. Existing clients may ignore it. It contains no Fact ID, scope, hash,
 embedding text or search metadata. Each visible reference is bounded to 20,000 characters; a longer
-Fact is withheld rather than cut after a condition. At most three references are projected. The
+Fact is withheld rather than cut after a condition. At most three references enter the public
+response; this display cap does not restrict the model's bounded final request. The
 answer remains `reference_answer / reference_only / needs_review=true`; fallback and offline results
 remain outside the successful-response cache.
+
+## Response to PR #236 checkpoint review
+
+- **R1, full online evidence:** The model's final request now receives up to 16 bound Facts within
+  the existing 60,000-character source budget. The three-reference cap applies only to the public
+  fallback/offline display. A five-topic API fixture places the key fact fourth: the final model
+  receives all five, a successful exact repeat makes zero new model calls, and a final failure
+  exposes only three originals. A separate four-long-Fact case checks the total character cap.
+- **R2, truthful offline/failure status:** The API summary and subanswers now follow actual
+  `delivery.source`, whether a bound Fact exists, and whether planning or final generation failed.
+  Offline says no model was called, with or without a verified original. Planning failure says no
+  general explanation was generated; final failure preserves the draft but says it was not merged
+  with originals. The page derives a readable selected-school scope from target names and does not
+  display the internal `local_scope_statement` audit string in reference-only answers. Synthetic
+  API and browser tests cover these cases and live/cache behavior. Previously captured real offline
+  JSON was replayed through the current UI without starting a service; that replay verifies the
+  scope display and 390px layout, but its **old server summary remains old** and is not evidence
+  of the new backend wording.
+- **R3, dual-school startup:** The startup command includes the existing read-only
+  `D:\J-Grad-Admission-RAG\outputs\display-01\real-config.json` via
+  `--reference-workspace-config`; the guide checks `/v1/reference-targets` for both entrances and
+  labels omission as a Science Tokyo-only diagnostic. Read-only preflight found a parseable
+  1,030-byte config, SHA-256 `CF624F61FDFF7B4D061E551B9C68878FB083DC94D99F89E75D81E013111676ED`.
+  A synthetic CLI test confirms argument forwarding without a real service start.
 
 ## Same-mode comparison and real offline run
 
@@ -93,6 +118,18 @@ The separate 334 baseline was not opened by the service or changed.
   it as a persistent integrity-control change. The hash remains unchanged. Design must review the
   above natural-QA diff and M9 evidence before any authorized signature update; Quality CI is
   expected to fail only this gate until then. No workaround or baseline rerecording was performed.
+
+After the review fixes, the focused API/browser/CLI/M9 endpoint suite reports **60 passed,
+1 skipped**; the offline wheel build test was deselected because the local pip cache is denied by
+the sandbox. Ruff check, Node syntax and `git diff --check` passed. The recomputed M9 gate has
+**16/17 passing checks**, with only `implementation_sha256` failing: new observed digest
+`34a7083ddc560a595bd9afd8b9dee428e388372e2935b53b48b0e212dd1ec78e`, unchanged policy
+digest `f2e73660b09c3a2374b1e674b15b31887c26686d9ba6bd604aeb4791048637c1`.
+AST comparison against the previous PR head identifies only `_NaturalQaOutcome`,
+`_build_uncached_natural_language_answer_response`, `_run_natural_qa`, `_natural_qa_outcome`,
+`_plain_qa_references`, and `_offline_simple_qa_answer` as changed top-level Python definitions.
+The M9 policy file remains unchanged. No real service start, HTTP request or paid call was added
+for this revision; the cumulative developer ledger above still applies.
 
 Online behavior remains unverified on this head. Do not mark the Draft PR ready for final review or
 merge until design approves the M9 fingerprint step, CI is green, and a separately authorized,

@@ -680,6 +680,37 @@ def test_cli_defaults_to_reuse_only_and_explicit_build_is_required(
     assert (workspace / "runtime-v1").is_dir()
 
 
+def test_cli_forwards_existing_reference_config_without_rebuilding(
+    monkeypatch, tmp_path: Path
+) -> None:
+    from jgrad_admission_rag import demo_cli
+
+    pdf, config, _ = _synthetic_config(tmp_path)
+    workspace = (tmp_path / "workspace").resolve()
+    prepare_demo(pdf, workspace, config_dir=config)
+    reference_config = tmp_path / "dual-school.json"
+    reference_config.write_text('{"schema_version":"1.0","slices":[]}', encoding="utf-8")
+    captured = []
+    monkeypatch.setattr(demo_cli, "_require_available_port", lambda _port: None)
+    monkeypatch.setattr(demo_cli, "_serve", lambda *args: captured.append(args))
+
+    demo_cli.main(
+        [
+            "--pdf",
+            str(pdf),
+            "--workspace",
+            str(workspace),
+            "--reference-workspace-config",
+            str(reference_config),
+        ],
+        config_dir=config,
+    )
+
+    assert len(captured) == 1
+    assert captured[0][-1] == reference_config
+    assert reference_config.read_text(encoding="utf-8") == '{"schema_version":"1.0","slices":[]}'
+
+
 def test_cli_rejects_build_and_rebuild_together() -> None:
     from jgrad_admission_rag.demo_cli import _parser
 
