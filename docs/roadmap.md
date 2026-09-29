@@ -17,7 +17,9 @@ from main without merging/cherry-picking the paused QA Draft.
 Reports contain selected basic information and actionable preparation status, without citation chains
 in their preview/copy. Unknown preparation is not a missing material. Existing backend provenance,
 canonical reports, applicant rules, v1 page and two-school selectors remain authoritative and reused.
-Source graphs project the existing reviewed relations; original excerpts open in the existing dialog.
+Source graphs project the existing reviewed relations. A button inside the existing four-step material
+card opens the graph in a modal; original excerpts replace the graph inside that same modal with a
+back action. No standalone evidence page or inline expanded graph; close restores the original card.
 See [reader-centered design and local interaction prototype](onboarding/reader-report-and-evidence-design.md).
 No model calls are needed; QA's remaining11/50 calls remain unused. After these presentation tasks,
 polish the demonstration and school presentation; stop before ordinary-student GSFS expansion.

@@ -15,8 +15,10 @@ This explicitly supersedes the QA-only/QA-first records below; do not resume #23
 - Reports prioritize target, selected information, next actions, dates, and materials. Keep missing
   materials separate from missing user information. Remove evidence chains/internal fields from the
   user report, preserving all internal validation and existing main-page source access.
-- Evidence graphs reuse verified relations; show distinct basis/context/enrollment stages and reuse
-  the existing original-text modal. No new parsing, models, indexes, graph platform or source coverage.
+- Evidence graphs reuse verified relations and distinct basis/context/enrollment stages. User clarified:
+  entry is a button in the existing four-step material card; graph and original excerpts alternate
+  inside one closable modal, with a back-to-graph action. No separate page/route or inline large graph.
+  Reuse the existing viewer. No new parsing, models, indexes, graph platform or source coverage.
 - QA online budget remains39/50 used; remaining11 untouched. New non-paid presentation verification
   budgets are explicit in each Spec; historical ledgers remain unchanged. No paid API calls released.
 - Stop before ordinary-student GSFS expansion. M13 paused, #177 closed, 334/391 separate and immutable.
