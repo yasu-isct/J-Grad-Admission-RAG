@@ -29,6 +29,10 @@ is independently accepted in PR #227: both schools share `/app` selection, evide
 report action, following the [approved design](docs/ui-prototypes/unified-workspace-v1.html).
 The original detailed Science Tokyo tools remain available at `/app/advanced`.
 
+Following user feedback on the delivered UI, the next bounded correction restores the original
+v1 four-step presentation while retaining both schools and optional reports; see the
+[UI-02 Spec](docs/onboarding/v1-flow-restoration-spec.md). This correction is not yet implemented.
+
 ## What Applicants Can Verify Today
 
 The local Chinese-language Demo now offers a unified target-to-reference workspace. For the fixed
