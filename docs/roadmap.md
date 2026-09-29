@@ -8,11 +8,12 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 2026-09-29 latest user decision supersedes the QA-first ordering below: **pause QA-01 #233 /
 Draft #236**, first improve reports for their readers, then show existing multi-document evidence
-relationships with on-demand original-text dialogs. Only [REPORT-02 #239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239)
-is released after this design merges; [Spec](onboarding/reader-report-spec.md).
-[EVID-UI-01 #240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) stays blocked until #239
-is accepted; [Spec](onboarding/evidence-relations-ui-spec.md). M17 Main implements one at a time,
-from main without merging/cherry-picking the paused QA Draft.
+relationships with on-demand original-text dialogs. [REPORT-02 #239](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/239)
+was independently accepted and merged through [PR #243](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/243)
+at `37603cf7292f573eaf9f802421a0ea82fe22725f`; see [acceptance](onboarding/report02-design-acceptance.md).
+Only [EVID-UI-01 #240](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/240) is Ready when this
+closeout merges; [Spec](onboarding/evidence-relations-ui-spec.md). M17 Main implements that task from
+latest main, preserving the accepted report and without merging/cherry-picking the paused QA Draft.
 
 Reports contain selected basic information and actionable preparation status, without citation chains
 in their preview/copy. Unknown preparation is not a missing material. Existing backend provenance,
