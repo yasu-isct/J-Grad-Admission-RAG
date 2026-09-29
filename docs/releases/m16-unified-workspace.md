@@ -1,5 +1,19 @@
 # M16 unified admissions workspace
 
+## Current presentation after UI-02 correction
+
+The user-requested restoration of the original v1 four-step page is accepted in PR #231 at
+head `cd09bd43abbc276c2f5fb1bc2fdae40aa82eb166`, merge `40cd25d84c15d4ccaace610d5158875632dd428c`.
+Both schools now use that retained workflow: prominent dates and material cards, personal details
+in the main flow, and an action summary after comparison. Optional reports are available in
+steps 2 and 4. `/app/advanced` is a compatible entry to the same flow, retaining advanced tools;
+`/app/reference` still redirects. [Independent evidence](../onboarding/ui02-final-acceptance.md).
+The data, coverage, authority and local-operation boundaries below are unchanged. UI-01's initial
+layout is superseded; its technical acceptance remains historical. M16 is complete with no next
+implementation released.
+
+## Original UI-01 acceptance and continuing boundaries
+
 Accepted 2026-09-29. [PR #227](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/227), exact
 head `f1b7b5c7a3cded5749c49de38355364c2732114f`, merge `fe83493ba1108167dd9de3a1a352714033f01e9b`.
 [Independent acceptance](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/227#issuecomment-5880980500)

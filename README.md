@@ -25,13 +25,10 @@ experiment [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) 
 M15 adds a [bounded GSFS materials preview](docs/releases/m15-reviewed-materials-preview.md),
 with three historical materials topics and optional cited reports. It does not add general GSFS
 search/QA or complete admissions coverage. The [M16 unified main page](docs/releases/m16-unified-workspace.md)
-is independently accepted in PR #227: both schools share `/app` selection, evidence and an optional
-report action, following the [approved design](docs/ui-prototypes/unified-workspace-v1.html).
-The original detailed Science Tokyo tools remain available at `/app/advanced`.
-
-Following user feedback on the delivered UI, the next bounded correction restores the original
-v1 four-step presentation while retaining both schools and optional reports; see the
-[UI-02 Spec](docs/onboarding/v1-flow-restoration-spec.md). This correction is not yet implemented.
+now uses the original v1 four-step presentation, independently accepted in PR #231 following
+user feedback: both schools share target selection, prominent dates/materials, optional personal
+comparison and report actions. The original advanced tools remain in the page, and `/app/advanced`
+is a compatible entry. See the [UI-02 final acceptance](docs/onboarding/ui02-final-acceptance.md).
 
 ## What Applicants Can Verify Today
 

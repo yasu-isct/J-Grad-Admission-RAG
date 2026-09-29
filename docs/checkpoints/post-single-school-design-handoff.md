@@ -1,14 +1,19 @@
 # Post-single-school Design Handoff
 
-## Current decision: restore v1 presentation, retain both schools
+## Current handoff: UI-02 accepted, M16 complete
 
 2026-09-29 post-use feedback supersedes the UI-01 prototype as the visual/workflow baseline.
 The user wants the retained v1 four-step page with its prominent dates/materials, personal-detail
 CTA and preparation/action summary, plus the two-school selector and optional report action.
 Read [ADR0016](../decisions/0016-restore-v1-flow-with-multi-school-capabilities.md) and
-[UI-02 Spec](../onboarding/v1-flow-restoration-spec.md). M16 reopens for one bounded correction;
-consult #191 for the one Issue release after design merge. Preserve accepted data/API behavior,
-all old budget ledgers, and active user preview workspaces. No automatic M17 or new coverage.
+[UI-02 Spec](../onboarding/v1-flow-restoration-spec.md). This correction is now independently accepted
+in PR #231, head `cd09bd43abbc276c2f5fb1bc2fdae40aa82eb166`, merge
+`40cd25d84c15d4ccaace610d5158875632dd428c`. See [final acceptance](../onboarding/ui02-final-acceptance.md):
+29 focused tests, 3 Node tests, six real reports, corrected physical/printed pages, 25 unchanged
+protected files. UI-02 cumulative developer/reviewer starts 5/1, reports 23/6, POSTs 14/3; developer
+supplements are recorded in #229. Reviewer startup/report reserve is exhausted. No Ready task.
+Preserve active user previews on 8000/8001 and their source workspaces; they do not automatically
+switch to merged code. No automatic M17, new coverage, highlighting or new experiment.
 The prior completion record below remains historical technical evidence, not current UX approval.
 
 Updated 2026-09-29 after independent M16 acceptance and merged PR #227 (`fe83493`). M15's
@@ -17,7 +22,7 @@ Design continuation below was recorded after the user's GSFS target/download dec
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
 
-## Latest handoff: M16 accepted, no next implementation released
+## Historical UI-01 handoff: initial M16 acceptance
 
 The user rejected the separate `/app/reference` journey and approved
 [this interactive prototype](../ui-prototypes/unified-workspace-v1.html), then explicitly asked
