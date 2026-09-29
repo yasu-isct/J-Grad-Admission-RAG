@@ -20,9 +20,12 @@ supersedes the historical no-M17/no-Ready statements below. Governance remains i
 - First checkpoint is unpaid implementation/API/browser verification. Only after a concrete exact-head
   result and CI pass does design request bounded live authorization. Current paid budget is **zero**;
   the proposed six-call scenario is not authorized. No final online-restoration claim without live proof.
-- New non-paid task ledger starts at zero: service starts developer2/reviewer2; natural-QA HTTP8/4;
-  base-requirements POST2/2. The Spec reserves capacity for later online verification. Older budgets
-  remain closed; user preview use is not acceptance evidence.
+- QA-01 Draft PR #236 now has reviewed fixes and green CI at `b7c6b772c403ec838e31a032a6c9d205da8f2364`.
+  The [question set and presentation card](../evaluation/qa01-demo-question-set.md) defines three
+  main questions, exact-date/source anchors and a pending six-provider-call plan. No live calls yet.
+- Cumulative non-paid limits: service starts developer2/reviewer2; natural-QA HTTP8/4;
+  base-requirements POST3/2 (one additional developer base POST for the upcoming browser session).
+  Developer used1/2/2 respectively; reviewer used0. No reset of any ledger. Paid authorization stays0.
 - Reports: later human-readable summary with internal fields/evidence chain absent from body/copy;
   preserve internal evidence and main-page source view. Then prepare demo polish, a sample report,
   a short walkthrough and a cooperation/trial proposal, distinguishing current features from future
