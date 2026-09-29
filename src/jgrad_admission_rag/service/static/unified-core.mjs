@@ -437,7 +437,7 @@ function readerText(view) {
     lines.push("", title);
     for (const row of rows) lines.push(`- ${row}`);
   };
-  section("接下来先做什么", view.priorities.length ? view.priorities : ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"]);
+  if (view.priorityRows.length) section("接下来先做什么", view.priorityRows);
   if (view.selected.includes("dates")) {
     section("关键时间", view.dates.length
       ? view.dates.map((item) => `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`)
@@ -516,8 +516,12 @@ export function readerReport(report, selected) {
   }
   const limitation = report.kind === "reviewed_material_slice"
     ? `仅整理当前已审核的 ${report.topics.length} 个材料主题，不是完整清单或资格判断；历史资料请核对官方最新信息。`
-    : "仅整理当前已审核资料与本次自报；已准备不代表有效、已提交或学校受理，未覆盖内容请核对完整募集要项。";
-  const view = {target, selected: chosen, priorities, dates, dateNote, materials, other, limitation};
+    : selected.materials
+      ? "仅整理当前已审核资料与本次自报；已准备不代表有效、已提交或学校受理，未覆盖内容请核对完整募集要项。"
+      : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
+  const priorityRows = priorities.length ? priorities : selected.materials
+    ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
+  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, other, limitation};
   return {...view, text: readerText(view)};
 }
 

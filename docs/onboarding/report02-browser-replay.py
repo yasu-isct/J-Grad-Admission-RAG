@@ -199,9 +199,28 @@ def main():
         for index, key in enumerate(("dates", "materials", "other")):
             for slot in range(3):
                 choices.nth(slot).set_checked(slot == index)
+            preview = page.locator("#reference-report-body").inner_text()
             page.locator("#reference-copy").click()
+            copied = page.evaluate("window.copied")
             expected = (OUT / f"isct-{key}-only-copy.txt").read_text(encoding="utf-8").rstrip("\n")
-            assert page.evaluate("window.copied") == expected, key
+            assert copied == expected, key
+            if key == "dates":
+                for value in ("接下来先做什么", "待补材料", "材料准备清单", "已准备不代表"):
+                    assert value not in preview and value not in copied, key
+            elif key == "materials":
+                assert "入学志願票：待补材料" in preview and "入学志願票：待补材料" in copied
+            else:
+                assert "没有明确的待补材料" not in preview + copied
+                assert "已准备不代表" not in preview + copied
+            if key in ("dates", "other"):
+                page.screenshot(path=str(OUT / f"isct-{key}-only-desktop.png"), full_page=False)
+                page.set_viewport_size({"width": 390, "height": 844})
+                page.screenshot(path=str(OUT / f"isct-{key}-only-mobile.png"), full_page=False)
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), key
+                page.set_viewport_size({"width": 1440, "height": 900})
+        choices.nth(2).uncheck()
+        assert page.locator("#reference-copy").is_disabled()
+        assert "请至少选择一类报告内容" in page.locator("#reference-report-body").inner_text()
         assert calls == before_themes
         page.locator("#reference-close").click()
         page.locator("#edit-target").click()
@@ -238,7 +257,7 @@ def main():
                 "service_startups": 0,
                 "real_posts": 0,
                 "replayed_posts": calls,
-                "screenshots": 18,
+                "screenshots": 22,
                 "single_theme_copies": 3,
                 "copy_matches_projection": True,
                 "no_horizontal_overflow": True,

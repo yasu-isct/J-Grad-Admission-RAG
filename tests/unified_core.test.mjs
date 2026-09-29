@@ -183,7 +183,19 @@ test("reader projection separates missing, self-reported ready, unfilled, and co
   assert.match(view.dateNote, /具体时刻不作推测/);
   assert.doesNotMatch(view.text, /日文官方原文|RULE-05A|precision|record_id|物理页/);
   const onlyDates = readerReport(supplied, {dates: true, materials: false, other: false});
-  assert.doesNotMatch(onlyDates.text, /未准备材料|材料准备清单/);
+  assert.equal(onlyDates.priorityRows.length, 0);
+  assert.match(onlyDates.text, /关键时间/);
+  assert.doesNotMatch(onlyDates.text, /接下来先做什么|待补材料|未准备材料|材料准备清单|已准备不代表/);
+  const materialsOnly = readerReport(supplied, {dates: false, materials: true, other: false});
+  assert.match(materialsOnly.text, /未准备材料：待补材料/);
+  assert.match(view.text, /未准备材料：待补材料/);
+  const settledOther = legacyReport(mapLegacyBase(scope, {...base, requirements: [
+    {...base.requirements[1], official_status: "required"}
+  ]}));
+  const otherOnly = readerReport(settledOther, {dates: false, materials: false, other: true});
+  assert.equal(otherOnly.priorityRows.length, 0);
+  assert.match(otherOnly.text, /其他已加载要求/);
+  assert.doesNotMatch(otherOnly.text, /接下来先做什么|待补材料|材料准备清单|已准备不代表/);
   const noProfile = readerReport(legacyReport(mapped), {dates: true, materials: true, other: false});
   assert.match(noProfile.text, /未填写准备情况，暂不能判断还缺哪些材料/);
   assert.ok(noProfile.materials.every((item) => item.state !== "待补材料"));

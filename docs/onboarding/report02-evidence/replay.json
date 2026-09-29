@@ -203,8 +203,8 @@
     {
       "theme": "dates",
       "file": "isct-dates-only-copy.txt",
-      "sha256": "f278f7445edf57b9970be5b2654bba6c613767b3a2f09d17f0d0dc72b6e61ef0",
-      "length": 399
+      "sha256": "a3209865a23886a9ce697e2d4f4b89713612562f98ed0d112caab7fa94e7dc57",
+      "length": 335
     },
     {
       "theme": "materials",
@@ -215,8 +215,8 @@
     {
       "theme": "other",
       "file": "isct-other-only-copy.txt",
-      "sha256": "87e5f391dc7f08eb1036e1a76b4a7778406e35dc69e306b36febf042e7b0ebcd",
-      "length": 473
+      "sha256": "4343db5ab84cbf76fd2286601398dfeb9db9d74cfbfffa65775975d32ae59548",
+      "length": 450
     }
   ]
 }

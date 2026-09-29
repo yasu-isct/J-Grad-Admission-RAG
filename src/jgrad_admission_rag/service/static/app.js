@@ -2411,8 +2411,7 @@ function renderReferenceReport(report) {
     focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"})[key]).join("、")}`;
     title.append(focus);
     content.append(title);
-    addSection("接下来先做什么", view.priorities,
-      "当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。");
+    if (view.priorityRows.length) addSection("接下来先做什么", view.priorityRows, "");
     if (selected.dates) {
       addSection("关键时间", view.dates.map((item) =>
         `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`),

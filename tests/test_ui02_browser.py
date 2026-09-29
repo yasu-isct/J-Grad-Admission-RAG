@@ -178,6 +178,7 @@ def _select_slice(page):
 def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
     catalog, base, comparison, evidence, report = _data()
     base["requirements"][1]["reviewed_summary"] = "<img src=x onerror=window.reportXss=1>"
+    base["requirements"][1]["official_status"] = "required"
     evidence["topics"][0]["records"].extend(
         {**deepcopy(evidence["topics"][0]["records"][0]), "record_id": f"extra-record-{i}"}
         for i in range(8)
@@ -299,11 +300,26 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         selected_copy = page.evaluate("window.copied")
         assert "材料准备清单" not in selected_copy and "英语成绩单" not in selected_copy
         assert len(calls["base"]) == 1 and len(calls["comparison"]) == 1
+        options.nth(2).uncheck()
+        date_preview = page.locator("#reference-report-body").inner_text()
+        page.locator("#reference-copy").click()
+        date_copy = page.evaluate("window.copied")
+        for value in ("接下来先做什么", "待补材料", "材料准备清单", "已准备不代表"):
+            assert value not in date_preview and value not in date_copy
+        assert "关键时间" in date_preview and "关键时间" in date_copy
         options.nth(0).uncheck()
+        options.nth(2).check()
+        other_preview = page.locator("#reference-report-body").inner_text()
+        page.locator("#reference-copy").click()
+        other_copy = page.evaluate("window.copied")
+        for value in ("接下来先做什么", "待补材料", "材料准备清单", "已准备不代表"):
+            assert value not in other_preview and value not in other_copy
+        assert "其他已加载要求" in other_preview and "其他已加载要求" in other_copy
         options.nth(2).uncheck()
         assert page.locator("#reference-copy").is_disabled()
         assert "请至少选择一类报告内容" in page.locator("#reference-report-body").inner_text()
         options.nth(1).check()
+        assert "材料准备清单" in page.locator("#reference-report-body").inner_text()
         page.evaluate(
             "Object.defineProperty(navigator, 'clipboard', {value: {writeText: async () => {throw Error('blocked')}}});"
         )
