@@ -1,0 +1,2746 @@
+[
+  {
+    "case": "01",
+    "title": "托业定义",
+    "turn": 1,
+    "question": "托业是什么",
+    "expected": "简洁解释 TOEIC；一般说明不能成为学校提交要求。",
+    "http_status": 200,
+    "seconds": 11.453,
+    "new_calls": 1,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R是什么",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成一般知识参考回答；未查询本地募集要项。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成一般知识参考回答；未查询本地募集要项。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "托业（TOEIC，国际交流英语考试）是一项面向职场和国际交流场景的英语能力测试，主要评估非英语母语者在日常工作和商务环境中的英语听力和阅读能力（也有口语与写作考试）。成绩通常用于求职、升学或企业内部语言评估。若你想了解它是否被该院校的具体项目认可或有何分数要求，需要查阅该校的官方招生信息。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 1522,
+        "validation_ms": 0,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "01",
+    "title": "托业定义",
+    "turn": "cache",
+    "question": "托业是什么",
+    "http_status": 200,
+    "seconds": 0.015,
+    "new_calls": 0,
+    "same_result": true,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R是什么",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成一般知识参考回答；未查询本地募集要项。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成一般知识参考回答；未查询本地募集要项。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "托业（TOEIC，国际交流英语考试）是一项面向职场和国际交流场景的英语能力测试，主要评估非英语母语者在日常工作和商务环境中的英语听力和阅读能力（也有口语与写作考试）。成绩通常用于求职、升学或企业内部语言评估。若你想了解它是否被该院校的具体项目认可或有何分数要求，需要查阅该校的官方招生信息。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "cache_hit",
+        "generation_ms": null,
+        "validation_ms": 0,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "02",
+    "title": "雅思定义",
+    "turn": 1,
+    "question": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+    "expected": "简短概念，不断言所选学校接受 IELTS。",
+    "http_status": 200,
+    "seconds": 1.047,
+    "new_calls": 1,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+            "retrieval_query": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成一般知识参考回答；未查询本地募集要项。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+            "retrieval_query": "雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成一般知识参考回答；未查询本地募集要项。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "雅思（IELTS）是国际英语语言测试系统，主要评估非英语母语者的英语能力，涵盖听力、阅读、写作和口语四项。成绩常用于申请海外大学、大学院或移民，分数越高代表英语水平越强。第一次申请大学院的学生可用它证明英语能力。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 1043,
+        "validation_ms": 1,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "03",
+    "title": "日语能力考试",
+    "turn": 1,
+    "question": "JLPT是什么？N1和N2是什么意思？",
+    "expected": "一般概念和等级，不断言学校要求。",
+    "http_status": 200,
+    "seconds": 5.203,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "JLPT是什么？N1和N2是什么意思？",
+        "corrections": [],
+        "requested_intents": [
+          "language_test_acceptance"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "jlpt"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "JLPT（日语能力考试，Japanese-Language Proficiency Test）是面向母语非日语者的日语能力标准化考试，由日本国际交流基金会与日本国际教育支援协会举办，每年7月和12月举行。它分为N1至N5五个级别，N1最高、N5最低。N1和N2是两个较高级别：N1要求能理解各种场面的日语，包括抽象度较高的文章、新闻评论及较为复杂的表达；N2要求能理解日常及较广泛场面的日语，包括报纸、杂志的较简单文章和一般性话题。\n\n关于你关注的东京科学大学情報理工学院情報工学系，本次提供的招生资料中并没有确认有关JLPT的要求、认可级别或免除条件等信息。资料中只提到英语外部试验成绩的提交与评价方式，以及出愿资格中涉及外国人留学生的部分条件，但未涉及JLPT。因此，是否要求或认可JLPT、认可到哪个级别，建议你直接查看该研究科当年的官方招生要项，或向资料中列出的入试课及情報工学系入试担当确认，不要仅凭一般介绍推断。入学要求最终以学校官方发布的招生要项为准。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4029,
+        "validation_ms": 1166,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "04",
+    "title": "考试区别",
+    "turn": 1,
+    "question": "托业和托福有什么区别？准备申请日本大学院时应该先确认什么？请列三点。",
+    "expected": "区分考试与项目要求，不保证某考试通用。",
+    "http_status": 200,
+    "seconds": 7.484,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R和TOEFL iBT有什么区别？准备申请日本大学院时应该先确认什么？请列三点。",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          },
+          {
+            "original": "托福",
+            "normalized": "TOEFL iBT"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity",
+          "language_test_acceptance"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "当前招生范围是否接受 TOEFL iBT？",
+            "retrieval_query": "TOEFL iBT 英語外部試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toefl_ibt",
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 14 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 14 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "当前招生范围是否接受 TOEFL iBT？",
+            "retrieval_query": "TOEFL iBT 英語外部試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 14 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "一般性说明：托业（TOEIC）主要面向职场，考查商务与日常场景中的英语沟通能力，通常以听力和阅读为主；托福（TOEFL）主要面向学术环境，考查大学课堂所需的听、说、读、写综合能力，在留学申请中更常见。两者并非可以随意互相替代，具体是否被认可必须以你申请的研究科当年发布的募集要项为准。\n\n关于你提到的这所大学的信息理工学院情报工学系，选定的本地招生资料中只能确认以下几点与英语相关：该系在B日程中“不实施英语笔试，而是根据本学指定的英语外部考试成绩进行评价”；英语成绩与笔试专业成绩、口试结果一起综合判定合格与否；笔试专业900分、英语100分；英语外部考试的成绩单必须在出愿时提交，出愿截止后不接受提交，也不接受替换。此外，资料还提示应先查看该大学院入试FAQ，仍有疑问时出愿资格等问题联系入试课，情报工学系相关问题联系该系入试担当。\n\n需要特别说明的是：选定的本地招生资料并未明确列出该系具体认可托业还是托福、是否两者都认可、是否接受雅思、是否有最低分数要求，也没有说明成绩有效期和官方送分方式。因此，这些学校特定信息不能从当前资料中确认，建议你直接查看该系当年最新的募集要项、该大学院入试FAQ，或向资料中列出的入试课／情报工学系入试担当确认。\n\n准备申请时建议先确认以下三点：第一，确认目标研究科与专攻（例如情报理工学院情报工学系）在最新募集要项中认可哪种英语外部考试成绩、是否设最低分数要求、是否可用其他考试替代；第二，确认英语成绩单的提交方式与截止时间（该系资料明确要求出愿时提交，且出愿截止后不接受提交或替换），以及是否需要提前完成考试和准备成绩单；第三，确认除英语之外的整体申请条件与时间线，包括是否需要事先联系导师、志望理由书、笔试与口试安排、在留资格要求以及各项材料的提交截止日期。以上请以该校当年官方募集要项为准。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 6454,
+        "validation_ms": 1033,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "05",
+    "title": "关键日期",
+    "turn": 1,
+    "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+    "expected": "p9: 2026-06-01 09:00 网上登记，6/4–6/10 材料必着；不补截止时刻。",
+    "http_status": 200,
+    "seconds": 5.422,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "retrieval_query": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "retrieval_query": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "关于东京科学大学情报理工学院2027年4月入学修士课程的网上登记开始时间，所选出的募集要项资料中未直接确认开始日期；其中仅明确出愿书类须于6月10日（水）必着，并建议尽量在6月4日（木）送达。关于“必着”和当天寄出的区别，一般理解为：1）“必着”指材料必须在指定日期前实际送达指定地点，以到达时间为准；2）“当天寄出”通常指在截止日当天交邮即可，以邮戳为凭；3）因此若注明“必着”，当天才寄出很可能来不及，而“当日消印有効”才可能认可当天寄出。学校-specific的网上登记开始时间请以募集要项正文或官方网络出愿页面为准，建议确认官方来源或向入试课咨询。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4261,
+        "validation_ms": 1144,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "05",
+    "title": "关键日期",
+    "turn": "cache",
+    "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+    "http_status": 200,
+    "seconds": 0.016,
+    "new_calls": 0,
+    "same_result": true,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "retrieval_query": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "retrieval_query": "按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "关于东京科学大学情报理工学院2027年4月入学修士课程的网上登记开始时间，所选出的募集要项资料中未直接确认开始日期；其中仅明确出愿书类须于6月10日（水）必着，并建议尽量在6月4日（木）送达。关于“必着”和当天寄出的区别，一般理解为：1）“必着”指材料必须在指定日期前实际送达指定地点，以到达时间为准；2）“当天寄出”通常指在截止日当天交邮即可，以邮戳为凭；3）因此若注明“必着”，当天才寄出很可能来不及，而“当日消印有効”才可能认可当天寄出。学校-specific的网上登记开始时间请以募集要项正文或官方网络出愿页面为准，建议确认官方来源或向入试课咨询。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "cache_hit",
+        "generation_ms": null,
+        "validation_ms": 0,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "06",
+    "title": "日文日期",
+    "turn": 1,
+    "question": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+    "expected": "与05相同日期，日语回答。",
+    "http_status": 200,
+    "seconds": 4.14,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "mixed",
+        "normalized_question": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+            "retrieval_query": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+            "retrieval_query": "出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "選択された東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学の募集要項では、出願書類の提出について「6月10日（水）必着」と記載されていることを確認できます。また、郵便事情を考慮し、できるだけ6月4日（木）に到着するように心がける旨も示されています。\n\n一方、出願情報の登録開始日については、選択された募集要項の該当箇所には明確な記載が確認できません。インターネット出願サイトで出願情報を登録する方法や登録後の修正不可などの注意事項は記載されていますが、登録開始日そのものは本文からは確認できません。\n\nしたがって、出願書類の必着日は「6月10日（水）」、出願情報の登録開始日は選択された募集要項では未確認です。登録開始日については、インターネット出願サイトや大学院入試FAQ、入試課などの公式情報でご確認ください。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3133,
+        "validation_ms": 1002,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "07",
+    "title": "截止日寄出",
+    "turn": 1,
+    "question": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+    "expected": "当天寄出不等于按时到达；不保证受理。",
+    "http_status": 200,
+    "seconds": 5.282,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+            "retrieval_query": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+            "retrieval_query": "如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "仅凭“2026年6月10日寄出纸质材料”这一点，无法据此判断是否算按时提交。是否以邮戳（消印）为准还是必须在截止日前寄达（必着），各研究科募集要项的写法不同，必须以你报考的研究科当年募集要项为准。\n\n关于本次选定的本地招生资料：其中未载明出願期間、消印有効/必着以及海外邮寄等具体规定，因此无法确认该研究科对6月10日寄出是否算按时提交。已确认的相关信息是：材料不完整可以补交，但英语外部考试成绩单必须在出願时提交，出願受付締切後の提出一律不予认可。建議你直接查阅该研究科募集要项的出願期間及邮寄要求（消印有効/必着），或向入試課确认。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4213,
+        "validation_ms": 1052,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "08",
+    "title": "登记不等于完成",
+    "turn": 1,
+    "question": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+    "expected": "不得把网上登记当全部手续完成。",
+    "http_status": 200,
+    "seconds": 5.562,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+            "retrieval_query": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 15 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+            "retrieval_query": "我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 15 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "一般に、インターネット出願（网上登记）と出願書類の郵送は別の手続きで、网上登记を済ませても紙の出願書類の郵送が必要なことが多いです。\n\n東京科学大学 情報理工学院 情報工学系 2027年4月入学の修士課程については、今回確認できた出願方法の記載では、出願完了には①出願情報の登録、②顔写真のアップロード、③検定料の支払い、④出願書類の印刷、⑤出願書類の提出という全ての手続きが必要とされています。インターネット出願サイトで登録を済ませ、検定料の支払いを完了しても、出願書類一式が出願期間内に本学へ到着しない場合は出願は受理されないと明記されています。\n\nまた、出願書類は、インターネット出願サイトのマイページからA4サイズでカラー印刷した宛名ラベルを角形2号封筒に貼り、所定の出願書類一式を番号の若い順に揃えて入れ、厳封して郵送で提出することとされています。郵送先は〒152-8550 東京都目黒区大岡山2-12-1 東京科学大学入試課、6月10日（水）必着、できるだけ6月4日（木）に到着するように心がけてください、窓口への持参は不可、速達書留郵便で送付してください、と記載されています。\n\nしたがって、网上登记を6月1日に完了していても、それだけで紙の出願書類の郵送が不要になるとは言えません。必ず2027年4月入学年度の公式募集要項で、郵送が必要か、締切、宛先、提出書類を確認してください。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4564,
+        "validation_ms": 988,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "09",
+    "title": "未给时刻",
+    "turn": 1,
+    "question": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+    "expected": "不可编造23:59或17:00；区分日期与时刻。",
+    "http_status": 200,
+    "seconds": 4.406,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+            "retrieval_query": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+            "retrieval_query": "纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "关于“纸质材料6月10日截止，是否当天23:59前送到就算有效”，一般取决于募集要项对截止时间的具体写法：如果只写日期、没写时刻，仅凭“6月10日截止”不能确认23:59前有效；如果明确写了“必着”或具体时刻，则须按该时刻执行。就你选定的本地招生资料而言，目前没有看到能确认“6月10日截止＝当天23:59前有效”的记载，因此不能据此认定23:59前送到即可。建议查看募集要项中出愿期间、必着/消印有效等表述，或直接向入试课确认。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3181,
+        "validation_ms": 1222,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "10",
+    "title": "共同材料",
+    "turn": 1,
+    "question": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+    "expected": "只按已找资料列材料，不声称完整。",
+    "http_status": 200,
+    "seconds": 7.188,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+            "retrieval_query": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+            "retrieval_query": "请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "根据你提供的本地招生资料，目前只能确认与“全员提交材料”相关的部分内容，无法整理出一份已验证完整的“志愿者全员必须提交”的材料清单。以下先说明一般背景，再列出本地资料能确认的项目。\n\n一般背景说明：东京科学大学情報理工学院情報工学系修士课程的出願書類通常会在官方募集要项的“出願書類”部分区分“全员提交”和“仅特定申请者提交”的材料。但仅凭当前提供的资料，未显示完整的出願書類一览或“全員提出”项目表，因此不能判定为完整清单。\n\n本地资料中可确认的内容如下：\n\n1. 志望理由書：需用日语（约1500字）或英语（约500词）记述，内容需包括：学部4年次学士论文研究概要；第1志望研究室或研究分野的选择理由；入学后的研究计划及修士课程修了前想达成的事项；修士课程修了后的未来希望与计划。同时，需输入志望指导教員，最多第10志望；如困难，不必填满所有栏位。\n\n2. 学部成绩証明書：出願書類中的“学部の成績証明書”应尽量提交记载有GPA的版本。\n\n3. 英語外部試験スコアシート：本地资料明确写到“スコアシートを必ず出願時に提出してください”，即必须在出願时提交英语外部考试的成绩单；出願受理截止后的提交一律不认可，已提交的スコアシート不可替换，也不返还。\n\n4. 出願資格審査結果通知メール的印刷件：仅针对以出願資格(9)、(10)或(11)申请、需要事前出願資格審査的志願者，出願时需提交出願資格審査結果通知メール的印刷件。这并非全员共通材料。\n\n5. インターネット出願サイト的“系･課程が指定する入力項目”栏：本地资料明确写到“何も入力しないでください”，即不要输入任何内容。这是填写注意事项，不是提交材料。\n\n需要特别说明：当前本地资料没有列出完整的“出願書類”一览，也没有明确标注哪些文件属于“志愿者全员必须提交”。因此，上述内容只能视为本地资料已确认的部分项目，不能据此称为完整清单。建议你进一步核对官方募集要项的“出願書類”部分、结构化特征或直接向入試課确认，以获取完整的全员提交材料列表。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 5874,
+        "validation_ms": 1314,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "11",
+    "title": "外国籍材料",
+    "turn": 1,
+    "question": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+    "expected": "条件性材料保留条件，不把在职情况套给学生。",
+    "http_status": 200,
+    "seconds": 14.609,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+            "retrieval_query": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 16 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+            "retrieval_query": "我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 16 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "你问的是“外国籍申请者额外要注意哪些材料”和“哪些不能因为你是外国人就被一律要求”。下面把一般背景和从你指定的東京科学大学 情報理工学院 情報工学系 2027年4月入学修士课程资料中能确认的内容分开说明。\n\n一、从你指定的学校资料中可以确认的外国籍相关材料\n\n1. 外国籍志愿者必须提交的在留相关材料\n   该系募集要项明确列出“外国籍の志願者のみ提出する書類”。外国籍志愿者必须提交所定样式，并在A4一页上贴附在留卡正反面复印件；如果没有在留卡，则贴附护照复印件（照片、姓名、国籍等页面）。这一点不是可选项，而是外国籍申请者需要特别留意的必交材料。\n\n2. 仅特定身份者才需要追加的证明\n   同一部分还列出：只有文部科学省国費外国人留学生才需要提交在籍大学发行的国费外国人留学生证明书原本；只有日韓共同理工系学部留学生才需要提交相应证明书原本；只有外国政府奨学金受給者才需要提交日本大使馆等公共机关发行的证明书原本。也就是说，这些不是所有外国籍申请者都要交，而是只针对符合该身份的人。\n\n3. 英语外部考试分数\n   该系资料提到英语外部试验的分数单。整体募集要项中说明，分数单的提交方式有“出愿时必需”“原则上出愿时提交但允许后交”“出愿时不提交、后日提交”等不同指定方式，必须确认该系的具体指示；如果未能在期限内提交，即使已发受験票也可能失去受験資格。对情報工学系而言，B日程明确写有“不实施笔试英语，而根据本学指定的英语外部试验分数评价”。因此英语分数材料是该系需要特别确认的重要材料，但它不是“因为你是外国人”才要交，而是该系选拔方式本身要求的。\n\n4. 出愿资格事前审查\n   如果不是按通常的16年教育路径，而是按出愿资格(9)(10)(11)等申请，可能需要进行出愿资格事前审查。资料中说明，需先邮件联系入试课确认是否需要审查；如需审查，要在2026年5月11日前邮寄审查材料，结果预计5月19日左右通知。这里不是所有中国籍应届本科生都一定要做，而是学历路径不符合标准出愿资格时才需要。\n\n5. 志望理由书、成绩证明等\n   该系资料要求提交志望理由书，日语约1500字或英语约500词，内容包括学士论文研究概要、第一志愿研究室或研究领域理由、入学后研究计划、修士毕业后希望等。此外，学部成绩证明书应尽量提交载有GPA的版本。这些是该系出愿材料的一部分，但不是仅因外国籍而额外增加的材料。\n\n二、一般背景上外国籍申请者常被提醒、但不能一概而论的材料\n\n外国籍申请者通常会被提醒留意：在留资格或在留经历材料、护照或在留卡复印件、学历和成绩证明的翻译或认证、语言能力证明、经费支付或身元保证相关材料、海外邮寄和出愿方式等。这些属于一般性注意事项，具体是否需要、以什么形式提交，仍必须看当年募集要项。\n\n以下这些不能仅凭“你是外国人、没有工作”就推断一定要交：\n\n- 在职证明、退职证明、工作经历证明：你是应届本科生、没有工作，通常不应因为外国籍而被要求提交在职证明。\n- 日本国内的住民票、纳税证明、课税证明：如果你尚未在日本居住或没有日本收入，这类材料通常不适用。\n- 日语能力测试或日本留学考试：并非所有修士课程都强制要求。该系资料中可确认的是英语外部试验分数与选拔相关，但并不能据此说你必须提交JLPT或EJU。\n- 推荐信：该系资料未显示所有外国籍申请者都必须提交推荐信。\n- 研究计划书：该系要求的是志望理由书，其中包含入学后研究计划等内容；是否需要单独的研究计划书，不能只凭外国籍判断。\n- 亲属关系证明、出生证明、无犯罪记录证明：一般不是所有外国籍出愿者都必须提交，通常只在特定在留资格、奖学金等情况下才可能需要。\n- 健康诊断书：该系资料中没有确认到所有外国籍申请者都必须提交健康诊断书。\n\n三、结论\n\n对你这种“中国籍应届本科生、没有工作”的情况，从所给学校资料中能明确确认的外国籍额外必交项，主要是在留卡或护照相关复印件。国费留学生、日韩共同理工系学部留学生、外国政府奖学金获得者才需要各自的追加证明。英语外部试验分数单是该系选拔相关的重要材料，但属于该系出愿要求，不是“外国人一律要交”的泛化要求。\n\n至于在职证明、日本纳税证明、住民票、JLPT或EJU、推荐信、亲属关系证明、无犯罪记录证明、健康诊断书等，不能仅凭外国籍就断定必须提交。最终请以東京科学大学 情報理工学院 情報工学系 2027年4月入学修士课程当年最新募集要项为准，并逐项确认“必须”“任意”“仅在符合条件时提交”的区别。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 13129,
+        "validation_ms": 1462,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "12",
+    "title": "缺材料能否补交",
+    "turn": 1,
+    "question": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+    "expected": "p10 出愿期间不能提交的材料导致不受理，不凭空允诺补交。",
+    "http_status": 200,
+    "seconds": 5.328,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+            "retrieval_query": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+            "retrieval_query": "如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "一般原則上，出願（申請）須在規定出願期間內提交完整材料；依所選資料顯示，出願書類一式若未在出願期間內寄達，出願將不被受理，且提出書類に不備があるもの亦不予受理。所選資料亦明確指出，英語外部試験のスコアシート「出願受付締切後の提出は一切認めません」「一度提出したスコアシートの差し替えも一切認めません」，受理後的出願書類內容變更亦一概不認。\n\n關於「是否可先出願、之後補交」：所選資料中未見允許補交之記載，反而顯示出願書類需在期限內到齊方會被受理，故無法確認允許補交。建議直接向資料所列窗口確認：出願書類或出願資格相關問題可洽入試課（聯絡方式載於募集要項最後一頁）；資訊工学系相關問題可洽情報工学系入試担当（cs-exam-inquiry@comp.isct.ac.jp）。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4062,
+        "validation_ms": 1256,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "13",
+    "title": "配点资料缺口",
+    "turn": 1,
+    "question": "托业840分，按东京科学大学情報工学系B日程的官方标准，最终英语配点具体是多少？",
+    "expected": "无已审核最终换算公式，不编造840=>84等分数。",
+    "http_status": 200,
+    "seconds": 5.0,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R840分，按东京科学大学情報工学系B日程的官方标准，最终英语配点具体是多少？",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity",
+          "language_score_conversion"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840分，按东京科学大学情報工学系B日程的官方标准，最终英语配点具体是多少？ TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [
+          {
+            "exam_type": "toeic_lr",
+            "score": 840,
+            "level": null
+          }
+        ],
+        "target_scope_mentions": [
+          "情報工学系"
+        ],
+        "missing_context": [
+          "exam_date"
+        ],
+        "unsupported_parts": []
+      },
+      "summary": "在线最终整理失败；第一阶段的一般说明尚未结合本地原文。可核对的本地原文列在下方。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "no_clear_evidence",
+          "message": "在线最终整理失败；第一阶段的一般说明尚未结合本地原文。可核对的本地原文列在下方。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840分，按东京科学大学情報工学系B日程的官方标准，最终英语配点具体是多少？ TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          "status": "no_clear_evidence",
+          "message": "在线最终整理失败；第一阶段的一般说明尚未结合本地原文。可核对的本地原文列在下方。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "在线最终整理未完成。下面依次列出本地检索状态和第一阶段模型的一般说明：\n本地原文参考单独列在下方，尚未由最终模型整合；第一阶段模型的一般说明仅供参考：\n这个最终英语配点必须以东京科学大学情報工学系B日程的官方募集要项为准，无法仅凭托业840分直接推断。请查阅该校官方入试信息中关于英语外部考试成绩换算的规定，确认840分对应的配点、是否设有最低分数线以及是否需提交官方成绩证明。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [
+            "exam_date"
+          ],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [
+        {
+          "title": "【記載内容及び入試に関する問合わせ先】",
+          "text": "【記載内容及び入試に関する問合わせ先】\nまず大学院入試 FAQ（https://admissions.isct.ac.jp/ja/013/graduate/faqs）を調べてください。\nそれでもわからない場合は、出願書類や出願資格についての質問は入試課に問い合わせてください。入試課の問い合わせ先はこ\nの募集要項の最後のページに記載されています。それ以外の情報工学系についての質問は情報工学系入試担当\n（cs-exam-inquiry@comp.isct.ac.jp）に問い合わせてください。\n52\n情報理工学院 情報工学系\nhttps://educ.titech.ac.jp/cs/\n情報工学コース、知能情報コース、人間医療科学技術コース、エネルギー・情報コース （ただし人間医療科学技術コース、\nエネルギー・情報コースは、このコースを担当する教員の研究室に配属された場合に限ります）\n９７名\n以下の項目を含む志望理由書を日本語（1500 字程度）または英語（500 ワード程度）で記述してください。\n１） 学部4 年次の学士論文研究（またはこれに相当する研究等）の概要\n２） 第1 志望の研究室や研究分野を選択した理由\n３） 入学後の研究計画、及び修士課程修了までに達成したいこと\n４） 修士課程修了後の将来の希望、計画\n志望指導教員を第10 志望まで入力してください。難しい場合には必ずしも全ての枠を埋める必要はありません。\n出願書類の「学部の成績証明書」は、できるだけGPA (Grade Point Average)が記載されているものを提出してください。\nインターネット出願サイトの「系･課程が指定する入力項目」欄には、 何も入力しないでください。",
+          "source_pages": [
+            52
+          ]
+        },
+        {
+          "title": "試験区分 試験日 試験内容等 備考",
+          "text": "試験区分 試験日 試験内容等 備考\nＡ\n日\n程\n卒業研究、志望する研究分野や入学後の研究テーマ、 ・分野によらず学部成績等の優秀な\nさらに専門的知識等についての試問を行います。 志願者を口述試験の対象とします。\n口述試験 7 月 10 日（金）\n学部成績等の出願書類及び口述試験の結果を総合的 ・A 日程試験が不合格となった場合は\nに評価し、合否を判定します。 B 日程試験を受験してください。\nＢ\n英語\n・筆答試験は実施せずに、本学の指定する英語外部\n試験のスコアに基づいて評価します。\n筆答専門試験科目: 情報工学系\n8 月 18 日（火） ・以下の A 群、B 群、C 群から各 1 問、合計 3 問出題し ・筆答専門試験では日本語で解答す 筆答試験\n9:30～12:00 ます。（150 分） ること。\nA) 微積分学、線形代数学、確率統計\nB) 数理論理学、オートマトンと形式言語\nC) データ構造とアルゴリズム、プログラミング\n配点：筆答専門試験：900 点、英語：100 点\n筆答専門試験成績、英語成績（英語外部試験）及び口 ・筆答専門試験成績及び英語成績\n口頭試問 8 月 24 日（月） 頭試問の結果を総合的に評価し、合否を判定します。判 （英語外部試験）の上位者を口頭試\n定に際して A 日程口述試験の結果は考慮しません。 問の対象とします。",
+          "source_pages": [
+            52
+          ]
+        },
+        {
+          "title": "【英語外部試験のスコアシートの取扱い】",
+          "text": "【英語外部試験のスコアシートの取扱い】\nスコアシートを必ず出願時に提出してください。出願受付締切後の提出は一切認めません。\n一度提出したスコアシートの差し替えも一切認めません。また、スコアシートは返却しません。",
+          "source_pages": [
+            52
+          ]
+        }
+      ],
+      "delivery": {
+        "source": "fallback",
+        "generation_ms": 3884,
+        "validation_ms": 1099,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [
+        "exam_date"
+      ],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "14",
+    "title": "混合问题",
+    "turn": 1,
+    "question": "托业840按官方的标准是多少英语配点，还有没有jlpt成绩，j-test可以吗",
+    "expected": "三个问题分别处理；不编换算、不把资料未确认说成不接受。",
+    "http_status": 200,
+    "seconds": 5.844,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗",
+        "corrections": [
+          {
+            "original": "j-test",
+            "normalized": "J.TEST"
+          },
+          {
+            "original": "jlpt",
+            "normalized": "JLPT"
+          },
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity",
+          "language_score_conversion",
+          "language_test_acceptance"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗 TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:03",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:04",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "j_test",
+          "jlpt",
+          "toeic_lr"
+        ],
+        "mentioned_scores": [
+          {
+            "exam_type": "toeic_lr",
+            "score": 840,
+            "level": null
+          }
+        ],
+        "target_scope_mentions": [],
+        "missing_context": [
+          "exam_date"
+        ],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗 TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:03",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:04",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "关于你问的“托业840分对应多少英语配点、是否还能用JLPT或J-TEST”，需要分两层说明。\n\n一般背景：日本大学院理工科常要求提交TOEIC L&R或TOEFL iBT等英语外部考试成绩，并可能设有换算表或免除条件；是否接受JLPT、J-TEST则因研究科而异，不少研究科仅认可TOEFL/TOEIC，不承认JLPT或J-TEST。因此不能一概而论，必须以目标研究科当年度的官方募集要项为准。\n\n就本次可确认的学校信息而言：在东京科学大学情報理工学院情報工学系的修士课程入试中，B日程的英语成绩是“不另行实施笔试，而是根据本学指定的英语外部考试成绩进行评价”，并且配点为“笔答专业考试900点、英语100点”。但可确认的资料中并没有给出TOEIC 840分具体换算成多少分的换算表，也没有明确写出是否接受JLPT或J-TEST作为英语外部考试。\n\n因此，TOEIC 840分对应的具体英语配点、以及JLPT/J-TEST是否被认可，本次选定的学校资料未予确认。建议你直接查看该专攻当年度募集要项中“英语外部考试”的认可考试种类与换算标准，或向募集要项末尾所列的入试课、以及情報工学系入试担当（cs-exam-inquiry@comp.isct.ac.jp）确认，以免把一般情况误当成该校的正式规定。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [
+            "exam_date"
+          ],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 4794,
+        "validation_ms": 1035,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [
+        "exam_date"
+      ],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "14",
+    "title": "混合问题",
+    "turn": "cache",
+    "question": "托业840按官方的标准是多少英语配点，还有没有jlpt成绩，j-test可以吗",
+    "http_status": 200,
+    "seconds": 0.0,
+    "new_calls": 0,
+    "same_result": true,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗",
+        "corrections": [
+          {
+            "original": "j-test",
+            "normalized": "J.TEST"
+          },
+          {
+            "original": "jlpt",
+            "normalized": "JLPT"
+          },
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity",
+          "language_score_conversion",
+          "language_test_acceptance"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗 TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:03",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:04",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "j_test",
+          "jlpt",
+          "toeic_lr"
+        ],
+        "mentioned_scores": [
+          {
+            "exam_type": "toeic_lr",
+            "score": 840,
+            "level": null
+          }
+        ],
+        "target_scope_mentions": [],
+        "missing_context": [
+          "exam_date"
+        ],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "TOEIC L&R840按官方的标准是多少英语配点，还有没有JLPT成绩，J.TEST可以吗 TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:03",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:04",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "关于你问的“托业840分对应多少英语配点、是否还能用JLPT或J-TEST”，需要分两层说明。\n\n一般背景：日本大学院理工科常要求提交TOEIC L&R或TOEFL iBT等英语外部考试成绩，并可能设有换算表或免除条件；是否接受JLPT、J-TEST则因研究科而异，不少研究科仅认可TOEFL/TOEIC，不承认JLPT或J-TEST。因此不能一概而论，必须以目标研究科当年度的官方募集要项为准。\n\n就本次可确认的学校信息而言：在东京科学大学情報理工学院情報工学系的修士课程入试中，B日程的英语成绩是“不另行实施笔试，而是根据本学指定的英语外部考试成绩进行评价”，并且配点为“笔答专业考试900点、英语100点”。但可确认的资料中并没有给出TOEIC 840分具体换算成多少分的换算表，也没有明确写出是否接受JLPT或J-TEST作为英语外部考试。\n\n因此，TOEIC 840分对应的具体英语配点、以及JLPT/J-TEST是否被认可，本次选定的学校资料未予确认。建议你直接查看该专攻当年度募集要项中“英语外部考试”的认可考试种类与换算标准，或向募集要项末尾所列的入试课、以及情報工学系入试担当（cs-exam-inquiry@comp.isct.ac.jp）确认，以免把一般情况误当成该校的正式规定。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [
+            "exam_date"
+          ],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "cache_hit",
+        "generation_ms": null,
+        "validation_ms": 0,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [
+        "exam_date"
+      ],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "15",
+    "title": "替代考试",
+    "turn": 1,
+    "question": "没有JLPT成绩，能用J.TEST替代吗？请区分一般介绍和这份募集要项明确规定的内容。",
+    "expected": "本项目替代关系未确认；一般考试介绍不成为学校规则。",
+    "http_status": 200,
+    "seconds": 6.344,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "没有JLPT成绩，能用J.TEST替代吗？请区分一般介绍和这份募集要项明确规定的内容。",
+        "corrections": [],
+        "requested_intents": [
+          "language_test_acceptance"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "j_test",
+          "jlpt"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "当前招生范围是否要求或接受 JLPT 成绩？",
+            "retrieval_query": "JLPT 日本語能力試験 日本語 成績",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "当前招生范围是否接受 J.TEST？",
+            "retrieval_query": "J.TEST 日本語試験 受理",
+            "requested_intent": "language_test_acceptance",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "一般性说明：JLPT（日语能力考试）与J.TEST（实用日本语检定）是两种不同的日语能力考试，主办方、等级划分和评分方式都不同。在日本升学中，有些学校或研究科把J.TEST成绩作为日语能力的替代证明，但也有不少学校只认可JLPT或本校指定的考试，因此能否替代完全取决于具体学校、研究科当年度的募集要项。\n\n关于你选定的“东京科学大学 修士课程 2027年4月入学 情报理工学院 情报工学系”：在你提供的这份当地招生资料中，未能找到任何关于“是否接受用J.TEST替代JLPT”或“需要哪个J.TEST等级/分数”的明确规定。资料中涉及外语能力的内容，只提到了英语外部考试（即英语成绩按本学指定的英语外部考试成绩评估），并未出现J.TEST或JLPT替代的相关表述。因此，这份材料没有确认该校该研究科接受J.TEST替代JLPT，也没有确认其拒绝；这一点仍属于未确认事项。\n\n建议你按募集要项中“出愿资格”“语言能力”“日语能力证明”“英语外部考试”等栏目逐项确认；若要项未列出J.TEST，通常需要向该研究科教务或入试课直接咨询确认。资料中给出的咨询途径是：先查大学院入试FAQ，若仍不清楚，出愿书类和出愿资格问题联系入试课，其他信息工学系相关问题联系信息工学系入试担当。请以官方最新募集要项和学校答复为准，不要将本回答理解为接受、拒绝、豁免或录取保证。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 5087,
+        "validation_ms": 1245,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "16",
+    "title": "资格与录取边界",
+    "turn": 1,
+    "question": "我托业840，能保证有资格报考而且能被录取吗？请直接给我结论。",
+    "expected": "不能凭单项成绩保证资格或录取，说明其他条件与审核边界。",
+    "http_status": 200,
+    "seconds": 7.234,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "我TOEIC L&R840，能保证有资格报考而且能被录取吗？请直接给我结论。",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [
+          {
+            "exam_type": "toeic_lr",
+            "score": 840,
+            "level": null
+          }
+        ],
+        "target_scope_mentions": [],
+        "missing_context": [
+          "exam_date"
+        ],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 15 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 15 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "结论：仅凭托业840分，不能保证有资格报考，更不能保证被录取。\n\n一般说明：在研究生入学中，“保证录取”通常不存在。是否录取由专业考试、英语成绩、面试/口述试问、研究计划、本科成绩、志望指导教員等多方面综合判定；英语分数高只是其中一个有利因素，不等于合格。\n\n就你提供的东京科学大学情報理工学院情報工学系本地招生材料而言，目前只能确认以下几点：\n1) 材料中出现的英语外部考试种类列有TOEFL iBT，并明确TOEFL-ITP、TOEIC-IP等团体特别考试无效；其中**没有明确列出托业（TOEIC）公开考试是否可作为有效英语外部考试**。因此，托业840分能否用于报考或免考英语，不能仅凭这些材料下结论。\n2) B日程中，英语不进行笔试，而是根据本学指定的英语外部考试分数评价；配点为笔答専門試験900点、英语100点。\n3) 是否进入口述试问，与笔答専門試験成绩及英语成绩（英语外部考试）的上位者有关；最终合否由笔答専門試験、英语成绩及口头试问等综合判定。\n4) 出愿时英语成绩单必须提交，出愿截止后不受理，也不能替换。\n\n因此，直接结论是：托业840分**不能保证你有报考资格，也不能保证录取**。请务必以最新募集要项和本学规定的英语外部考试换算基准为准，确认托业是否被认可；如材料未明确，请向入试课或情報工学系入试担当确认。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [
+            "exam_date"
+          ],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 5509,
+        "validation_ms": 1708,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [
+        "exam_date"
+      ],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "17",
+    "title": "跨年度边界",
+    "turn": 1,
+    "question": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+    "expected": "明确固定2027/2026历史资料不能套2028。",
+    "http_status": 200,
+    "seconds": 4.312,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+            "retrieval_query": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+            "retrieval_query": "这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 11 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "根据你提供的资料，不能直接把其中的日期套用到2028年4月入学的出愿日程上。该资料标注的入学年度为2027年4月入学，属于东京科学大学情報理工学院情報工学系的修士课程信息；一般募集要项是按入学年度另行发布的，不同年度的日程可能调整，因此应以2028年4月入学对应的最新募集要项为准。资料中列出的日期（例如A日程口述試験7月10日、B日程筆答試験8月18日、口頭試問8月24日、出願書類郵送6月10日必着等）仅能确认为该2027年度资料中的日程，不能直接作为2028年度的出愿日程依据。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3238,
+        "validation_ms": 1055,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "18",
+    "title": "跨学校边界",
+    "turn": 1,
+    "question": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+    "expected": "当前选择ISCT不能回答UTokyo完整要求，不混学校。",
+    "http_status": 200,
+    "seconds": 4.532,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+            "retrieval_query": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 10 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+            "retrieval_query": "那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 10 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "你问的是东京大学新领域创成科学研究科的CBMS项目，而目前锁定的是东京科学大学信息理工学院2027年4月入学的修士课程资料，两者并非同一学校、同一项目。因此，基于现有资料无法给出东京大学CBMS“普通学生”的完整申请材料与截止日期，这类学校及项目特定的信息需要以东京大学该项目的官方募集要项为准。\n\n就当前锁定资料而言，只能确认它对应的是东京科学大学信息理工学院信息工学系2027年4月入学的修士课程，其中包含出愿方法、出愿资格、试验区分等内容，但并没有东京大学新领域CBMS的申请材料清单或截止日期。若你确认要查东京大学CBMS，建议直接查阅东京大学新领域创成科学研究科CBMS项目的最新官方募集要项，或向该研究科事务室确认；若你要查的是当前资料对应的东京科学大学项目，则请明确说明，我可以按该项目的官方要求继续梳理。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3433,
+        "validation_ms": 1086,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "19",
+    "title": "省略追问",
+    "turn": 1,
+    "question": "托业是什么",
+    "expected": "第一轮定义；第二轮独立请求无历史，应澄清它指什么或明确条件假设，不能假装记住对话。",
+    "http_status": 200,
+    "seconds": 0.0,
+    "new_calls": 0,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "TOEIC L&R是什么",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成一般知识参考回答；未查询本地募集要项。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成一般知识参考回答；未查询本地募集要项。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "托业（TOEIC，国际交流英语考试）是一项面向职场和国际交流场景的英语能力测试，主要评估非英语母语者在日常工作和商务环境中的英语听力和阅读能力（也有口语与写作考试）。成绩通常用于求职、升学或企业内部语言评估。若你想了解它是否被该院校的具体项目认可或有何分数要求，需要查阅该校的官方招生信息。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "cache_hit",
+        "generation_ms": null,
+        "validation_ms": 0,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "19",
+    "title": "省略追问",
+    "turn": 2,
+    "question": "那它满分多少？",
+    "expected": "第一轮定义；第二轮独立请求无历史，应澄清它指什么或明确条件假设，不能假装记住对话。",
+    "http_status": 200,
+    "seconds": 5.078,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "那它满分多少？",
+        "corrections": [],
+        "requested_intents": [
+          "general"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "那它满分多少？",
+            "retrieval_query": "那它满分多少？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          }
+        ],
+        "mentioned_exam_types": [],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "那它满分多少？",
+            "retrieval_query": "那它满分多少？",
+            "requested_intent": "general",
+            "needs_clarification": true
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 13 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "你问的“它”具体指哪一项需要先确认。一般背景上，如果指的是英语外部考试（如托福、雅思等），满分由考试种类本身决定，学校通常只规定采用哪种考试和如何换算、如何提交，并不改变该考试的满分；如果指的是专业课笔试，则满分和配点由学校募集要项规定。\n\n从你提供的东京科学大学情报理工学院情报工学系修士课程资料来看，能确认的是：B日程的英语不另行实施笔试，而是根据本学指定的英语外部考试成绩进行评价；配点为“笔答专业考试：900分、英语：100分”。但这份资料没有写明你所问的“它”（例如某项英语外部考试本身）的满分。因此，若你指的是英语外部考试的满分，本资料未确认；请确认你指的是哪一项考试，并查阅该考试官方成绩说明或向学校入试担当确认。若你指的是本募集要项中的配点，则英语为100分、笔答专业考试为900分。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3787,
+        "validation_ms": 1289,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "20",
+    "title": "补全上下文",
+    "turn": 1,
+    "question": "我想知道托业考试满分是多少。",
+    "expected": "概念分数990与校内配点不同，第二轮补全上下文应可用。",
+    "http_status": 200,
+    "seconds": 1.016,
+    "new_calls": 1,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "我想知道TOEIC L&R考试满分是多少。",
+        "corrections": [
+          {
+            "original": "托业",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成一般知识参考回答；未查询本地募集要项。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成一般知识参考回答；未查询本地募集要项。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "托业考试（TOEIC）有两种常见考试：托业听读考试满分为 990 分（听力 495 分 + 阅读 495 分）；托业口语写作考试则分别计分，口语和写作各 200 分。你问题中问到的是“托业考试满分”，通常指的是听读考试，即 990 分。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 1003,
+        "validation_ms": 1,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  },
+  {
+    "case": "20",
+    "title": "补全上下文",
+    "turn": 2,
+    "question": "我指的是TOEIC Listening & Reading，满分多少？这个满分是不是学校的英语配点满分？",
+    "expected": "概念分数990与校内配点不同，第二轮补全上下文应可用。",
+    "http_status": 200,
+    "seconds": 4.828,
+    "new_calls": 2,
+    "body": {
+      "schema_version": "1.0",
+      "mode": {
+        "schema_version": "1.0",
+        "provider": "deepseek-responses",
+        "model": "deepseek-flash",
+        "mode": "online_model",
+        "configured": true,
+        "label": "DeepSeek 在线模型 · deepseek-flash",
+        "request_timeout_seconds": 195
+      },
+      "analysis": {
+        "schema_version": "1.0",
+        "detected_language": "zh",
+        "normalized_question": "我指的是TOEIC L&R Listening & Reading，满分多少？这个满分是不是学校的英语配点满分？",
+        "corrections": [
+          {
+            "original": "TOEIC",
+            "normalized": "TOEIC L&R"
+          }
+        ],
+        "requested_intents": [
+          "exam_identity",
+          "language_score_conversion"
+        ],
+        "subquestions": [
+          {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "我指的是TOEIC L&R Listening & Reading，满分多少？这个满分是不是学校的英语配点满分？ TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          }
+        ],
+        "mentioned_exam_types": [
+          "toeic_lr"
+        ],
+        "mentioned_scores": [],
+        "target_scope_mentions": [],
+        "missing_context": [],
+        "unsupported_parts": []
+      },
+      "summary": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。",
+      "subanswers": [
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:01",
+            "question": "问题中的“托业／トーイック”是否指 TOEIC L&R？",
+            "retrieval_query": "TOEIC L&R 英語外部試験 種別",
+            "requested_intent": "exam_identity",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。"
+        },
+        {
+          "schema_version": "1.0",
+          "subquestion": {
+            "subquestion_id": "subquestion:02",
+            "question": "TOEIC L&R 成绩在当前专业和日程下如何换算或计入英语配点？",
+            "retrieval_query": "我指的是TOEIC L&R Listening & Reading，满分多少？这个满分是不是学校的英语配点满分？ TOEIC L&R 英語外部試験 換算基準 配点",
+            "requested_intent": "language_score_conversion",
+            "needs_clarification": false
+          },
+          "status": "answered",
+          "message": "已生成参考回答；检索了所选募集要项中的 12 条本地记录。"
+        }
+      ],
+      "result": {
+        "target": {
+          "school_name": "東京科学大学",
+          "degree_name": "修士课程",
+          "intake_name": "2027年4月入学",
+          "college_name": "情報理工学院",
+          "department_name": "情報工学系",
+          "application_route_name": "B 日程"
+        },
+        "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+        "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+        "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+        "answer": {
+          "kind": "reference_answer",
+          "answer": "一般常识：TOEIC Listening & Reading 的满分是 990 分，由听力 495 分与阅读 495 分组成。\n\n学校信息：根据本次提供的选校招生资料，东京科学大学情報理工学院情報工学系（B日程）的英语成绩采用本学指定的英语外部考试成绩进行评价，配点为英语 100 点（専門筆答試験 900 点）。但该资料并未写明 TOEIC L&R 的满分是否被直接换算为该英语配点的满分，也未写明 TOEIC L&R 的具体计分方式或最低分数要求。因此，关于“TOEIC L&R 满分是否等于该校英语配点满分”这一点，所给资料未能确认。\n\n由于选校招生资料未确认该具体换算关系，建议你进一步查看该校公布的募集要项、英语外部考试成绩的具体要求，或直接向招生负责窗口确认。避免仅凭一般常识推断该校的计分与合格标准。",
+          "assurance": "reference_only",
+          "needs_review": true,
+          "missing_information": [],
+          "limitations": [
+            "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+          ]
+        }
+      },
+      "source_references": [],
+      "delivery": {
+        "source": "live",
+        "generation_ms": 3763,
+        "validation_ms": 1050,
+        "knowledge_base_version": "kb-7fa46e49b794",
+        "cache_scope": "process_memory",
+        "cache_cleared_on_restart": true,
+        "cache_ttl_seconds": 600
+      },
+      "missing_context": [],
+      "unsupported_parts": []
+    }
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "head": "b7c6b772c403ec838e31a032a6c9d205da8f2364",
+  "model": "deepseek-flash",
+  "calls": 39,
+  "max_calls": 50,
+  "http_requests": 25,
+  "cases_completed": 20,
+  "assets_unchanged": true,
+  "protected_files": 16,
+  "seconds": 122.77,
+  "memory": {
+    "available_gib": 16.06,
+    "rss_gib": 1.97
+  }
+}

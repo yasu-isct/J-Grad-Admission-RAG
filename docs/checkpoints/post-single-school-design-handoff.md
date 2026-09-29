@@ -17,15 +17,18 @@ supersedes the historical no-M17/no-Ready statements below. Governance remains i
 - Verified diagnosis: 8002 reports reviewed-state-offline / offline_rules; its fallback concatenates
   raw retrieval text. Offline preview is not the previous DeepSeek experience. Other alleged regressions
   need same-mode historical comparisons. UI-02's synthetic QA did not certify live online quality.
-- First checkpoint is unpaid implementation/API/browser verification. Only after a concrete exact-head
-  result and CI pass does design request bounded live authorization. Current paid budget is **zero**;
-  the proposed six-call scenario is not authorized. No final online-restoration claim without live proof.
-- QA-01 Draft PR #236 now has reviewed fixes and green CI at `b7c6b772c403ec838e31a032a6c9d205da8f2364`.
-  The [question set and presentation card](../evaluation/qa01-demo-question-set.md) defines three
-  main questions, exact-date/source anchors and a pending six-provider-call plan. No live calls yet.
-- Cumulative non-paid limits: service starts developer2/reviewer2; natural-QA HTTP8/4;
-  base-requirements POST3/2 (one additional developer base POST for the upcoming browser session).
-  Developer used1/2/2 respectively; reviewer used0. No reset of any ledger. Paid authorization stays0.
+- The unpaid checkpoint has reviewed fixes and green CI at `b7c6b772c403ec838e31a032a6c9d205da8f2364`.
+  The user then authorized 20 scenarios / 50 cumulative provider calls. Design's
+  [online audit and full transcripts](../evaluation/qa01-online20/report.md) used39 calls / 25 HTTP
+  requests: 9 scenarios met their goals, 5 need refinement, 6 failed. **Changes requested** on Draft
+  PR #236; fix incorrect late-material advice, missing dates/materials and mixed-question semantics
+  before claiming recovery. The former three-question/six-call proposal is historical, not additive.
+- Design used one real application session, HTTP25/26, base/report/personal POST0; its 2-start cap
+  remains. Developer used startup1/2, QA2/8, base2/3. Preserve all historical counts. Remaining paid
+  **11/50** is reserved for design's repaired-head verification, with no parallel developer paid calls.
+  One zero-call preflight failure preceded the real session; no model/dependency was downloaded.
+  The session stopped and all16 protected asset hashes match. M17 Main owns the minimum #233 fix;
+  any required retrieval-scope change first needs a small reviewed design delta.
 - Reports: later human-readable summary with internal fields/evidence chain absent from body/copy;
   preserve internal evidence and main-page source view. Then prepare demo polish, a sample report,
   a short walkthrough and a cooperation/trial proposal, distinguishing current features from future
