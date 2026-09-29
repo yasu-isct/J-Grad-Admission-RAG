@@ -24,6 +24,10 @@ The developer may implement and validate the unpaid checkpoint. Paid calls remai
 once a concrete exact-head result is reviewable, design requests a bounded live check. A proposed
 six-call plan in the Spec is not permission. Do not claim online recovery or merge the whole task
 on synthetic/offline evidence alone. Routine implementation belongs to the independent developer.
+The [prepared question set](evaluation/qa01-demo-question-set.md) supplies exact test/demo prompts,
+source-grounded expectations and a bounded pending live plan for green implementation head `b7c6b77`.
+Only one additional non-paid developer base-requirements POST is released for that browser session;
+preparing these materials does not authorize paid calls or start the later report-improvement task.
 
 Reports will later export readable key information without evidence chains or internal fields in
 the body/copy, preserving backend provenance and main-page source access. Then polish the existing
