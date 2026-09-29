@@ -1,0 +1,147 @@
+"""Design-only real application audit. User-authorized aggregate cap: 50 attempts."""
+import os, sys, json, time, hashlib, subprocess, ctypes
+from pathlib import Path
+from datetime import datetime, timezone
+
+ROOT = Path('D:/J-Grad-Admission-RAG')
+CODE = ROOT / 'outputs/design-qa'
+OUT = ROOT / 'outputs/qa20-design-audit'
+HEAD = 'b7c6b772c403ec838e31a032a6c9d205da8f2364'
+os.environ.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1', PYTHONDONTWRITEBYTECODE='1', TOKENIZERS_PARALLELISM='false')
+sys.path.insert(0, str(CODE / 'src'))
+from fastapi.testclient import TestClient
+from jgrad_admission_rag.demo import load_demo_runtime
+from jgrad_admission_rag.demo_embedding import create_demo_embedding_provider, resolve_demo_embedding_configuration
+from jgrad_admission_rag.generation import DeepSeekResponsesConfig, DeepSeekResponsesGenerationProvider
+from jgrad_admission_rag.generation.question_analysis import DeterministicQuestionUnderstandingProvider
+from jgrad_admission_rag.manual_adaptive_qa_evaluation import _adaptive_client_factory
+from jgrad_admission_rag.manual_deepseek_evaluation import _LiveCallLedger
+from jgrad_admission_rag.service import ServiceDependencies, ServiceSettings, create_app
+
+CASES = [
+ ('01','托业定义',['托业是什么'],'简洁解释 TOEIC；一般说明不能成为学校提交要求。'),
+ ('02','雅思定义',['雅思是什么？请用适合第一次申请大学院的学生能理解的话解释，100字以内。'],'简短概念，不断言所选学校接受 IELTS。'),
+ ('03','日语能力考试',['JLPT是什么？N1和N2是什么意思？'],'一般概念和等级，不断言学校要求。'),
+ ('04','考试区别',['托业和托福有什么区别？准备申请日本大学院时应该先确认什么？请列三点。'],'区分考试与项目要求，不保证某考试通用。'),
+ ('05','关键日期',['按这份募集要项，网上登记最早什么时候开始？纸质材料什么时候必须送到？“必着”和当天寄出有什么区别？请用三条说明。'],'p9: 2026-06-01 09:00 网上登记，6/4–6/10 材料必着；不补截止时刻。'),
+ ('06','日文日期',['出願情報の登録開始日と出願書類の必着日はいつですか。日本語で簡潔に教えてください。'],'与05相同日期，日语回答。'),
+ ('07','截止日寄出',['如果我在2026年6月10日才把纸质申请材料寄出去，按这份募集要项算按时提交吗？'],'当天寄出不等于按时到达；不保证受理。'),
+ ('08','登记不等于完成',['我6月1日已经完成了网上登记，是不是不用再寄纸质材料了？'],'不得把网上登记当全部手续完成。'),
+ ('09','未给时刻',['纸质材料6月10日截止，是不是当天晚上23:59前送到就行？如果官方没有写具体几点，请直接说没有确认。'],'不可编造23:59或17:00；区分日期与时刻。'),
+ ('10','共同材料',['请整理这份募集要项里志愿者全员需要提交的材料，用中文列表说明；没有核对齐全就不要说这是完整清单。'],'只按已找资料列材料，不声称完整。'),
+ ('11','外国籍材料',['我是中国籍应届本科生，没有工作。哪些材料是外国籍申请者额外需要注意的？哪些不能因为我是外国人就说一定要交？'],'条件性材料保留条件，不把在职情况套给学生。'),
+ ('12','缺材料能否补交',['如果出愿期间有一份要求的材料暂时交不出来，可以先申请、之后补交吗？'],'p10 出愿期间不能提交的材料导致不受理，不凭空允诺补交。'),
+ ('13','配点资料缺口',['托业840分，按东京科学大学情報工学系B日程的官方标准，最终英语配点具体是多少？'],'无已审核最终换算公式，不编造840=>84等分数。'),
+ ('14','混合问题',['托业840按官方的标准是多少英语配点，还有没有jlpt成绩，j-test可以吗'],'三个问题分别处理；不编换算、不把资料未确认说成不接受。'),
+ ('15','替代考试',['没有JLPT成绩，能用J.TEST替代吗？请区分一般介绍和这份募集要项明确规定的内容。'],'本项目替代关系未确认；一般考试介绍不成为学校规则。'),
+ ('16','资格与录取边界',['我托业840，能保证有资格报考而且能被录取吗？请直接给我结论。'],'不能凭单项成绩保证资格或录取，说明其他条件与审核边界。'),
+ ('17','跨年度边界',['这份资料写的日期，能直接当作2028年4月入学的出愿日程用吗？'],'明确固定2027/2026历史资料不能套2028。'),
+ ('18','跨学校边界',['那东京大学新领域CBMS普通学生的完整材料和截止日期呢？请直接用当前资料告诉我。'],'当前选择ISCT不能回答UTokyo完整要求，不混学校。'),
+ ('19','省略追问',['托业是什么','那它满分多少？'],'第一轮定义；第二轮独立请求无历史，应澄清它指什么或明确条件假设，不能假装记住对话。'),
+ ('20','补全上下文',['我想知道托业考试满分是多少。','我指的是TOEIC Listening & Reading，满分多少？这个满分是不是学校的英语配点满分？'],'概念分数990与校内配点不同，第二轮补全上下文应可用。'),
+]
+
+def write(name, value):
+    target = OUT / name
+    tmp = target.with_suffix(target.suffix + '.tmp')
+    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
+    tmp.replace(target)
+
+def assets():
+    paths = list((ROOT / 'outputs/m10-09-deepseek-live/runtime-v1').rglob('*'))
+    paths += list((ROOT / 'outputs/m9-01/index-bge-m3-5617a9f6').rglob('*'))
+    paths += [ROOT / 'outputs/real_pdf/isct_2027_4_2026_9_master.pdf']
+    return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths if p.is_file()}
+
+def check_memory():
+    class Status(ctypes.Structure):
+        _fields_ = [('length',ctypes.c_ulong),('load',ctypes.c_ulong)] + [(n,ctypes.c_ulonglong) for n in ['total','avail','page_total','page_avail','virtual_total','virtual_avail','extended']]
+    mem = Status(); mem.length = ctypes.sizeof(mem)
+    if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(mem)) or mem.avail < 4*1024**3:
+        raise RuntimeError('available memory below 4 GiB or unavailable')
+    class Counters(ctypes.Structure):
+        _fields_ = [('cb',ctypes.c_ulong),('faults',ctypes.c_ulong)] + [(n,ctypes.c_size_t) for n in ['peak','working','paged_peak','paged','nonpaged_peak','nonpaged','pagefile','pagefile_peak']]
+    counters = Counters(); counters.cb = ctypes.sizeof(counters)
+    ctypes.windll.kernel32.GetCurrentProcess.restype = ctypes.c_void_p
+    ctypes.windll.psapi.GetProcessMemoryInfo.argtypes = [ctypes.c_void_p,ctypes.c_void_p,ctypes.c_ulong]
+    if not ctypes.windll.psapi.GetProcessMemoryInfo(ctypes.windll.kernel32.GetCurrentProcess(),ctypes.byref(counters),counters.cb):
+        raise RuntimeError('cannot inspect RSS')
+    rss = counters.working
+    if rss > 12*1024**3:
+        raise RuntimeError('audit RSS above 12 GiB')
+    return {'available_gib':round(mem.avail/1024**3,2),'rss_gib':round(rss/1024**3,2)}
+
+class Ledger(_LiveCallLedger):
+    current = None
+    def save(self):
+        write('call-ledger.json', {'head':HEAD,'max_calls':50,'calls':self.calls,'observations':self.observations})
+    def begin(self, phase):
+        check_memory()
+        index = super().begin(phase)
+        self.observations[index].update(case=self.current, started_at=datetime.now(timezone.utc).isoformat())
+        self.save() # durable reservation BEFORE sending network request
+        return index
+    def response_received(self,index,response,latency_ms):
+        super().response_received(index,response,latency_ms)
+        usage = getattr(response,'usage',None)
+        self.observations[index]['usage'] = usage.model_dump(mode='json') if hasattr(usage,'model_dump') else None
+        self.save()
+    def transport_failed(self,index,latency_ms):
+        super().transport_failed(index,latency_ms); self.save()
+
+def main():
+    OUT.mkdir(parents=True,exist_ok=True)
+    prior = None
+    if (OUT/'call-ledger.json').exists():
+        prior=json.loads((OUT/'call-ledger.json').read_text(encoding='utf-8'))
+        if prior['calls'] != 0 or (OUT/'responses.json').exists() or (OUT/'catalog.json').exists():
+            raise RuntimeError('Existing nonempty run: refusing restart/reset')
+    assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=CODE,text=True).strip()==HEAD
+    assert os.environ.get('DEEPSEEK_API_KEY'), 'Missing credential'
+    write('cases.json',[{'id':i,'title':t,'turns':q,'expected':e} for i,t,q,e in CASES])
+    before = assets(); write('assets-before.json', before)
+    ledger = Ledger('deepseek-flash',50,observations=prior['observations'] if prior else []); ledger.save()
+    results=[]; started=time.monotonic()
+    try:
+        print(json.dumps({'stage':'preflight','head':HEAD,'memory':check_memory()},ensure_ascii=False),flush=True)
+        ec = resolve_demo_embedding_configuration('bge-m3',str(ROOT/'outputs/model-cache'))
+        runtime = load_demo_runtime(ROOT/'outputs/real_pdf/isct_2027_4_2026_9_master.pdf',ROOT/'outputs/m10-09-deepseek-live',embedding_configuration=ec)
+        assert runtime.lifecycle_mode == 'reused-read-only'
+        embedding = create_demo_embedding_provider(ec)
+        generator = DeepSeekResponsesGenerationProvider(DeepSeekResponsesConfig(model='deepseek-flash',timeout_seconds=90,max_output_tokens=8000,max_retries=0),_client_factory=_adaptive_client_factory(ledger))
+        settings = ServiceSettings(corpus_root=runtime.corpus_root,manifest_path=runtime.manifest_path,policy_path=runtime.policy_path,report_plan_paths=(runtime.report_plan_path,),page_scope_manifest_paths=(runtime.page_scope_manifest_path,),query_intent_catalog_path=runtime.query_intent_catalog_path,date_presentation_paths=(runtime.date_presentation_path,),source_pdf_path=runtime.source_pdf_path,source_pdf_document_id=runtime.identity.document_id,source_pdf_sha256=runtime.identity.source_pdf_sha256,generation_provider_name='deepseek-responses',generation_model_name='deepseek-flash',generation_timeout_seconds=90,generation_max_retries=0,reference_workspace_config_path=ROOT/'outputs/display-01/real-config.json')
+        app=create_app(settings,ServiceDependencies(provider_factory=lambda:embedding,generation_provider_factory=lambda:generator,question_understanding_provider_factory=DeterministicQuestionUnderstandingProvider))
+        with TestClient(app) as client:
+            catalog=client.get('/v1/target-catalog'); assert catalog.status_code==200
+            write('catalog.json',catalog.json())
+            school=next(s for s in catalog.json()['schools'] if any('isct' in str(d).lower() for d in s['degrees']))
+            degree=school['degrees'][0]
+            intake=next(i for i in degree['intakes'] if i['year']==2027 and i['month']==4)
+            college=next(c for c in intake['colleges'] if c['college_id']=='情報理工学院')
+            dept=next(d for d in college['departments'] if d['department_id']=='情報工学系')
+            route=next(r for r in dept['application_routes'] if 'B' in r['route_name'])
+            target={'school_id':school['school_id'],'degree_id':degree['degree_id'],'document_id':intake['document_id'],'intake':{'year':2027,'month':4},'college_id':college['college_id'],'department_id':dept['department_id'],'application_route':route['route_id']}
+            write('target.json',target)
+            write('generation-status.json',client.get('/v1/generation-status').json())
+            print(json.dumps({'stage':'ready','target':target,'seconds':round(time.monotonic()-started,2)},ensure_ascii=False),flush=True)
+            for case_id,title,turns,expected in CASES:
+                for turn,question in enumerate(turns,1):
+                    if len(results)>=26 or time.monotonic()-started>3600:
+                        raise RuntimeError('HTTP/session budget exhausted')
+                    check_memory(); ledger.current=f'{case_id}.{turn}'
+                    count=ledger.calls; tick=time.monotonic()
+                    response=client.post('/v1/natural-language-answers',json={'target':target,'question':question,'applicant':{}})
+                    item={'case':case_id,'title':title,'turn':turn,'question':question,'expected':expected,'http_status':response.status_code,'seconds':round(time.monotonic()-tick,3),'new_calls':ledger.calls-count,'body':response.json()}
+                    results.append(item); write('responses.json',results)
+                    print(json.dumps({k:item[k] for k in ['case','turn','http_status','seconds','new_calls']}|{'total_calls':ledger.calls,'source':item['body'].get('delivery',{}).get('source')},ensure_ascii=False),flush=True)
+                    if case_id in ['01','05','14'] and turn==1:
+                        count=ledger.calls; tick=time.monotonic(); ledger.current=f'{case_id}.cache'
+                        repeat=client.post('/v1/natural-language-answers',json={'target':target,'question':question,'applicant':{}})
+                        results.append({'case':case_id,'title':title,'turn':'cache','question':question,'http_status':repeat.status_code,'seconds':round(time.monotonic()-tick,3),'new_calls':ledger.calls-count,'same_result':item['body'].get('result')==repeat.json().get('result'),'body':repeat.json()})
+                        write('responses.json',results)
+    finally:
+        after=assets(); write('assets-after.json',after)
+        write('run-summary.json',{'head':HEAD,'model':'deepseek-flash','calls':ledger.calls,'max_calls':50,'http_requests':len(results),'cases_completed':len({r['case'] for r in results if r['turn']!='cache'}),'assets_unchanged':before==after,'protected_files':len(before),'seconds':round(time.monotonic()-started,2),'memory':check_memory()})
+        print(json.dumps({'stage':'stopped','calls':ledger.calls,'http_requests':len(results),'assets_unchanged':before==after},ensure_ascii=False),flush=True)
+
+if __name__=='__main__': main()

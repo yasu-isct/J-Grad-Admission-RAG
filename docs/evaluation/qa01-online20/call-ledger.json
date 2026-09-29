@@ -1,0 +1,987 @@
+{
+  "head": "b7c6b772c403ec838e31a032a6c9d205da8f2364",
+  "max_calls": 50,
+  "calls": 39,
+  "observations": [
+    {
+      "attempt": 1,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1518.612,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "01.1",
+      "started_at": "2026-09-29T07:35:49.174567+00:00",
+      "usage": {
+        "input_tokens": 368,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 103,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 471
+      }
+    },
+    {
+      "attempt": 2,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1041.131,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "02.1",
+      "started_at": "2026-09-29T07:35:50.718893+00:00",
+      "usage": {
+        "input_tokens": 385,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 83,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 468
+      }
+    },
+    {
+      "attempt": 3,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2018.171,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "03.1",
+      "started_at": "2026-09-29T07:35:51.773249+00:00",
+      "usage": {
+        "input_tokens": 376,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 251,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 627
+      }
+    },
+    {
+      "attempt": 4,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2005.383,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "03.1",
+      "started_at": "2026-09-29T07:35:54.961322+00:00",
+      "usage": {
+        "input_tokens": 8640,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 256,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 8896
+      }
+    },
+    {
+      "attempt": 5,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 3101.833,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "04.1",
+      "started_at": "2026-09-29T07:35:56.980221+00:00",
+      "usage": {
+        "input_tokens": 386,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 354,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 740
+      }
+    },
+    {
+      "attempt": 6,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 3346.57,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "04.1",
+      "started_at": "2026-09-29T07:36:01.119066+00:00",
+      "usage": {
+        "input_tokens": 6272,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 472,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 6744
+      }
+    },
+    {
+      "attempt": 7,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2023.203,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "05.1",
+      "started_at": "2026-09-29T07:36:04.479403+00:00",
+      "usage": {
+        "input_tokens": 397,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 281,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 678
+      }
+    },
+    {
+      "attempt": 8,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2233.95,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "05.1",
+      "started_at": "2026-09-29T07:36:07.647421+00:00",
+      "usage": {
+        "input_tokens": 9947,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 188,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 10135
+      }
+    },
+    {
+      "attempt": 9,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1351.524,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "06.1",
+      "started_at": "2026-09-29T07:36:09.908125+00:00",
+      "usage": {
+        "input_tokens": 395,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 191,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 586
+      }
+    },
+    {
+      "attempt": 10,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1776.8,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "06.1",
+      "started_at": "2026-09-29T07:36:12.264089+00:00",
+      "usage": {
+        "input_tokens": 16248,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 242,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 16490
+      }
+    },
+    {
+      "attempt": 11,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2130.632,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "07.1",
+      "started_at": "2026-09-29T07:36:14.055133+00:00",
+      "usage": {
+        "input_tokens": 392,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 612
+      }
+    },
+    {
+      "attempt": 12,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2075.787,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "07.1",
+      "started_at": "2026-09-29T07:36:17.240564+00:00",
+      "usage": {
+        "input_tokens": 11730,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 188,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11918
+      }
+    },
+    {
+      "attempt": 13,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1441.11,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "08.1",
+      "started_at": "2026-09-29T07:36:19.332274+00:00",
+      "usage": {
+        "input_tokens": 383,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 179,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 562
+      }
+    },
+    {
+      "attempt": 14,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 3117.968,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "08.1",
+      "started_at": "2026-09-29T07:36:21.761967+00:00",
+      "usage": {
+        "input_tokens": 16747,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 436,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 17183
+      }
+    },
+    {
+      "attempt": 15,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1488.957,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "09.1",
+      "started_at": "2026-09-29T07:36:24.894634+00:00",
+      "usage": {
+        "input_tokens": 396,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 186,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 582
+      }
+    },
+    {
+      "attempt": 16,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1686.537,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "09.1",
+      "started_at": "2026-09-29T07:36:27.607586+00:00",
+      "usage": {
+        "input_tokens": 8521,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 148,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 8669
+      }
+    },
+    {
+      "attempt": 17,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1915.064,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "10.1",
+      "started_at": "2026-09-29T07:36:29.307619+00:00",
+      "usage": {
+        "input_tokens": 392,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 236,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 628
+      }
+    },
+    {
+      "attempt": 18,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 3953.159,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "10.1",
+      "started_at": "2026-09-29T07:36:32.540904+00:00",
+      "usage": {
+        "input_tokens": 8559,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 560,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 9119
+      }
+    },
+    {
+      "attempt": 19,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 5038.605,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "11.1",
+      "started_at": "2026-09-29T07:36:36.509732+00:00",
+      "usage": {
+        "input_tokens": 394,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 728,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1122
+      }
+    },
+    {
+      "attempt": 20,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 8084.317,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "11.1",
+      "started_at": "2026-09-29T07:36:43.013556+00:00",
+      "usage": {
+        "input_tokens": 14127,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 1177,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 15304
+      }
+    },
+    {
+      "attempt": 21,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2002.114,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "12.1",
+      "started_at": "2026-09-29T07:36:51.113211+00:00",
+      "usage": {
+        "input_tokens": 385,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 197,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 582
+      }
+    },
+    {
+      "attempt": 22,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2053.206,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "12.1",
+      "started_at": "2026-09-29T07:36:54.375390+00:00",
+      "usage": {
+        "input_tokens": 9635,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 241,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 9876
+      }
+    },
+    {
+      "attempt": 23,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1493.304,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "13.1",
+      "started_at": "2026-09-29T07:36:56.443480+00:00",
+      "usage": {
+        "input_tokens": 390,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 256
+        },
+        "output_tokens": 162,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 552
+      }
+    },
+    {
+      "attempt": 24,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2384.567,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_invalid",
+      "validation_errors": [
+        "field.extra_forbidden",
+        "field.extra_forbidden",
+        "field.extra_forbidden",
+        "field.extra_forbidden"
+      ],
+      "case": "13.1",
+      "started_at": "2026-09-29T07:36:59.039251+00:00",
+      "usage": {
+        "input_tokens": 11634,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11854
+      }
+    },
+    {
+      "attempt": 25,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1848.414,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "14.1",
+      "started_at": "2026-09-29T07:37:01.437787+00:00",
+      "usage": {
+        "input_tokens": 387,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 256,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 643
+      }
+    },
+    {
+      "attempt": 26,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2938.983,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "14.1",
+      "started_at": "2026-09-29T07:37:04.325456+00:00",
+      "usage": {
+        "input_tokens": 11306,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 334,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11640
+      }
+    },
+    {
+      "attempt": 27,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2673.676,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "15.1",
+      "started_at": "2026-09-29T07:37:07.291835+00:00",
+      "usage": {
+        "input_tokens": 389,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 351,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 740
+      }
+    },
+    {
+      "attempt": 28,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2408.159,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "15.1",
+      "started_at": "2026-09-29T07:37:11.211108+00:00",
+      "usage": {
+        "input_tokens": 11794,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 350,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 12144
+      }
+    },
+    {
+      "attempt": 29,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2186.393,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "16.1",
+      "started_at": "2026-09-29T07:37:13.636284+00:00",
+      "usage": {
+        "input_tokens": 385,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 247,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 632
+      }
+    },
+    {
+      "attempt": 30,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 3315.904,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "16.1",
+      "started_at": "2026-09-29T07:37:17.534018+00:00",
+      "usage": {
+        "input_tokens": 12107,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 370,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 12477
+      }
+    },
+    {
+      "attempt": 31,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1686.631,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "17.1",
+      "started_at": "2026-09-29T07:37:20.867316+00:00",
+      "usage": {
+        "input_tokens": 386,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 181,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 567
+      }
+    },
+    {
+      "attempt": 32,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1544.626,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "17.1",
+      "started_at": "2026-09-29T07:37:23.611509+00:00",
+      "usage": {
+        "input_tokens": 9398,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 160,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 9558
+      }
+    },
+    {
+      "attempt": 33,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1615.964,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "18.1",
+      "started_at": "2026-09-29T07:37:25.172254+00:00",
+      "usage": {
+        "input_tokens": 386,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 189,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 575
+      }
+    },
+    {
+      "attempt": 34,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1809.458,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "18.1",
+      "started_at": "2026-09-29T07:37:27.875870+00:00",
+      "usage": {
+        "input_tokens": 10959,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 215,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11174
+      }
+    },
+    {
+      "attempt": 35,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1665.446,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "19.2",
+      "started_at": "2026-09-29T07:37:29.715638+00:00",
+      "usage": {
+        "input_tokens": 370,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 163,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 533
+      }
+    },
+    {
+      "attempt": 36,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2115.235,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "19.2",
+      "started_at": "2026-09-29T07:37:32.671702+00:00",
+      "usage": {
+        "input_tokens": 11675,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11895
+      }
+    },
+    {
+      "attempt": 37,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1000.051,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "20.1",
+      "started_at": "2026-09-29T07:37:34.804501+00:00",
+      "usage": {
+        "input_tokens": 373,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 100,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 473
+      }
+    },
+    {
+      "attempt": 38,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 1527.113,
+      "phase": "adaptive-planning",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "20.2",
+      "started_at": "2026-09-29T07:37:35.820515+00:00",
+      "usage": {
+        "input_tokens": 386,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 128
+        },
+        "output_tokens": 187,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 573
+      }
+    },
+    {
+      "attempt": 39,
+      "citation_validation": "not_applicable",
+      "incomplete_reason": null,
+      "latency_ms": 2229.286,
+      "phase": "adaptive-final",
+      "response_status": "completed",
+      "result_status": "response_received",
+      "structured_output": "pydantic_valid",
+      "validation_errors": [],
+      "case": "20.2",
+      "started_at": "2026-09-29T07:37:38.399710+00:00",
+      "usage": {
+        "input_tokens": 11634,
+        "input_tokens_details": {
+          "cache_write_tokens": null,
+          "cached_tokens": 0
+        },
+        "output_tokens": 215,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 11849
+      }
+    }
+  ]
+}

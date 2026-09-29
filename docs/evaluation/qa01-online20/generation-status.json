@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "provider": "deepseek-responses",
+  "model": "deepseek-flash",
+  "mode": "online_model",
+  "configured": true,
+  "label": "DeepSeek 在线模型 · deepseek-flash",
+  "request_timeout_seconds": 195
+}
