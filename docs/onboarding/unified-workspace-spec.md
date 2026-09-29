@@ -2,6 +2,10 @@
 
 Implementation: [#225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225).
 
+Completed 2026-09-29 in independently accepted PR #227, head `f1b7b5c7a3cded5749c49de38355364c2732114f`.
+[Final evidence](unified-workspace-acceptance.md). The release instructions and resource allowances
+below are the historical implementation contract, not a new Ready task or budget reset.
+
 Status: design approved in conversation; implementation becomes **Ready only after this design
 PR merges and #191 records the one Issue release**. Milestone: M16 — Unified admissions workspace.
 Owner: independent development Agent; design-main performs exact-head architecture/product review.
@@ -49,7 +53,7 @@ ISCT profile, fake data objects, sample scope or prototype banner as production 
 | Copy | Current preview's headings, scope, personal-context status, limits, findings and citations |
 | Question area | Existing supported ISCT behavior; explicitly unavailable for GSFS, with no request/fallback |
 
-The underlying ISCT document spans April2027 and September2026. Do not derive a fake admission
+The underlying ISCT document spans April 2027 and September 2026. Do not derive a fake admission
 cycle from intake, drop the September option, or turn a document edition into a different route.
 Use verified edition metadata or the official edition label; if a separate cycle is not represented
 in the old contract, show an edition label rather than a fabricated selectable value. GSFS has an
@@ -143,7 +147,7 @@ school/edition isolation, report mappings/citations, all supported profile disti
 and supplied-profile exports, request counts, invalid/mismatched responses, races, clipboard and
 keyboard/mobile behavior. Use existing focused test suites plus meaningful new integration tests.
 Run existing Quality CI; do not alter ranking golds or protected artifacts to silence diagnostics.
-Record the previously known391 ranking limitation if relevant; do not claim unrelated full-suite
+Record the previously known 391 ranking limitation if relevant; do not claim unrelated full-suite
 success. Do not run old browser harnesses that parse/build during import.
 
 New **UI-01** integration allowance is independent of exhausted M15 runs, not a reset:

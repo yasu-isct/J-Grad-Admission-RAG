@@ -1,20 +1,21 @@
 # Post-single-school Design Handoff
 
-Updated 2026-09-29 after user approval of the unified-page prototype. M15 was technically closed
-in PR #224 (`5fb98c4`); its split-entry product design is superseded for the next implementation.
+Updated 2026-09-29 after independent M16 acceptance and merged PR #227 (`fe83493`). M15's
+split-entry design is superseded by the implemented unified page under ADR0015.
 Design continuation below was recorded after the user's GSFS target/download decision.
 Always re-read current GitHub
 state before acting; this checkpoint is a compact starting map, not a higher authority than `main`.
 
-## Latest decision: implement the approved unified page
+## Latest handoff: M16 accepted, no next implementation released
 
 The user rejected the separate `/app/reference` journey and approved
 [this interactive prototype](../ui-prototypes/unified-workspace-v1.html), then explicitly asked
 to build it. Read [ADR0015](../decisions/0015-unified-admissions-workspace.md) and the full
-[UI-01 Spec](../onboarding/unified-workspace-spec.md). M16 is one bounded implementation, with
-data/report mapping and UI/browser checkpoints in one development context. Only
-[UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) is eligible
-for Ready after design merge; obtain its live Issue state from #191, not historical Ready sections.
+[UI-01 Spec](../onboarding/unified-workspace-spec.md). Both implementation checkpoints are complete.
+[UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) is accepted in PR #227,
+exact head `f1b7b5c7a3cded5749c49de38355364c2732114f`, merge `fe83493ba1108167dd9de3a1a352714033f01e9b`.
+See [acceptance evidence](../onboarding/unified-workspace-acceptance.md) and
+[M16 release boundary](../releases/m16-unified-workspace.md). No next task is Ready.
 
 The main page has both schools in one dropdown; GSFS offers only the existing Complex Science
 scope. Reports are optional for both. Preserve all supported ISCT functions; its common report
@@ -24,10 +25,15 @@ all sample data with actual responses, preserve official evidence and show real 
 No GSFS QA, new sources, core schema/gate changes, asset builds or M13 work. The prototype's two
 ISCT fields and one example program do not authorize reducing existing functionality.
 
-M15 remains closed. Its budgets stay exhausted; UI-01 has its own bounded read-only integration
-ledger, including independent-review reserves. The user's live preview process is separate;
-never stop/reuse it as an acceptance service without checking ownership. No production code was
-changed during this design phase. Historical handoffs below are retained for traceability.
+M15 remains closed and its budgets stay exhausted. Final UI-01 cumulative: startup 4/4,
+report 14/20, base/comparison/detail POST 8/40, query 2/2; independent reviewer used 1/6/3/1.
+Independent 56 focused tests, 3 Node tests and final-head CI passed. Final-head real six-report
+browser sequence, clipboard/source parity, mobile layout and one cache-only BGE-M3 query passed;
+25 protected files unchanged. The four earlier findings are resolved in the original review
+comment. The review service is stopped; user's old preview on port 8000 was not replaced. Do not
+claim an already-running process automatically serves the merged code. Check ownership before
+restarting it for a separately requested preview. No auto M17/highlighting/new coverage/M13.
+Historical handoffs below are retained for traceability.
 
 ## Required read order
 

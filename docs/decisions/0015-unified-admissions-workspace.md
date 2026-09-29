@@ -5,6 +5,9 @@ Status: Accepted on design merge, following the user's 2026-09-29 approval of th
 Owner: [#191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191).
 Audited base: `5fb98c413f0c75ed2bb59d4cdbdae8ba7e8b3a59`.
 
+Implemented and independently accepted 2026-09-29 in PR #227, merge `fe83493ba1108167dd9de3a1a352714033f01e9b`.
+See the [M16 release boundary](../releases/m16-unified-workspace.md).
+
 ## Problem and product correction
 
 The user originally wanted Science Tokyo and UTokyo in the existing school's dropdown, with
@@ -25,7 +28,7 @@ immutable snapshot, optional-report, privacy and protected-asset decisions remai
 2. One school dropdown contains actual available schools. Organization/program and admissions
    dimensions come from validated server data. Single choices may auto-select. Science Tokyo
    retains all currently supported targets; UTokyo offers only GSFS Complexity Science and
-   Engineering, the fixed2027 master's ordinary general/A/April2027 target. Display CBMS as the
+   Engineering, the fixed2027 master's ordinary general/A/April 2027 target. Display CBMS as the
    user-requested alias together with the official name; it never becomes an identity key.
 3. Use small presentation adapters for `legacy_applicant` and `reviewed_material_slice`, not
    school-name branches. Keep legacy `DemoTargetRequest` and the GSFS full target as distinct
@@ -81,7 +84,7 @@ solely because a school name is present.
 
 No new source/model acquisition, parsing, KB/index building, GSFS production promotion, PDF
 highlighting/export, paid API, M13 deployment, annual-update automation, or broader coverage.
-Protect the334 frozen baseline and391 product runtime. M15's exhausted validation budgets remain
+Protect the334 frozen baseline and 391 product runtime. M15's exhausted validation budgets remain
 historical; the new Spec has a separately bounded UI integration allowance and ledger.
 
 ## Product acceptance and rollback
