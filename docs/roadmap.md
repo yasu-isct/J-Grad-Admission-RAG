@@ -4,17 +4,21 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current product correction: restore the v1 flow within M16
+## Completed M16 correction: v1 flow with both schools
 
 After trying the delivered page on 2026-09-29, the user retained the two-school framework but
 explicitly requested the original v1 four-step page, with prominent dates/materials, main-flow
-personal details and clear action/readiness results. Implement only the bounded
+personal details and clear action/readiness results. The bounded
 [UI-02 Spec](onboarding/v1-flow-restoration-spec.md) under [ADR0016](decisions/0016-restore-v1-flow-with-multi-school-capabilities.md).
-Implementation: [UI-02 #229](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/229).
-Reuse the retained old page and the accepted multi-school/report capabilities; do not redesign a
-third page or expand admissions coverage. M16 reopens for this correction. The single UI-02 Issue
-becomes Ready only after this design merge and the #191 handoff. No M17 or parallel task is released.
-User preview processes and their workspaces stay untouched. Prior budgets remain closed.
+implementation [UI-02 #229](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/229) is accepted
+and merged in PR #231: head `cd09bd43abbc276c2f5fb1bc2fdae40aa82eb166`, merge
+`40cd25d84c15d4ccaace610d5158875632dd428c`. Actual v1 components and accepted report capabilities
+are reused; no new admissions coverage. Independent 29 focused tests, 3 Node tests and six real
+report scenarios passed, with all 25 protected file identities unchanged. See
+[final evidence and cumulative ledger](onboarding/ui02-final-acceptance.md).
+M16 is complete again after this user-requested correction. No implementation is Ready; no M17,
+highlighting or coverage task is automatically released. Existing user previews remain on their
+original source checkout until explicitly switched; old and UI-02 acceptance budgets stay closed.
 
 ## UI-01 completion record: unified admissions workspace
 

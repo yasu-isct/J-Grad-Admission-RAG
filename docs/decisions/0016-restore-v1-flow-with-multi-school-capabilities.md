@@ -1,6 +1,7 @@
 # ADR0016：保留 v1 工作流程，叠加多校和报告能力
 
-Status: Accepted by explicit user direction on 2026-09-29; implementation pending.
+Status: Implemented and independently accepted on 2026-09-29 in PR #231, merge
+`40cd25d84c15d4ccaace610d5158875632dd428c`. [Final evidence](../onboarding/ui02-final-acceptance.md).
 
 ## 决定及理由
 
@@ -14,4 +15,4 @@ Status: Accepted by explicit user direction on 2026-09-29; implementation pendin
 
 不重新设计第三套页面，不削减原字段或用当前东大局部能力仿造完整准备检查。页面强调不等于 PDF 坐标高亮，不涉及 MinerU、生产 Schema、招生资产或付费服务。
 
-M16 按用户后续反馈重新打开，仅增加一个 UI-02 修正任务；UI-01 / PR #227 的技术验收和旧资源台账保持历史有效。下一任务在设计文档合并后才 Ready。详见 [UI-02 Spec](../onboarding/v1-flow-restoration-spec.md)。
+M16 曾按用户后续反馈重新打开，仅增加 UI-02 修正任务；现已完成独立验收。UI-01 / PR #227 的技术验收和旧资源台账保持历史有效，不自动放行下一任务。详见 [UI-02 Spec](../onboarding/v1-flow-restoration-spec.md)。

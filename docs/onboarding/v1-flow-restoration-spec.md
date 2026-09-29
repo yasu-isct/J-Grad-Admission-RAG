@@ -1,6 +1,6 @@
 # UI-02：在东科大 v1 页面上接入双校与可选报告
 
-Implementation: [#229](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/229)。设计合并并由 #191 放行后才 Ready；M16 的唯一后续实现。
+Implementation: [#229](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/229)，已在 PR #231 独立验收并合并。见[最终证据及台账](ui02-final-acceptance.md)。下文为历史执行合同，不重新放行任务或重置预算。
 
 2026-09-29 用户查看 M16 实际页面后给出最新产品决定：认可两校框架，但拒绝弱化日期、材料、个人情况和准备对照的重新布局。恢复单校 v1 四步页面作为产品基底，只做必要的多校和报告适配。该决定取代 UI-01 原型的视觉与流程基线，不撤销已验收的数据/API/证据约束。
 
