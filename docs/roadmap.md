@@ -20,14 +20,16 @@ Reuse the existing M10 adaptive pipeline, exact cache, 391 runtime and v1 questi
 explain the observed poor answer. This is not evidence that all historical online capabilities vanished.
 UI-02 did not revalidate real online QA. Compare equivalent modes and preserve M9 authority.
 
-The developer may implement and validate the unpaid checkpoint. Paid calls remain **0 authorized**;
-once a concrete exact-head result is reviewable, design requests a bounded live check. A proposed
-six-call plan in the Spec is not permission. Do not claim online recovery or merge the whole task
-on synthetic/offline evidence alone. Routine implementation belongs to the independent developer.
-The [prepared question set](evaluation/qa01-demo-question-set.md) supplies exact test/demo prompts,
-source-grounded expectations and a bounded pending live plan for green implementation head `b7c6b77`.
-Only one additional non-paid developer base-requirements POST is released for that browser session;
-preparing these materials does not authorize paid calls or start the later report-improvement task.
+The user subsequently authorized 20 dialogue scenarios with a cumulative cap of 50 provider calls.
+Design completed the [real online audit](evaluation/qa01-online20/report.md) at exact green-CI
+implementation `b7c6b772c403ec838e31a032a6c9d205da8f2364`: 25 application requests, 39 provider calls,
+9 scenarios meeting their goals, 5 needing refinement and 6 failing. PR #236 remains Draft /
+**Changes requested**: incorrect late-material advice, missing existing date/material information,
+and conflated Japanese/English exam questions block final online acceptance. Fix these in #233 first.
+The remaining 11 calls are reserved for design's bounded verification of a repaired head; the developer
+must not spend them concurrently. The former unapproved six-call proposal is superseded, not additive.
+Existing assets remain unchanged; do not rebuild indexes or widen retrieval scope without a reviewed
+design delta. Routine fixes belong to the independent developer; no report-improvement task is released.
 
 Reports will later export readable key information without evidence chains or internal fields in
 the body/copy, preserving backend provenance and main-page source access. Then polish the existing
