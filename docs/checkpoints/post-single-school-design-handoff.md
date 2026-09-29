@@ -1,5 +1,16 @@
 # Post-single-school Design Handoff
 
+## Current decision: restore v1 presentation, retain both schools
+
+2026-09-29 post-use feedback supersedes the UI-01 prototype as the visual/workflow baseline.
+The user wants the retained v1 four-step page with its prominent dates/materials, personal-detail
+CTA and preparation/action summary, plus the two-school selector and optional report action.
+Read [ADR0016](../decisions/0016-restore-v1-flow-with-multi-school-capabilities.md) and
+[UI-02 Spec](../onboarding/v1-flow-restoration-spec.md). M16 reopens for one bounded correction;
+consult #191 for the one Issue release after design merge. Preserve accepted data/API behavior,
+all old budget ledgers, and active user preview workspaces. No automatic M17 or new coverage.
+The prior completion record below remains historical technical evidence, not current UX approval.
+
 Updated 2026-09-29 after independent M16 acceptance and merged PR #227 (`fe83493`). M15's
 split-entry design is superseded by the implemented unified page under ADR0015.
 Design continuation below was recorded after the user's GSFS target/download decision.

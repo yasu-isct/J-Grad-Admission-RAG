@@ -10,6 +10,10 @@ See the [M16 release boundary](../releases/m16-unified-workspace.md).
 
 ## Problem and product correction
 
+2026-09-29 post-use update: [ADR0016](0016-restore-v1-flow-with-multi-school-capabilities.md)
+supersedes the new prototype layout/workflow requirement with the existing v1 four-step page.
+This ADR's two-school capability, identity, report and evidence boundaries remain applicable.
+
 The user originally wanted Science Tokyo and UTokyo in the existing school's dropdown, with
 dependent organization/program choices and an optional report button on the same main page.
 DISPLAY-01 instead linked two journeys and put only the GSFS report in the new entry. Its technical

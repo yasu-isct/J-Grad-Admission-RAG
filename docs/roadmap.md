@@ -4,7 +4,19 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Completed M16: unified admissions workspace
+## Current product correction: restore the v1 flow within M16
+
+After trying the delivered page on 2026-09-29, the user retained the two-school framework but
+explicitly requested the original v1 four-step page, with prominent dates/materials, main-flow
+personal details and clear action/readiness results. Implement only the bounded
+[UI-02 Spec](onboarding/v1-flow-restoration-spec.md) under [ADR0016](decisions/0016-restore-v1-flow-with-multi-school-capabilities.md).
+Implementation: [UI-02 #229](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/229).
+Reuse the retained old page and the accepted multi-school/report capabilities; do not redesign a
+third page or expand admissions coverage. M16 reopens for this correction. The single UI-02 Issue
+becomes Ready only after this design merge and the #191 handoff. No M17 or parallel task is released.
+User preview processes and their workspaces stay untouched. Prior budgets remain closed.
+
+## UI-01 completion record: unified admissions workspace
 
 On2026-09-29 the user explicitly approved the [interactive page prototype](ui-prototypes/unified-workspace-v1.html)
 and instructed implementation. This supersedes M15's separate-entry product design, not its
