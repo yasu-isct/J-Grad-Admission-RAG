@@ -3,7 +3,9 @@
 实现：[#233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233)。
 状态：本设计合入 main 并在 #191 同步后，QA-01 是唯一 Ready；先执行不付费检查点。
 Milestone：[M17](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/17)。
-设计基底：`ab35a2f287718c4d7181c42a28148047fb73d4f7`；2026-09-29 用户批准先问答、后报告、再普通学生覆盖。
+设计基底：`ab35a2f287718c4d7181c42a28148047fb73d4f7`；2026-09-29 用户最新顺序为先问答、后报告，
+随后停下来优化演示、准备私塾汇报；东大普通学生覆盖暂缓，需用户再次明确决定才设计放行。
+此顺序调整不改变 QA-01 本身的范围、预算和两个检查点。
 
 ## 背景与用户可见目标
 
