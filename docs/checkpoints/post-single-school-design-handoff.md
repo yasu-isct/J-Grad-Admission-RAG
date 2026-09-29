@@ -2,13 +2,16 @@
 
 ## Current handoff: M17 QA-01 only
 
-2026-09-29 user-approved sequence: recover the existing M10 QA experience, then readable optional
-reports, then useful ordinary-student GSFS coverage. M16 remains complete; this new explicit task
+2026-09-29 latest user sequence: recover existing M10 QA, improve readable optional reports,
+then stop coverage expansion to polish the demo and prepare the presentation to the user's school.
+M17 ends at presentation readiness; ordinary-student GSFS coverage is deferred until a new explicit
+user decision and separately released Spec. M16 remains complete; this new explicit task
 supersedes the historical no-M17/no-Ready statements below. Governance remains in #191.
 
-- Only [QA-01 #233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233) becomes Ready when
-  this design merges and the charter is synchronized. Read [QA Spec](../onboarding/qa-experience-recovery-spec.md).
-  Next owner: independent developer, who may reuse the existing development chat with this compact task.
+- Only [QA-01 #233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233) is released; the
+  developer has claimed it in `outputs/qa01-worktree`, branch `codex/qa01-readable-answers`.
+  Read [QA Spec](../onboarding/qa-experience-recovery-spec.md). This stop-point decision does not
+  change its scope, budget or checkpoints; re-read #233 for live status.
 - Preserve M10 #180 / PR #181's adaptive one/two-call pipeline and zero-call exact cache, existing
   source-scoped retrieval, v1 page, M9 authority and reference_only boundary. No new framework/index.
 - Verified diagnosis: 8002 reports reviewed-state-offline / offline_rules; its fallback concatenates
@@ -21,8 +24,10 @@ supersedes the historical no-M17/no-Ready statements below. Governance remains i
   base-requirements POST2/2. The Spec reserves capacity for later online verification. Older budgets
   remain closed; user preview use is not acceptance evidence.
 - Reports: later human-readable summary with internal fields/evidence chain absent from body/copy;
-  preserve internal evidence and the main-page source view. GSFS: later ordinary-student requirements,
-  reusing ISCT mechanisms with independently reviewed UTokyo facts. Neither task is released yet.
+  preserve internal evidence and main-page source view. Then prepare demo polish, a sample report,
+  a short walkthrough and a cooperation/trial proposal, distinguishing current features from future
+  plans without invented time-saving claims. Retain honest GSFS partial coverage for the demo.
+  Neither follow-up is released yet; do not automatically continue into GSFS ordinary-student coverage.
 - Preserve active user previews 8000/8001/8002 and their source directories. Design docs use
   `outputs/design-qa`; inspect ownership before any checkout or process action. Do not copy large assets.
 - M13 paused; MinerU #177 reject/closed, no rerun; #163 Backlog; 334/391 immutable and separate.

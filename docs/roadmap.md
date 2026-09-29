@@ -6,13 +6,15 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 ## Current M17 release: QA recovery first
 
-On 2026-09-29 the user approved the post-use sequence **QA recovery -> readable optional reports
--> ordinary-student GSFS coverage**. [M17](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/17)
-records that direction; it does not authorize implementing all three at once. M16 remains complete.
+On 2026-09-29 the user set the sequence **QA recovery -> readable optional reports
+-> demo polish and preparation for a presentation to the user's school**.
+[M17](https://github.com/yasu-isct/J-Grad-Admission-RAG/milestone/17) now ends at that presentation
+readiness checkpoint. **Stop before ordinary-student GSFS coverage**; resuming coverage requires a
+new explicit user decision and a separately released Spec. M16 remains complete.
 This explicit decision supersedes historical statements below that no M17 task is released.
 
-Only [QA-01 #233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233) is Ready after this
-design merges and #191 is synchronized. Follow the [complete Spec](onboarding/qa-experience-recovery-spec.md).
+Only [QA-01 #233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233) is released and has
+been claimed by the developer. Follow the [complete Spec](onboarding/qa-experience-recovery-spec.md).
 Reuse the existing M10 adaptive pipeline, exact cache, 391 runtime and v1 question area. The current
 8002 preview runs reviewed-state-offline; raw retrieval concatenation and single-paragraph rendering
 explain the observed poor answer. This is not evidence that all historical online capabilities vanished.
@@ -24,10 +26,16 @@ six-call plan in the Spec is not permission. Do not claim online recovery or mer
 on synthetic/offline evidence alone. Routine implementation belongs to the independent developer.
 
 Reports will later export readable key information without evidence chains or internal fields in
-the body/copy, preserving backend provenance and main-page source access. GSFS expansion will then
-reuse existing mechanisms for ordinary students; its current general-selection slice covers only
-three material topics, not a special working-person admission route. These are planned directions,
-not Ready Issues. #163 stays Backlog; M13 paused, MinerU #177 closed, 334/391 protected.
+the body/copy, preserving backend provenance and main-page source access. Then polish the existing
+demo journey and prepare a readable sample report, a short walkthrough and a cooperation/limited
+trial proposal. Show current capabilities separately from future potential; do not invent measured
+time savings, current-season coverage or complete UTokyo support. This checkpoint does not require
+a page redesign, a new feature platform or sending a proposal externally.
+
+GSFS ordinary-student expansion is deferred, not cancelled. Its current general-selection slice
+covers three material topics, not a special working-person admission route. Retain the two-school
+selector and truthful limits for the presentation. Report/presentation tasks need their own later
+Spec; neither is Ready today. #163 stays Backlog; M13 paused, MinerU #177 closed, 334/391 protected.
 
 ## Completed M16 correction: v1 flow with both schools
 
