@@ -1,6 +1,26 @@
 # Post-single-school Design Handoff
 
-## Current handoff: REPORT-02 and EVID-UI-01 accepted; prepare the demonstration
+## Current handoff: fixed rollback baseline; UX-01 uniquely Ready after design merge
+
+2026-09-30: user requested saving the current version and designing the next development direction.
+This section supersedes earlier no-Ready handoffs. [Rollback record](demo-before-usability-20260930.md):
+remote tag `demo-before-usability-20260930`, code `29a91ac9280349300c0d1890f48cf9e4244cd68c`.
+The online 8003 preview remains running from `outputs/design-report02`; never checkout/reset that directory.
+Local startup/31 asset hashes are recorded without keys or copies of models/PDFs/indexes.
+
+- Only [#247 UX-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247) is Ready after this design merge.
+  [Complete Spec](../onboarding/demo-usability-navigation-report-spec.md); M17 Main implements, design reviews.
+- Fix report interaction feedback and clear school-changing navigation first. The saved-response reproduction
+  opens ISCT reports in steps 2/4 on desktop/mobile; the user's exact failure remains unconfirmed.
+- [B planning](../onboarding/demo-usability-development-plan.md) covers typography, readable copy/material
+  explanations and answer presentation. Release its implementation only after #247 acceptance; no parallel app.js work.
+- The fixed main baseline excludes paused QA #236. Do not cherry-pick it or call an online-provider switch
+  a recovery of its behavior. Current user manual online use is not new automated acceptance authorization.
+- New #247 budget is explicit and cumulative in its Spec; paid calls 0. #239/#240/QA historical ledgers stay frozen.
+- Preserve 8000/8001/8002/8003/8029 user services and source directories, 334/391 assets, reference_only.
+  No GSFS ordinary-student coverage, MinerU restart or M13 deployment. End at demonstration readiness.
+
+## Previous handoff: REPORT-02 and EVID-UI-01 accepted; prepare the demonstration
 
 2026-09-29 latest instruction: pause QA fixes and prioritize reader-facing reports, followed by a
 visual explanation of GSFS multi-document evidence with original text opened only on demand.
