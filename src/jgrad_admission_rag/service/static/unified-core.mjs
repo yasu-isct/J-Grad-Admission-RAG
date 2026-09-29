@@ -229,6 +229,7 @@ export function mapSliceEvidence(scope, evidence) {
     && evidence?.schema_version === "1.0"
     && evidence.snapshot_id === scope.item.snapshot_id
     && same(evidence.target, scope.item.target)
+    && (!Number.isSafeInteger(scope.item.revision) || evidence.revision === scope.item.revision)
     && Array.isArray(evidence.topics) && evidence.topics.length > 0, "官方依据与当前目标不匹配");
   const topics = evidence.topics.map((topic) => {
     const sources = array(topic.records).map((record) => {
@@ -242,6 +243,8 @@ export function mapSliceEvidence(scope, evidence) {
         title: record.source_title, pages: [record.physical_page],
         printed: record.printed_page_label, quote: quotes.join("\n\n"),
         source_url: record.official_source_url, local_pdf_url: null,
+        source_id: record.source_id, role: record.role, stage: record.stage,
+        heading: array(record.official_heading_path).join(" › "),
         context: [record.scope_note_zh, array(record.official_heading_path).join(" › "),
           record.role === "basis" ? "本条依据" : "关联上下文",
           record.stage === "enrollment_context_only" ? "入学手续关联，非申请阶段义务" : ""].filter(Boolean).join(" · "),
@@ -249,11 +252,14 @@ export function mapSliceEvidence(scope, evidence) {
       };
     });
     requireValue(sources.length > 0, "材料主题依据缺失");
+    const ids = new Set(sources.map((source) => source.record_id));
+    const relations = array(topic.relations).filter((relation) => relation
+      && ids.has(relation.from) && ids.has(relation.to) && typeof relation.kind === "string");
     return {
       id: topic.topic_id, category: "materials", title: topic.material_name_zh,
       summary: topic.context_note_zh, description: topic.context_note_zh,
       status: "当前条件待报告判断", status_code: "needs_information",
-      deadline: "", limitation: "", dates: [], sources
+      deadline: "", limitation: "", dates: [], sources, relations
     };
   });
   return {

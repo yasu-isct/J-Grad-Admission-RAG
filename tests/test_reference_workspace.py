@@ -13,6 +13,7 @@ from jgrad_admission_rag.reviewed_source_evidence import canonical_json_bytes, p
 from jgrad_admission_rag.service import create_app
 from jgrad_admission_rag.service.runtime import ServiceSettings
 from jgrad_admission_rag.service.demo_requirements import DemoTargetCatalogResponse
+from jgrad_admission_rag.service.reference_contracts import ReferenceEvidenceResponse
 from tests.test_material_slice_report import make_tiny_synthetic_slice
 from tests.test_applicant_report_api import _runtime as legacy_runtime
 
@@ -104,6 +105,20 @@ def test_synthetic_reference_catalog_evidence_and_explicit_report(local_slice, m
         assert evidence.status_code == 200
         assert len(evidence.json()["topics"]) == 1
         assert len(evidence.json()["topics"][0]["records"][0]["fragments"]) == 2
+        assert evidence.json()["topics"][0]["relations"] == []
+        old_client = deepcopy(evidence.json())
+        old_client["topics"][0].pop("relations")
+        assert ReferenceEvidenceResponse.model_validate(old_client).topics[0].relations == ()
+        bad_relation = deepcopy(evidence.json())
+        bad_relation["topics"][0]["relations"] = [
+            {
+                "from": "outside",
+                "kind": "cross_reference",
+                "to": bad_relation["topics"][0]["records"][0]["record_id"],
+            }
+        ]
+        with pytest.raises(ValueError, match="outside visible topic"):
+            ReferenceEvidenceResponse.model_validate(bad_relation)
         assert reads == 1
         (Path(config_path.parent) / "candidate" / "candidate.json").write_bytes(b"{}")
         report = client.post(f"/v1/reference-slices/{item['entry_id']}/reports", json=request)

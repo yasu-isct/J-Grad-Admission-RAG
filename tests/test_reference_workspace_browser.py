@@ -219,8 +219,12 @@ def test_browser_reaches_synthetic_http_backend(tmp_path):
             page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
             assert "当前资料尚未覆盖日期" in page.locator(".key-dates-section").inner_text()
             page.locator(".materials-section .requirement-card button").first.click()
+            assert page.locator("#evidence-drawer .relation-node").count() == 1
+            page.locator("#evidence-drawer .relation-node button").click()
             assert page.locator("#evidence-drawer blockquote").count() >= 1
             assert "TOEFL iBT" in page.locator("#evidence-drawer blockquote").first.inner_text()
+            page.locator("#evidence-drawer .relation-back").click()
+            assert page.locator("#evidence-drawer .relation-node").count() == 1
             page.locator("#drawer-close").click()
             page.screenshot(path=str(tmp_path / "synthetic-desktop.png"), full_page=True)
             assert not posts

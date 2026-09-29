@@ -169,7 +169,8 @@ def test_demo01_ui_has_cascading_target_requirements_and_evidence_drawer() -> No
     assert "handleDemoTargetChange" in javascript
     assert "clearDemoResults" in javascript
     assert "evidenceDrawer.showModal()" in javascript
-    assert "drawerTrigger.focus()" in javascript
+    assert "drawerTrigger?.isConnected" in javascript
+    assert "drawerTrigger.focus({preventScroll: true})" in javascript
     assert "new AbortController()" in javascript
     assert "requirementsRequestId" in javascript
     assert "referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot" in javascript

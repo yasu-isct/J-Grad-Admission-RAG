@@ -1,0 +1,384 @@
+{
+  "limitations_zh": [
+    "固定历史招生切片，不是当前开放申请窗口。",
+    "仅覆盖英语成绩单、检查表本身和在职计划书三个主题，不是完整材料清单或资格判断。",
+    "申请人信息为自报；中文说明是审核解释，日文引用来自官方原文。",
+    "单位同意书仅作入学手续阶段的关联提示，未核验其完整要求。",
+    "未验证原PDF精确高亮坐标；页码指物理页，印刷页码另列。"
+  ],
+  "plan_id": "utokyo-gsfs-complex-2027-material-report",
+  "revision": 1,
+  "schema_version": "1.0",
+  "snapshot_id": "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98",
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {
+      "month": 4,
+      "year": 2027
+    },
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  },
+  "topics": [
+    {
+      "context_note_zh": "共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。",
+      "material_name_zh": "英语成绩单",
+      "records": [
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "4be70c9c879379c75ced1a76fe2a98b038b46455233e79bb529d2e797cabb9bb",
+              "fact_id": "fact:reviewed:gsfs-master-2027:E01:r1:E01-1",
+              "fragment_id": "E01-1",
+              "fragment_role": "context",
+              "quote_text": "7. 英語のスコアシートについて"
+            },
+            {
+              "authoritative_fact_text_sha256": "67b825106e3157dda93a1b914c1160a54994f600724e28d4e50c6f4ba9250c8d",
+              "fact_id": "fact:reviewed:gsfs-master-2027:E01:r1:E01-2",
+              "fragment_id": "E01-2",
+              "fragment_role": "clause",
+              "quote_text": "専攻により，TOEFL，IELTS，TOEIC 等のスコアシートの提出が必要な場合があります。どのスコアシートが必要か，各スコアシートの提出期限とともに，必ず志望専攻の入試案内書を確認してください。"
+            }
+          ],
+          "manual_anchor": "Section 7 heading and opening two sentences",
+          "official_heading_path": [
+            "7. 英語のスコアシートについて"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+          "physical_page": 6,
+          "printed_page_label": "6",
+          "record_id": "E01",
+          "role": "context",
+          "scope_note_zh": "研究科共通文件要求按专攻确认是否需要提交及期限，不能据此推定所有人都要交。",
+          "source_id": "gsfs-master-2027",
+          "source_title": "令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項",
+          "stage": "application"
+        },
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E02:r1:E02-1",
+              "fragment_id": "E02-1",
+              "fragment_role": "context",
+              "quote_text": "修士課程 一般選抜"
+            },
+            {
+              "authoritative_fact_text_sha256": "e1024058e91ea35fc149823e29da985f0c5dea1936649d6ab24da45b9563213d",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E02:r1:E02-2",
+              "fragment_id": "E02-2",
+              "fragment_role": "clause",
+              "quote_text": "修士課程一般選抜試験では、TOEFL iBTやTOEIC L&Rなどの英語のスコアシートを提出する必要はない。"
+            }
+          ],
+          "manual_anchor": "Masters general heading and first bullet under other notes",
+          "official_heading_path": [
+            "修士課程 一般選抜",
+            "その他注意事項"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "physical_page": 28,
+          "printed_page_label": "26",
+          "record_id": "E02",
+          "role": "basis",
+          "scope_note_zh": "此处明确不需要提交英语成绩单，范围是这份案内书中的修士一般选拔；不等于免除任何英语相关考查。",
+          "source_id": "complex-guide-2027-revised",
+          "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "stage": "application"
+        },
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E03:r1:E03-1",
+              "fragment_id": "E03-1",
+              "fragment_role": "context",
+              "quote_text": "【複雑理工学専攻】"
+            },
+            {
+              "authoritative_fact_text_sha256": "841dbac0120e65de2fdd9808922081dbc9167007d338ebba880dbbace73bfde8",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E03:r1:E03-2",
+              "fragment_id": "E03-2",
+              "fragment_role": "cross_reference",
+              "quote_text": "注：英語スコアの送付方法については，募集要項を熟読すること。"
+            }
+          ],
+          "manual_anchor": "Footer immediately below additional-material table",
+          "official_heading_path": [
+            "【複雑理工学専攻】"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+          "physical_page": 1,
+          "printed_page_label": null,
+          "record_id": "E03",
+          "role": "context",
+          "scope_note_zh": "这是送付方法的引用提示。结合 E01 和 E02 审核，不把它当成第四项所有人必交的材料。",
+          "source_id": "complex-master-a-additional",
+          "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+          "stage": "application"
+        }
+      ],
+      "relations": [
+        {
+          "from": "E01",
+          "kind": "department_specific_detail",
+          "to": "E02"
+        },
+        {
+          "from": "E03",
+          "kind": "cross_reference",
+          "to": "E01"
+        }
+      ],
+      "topic_id": "english-score-sheets"
+    },
+    {
+      "context_note_zh": "参照清单与提交清单是两件事。本报告只核对三个主题，不判断材料是否全部齐全。",
+      "material_name_zh": "提交书类检查表本身",
+      "records": [
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E04:r1:E04-1",
+              "fragment_id": "E04-1",
+              "fragment_role": "context",
+              "quote_text": "修士課程 一般選抜"
+            },
+            {
+              "authoritative_fact_text_sha256": "84bec195165bb6d52afd6e9435ca015805942243a07bd458271b770124697b35",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E04:r1:E04-2",
+              "fragment_id": "E04-2",
+              "fragment_role": "clause",
+              "quote_text": "本案内書添付のチェックリストを参照し、募集要項に記載された全ての書類を提出すること。"
+            }
+          ],
+          "manual_anchor": "Masters general heading and last bullet under other notes",
+          "official_heading_path": [
+            "修士課程 一般選抜",
+            "その他注意事項"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "physical_page": 28,
+          "printed_page_label": "26",
+          "record_id": "E04",
+          "role": "context",
+          "scope_note_zh": "参照清单核对材料，并不意味着要上传清单本身；须连同 E05 查看。",
+          "source_id": "complex-guide-2027-revised",
+          "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "stage": "application"
+        },
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "c4f59897bdfccb7a2824676d023522264aa4ff999f2931348278f61c2f3b189d",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E05:r1:E05-1",
+              "fragment_id": "E05-1",
+              "fragment_role": "clause",
+              "quote_text": "このチェックシートの提出は不要"
+            },
+            {
+              "authoritative_fact_text_sha256": "93465390fe2e05c856be3877638d8e6146334698be2991274899f14c0336c8ad",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E05:r1:E05-2",
+              "fragment_id": "E05-2",
+              "fragment_role": "context",
+              "quote_text": "提出書類等チェックシート（修士課程一般選抜用）"
+            }
+          ],
+          "manual_anchor": "Top notice and checklist heading",
+          "official_heading_path": [
+            "提出書類等チェックシート（修士課程一般選抜用）"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "physical_page": 40,
+          "printed_page_label": "38",
+          "record_id": "E05",
+          "role": "basis",
+          "scope_note_zh": "免提交的是清单这张表，不是清单中列出的各项材料。原解析结果漏掉的文字来自页面人工转录，不伪称解析器自动提取。",
+          "source_id": "complex-guide-2027-revised",
+          "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "stage": "application"
+        }
+      ],
+      "relations": [
+        {
+          "from": "E04",
+          "kind": "consulting_is_distinct_from_submitting",
+          "to": "E05"
+        }
+      ],
+      "topic_id": "checklist-submission"
+    },
+    {
+      "context_note_zh": "入学手续时另有单位同意书的相关条款；其所引共通要项11.(8)全文未在本切片核验，不据此给出完整同意书要求。",
+      "material_name_zh": "学业与职务両立计划书",
+      "records": [
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-1",
+              "fragment_id": "E06-1",
+              "fragment_role": "context",
+              "quote_text": "修士課程 一般選抜"
+            },
+            {
+              "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-2",
+              "fragment_id": "E06-2",
+              "fragment_role": "context",
+              "quote_text": "学業・職務両立計画書"
+            },
+            {
+              "authoritative_fact_text_sha256": "577ea595d0ae48d0b29a36b7bbba7339dd309f4f19c4f2d5d34f8a36cbbf4180",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-3",
+              "fragment_id": "E06-3",
+              "fragment_role": "clause",
+              "quote_text": "企業・官公庁・団体等に在職する者で、在職の身分のまま入学を希望する者は、学業・職務両立計画書を提出すること。"
+            }
+          ],
+          "manual_anchor": "Work-study plan heading and first paragraph",
+          "official_heading_path": [
+            "修士課程 一般選抜",
+            "学業・職務両立計画書"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "physical_page": 28,
+          "printed_page_label": "26",
+          "record_id": "E06",
+          "role": "basis",
+          "scope_note_zh": "该段位于修士一般选拔的学业・职务両立计划书小节，要求同时满足当前在职和保留在职身份入学；仅审核所选目标，未推定其他路线。",
+          "source_id": "complex-guide-2027-revised",
+          "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "stage": "application"
+        },
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-1",
+              "fragment_id": "E07-1",
+              "fragment_role": "context",
+              "quote_text": "修士課程 一般選抜"
+            },
+            {
+              "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-2",
+              "fragment_id": "E07-2",
+              "fragment_role": "context",
+              "quote_text": "学業・職務両立計画書"
+            },
+            {
+              "authoritative_fact_text_sha256": "a0625ab843b0525c1348c1a3d5aa1f3a551a2b5fe8bdf72326197efbbc1df5d6",
+              "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-3",
+              "fragment_id": "E07-3",
+              "fragment_role": "clause",
+              "quote_text": "また、入学手続きの際に、勤務先の承諾書（様式任意、研究科募集要項 11. (8)を参照）を提出すること。"
+            }
+          ],
+          "manual_anchor": "Second paragraph under work-study plan heading",
+          "official_heading_path": [
+            "修士課程 一般選抜",
+            "学業・職務両立計画書"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "physical_page": 28,
+          "printed_page_label": "26",
+          "record_id": "E07",
+          "role": "context",
+          "scope_note_zh": "与E06共享在职人群上下文，但明确为入学手续阶段。所引共通要项11.(8)全文未在切片核验，本条仅作关联提示，不作为出愿义务依据。",
+          "source_id": "complex-guide-2027-revised",
+          "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "stage": "enrollment_context_only"
+        },
+        {
+          "fragments": [
+            {
+              "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-1",
+              "fragment_id": "E08-1",
+              "fragment_role": "context",
+              "quote_text": "【複雑理工学専攻】"
+            },
+            {
+              "authoritative_fact_text_sha256": "332fe4bb54cc0d19d975f8debbe722e4c74e4916f50c912ebb59e6ba04de1614",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-2",
+              "fragment_id": "E08-2",
+              "fragment_role": "table_group_header",
+              "quote_text": "出願期間中に「オンライン出願システム」により提出する書類等"
+            },
+            {
+              "authoritative_fact_text_sha256": "2339aa16d5a0f7588cf4d07656c8cd3c83baa3290f481c96489a4fa30abc7f9c",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-3",
+              "fragment_id": "E08-3",
+              "fragment_role": "table_group_note",
+              "quote_text": "（※PDFファイルのアップロードによる）"
+            },
+            {
+              "authoritative_fact_text_sha256": "186be1e910a8b497d048b15548fd87301e7db249daa69e230397b779da9fb77c",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-4",
+              "fragment_id": "E08-4",
+              "fragment_role": "table_column_header",
+              "quote_text": "提出物"
+            },
+            {
+              "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-5",
+              "fragment_id": "E08-5",
+              "fragment_role": "table_row_label",
+              "quote_text": "学業・職務両立計画書"
+            },
+            {
+              "authoritative_fact_text_sha256": "21ebc639b0d4de58d0ae50aeb2b5ebe90ccb74285a1602e0878e4f541046ed6a",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-6",
+              "fragment_id": "E08-6",
+              "fragment_role": "table_column_header",
+              "quote_text": "対象者，備考"
+            },
+            {
+              "authoritative_fact_text_sha256": "0bbfebbd39409448bc442a19294e00fce29a11e8f67253c998663c66b9542442",
+              "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-7",
+              "fragment_id": "E08-7",
+              "fragment_role": "table_cell",
+              "quote_text": "【対象者】企業・官公庁・団体等に在職する者で，在職の身分のまま入学を希望する者。"
+            }
+          ],
+          "manual_anchor": "Left upload group and final material row; right group is empty",
+          "official_heading_path": [
+            "【複雑理工学専攻】",
+            "出願期間中に「オンライン出願システム」により提出する書類等",
+            "学業・職務両立計画書"
+          ],
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+          "physical_page": 1,
+          "printed_page_label": null,
+          "record_id": "E08",
+          "role": "basis",
+          "scope_note_zh": "这些分段来自左侧上传栏目同一行的表头、材料名和对象单元格；并非一段连续正文。右侧专攻指定方法栏目为空，不复制邻行的“全员”。",
+          "source_id": "complex-master-a-additional",
+          "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+          "stage": "application"
+        }
+      ],
+      "relations": [
+        {
+          "from": "E07",
+          "kind": "shares_employment_context_but_separate_enrollment_stage",
+          "to": "E06"
+        },
+        {
+          "from": "E08",
+          "kind": "corroborates_condition_with_submission_method",
+          "to": "E06"
+        }
+      ],
+      "topic_id": "work-study-plan"
+    }
+  ]
+}

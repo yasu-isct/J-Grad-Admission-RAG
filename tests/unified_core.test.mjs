@@ -141,12 +141,24 @@ test("slice evidence and canonical report keep unknown status, citation and raw 
   const mapped = mapSliceEvidence(scope, evidence);
   assert.match(mapped.topics[0].sources[0].quote, /提出が必要/);
   assert.equal(mapped.topics[0].sources[0].printed, "7");
+  assert.deepEqual(mapped.topics[0].relations, []);
+  const related = mapSliceEvidence(scope, {...evidence, topics: [{...evidence.topics[0],
+    records: [...evidence.topics[0].records, {...evidence.topics[0].records[0], record_id: "record-context",
+      role: "context", stage: "enrollment_context_only"}],
+    relations: [{from: "record-context", kind: "shares_employment_context_but_separate_enrollment_stage", to: "record"},
+      {from: "outside", kind: "cross_reference", to: "record"}]
+  }]});
+  assert.deepEqual(related.topics[0].relations,
+    [{from: "record-context", kind: "shares_employment_context_but_separate_enrollment_stage", to: "record"}]);
+  assert.equal(related.topics[0].sources[1].stage, "enrollment_context_only");
   const result = sliceReport(scope, mapped, report);
   assert.equal(result.topics[0].status_code, "needs_information");
   assert.match(result.text, /# Canonical/);
   assert.match(result.text, /提出が必要/);
   assert.equal(result.canonicalMarkdown, report.markdown);
   assert.throws(() => mapSliceEvidence(scope, {...evidence, snapshot_id: "b".repeat(64)}));
+  assert.throws(() => mapSliceEvidence({...scope, item: {...scope.item, revision: 2}},
+    {...evidence, revision: 1}));
   assert.throws(() => sliceReport(scope, mapped, {...report, report: {...report.report, evidence_inventory: []}}));
   assert.throws(() => sliceReport(scope, mapped, {...report, snapshot_id: "b".repeat(64)}));
 });

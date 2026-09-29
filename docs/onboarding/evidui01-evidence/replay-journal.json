@@ -1,0 +1,44 @@
+{
+  "method": "saved real HTTP responses through current four-step browser code",
+  "service_startups": 0,
+  "real_posts": 0,
+  "replayed_posts": {
+    "evidence_get": 1,
+    "base_post": 1,
+    "report_post": 1
+  },
+  "screenshots": [
+    "gsfs-1-graph-desktop-review-replay.png",
+    "gsfs-1-graph-mobile-review-replay.png",
+    "gsfs-2-graph-desktop-review-replay.png",
+    "gsfs-2-graph-mobile-review-replay.png",
+    "gsfs-3-graph-desktop-review-replay.png",
+    "gsfs-3-graph-mobile-review-replay.png",
+    "gsfs-step4-mobile-replay-full.png",
+    "isct-step2-mobile-replay-full.png"
+  ],
+  "duplicate_record_focus": [
+    {
+      "viewport": 1440,
+      "instance": 1,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 1440,
+      "instance": 2,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 390,
+      "instance": 1,
+      "scroll_restored": true
+    },
+    {
+      "viewport": 390,
+      "instance": 2,
+      "scroll_restored": true
+    }
+  ],
+  "no_horizontal_overflow": true,
+  "browser_errors": []
+}

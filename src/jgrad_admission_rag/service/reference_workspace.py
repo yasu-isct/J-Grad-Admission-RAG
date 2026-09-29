@@ -163,6 +163,12 @@ def _presentation(
                 "material_name_zh": topic.material_name_zh,
                 "context_note_zh": topic.context_note_zh,
                 "records": entries,
+                "relations": [
+                    relation.model_dump(mode="json", by_alias=True)
+                    for relation in evidence.relations
+                    if relation.from_id in topic.required_context_record_ids
+                    and relation.to in topic.required_context_record_ids
+                ],
             }
         )
     response = ReferenceEvidenceResponse.model_validate(
@@ -176,7 +182,7 @@ def _presentation(
             "topics": topics,
         }
     )
-    return canonical_json_bytes(response.model_dump(mode="json"))
+    return canonical_json_bytes(response.model_dump(mode="json", by_alias=True))
 
 
 @dataclass(frozen=True, slots=True)
