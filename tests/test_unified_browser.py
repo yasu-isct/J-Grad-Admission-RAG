@@ -151,7 +151,16 @@ def _fixture():
                 "official_status": "required",
                 "deadline": "2026-12-01 17:00",
                 "evidence": [source],
-                "date_events": [],
+                "date_events": [
+                    {
+                        "label": "截止",
+                        "display_text": "2026-12-01 17:00",
+                        "precision": "minute",
+                        "unknown_fields": ["截止后补交是否受理"],
+                        "uncertainty_note": "仅审核到达时间",
+                        "evidence": [source],
+                    }
+                ],
                 "limitation": "只涵盖当前批次",
             },
             {
@@ -179,9 +188,11 @@ def _fixture():
                 "comparison_status": "needs_information",
                 "description": "尚缺信息",
                 "action_group": "action_required",
-                "next_action": "补充信息",
+                "next_action": "单独联系招生办公室核对下一步",
+                "official_status": "required",
+                "preparation_status": "not_yet",
                 "evidence": [source],
-                "limitation": "待核对",
+                "limitation": "不能据此判定个人资格",
             }
         ],
     }
@@ -313,8 +324,20 @@ def test_unified_page_explicit_actions_and_state_isolation(tmp_path):
         page.locator("#uw-generate").click()
         page.locator("#uw-report").wait_for(state="visible")
         assert len(calls["comparison"]) == 1
+        preview = page.locator("#uw-report-body").inner_text()
         page.locator("#uw-copy").click()
-        assert "保守对照" in page.evaluate("window.copied")
+        copied = page.evaluate("window.copied")
+        for value in (
+            "保守对照",
+            "单独联系招生办公室核对下一步",
+            "不能据此判定个人资格",
+            "官方适用性：需要提交／满足对应条件时适用",
+            "自报准备状态：尚未取得",
+            "截止后补交是否受理",
+            "精度 minute",
+            "仅审核到达时间",
+        ):
+            assert value in preview and value in copied
         page.locator("#uw-report [data-close]").click()
         page.locator("#uw-generate").click()
         page.locator("#uw-report").wait_for(state="visible")
@@ -349,5 +372,110 @@ def test_unified_page_explicit_actions_and_state_isolation(tmp_path):
         assert page.locator("#uw-generate").is_disabled()
         assert not calls["qa"]
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+        assert errors == []
+        browser.close()
+
+
+def test_unified_question_displays_source_scope_and_actual_boundaries():
+    catalog, base, _, _, _ = _fixture()
+    questions = []
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
+        page = browser.new_page()
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+
+        def response_for(question):
+            fallback = question == "fallback"
+            zero_hits = question == "zero hits"
+            unsupported = question == "partial unsupported"
+            no_result = question == "no safe result"
+            return {
+                "summary": f"处理概况 {question}",
+                "delivery": {"source": "fallback" if fallback else "offline"},
+                "result": None
+                if no_result
+                else {
+                    "local_scope_statement": "仅覆盖本地已审核的申请材料",
+                    "official_source_url": "https://example.edu/official.pdf",
+                    "local_pdf_url": "/documents/doc-one/source.pdf",
+                    "answer": {
+                        "answer": f"参考正文 {question}",
+                        "missing_information": ["还缺申请人的具体成绩"],
+                        "limitations": [
+                            "本地未命中可引用片段" if zero_hits else "不能判断最终资格"
+                        ],
+                    },
+                },
+                "missing_context": ["尚待确认考试日期"],
+                "unsupported_parts": ["院外课程要求" if unsupported else "暂不覆盖住宿问题"],
+                "subanswers": [{"status": "no_clear_evidence", "message": "该分项没有清晰依据"}],
+            }
+
+        def route_request(route):
+            path = urlparse(route.request.url).path
+            if path == "/app":
+                route.fulfill(body=(STATIC / "app.html").read_bytes(), content_type="text/html")
+            elif path.startswith("/assets/unified"):
+                name = path.rsplit("/", 1)[-1]
+                media = "text/css" if name.endswith(".css") else "text/javascript"
+                route.fulfill(body=(STATIC / name).read_bytes(), content_type=media)
+            elif path == "/v1/reference-targets":
+                route.fulfill(json=catalog)
+            elif path == "/v1/base-requirements":
+                route.fulfill(json=base)
+            elif path == "/v1/natural-language-answers":
+                question = route.request.post_data_json["question"]
+                questions.append(question)
+                route.fulfill(json=response_for(question))
+            else:
+                route.abort()
+
+        page.route("**/*", route_request)
+        page.goto("http://unified.test/app")
+        page.locator("#uw-school option").first.wait_for(state="attached")
+        page.locator("#uw-load").click()
+        page.get_by_text("出愿日期", exact=True).wait_for()
+        for question in (
+            "normal",
+            "zero hits",
+            "fallback",
+            "partial unsupported",
+            "no safe result",
+        ):
+            page.locator("#uw-question").fill(question)
+            page.locator("#uw-ask").click()
+            output = page.locator("#uw-qa-result")
+            if question == "no safe result":
+                page.get_by_text("处理概况 no safe result").wait_for()
+                assert "本次没有可安全展示的引用回答" in output.inner_text()
+                assert "参考正文 partial unsupported" not in output.inner_text()
+                assert output.locator("a").count() == 0
+                assert "尚待确认考试日期" in output.inner_text()
+                continue
+            page.get_by_text(f"参考正文 {question}").wait_for()
+            for value in (
+                "仅覆盖本地已审核的申请材料",
+                "还缺申请人的具体成绩",
+                "尚待确认考试日期",
+                "该分项没有清晰依据",
+            ):
+                assert value in output.inner_text()
+            assert output.locator('a[href="https://example.edu/official.pdf"]').count() == 1
+            assert output.locator('a[href="/documents/doc-one/source.pdf"]').count() == 1
+            assert (
+                "本地未命中可引用片段" if question == "zero hits" else "不能判断最终资格"
+            ) in output.inner_text()
+            if question == "fallback":
+                assert "在线整理不可用" in output.inner_text()
+            if question == "partial unsupported":
+                assert "院外课程要求" in output.inner_text()
+        assert questions == [
+            "normal",
+            "zero hits",
+            "fallback",
+            "partial unsupported",
+            "no safe result",
+        ]
         assert errors == []
         browser.close()

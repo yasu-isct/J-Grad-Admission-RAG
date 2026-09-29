@@ -377,9 +377,10 @@ function renderComparison(payload) {
   host.replaceChildren();
   for (const item of payload.items) {
     const article = document.createElement("article");
-    article.append(node("h3", item.title), node("p", statusNames[item.comparison_status] || item.comparison_status),
+    article.append(node("h3", item.title), node("p", statusNames[item.comparison_status] || "需核对具体说明"),
       node("p", item.description), node("p", `下一步：${item.next_action}`));
-    if (item.official_status) appendText(article, "p", `官方适用性：${item.official_status}；自报准备：${item.preparation_status || "未知"}`);
+    if (item.official_status) appendText(article, "p", `官方适用性：${statusNames[item.official_status] || "需核对具体说明"}；自报准备：${statusNames[item.preparation_status] || "未知／待确认"}`);
+    if (item.limitation) appendText(article, "p", `限制：${item.limitation}`);
     if (item.evidence?.length) {
       const button = node("button", "查看官方依据", "uw-link-button");
       button.type = "button";
@@ -430,35 +431,27 @@ function renderReport(report, mapped) {
     ? `当前已审核结果的展示导出，不是新的权威报告。覆盖：${mapped.coverage}；限制：${mapped.limitation}`
     : `历史资料、部分材料范围。请结合完整原报告和官方依据核对条件。`, "uw-paper-note"));
   if (report.kind === "legacy_applicant") {
-    for (const [index, topic] of report.topics.entries()) {
-      reportSection(body, `${index + 1}. ${topic.title}`, [topic.status, topic.summary,
-        topic.deadline && `截止：${topic.deadline}`, ...topic.dates.map((date) => `${date.label}：${date.display}`),
-        topic.limitation, topic.sources.map((source) => `${source.title} · 物理页 ${source.pages.join("、")}`).join("；")]);
-      const references = [...topic.sources, ...topic.dates.flatMap((date) => date.sources)];
-      if (references.length) {
+    reportSection(body, "资料范围", report.presentation.intro);
+    for (const topic of report.presentation.topics) {
+      reportSection(body, topic.heading, topic.lines);
+      if (topic.references.length) {
         const details = document.createElement("details");
-        details.append(node("summary", `查看本项 ${references.length} 条官方依据`));
-        for (const source of references) details.append(sourceCard(source));
+        details.append(node("summary", `查看本项 ${topic.references.length} 条官方依据`));
+        for (const source of topic.references) details.append(sourceCard(source));
         body.append(details);
       }
     }
-    if (report.comparison) {
-      reportSection(body, "个人情况与对照", [report.comparison.comparison_statement,
-        ...report.profileDisclosure.map((field) => `${field.label}：${field.value}`),
-        ...report.comparison.items.map((item) => `${item.title}：${statusNames[item.comparison_status] || item.comparison_status}。 ${item.description}`),
-        report.comparison.partial_checklist_statement, report.comparison.limitation_statement]);
-      for (const item of report.comparison.items) {
-        if (!item.evidence?.length) continue;
+    if (report.presentation.comparison) {
+      reportSection(body, "个人情况与规则对照（仅依据本次自报）", report.presentation.comparison.overview);
+      for (const item of report.presentation.comparison.items) {
+        reportSection(body, item.heading, item.lines);
+        if (!item.references.length) continue;
         const details = document.createElement("details");
-        details.append(node("summary", `${item.title} · 查看个人对照依据`));
-        for (const evidence of item.evidence)
-          details.append(sourceCard({
-            title: evidence.official_title, pages: evidence.pages, printed: null,
-            quote: evidence.official_text, source_url: evidence.source_url,
-            local_pdf_url: evidence.local_pdf_url, context: evidence.limitation
-          }));
+        details.append(node("summary", `${item.heading} · 查看个人对照依据`));
+        for (const source of item.references) details.append(sourceCard(source));
         body.append(details);
       }
+      reportSection(body, "对照范围与限制", report.presentation.comparison.end);
     } else reportSection(body, "资料整理范围", ["未加入个人情况，不作个人适用性判断。"]);
   } else {
     reportSection(body, "本次个人条件", [
@@ -490,7 +483,9 @@ function renderReport(report, mapped) {
     details.append(node("pre", report.canonicalMarkdown));
     body.append(details);
   }
-  reportSection(body, "待确认事项", ["未覆盖内容、未知条件与官方原文应单独核对；本报告不判断最终资格、受理或录取。"]);
+  reportSection(body, "待确认事项", [report.kind === "legacy_applicant"
+    ? report.presentation.conclusion
+    : "未覆盖内容、未知条件与官方原文应单独核对；本报告不判断最终资格、受理或录取。"]);
   $("report").showModal();
   $("report").querySelector("[data-close]").focus();
 }
@@ -553,6 +548,51 @@ async function copyReport() {
     $("copy-status").textContent = "无法自动复制；请按 Ctrl+C 手动复制。";
   }
 }
+function qaList(host, title, values) {
+  if (!Array.isArray(values) || !values.length) return;
+  const section = node("section", "", "uw-qa-boundary");
+  section.append(node("h3", title));
+  const list = document.createElement("ul");
+  for (const value of values) list.append(node("li", String(value)));
+  section.append(list);
+  host.append(section);
+}
+function renderQuestionResponse(payload) {
+  const host = $("qa-result");
+  host.replaceChildren();
+  const source = payload.delivery?.source;
+  const delivery = {offline: "本地离线参考回答", fallback: "在线整理不可用，已使用本地检索参考内容",
+    cache_hit: "当前条件的已缓存参考回答", live: "在线整理的参考回答"};
+  appendText(host, "p", delivery[source] || "当前范围的参考回答", "uw-qa-mode");
+  appendText(host, "p", payload.result?.answer?.answer || payload.summary);
+  if (!payload.result) appendText(host, "p", "本次没有可安全展示的引用回答，请核对下列限制和官方依据。");
+  else {
+    appendText(host, "p", payload.result.local_scope_statement || payload.result.reviewed_scope_statement,
+      "uw-qa-boundary");
+    const links = node("div", "", "uw-qa-links");
+    const official = safeSource(payload.result.official_source_url, null);
+    if (official) {
+      const link = node("a", "打开官方来源");
+      link.href = official; link.target = "_blank"; link.rel = "noopener noreferrer";
+      links.append(link);
+    }
+    const local = payload.result.local_pdf_url;
+    if (/^\/documents\/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?\/source\.pdf$/.test(local || "")) {
+      const link = node("a", "查看本地官方 PDF");
+      link.href = local; link.target = "_blank"; link.rel = "noopener noreferrer";
+      links.append(link);
+    }
+    if (links.childElementCount) host.append(links);
+  }
+  qaList(host, "回答仍缺少的信息", payload.result?.answer?.missing_information);
+  qaList(host, "回答的适用限制", payload.result?.answer?.limitations);
+  qaList(host, "问题待确认的条件", payload.missing_context);
+  qaList(host, "本次不支持的请求部分", payload.unsupported_parts);
+  qaList(host, "分项处理说明", (payload.subanswers || []).filter((part) => part.status !== "answered")
+    .map((part) => part.message));
+  if (payload.result && payload.summary && payload.result.answer?.answer !== payload.summary)
+    appendText(host, "p", `处理概况：${payload.summary}`, "uw-qa-boundary");
+}
 async function askQuestion(event) {
   event.preventDefault();
   const mapped = state.loaded, scope = mapped?.scope;
@@ -573,8 +613,7 @@ async function askQuestion(event) {
     });
     if (generation !== state.generation.question || mapped !== state.loaded) return;
     $("qa-status").textContent = "参考回答仅作补充，请以已审核规则和官方原文为准。";
-    appendText($("qa-result"), "p", body.result?.answer?.answer || body.summary);
-    for (const value of body.missing_context || []) appendText($("qa-result"), "p", `待确认：${value}`);
+    renderQuestionResponse(body);
   } catch {
     if (generation === state.generation.question) $("qa-status").textContent = "问答暂时不可用；当前要求和已审核依据仍可查看。";
   } finally {

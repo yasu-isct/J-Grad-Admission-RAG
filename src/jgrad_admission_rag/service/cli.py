@@ -19,7 +19,7 @@ from ..generation.config import (
     resolve_generation_configuration,
 )
 from ..generation.question_analysis import DeterministicQuestionUnderstandingProvider
-from .app import create_app
+from .reference_app import create_app
 from .runtime import ServiceDependencies, ServiceSettings
 
 
@@ -50,6 +50,11 @@ def _parser() -> argparse.ArgumentParser:
         "--query-intent-catalog",
         metavar="ABSOLUTE_PATH",
         help="Server-owned query intent catalog JSON used by the local report UI.",
+    )
+    parser.add_argument(
+        "--reference-workspace-config",
+        metavar="ABSOLUTE_PATH",
+        help="Optional reviewed material slice configuration JSON.",
     )
     parser.add_argument("--max-pdf-bytes", type=int, default=25 * 1024 * 1024)
     parser.add_argument("--job-root")
@@ -83,6 +88,16 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
         if query_intent_catalog_path is not None and not query_intent_catalog_path.is_absolute():
             raise ValueError("query intent catalog path must be absolute")
+        reference_workspace_config_path = (
+            Path(args.reference_workspace_config)
+            if args.reference_workspace_config is not None
+            else None
+        )
+        if (
+            reference_workspace_config_path is not None
+            and not reference_workspace_config_path.is_absolute()
+        ):
+            raise ValueError("reference workspace configuration path must be absolute")
         settings = ServiceSettings(
             corpus_root=Path(args.corpus_root).resolve(strict=False),
             manifest_path=Path(args.manifest).resolve(strict=False),
@@ -94,6 +109,11 @@ def main(argv: Sequence[str] | None = None) -> None:
             query_intent_catalog_path=(
                 query_intent_catalog_path.resolve(strict=False)
                 if query_intent_catalog_path is not None
+                else None
+            ),
+            reference_workspace_config_path=(
+                reference_workspace_config_path.resolve(strict=False)
+                if reference_workspace_config_path is not None
                 else None
             ),
             max_pdf_bytes=args.max_pdf_bytes,

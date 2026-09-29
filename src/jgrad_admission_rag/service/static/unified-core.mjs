@@ -10,8 +10,14 @@ const statusNames = {
   possible_match: "可能匹配，仍需核对",
   submission_required: "需要提交",
   submission_not_required: "无需提交（仅此材料本身）",
-  rule_not_applicable: "本条条件不适用，不能推定一般性免交"
+  rule_not_applicable: "本条条件不适用，不能推定一般性免交",
+  unknown: "未知／待确认",
+  available: "已准备",
+  not_yet: "尚未取得"
 };
+const categoryNames = {dates: "日期", eligibility: "申请资格", language: "语言", materials: "材料"};
+function publicReviewedText(value) { return text(value).replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim(); }
+function publicStatus(value) { return statusNames[value] || "需核对具体说明"; }
 
 function requireValue(condition, message) {
   if (!condition) throw new Error(message);
@@ -202,8 +208,8 @@ export function mapLegacyBase(scope, base) {
       requireValue(sources.length > 0 || dates.length > 0, "已审核要求缺少引用");
     return {
       id: requirement.requirement_id, category: requirement.category, title: requirement.title,
-      summary: requirement.reviewed_summary || requirement.description,
-      description: requirement.description,
+      summary: publicReviewedText(requirement.reviewed_summary || requirement.description),
+      description: publicReviewedText(requirement.description),
       status: statusNames[requirement.official_status] || requirement.official_status,
       status_code: requirement.official_status,
       deadline: requirement.deadline || "", limitation: requirement.limitation || "",
@@ -275,48 +281,62 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = []) 
       if (!["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
         requireValue(array(item.evidence).length > 0, "个人对照引用缺失");
   }
-  const lines = [
+  const intro = [
     "募集要项参考报告", scopeLabel(mapped.scope), "",
-    "资料性质：当前已审核结果的页面导出；不是新的 ApplicantReport 或最终资格判断。",
-    `审核覆盖：${mapped.coverage}`, `范围限制：${mapped.limitation}`, "",
-    "基础要求"
+    "资料性质：当前已审核结果的页面导出；不是最终资格判断。",
+    `审核覆盖：${mapped.coverage}`, `范围限制：${mapped.limitation}`
   ];
-  for (const [index, topic] of mapped.topics.entries()) {
-    lines.push("", `${index + 1}. ${topic.title}`, `类别：${topic.category}；官方状态：${topic.status}`,
-      `说明：${topic.summary}`);
+  const topics = mapped.topics.map((topic, index) => {
+    const lines = [`类别：${categoryNames[topic.category] || "其他已审核事项"}；官方状态：${topic.status}`,
+      `说明：${topic.summary}`];
     if (topic.description !== topic.summary) lines.push(`详情：${topic.description}`);
     if (topic.deadline) lines.push(`截止说明：${topic.deadline}`);
+    const references = [];
     for (const date of topic.dates) {
       lines.push(`日期：${date.label} · ${date.display} · 精度 ${date.precision}`);
       if (date.unknown.length) lines.push(`未知时间字段：${date.unknown.join("、")}`);
       if (date.uncertainty) lines.push(`日期限制：${date.uncertainty}`);
-      for (const source of date.sources) lines.push(...sourceLines(source));
+      references.push(...date.sources);
     }
-    for (const source of topic.sources) lines.push(...sourceLines(source));
+    references.push(...topic.sources);
     if (topic.limitation) lines.push(`限制：${topic.limitation}`);
-  }
+    return {heading: `${index + 1}. ${topic.title}`, lines, references};
+  });
+  const lines = [...intro, "", "基础要求"];
+  for (const topic of topics)
+    lines.push("", topic.heading, ...topic.lines, ...topic.references.flatMap(sourceLines));
+  let comparisonPresentation = null;
   if (comparison) {
-    lines.push("", "个人情况与规则对照（仅依据本次自报）", comparison.comparison_statement,
-      `准备状态：共 ${comparison.counts.total} 项；需补充 ${comparison.counts.action_required}；需审核 ${comparison.counts.review_required}；已记录 ${comparison.counts.recorded}`);
-    lines.push("本次自报；未填写／不知道保持未知，自报不适用不代表官方豁免：");
+    const overview = [comparison.comparison_statement,
+      `准备状态：共 ${comparison.counts.total} 项；需补充 ${comparison.counts.action_required}；需审核 ${comparison.counts.review_required}；已记录 ${comparison.counts.recorded}`,
+      "本次自报；未填写／不知道保持未知，自报不适用不代表官方豁免："];
     for (const field of profileDisclosure) {
       requireValue(nonempty(field.label) && nonempty(field.value), "个人情况展示缺失");
-      lines.push(`${field.label}：${field.value}`);
+      overview.push(`${field.label}：${field.value}`);
     }
-    for (const item of comparison.items) {
-      lines.push("", `${item.title} · ${statusNames[item.comparison_status] || item.comparison_status}`,
-        item.description, `下一步：${item.next_action}`);
-      if (item.official_status) lines.push(`官方适用性：${item.official_status}`);
-      if (item.preparation_status) lines.push(`自报准备状态：${item.preparation_status}`);
-      for (const source of array(item.evidence).map((evidence) => validateLegacyEvidence(evidence, mapped.scope)))
-        lines.push(...sourceLines(source));
-      if (item.limitation) lines.push(`限制：${item.limitation}`);
-    }
-    lines.push(comparison.partial_checklist_statement, comparison.limitation_statement);
+    const items = comparison.items.map((item) => {
+      const itemLines = [item.description, `下一步：${item.next_action}`];
+      if (item.official_status) itemLines.push(`官方适用性：${publicStatus(item.official_status)}`);
+      if (item.preparation_status) itemLines.push(`自报准备状态：${publicStatus(item.preparation_status)}`);
+      if (item.limitation) itemLines.push(`限制：${item.limitation}`);
+      return {
+        heading: `${item.title} · ${publicStatus(item.comparison_status)}`,
+        lines: itemLines,
+        references: array(item.evidence).map((evidence) => validateLegacyEvidence(evidence, mapped.scope))
+      };
+    });
+    const end = [comparison.partial_checklist_statement, comparison.limitation_statement];
+    comparisonPresentation = {overview, items, end};
+    lines.push("", "个人情况与规则对照（仅依据本次自报）", ...overview);
+    for (const item of items)
+      lines.push("", item.heading, ...item.lines, ...item.references.flatMap(sourceLines));
+    lines.push(...end);
   } else lines.push("", "未加入个人情况；不作个人适用性判断。");
-  lines.push("", "请逐项核对未覆盖内容、未知条件与官方原文；材料准备不代表学校已受理。");
+  const conclusion = "请逐项核对未覆盖内容、未知条件与官方原文；材料准备不代表学校已受理。";
+  lines.push("", conclusion);
   return {kind: "legacy_applicant", scope: mapped.scope, topics: mapped.topics,
-    comparison, profileDisclosure, text: lines.join("\n"), raw: {base: mapped.raw, comparison}};
+    comparison, profileDisclosure, text: lines.join("\n"), raw: {base: mapped.raw, comparison},
+    presentation: {intro: intro.slice(3), topics, comparison: comparisonPresentation, conclusion}};
 }
 
 export function sliceReport(scope, mapped, payload, employment = {current: "unknown", retain: "unknown"}) {

@@ -46,10 +46,10 @@ const base = {
   coverage_statement: "部分已审核", limitation_statement: "其他事项待核对",
   requirements: [
     {requirement_id: "date", category: "dates", title: "申请截止", description: "以到达为准",
-      reviewed_summary: "必须在期限内到达", official_status: "required", deadline: "2026-12-01 17:00",
+      reviewed_summary: "RULE-05A 必须在期限内到达", official_status: "required", deadline: "2026-12-01 17:00",
       evidence: [source], date_events: [{
         label: "到达截止", display_text: "2026-12-01 17:00", precision: "minute",
-        unknown_fields: [], uncertainty_note: "时区日本", evidence: [source]
+        unknown_fields: ["日期备注待确认"], uncertainty_note: "时区日本", evidence: [source]
       }], limitation: "只涵盖此批次"},
     {requirement_id: "language", category: "language", title: "语言", description: "未知情况待确认",
       official_status: "needs_information", evidence: [source], date_events: [], limitation: ""}
@@ -61,6 +61,7 @@ const comparison = {
   counts: {total: 1, recorded: 0, action_required: 1, review_required: 0},
   items: [{title: "英语成绩单", comparison_status: "needs_information",
     description: "尚未提供", action_group: "action_required", next_action: "补充信息",
+    official_status: "required", preparation_status: "not_yet",
     evidence: [source], limitation: "不能判定有效性"}]
 };
 const evidence = {
@@ -109,12 +110,20 @@ test("full base export preserves dates, all categories, citations and optional c
   assert.match(noProfile.text, /2026-12-01 17:00/);
   assert.match(noProfile.text, /日文官方原文/);
   assert.match(noProfile.text, /语言/);
+  assert.doesNotMatch(noProfile.text, /RULE-05A|ApplicantReport|类别：dates/);
+  assert.match(noProfile.text, /日期：到达截止 · 2026-12-01 17:00 · 精度 minute/);
+  assert.match(noProfile.text, /未知时间字段：日期备注待确认/);
+  assert.match(noProfile.presentation.topics[0].lines.join(" "), /日期备注待确认/);
   assert.match(noProfile.text, /不作个人适用性判断/);
   assert.equal(hasSuppliedProfile({credential_basis: "", materials: [{code: "address_label", value: ""}]}), false);
   assert.equal(hasSuppliedProfile({credential_basis: "ui_unknown", materials: []}), true);
   const supplied = legacyReport(mapped, comparison);
   assert.match(supplied.text, /保守对照/);
   assert.match(supplied.text, /补充信息/);
+  assert.match(supplied.text, /官方适用性：需要提交／满足对应条件时适用/);
+  assert.match(supplied.text, /自报准备状态：尚未取得/);
+  for (const item of supplied.presentation.comparison.items)
+    for (const line of item.lines) assert.ok(supplied.text.includes(line));
   const request = comparisonRequest(scope, {credential_basis: "ui_unknown", english_test_kind: "toeic_lr",
     english_score: "810", materials: [{code: "address_label", value: "not_yet"}]});
   assert.equal(request.applicant.credential_basis, null);
