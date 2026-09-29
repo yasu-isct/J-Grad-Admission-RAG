@@ -4,7 +4,22 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 release: readable reports, then source relations
+## Current M17 release: usability before the school presentation
+
+2026-09-30 user requested a rollback point and a development plan for six usability findings.
+The running online preview is frozen at [demo-before-usability-20260930](https://github.com/yasu-isct/J-Grad-Admission-RAG/tree/demo-before-usability-20260930),
+commit `29a91ac9280349300c0d1890f48cf9e4244cd68c`; [restore record](checkpoints/demo-before-usability-20260930.md).
+The saved code excludes paused QA Draft #236; enabling the provider does not import its behavior.
+
+Only [UX-01 #247](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247) becomes Ready with this design merge:
+report-button feedback and clear school navigation, using the existing four-step page and report pipeline.
+See the [complete Spec](onboarding/demo-usability-navigation-report-spec.md) and [six-point development direction](onboarding/demo-usability-development-plan.md).
+M17 Main implements; design independently accepts. Typography, plain-language copy, material explanations and
+QA presentation are planned as B after A acceptance, with no second Ready Issue. No coverage expansion or QA behavior repair.
+After both usability steps, prepare the demonstration and school presentation. QA #233 / Draft #236 stays paused.
+No new paid verification, indexes, downloads or M13 work. The prior no-Ready statement below is historical.
+
+## Previous M17 release: readable reports and source relations
 
 2026-09-29 latest user decision supersedes the QA-first ordering below: **pause QA-01 #233 /
 Draft #236**, first improve reports for their readers, then show existing multi-document evidence
