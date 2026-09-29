@@ -14,6 +14,7 @@ const read = (name) => JSON.parse(readFileSync(join(sourceDir, name), "utf8"));
 const sha = (value) => createHash("sha256").update(value).digest("hex");
 const selection = (report) => readerReportOptions(report);
 const cases = [];
+const themeCopies = [];
 const save = (name, sourceNames, report, expected) => {
   const view = readerReport(report, selection(report));
   for (const state of expected) {
@@ -42,8 +43,17 @@ const legacyScope = {
 const mapped = mapLegacyBase(legacyScope, base);
 save("isct-no-profile", ["isct-base-2027.json"], legacyReport(mapped),
   ["待填写准备情况", "待确认适用"]);
+const profiled = legacyReport(mapped, comparison);
 save("isct-with-profile", ["isct-base-2027.json", "isct-comparison.json"],
-  legacyReport(mapped, comparison), ["待补材料", "已自报准备", "待确认适用"]);
+  profiled, ["待补材料", "已自报准备", "待确认适用"]);
+for (const key of ["dates", "materials", "other"]) {
+  const selected = {dates: false, materials: false, other: false};
+  selected[key] = true;
+  const view = readerReport(profiled, selected);
+  const file = `isct-${key}-only-copy.txt`;
+  writeFileSync(join(outputDir, file), `${view.text}\n`, "utf8");
+  themeCopies.push({theme: key, file, sha256: sha(view.text), length: view.text.length});
+}
 
 const evidence = read("gsfs-evidence.json");
 const sliceId = "gsfs-complex-2027-a";
@@ -67,5 +77,5 @@ for (const [name, current, retain, state] of [
 }
 writeFileSync(join(outputDir, "replay.json"), `${JSON.stringify({
   method: "Existing real HTTP responses revalidated by unified-core, then projected before/after",
-  cases
+  cases, themeCopies
 }, null, 2)}\n`, "utf8");

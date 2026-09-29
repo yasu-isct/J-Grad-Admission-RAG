@@ -164,6 +164,13 @@ def main():
             page.set_viewport_size({"width": 1440, "height": 900})
             page.locator("#reference-close").click()
 
+        def full_page_pair(name):
+            page.screenshot(path=str(OUT / f"{name}-desktop-full.png"), full_page=True)
+            page.set_viewport_size({"width": 390, "height": 844})
+            page.screenshot(path=str(OUT / f"{name}-mobile-full.png"), full_page=True)
+            assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), name
+            page.set_viewport_size({"width": 1440, "height": 900})
+
         page.route("**/*", route_request)
         page.goto("http://report02-replay.test/app")
         page.locator("#school-select option").nth(2).wait_for(state="attached")
@@ -174,6 +181,7 @@ def main():
         page.locator("#department-select").select_option("システム制御系")
         page.locator("#requirements-submit").click()
         page.locator(".key-dates-section .date-event").first.wait_for()
+        full_page_pair("isct-step2")
         capture("isct-no-profile", "#step-2-panel .reference-generate")
         page.locator(".overview-cta").click()
         page.locator("#demo-credential-basis").select_option("ui_unknown")
@@ -181,7 +189,21 @@ def main():
         page.locator('[data-material-code="application_form"]').select_option("not_yet")
         page.locator("#comparison-submit").click()
         page.locator("#readiness-panel").wait_for(state="visible")
+        full_page_pair("isct-step4")
         capture("isct-with-profile", "#readiness-panel .reference-generate")
+        before_themes = dict(calls)
+        page.locator("#readiness-panel .reference-generate").click()
+        page.locator("#reference-report").wait_for(state="visible")
+        choices = page.locator(".reader-report-options input")
+        assert choices.count() == 3
+        for index, key in enumerate(("dates", "materials", "other")):
+            for slot in range(3):
+                choices.nth(slot).set_checked(slot == index)
+            page.locator("#reference-copy").click()
+            expected = (OUT / f"isct-{key}-only-copy.txt").read_text(encoding="utf-8").rstrip("\n")
+            assert page.evaluate("window.copied") == expected, key
+        assert calls == before_themes
+        page.locator("#reference-close").click()
         page.locator("#edit-target").click()
         page.locator("#school-select").select_option("gsfs-complex-2027-a")
         page.locator("#demo-degree-select").select_option("master")
@@ -191,6 +213,7 @@ def main():
                 page.locator(selector).select_option(index=1)
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for()
+        full_page_pair("gsfs-step2")
         page.locator(".overview-cta").click()
         for current, retain, name in (
             ("unknown", "unknown", "gsfs-unknown"),
@@ -203,6 +226,8 @@ def main():
             page.locator("#slice-retain-employed").select_option(retain)
             page.locator("#comparison-submit").click()
             page.locator("#readiness-panel.slice-readiness").wait_for(state="visible")
+            if name == "gsfs-unknown":
+                full_page_pair("gsfs-step4")
             capture(name, "#readiness-panel .reference-generate")
         assert calls == {"base": 1, "comparison": 1, "reports": 3} and not errors, (calls, errors)
         browser.close()
@@ -213,7 +238,8 @@ def main():
                 "service_startups": 0,
                 "real_posts": 0,
                 "replayed_posts": calls,
-                "screenshots": 10,
+                "screenshots": 18,
+                "single_theme_copies": 3,
                 "copy_matches_projection": True,
                 "no_horizontal_overflow": True,
                 "browser_errors": [],

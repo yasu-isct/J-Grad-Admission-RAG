@@ -12,6 +12,10 @@ This checkpoint uses the saved real HTTP responses from `outputs/ui02-real/final
 
 The previous ISCT profile export was 33,346 characters; the corresponding current copy is 954 characters. The prior GSFS conditional export was 7,938 characters; its current copy is 429 characters. These counts describe the whole exported text, including target labels. The original report/canonical text and citation checks in `unified-core.mjs` remain unchanged.
 
+Full-page 1440/390 browser captures keep the existing four-step workspace visible: [ISCT step 2 desktop](isct-step2-desktop-full.png), [mobile](isct-step2-mobile-full.png); [ISCT step 4 desktop](isct-step4-desktop-full.png), [mobile](isct-step4-mobile-full.png); [GSFS step 2 desktop](gsfs-step2-desktop-full.png), [mobile](gsfs-step2-mobile-full.png); [GSFS step 4 desktop](gsfs-step4-desktop-full.png), [mobile](gsfs-step4-mobile-full.png). Report screenshots in the table show the first viewport of the dialog.
+
+The same ISCT profile response was also copied with one theme selected at a time: [time only](isct-dates-only-copy.txt), [materials only](isct-materials-only-copy.txt), [other loaded requirements only](isct-other-only-copy.txt). The browser replay confirmed that changing these local selections made no additional API request.
+
 ## Reuse and differences
 
 | Existing resource | Reuse point | Required change |
@@ -25,7 +29,7 @@ The previous ISCT profile export was 33,346 characters; the corresponding curren
 ## Validation and limits
 
 - `node --test tests/unified_core.test.mjs`: 5 passed. UI-02, reference, unified, and material-condition/report directed pytest group: 101 passed, 2 skipped, 1 obsolete preformatted-report assertion corrected; that test then passed on its own. `ruff --no-cache`, JS syntax checks, and `git diff --check` passed.
-- Saved-response browser replay: 5 reports, 10 desktop/mobile screenshots, matching preview copy, no horizontal overflow or browser errors. See [replay-browser-journal.json](replay-browser-journal.json). A synthetic UI-02 browser case also checked theme choice, empty selection, stale copy reset, clipboard fallback, and HTML text safety.
+- Saved-response browser replay: 5 reports, 18 desktop/mobile screenshots, 3 single-theme copies, matching preview copy, no horizontal overflow or browser errors. See [replay-browser-journal.json](replay-browser-journal.json). A synthetic UI-02 browser case also checked theme choice, empty selection, stale copy reset, clipboard fallback, and HTML text safety.
 - Real-service budget used: 2 of 2 starts, 2 of 8 explicit report attempts, 3 of 12 base/comparison POSTs, 0 other POSTs, 0 paid calls. Both sessions used independent loopback ports and stopped. The real base and comparison HTTP objects matched saved responses. The browser check stopped on equality with replay copies because the initial replay scope used the sample's Chinese/Japanese title metadata instead of the 391 official English title and Japanese GSFS name. Those replay labels were corrected; no third service start was made. Thus the real-service full copy/screenshots remain unverified, while the saved real-response browser replay passed.
 - Read-only pre/post SHA-256 comparison found no changes in 30 protected 334/391, GSFS source/candidate, and policy/plan/trust files. See [asset-check.json](asset-check.json) and [browser-journal.json](browser-journal.json) for the hashes and counted attempts.
 
