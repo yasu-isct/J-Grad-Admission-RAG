@@ -2011,9 +2011,59 @@ const relationMeanings = {
   shares_employment_context_but_separate_enrollment_stage: "入学手续相关，非本次出愿提交义务"
 };
 
+function graphDocumentLabel(title) {
+  if (title.includes("追加提出物一覧")) return "专攻追加材料表";
+  if (title.includes("入試案内")) return "入试案内";
+  if (title.includes("募集要項")) return "募集要项";
+  return title.length > 22 ? `…${title.slice(-22)}` : title;
+}
+
 function graphNodeLabel(source) {
-  const short = source.title.length > 32 ? `${source.title.slice(0, 32)}…` : source.title;
-  return `${short} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
+  const role = source.stage === "enrollment_context_only" ? "入学手续背景"
+    : source.role === "basis" ? "出愿直接依据" : "出愿关联说明";
+  return `${role} · ${graphDocumentLabel(source.title)} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
+}
+
+function graphSourceCard(source, requirement) {
+  const node = document.createElement("article");
+  node.className = "relation-node";
+  node.dataset.recordId = source.record_id;
+  node.append(heading(4, graphNodeLabel(source)));
+  const context = document.createElement("p");
+  context.textContent = (source.context?.split(" · ")[0] || "当前审核范围内的来源")
+    .replace(/\b[A-Z]\d{2,}\b/g, "相关条款");
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "secondary";
+  button.dataset.recordId = source.record_id;
+  button.textContent = "查看原文";
+  button.addEventListener("click", () => openDemoEvidence(requirement,
+    sourceAsEvidence(source, requirement.graphScope), button,
+    {fromGraph: true, scrollTop: evidenceDrawer.scrollTop}));
+  node.append(context, button);
+  return node;
+}
+
+function graphPaths(relations) {
+  const pending = [...relations];
+  const paths = [];
+  while (pending.length) {
+    const targets = new Set(pending.map((edge) => edge.to));
+    const first = pending.find((edge) => !targets.has(edge.from)) || pending[0];
+    const path = [];
+    let current = first.from;
+    const visited = new Set();
+    while (!visited.has(current)) {
+      visited.add(current);
+      const index = pending.findIndex((edge) => edge.from === current);
+      if (index < 0) break;
+      const [edge] = pending.splice(index, 1);
+      path.push(edge);
+      current = edge.to;
+    }
+    paths.push(path);
+  }
+  return paths;
 }
 
 function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop = 0) {
@@ -2031,44 +2081,39 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
   explanation.className = "relation-intro";
   explanation.textContent = `${requirement.description} 图中箭头只说明已审核的文件关系，不表示每份文件都是出愿必交材料。`;
   drawerContent.append(explanation);
-  const nodes = document.createElement("div");
-  nodes.className = "relation-nodes";
   const sources = new Map(topic.sources.map((source) => [source.record_id, source]));
-  for (const source of topic.sources) {
-    const node = document.createElement("article");
-    node.className = "relation-node";
-    node.append(heading(4, graphNodeLabel(source)));
-    const role = document.createElement("p");
-    role.textContent = source.stage === "enrollment_context_only"
-      ? "入学手续相关，非本次出愿提交义务" : source.role === "basis" ? "本条直接依据" : "关联上下文";
-    const context = document.createElement("p");
-    context.textContent = source.heading || source.context || "当前审核范围内的来源";
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "secondary";
-    button.dataset.recordId = source.record_id;
-    button.textContent = "查看原文";
-    button.addEventListener("click", () => openDemoEvidence(requirement,
-      sourceAsEvidence(source, requirement.graphScope), button,
-      {fromGraph: true, scrollTop: evidenceDrawer.scrollTop}));
-    node.append(role, context, button);
-    nodes.append(node);
-  }
-  drawerContent.append(nodes);
-  const known = topic.relations.filter((row) => Object.hasOwn(relationMeanings, row.kind));
-  if (known.length) {
-    const relations = document.createElement("section");
-    relations.className = "relation-links";
-    relations.append(heading(4, "已审核的文件关系"));
-    for (const row of known) {
-      const edge = document.createElement("p");
+  const known = topic.relations.filter((row) => Object.hasOwn(relationMeanings, row.kind)
+    && sources.has(row.from) && sources.has(row.to));
+  const paths = graphPaths(known);
+  const connected = new Set(known.flatMap((edge) => [edge.from, edge.to]));
+  const graph = document.createElement("div");
+  graph.className = "relation-graph";
+  for (const path of paths) {
+    const flow = document.createElement("section");
+    flow.className = "relation-path";
+    if (path.length > 2) flow.classList.add("relation-path-long");
+    flow.append(graphSourceCard(sources.get(path[0].from), requirement));
+    for (const row of path) {
+      const edge = document.createElement("div");
       edge.className = row.kind === "shares_employment_context_but_separate_enrollment_stage"
         ? "relation-edge relation-edge-stage" : "relation-edge";
-      edge.textContent = `${graphNodeLabel(sources.get(row.from))} → ${relationMeanings[row.kind]} → ${graphNodeLabel(sources.get(row.to))}`;
-      relations.append(edge);
+      edge.setAttribute("aria-label", `${graphNodeLabel(sources.get(row.from))} 指向 ${graphNodeLabel(sources.get(row.to))}：${relationMeanings[row.kind]}`);
+      const meaning = document.createElement("span");
+      meaning.textContent = relationMeanings[row.kind];
+      edge.append(meaning);
+      flow.append(edge, graphSourceCard(sources.get(row.to), requirement));
     }
-    drawerContent.append(relations);
+    graph.append(flow);
   }
+  const independent = topic.sources.filter((source) => !connected.has(source.record_id));
+  if (independent.length) {
+    const nodes = document.createElement("section");
+    nodes.className = "relation-nodes";
+    if (paths.length) nodes.append(heading(4, "其他可查看的来源"));
+    for (const source of independent) nodes.append(graphSourceCard(source, requirement));
+    graph.append(nodes);
+  }
+  drawerContent.append(graph);
   if (!topic.relations.length || topic.relations.some((row) => !Object.hasOwn(relationMeanings, row.kind))) {
     const note = document.createElement("p");
     note.className = "relation-unknown";
@@ -2079,7 +2124,7 @@ function openEvidenceGraph(requirement, trigger, focusRecordId = null, scrollTop
   if (!evidenceDrawer.open) evidenceDrawer.showModal();
   evidenceDrawer.scrollTop = scrollTop;
   const focus = focusRecordId
-    ? Array.from(nodes.querySelectorAll("button")).find((button) => button.dataset.recordId === focusRecordId)
+    ? Array.from(graph.querySelectorAll("button")).find((button) => button.dataset.recordId === focusRecordId)
     : null;
   (focus || drawerClose).focus({preventScroll: true});
 }

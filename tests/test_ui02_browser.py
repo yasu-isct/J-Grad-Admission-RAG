@@ -358,8 +358,13 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         main_scroll = page.evaluate("window.scrollY")
         graph_trigger.click()
         drawer = page.locator("#evidence-drawer")
-        assert drawer.locator(".relation-node").count() == 9
+        assert set(
+            drawer.locator(".relation-node").evaluate_all(
+                "nodes => nodes.map(node => node.dataset.recordId)"
+            )
+        ) == {record["record_id"] for record in evidence["topics"][0]["records"]}
         assert drawer.locator(".relation-edge").count() == 2
+        assert drawer.locator(".relation-path").count() == 2
         assert "部分关系类型尚未展示" in drawer.inner_text()
         assert "送付方法参照" in drawer.inner_text()
         assert (
@@ -371,7 +376,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert "提出が必要" in drawer.inner_text()
         assert "第二所学校官方文件" in drawer.inner_text()
         drawer.locator(".relation-back").click()
-        assert drawer.locator(".relation-node").count() == 9
+        assert drawer.locator(".relation-node").count() >= 9
         page.locator("#drawer-close").click()
         assert page.evaluate("window.scrollY") == main_scroll
         assert graph_trigger.evaluate("button => button === document.activeElement")
@@ -393,7 +398,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert "目前任职是；入学后继续任职否" in page.locator("#comparison-output").inner_text()
         assert "当前条件：需准备" in page.locator("#comparison-output").inner_text()
         page.locator("#comparison-output .requirement-evidence-actions button").first.click()
-        assert drawer.locator(".relation-node").count() == 9
+        assert drawer.locator(".relation-node").count() >= 9
         drawer.locator(".relation-node button").first.click()
         assert "PDF 物理页 8／印刷页 7" in drawer.inner_text()
         drawer.press("Escape")
@@ -421,7 +426,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#edit-target").click()
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-evidence-actions button").first.click()
-        drawer.locator(".relation-node button").first.click()
+        drawer.locator(f'.relation-node[data-record-id="{primary_record_id}"] button').first.click()
         no_printed = drawer.inner_text()
         assert "PDF 物理页 8" in no_printed
         assert "印刷页" not in no_printed

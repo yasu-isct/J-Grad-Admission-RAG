@@ -14,7 +14,7 @@ The existing repository callers (`app.js` and `reference.js`) accept the additiv
 
 ## Reviewed relationship mapping
 
-The five rows below come from the verified plan/seed relation set. The [real GET response](evidui01-evidence/gsfs-evidence-real.json) carries the same five directed edges under the three topics, bound to the same snapshot and revision. `E` identifiers are audit labels here; the user window shows titles, pages and Chinese meanings.
+The five rows below come from the verified plan/seed relation set. The [real GET response](evidui01-evidence/gsfs-evidence-real.json) carries the same five directed edges under the three topics, bound to the same snapshot and revision. `E` identifiers are audit labels here; the user window shows short document types, application stage, pages and Chinese meanings.
 
 | Topic | Reviewed direction | Record/page binding | User meaning |
 | --- | --- | --- | --- |
@@ -32,5 +32,21 @@ An unknown relation kind keeps the source nodes and shows that some relations co
 - Real local browser: the original two-school four-step page was used with existing read-only 391 and GSFS assets. [Journal](evidui01-evidence/real-browser-journal.json) records three GSFS material cards, five matching plan edges, graph → original → back → close/Escape in one dialog, GSFS step 4, ISCT step 2, zero automatic report POSTs while viewing graphs, no browser errors and no horizontal overflow. See [GSFS step 2 desktop](evidui01-evidence/gsfs-step2-desktop-full.png), [mobile](evidui01-evidence/gsfs-step2-mobile-full.png), [three graph captures](evidui01-evidence/gsfs-1-graph-desktop.png), and [ISCT step 2 desktop](evidui01-evidence/isct-step2-desktop-full.png). The other two graph cases and mobile captures are alongside these files.
 - The first real session stopped after the three relation flows because an assertion expected one particular status phrase in step 4. The second and final service session replaced that assertion with the actual three-card result and completed the two-school flow. Cumulative developer use: **2/2 service starts, 3/3 GSFS report attempts, 1/4 base/comparison POST, 0 other POSTs, 0 paid calls**. Both services stopped. The same 30 protected files matched before/after SHA-256 values; see the journal. Design allowance remains unused.
 - The live session captured GSFS step 2 at 1440/390, GSFS step 4 at 1440, and ISCT step 2 at 1440. [GSFS step 4 mobile](evidui01-evidence/gsfs-step4-mobile-replay-full.png) and [ISCT step 2 mobile](evidui01-evidence/isct-step2-mobile-replay-full.png) were captured by a separate [saved-response replay](evidui01-evidence/replay-journal.json), with zero live service starts or POSTs. No further real service start is available in the developer budget.
+
+## Design review correction at the saved response
+
+The graph now derives connected card paths from the reviewed edges. The English topic is one visible three-card path, with both arrows between their source and target cards. Other relations are separate connected paths; where two reviewed edges point to one source, that source card repeats with the same `record_id` binding instead of implying an unreviewed connection. Independent sources remain visible when relations are missing or unknown. On mobile, the paths stack vertically. The stage-separation edge uses a dashed line and its own Chinese explanation.
+
+Each card uses the source stage, role, document type and page for its short label. Thus the PDF 28 application clause and PDF 28 enrollment context have different visible endpoint labels, while PDF 28 and PDF 40 check-sheet clauses remain distinct. The reviewed Chinese scope note appears inside each card, with audit record IDs replaced by “相关条款” in the display only. Full official titles, headings, quotes and pages remain tied to the original record in the same modal. The stored response and reviewed relation data were not edited.
+
+The [replay journal](evidui01-evidence/replay-journal.json) records zero service starts and zero real POSTs for this correction. It exercised all three graph buttons, checked all five edges and eight unique source bindings, verified distinct E06/E07 and E04/E05 labels, dashed stage line, original text and back focus, Escape and no horizontal overflow, then retained the report and ISCT replay checks. The new screenshots are separate from the earlier live captures:
+
+| Reviewed topic | Desktop 1440 | Mobile 390 |
+| --- | --- | --- |
+| 英语成绩单 | [connected path](evidui01-evidence/gsfs-1-graph-desktop-review-replay.png) | [vertical path](evidui01-evidence/gsfs-1-graph-mobile-review-replay.png) |
+| 提交书类检查表本身 | [connected clauses](evidui01-evidence/gsfs-2-graph-desktop-review-replay.png) | [vertical clauses](evidui01-evidence/gsfs-2-graph-mobile-review-replay.png) |
+| 学业与职务両立计划书 | [stage and application paths](evidui01-evidence/gsfs-3-graph-desktop-review-replay.png) | [dashed stage path](evidui01-evidence/gsfs-3-graph-mobile-review-replay.png) |
+
+At the corrected head, 18 focused reference/API/browser tests and 5 Node projection tests passed; Ruff lint and formatting, JavaScript syntax and patch whitespace checks passed. The saved-response replay and synthetic browser tests run the current UI code. They are evidence for presentation and binding after this review correction, not a new live-service verification. The prior live-service budget and protected asset hashes remain as recorded above.
 
 The implementation did not alter reviewed plan, seed, trust, policy, canonical report, PDF, KB, index or model artifacts. A rollback can remove the optional DTO projection and graph UI while leaving the original source viewer and REPORT-02 report intact.

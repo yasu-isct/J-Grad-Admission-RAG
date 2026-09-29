@@ -1,9 +1,10 @@
-"""Supplementary mobile captures from saved real responses; starts no service."""
+"""Replay saved real responses through the current UI; starts no service."""
 
 from __future__ import annotations
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -84,17 +85,107 @@ def main():
         real_helper.choose(page, gsfs)
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
+        screenshots = []
+        for index, topic in enumerate(evidence["topics"], start=1):
+            page.set_viewport_size({"width": 1440, "height": 900})
+            trigger = page.locator(
+                ".materials-section .requirement-card .requirement-evidence-actions button"
+            ).nth(index - 1)
+            trigger.click()
+            drawer = page.locator("#evidence-drawer")
+            assert drawer.is_visible()
+            assert drawer.locator(".relation-edge").count() == len(topic["relations"])
+            assert {
+                record_id
+                for record_id in drawer.locator(".relation-node").evaluate_all(
+                    "nodes => nodes.map(node => node.dataset.recordId)"
+                )
+            } == {record["record_id"] for record in topic["records"]}
+            edge_labels = drawer.locator(".relation-edge").evaluate_all(
+                "edges => edges.map(edge => edge.getAttribute('aria-label'))"
+            )
+            for relation in topic["relations"]:
+                from_label = drawer.locator(
+                    f'.relation-node[data-record-id="{relation["from"]}"] h4'
+                ).first.inner_text()
+                to_label = drawer.locator(
+                    f'.relation-node[data-record-id="{relation["to"]}"] h4'
+                ).first.inner_text()
+                assert any(f"{from_label} 指向 {to_label}：" in label for label in edge_labels)
+            assert not any(
+                re.search(r"\bE\d{2,}\b", label)
+                for label in drawer.locator(".relation-node h4").all_inner_texts() + edge_labels
+            )
+            assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
+            if index == 1:
+                assert drawer.locator(".relation-path").count() == 1
+                assert drawer.locator(".relation-path .relation-node").count() == 3
+                assert drawer.evaluate("dialog => dialog.scrollHeight <= dialog.clientHeight"), (
+                    drawer.evaluate(
+                        "dialog => ({scroll: dialog.scrollHeight, client: dialog.clientHeight, "
+                        "path: dialog.querySelector('.relation-path').getBoundingClientRect().height, "
+                        "children: [...dialog.querySelector('.relation-path').children].map(x => [x.className, x.getBoundingClientRect().height, x.getBoundingClientRect().width]), "
+                        "display: getComputedStyle(dialog.querySelector('.relation-path')).display})"
+                    )
+                )
+            if index == 2:
+                labels = drawer.locator(".relation-node h4").all_inner_texts()
+                assert len(labels) == 2 and labels[0] != labels[1]
+                assert "第 28 页" in labels[0] and "第 40 页" in labels[1]
+            if index == 3:
+                labels = {
+                    record_id: drawer.locator(
+                        f'.relation-node[data-record-id="{record_id}"] h4'
+                    ).first.inner_text()
+                    for record_id in ("E06", "E07")
+                }
+                assert labels["E06"] != labels["E07"]
+                assert "出愿" in labels["E06"] and "入学手续" in labels["E07"]
+                stage = drawer.locator(".relation-edge-stage")
+                assert stage.count() == 1
+                assert "入学手续" in stage.get_attribute("aria-label")
+                assert "出愿" in stage.get_attribute("aria-label")
+                assert (
+                    stage.evaluate("node => getComputedStyle(node, '::before').borderTopStyle")
+                    == "dashed"
+                )
+            for width, height, name in ((1440, 900, "desktop"), (390, 844, "mobile")):
+                page.set_viewport_size({"width": width, "height": height})
+                assert drawer.evaluate(
+                    "dialog => { const dialogBox = dialog.getBoundingClientRect(); "
+                    "const headerBox = dialog.querySelector('.drawer-header').getBoundingClientRect(); "
+                    "return dialogBox.top >= 0 && headerBox.top >= 0 && headerBox.bottom <= innerHeight; }"
+                )
+                filename = f"gsfs-{index}-graph-{name}-review-replay.png"
+                page.screenshot(path=str(OUT / filename))
+                screenshots.append(filename)
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            node = drawer.locator(".relation-node button").first
+            record_id = node.get_attribute("data-record-id")
+            node.click()
+            record = next(row for row in topic["records"] if row["record_id"] == record_id)
+            assert record["fragments"][0]["quote_text"] in drawer.inner_text()
+            assert record["source_title"] in drawer.inner_text()
+            drawer.locator(".relation-back").click()
+            assert drawer.locator(
+                f'.relation-node[data-record-id="{record_id}"] button'
+            ).first.evaluate("button => button === document.activeElement")
+            drawer.press("Escape")
+            assert trigger.evaluate("button => button === document.activeElement")
+            page.set_viewport_size({"width": 390, "height": 844})
         page.locator(".overview-cta").click()
         page.locator("#slice-current-employed").select_option("yes")
         page.locator("#slice-retain-employed").select_option("yes")
         page.locator("#comparison-submit").click()
         page.locator("#readiness-panel.slice-readiness").wait_for(state="visible")
         page.screenshot(path=str(OUT / "gsfs-step4-mobile-replay-full.png"), full_page=True)
+        screenshots.append("gsfs-step4-mobile-replay-full.png")
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         real_helper.choose(page, legacy)
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
         page.screenshot(path=str(OUT / "isct-step2-mobile-replay-full.png"), full_page=True)
+        screenshots.append("isct-step2-mobile-replay-full.png")
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
         assert calls == {"evidence_get": 1, "base_post": 1, "report_post": 1} and not errors
         browser.close()
@@ -105,10 +196,7 @@ def main():
                 "service_startups": 0,
                 "real_posts": 0,
                 "replayed_posts": calls,
-                "screenshots": [
-                    "gsfs-step4-mobile-replay-full.png",
-                    "isct-step2-mobile-replay-full.png",
-                ],
+                "screenshots": screenshots,
                 "no_horizontal_overflow": True,
                 "browser_errors": errors,
             },
