@@ -1363,4 +1363,5 @@ button.quiet:hover:not(:disabled) { color: #ffffff; background: var(--color-prim
   .grounded-answer-header { align-items: flex-start; }
   .grounded-source-actions { display: grid; }
   .grounded-source-actions .source-link { overflow-wrap: anywhere; text-align: center; }
+  .requirement-evidence-actions button { flex: 1 1 125px; min-width: 125px; white-space: normal; }
 }

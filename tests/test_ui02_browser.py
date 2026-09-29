@@ -333,6 +333,9 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         )
         page.set_viewport_size({"width": 390, "height": 844})
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+        assert page.locator("#comparison-output .requirement-evidence-actions button").first.evaluate(
+            "button => button.getBoundingClientRect().width >= 125"
+        )
         page.set_viewport_size({"width": 1440, "height": 900})
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
