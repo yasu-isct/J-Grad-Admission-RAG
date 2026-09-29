@@ -24,14 +24,15 @@ experiment [#177](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/177) 
 
 M15 adds a [bounded GSFS materials preview](docs/releases/m15-reviewed-materials-preview.md),
 with three historical materials topics and optional cited reports. It does not add general GSFS
-search/QA or complete admissions coverage. The user-approved next increment is the
-[M16 unified main page](docs/onboarding/unified-workspace-spec.md), following this
-[interactive design](docs/ui-prototypes/unified-workspace-v1.html); implementation is not yet delivered.
+search/QA or complete admissions coverage. The [M16 unified main page](docs/releases/m16-unified-workspace.md)
+is independently accepted in PR #227: both schools share `/app` selection, evidence and an optional
+report action, following the [approved design](docs/ui-prototypes/unified-workspace-v1.html).
+The original detailed Science Tokyo tools remain available at `/app/advanced`.
 
 ## What Applicants Can Verify Today
 
-The local Chinese-language Demo guides an applicant through a reviewed four-step workflow for one
-fixed official Science Tokyo master's guideline:
+The local Chinese-language Demo now offers a unified target-to-reference workspace. For the fixed
+official Science Tokyo master's guideline, the existing reviewed workflow still supports:
 
 - choose the school, degree, April 2027 intake, college, and department;
 - review key dates, education and individual-eligibility-review paths, language information, and

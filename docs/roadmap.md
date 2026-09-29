@@ -4,7 +4,7 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current next increment: M16 unified admissions workspace
+## Completed M16: unified admissions workspace
 
 On2026-09-29 the user explicitly approved the [interactive page prototype](ui-prototypes/unified-workspace-v1.html)
 and instructed implementation. This supersedes M15's separate-entry product design, not its
@@ -17,10 +17,16 @@ supported ISCT target and comparison/search/QA feature; GSFS remains the three-t
 Main-page ISCT report is a cited presentation export of existing base/comparison responses; GSFS
 uses its accepted report endpoint. No new rule engine, index, school coverage or paid generation.
 
-Only [UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) may be released after
-design merge and the #191 handoff. No parallel implementation or
-downstream highlighter is Ready. M16 exit requires actual same-page school selection, reports for
-both capabilities and desktop/mobile fidelity to the approved prototype, not only backend tests.
+[UI-01 #225](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/225) is independently accepted
+and merged in PR #227: head `f1b7b5c7a3cded5749c49de38355364c2732114f`, merge
+`fe83493ba1108167dd9de3a1a352714033f01e9b`. Four review findings were fixed before acceptance.
+Independent 56 focused tests and 3 Node tests passed; exact-head CI passed. Final-head real browser
+proof includes 6 reports, source/copy parity, both schools/intakes, desktop/mobile and one offline
+query. All 25 protected input files stayed unchanged. See the [release boundary](releases/m16-unified-workspace.md)
+and [independent evidence](onboarding/unified-workspace-acceptance.md).
+No Ready implementation remains. Do not automatically start highlighting, new coverage or M17.
+UI-01 cumulative starts 4/4 and searches 2/2 are exhausted; reports 14/20, base/comparison/detail
+POSTs 8/40 do not authorize a new service session or reset old budgets.
 Older paragraphs recording no M16 release describe the M15 closeout before this user decision.
 M13 remains paused; #177 remains closed and334/391 remain protected.
 
