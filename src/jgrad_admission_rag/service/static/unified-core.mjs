@@ -483,6 +483,8 @@ export function readerReport(report, selected) {
     }
   }
   if (selected.materials) {
+    const unfilled = [];
+    const conditional = [];
     const comparison = new Map(array(report.comparison?.items)
       .filter((item) => item.category === "materials").map((item) => [item.item_id || item.title, item]));
     for (const topic of report.topics) {
@@ -492,11 +494,18 @@ export function readerReport(report, selected) {
         : sliceMaterialState(topic, report.employment);
       const item = {title: topic.title, ...state};
       materials.push(item);
-      if (["待补材料", "待填写准备情况", "待确认适用", "需要准备，完成情况未填写"].includes(state.state))
+      if (["待补材料", "需要准备，完成情况未填写"].includes(state.state))
         priorities.push(`${topic.title}：${state.state}。${state.action}`);
+      else if (state.state === "待填写准备情况") unfilled.push(topic.title);
+      else if (state.state === "待确认适用") conditional.push(item);
     }
     if (report.kind === "legacy_applicant" && !report.comparison)
       priorities.unshift("未填写准备情况，暂不能判断还缺哪些材料；可先保存基础要求。");
+    else if (unfilled.length)
+      priorities.push(`${unfilled.join("、")}：待填写准备情况；不能算作缺失材料。`);
+    if (conditional.length) priorities.push(conditional.length === 1
+      ? `${conditional[0].title}：待确认适用。${conditional[0].action}`
+      : `${conditional.map((item) => item.title).join("、")}：待确认适用；请先确认这些材料的适用条件。`);
   }
   if (selected.other) {
     for (const topic of report.topics.filter((item) => !["dates", "materials"].includes(item.category))) {

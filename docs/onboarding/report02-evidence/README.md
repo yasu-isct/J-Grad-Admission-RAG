@@ -10,7 +10,7 @@ This checkpoint uses the saved real HTTP responses from `outputs/ui02-real/final
 | GSFS, condition applies | Previous copy opening and hash in [replay.json](replay.json) | [desktop](gsfs-required-desktop.png) | [mobile](gsfs-required-mobile.png) | [text](gsfs-required-after-copy.txt) |
 | GSFS, condition does not apply | Previous copy opening and hash in [replay.json](replay.json) | [desktop](gsfs-inapplicable-desktop.png) | [mobile](gsfs-inapplicable-mobile.png) | [text](gsfs-inapplicable-after-copy.txt) |
 
-The previous ISCT profile export was 33,346 characters; the corresponding current copy is 1,018 characters. The prior GSFS conditional export was 7,938 characters; its current copy is 429 characters. These counts describe the whole exported text, including target labels. The original report/canonical text and citation checks in `unified-core.mjs` remain unchanged.
+The previous ISCT profile export was 33,346 characters; the corresponding current copy is 954 characters. The prior GSFS conditional export was 7,938 characters; its current copy is 429 characters. These counts describe the whole exported text, including target labels. The original report/canonical text and citation checks in `unified-core.mjs` remain unchanged.
 
 ## Reuse and differences
 

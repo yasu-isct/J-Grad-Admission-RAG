@@ -1,4 +1,5 @@
 """Browser screenshots from saved real HTTP responses; no service or model is started."""
+
 from __future__ import annotations
 
 import json
@@ -23,55 +24,104 @@ def catalog_from_saved(base, evidence):
     """Only route replay UI to saved targets; this catalog is never shipped to production."""
     target = base["target"]
     document_id = base["requirements"][0]["evidence"][0]["document_id"]
-    return {"schema_version": "1.0", "items": [
-        {"entry_id": "legacy-isct", "kind": "legacy_applicant", "availability": "ready",
-         "institution_name": target["school_name"],
-         "capabilities": {"evidence_browse": True, "reference_report": True},
-         "legacy_edition_labels": {document_id:
-             "2027 April / 2026 September Master's Program Admission Guidelines"},
-         "legacy_catalog": {"school_id": "isct", "school_name": target["school_name"],
-             "degrees": [{"degree_id": "master", "degree_name": target["degree_name"],
-                 "intakes": [{"document_id": document_id, "year": 2027, "month": 4,
-                     "intake_name": target["intake_name"], "colleges": [
-                         {"college_id": target["college_name"], "college_name": target["college_name"],
-                          "departments": [{"department_id": target["department_name"],
-                                           "department_name": target["department_name"],
-                                           "application_routes": []}]}]}]}]}},
-        {"entry_id": "gsfs-complex-2027-a", "kind": "reviewed_material_slice",
-         "availability": "ready", "institution_name": "东京大学",
-         "organization_name": "新领域创成科学研究科", "program_name": "複雑理工学専攻",
-         "program_display_name": "複雑理工学専攻", "program_alias": "CBMS",
-         "capabilities": {"evidence_browse": True, "reference_report": True},
-         "target": evidence["target"], "snapshot_id": evidence["snapshot_id"],
-         "request_profile_target": {"graduate_school_or_college": "utokyo-gsfs",
-                                    "department_or_program": "utokyo-gsfs-complex",
-                                    "application_route": "general-ordinary"}}
-    ]}
+    return {
+        "schema_version": "1.0",
+        "items": [
+            {
+                "entry_id": "legacy-isct",
+                "kind": "legacy_applicant",
+                "availability": "ready",
+                "institution_name": target["school_name"],
+                "capabilities": {"evidence_browse": True, "reference_report": True},
+                "legacy_edition_labels": {
+                    document_id: "2027 April / 2026 September Master's Program Admission Guidelines"
+                },
+                "legacy_catalog": {
+                    "school_id": "isct",
+                    "school_name": target["school_name"],
+                    "degrees": [
+                        {
+                            "degree_id": "master",
+                            "degree_name": target["degree_name"],
+                            "intakes": [
+                                {
+                                    "document_id": document_id,
+                                    "year": 2027,
+                                    "month": 4,
+                                    "intake_name": target["intake_name"],
+                                    "colleges": [
+                                        {
+                                            "college_id": target["college_name"],
+                                            "college_name": target["college_name"],
+                                            "departments": [
+                                                {
+                                                    "department_id": target["department_name"],
+                                                    "department_name": target["department_name"],
+                                                    "application_routes": [],
+                                                }
+                                            ],
+                                        }
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                },
+            },
+            {
+                "entry_id": "gsfs-complex-2027-a",
+                "kind": "reviewed_material_slice",
+                "availability": "ready",
+                "institution_name": "东京大学",
+                "organization_name": "新领域创成科学研究科",
+                "program_name": "複雑理工学専攻",
+                "program_display_name": "複雑理工学専攻",
+                "program_alias": "CBMS",
+                "capabilities": {"evidence_browse": True, "reference_report": True},
+                "target": evidence["target"],
+                "snapshot_id": evidence["snapshot_id"],
+                "request_profile_target": {
+                    "graduate_school_or_college": "utokyo-gsfs",
+                    "department_or_program": "utokyo-gsfs-complex",
+                    "application_route": "general-ordinary",
+                },
+            },
+        ],
+    }
 
 
 def main():
-    base, comparison, evidence = (read(name) for name in
-                                  ("isct-base-2027.json", "isct-comparison.json", "gsfs-evidence.json"))
+    base, comparison, evidence = (
+        read(name) for name in ("isct-base-2027.json", "isct-comparison.json", "gsfs-evidence.json")
+    )
     catalog = catalog_from_saved(base, evidence)
-    reports = {(None, None): read("gsfs-unknown-unknown.json"),
-               (True, True): read("gsfs-yes-yes.json"),
-               (False, None): read("gsfs-no-unknown.json")}
+    reports = {
+        (None, None): read("gsfs-unknown-unknown.json"),
+        (True, True): read("gsfs-yes-yes.json"),
+        (False, None): read("gsfs-no-unknown.json"),
+    }
     calls = {"base": 0, "comparison": 0, "reports": 0}
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
         page = browser.new_page(viewport={"width": 1440, "height": 900})
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
-        page.add_init_script("Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copied=text}}});")
+        page.add_init_script(
+            "Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copied=text}}});"
+        )
 
         def route_request(route):
             path = urlparse(route.request.url).path
             if path == "/app":
-                route.fulfill(body=(STATIC / "advanced.html").read_bytes(), content_type="text/html")
+                route.fulfill(
+                    body=(STATIC / "advanced.html").read_bytes(), content_type="text/html"
+                )
             elif path.startswith("/assets/"):
                 name = path.rsplit("/", 1)[-1]
-                route.fulfill(body=(STATIC / name).read_bytes(),
-                              content_type="text/css" if name.endswith(".css") else "text/javascript")
+                route.fulfill(
+                    body=(STATIC / name).read_bytes(),
+                    content_type="text/css" if name.endswith(".css") else "text/javascript",
+                )
             elif path == "/v1/reference-targets":
                 route.fulfill(json=catalog)
             elif path == "/v1/reviewed-documents":
@@ -89,7 +139,10 @@ def main():
             elif path.endswith("/reports"):
                 calls["reports"] += 1
                 values = route.request.post_data_json["employment"]
-                key = (values["currently_employed_in_organization"], values["retain_employment_at_enrollment"])
+                key = (
+                    values["currently_employed_in_organization"],
+                    values["retain_employment_at_enrollment"],
+                )
                 route.fulfill(json=reports[key])
             else:
                 route.abort()
@@ -139,9 +192,11 @@ def main():
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for()
         page.locator(".overview-cta").click()
-        for current, retain, name in (("unknown", "unknown", "gsfs-unknown"),
-                                      ("yes", "yes", "gsfs-required"),
-                                      ("no", "unknown", "gsfs-inapplicable")):
+        for current, retain, name in (
+            ("unknown", "unknown", "gsfs-unknown"),
+            ("yes", "yes", "gsfs-required"),
+            ("no", "unknown", "gsfs-inapplicable"),
+        ):
             if not page.locator("#slice-current-employed").is_visible():
                 page.locator("#edit-applicant").click()
             page.locator("#slice-current-employed").select_option(current)
@@ -152,11 +207,23 @@ def main():
         assert calls == {"base": 1, "comparison": 1, "reports": 3} and not errors, (calls, errors)
         browser.close()
     (OUT / "replay-browser-journal.json").write_text(
-        json.dumps({"method": "saved real HTTP responses through current browser code",
-                    "service_startups": 0, "real_posts": 0, "replayed_posts": calls,
-                    "screenshots": 10, "copy_matches_projection": True,
-                    "no_horizontal_overflow": True, "browser_errors": []}, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8")
+        json.dumps(
+            {
+                "method": "saved real HTTP responses through current browser code",
+                "service_startups": 0,
+                "real_posts": 0,
+                "replayed_posts": calls,
+                "screenshots": 10,
+                "copy_matches_projection": True,
+                "no_horizontal_overflow": True,
+                "browser_errors": [],
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":

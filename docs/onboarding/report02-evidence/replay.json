@@ -15,8 +15,8 @@
         "excerpt": "募集要项参考报告\n東京科学大学 · 工学院 · システム制御系 · 修士课程 · 2027 April / 2026 September Master's Program Admission Guidelines · 2027年4月入学 · 一般选拔\n\n资料性质：当前已审核结果的页面导出；不是最终资格判断。\n审核覆盖：当前只展示人工审核并与官方 Fact 绑定的部分日期、材料、资格和语言规则。\n范围限制：本报告不判断最终出愿资格、材料受理、录取结果或成功概率。\n\n基础要求\n\n1. 网上登记与出愿期间\n类别：日期；官方状态：需要提交／满足对应条件时适用\n说明：请根据下方官方日文核对网上登记开始时间与出愿期间。\n日期：网上出愿信息登记开放 · 2026年6月1日 09:00 起（JST） · 精度 minute\n未知时间字段：end_date、end_time\n日期限制：登记结束日期与时刻：官方原文未明确，不作推断。\n日期：出愿材料到达期间 · 2026年6月4日至2026年6月10日 · 精度 date\n未知时间字段：end_time、start_time\n日期限制：官方按日期说明期间，未给出每日具体时刻。\n限制：仅显示已审核的官方期间；请以官方文件与学校最新通知为准。\n出处：2027 April / 2026 September Master's Program Admission Guidelines · 物理页 9\n上下文：日期结论仅复述已审核的官方日期语义；请通过原文与 PDF 页码最终核对。\n官方原文：（１）出願期間\n2026年6月4日（木）～6月10日（水）（必着）\n"
       },
       "afterCopy": {
-        "sha256": "440d64f4b4dbfd8f4d6288de49c963aa4f715985419ec1d9b48a3bb40ea47be4",
-        "length": 1084,
+        "sha256": "7e2636716e5cc6a3e8a4083143e560d377111c42c0193b7c1a00f76d483966cf",
+        "length": 948,
         "file": "isct-no-profile-after-copy.txt"
       },
       "materials": [
@@ -60,8 +60,8 @@
         "excerpt": "募集要项参考报告\n東京科学大学 · 工学院 · システム制御系 · 修士课程 · 2027 April / 2026 September Master's Program Admission Guidelines · 2027年4月入学 · 一般选拔\n\n资料性质：当前已审核结果的页面导出；不是最终资格判断。\n审核覆盖：当前只展示人工审核并与官方 Fact 绑定的部分日期、材料、资格和语言规则。\n范围限制：本报告不判断最终出愿资格、材料受理、录取结果或成功概率。\n\n基础要求\n\n1. 网上登记与出愿期间\n类别：日期；官方状态：需要提交／满足对应条件时适用\n说明：请根据下方官方日文核对网上登记开始时间与出愿期间。\n日期：网上出愿信息登记开放 · 2026年6月1日 09:00 起（JST） · 精度 minute\n未知时间字段：end_date、end_time\n日期限制：登记结束日期与时刻：官方原文未明确，不作推断。\n日期：出愿材料到达期间 · 2026年6月4日至2026年6月10日 · 精度 date\n未知时间字段：end_time、start_time\n日期限制：官方按日期说明期间，未给出每日具体时刻。\n限制：仅显示已审核的官方期间；请以官方文件与学校最新通知为准。\n出处：2027 April / 2026 September Master's Program Admission Guidelines · 物理页 9\n上下文：日期结论仅复述已审核的官方日期语义；请通过原文与 PDF 页码最终核对。\n官方原文：（１）出願期間\n2026年6月4日（木）～6月10日（水）（必着）\n"
       },
       "afterCopy": {
-        "sha256": "31af5c313342e8cfc6a581d3e25a3bcdaf0d7bdd01781b1a1dc81ec081b69a84",
-        "length": 1018,
+        "sha256": "fb6dac375b0fe4ab7d86fed64f578e00f8a86169f8d9e580794a3f98e7a2c1f4",
+        "length": 954,
         "file": "isct-with-profile-after-copy.txt"
       },
       "materials": [
