@@ -4,7 +4,18 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 release: usability before the school presentation
+## Current M17 release: UX-01 accepted, UX-02 reader experience
+
+UX-01 [#247](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247) was independently accepted in
+[PR #249](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/249), reviewed `e86318b01c408ec64aaa85cee611df0b6439dd8e`,
+merge `be01eccbc078816b09945cb2866f8294a8ab767d`; [acceptance](onboarding/ux01-design-acceptance.md).
+Only [UX-02 #250](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/250) becomes Ready with this design merge:
+readable typography/copy/material explanations and answer presentation in the original four-step page.
+[Complete Spec](onboarding/demo-readability-spec.md). M17 Main implements; design independently accepts.
+No QA behavior repair, new coverage or framework. Keep the 8003 rollback preview and immutable tag.
+After UX-02, prepare the school demonstration; QA #233/#236, M13 and ordinary-student expansion remain paused.
+
+## Previous M17 release: UX-01 plan
 
 2026-09-30 user requested a rollback point and a development plan for six usability findings.
 The running online preview is frozen at [demo-before-usability-20260930](https://github.com/yasu-isct/J-Grad-Admission-RAG/tree/demo-before-usability-20260930),
