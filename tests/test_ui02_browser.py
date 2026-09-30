@@ -578,8 +578,7 @@ def test_ui02_question_boundaries_and_school_isolation():
             page.locator("#grounded-question").fill(question)
             page.locator("#grounded-answer-submit").click()
             page.get_by_text(
-                f"处理概况 {question}" if question == "no safe result"
-                else f"参考正文 {question}"
+                f"处理概况 {question}" if question == "no safe result" else f"参考正文 {question}"
             ).wait_for()
             output = page.locator("#grounded-answer-output").inner_text()
             if question == "no safe result":
