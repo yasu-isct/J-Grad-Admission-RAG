@@ -123,8 +123,26 @@
                   <option value="university_three_year_enrollment">大学在学满 3 年等（需个别资格审查）</option>
                 </select>
                 <label for="demo-completion-state">毕业状态</label>
-                <p id="completion-help" class="field-help">记录你是否已毕业或预计毕业；此处不要求填写毕业日期，也不会自动认定资格。</p>
+                <p id="completion-help" class="field-help">记录你是否已毕业或预计毕业；日期可留空，填写后也只核对毕业时间这一项。</p>
                 <select id="demo-completion-state" aria-describedby="completion-help"><option value="">未填写</option><option value="ui_unknown">不知道／需要确认</option><option value="ui_not_applicable">目前不适用／暂无毕业状态</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
+                <div id="demo-completion-date-field" hidden><label for="demo-completion-date">毕业日期</label><input id="demo-completion-date" type="date" aria-describedby="completion-help"></div>
+                <div id="demo-expected-completion-date-field" hidden><label for="demo-expected-completion-date">预计毕业日期</label><input id="demo-expected-completion-date" type="date" aria-describedby="completion-help"></div>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="submission" data-profile-label="网上手续与寄送" data-requirement-categories="dates,eligibility">
+                <summary><span class="profile-group-title"><strong>网上手续与寄送</strong><small>寄出不代表送达；自报完成不代表学校受理。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                  <legend>提交进度</legend>
+                  <label for="demo-online-steps">网上注册、照片上传及缴费是否均已完成</label>
+                  <select id="demo-online-steps"><option value="">未填写／不清楚</option><option value="true">均已完成（自报）</option><option value="false">尚未全部完成</option></select>
+                  <label for="demo-dispatched-date">材料寄出日期</label><input id="demo-dispatched-date" type="date">
+                  <label for="demo-arrival-date">材料实际送达日期</label><input id="demo-arrival-date" type="date" aria-describedby="demo-submission-hint">
+                  <p id="demo-submission-hint" class="linked-field-hint" role="status" aria-live="polite">实际送达日期可以留空；寄出日期不会当作送达日期。</p>
+                  <p class="field-help">当前资料要求邮寄材料，不接受窗口递交；请使用速达挂号。建议提前到达日不等于必着截止日。实际送达与受理均须另行核对。</p>
+                  <div id="demo-review-status-field" hidden>
+                    <label for="demo-review-status">资格审查办理进度</label>
+                    <select id="demo-review-status"><option value="">未填写／不清楚</option><option value="not_requested">尚未申请</option><option value="requested">已申请，等待结果</option><option value="completed">流程已完成（仅自报，不表示通过）</option></select>
+                  </div>
                 </fieldset>
               </details>
               <details class="profile-group" data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">

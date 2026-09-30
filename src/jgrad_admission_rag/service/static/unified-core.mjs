@@ -129,7 +129,8 @@ export function hasSuppliedProfile(controls) {
 export function comparisonRequest(scope, controls) {
   requireValue(scope.kind === "legacy_applicant" && scope.request, "目标类型不匹配");
   return {schema_version: "1.0", target: scope.request, applicant: legacyApplicant(controls),
-    ...(controls.english_preparation ? {english_preparation: controls.english_preparation} : {})};
+    ...(controls.english_preparation ? {english_preparation: controls.english_preparation} : {}),
+    ...(controls.application_preparation ? {application_preparation: controls.application_preparation} : {})};
 }
 
 export function validateEnglishPreparationResult(scope, payload) {
@@ -147,6 +148,26 @@ export function validateEnglishPreparationResult(scope, payload) {
     ids.add(check.check_id);
     if (["reported_match", "action_needed"].includes(check.status))
       requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "英语核对依据缺失");
+    for (const source of check.evidence) validateLegacyEvidence(source, scope);
+  }
+  return result;
+}
+
+export function validateApplicationPreparationResult(scope, payload) {
+  const result = payload?.application_preparation_result;
+  requireValue(scope?.kind === "legacy_applicant" && result
+    && result.document_id === scope.request.document_id
+    && legacyTargetMatches(scope, result.target) && Array.isArray(result.checks),
+  "毕业与提交核对结果与当前目标不匹配");
+  const ids = new Set();
+  for (const check of result.checks) {
+    requireValue(nonempty(check.check_id) && !ids.has(check.check_id)
+      && ["reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"].includes(check.status)
+      && nonempty(check.title) && nonempty(check.explanation) && nonempty(check.next_action)
+      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "毕业与提交核对项无效");
+    ids.add(check.check_id);
+    if (check.status === "reported_match")
+      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "毕业与提交核对依据缺失");
     for (const source of check.evidence) validateLegacyEvidence(source, scope);
   }
   return result;
@@ -310,6 +331,8 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = []) 
       && comparison.counts?.total === comparison.items.length, "个人对照目标不匹配");
     if (comparison.english_preparation_result)
       validateEnglishPreparationResult(mapped.scope, comparison);
+    if (comparison.application_preparation_result)
+      validateApplicationPreparationResult(mapped.scope, comparison);
     for (const item of comparison.items)
       if (!["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
         requireValue(array(item.evidence).length > 0, "个人对照引用缺失");
@@ -610,6 +633,8 @@ function readerText(view) {
       : ["当前所选资料没有可整理的材料主题。"]);
   if (view.selected.includes("materials") && view.english.length)
     section("英语成绩与证明", view.english);
+  if (view.selected.includes("materials") && view.submission.length)
+    section("毕业与提交提醒", view.submission);
   if (view.selected.includes("other"))
     section("其他已加载要求", view.other.length
       ? view.other.map((item) => `${item.title}：${item.summary}（${item.status}）`)
@@ -629,6 +654,7 @@ export function readerReport(report, selected) {
   const materials = [];
   const other = [];
   const english = [];
+  const submission = [];
   const priorities = [];
   let dateNote = "";
   if (selected.dates) {
@@ -661,6 +687,17 @@ export function readerReport(report, selected) {
           needs_information: "待确认", not_applicable: "不适用", not_covered: "未覆盖"}[check.status];
         english.push(`${check.title}：${status}。${check.explanation} 下一步：${check.next_action}`);
         if (check.status === "action_needed") priorities.push(`英语 · ${check.title}：${check.next_action}`);
+      }
+    }
+    const application = report.comparison?.application_preparation_result;
+    if (application) {
+      for (const check of application.checks) {
+        const status = {reported_match: "按填写已记录", action_needed: "需处理",
+          needs_information: "待确认", not_applicable: "不适用", not_covered: "未覆盖"}[check.status];
+        const line = `${check.title}：${status}。${check.explanation} 下一步：${check.next_action}`;
+        submission.push(line);
+        if (check.status === "action_needed" || check.status === "needs_information")
+          priorities.push(`毕业与提交 · ${check.title}：${check.next_action}`);
       }
     }
     const unfilled = [];
@@ -705,7 +742,7 @@ export function readerReport(report, selected) {
       : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
   const priorityRows = priorities.length ? priorities : selected.materials
     ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
-  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, other, limitation};
+  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, submission, other, limitation};
   return {...view, text: readerText(view)};
 }
 

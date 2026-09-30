@@ -105,6 +105,32 @@ test("catalog and request mapping work for renamed schools and a second slice", 
   assert.throws(() => readyEntries({schema_version: "1.0", items: [{...legacy, capabilities: {...legacy.capabilities, reference_report: false}}]}));
 });
 
+test("PREP-02 request, evidence binding, and report topics stay scoped", () => {
+  const scope = scopesFor(legacy)[0];
+  const preparation = {materials_dispatched_date: "2026-06-09", materials_arrival_date: null,
+    online_steps_completed: false};
+  const request = comparisonRequest(scope, {materials: [], application_preparation: preparation});
+  assert.deepEqual(request.application_preparation, preparation);
+  const mapped = mapLegacyBase(scope, {...base, requirements: [...base.requirements,
+    {requirement_id: "material:address_label", category: "materials", title: "宛名ラベル",
+      description: "邮寄地址标签", official_status: "required", evidence: [source], date_events: []}]});
+  const detailed = {...comparison, application_preparation_result: {
+    document_id: "doc-a", target: base.target, scope_statement: "仅核对自报",
+    checks: [{check_id: "application:arrival", title: "材料送达", status: "needs_information",
+      explanation: "已寄出，送达尚未确认", next_action: "确认实际送达日期",
+      rule_ids: ["reviewed-arrival"], evidence: [source]}]
+  }};
+  const report = legacyReport(mapped, detailed);
+  const dates = readerReport(report, {dates: true, materials: false, other: false});
+  assert.doesNotMatch(dates.text, /送达尚未确认|毕业与提交提醒/);
+  const materials = readerReport(report, {dates: false, materials: true, other: false});
+  assert.match(materials.text, /毕业与提交提醒/);
+  assert.match(materials.text, /已寄出，送达尚未确认/);
+  assert.equal(materials.submission.length, 1);
+  assert.throws(() => legacyReport(mapped, {...detailed, application_preparation_result: {
+    ...detailed.application_preparation_result, document_id: "other-document"}}));
+});
+
 test("full base export preserves dates, all categories, citations and optional comparison", () => {
   const scope = scopesFor(legacy)[0];
   const mapped = mapLegacyBase(scope, base);

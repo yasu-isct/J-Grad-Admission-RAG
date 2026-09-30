@@ -1,0 +1,25 @@
+{
+  "target": {
+    "school_id": "isct",
+    "document_id": "isct_2027_4_2026_9_master",
+    "degree_id": "master",
+    "intake": {
+      "year": 2027,
+      "month": 4
+    },
+    "college_id": "情報理工学院",
+    "department_id": "情報工学系",
+    "application_route": "b_schedule"
+  },
+  "applicant": {
+    "credential_basis": "university_graduation",
+    "completion_state": "expected"
+  },
+  "english_preparation": {},
+  "application_preparation": {
+    "expected_completion_date": "2027-04-10",
+    "materials_dispatched_date": "2026-06-09",
+    "materials_arrival_date": "2026-06-10",
+    "online_steps_completed": false
+  }
+}
