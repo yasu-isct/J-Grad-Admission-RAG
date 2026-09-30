@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date, time
 from enum import Enum
 from typing import Literal
+from uuid import uuid4
 
 from pydantic import (
     BaseModel,
@@ -13,8 +14,10 @@ from pydantic import (
     StrictBool,
     StrictFloat,
     StrictInt,
+    model_serializer,
     model_validator,
 )
+from pydantic_core import PydanticCustomError
 
 from ..reasoning.applicability import ApplicabilityPredicate, ApplicabilityRule, PredicateOperator
 from ..reasoning.application_materials import (
@@ -27,6 +30,14 @@ from ..reasoning.applicant_profile import (
     CompletionState,
     CredentialBasis,
     LanguageTestKind,
+)
+from ..reasoning.applicant_report import build_applicant_report
+from ..reasoning.query_intent import (
+    IntentCategory,
+    IntentMention,
+    MentionKind,
+    QueryIntent,
+    RequestedScope,
 )
 from ..reasoning.reviewed_report_evidence import (
     ReviewedReportEvidenceBundle,
@@ -224,10 +235,64 @@ class DemoApplicantInput(DemoModel):
         return self
 
 
+class DemoEnglishPreparationInput(DemoModel):
+    downloaded_online_pdf: StrictBool | None = None
+    toeic_verification_qr_present: StrictBool | None = None
+    toeic_digital_official_score_certificate: StrictBool | None = None
+    toefl_test_taker_score_report_pdf: StrictBool | None = None
+    toefl_di_code_g179_set: StrictBool | None = None
+
+
 class DemoApplicantComparisonRequest(DemoModel):
     schema_version: Literal["1.0"] = "1.0"
     target: DemoTargetRequest
     applicant: DemoApplicantInput
+    english_preparation: DemoEnglishPreparationInput | None = None
+
+    @model_validator(mode="after")
+    def english_fields_must_match_test_kind(self) -> "DemoApplicantComparisonRequest":
+        proof = self.english_preparation
+        if proof is None:
+            return self
+        kind = self.applicant.english_test_kind
+        if kind is not LanguageTestKind.TOEIC_LR and (
+            proof.toeic_verification_qr_present is not None
+            or proof.toeic_digital_official_score_certificate is not None
+        ):
+            raise PydanticCustomError(
+                "english_proof_kind_mismatch",
+                "TOEIC proof fields require english_test_kind=toeic_lr",
+                {"field": "english_preparation.toeic_*", "expected_test_kind": "toeic_lr"},
+            )
+        if kind not in {LanguageTestKind.TOEFL_IBT, LanguageTestKind.TOEFL_IBT_HOME_EDITION} and (
+            proof.toefl_test_taker_score_report_pdf is not None
+            or proof.toefl_di_code_g179_set is not None
+        ):
+            raise PydanticCustomError(
+                "english_proof_kind_mismatch",
+                "TOEFL proof fields require a TOEFL iBT english_test_kind",
+                {"field": "english_preparation.toefl_*", "expected_test_kind": "toefl_ibt"},
+            )
+        return self
+
+
+class DemoEnglishPreparationCheck(DemoModel):
+    check_id: str
+    title: str
+    status: Literal[
+        "reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"
+    ]
+    explanation: str
+    next_action: str
+    rule_ids: tuple[str, ...] = ()
+    evidence: tuple[DemoEvidence, ...] = ()
+
+
+class DemoEnglishPreparationResult(DemoModel):
+    document_id: str
+    target: DemoTargetSummary
+    scope_statement: str
+    checks: tuple[DemoEnglishPreparationCheck, ...]
 
 
 class DemoComparisonItem(DemoModel):
@@ -284,6 +349,14 @@ class DemoApplicantComparisonResponse(DemoModel):
     limitation_statement: str
     items: tuple[DemoComparisonItem, ...]
     counts: DemoReadinessCounts
+    english_preparation_result: DemoEnglishPreparationResult | None = None
+
+    @model_serializer(mode="wrap")
+    def omit_unrequested_english_result(self, handler):
+        payload = handler(self)
+        if self.english_preparation_result is None:
+            payload.pop("english_preparation_result", None)
+        return payload
 
     @model_validator(mode="after")
     def counts_must_match_items(self) -> "DemoApplicantComparisonResponse":
@@ -523,8 +596,102 @@ def build_demo_base_requirements(
                     if "english-submission-" in rule.rule_id
                     else "该目标适用已审核的英语考试要求；个人成绩与证明材料尚未比较。"
                 ),
+                reviewed_summary=(
+                    "信息工学系须在出愿时提交英语成绩单；截止后不能补交，已交成绩单不能替换，成绩单不退还。"
+                    if rule.rule_id
+                    == f"isct-master-english-submission-computer-science-{'apr' if request.intake.month == 4 else 'sep'}"
+                    and {binding.fact_id for binding in rule.evidence_bindings} == {"fact:00287"}
+                    else None
+                ),
             )
         )
+
+    if (
+        request.school_id == "isct"
+        and request.document_id == "isct_2027_4_2026_9_master"
+        and plan.document_identity.document_id == request.document_id
+    ):
+        month = "apr" if request.intake.month == 4 else "sep"
+        names = (
+            ("math-written-exam",)
+            if request.department_id == "数学系"
+            else (
+                "approved-kind-toeic_lr",
+                "toefl-report-toefl_ibt",
+                "test-date",
+                "online-pdf",
+                "external-score-required",
+            )
+        )
+        guide_rules = tuple(
+            next(
+                (
+                    rule
+                    for rule in plan.rules
+                    if rule.rule_id == f"isct-master-english-{name}-{month}"
+                    and _rule_matches_target(rule, request)
+                ),
+                None,
+            )
+            for name in names
+        )
+        date_rule = next(
+            (
+                rule
+                for rule in guide_rules
+                if rule is not None and rule.rule_id == f"isct-master-english-test-date-{month}"
+            ),
+            None,
+        )
+        date_bound = date_rule is None or any(
+            predicate.field_path == "language_test_results.selected.test_date"
+            and predicate.expected_value == "2024-06-11"
+            for predicate in date_rule.predicates
+        )
+        if all(guide_rules) and date_bound:
+            fact_ids = sorted(
+                {binding.fact_id for rule in guide_rules for binding in rule.evidence_bindings}
+            )
+            expected_facts = (
+                {"fact:00123"}
+                if request.department_id == "数学系"
+                else {"fact:00110", "fact:00111", "fact:00114", "fact:00115", "fact:00122"}
+            )
+            if set(fact_ids) == expected_facts and all(
+                fact_id in evidence_by_fact for fact_id in fact_ids
+            ):
+                math = request.department_id == "数学系"
+                guide = (
+                    "当前资料中，数学系采用校内英语笔试，不要求提交上述英语外部成绩单。\n"
+                    "请查看数学系已审核的考试安排。"
+                    if math
+                    else "可用考试：TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition。\n"
+                    "TOEIC-IP、TOEFL-ITP等团体考试不能用于本轮申请。\n"
+                    "考试日期须为2024年6月11日或之后（仅本募集版本）。\n"
+                    "打印在线下载的官方PDF；ETS寄给本人或学校的纸质成绩单不能替代。\n"
+                    "TOEIC：核对数字官方成绩证明或同等形式及真伪验证二维码；无二维码的纸质证明不接受。\n"
+                    "TOEFL：打印Test Taker Score Report PDF，并为本次成绩设置学校DI代码G179。"
+                )
+                requirements.append(
+                    DemoRequirement(
+                        requirement_id="language:preparation-guide",
+                        category="language",
+                        title="英语成绩怎么准备",
+                        description=guide,
+                        reviewed_summary=guide,
+                        official_status="conditional" if not math else "not_applicable",
+                        evidence=tuple(
+                            _demo_evidence(
+                                plan,
+                                evidence_by_fact[fact_id],
+                                "只适用于当前东科大募集版本；各学系提交方式须另行核对。",
+                                request.intake,
+                            )
+                            for fact_id in fact_ids
+                        ),
+                        limitation="只说明已审核的类型、日期与证明形式；不判断成绩或学校受理。",
+                    )
+                )
 
     if plan.language_score_allocation is not None:
         for entry in plan.language_score_allocation.entries:
@@ -752,11 +919,329 @@ def build_demo_applicant_comparison(
         limitation_statement="本结果不是完整 checklist，不判断最终资格、材料完整性、受理或录取。",
         items=tuple(items),
         counts=counts,
+        english_preparation_result=(
+            _english_preparation_result(request, plan, evidence_bundle, base.target)
+            if request.english_preparation is not None
+            else None
+        ),
+    )
+
+
+def _english_preparation_result(
+    request: DemoApplicantComparisonRequest,
+    plan: ReviewedReportPlan,
+    evidence_bundle: ReviewedReportEvidenceBundle,
+    target: DemoTargetSummary,
+) -> DemoEnglishPreparationResult:
+    """Translate the existing reviewed report trace into bounded preparation checks."""
+
+    scope_statement = "只核对当前已审核资料与本次自报；不判断整份成绩、资格或学校受理。"
+    if (request.target.school_id, request.target.document_id) != (
+        "isct",
+        "isct_2027_4_2026_9_master",
+    ) or plan.document_identity.document_id != request.target.document_id:
+        return DemoEnglishPreparationResult(
+            document_id=request.target.document_id,
+            target=target,
+            scope_statement=scope_statement,
+            checks=(
+                DemoEnglishPreparationCheck(
+                    check_id="english:coverage",
+                    title="英语证明核对",
+                    status="not_covered",
+                    explanation="当前资料未覆盖这项目标的详细英语证明核对。",
+                    next_action="请查看当前目标的已审核要求和官方原文。",
+                ),
+            ),
+        )
+
+    token = "language_tests"
+    intent = QueryIntent(
+        schema_version="1.0",
+        parser_version="lexical-ja-v1",
+        catalog_version="prep01-v1",
+        query=token,
+        requested_categories=(IntentCategory.LANGUAGE_TESTS,),
+        requested_scope=RequestedScope(
+            department_or_program_targets=(),
+            parent_college_values=(),
+            target_degree_level=None,
+            intake_year=None,
+            intake_month=None,
+        ),
+        matched_mentions=(
+            IntentMention(
+                canonical_value=token,
+                mention_kind=MentionKind.INTENT,
+                start_offset=0,
+                end_offset=len(token),
+                surface=token,
+            ),
+        ),
+        diagnostics=(),
+    )
+    report = build_applicant_report(
+        f"prep01-{uuid4().hex}",
+        _demo_applicant_profile(request.target, request.applicant, request.english_preparation),
+        intent,
+        plan,
+        evidence_bundle,
+    )
+    decisions = {item.rule_id: item for item in report.reasoning_trace.source_decisions}
+    resolution = {item.rule_id: item for item in report.reasoning_trace.resolution_steps}
+    conflicts = {
+        rule_id
+        for item in report.reasoning_trace.interaction_steps
+        if item.outcome.value in {"conflict", "ambiguity", "unreviewed_interaction"}
+        for rule_id in item.rule_ids
+    }
+    rules = {item.rule_id: item for item in plan.rules}
+    records = {item.fact_id: item for item in evidence_bundle.evidence_records}
+    suffix = "apr" if request.target.intake.month == 4 else "sep"
+
+    def binding(stem: str, field: str | None = None, expected: object = True):
+        rule_id = f"isct-master-english-{stem}-{suffix}"
+        rule = rules.get(rule_id)
+        if rule is None or not _rule_matches_target(rule, request.target):
+            return None
+        if field is not None and not any(
+            predicate.field_path == field and predicate.expected_value == expected
+            for predicate in rule.predicates
+        ):
+            return None
+        decision, step = decisions.get(rule_id), resolution.get(rule_id)
+        if decision is None or step is None or rule_id in conflicts:
+            return None
+        if step.disposition.value == "overridden":
+            return None
+        evidence = tuple(
+            _demo_evidence(
+                plan,
+                records[item.fact_id],
+                scope_statement,
+                request.target.intake,
+            )
+            for item in rule.evidence_bindings
+            if item.fact_id in records
+        )
+        if len(evidence) != len(rule.evidence_bindings):
+            return None
+        return rule_id, decision, evidence
+
+    def check(
+        check_id: str,
+        title: str,
+        bound,
+        value: object,
+        good: str,
+        bad: str,
+        unknown: str,
+        action: str,
+        *,
+        bad_action: str | None = None,
+    ) -> DemoEnglishPreparationCheck:
+        if bound is None:
+            return DemoEnglishPreparationCheck(
+                check_id=check_id,
+                title=title,
+                status="not_covered",
+                explanation="当前目标缺少可核对的完整审核依据。",
+                next_action="请查看官方原文或向学校确认。",
+            )
+        rule_id, decision, evidence = bound
+        # A confirmed rule means its condition fired. A failed true predicate is
+        # only an action when the applicant explicitly supplied false (or an old date).
+        predicate = next(
+            (
+                item
+                for item in decision.predicate_outcomes
+                if item.field_path
+                == {
+                    "english:date": "language_test_results.selected.test_date",
+                    "english:kind": "language_test_results.selected.test_kind",
+                }.get(check_id, f"language_test_results.selected.{check_id.split(':')[-1]}")
+            ),
+            None,
+        )
+        if value is None:
+            status, explanation, next_action = "needs_information", unknown, action
+        elif (
+            resolution[rule_id].disposition.value == "pending"
+            or decision.scope_status.value != "confirmed"
+            or predicate is None
+        ):
+            status, explanation, next_action = (
+                "not_covered",
+                "当前目标的审核条件不能确认这一项。",
+                "请查看官方原文。",
+            )
+        elif predicate.status.value == "confirmed" and decision.status.value == "confirmed":
+            status, explanation, next_action = (
+                "reported_match",
+                good,
+                "继续核对证明内容与提交方式。",
+            )
+        elif predicate.status.value == "not_applicable":
+            status, explanation, next_action = "action_needed", bad, bad_action or action
+        else:
+            status, explanation, next_action = "needs_information", unknown, action
+        return DemoEnglishPreparationCheck(
+            check_id=check_id,
+            title=title,
+            status=status,
+            explanation=explanation,
+            next_action=next_action,
+            rule_ids=(rule_id,),
+            evidence=evidence,
+        )
+
+    math = binding("math-written-exam")
+    if math and math[1].status.value == "confirmed" and math[1].scope_status.value == "confirmed":
+        checks = (
+            DemoEnglishPreparationCheck(
+                check_id="english:math",
+                title="数学系英语笔试",
+                status="not_applicable",
+                explanation="当前目标采用校内英语笔试，不要求提交上述外部英语成绩单。",
+                next_action="请查看数学系已审核的考试安排。",
+                rule_ids=(math[0],),
+                evidence=math[2],
+            ),
+        )
+        return DemoEnglishPreparationResult(
+            document_id=request.target.document_id,
+            target=target,
+            scope_statement=scope_statement,
+            checks=checks,
+        )
+
+    kind = request.applicant.english_test_kind
+    if kind in {
+        LanguageTestKind.TOEIC_LR,
+        LanguageTestKind.TOEFL_IBT,
+        LanguageTestKind.TOEFL_IBT_HOME_EDITION,
+    }:
+        kind_bound = binding(
+            f"approved-kind-{kind.value}", "language_test_results.selected.test_kind", kind.value
+        )
+        kind_good, kind_bad = (
+            "该考试类型属于本轮接受范围；仍需核对日期与证明。",
+            "当前类型不在本轮接受范围。",
+        )
+    elif kind in {LanguageTestKind.TOEIC_IP, LanguageTestKind.TOEFL_ITP}:
+        kind_bound = binding(
+            f"unapproved-kind-{kind.value}", "language_test_results.selected.test_kind", kind.value
+        )
+        kind_good, kind_bad = "", "本轮不接受此考试类型。"
+    else:
+        kind_bound = None
+        kind_good, kind_bad = "", ""
+    if (
+        kind in {LanguageTestKind.TOEIC_IP, LanguageTestKind.TOEFL_ITP}
+        and kind_bound
+        and kind_bound[1].status.value == "confirmed"
+        and resolution[kind_bound[0]].disposition.value == "active"
+    ):
+        kind_check = DemoEnglishPreparationCheck(
+            check_id="english:kind",
+            title="考试类型",
+            status="action_needed",
+            explanation=kind_bad,
+            next_action="请改用本轮接受的考试类型。",
+            rule_ids=(kind_bound[0],),
+            evidence=kind_bound[2],
+        )
+    elif kind is LanguageTestKind.OTHER:
+        kind_check = DemoEnglishPreparationCheck(
+            check_id="english:kind",
+            title="考试类型",
+            status="needs_information",
+            explanation="尚未确认该考试类型是否可用。",
+            next_action="请核对本轮接受的考试类型。",
+        )
+    elif kind is None:
+        kind_check = DemoEnglishPreparationCheck(
+            check_id="english:kind",
+            title="考试类型",
+            status="needs_information",
+            explanation="尚未填写考试类型。",
+            next_action="请选择本次拟提交的考试类型。",
+        )
+    else:
+        kind_check = check(
+            "english:kind",
+            "考试类型",
+            kind_bound,
+            kind.value if kind else None,
+            kind_good,
+            kind_bad,
+            "尚未填写考试类型。",
+            "请选择本次拟提交的考试类型。",
+        )
+    checks = [kind_check]
+    if kind_check.status == "reported_match":
+        exam_date = request.applicant.english_test_date
+        date_bound = binding("test-date", "language_test_results.selected.test_date", "2024-06-11")
+        checks.append(
+            check(
+                "english:date",
+                "考试日期",
+                date_bound,
+                exam_date,
+                "考试日期符合本轮日期要求。",
+                "此次考试日期早于本轮要求。",
+                "尚未填写考试日期。",
+                "请填写考试日期并核对当前募集版本。",
+            )
+        )
+        proof = request.english_preparation
+        specs = [
+            ("downloaded_online_pdf", "在线下载的官方PDF", "online-pdf"),
+        ]
+        if kind is LanguageTestKind.TOEIC_LR:
+            specs += [
+                ("toeic_verification_qr_present", "TOEIC真伪验证二维码", "toeic-qr"),
+                (
+                    "toeic_digital_official_score_certificate",
+                    "TOEIC数字官方证明或同等形式",
+                    "toeic-digital-certificate",
+                ),
+            ]
+        else:
+            specs += [
+                (
+                    "toefl_test_taker_score_report_pdf",
+                    "TOEFL Test Taker Score Report PDF",
+                    f"toefl-report-{kind.value}",
+                ),
+                ("toefl_di_code_g179_set", "本次成绩的G179设置", f"toefl-g179-{kind.value}"),
+            ]
+        for field, title, stem in specs:
+            bound = binding(stem, f"language_test_results.selected.{field}")
+            checks.append(
+                check(
+                    f"english:{field}",
+                    title,
+                    bound,
+                    getattr(proof, field),
+                    "按你的填写，已准备本项；仍需核对证明内容。",
+                    "按你的填写，当前尚未具备本项要求。",
+                    "尚未确认本项准备情况。",
+                    f"请核对{title}后再准备提交。",
+                )
+            )
+    return DemoEnglishPreparationResult(
+        document_id=request.target.document_id,
+        target=target,
+        scope_statement=scope_statement,
+        checks=tuple(checks),
     )
 
 
 def _demo_applicant_profile(
-    target: DemoTargetRequest, applicant: DemoApplicantInput
+    target: DemoTargetRequest,
+    applicant: DemoApplicantInput,
+    english_preparation: DemoEnglishPreparationInput | None = None,
 ) -> ApplicantProfile:
     credentials = None
     if applicant.credential_basis is not None or applicant.completion_state is not None:
@@ -777,6 +1262,10 @@ def _demo_applicant_profile(
         or applicant.english_score is not None
         or applicant.english_test_date is not None
         or applicant.english_official_report_available is not None
+        or (
+            english_preparation is not None
+            and any(value is not None for value in english_preparation.model_dump().values())
+        )
     ):
         language_results = (
             {
@@ -785,6 +1274,7 @@ def _demo_applicant_profile(
                 "test_date": applicant.english_test_date,
                 "validity_status": None,
                 "official_report_available": applicant.english_official_report_available,
+                **(english_preparation.model_dump() if english_preparation is not None else {}),
             },
         )
     return ApplicantProfile.model_validate(

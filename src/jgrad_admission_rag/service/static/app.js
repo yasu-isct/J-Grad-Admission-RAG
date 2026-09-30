@@ -1411,6 +1411,28 @@ function updateEnglishInputHint() {
   }
 }
 
+const englishProofControls = ["demo-english-online-pdf", "demo-toeic-qr",
+  "demo-toeic-certificate", "demo-toefl-report-pdf", "demo-toefl-g179"];
+
+function updateEnglishProofVisibility() {
+  const kind = byId("demo-english-kind").value;
+  const toeic = kind === "toeic_lr";
+  const toefl = kind === "toefl_ibt" || kind === "toefl_ibt_home_edition";
+  byId("demo-english-proof-fields").hidden = !(toeic || toefl);
+  byId("demo-toeic-proof-fields").hidden = !toeic;
+  byId("demo-toefl-proof-fields").hidden = !toefl;
+}
+
+function englishPreparationInput() {
+  return {
+    downloaded_online_pdf: nullableDemoBoolean("demo-english-online-pdf"),
+    toeic_verification_qr_present: nullableDemoBoolean("demo-toeic-qr"),
+    toeic_digital_official_score_certificate: nullableDemoBoolean("demo-toeic-certificate"),
+    toefl_test_taker_score_report_pdf: nullableDemoBoolean("demo-toefl-report-pdf"),
+    toefl_di_code_g179_set: nullableDemoBoolean("demo-toefl-g179")
+  };
+}
+
 function initializeProfileGroups() {
   const desktop = window.matchMedia("(min-width: 761px)").matches;
   for (const group of applicantForm.querySelectorAll(".profile-group")) {
@@ -1418,12 +1440,14 @@ function initializeProfileGroups() {
   }
   updateProfileGroupStates();
   updateEnglishInputHint();
+  updateEnglishProofVisibility();
 }
 
 function resetApplicantInputs() {
   applicantForm.reset();
   updateProfileGroupStates();
   updateEnglishInputHint();
+  updateEnglishProofVisibility();
 }
 
 function populateDegreeSelect() {
@@ -1720,6 +1744,37 @@ function appendRequirementEvidence(card, requirement) {
   card.append(actions);
 }
 
+function appendPreparationGuide(card, guide) {
+  if (!guide) return;
+  const steps = document.createElement("ol");
+  steps.className = "preparation-steps";
+  for (const line of guide.steps) {
+    const item = document.createElement("li");
+    item.textContent = line;
+    steps.append(item);
+  }
+  card.append(steps);
+  for (const line of guide.warnings) {
+    const note = document.createElement("p");
+    note.className = "preparation-warning";
+    note.textContent = `注意：${line}`;
+    card.append(note);
+  }
+  if (guide.conditions.length) {
+    const details = document.createElement("details");
+    details.className = "preparation-conditions";
+    const summary = document.createElement("summary");
+    summary.textContent = "查看特殊情况";
+    details.append(summary);
+    for (const condition of guide.conditions) {
+      const note = document.createElement("p");
+      note.textContent = `${condition.title}：${condition.text}`;
+      details.append(note);
+    }
+    card.append(details);
+  }
+}
+
 function renderRequirementCard(requirement, options = {}) {
   const card = document.createElement("article");
   card.className = `requirement-card${options.compact ? " requirement-card-compact" : ""}`;
@@ -1727,6 +1782,9 @@ function renderRequirementCard(requirement, options = {}) {
   const material = requirement.category === "materials"
     ? referenceCore.materialDisplay(options.scope,
       requirement.material_code || requirement.requirement_id, requirement.title) : null;
+  const guide = material ? referenceCore.materialGuide(options.scope, {
+    id: requirement.material_code || requirement.requirement_id, evidence: requirement.evidence
+  }) : null;
   card.append(heading(4, material ? material.name : requirement.title));
   if (material?.official) {
     const official = document.createElement("p");
@@ -1745,16 +1803,37 @@ function renderRequirementCard(requirement, options = {}) {
     : requirementStatusLabel(requirement.official_status);
   const description = document.createElement("p");
   description.className = "requirement-description";
-  description.textContent = material ? material.description
-    : String(requirement.description || "").replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
+  description.textContent = material ? guide?.purpose || material.description
+    : String(requirement.requirement_id?.includes("english-submission-computer-science")
+      ? requirement.reviewed_summary || requirement.description : requirement.description || "")
+      .replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
   card.append(status, description);
+  if (guide && requirement.official_status !== "required") {
+    const conditional = document.createElement("p");
+    conditional.className = "preparation-warning";
+    conditional.textContent = "适用条件仍需确认；以下是需要提交时的准备方法。";
+    card.append(conditional);
+  }
+  if (guide) appendPreparationGuide(card, guide);
+  if (requirement.requirement_id === "language:preparation-guide") {
+    description.remove();
+    const list = document.createElement("ul");
+    list.className = "english-guide-list";
+    for (const line of String(requirement.reviewed_summary || "").split("\n").filter(Boolean)) {
+      const item = document.createElement("li");
+      item.textContent = line;
+      list.append(item);
+    }
+    card.append(list);
+  }
   if (requirement.deadline) {
     const deadline = document.createElement("p");
     deadline.className = "deadline-callout";
     deadline.textContent = `官方日期／截止：${requirement.deadline}`;
     card.append(deadline);
   }
-  if (!options.compact && requirement.reviewed_summary) {
+  if (!options.compact && requirement.reviewed_summary
+    && requirement.requirement_id !== "language:preparation-guide") {
     const detail = document.createElement("details");
     detail.className = "technical-disclosure";
     const summary = document.createElement("summary");
@@ -1927,18 +2006,21 @@ function renderRequirements(payload, scope) {
   const overview = applicationOverview(payload);
   const requirements = payload.requirements;
   const dateRequirements = requirements.filter((item) => item.category === "dates");
+  const englishRequirements = requirements.filter((item) => item.category === "language");
   const materialRequirements = requirements.filter((item) => item.category === "materials");
   const pending = requirements.filter((item) => item.category !== "materials"
     && item.official_status === "needs_information");
   const secondary = requirements.filter((item) => (
     item.category !== "dates"
     && item.category !== "materials"
+    && item.category !== "language"
     && item.official_status !== "needs_information"
   ));
 
   requirementsOutput.append(
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
+    renderRequirementSection("英语考试与证明", englishRequirements, "english-section", scope),
     renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
     renderPendingRequirements(pending, overview, scope)
   );
@@ -2211,6 +2293,24 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     drawerContent.append(back);
   }
   drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
+  const guidance = referenceCore?.materialGuide(currentReferenceScope(), {
+    id: requirement.requirement_id || requirement.item_id || requirement.material_code,
+    evidence: requirement.evidence
+  });
+  if (guidance) {
+    const summary = document.createElement("section");
+    summary.className = "evidence-chinese-summary";
+    summary.append(heading(4, "这项材料的准备要点"));
+    const purpose = document.createElement("p");
+    purpose.textContent = guidance.purpose;
+    summary.append(purpose);
+    appendPreparationGuide(summary, guidance);
+    const context = document.createElement("p");
+    context.className = "field-detail";
+    context.textContent = "下方原文是第10页共通材料表，包含其他材料行；中文要点只整理当前这项。";
+    summary.append(context);
+    drawerContent.append(summary);
+  }
   const meta = document.createElement("dl");
   meta.className = "evidence-meta";
   appendDefinition(meta, "官方文档", evidence.official_title);
@@ -2325,7 +2425,8 @@ function demoApplicantInput() {
 }
 
 function demoComparisonRequest() {
-  return { schema_version: "1.0", target: demoTargetRequest(), applicant: demoApplicantInput() };
+  return { schema_version: "1.0", target: demoTargetRequest(), applicant: demoApplicantInput(),
+    english_preparation: englishPreparationInput() };
 }
 
 function cancelPendingComparison() {
@@ -2399,27 +2500,40 @@ function materialNextAction(item) {
   return "填写准备情况，再核对官方说明。";
 }
 
-function renderPriorityActions(entries, scope) {
+function englishActionGroup(check) {
+  if (check.status === "action_needed") return "action_required";
+  if (check.status === "needs_information" || check.status === "not_covered") return "review_required";
+  return "recorded";
+}
+
+function renderPriorityActions(entries, scope, englishEntries = []) {
   const container = byId("priority-actions");
   container.hidden = false;
   container.replaceChildren();
   const pending = entries.filter(({ item }) => item.action_group !== "recorded");
+  const englishPending = englishEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
+  const prioritized = [
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "action_required"),
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "review_required"),
+    ...pending
+  ];
   const title = heading(4, "优先处理");
   container.append(title);
-  if (!pending.length) {
+  if (!prioritized.length) {
     const empty = document.createElement("p");
-    empty.textContent = "当前没有被系统归入补充或人工确认的项目；已记录仍不等于学校确认或完成出愿。";
+    empty.textContent = "当前没有需要补充或待确认的项目；已记录仍不等于学校确认或完成出愿。";
     container.append(empty);
     return;
   }
   const list = document.createElement("ol");
-  for (const { item, cardId } of pending.slice(0, 3)) {
+  for (const entry of prioritized.slice(0, 3)) {
+    const { item, check, cardId } = entry;
     const row = document.createElement("li");
     const link = document.createElement("a");
     link.href = `#${cardId}`;
-    const material = item.category === "materials"
+    const material = item?.category === "materials"
       ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
-    link.textContent = material ? material.name : item.title;
+    link.textContent = check ? `英语 · ${check.title}` : material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
       readinessFilters.querySelector('[value="all"]').checked = true;
@@ -2431,19 +2545,56 @@ function renderPriorityActions(entries, scope) {
       target.focus({ preventScroll: true });
     });
     const action = document.createElement("span");
-    action.textContent = material
-      ? `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`
-      : `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
+    if (check) action.textContent = `${check.explanation} 下一步：${check.next_action}`;
+    else if (material) action.textContent = `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`;
+    else action.textContent = `${item.action_group === "action_required" ? "需要补充" : "待确认／需审核"} · ${item.next_action}`;
     row.append(link, action);
     list.append(row);
   }
   container.append(list);
-  if (pending.length > 3) {
+  if (prioritized.length > 3) {
     const remainder = document.createElement("p");
     remainder.className = "field-detail";
-    remainder.textContent = `下方还有 ${pending.length - 3} 项需要逐项核对。`;
+    remainder.textContent = `下方还有 ${prioritized.length - 3} 项需要逐项核对。`;
     container.append(remainder);
   }
+}
+
+function renderEnglishPreparation(result, entries) {
+  const section = document.createElement("section");
+  section.className = "requirement-group english-preparation-group";
+  section.append(heading(3, "英语成绩准备"));
+  const scope = document.createElement("p");
+  scope.className = "field-detail";
+  scope.textContent = result.scope_statement;
+  section.append(scope);
+  const list = document.createElement("div");
+  list.className = "requirement-list";
+  const statusLabels = {reported_match: "按填写已具备", action_needed: "需要处理",
+    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  for (const { check, cardId, actionGroup } of entries) {
+    const card = document.createElement("article");
+    card.className = "requirement-card comparison-card";
+    card.id = cardId;
+    card.tabIndex = -1;
+    card.dataset.actionGroup = actionGroup;
+    card.dataset.category = "english";
+    card.append(heading(4, check.title));
+    const status = document.createElement("span");
+    status.className = "requirement-status";
+    status.dataset.status = check.status;
+    status.textContent = statusLabels[check.status];
+    const explanation = document.createElement("p");
+    explanation.textContent = check.explanation;
+    const action = document.createElement("p");
+    action.className = "next-action";
+    action.textContent = `下一步：${check.next_action}`;
+    card.append(status, explanation, action);
+    appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
+    list.append(card);
+  }
+  section.append(list);
+  return section;
 }
 
 function renderComparison(payload, scope) {
@@ -2454,24 +2605,36 @@ function renderComparison(payload, scope) {
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
   partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
-  byId("count-total").textContent = String(payload.counts.total);
-  byId("count-recorded").textContent = String(payload.counts.recorded);
-  byId("count-action").textContent = String(payload.counts.action_required);
-  byId("count-review").textContent = String(payload.counts.review_required);
   readinessFilters.querySelector('[value="all"]').checked = true;
-  const groups = [["action_required", "需要补充"], ["review_required", "需学校／人工确认"], ["recorded", "已记录／可能匹配"]];
+  const groups = [["action_required", "需要补充"], ["review_required", "待确认／需审核"], ["recorded", "已记录／可能匹配"]];
   const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
     .filter((item) => item.action_group === actionGroup)
     .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
-  renderPriorityActions(entriesWithIds, scope);
+  const detailed = payload.english_preparation_result;
+  const visibleEntries = detailed
+    ? entriesWithIds.filter(({ item }) => item.category !== "english") : entriesWithIds;
+  const englishEntries = (detailed?.checks || []).map((check, index) => ({
+    check, cardId: `comparison-english-${index}`, actionGroup: englishActionGroup(check)
+  }));
+  const visibleGroups = [
+    ...visibleEntries.map(({ item }) => item.action_group),
+    ...englishEntries.map(({ actionGroup }) => actionGroup)
+  ];
+  byId("count-total").textContent = String(visibleGroups.length);
+  byId("count-recorded").textContent = String(visibleGroups.filter((group) => group === "recorded").length);
+  byId("count-action").textContent = String(visibleGroups.filter((group) => group === "action_required").length);
+  byId("count-review").textContent = String(visibleGroups.filter((group) => group === "review_required").length);
+  renderPriorityActions(visibleEntries, scope, englishEntries);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
-  const materialEntries = entriesWithIds.filter(({ item }) => item.category === "materials");
+  const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
   const sections = [
     ["materials", `材料准备（${materialEntries.length} 项）`, materialEntries],
     ...groups.map(([actionGroup, label]) => [actionGroup, label,
-      entriesWithIds.filter(({ item }) => item.action_group === actionGroup
+      visibleEntries.filter(({ item }) => item.action_group === actionGroup
         && item.category !== "materials")])
   ];
+  if (detailed)
+    comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
   for (const [actionGroup, label, entries] of sections) {
     if (!entries.length) continue;
     const section = document.createElement("section");
@@ -2489,6 +2652,9 @@ function renderComparison(payload, scope) {
       card.dataset.category = item.category;
       const material = item.category === "materials"
         ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
+      const guide = material ? referenceCore.materialGuide(scope, {
+        id: item.item_id, evidence: item.evidence
+      }) : null;
       const category = document.createElement("p");
       category.className = "comparison-category";
       category.textContent = categoryLabels[item.category] || item.category;
@@ -2500,11 +2666,18 @@ function renderComparison(payload, scope) {
         officialName.textContent = material.official || "正式名称待核实";
         const what = document.createElement("p");
         what.className = "material-explanation";
-        what.textContent = material.description;
+        what.textContent = guide?.purpose || material.description;
         const applicability = document.createElement("p");
         applicability.className = "material-applicability";
         applicability.textContent = materialOfficialState(item);
         card.append(officialName, what, applicability);
+        if (guide && item.official_status !== "required") {
+          const conditional = document.createElement("p");
+          conditional.className = "preparation-warning";
+          conditional.textContent = "当前路径是否须交这项仍待确认；以下是需要提交时的准备方法。";
+          card.append(conditional);
+        }
+        appendPreparationGuide(card, guide);
       }
       const statusLabel = document.createElement("p");
       statusLabel.className = "comparison-state-label";
@@ -2719,6 +2892,8 @@ function renderReferenceReport(report) {
     }
     if (selected.materials) addSection("材料准备清单", view.materials.map((item) => item.line),
       "当前所选资料没有可整理的材料主题。");
+    if (selected.materials && view.english.length)
+      addSection("英语成绩与证明", view.english, "");
     if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
       `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
     const limit = document.createElement("p");
@@ -2796,21 +2971,13 @@ async function generateReferenceReport(event) {
       if (disclosure.length && !comparison) {
         const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
           method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
-          body: JSON.stringify(referenceCore.comparisonRequest(scope, {
-            credential_basis: byId("demo-credential-basis").value,
-            completion_state: byId("demo-completion-state").value,
-            english_test_kind: byId("demo-english-kind").value,
-            english_score: byId("demo-english-score").value,
-            english_test_date: byId("demo-english-date").value,
-            english_official_report_available: byId("demo-english-report").value,
-            japanese_background: byId("demo-japanese-background").value,
-            materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({
-              code: select.dataset.materialCode, value: select.value
-            }))
-          })), cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+          body: JSON.stringify(demoComparisonRequest()), cache: "no-store", credentials: "same-origin",
+          signal: referenceReportController.signal
         });
         if (!response.ok) throw new Error();
         comparison = await response.json();
+        if (comparison.english_preparation_result)
+          referenceCore.validateEnglishPreparationResult(scope, comparison);
       }
       if (!current()) return;
       report = referenceCore.legacyReport(loadedReference, disclosure.length ? comparison : null,
@@ -2864,7 +3031,7 @@ function applyReadinessFilter() {
     card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;
     if (!card.hidden) visible += 1;
   }
-  for (const group of comparisonOutput.querySelectorAll(".comparison-group")) {
+  for (const group of comparisonOutput.querySelectorAll(".comparison-group, .english-preparation-group")) {
     group.hidden = !Array.from(group.querySelectorAll(".comparison-card")).some((card) => !card.hidden);
   }
   filterEmpty.hidden = visible !== 0;
@@ -2894,6 +3061,8 @@ async function submitApplicantComparison() {
       || payload.counts.total !== payload.items.length || !baseResponse?.target
       || ["school_name", "degree_name", "intake_name", "college_name", "department_name", "application_route_name"]
         .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
+    if (payload.english_preparation_result)
+      referenceCore.validateEnglishPreparationResult(scope, payload);
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload, scope);
     comparisonResponse = payload;
@@ -3082,6 +3251,18 @@ applicantForm.addEventListener("input", () => {
 applicantForm.addEventListener("change", () => {
   updateProfileGroupStates();
   updateEnglishInputHint();
+  updateEnglishProofVisibility();
+});
+let previousEnglishKind = byId("demo-english-kind").value;
+byId("demo-english-kind").addEventListener("change", () => {
+  const kind = byId("demo-english-kind").value;
+  if (kind !== previousEnglishKind) {
+    for (const id of ["demo-english-score", "demo-english-date", "demo-english-report", ...englishProofControls])
+      byId(id).value = "";
+    previousEnglishKind = kind;
+    updateEnglishInputHint();
+    updateEnglishProofVisibility();
+  }
 });
 comparisonRetry.addEventListener("click", submitApplicantComparison);
 readinessFilters.addEventListener("change", applyReadinessFilter);

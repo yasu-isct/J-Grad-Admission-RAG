@@ -128,7 +128,28 @@ export function hasSuppliedProfile(controls) {
 
 export function comparisonRequest(scope, controls) {
   requireValue(scope.kind === "legacy_applicant" && scope.request, "目标类型不匹配");
-  return {schema_version: "1.0", target: scope.request, applicant: legacyApplicant(controls)};
+  return {schema_version: "1.0", target: scope.request, applicant: legacyApplicant(controls),
+    ...(controls.english_preparation ? {english_preparation: controls.english_preparation} : {})};
+}
+
+export function validateEnglishPreparationResult(scope, payload) {
+  const result = payload?.english_preparation_result;
+  requireValue(scope?.kind === "legacy_applicant" && result
+    && result.document_id === scope.request.document_id
+    && legacyTargetMatches(scope, result.target) && Array.isArray(result.checks),
+  "英语核对结果与当前目标不匹配");
+  const ids = new Set();
+  for (const check of result.checks) {
+    requireValue(nonempty(check.check_id) && !ids.has(check.check_id)
+      && ["reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"].includes(check.status)
+      && nonempty(check.title) && nonempty(check.explanation) && nonempty(check.next_action)
+      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "英语核对项无效");
+    ids.add(check.check_id);
+    if (["reported_match", "action_needed"].includes(check.status))
+      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "英语核对依据缺失");
+    for (const source of check.evidence) validateLegacyEvidence(source, scope);
+  }
+  return result;
 }
 
 export function sliceReportRequest(scope, employment) {
@@ -177,6 +198,7 @@ function validateLegacyEvidence(evidence, scope) {
     requireValue(evidence.official_text.slice(mark.start, mark.end) === mark.exact_text, "官方引文与原文不一致");
   return {
     title: evidence.official_title, pages: evidence.pages,
+    fact_id: evidence.fact_id, document_id: evidence.document_id,
     printed: null, quote: evidence.official_text, source_url: evidence.source_url,
     local_pdf_url: evidence.local_pdf_url || null, context: evidence.limitation || "",
     highlights: array(evidence.highlights)
@@ -214,7 +236,9 @@ export function mapLegacyBase(scope, base) {
       status: statusNames[requirement.official_status] || requirement.official_status,
       status_code: requirement.official_status,
       deadline: requirement.deadline || "", limitation: requirement.limitation || "",
-      dates, sources
+      dates, sources,
+      guide: requirement.category === "materials"
+        ? materialGuide(scope, {id: requirement.requirement_id, sources}) : null
     };
   });
   return {
@@ -284,6 +308,8 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = []) 
       && legacyTargetMatches(mapped.scope, comparison.target)
       && Array.isArray(comparison.items)
       && comparison.counts?.total === comparison.items.length, "个人对照目标不匹配");
+    if (comparison.english_preparation_result)
+      validateEnglishPreparationResult(mapped.scope, comparison);
     for (const item of comparison.items)
       if (!["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
         requireValue(array(item.evidence).length > 0, "个人对照引用缺失");
@@ -416,6 +442,59 @@ const materialDisplays = [
   }}
 ];
 
+// Human guidance is attached only to the exact reviewed p.10 table in this edition.
+const isctMaterialGuides = {
+  address_label: {
+    purpose: "标明出愿材料邮寄收件信息的标签。",
+    steps: ["从网上出愿个人页面取得，用A4纸彩色打印。", "贴在角形2号信封上（240×332毫米）。", "寄出前核对标签信息。"],
+    warnings: ["A4彩色打印和信封尺寸只适用于当前资料的这项标签。"],
+    conditions: []
+  },
+  application_form: {
+    purpose: "网上出愿后打印并提交的正式申请表。",
+    steps: ["先完成报名费等付款和证件照片上传，再打印申请表。", "从网上出愿个人页面用A4纸彩色打印。", "核对内容，并与所需出愿材料一并准备。"],
+    warnings: ["若暂时无法打印，先检查付款和照片上传是否完成；本页不核验这两项进度。"],
+    conditions: []
+  },
+  statement_of_purpose: {
+    purpose: "说明申请理由等内容的指定文书。",
+    steps: ["使用募集要项提供的指定格式。", "打印在一张A4纸上，可以双面打印。", "查看目标学系是否指定题目；没有指定题目不等于免交。"],
+    warnings: ["本项是否需要提交，仍按当前学历资格路径的审核结果确认。"],
+    conditions: []
+  },
+  bachelor_transcript: {
+    purpose: "证明学士课程各科成绩的大学文件。",
+    steps: ["准备大学出具的学士课程成绩证明，不用研究生阶段成绩替代。", "按本资料共同要求准备原件；普通复印件或自行下载打印件不能直接替代。", "无论已毕业或预计毕业，都先核对这项材料在当前路径是否适用。"],
+    warnings: ["成绩证明与毕业证明可合在同一份大学证明中；仍需核对两项内容。"],
+    conditions: [
+      {title: "如果有转学经历", text: "一并准备转学前大学等的成绩证明。"},
+      {title: "如果成绩分成教养／专业或本科／专攻科等部分", text: "两部分都要准备。"},
+      {title: "如果因保存期限、学校关闭或受灾等无法开具", text: "应在出愿期间开始前向入试课咨询；本页不认定替代文件已获批准。"},
+      {title: "如果无法提交原件", text: "查看共同要求，由毕业大学或使领馆、公证机关等公共机构完成原本证明；普通复印件不能直接替代。"},
+      {title: "如果证明不是日文或英文", text: "附毕业大学出具的日文或英文翻译；大学无法出具时，按原文办理公共机构的译文内容认证。仅本人翻译或只认证声明、签名不足以代替内容认证。"}
+    ]
+  },
+  graduation_or_expected_graduation_certificate: {
+    purpose: "证明学士课程已经毕业或预计毕业的大学文件。",
+    steps: ["按自己的毕业状态准备毕业证明或预计毕业证明。", "外国大学申请人还需学位取得或预计取得证明；两类内容可以由同一证明记载。", "使用大学出具的文件，核对原件、语言和翻译要求。"],
+    warnings: ["成绩证明与毕业证明可合在一份大学证明中；本页不判断手中的替代证明是否有效。"],
+    conditions: [
+      {title: "如果申请2026年9月入学", text: "证明须体现可在2026年9月27日前毕业；该日期不适用于2027年4月入学。", intakeYear: 2026, intakeMonth: 9},
+      {title: "如果毕业证明无法提供", text: "原文允许大学出具载明毕业或预计毕业年月、姓名、出生日期的证明；年月可用入学与毕业年月表示。"},
+      {title: "如果外国大学的毕业或学位证明均无法提供", text: "另有须写明取得或预计取得学位等内容的大学证明要求；不要把两种替代情形合并。"},
+      {title: "如果无法提交原件", text: "按原文由毕业大学或使领馆、公证机关等公共机构完成原本证明；普通复印件不能直接替代。"},
+      {title: "如果证明不是日文或英文", text: "附毕业大学出具的日文或英文翻译；大学无法出具时，按原文办理公共机构的译文内容认证。仅本人翻译或只认证声明、签名不足以代替内容认证。"}
+    ]
+  }
+};
+const isctMaterialRowMarkers = {
+  address_label: ["①宛名ラベル"],
+  application_form: ["②入学志願票"],
+  statement_of_purpose: ["③志望理由書"],
+  bachelor_transcript: ["④学士課程の成績証", "明書"],
+  graduation_or_expected_graduation_certificate: ["⑤学士課程の卒業証", "卒業見込み証明書"]
+};
+
 function materialScopeIdentity(scope) {
   if (!scope || scope.kind !== scope.item?.kind) return null;
   if (scope.kind === "legacy_applicant") {
@@ -444,8 +523,28 @@ export function materialDisplay(scope, rawCode, originalName) {
   return {name: row[0], official: row[1], description: row[2], verified: true};
 }
 
+export function materialGuide(scope, topic) {
+  const identity = materialScopeIdentity(scope);
+  if (identity?.kind !== "legacy_applicant" || identity.school_id !== "isct"
+    || identity.document_id !== "isct_2027_4_2026_9_master") return null;
+  const code = String(topic?.id || "").replace(/^material:/, "");
+  const guide = isctMaterialGuides[code];
+  const markers = isctMaterialRowMarkers[code];
+  if (!guide || !markers || !array(topic.sources || topic.evidence).some((source) =>
+    source.fact_id === "fact:00104" && source.document_id === identity.document_id
+      && array(source.pages).includes(10)
+      && markers.every((marker) => text(source.quote || source.official_text).includes(marker)))) return null;
+  return {...guide, conditions: guide.conditions.filter((condition) =>
+    condition.intakeYear === undefined || (scope.request?.intake?.year === condition.intakeYear
+      && scope.request?.intake?.month === condition.intakeMonth))};
+}
+
 function readerMaterialLine(item) {
-  return `${item.title}${item.official ? `（${item.official}）` : ""}｜${item.description}｜${item.state}。${item.action}`;
+  const guide = item.guide;
+  const joinSentences = (rows) => `${rows.map((row) => row.replace(/[。；]$/, "")).join("；")}。`;
+  return `${item.title}${item.official ? `（${item.official}）` : ""}｜${guide?.purpose || item.description}｜${item.state}。${item.action}`
+    + (guide ? ` 准备方法：${joinSentences(guide.steps)} 注意：${joinSentences(guide.warnings)}`
+      + (guide.conditions.length ? ` 特殊情况：${joinSentences(guide.conditions.map((row) => `${row.title}：${row.text}`))}` : "") : "");
 }
 
 export function readerReportOptions(report) {
@@ -509,6 +608,8 @@ function readerText(view) {
     section("材料准备清单", view.materials.length
       ? view.materials.map((item) => item.line)
       : ["当前所选资料没有可整理的材料主题。"]);
+  if (view.selected.includes("materials") && view.english.length)
+    section("英语成绩与证明", view.english);
   if (view.selected.includes("other"))
     section("其他已加载要求", view.other.length
       ? view.other.map((item) => `${item.title}：${item.summary}（${item.status}）`)
@@ -527,6 +628,7 @@ export function readerReport(report, selected) {
   const dates = [];
   const materials = [];
   const other = [];
+  const english = [];
   const priorities = [];
   let dateNote = "";
   if (selected.dates) {
@@ -544,6 +646,23 @@ export function readerReport(report, selected) {
     }
   }
   if (selected.materials) {
+    const guide = report.kind === "legacy_applicant"
+      ? report.topics.find((topic) => topic.id === "language:preparation-guide") : null;
+    if (guide) english.push(...guide.summary.split("\n").filter(Boolean));
+    if (report.kind === "legacy_applicant") {
+      const submission = report.topics.find((topic) =>
+        /^rule:isct-master-english-submission-computer-science-(apr|sep)$/.test(topic.id));
+      if (submission) english.push(submission.summary);
+    }
+    const detailed = report.comparison?.english_preparation_result;
+    if (detailed) {
+      for (const check of detailed.checks) {
+        const status = {reported_match: "按填写已具备", action_needed: "待处理",
+          needs_information: "待确认", not_applicable: "不适用", not_covered: "未覆盖"}[check.status];
+        english.push(`${check.title}：${status}。${check.explanation} 下一步：${check.next_action}`);
+        if (check.status === "action_needed") priorities.push(`英语 · ${check.title}：${check.next_action}`);
+      }
+    }
     const unfilled = [];
     const conditional = [];
     const comparison = new Map(array(report.comparison?.items)
@@ -555,7 +674,7 @@ export function readerReport(report, selected) {
         : sliceMaterialState(topic, report.employment);
       const display = materialDisplay(report.scope, topic.id || topic.material_code, topic.title);
       const item = {title: display.name, official: display.official,
-        description: display.description, verified: display.verified, ...state};
+        description: display.description, verified: display.verified, guide: topic.guide, ...state};
       item.line = readerMaterialLine(item);
       materials.push(item);
       if (["待准备", "需提交，尚未填写准备情况"].includes(state.state))
@@ -572,7 +691,8 @@ export function readerReport(report, selected) {
       : `${conditional.map((item) => item.title).join("、")}：待确认适用；请先确认这些材料的适用条件。`);
   }
   if (selected.other) {
-    for (const topic of report.topics.filter((item) => !["dates", "materials"].includes(item.category))) {
+    for (const topic of report.topics.filter((item) => !["dates", "materials"].includes(item.category)
+      && item.id !== "language:preparation-guide")) {
       other.push({title: topic.title, summary: topic.summary, status: topic.status});
       if (["needs_information", "needs_review", "not_covered"].includes(topic.status_code))
         priorities.push(`${topic.title}：${topic.status}。请核对该项条件。`);
@@ -585,7 +705,7 @@ export function readerReport(report, selected) {
       : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
   const priorityRows = priorities.length ? priorities : selected.materials
     ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
-  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, other, limitation};
+  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, other, limitation};
   return {...view, text: readerText(view)};
 }
 

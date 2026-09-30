@@ -1,0 +1,15 @@
+{
+  "before": {
+    "copy_sha256": "6df038d0a35f0eea5656beae1d78f47c274ef7c7a851593a0950bd8122e15594",
+    "chars": 602
+  },
+  "after": {
+    "copy_sha256": "7f58c8186ff1da59bda4aa6dff0f455ae6de16f7c3d3cc37405f54e24f0aad36",
+    "chars": 2245
+  },
+  "saved_response_hashes": {
+    "catalog": "f26519c9a5bf168730ada4e84bde465bc5a2e1d897c249d850e55012e2ba2e2b",
+    "base": "e725b04437b505b9f7db35156e1ac2bedf86bf04effa3d92fcb48c89d4df09e0",
+    "comparison": "d502bd0403e896cbefac1d42c2c0595e8decf8e5d52defb3bf11d92e60f9257d"
+  }
+}

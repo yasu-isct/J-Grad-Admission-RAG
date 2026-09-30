@@ -133,7 +133,7 @@
                 <legend>英语</legend>
                 <label for="demo-english-kind">考试类型</label>
                 <p id="english-kind-help" class="field-help">若填写成绩或考试日期，服务端也需要知道考试类型；未参加可选择“目前不适用”。</p>
-                <select id="demo-english-kind" aria-describedby="english-kind-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道考试类型</option><option value="ui_not_applicable">未参加／目前不适用</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="other">其他</option></select>
+                <select id="demo-english-kind" aria-describedby="english-kind-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道考试类型</option><option value="ui_not_applicable">未参加／目前不适用</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="toeic_ip">TOEIC-IP（本轮不接受）</option><option value="toefl_itp">TOEFL-ITP（本轮不接受）</option><option value="other">其他</option></select>
                 <label for="demo-english-score">成绩</label>
                 <p id="english-score-help" class="field-help">有成绩时填写数字；没有或不知道可留空。填写分数不会自动判定成绩有效。</p>
                 <input id="demo-english-score" type="number" min="0" max="10000" step="0.01" inputmode="decimal" aria-describedby="english-score-help english-link-hint">
@@ -143,6 +143,23 @@
                 <label for="demo-english-report">官方成绩单</label>
                 <p id="english-report-help" class="field-help">这里只记录你是否已取得官方成绩单；“已取得”不代表学校已收到或受理。</p>
                 <select id="demo-english-report" aria-describedby="english-report-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用／未参加考试</option><option value="true">已取得官方成绩单</option><option value="false">尚未取得官方成绩单</option></select>
+                <div id="demo-english-proof-fields" class="english-proof-fields" hidden>
+                  <p class="field-help">以下只记录你目前掌握的证明情况；留空表示待确认，不会当作缺失。</p>
+                  <label for="demo-english-online-pdf">是否取得在线下载的官方PDF</label>
+                  <select id="demo-english-online-pdf"><option value="">尚未确认</option><option value="true">已取得</option><option value="false">尚未取得</option></select>
+                  <div id="demo-toeic-proof-fields" hidden>
+                    <label for="demo-toeic-qr">PDF是否带真伪验证二维码</label>
+                    <select id="demo-toeic-qr"><option value="">尚未确认</option><option value="true">有二维码</option><option value="false">无二维码</option></select>
+                    <label for="demo-toeic-certificate">是否为数字官方成绩证明或符合要求的同等形式</label>
+                    <select id="demo-toeic-certificate"><option value="">尚未确认</option><option value="true">是</option><option value="false">否</option></select>
+                  </div>
+                  <div id="demo-toefl-proof-fields" hidden>
+                    <label for="demo-toefl-report-pdf">是否取得Test Taker Score Report PDF</label>
+                    <select id="demo-toefl-report-pdf"><option value="">尚未确认</option><option value="true">已取得</option><option value="false">尚未取得</option></select>
+                    <label for="demo-toefl-g179">是否为本次成绩设置学校DI代码G179</label>
+                    <select id="demo-toefl-g179"><option value="">尚未确认</option><option value="true">已设置</option><option value="false">尚未设置</option></select>
+                  </div>
+                </div>
                 <p id="english-link-hint" class="linked-field-hint" role="status" aria-live="polite">成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。</p>
                 </fieldset>
               </details>
@@ -195,7 +212,7 @@
             <div class="action-summary-heading"><div><p class="section-label">先看下一步</p><h3 id="action-summary-heading">当前行动摘要</h3></div><p class="action-summary-total">本次对照 <span id="count-total">0</span> 项</p></div>
             <dl class="readiness-counts" aria-label="当前核对结果统计">
               <div data-group="action_required"><dt>需补充或处理</dt><dd id="count-action">0</dd></div>
-              <div data-group="review_required"><dt>需学校／人工确认</dt><dd id="count-review">0</dd></div>
+              <div data-group="review_required"><dt>待确认／需审核</dt><dd id="count-review">0</dd></div>
               <div data-group="recorded"><dt>已记录／可能匹配</dt><dd id="count-recorded">0</dd></div>
             </dl>
             <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
@@ -207,7 +224,7 @@
             <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
             <label><input type="radio" name="readiness-filter" value="action_required"> 需要补充</label>
             <label><input type="radio" name="readiness-filter" value="recorded"> 已记录</label>
-            <label><input type="radio" name="readiness-filter" value="review_required"> 需审核／未覆盖</label>
+            <label><input type="radio" name="readiness-filter" value="review_required"> 待确认／需审核</label>
           </fieldset>
           <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
           <div id="comparison-output" class="comparison-output"></div>
