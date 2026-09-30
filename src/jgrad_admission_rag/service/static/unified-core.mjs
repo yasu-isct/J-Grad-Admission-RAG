@@ -396,25 +396,50 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
 
 const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"};
 
-// Presentation only. Applicability and preparation still come from reviewed responses.
-const materialDisplays = {
-  legacy_applicant: {
+// Presentation only. Code meanings are bound to reviewed document/snapshot identity;
+// applicability and preparation still come from reviewed responses.
+const materialDisplays = [
+  {identity: {kind: "legacy_applicant", school_id: "isct",
+    document_id: "isct_2027_4_2026_9_master"}, materials: {
     address_label: ["邮寄地址标签", "宛名ラベル", "贴在提交出愿材料的信封上的标签。"],
     application_form: ["入学申请表", "入学志願票", "本次入学申请使用的正式表格。"],
     statement_of_purpose: ["志愿理由书", "志望理由書", "说明申请该方向理由的文书。"],
     bachelor_transcript: ["学士课程成绩证明", "学士課程の成績証明書", "记录学士课程成绩的证明文件。"],
     graduation_or_expected_graduation_certificate: ["毕业或预计毕业证明", "学士課程の卒業証明書又は卒業見込み証明書", "证明学士课程已毕业或预计毕业的文件。"]
-  },
-  reviewed_material_slice: {
+  }},
+  {identity: {kind: "reviewed_material_slice", institution_id: "utokyo",
+    organization_id: "utokyo-gsfs", program_id: "utokyo-gsfs-complex",
+    snapshot_id: "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98"}, materials: {
     "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
     "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
     "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"]
-  }
-};
+  }}
+];
 
-export function materialDisplay(kind, rawCode, originalName) {
+function materialScopeIdentity(scope) {
+  if (!scope || scope.kind !== scope.item?.kind) return null;
+  if (scope.kind === "legacy_applicant") {
+    if (scope.request?.school_id !== scope.item.legacy_catalog?.school_id) return null;
+    return {
+    kind: scope.kind, school_id: scope.request?.school_id,
+    document_id: scope.request?.document_id
+    };
+  }
+  if (scope.kind === "reviewed_material_slice") return {
+    kind: scope.kind, institution_id: scope.item.target?.institution_id,
+    organization_id: scope.item.target?.organization_id,
+    program_id: scope.item.target?.program_id,
+    snapshot_id: scope.item.snapshot_id
+  };
+  return null;
+}
+
+export function materialDisplay(scope, rawCode, originalName) {
   const code = String(rawCode || "").replace(/^material:/, "");
-  const row = materialDisplays[kind]?.[code];
+  const identity = materialScopeIdentity(scope);
+  const catalog = identity && materialDisplays.find((entry) =>
+    Object.entries(entry.identity).every(([key, value]) => identity[key] === value));
+  const row = catalog?.materials[code];
   if (!row) return {name: originalName, official: "", description: "说明待核实。", verified: false};
   return {name: row[0], official: row[1], description: row[2], verified: true};
 }
@@ -528,7 +553,7 @@ export function readerReport(report, selected) {
       const state = report.kind === "legacy_applicant"
         ? legacyMaterialState(topic, comparison.get(topic.id) || comparison.get(topic.title))
         : sliceMaterialState(topic, report.employment);
-      const display = materialDisplay(report.kind, topic.id || topic.material_code, topic.title);
+      const display = materialDisplay(report.scope, topic.id || topic.material_code, topic.title);
       const item = {title: display.name, official: display.official,
         description: display.description, verified: display.verified, ...state};
       item.line = readerMaterialLine(item);

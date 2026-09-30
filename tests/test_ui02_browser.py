@@ -219,7 +219,14 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
             elif path == "/v1/reviewed-documents":
                 route.fulfill(json={"items": []})
             elif path == "/v1/generation-status":
-                route.fulfill(json={"configured": False, "label": "本地未配置问答"})
+                route.fulfill(
+                    json={
+                        "mode": "online_model",
+                        "configured": False,
+                        "label": "DeepSeek 在线生成服务未配置",
+                        "request_timeout_seconds": 30,
+                    }
+                )
             elif path == "/v1/base-requirements":
                 calls["base"].append(route.request.post_data_json)
                 route.fulfill(json=base)
@@ -240,6 +247,9 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.goto("http://ui02.test/app")
         page.locator("#school-select option").nth(2).wait_for(state="attached")
         assert page.locator("#school-select option").count() == 3
+        page.get_by_text("在线问答暂不可用；已审核基础要求仍可查看。").wait_for()
+        assert "DeepSeek" not in page.locator("#grounded-answer-panel").inner_text()
+        assert page.locator("#grounded-answer-submit").is_disabled()
         _select_legacy(page)
         assert calls == {"base": [], "comparison": [], "reports": []}
         page.locator("#requirements-submit").click()
@@ -272,6 +282,9 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert not calls["comparison"] and not calls["reports"]
         page.locator("#reference-close").click()
         page.locator(".overview-cta").click()
+        other_school_label = page.locator('label:has(select[data-material-code="address_label"])')
+        assert "宛名标签 · 说明待核实" in other_school_label.inner_text()
+        assert "邮寄地址标签" not in other_school_label.inner_text()
         page.locator("#demo-credential-basis").select_option("ui_unknown")
         page.locator('[data-material-code="address_label"]').select_option("available")
         page.locator('[data-material-code="application_form"]').select_option("not_yet")
@@ -291,10 +304,14 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert page.locator("#count-action").inner_text() == "1"
         assert page.locator("#count-recorded").inner_text() == "1"
         assert page.locator("#count-review").inner_text() == "1"
+        assert "checklist" not in page.locator("#readiness-panel").inner_text()
+        assert "本页仅整理已审核范围" in page.locator("#readiness-panel").inner_text()
         cards = page.locator("#comparison-output .comparison-card")
         assert "材料准备" in page.locator("#comparison-output .comparison-group").first.inner_text()
         assert "待准备" in cards.filter(has_text="入学志愿票").inner_text()
         assert "已准备（自报）" in cards.filter(has_text="宛名标签").inner_text()
+        assert "说明待核实" in cards.filter(has_text="宛名标签").inner_text()
+        assert "宛名ラベル" not in cards.filter(has_text="宛名标签").inner_text()
         assert "未提供／不确定" in cards.filter(has_text="学历路径").inner_text()
         assert page.locator("#readiness-heading").evaluate(
             "node => node === document.activeElement"
@@ -308,6 +325,8 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         copied = page.evaluate("window.copied")
         for value in ("英语成绩单", "尚未填写准备情况", "关键时间", "材料准备清单"):
             assert value in preview and value in copied
+        assert "说明待核实" in preview and "说明待核实" in copied
+        assert "邮寄地址标签" not in preview and "邮寄地址标签" not in copied
         for value in ("available", "not_yet", "保守对照", "官方原文", "物理页"):
             assert value not in preview and value not in copied
         assert page.locator("#reference-report-body img").count() == 0

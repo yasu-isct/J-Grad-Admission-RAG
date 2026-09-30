@@ -132,6 +132,9 @@ def run(browser, before, catalog, saved, answer):
         assert "邮寄地址标签" in cards.first.inner_text()
         assert "宛名ラベル" in cards.first.inner_text()
     page.locator(".overview-cta").click()
+    if not before:
+        label = page.locator('label:has(select[data-material-code="address_label"])')
+        assert "邮寄地址标签 · 宛名ラベル" in label.inner_text()
     page.locator("#demo-credential-basis").select_option("ui_unknown")
     page.locator('[data-material-code="address_label"]').select_option("available")
     page.locator('[data-material-code="application_form"]').select_option("not_yet")
@@ -146,6 +149,8 @@ def run(browser, before, catalog, saved, answer):
         assert any("待准备" in value for value in text)
         assert any("尚未填写准备情况" in value for value in text)
         assert "低保证" not in page.locator("#readiness-panel").inner_text()
+        assert "checklist" not in page.locator("#readiness-panel").inner_text()
+        assert "本页仅整理已审核范围" in page.locator("#readiness-panel").inner_text()
     page.locator("#readiness-panel .reference-generate").click()
     page.locator("#reference-report").wait_for(state="visible")
     capture(page, version, "report", "#reference-report")
@@ -219,6 +224,52 @@ def run(browser, before, catalog, saved, answer):
     return calls
 
 
+def capture_unconfigured(browser, catalog, saved):
+    page = browser.new_page(viewport={"width": 390, "height": 844})
+
+    def route_request(route):
+        path = urlparse(route.request.url).path
+        if path == "/app":
+            route.fulfill(body=static_bytes("advanced.html", False), content_type="text/html")
+        elif path.startswith("/assets/"):
+            name = path.rsplit("/", 1)[-1]
+            route.fulfill(
+                body=static_bytes(name, False),
+                content_type="text/css" if name.endswith(".css") else "text/javascript",
+            )
+        elif path == "/v1/reference-targets":
+            route.fulfill(json=catalog)
+        elif path == "/v1/reviewed-documents":
+            route.fulfill(json={"items": []})
+        elif path == "/v1/generation-status":
+            route.fulfill(
+                json={
+                    "mode": "online_model",
+                    "configured": False,
+                    "label": "DeepSeek 在线生成服务未配置",
+                    "request_timeout_seconds": 30,
+                }
+            )
+        elif path == "/v1/base-requirements":
+            route.fulfill(json=saved["isct-base-2027.json"])
+        else:
+            route.abort()
+
+    page.route("**/*", route_request)
+    page.goto("http://ux02-review.test/app")
+    page.locator("#school-select option").nth(2).wait_for(state="attached")
+    legacy = next(item for item in catalog["items"] if item["kind"] == "legacy_applicant")
+    helper().choose(page, legacy)
+    page.locator("#requirements-submit").click()
+    page.locator(".materials-section .requirement-card").first.wait_for(state="visible")
+    panel = page.locator("#grounded-answer-panel")
+    panel.get_by_text("在线问答暂不可用；已审核基础要求仍可查看。").wait_for()
+    assert "DeepSeek" not in panel.inner_text()
+    assert page.locator("#grounded-answer-submit").is_disabled()
+    panel.screenshot(path=str(OUT / "review-unconfigured-synthetic-390.png"))
+    page.close()
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     saved = {
@@ -240,6 +291,7 @@ def main():
         browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
         before = run(browser, True, catalog, saved, answer)
         after = run(browser, False, catalog, saved, answer)
+        capture_unconfigured(browser, catalog, saved)
         browser.close()
     (OUT / "journal.json").write_text(
         json.dumps(
@@ -262,6 +314,7 @@ def main():
                 "real_posts": 0,
                 "paid_calls": 0,
                 "same_saved_responses": True,
+                "synthetic_unconfigured_checked": True,
             },
             ensure_ascii=False,
             indent=2,

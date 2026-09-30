@@ -1,6 +1,8 @@
 # UX-02 材料解释与文案复用表
 
-对应 [#250](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/250)。本表先于页面改动建立。中文解释用于认识材料，不改变服务端适用条件、提交义务、材料状态或官方原文。页面、个人对照和简洁报告共用 `unified-core.mjs` 的展示映射；未知 code 保留响应原名并显示“说明待核实”。
+对应 [#250](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/250)。本表先于页面改动建立。中文解释用于认识材料，不改变服务端适用条件、提交义务、材料状态或官方原文。页面、个人表单、个人对照和简洁报告共用 `unified-core.mjs` 的展示映射，查找时必须传入当前已验证的 scope；数据类型本身不授予任何材料解释。未知 code 或未注册资料身份均保留响应原名并显示“说明待核实”。
+
+当前声明的资料身份：ISCT 为 `school_id=isct` 且 `document_id=isct_2027_4_2026_9_master`；GSFS 为 `institution_id=utokyo`、`organization_id=utokyo-gsfs`、`program_id=utokyo-gsfs-complex` 且 `snapshot_id=2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98`。更换学校、文档或快照后，即使 material code 相同，也不会继承这里的中文名、日文名或说明。
 
 ## 当前可出现的全部材料主题
 

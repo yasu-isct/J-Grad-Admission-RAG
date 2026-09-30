@@ -19,8 +19,9 @@ def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() 
     assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers"' in javascript
     assert 'const GENERATION_STATUS_ENDPOINT = "/v1/generation-status"' in javascript
     assert "在线问答暂时不可用" in javascript
-    assert 'generationStatus.mode === "online_model" ? "在线问答可用"' in javascript
-    assert 'generationStatus.mode === "offline_rules" ? "仅离线资料"' in javascript
+    assert 'status.mode === "online_model") return "在线问答可用"' in javascript
+    assert 'status.mode === "offline_rules") return "仅离线资料"' in javascript
+    assert "generationStatus.label : message" not in javascript
     assert 'appendGroundedList(container, "回答范围"' in javascript
     assert "label.textContent = claim.kind" not in javascript
 

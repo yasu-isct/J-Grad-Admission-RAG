@@ -27,7 +27,7 @@ def test_step_four_separates_system_counts_from_personal_progress() -> None:
     assert "target.focus({ preventScroll: true })" in js
     assert (
         "学校已受理"
-        not in js.split("function renderComparison(payload)", 1)[1].split(
+        not in js.split("function renderComparison(payload, scope)", 1)[1].split(
             "function applyReadinessFilter()", 1
         )[0]
     )
@@ -35,7 +35,7 @@ def test_step_four_separates_system_counts_from_personal_progress() -> None:
 
 def test_checkmarks_are_ephemeral_and_do_not_enter_api_payload() -> None:
     js = (STATIC / "app.js").read_text(encoding="utf-8")
-    comparison = js.split("function renderComparison(payload)", 1)[1].split(
+    comparison = js.split("function renderComparison(payload, scope)", 1)[1].split(
         "function applyReadinessFilter()", 1
     )[0]
     request = js.split("function demoApplicantInput()", 1)[1].split(

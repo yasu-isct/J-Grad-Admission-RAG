@@ -236,21 +236,44 @@ test("slice reader projection respects conditional and non-submission results", 
 });
 
 test("all reviewed material codes have scoped explanations and unknown codes keep their original name", () => {
+  const isctScope = {kind: "legacy_applicant", item: {kind: "legacy_applicant",
+    legacy_catalog: {school_id: "isct"}}, request: {school_id: "isct",
+    document_id: "isct_2027_4_2026_9_master"}};
+  const gsfsScope = {kind: "reviewed_material_slice", item: {kind: "reviewed_material_slice",
+    snapshot_id: "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98",
+    target: {institution_id: "utokyo", organization_id: "utokyo-gsfs",
+      program_id: "utokyo-gsfs-complex"}}};
   const isct = ["address_label", "application_form", "statement_of_purpose",
     "bachelor_transcript", "graduation_or_expected_graduation_certificate"];
   const gsfs = ["english-score-sheets", "checklist-submission", "work-study-plan"];
   for (const code of isct) {
-    const display = materialDisplay("legacy_applicant", `material:${code}`, "原名");
+    const display = materialDisplay(isctScope, `material:${code}`, "原名");
     assert.equal(display.verified, true);
     assert.ok(display.name && display.official && display.description);
-    assert.equal(materialDisplay("reviewed_material_slice", code, "原名").verified, false);
+    assert.equal(materialDisplay(gsfsScope, code, "原名").verified, false);
   }
   for (const code of gsfs) {
-    const display = materialDisplay("reviewed_material_slice", code, "原名");
+    const display = materialDisplay(gsfsScope, code, "原名");
     assert.equal(display.verified, true);
     assert.ok(display.name && display.official && display.description);
-    assert.equal(materialDisplay("legacy_applicant", code, "原名").verified, false);
+    assert.equal(materialDisplay(isctScope, code, "原名").verified, false);
   }
-  assert.deepEqual(materialDisplay("legacy_applicant", "new-material", "未审核日文原名"),
-    {name: "未审核日文原名", official: "", description: "说明待核实。", verified: false});
+  const fallback = {name: "另一校原名", official: "", description: "说明待核实。", verified: false};
+  assert.deepEqual(materialDisplay(isctScope, "new-material", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...isctScope, request: {...isctScope.request,
+    school_id: "another-school"}}, "address_label", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...isctScope, request: {...isctScope.request,
+    document_id: "another-document"}}, "address_label", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...gsfsScope, item: {...gsfsScope.item,
+    snapshot_id: "another-snapshot"}}, "work-study-plan", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay(null, "address_label", "另一校原名"), fallback);
+  const otherSchool = {...isctScope, item: {...isctScope.item,
+    legacy_catalog: {school_id: "another-school"}}, request: {...isctScope.request,
+    school_id: "another-school"}};
+  const copied = readerReport({kind: "legacy_applicant", scope: otherSchool,
+    topics: [{id: "material:address_label", category: "materials", title: "另一校原名",
+      status_code: "required"}]}, {dates: false, materials: true, other: false});
+  assert.equal(copied.materials[0].verified, false);
+  assert.match(copied.text, /另一校原名.*说明待核实/);
+  assert.doesNotMatch(copied.text, /宛名ラベル|邮寄地址标签/);
 });

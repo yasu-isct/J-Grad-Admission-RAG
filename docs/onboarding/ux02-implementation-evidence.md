@@ -43,3 +43,9 @@ ISCT 报告复制文本：[前](ux02-evidence/before-report-copy.txt) → [后](
 - `ruff check --no-cache`、`ruff format --check --no-cache`、`node --check`、`git diff --check`：随本 PR 的最终检查记录；打包测试在隔离临时目录通过。
 
 线上问答质量属于暂停的 QA #233/#236，本 Issue 不作恢复声明；本次仅调整当前 main 页面展示。等待设计 Agent 独立验收后再决定合并。
+
+## PR #252 第一轮审查后的增量修正
+
+- 材料解释表按已验证 scope 的资料身份声明：ISCT 同时匹配 `school_id` 与 `document_id`；GSFS 同时匹配机构、研究科、专攻和 `snapshot_id`。页面材料卡、第三步表单、第四步个人对照与报告投影传递同一个 scope。纯函数反例覆盖同 kind/同 code 但异校、异文档、异快照、未知身份和未知 code；合成浏览器检查异校表单及卡片回退，报告投影单元测试检查同 code 复制回退，浏览器再核对未知材料的预览与复制一致。
+- 保存真实响应的[第四步手机截图](ux02-evidence/after-step4-390.png)与[桌面截图](ux02-evidence/after-step4-1440.png)已刷新：原始响应中的人工审核 checklist 句不再直接作为正文输出；部分覆盖含义仍可见。未配置 `online_model` 且后台 label 含供应商品牌的[合成手机截图](ux02-evidence/review-unconfigured-synthetic-390.png)显示“在线问答暂不可用”，正文不含品牌。浏览器测试继续区分成功、离线、失败。
+- 增量检查：直接相关的 Python 浏览器/UI 测试 **16 通过**，Node 投影 **6 通过**；Ruff 全仓格式/静态检查、JS 语法及 Git 空白检查通过。这是原 PR 的增量验证；保存响应与受保护资产未修改，无真实服务、模型或付费调用。原 40 张前后视图由同一重放脚本刷新，另增 1 张明确标为合成的未配置状态截图。

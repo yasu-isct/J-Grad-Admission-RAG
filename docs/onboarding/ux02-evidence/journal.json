@@ -28,5 +28,6 @@
   "service_starts": 0,
   "real_posts": 0,
   "paid_calls": 0,
-  "same_saved_responses": true
+  "same_saved_responses": true,
+  "synthetic_unconfigured_checked": true
 }

@@ -54,6 +54,9 @@ const evidenceDrawer = byId("evidence-drawer");
 const drawerClose = byId("drawer-close");
 const drawerContent = byId("drawer-content");
 const applicantForm = byId("applicant-form");
+const materialInputs = Array.from(applicantForm.querySelectorAll("[data-material-code]"));
+const materialInputOriginalNames = new Map(materialInputs.map((select) =>
+  [select, select.parentElement.firstChild.textContent.trim()]));
 const comparisonSubmit = byId("comparison-submit");
 const comparisonRetry = byId("comparison-retry");
 const comparisonStatus = byId("comparison-status");
@@ -257,7 +260,16 @@ function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
   groundedQuestion.disabled = !baseRequirementsLoaded || !configured || !supported;
   groundedSubmit.disabled = !baseRequirementsLoaded || !configured || !supported;
   setMessage(groundedStatus, "initial", !supported ? "当前材料切片暂不支持检索或问答。"
-    : generationStatus && !configured ? generationStatus.label : message);
+    : generationStatus && !configured
+      ? `${generationAvailabilityLabel(generationStatus)}；已审核基础要求仍可查看。` : message);
+}
+
+function generationAvailabilityLabel(status) {
+  if (!status?.configured) return status?.mode === "offline_rules"
+    ? "离线资料暂不可用" : "在线问答暂不可用";
+  if (status.mode === "online_model") return "在线问答可用";
+  if (status.mode === "offline_rules") return "仅离线资料";
+  return "问答可用";
 }
 
 function updateGroundedContext() {
@@ -289,7 +301,7 @@ function groundedFailureMessage(code, status) {
   if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
   if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
   if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答未通过证据或引用校验，因此已安全隐藏。请重试或查看基础要求。";
-  if (code === "unsupported_question" || status === 422) return "问题超出当前人工审核范围，或未包含可识别的资格、语言、日期、费用等主题。";
+  if (code === "unsupported_question" || status === 422) return "当前资料未覆盖这个问题，或问题中没有明确的申请事项；请换一种问法。";
   return "暂时无法生成有依据的回答，请重试。";
 }
 
@@ -417,10 +429,7 @@ async function loadGenerationStatus() {
   } catch (_) {
     generationStatus = { configured: false, label: "生成模式状态不可用" };
   }
-  generationModeLabel.textContent = generationStatus.configured
-    ? generationStatus.mode === "online_model" ? "在线问答可用"
-      : generationStatus.mode === "offline_rules" ? "仅离线资料" : "问答可用"
-    : generationStatus.mode === "offline_rules" ? "离线资料暂不可用" : "在线问答暂不可用";
+  generationModeLabel.textContent = generationAvailabilityLabel(generationStatus);
   clearGroundedAnswer(baseRequirementsLoaded ? "可针对当前目标和本页个人情况提问。" : "加载基础要求后即可提问。");
 }
 
@@ -1538,6 +1547,16 @@ function currentReferenceScope() {
   return scopes.find((scope) => JSON.stringify(scope.request) === JSON.stringify(request)) || null;
 }
 
+function refreshMaterialInputLabels(scope) {
+  for (const select of materialInputs) {
+    const display = referenceCore.materialDisplay(scope, select.dataset.materialCode,
+      materialInputOriginalNames.get(select));
+    const label = display.verified
+      ? `${display.name} · ${display.official}` : `${display.name} · ${display.description}`;
+    select.parentElement.replaceChildren(document.createTextNode(`${label} `), select);
+  }
+}
+
 async function loadDemoCatalog() {
   discardEvidenceDrawer();
   cancelPendingRequirements();
@@ -1706,7 +1725,7 @@ function renderRequirementCard(requirement, options = {}) {
   card.className = `requirement-card${options.compact ? " requirement-card-compact" : ""}`;
   card.dataset.category = requirement.category;
   const material = requirement.category === "materials"
-    ? referenceCore.materialDisplay(requirement.graphTopic ? "reviewed_material_slice" : "legacy_applicant",
+    ? referenceCore.materialDisplay(options.scope,
       requirement.material_code || requirement.requirement_id, requirement.title) : null;
   card.append(heading(4, material ? material.name : requirement.title));
   if (material?.official) {
@@ -1831,14 +1850,14 @@ function renderKeyDates(requirements, emptyMessage = "暂无已审核数据") {
   return section;
 }
 
-function renderRequirementSection(title, entries, className) {
+function renderRequirementSection(title, entries, className, scope) {
   const section = document.createElement("section");
   section.className = `result-section ${className}`;
   section.append(heading(3, title));
   const list = document.createElement("div");
   list.className = "requirement-list";
   if (entries.length) {
-    for (const requirement of entries) list.append(renderRequirementCard(requirement));
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, {scope}));
   } else {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
@@ -1849,7 +1868,7 @@ function renderRequirementSection(title, entries, className) {
   return section;
 }
 
-function renderPendingRequirements(entries, overview) {
+function renderPendingRequirements(entries, overview, scope) {
   const section = document.createElement("section");
   section.className = "result-section pending-section";
   const count = overview.needsInformationCount === null ? null : entries.length;
@@ -1891,14 +1910,14 @@ function renderPendingRequirements(entries, overview) {
     summary.textContent = `查看待确认的 ${entries.length} 项要求`;
     const list = document.createElement("div");
     list.className = "requirement-list";
-    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true }));
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true, scope }));
     details.append(summary, list);
     section.append(details);
   }
   return section;
 }
 
-function renderRequirements(payload) {
+function renderRequirements(payload, scope) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
   targetSummary.hidden = true;
@@ -1920,8 +1939,8 @@ function renderRequirements(payload) {
   requirementsOutput.append(
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
-    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section"),
-    renderPendingRequirements(pending, overview)
+    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
+    renderPendingRequirements(pending, overview, scope)
   );
 
   const next = document.createElement("section");
@@ -1940,7 +1959,7 @@ function renderRequirements(payload) {
   otherSummary.textContent = `其他说明与已审核要求${secondary.length ? `（${secondary.length} 项）` : ""}`;
   const otherList = document.createElement("div");
   otherList.className = "requirement-list";
-  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement));
+  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement, {scope}));
   if (!secondary.length) {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
@@ -1997,7 +2016,7 @@ function renderSliceRequirements(mapped) {
   requirementsOutput.append(
     overview,
     renderKeyDates([], "当前资料尚未覆盖日期"),
-    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section")
+    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section", scope)
   );
   const next = document.createElement("section");
   next.className = "result-section next-step-section";
@@ -2380,7 +2399,7 @@ function materialNextAction(item) {
   return "填写准备情况，再核对官方说明。";
 }
 
-function renderPriorityActions(entries) {
+function renderPriorityActions(entries, scope) {
   const container = byId("priority-actions");
   container.hidden = false;
   container.replaceChildren();
@@ -2399,7 +2418,7 @@ function renderPriorityActions(entries) {
     const link = document.createElement("a");
     link.href = `#${cardId}`;
     const material = item.category === "materials"
-      ? referenceCore.materialDisplay("legacy_applicant", item.item_id, item.title) : null;
+      ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
     link.textContent = material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
@@ -2427,14 +2446,14 @@ function renderPriorityActions(entries) {
   }
 }
 
-function renderComparison(payload) {
+function renderComparison(payload, scope) {
   byId("readiness-panel").classList.remove("slice-readiness");
   byId("readiness-filters").hidden = false;
   byId("readiness-panel").querySelector(".readiness-counts").hidden = false;
   byId("readiness-panel").querySelector(".action-summary-total").hidden = false;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
-  partialChecklistStatement.textContent = payload.partial_checklist_statement;
+  partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
   byId("count-total").textContent = String(payload.counts.total);
   byId("count-recorded").textContent = String(payload.counts.recorded);
   byId("count-action").textContent = String(payload.counts.action_required);
@@ -2444,7 +2463,7 @@ function renderComparison(payload) {
   const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
     .filter((item) => item.action_group === actionGroup)
     .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
-  renderPriorityActions(entriesWithIds);
+  renderPriorityActions(entriesWithIds, scope);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
   const materialEntries = entriesWithIds.filter(({ item }) => item.category === "materials");
   const sections = [
@@ -2469,7 +2488,7 @@ function renderComparison(payload) {
       card.dataset.actionGroup = item.action_group;
       card.dataset.category = item.category;
       const material = item.category === "materials"
-        ? referenceCore.materialDisplay("legacy_applicant", item.item_id, item.title) : null;
+        ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
       const category = document.createElement("p");
       category.className = "comparison-category";
       category.textContent = categoryLabels[item.category] || item.category;
@@ -2561,7 +2580,7 @@ function renderComparison(payload) {
   }
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
-  boundary.textContent = "仅整理当前已审核范围和本次填写情况；准备状态不代表材料已提交或学校受理。";
+  boundary.textContent = "准备状态不代表材料已提交或学校受理。";
   comparisonOutput.append(boundary);
   filterEmpty.hidden = true;
   comparisonComplete = true;
@@ -2594,7 +2613,7 @@ function renderSliceReadiness(report, mapped) {
       official_status: topic.status_code, evidence, graphTopic: mappedTopic,
       graphScope: mapped.scope
     };
-    const card = renderRequirementCard(requirement);
+    const card = renderRequirementCard(requirement, {scope: mapped.scope});
     if (topic.explanation) {
       const result = document.createElement("p");
       result.className = "material-condition";
@@ -2876,7 +2895,7 @@ async function submitApplicantComparison() {
       || ["school_name", "degree_name", "intake_name", "college_name", "department_name", "application_route_name"]
         .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
-    renderComparison(payload);
+    renderComparison(payload, scope);
     comparisonResponse = payload;
     setMessage(comparisonStatus, "success", "个人情况已完成保守对照。");
     activateStep(4, true);
@@ -2977,10 +2996,11 @@ async function submitBaseRequirements() {
     const mapped = scope.kind === "legacy_applicant"
       ? referenceCore.mapLegacyBase(scope, payload) : referenceCore.mapSliceEvidence(scope, payload);
     if (requestId !== requirementsRequestId || referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot) return;
-    if (scope.kind === "legacy_applicant") renderRequirements(payload);
+    if (scope.kind === "legacy_applicant") renderRequirements(payload, scope);
     else renderSliceRequirements(mapped);
     loadedReference = mapped;
     baseResponse = payload;
+    refreshMaterialInputLabels(scope);
     baseRequirementsLoaded = true;
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
@@ -3109,11 +3129,5 @@ loadGenerationStatus();
 loadCatalog();
 import("/assets/unified-core.mjs").then((module) => {
   referenceCore = module;
-  for (const select of applicantForm.querySelectorAll("[data-material-code]")) {
-    const label = select.parentElement;
-    const display = referenceCore.materialDisplay("legacy_applicant", select.dataset.materialCode,
-      select.dataset.materialCode);
-    label.replaceChildren(document.createTextNode(`${display.name} · ${display.official} `), select);
-  }
   loadDemoCatalog();
 }).catch(() => setMessage(targetStatus, "error", "审核目录组件暂时无法加载，请刷新页面。"));
