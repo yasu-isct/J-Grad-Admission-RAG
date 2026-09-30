@@ -253,6 +253,15 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         )
         assert page.locator(".overview-cta").is_visible()
         assert not calls["comparison"] and not calls["reports"]
+        assert page.locator("#current-target-bar").is_visible()
+        assert "第一所学校 · 专业" in page.locator("#current-target-name").inner_text()
+        page.locator("#change-school").click()
+        assert page.locator("#step-1-content").is_visible()
+        assert page.locator("#school-select").input_value() == "school-one"
+        assert page.locator("#current-target-bar").is_hidden()
+        assert len(calls["base"]) == 1
+        page.locator("#edit-requirements").click()
+        assert page.locator("#current-target-bar").is_visible()
         page.screenshot(path=str(tmp_path / "new-dates-materials-1440.png"), full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
         page.screenshot(path=str(tmp_path / "new-dates-materials-390.png"), full_page=True)
@@ -295,6 +304,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.screenshot(path=str(tmp_path / "new-action-summary-1440.png"), full_page=True)
         page.locator("#readiness-panel .reference-generate").click()
         page.locator("#reference-report").wait_for(state="visible")
+        assert "已打开" in page.locator("#reference-step4-status").inner_text()
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
@@ -342,8 +352,13 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         )
         page.locator("#reference-close").click()
         assert len(calls["base"]) == 1 and len(calls["comparison"]) == 1
-        page.locator("#edit-target").click()
+        assert page.locator("#current-target-bar").is_visible()
+        page.locator("#change-school").click()
+        assert page.locator('[data-material-code="application_form"]').input_value() == "not_yet"
+        assert page.locator("#reference-report-body").inner_text() != ""
         _select_slice(page)
+        assert page.locator("#reference-report-body").inner_text() == ""
+        assert page.locator('[data-material-code="application_form"]').input_value() == ""
         assert page.locator("#grounded-answer-panel").is_hidden()
         assert page.locator("#advanced-tools").is_hidden()
         page.locator("#requirements-submit").click()
@@ -591,6 +606,7 @@ def test_ui02_delayed_switch_failure_retry_and_report_invalidation():
     catalog, base, comparison, evidence, report = _data()
     held_base = []
     held_report = []
+    held_report_error = []
     calls = {"base": [], "evidence": 0, "reports": [], "comparison": []}
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
@@ -638,7 +654,7 @@ def test_ui02_delayed_switch_failure_retry_and_report_invalidation():
                 request = route.request.post_data_json
                 calls["reports"].append(request)
                 if len(calls["reports"]) == 1:
-                    route.fulfill(status=503, json={"code": "unavailable"})
+                    held_report_error.append(route)
                 elif len(calls["reports"]) == 3:
                     held_report.append(route)
                 else:
@@ -672,11 +688,20 @@ def test_ui02_delayed_switch_failure_retry_and_report_invalidation():
         assert "当前资料尚未覆盖日期" in page.locator(".key-dates-section").inner_text()
         page.locator("#step-2-panel .reference-generate").click()
         page.wait_for_function(
+            "document.querySelector('#step-2-panel .reference-generate').disabled"
+        )
+        assert "正在整理" in page.locator("#reference-inline-status").inner_text()
+        page.locator("#step-2-panel .reference-generate").evaluate("button => button.click()")
+        assert len(calls["reports"]) == 1
+        held_report_error[0].fulfill(status=503, json={"code": "unavailable"})
+        page.wait_for_function(
             "document.querySelector('#reference-inline-status').textContent.includes('失败')"
         )
         assert page.locator("#reference-report").is_hidden()
+        assert page.locator("#step-2-panel .reference-generate").inner_text() == "重试生成报告"
         page.locator("#step-2-panel .reference-generate").click()
         page.locator("#reference-report").wait_for(state="visible")
+        assert "已打开" in page.locator("#reference-inline-status").inner_text()
         assert len(calls["reports"]) == 2
         assert calls["reports"][0]["employment"] == calls["reports"][1]["employment"]
         page.locator("#reference-close").click()

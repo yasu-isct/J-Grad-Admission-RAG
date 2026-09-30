@@ -32,6 +32,11 @@
         </details>
       </section>
 
+      <div id="current-target-bar" class="current-target-bar" hidden>
+        <div><p class="summary-label">当前申请目标</p><strong id="current-target-name"></strong><p class="current-target-hint">更换后将清除当前查询结果。</p></div>
+        <button id="change-school" class="secondary" type="button">更换学校</button>
+      </div>
+
       <nav class="stepper" aria-label="申请检查步骤">
         <ol>
           <li id="step-nav-1" data-state="current" aria-current="step"><span class="step-number">1</span><span><strong>选择目标</strong><small>当前</small></span></li>
@@ -49,7 +54,7 @@
           </header>
           <div id="step-1-summary" class="completed-summary" hidden>
             <div><p class="summary-label">已选择的目标</p><p id="step-1-summary-text"></p></div>
-            <button id="edit-target" class="quiet edit-step" type="button">修改</button>
+            <button id="edit-target" class="quiet edit-step" type="button">修改目标</button>
           </div>
           <div id="step-1-content" class="flow-step-content">
           <p class="field-detail">选项来自服务端审核目录。全部选完后，按钮会变为可用。</p>
@@ -85,7 +90,7 @@
           <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
           <div id="requirements-output" class="requirements-output"></div>
           <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
-          <p id="reference-inline-status" class="status-message" role="status" aria-live="polite">按需生成；浏览要求不会自动生成报告。</p>
+          <p id="reference-inline-status" class="status-message reference-action-status" role="status" aria-live="polite">要求加载后即可生成参考报告。</p>
           </div>
         </section>
 
@@ -196,7 +201,7 @@
             <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
           </section>
           <p id="partial-checklist-statement" class="final-notice"></p>
-          <p class="progress-boundary">“系统对照状态”来自当前人工审核覆盖范围内的规则；“我的处理进度”只是此页面会话中的自我标记。刷新、修改目标、返回修改个人情况或重新对照都会清空勾选。材料实际到达、最终资格、申请完整性和录取均未由此验证。</p>
+          <p class="progress-boundary">“系统对照状态”来自当前人工审核覆盖范围内的规则；“我的处理进度”只是此页面会话中的自我标记。刷新、实际更改目标、返回修改个人情况或重新对照都会清空勾选。材料实际到达、最终资格、申请完整性和录取均未由此验证。</p>
           <fieldset id="readiness-filters" class="readiness-filters">
             <legend>筛选显示</legend>
             <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
@@ -207,6 +212,7 @@
           <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
           <div id="comparison-output" class="comparison-output"></div>
           <div class="step-primary-action"><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
+          <p id="reference-step4-status" class="status-message reference-action-status" role="status" aria-live="polite">要求加载后即可生成参考报告。</p>
         </section>
       </section>
 

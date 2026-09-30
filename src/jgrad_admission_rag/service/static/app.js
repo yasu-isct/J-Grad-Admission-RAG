@@ -65,6 +65,9 @@ const readinessFilters = byId("readiness-filters");
 const filterEmpty = byId("filter-empty");
 const requirementsContinue = byId("requirements-continue");
 const editTarget = byId("edit-target");
+const changeSchool = byId("change-school");
+const currentTargetBar = byId("current-target-bar");
+const currentTargetName = byId("current-target-name");
 const editRequirements = byId("edit-requirements");
 const editApplicant = byId("edit-applicant");
 const groundedForm = byId("grounded-answer-form");
@@ -129,7 +132,16 @@ let referenceTrigger = null;
 const referenceButtons = Array.from(document.querySelectorAll(".reference-generate"));
 const referenceDialog = byId("reference-report");
 const referenceBody = byId("reference-report-body");
-const referenceInlineStatus = byId("reference-inline-status");
+const referenceActionStatuses = [byId("reference-inline-status"), byId("reference-step4-status")];
+
+function setReferenceActionState(state, message, enabled = baseRequirementsLoaded) {
+  for (const status of referenceActionStatuses) setMessage(status, state, message);
+  for (const button of referenceButtons) {
+    button.disabled = !enabled;
+    button.textContent = state === "loading" ? "正在整理…"
+      : state === "error" && enabled ? "重试生成报告" : "生成参考报告";
+  }
+}
 
 function clearReferenceReport(message = "当前目标或个人情况已改变，请按需重新生成。") {
   referenceReportRequestId += 1;
@@ -143,8 +155,7 @@ function clearReferenceReport(message = "当前目标或个人情况已改变，
   byId("reference-copy-fallback").hidden = true;
   byId("reference-copy-fallback-label").hidden = true;
   byId("reference-report-status").textContent = "";
-  referenceInlineStatus.textContent = message;
-  for (const button of referenceButtons) button.disabled = !baseRequirementsLoaded;
+  setReferenceActionState("initial", message);
   if (referenceDialog.open) referenceDialog.close();
 }
 
@@ -202,6 +213,10 @@ function updateFlowPresentation() {
     if (step.content) step.content.hidden = !isActive;
     if (step.summary) step.summary.hidden = isActive || state !== "complete";
   }
+  const showTarget = activeStep >= 2 && baseRequirementsLoaded && loadedReference;
+  currentTargetBar.hidden = !showTarget;
+  if (showTarget) currentTargetName.textContent = [loadedReference.scope.school,
+    loadedReference.scope.program].filter(Boolean).join(" · ");
 }
 
 function focusStep(number) {
@@ -2635,13 +2650,21 @@ function legacyProfileDisclosure() {
 }
 
 async function generateReferenceReport(event) {
-  if (!baseRequirementsLoaded || !loadedReference || referenceButtons.some((button) => button.disabled)) return;
+  if (referenceReportController) return;
+  if (!baseRequirementsLoaded || !loadedReference) {
+    setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
+    return;
+  }
   const trigger = event.currentTarget;
-  referenceTrigger = trigger;
   const scope = currentReferenceScope();
-  if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) return;
+  if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
+    setReferenceActionState("error", "当前选择与已加载要求不一致，请重新加载要求。", false);
+    return;
+  }
+  referenceTrigger = trigger;
   if (referenceReport?.kind === "reviewed_material_slice" && scope.kind === "reviewed_material_slice") {
     renderReferenceReport(referenceReport);
+    setReferenceActionState("success", "报告已打开，可选择内容并复制。");
     return;
   }
   clearReferenceReport("正在整理当前已审核结果和官方依据。");
@@ -2651,7 +2674,7 @@ async function generateReferenceReport(event) {
     : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
   const scopeSnapshot = referenceCore.scopeKey(scope);
   referenceReportController = new AbortController();
-  for (const button of referenceButtons) button.disabled = true;
+  setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
   const current = () => requestId === referenceReportRequestId
     && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
     && (scope.kind === "legacy_applicant" ? JSON.stringify(demoApplicantInput())
@@ -2697,14 +2720,13 @@ async function generateReferenceReport(event) {
     if (!current()) return;
     referenceReport = report;
     renderReferenceReport(report);
-    referenceInlineStatus.textContent = "报告已生成，可预览和复制；修改目标或条件会清除旧报告。";
+    setReferenceActionState("success", "报告已打开，可选择内容并复制；修改目标或条件会清除旧报告。");
   } catch (error) {
     if (error?.name !== "AbortError" && current())
-      referenceInlineStatus.textContent = "报告生成失败或依据不完整，请保留当前输入并重试。";
+      setReferenceActionState("error", "报告生成失败或依据不完整。输入已保留，请再次点击“重试生成报告”。", true);
   } finally {
     if (requestId === referenceReportRequestId) {
       referenceReportController = null;
-      for (const button of referenceButtons) button.disabled = !baseRequirementsLoaded;
       if (!referenceDialog.open) trigger.focus();
     }
   }
@@ -2811,7 +2833,7 @@ async function submitSliceComparison(scope) {
     const report = referenceCore.sliceReport(scope, loadedReference, payload, employment);
     renderSliceReadiness(report, loadedReference);
     referenceReport = report;
-    referenceInlineStatus.textContent = "当前条件结果已加载；可按需预览和复制参考报告。";
+    setReferenceActionState("success", "当前条件结果已加载；可按需预览和复制参考报告。", true);
     setMessage(comparisonStatus, "success", "已核对当前 3 个材料主题；报告可按需预览和复制。");
     activateStep(4, true);
   } catch (error) {
@@ -2873,8 +2895,7 @@ async function submitBaseRequirements() {
     baseRequirementsLoaded = true;
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
-    for (const button of referenceButtons) button.disabled = false;
-    referenceInlineStatus.textContent = "要求已加载；可以按需生成参考报告。";
+    setReferenceActionState("initial", "要求已加载；可在此生成并复制参考报告。", true);
     clearComparison();
     clearGroundedAnswer("可针对当前目标和本页个人情况提问。");
     updateGroundedContext();
@@ -2958,7 +2979,8 @@ readinessFilters.addEventListener("change", applyReadinessFilter);
 requirementsContinue.addEventListener("click", () => {
   if (baseRequirementsLoaded) activateStep(3, true);
 });
-editTarget.addEventListener("click", () => { resetChecklistProgress(); activateStep(1, true); });
+editTarget.addEventListener("click", () => activateStep(1, true));
+changeSchool.addEventListener("click", () => activateStep(1, true));
 editRequirements.addEventListener("click", () => activateStep(2, true));
 editApplicant.addEventListener("click", () => { resetChecklistProgress(); activateStep(3, true); });
 schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
@@ -2973,7 +2995,12 @@ groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGrou
 referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
 byId("reference-copy").addEventListener("click", copyReferenceReport);
 byId("reference-close").addEventListener("click", () => referenceDialog.close());
-referenceDialog.addEventListener("close", () => { referenceTrigger?.focus(); referenceTrigger = null; });
+referenceDialog.addEventListener("close", () => {
+  if (referenceTrigger?.isConnected && !referenceTrigger.disabled && referenceReport
+    && currentReferenceScope() && referenceCore.scopeKey(referenceReport.scope)
+      === referenceCore.scopeKey(currentReferenceScope())) referenceTrigger.focus({preventScroll: true});
+  referenceTrigger = null;
+});
 drawerClose.addEventListener("click", () => evidenceDrawer.close());
 evidenceDrawer.addEventListener("close", () => {
   const scope = currentReferenceScope();
