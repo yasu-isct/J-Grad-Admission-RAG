@@ -50,6 +50,6 @@ def test_linked_english_help_and_evidence_limits_are_not_rule_judgments() -> Non
     assert "日语信息目前只记录" in html
     assert "不会给出“已满足日语要求”的结论" in html
     assert "不代表内容有效、学校已收到或受理" in html
-    assert "官方适用性在结果中单独显示" in html
+    assert "认为不适用时仍需查看官方适用性" in html
     assert "score >=" not in javascript
     assert "score <=" not in javascript

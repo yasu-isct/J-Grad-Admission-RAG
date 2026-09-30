@@ -1,0 +1,32 @@
+{
+  "baseline": "b0943cc651f5d0b92bfa0226f7583b810e90a29a",
+  "response_sources": [
+    "D:\\J-Grad-Admission-RAG\\outputs\\ui02-real\\final-head-cd09bd4",
+    "docs/onboarding/evidui01-evidence/gsfs-evidence-real.json"
+  ],
+  "answer_source": "docs/evaluation/qa01-online20/responses.json case 03 turn 1",
+  "response_sha256": {
+    "isct-base-2027.json": "d1ac46581a57e9a07ddc1edc6a20be54fddaef1a359c56a9de0622dbf3736236",
+    "isct-comparison.json": "3744f08dad012f8286c609cb5370807f81c6593f6f7ad8642310d6b7e09e87a1",
+    "gsfs-unknown-unknown.json": "9abbdba85ea147051607798751351df3318427eaa86c6d97c5149e8c8fb7b744",
+    "gsfs-evidence": "9b0b4b3118921d73b5425883f17d5678ca80ea4793e75cc8a42e10c4558ca4df"
+  },
+  "before_replayed": {
+    "base": 1,
+    "comparison": 1,
+    "evidence": 1,
+    "report": 1,
+    "answer": 1
+  },
+  "after_replayed": {
+    "base": 1,
+    "comparison": 1,
+    "evidence": 1,
+    "report": 1,
+    "answer": 1
+  },
+  "service_starts": 0,
+  "real_posts": 0,
+  "paid_calls": 0,
+  "same_saved_responses": true
+}

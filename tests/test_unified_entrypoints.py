@@ -150,6 +150,7 @@ def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path
             "wheel",
             ".",
             "--no-deps",
+            "--no-cache-dir",
             "--no-build-isolation",
             "--no-index",
             "-w",

@@ -292,12 +292,10 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert page.locator("#count-recorded").inner_text() == "1"
         assert page.locator("#count-review").inner_text() == "1"
         cards = page.locator("#comparison-output .comparison-card")
-        assert "入学志愿票" in cards.nth(0).inner_text()
-        assert "尚未准备" in cards.nth(0).inner_text()
-        assert "学历路径" in cards.nth(1).inner_text()
-        assert "未提供／不确定" in cards.nth(1).inner_text()
-        assert "宛名标签" in cards.nth(2).inner_text()
-        assert "已有" in cards.nth(2).inner_text()
+        assert "材料准备" in page.locator("#comparison-output .comparison-group").first.inner_text()
+        assert "待准备" in cards.filter(has_text="入学志愿票").inner_text()
+        assert "已准备（自报）" in cards.filter(has_text="宛名标签").inner_text()
+        assert "未提供／不确定" in cards.filter(has_text="学历路径").inner_text()
         assert page.locator("#readiness-heading").evaluate(
             "node => node === document.activeElement"
         )
@@ -308,7 +306,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
-        for value in ("英语成绩单", "待填写准备情况", "关键时间", "材料准备清单"):
+        for value in ("英语成绩单", "尚未填写准备情况", "关键时间", "材料准备清单"):
             assert value in preview and value in copied
         for value in ("available", "not_yet", "保守对照", "官方原文", "物理页"):
             assert value not in preview and value not in copied
@@ -325,7 +323,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         date_preview = page.locator("#reference-report-body").inner_text()
         page.locator("#reference-copy").click()
         date_copy = page.evaluate("window.copied")
-        for value in ("接下来先做什么", "待补材料", "材料准备清单", "已准备不代表"):
+        for value in ("接下来先做什么", "待准备", "材料准备清单", "已准备不代表"):
             assert value not in date_preview and value not in date_copy
         assert "关键时间" in date_preview and "关键时间" in date_copy
         options.nth(0).uncheck()
@@ -333,7 +331,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         other_preview = page.locator("#reference-report-body").inner_text()
         page.locator("#reference-copy").click()
         other_copy = page.evaluate("window.copied")
-        for value in ("接下来先做什么", "待补材料", "材料准备清单", "已准备不代表"):
+        for value in ("接下来先做什么", "待准备", "材料准备清单", "已准备不代表"):
             assert value not in other_preview and value not in other_copy
         assert "其他已加载要求" in other_preview and "其他已加载要求" in other_copy
         options.nth(2).uncheck()
@@ -426,7 +424,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
             "retain_employment_at_enrollment": False,
         }
         assert "目前任职是；入学后继续任职否" in page.locator("#comparison-output").inner_text()
-        assert "当前条件：需准备" in page.locator("#comparison-output").inner_text()
+        assert "当前条件：需提交" in page.locator("#comparison-output").inner_text()
         page.locator("#comparison-output .requirement-evidence-actions button").first.click()
         assert drawer.locator(".relation-node").count() >= 9
         drawer.locator(".relation-node button").first.click()
@@ -446,7 +444,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         page.locator("#reference-copy").click()
         preview = page.locator("#reference-report-body").inner_text()
         copied = page.evaluate("window.copied")
-        for value in ("计划书", "成绩单", "申请表", "需要准备，完成情况未填写"):
+        for value in ("计划书", "成绩单", "申请表", "需提交，尚未填写准备情况"):
             assert value in preview and value in copied
         for value in ("# 原始报告", "物理页 8", "印刷页 7", "提出が必要", "record_id"):
             assert value not in preview and value not in copied
@@ -486,6 +484,11 @@ def test_ui02_question_boundaries_and_school_isolation():
 
     def answer_for(question):
         no_result = question == "no safe result"
+        answer_text = (
+            "参考正文 formatted\n\n- JLPT N1\n- J.TEST\n\n**提醒** <img src=x onerror=window.answerXss=1>"
+            if question == "formatted"
+            else f"参考正文 {question}"
+        )
         return {
             "mode": "reference_only",
             "analysis": {},
@@ -498,7 +501,7 @@ def test_ui02_question_boundaries_and_school_isolation():
                 "official_source_url": "https://example.edu/official.pdf",
                 "answer": {
                     "kind": "reference_answer",
-                    "answer": f"参考正文 {question}",
+                    "answer": answer_text,
                     "claims": [],
                     "missing_information": ["还缺申请人的具体成绩"],
                     "limitations": [
@@ -539,6 +542,7 @@ def test_ui02_question_boundaries_and_school_isolation():
                 route.fulfill(
                     json={
                         "configured": True,
+                        "mode": "offline_rules",
                         "request_timeout_seconds": 30,
                         "label": "合成离线问答",
                     }
@@ -550,7 +554,10 @@ def test_ui02_question_boundaries_and_school_isolation():
             elif path == "/v1/natural-language-answers":
                 question = route.request.post_data_json["question"]
                 questions.append(question)
-                route.fulfill(json=answer_for(question))
+                if question == "service failure":
+                    route.fulfill(status=503, json={"code": "grounded_service_unavailable"})
+                else:
+                    route.fulfill(json=answer_for(question))
             else:
                 route.abort()
 
@@ -566,25 +573,39 @@ def test_ui02_question_boundaries_and_school_isolation():
             "fallback",
             "partial unsupported",
             "no safe result",
+            "formatted",
         ):
             page.locator("#grounded-question").fill(question)
             page.locator("#grounded-answer-submit").click()
-            page.get_by_text(f"处理概况 {question}").wait_for()
+            page.get_by_text(
+                f"处理概况 {question}" if question == "no safe result"
+                else f"参考正文 {question}"
+            ).wait_for()
             output = page.locator("#grounded-answer-output").inner_text()
             if question == "no safe result":
                 assert "本次没有可安全展示的引用回答" in output
                 assert "参考正文 partial unsupported" not in output
                 continue
             assert f"参考正文 {question}" in output
-            assert "仅覆盖本地已审核的申请材料" in output
+            assert "仅覆盖本地已审核的申请材料" not in output
             assert "还缺申请人的具体成绩" in output
             assert "尚待确认考试日期" in output
             if question == "zero hits":
                 assert "本地未命中可引用片段" in output
             if question == "fallback":
-                assert "在线整理不可用" in output
+                assert "在线服务不可用" in output
             if question == "partial unsupported":
                 assert "院外课程要求" in output
+            if question == "formatted":
+                assert page.locator(".grounded-response-text li").count() == 2
+                assert page.locator(".grounded-response-text strong").count() == 1
+                assert page.locator("#grounded-answer-output img").count() == 0
+                assert not page.evaluate("window.answerXss")
+        page.locator("#grounded-question").fill("service failure")
+        page.locator("#grounded-answer-submit").click()
+        page.get_by_text("生成或检索服务暂时不可用，请稍后重试。").wait_for()
+        assert page.locator("#grounded-answer-output").is_hidden()
+        assert page.locator("#grounded-answer-retry").is_visible()
         page.locator("#edit-target").click()
         _select_slice(page)
         assert page.locator("#grounded-question").is_disabled()
@@ -597,6 +618,8 @@ def test_ui02_question_boundaries_and_school_isolation():
             "fallback",
             "partial unsupported",
             "no safe result",
+            "formatted",
+            "service failure",
         ]
         assert errors == []
         browser.close()

@@ -367,6 +367,7 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
         && source.pages.every((page, index) => page === row.physical_pages[index])
         && source.quote.includes(row.quote_text)), "报告引文与已加载原文不一致");
     return {
+      id: result.topic_id, material_code: result.material_code,
       title: result.material_name_zh,
       status: statusNames[result.disposition] || result.disposition,
       status_code: result.disposition, condition: result.condition_status,
@@ -395,6 +396,33 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
 
 const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"};
 
+// Presentation only. Applicability and preparation still come from reviewed responses.
+const materialDisplays = {
+  legacy_applicant: {
+    address_label: ["邮寄地址标签", "宛名ラベル", "贴在提交出愿材料的信封上的标签。"],
+    application_form: ["入学申请表", "入学志願票", "本次入学申请使用的正式表格。"],
+    statement_of_purpose: ["志愿理由书", "志望理由書", "说明申请该方向理由的文书。"],
+    bachelor_transcript: ["学士课程成绩证明", "学士課程の成績証明書", "记录学士课程成绩的证明文件。"],
+    graduation_or_expected_graduation_certificate: ["毕业或预计毕业证明", "学士課程の卒業証明書又は卒業見込み証明書", "证明学士课程已毕业或预计毕业的文件。"]
+  },
+  reviewed_material_slice: {
+    "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
+    "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
+    "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"]
+  }
+};
+
+export function materialDisplay(kind, rawCode, originalName) {
+  const code = String(rawCode || "").replace(/^material:/, "");
+  const row = materialDisplays[kind]?.[code];
+  if (!row) return {name: originalName, official: "", description: "说明待核实。", verified: false};
+  return {name: row[0], official: row[1], description: row[2], verified: true};
+}
+
+function readerMaterialLine(item) {
+  return `${item.title}${item.official ? `（${item.official}）` : ""}｜${item.description}｜${item.state}。${item.action}`;
+}
+
 export function readerReportOptions(report) {
   requireValue(report?.scope && Array.isArray(report.topics), "报告尚未校验");
   return {
@@ -414,12 +442,14 @@ function legacyMaterialState(topic, comparisonItem) {
   if (applicability !== "required")
     return {state: "待确认适用", action: preparation === "not_yet"
       ? "自报尚未准备；先确认适用条件，再决定是否需要补材料。"
-      : "先补充个人条件，确认这一项是否需要提交。"};
+      : preparation === "available"
+        ? "已自报准备；先确认这一项是否需要提交。"
+        : "尚未填写准备情况；先确认这一项是否需要提交。"};
   if (preparation === "not_yet")
-    return {state: "待补材料", action: "自报尚未准备；请准备材料并核对提交格式。"};
+    return {state: "待准备", action: "你填写为尚未准备；请核对该材料的具体要求。"};
   if (preparation === "available")
-    return {state: "已自报准备", action: "请核对内容、有效性和提交方式；不表示学校已审核或受理。"};
-  return {state: "待填写准备情况", action: "尚未填写准备情况，暂不能算作缺失材料。"};
+    return {state: "已准备（自报）", action: "请核对材料是否符合要求。"};
+  return {state: "尚未填写准备情况", action: "请填写准备情况；目前不计为缺材料。"};
 }
 
 function sliceMaterialState(topic, employment) {
@@ -428,7 +458,7 @@ function sliceMaterialState(topic, employment) {
   if (topic.status_code === "rule_not_applicable")
     return {state: "本条条件不适用", action: topic.explanation};
   if (topic.status_code === "submission_required")
-    return {state: "需要准备，完成情况未填写", action: topic.explanation};
+    return {state: "需提交，尚未填写准备情况", action: topic.explanation};
   if (topic.status_code === "not_covered")
     return {state: "当前资料未覆盖", action: "本切片未确认这一项。"};
   const missing = [];
@@ -452,7 +482,7 @@ function readerText(view) {
   }
   if (view.selected.includes("materials"))
     section("材料准备清单", view.materials.length
-      ? view.materials.map((item) => `${item.title}｜${item.state}。${item.action}`)
+      ? view.materials.map((item) => item.line)
       : ["当前所选资料没有可整理的材料主题。"]);
   if (view.selected.includes("other"))
     section("其他已加载要求", view.other.length
@@ -498,17 +528,20 @@ export function readerReport(report, selected) {
       const state = report.kind === "legacy_applicant"
         ? legacyMaterialState(topic, comparison.get(topic.id) || comparison.get(topic.title))
         : sliceMaterialState(topic, report.employment);
-      const item = {title: topic.title, ...state};
+      const display = materialDisplay(report.kind, topic.id || topic.material_code, topic.title);
+      const item = {title: display.name, official: display.official,
+        description: display.description, verified: display.verified, ...state};
+      item.line = readerMaterialLine(item);
       materials.push(item);
-      if (["待补材料", "需要准备，完成情况未填写"].includes(state.state))
-        priorities.push(`${topic.title}：${state.state}。${state.action}`);
-      else if (state.state === "待填写准备情况") unfilled.push(topic.title);
+      if (["待准备", "需提交，尚未填写准备情况"].includes(state.state))
+        priorities.push(`${display.name}：${state.state}。${state.action}`);
+      else if (state.state === "尚未填写准备情况") unfilled.push(display.name);
       else if (state.state === "待确认适用") conditional.push(item);
     }
     if (report.kind === "legacy_applicant" && !report.comparison)
-      priorities.unshift("未填写准备情况，暂不能判断还缺哪些材料；可先保存基础要求。");
+      priorities.unshift("尚未填写准备情况，暂不能判断还缺哪些材料；可先保存基础要求。");
     else if (unfilled.length)
-      priorities.push(`${unfilled.join("、")}：待填写准备情况；不能算作缺失材料。`);
+      priorities.push(`${unfilled.join("、")}：尚未填写准备情况；不能算作缺失材料。`);
     if (conditional.length) priorities.push(conditional.length === 1
       ? `${conditional[0].title}：待确认适用。${conditional[0].action}`
       : `${conditional.map((item) => item.title).join("、")}：待确认适用；请先确认这些材料的适用条件。`);

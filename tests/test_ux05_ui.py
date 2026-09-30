@@ -10,7 +10,7 @@ def test_step_four_separates_system_counts_from_personal_progress() -> None:
 
     assert 'id="action-summary-heading"' in html
     assert 'id="priority-actions"' in html
-    assert 'aria-label="系统对照状态统计"' in html
+    assert 'aria-label="当前核对结果统计"' in html
     for field in ("total", "recorded", "action", "review"):
         assert f'id="count-{field}"' in html
     assert "payload.counts.action_required" in js
@@ -57,8 +57,8 @@ def test_limitations_are_visible_without_conflating_recorded_with_satisfied() ->
     html = (STATIC / "advanced.html").read_text(encoding="utf-8")
     js = (STATIC / "app.js").read_text(encoding="utf-8")
 
-    assert "材料实际到达、最终资格、申请完整性和录取均未由此验证" in html
-    assert "刷新、实际更改目标、返回修改个人情况或重新对照都会清空勾选" in html
+    assert "材料是否有效、已送达或被学校受理仍需核对" in html
+    assert "刷新或重新对照后会清空" in html
     assert "已记录仍不等于学校确认或完成出愿" in js
     assert 'progress.textContent = item.action_group === "recorded"' in js
     assert "official.textContent = `官方适用性：" in js
