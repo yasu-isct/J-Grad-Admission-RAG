@@ -32,8 +32,10 @@
 
 ## 真实服务闭环
 
-使用现有 391 runtime 和 GSFS 配置，只读验证保护资产前后 SHA-256；独立临时端口由脚本持有并停止。脚本：[ux01-real-browser.py](ux01-real-browser.py)。结果见运行后生成的 `ux01-evidence/real-journal.json`。单次会话上限为基础要求与个人对照 POST 合计 4、GSFS 报告 POST 1；本地 ISCT 报告投影不发 POST。付费、下载、解析、索引构建为 0。
+使用现有 391 runtime 和 GSFS 配置，只读验证保护资产前后 SHA-256；独立临时端口由脚本持有并停止。脚本：[ux01-real-browser.py](ux01-real-browser.py)，记录：[real-journal.json](ux01-evidence/real-journal.json)，[真实手机第四步](ux01-evidence/real-isct-step4-mobile.png)。执行代码 head `dbab65e86a869900e91d98fc9e1a69d82f4111d2`：1 次服务启动并正常停止，基础要求与个人对照 POST 合计 3 次、GSFS 报告 POST 1 次、其他 POST 0 次、付费调用 0 次。31 项保护资产前后大小和 SHA-256 全部相同。较早的普通权限预检因 391 runtime 的 `.jgrad-demo-owned.json` 无读取权限而中止，未启动服务；随后仅以提升权限完成只读预检和单次闭环，未改 ACL。
+
+真实闭环从 `/v1/reference-targets` 的两个目标进入：ISCT 第二步无个人信息报告和第四步个人结果报告均打开、聚焦，复制文本分别逐字匹配 [无个人信息](report02-evidence/isct-no-profile-after-copy.txt) 与 [已有对照](report02-evidence/isct-with-profile-after-copy.txt)，本地投影不发 POST。原个人材料状态经实际个人对照响应呈现；只打开学校选择器时输入不变，切到 GSFS 后旧报告及字段清空。GSFS 关系图能打开原文并返回，报告响应与既有保存响应一致；再切回 ISCT 无串校。真实会话未模拟服务故障，等待、失败与重试结论仅来自受控回放。
 
 ## 定向检查
 
-`pytest tests/test_ui02_browser.py tests/test_reference_workspace_browser.py tests/test_ux05_ui.py -q`：11 passed。`node --test tests/unified_core.test.mjs`：5 passed。`node --check app.js`、`ruff check`、`ruff format --check`、`git diff --check` 均通过。精确 head 的 CI 与真实服务记录在 PR 创建后补齐。
+`pytest tests/test_ui02_browser.py tests/test_reference_workspace_browser.py tests/test_ux05_ui.py -q`：11 passed。`node --test tests/unified_core.test.mjs`：5 passed。`node --check app.js`、`ruff check`、`ruff format --check`、`git diff --check` 均通过。精确 PR head 的 CI 在 PR 创建后核对。
