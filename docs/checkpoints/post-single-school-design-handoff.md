@@ -1,6 +1,21 @@
 # Post-single-school Design Handoff
 
-## Current handoff: PREP-01 #254 uniquely Ready after design merge
+## Current handoff: PREP-01 #254 accepted; no new Ready implementation
+
+2026-09-30: PR #256 accepted at `358abd6ea0c382dbb0b07ed244c2c8efe8c46a36`,
+merged `3afa83c4acfa97f9e2148f284749fdefd985bd57`; #254 is complete.
+[Independent acceptance](../onboarding/prep01-design-acceptance.md) records source/rule review,
+old-request compatibility, final 14 UI/browser tests and eight Node tests, three actual-rule browser
+replays and 12 unchanged asset hashes. Both R1 issues are resolved; exact-head CI passed.
+Developer cumulative real sessions/base-personalPOSTs:1/1,2/6;design:0/1,0/6;GSFS reports/paid0.
+Final repair used replay, not another live service or online-QA experiment. Do not reset budgets.
+Next responsibility: design prepares user acceptance and the school demonstration; M17 Main waits.
+No new Ready Issue, no automatic B/C, QA #233/#236, GSFS expansion, M13 or MinerU work. M17 stays open.
+8004 still serves1a36683 fromoutputs/design-usability;8003 serves29a91ac fromoutputs/design-report02.
+Do not switch running previews. Preserve334/391, rollback tag andreference_only.
+This section supersedes historical #254 Ready/Changes requested instructions.
+
+## Previous handoff: PREP-01 #254 uniquely Ready after design merge
 
 2026-09-30 user requested developer instructions after reviewing the first-stage Chinese samples and field map.
 Only [#254](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/254) is released by this design merge;
