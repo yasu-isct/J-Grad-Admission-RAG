@@ -59,7 +59,7 @@ from ..generation.simple_qa import (
     SIMPLE_QA_SCHEMA_VERSION,
     SimpleQaSource,
 )
-from ..corpus import audit_corpus_manifest, resolve_registered_corpus_kb_path
+from ..corpus import CorpusAuditError, audit_corpus_manifest, resolve_registered_corpus_kb_path
 from ..corpus_search import (
     CorpusSearchError,
     CorpusSearchInputError,
@@ -121,7 +121,7 @@ from ..schemas.document_identity import (
     canonical_document_identity_bytes,
     load_document_identity_bytes,
 )
-from ..schemas.document_kb import load_document_kb
+from ..schemas.document_kb import DocumentKnowledgeBaseError, load_document_kb
 from ..schemas.page_scope_manifest import (
     PageScopeManifest,
     canonical_page_scope_manifest_bytes,
@@ -178,6 +178,7 @@ from .grounded_answers import (
     PublicGroundedClaim,
     PublicGroundedResult,
     PublicReferenceAnswer,
+    PublicReferenceSource,
     PublicReferenceResult,
 )
 from .date_presentation import (
@@ -233,6 +234,8 @@ class _NaturalQaOutcome:
     delivery_source: str
     local_record_count: int
     local_lookup_performed: bool
+    source_references: tuple[PublicReferenceSource, ...] = ()
+    fallback_stage: str | None = None
 
 
 BUILD_OPENAPI_EXTRA = {
@@ -1788,38 +1791,56 @@ def _build_uncached_natural_language_answer_response(
     plan = matching_plans[0]
     language = analysis.detected_language.value
     outcome = _run_natural_qa(request, analysis, plan, settings, state)
+    has_bound_sources = bool(outcome.source_references)
+    if outcome.delivery_source == "offline":
+        summary_zh = "离线模式未调用模型；" + (
+            "已找到可核对的本地原文，列在下方。"
+            if has_bound_sources
+            else "当前没有可核对的本地原文。"
+        )
+        summary_ja = "オフラインではモデルを呼び出していません。" + (
+            "確認可能なローカル原文を下に示します。"
+            if has_bound_sources
+            else "確認可能なローカル原文はありません。"
+        )
+    elif outcome.delivery_source == "fallback":
+        planning_failed = outcome.fallback_stage == "planning"
+        summary_zh = (
+            "在线规划失败，未生成一般说明；已改用本地检索。"
+            if planning_failed
+            else "在线最终整理失败；第一阶段的一般说明尚未结合本地原文。"
+        ) + ("可核对的本地原文列在下方。" if has_bound_sources else "当前没有可核对的本地原文。")
+        summary_ja = (
+            "オンラインでの計画に失敗し、一般説明は生成されていません。ローカル検索に切り替えました。"
+            if planning_failed
+            else "オンラインでの最終整理に失敗しました。第一段階の一般説明はローカル原文と統合されていません。"
+        ) + (
+            "確認可能なローカル原文を下に示します。"
+            if has_bound_sources
+            else "確認可能なローカル原文はありません。"
+        )
+    elif not outcome.local_lookup_performed:
+        summary_zh = "已生成一般知识参考回答；未查询本地募集要项。"
+        summary_ja = "一般知識の参考回答を生成しました。ローカル募集要項は検索していません。"
+    else:
+        summary_zh = (
+            f"已生成参考回答；检索了所选募集要项中的 {outcome.local_record_count} 条本地记录。"
+        )
+        summary_ja = f"参考回答を生成しました。選択した募集要項からローカル記録を{outcome.local_record_count}件検索しました。"
+    summary = _localized_message(language, summary_zh, summary_ja)
+    subanswer_status = (
+        "answered"
+        if outcome.delivery_source == "live"
+        and (not outcome.local_lookup_performed or outcome.local_record_count)
+        else "no_clear_evidence"
+    )
     subanswers = tuple(
         NaturalLanguageSubanswer(
             subquestion=item,
-            status=(
-                "answered"
-                if not outcome.local_lookup_performed or outcome.local_record_count
-                else "no_clear_evidence"
-            ),
-            message=_localized_message(
-                language,
-                "已提供一般知识参考说明；该问题未要求查询学校规则。"
-                if not outcome.local_lookup_performed
-                else "已结合本地募集要项检索结果生成参考回答。"
-                if outcome.local_record_count
-                else "已提供一般说明，但当前本地资料没有确认相关学校规则。",
-                "一般知識として参考説明を提供し、学校規則の検索は行いませんでした。"
-                if not outcome.local_lookup_performed
-                else "ローカル募集要項の検索結果を含む参考回答です。"
-                if outcome.local_record_count
-                else "一般説明を提供しましたが、現在のローカル資料では学校固有の規則を確認できませんでした。",
-            ),
+            status=subanswer_status,
+            message=summary,
         )
         for item in analysis.subquestions
-    )
-    summary = _localized_message(
-        language,
-        "该问题作为一般知识参考回答处理，未查询本地募集要项。"
-        if not outcome.local_lookup_performed
-        else f"已按模型规划在所选募集要项中检索 {outcome.local_record_count} 条本地记录。",
-        "一般知識の参考回答として処理し、ローカル募集要項は検索しませんでした。"
-        if not outcome.local_lookup_performed
-        else f"モデルの計画に基づき、選択した募集要項からローカル記録を{outcome.local_record_count}件検索しました。",
     )
     return NaturalLanguageAnswerResponse(
         mode=_generation_status_response(settings, state),
@@ -1827,6 +1848,7 @@ def _build_uncached_natural_language_answer_response(
         summary=summary,
         subanswers=subanswers,
         result=outcome.result,
+        source_references=outcome.source_references,
         delivery=NaturalLanguageDeliveryMetadata(
             source=outcome.delivery_source,
             generation_ms=outcome.generation_ms,
@@ -1946,7 +1968,8 @@ def _run_natural_qa(
         except GenerationError:
             generation_ms += planning_provider.elapsed_ms
             selected = _retrieve_deterministic_fallback(request, analysis, settings, state)
-            answer_text = _offline_simple_qa_answer(selected, language, unavailable=True)
+            references = _plain_qa_references(selected, plan, settings)[:3]
+            answer_text = _offline_simple_qa_answer(references, language, unavailable=True)
             return _natural_qa_outcome(
                 request,
                 analysis,
@@ -1959,6 +1982,8 @@ def _run_natural_qa(
                 delivery_source="fallback",
                 selected=selected,
                 local_lookup_performed=True,
+                source_references=references,
+                fallback_stage="planning",
             )
 
         if not planned.needs_local_lookup:
@@ -1978,18 +2003,20 @@ def _run_natural_qa(
 
         packs = _retrieve_natural_answer_evidence(planned.search_queries, request, settings, state)
         selected = _select_consolidated_evidence(packs, None, request.target)
+        references = _plain_qa_references(selected, plan, settings)
+        display_references = references[:3]
         final_request = AdaptiveQaFinalRequest(
             question=request.question,
             target_label=target_label,
             draft_answer=planned.draft_answer,
-            retrieval_status="hits" if selected else "no_hits",
+            retrieval_status="hits" if references else "no_hits",
             sources=tuple(
                 SimpleQaSource(
                     source_id=f"source:{index:04d}",
-                    text=record.text,
-                    scope_label=" / ".join(record.section_path),
+                    text=reference.text,
+                    scope_label=reference.title,
                 )
-                for index, record in enumerate(selected, start=1)
+                for index, reference in enumerate(references, start=1)
             ),
         )
         final_provider = _TimedGenerationProvider(provider)
@@ -1999,7 +2026,9 @@ def _run_natural_qa(
             answer_text = generated.answer
             delivery_source = "live"
         except GenerationError:
-            answer_text = _adaptive_final_fallback(planned.draft_answer, selected, language)
+            answer_text = _adaptive_final_fallback(
+                planned.draft_answer, display_references, language
+            )
             delivery_source = "fallback"
         generation_ms += final_provider.elapsed_ms
         return _natural_qa_outcome(
@@ -2014,10 +2043,13 @@ def _run_natural_qa(
             delivery_source=delivery_source,
             selected=selected,
             local_lookup_performed=True,
+            source_references=display_references if delivery_source == "fallback" else (),
+            fallback_stage="final" if delivery_source == "fallback" else None,
         )
 
     selected = _retrieve_deterministic_fallback(request, analysis, settings, state)
-    answer_text = _offline_simple_qa_answer(selected, language, unavailable=False)
+    references = _plain_qa_references(selected, plan, settings)[:3]
+    answer_text = _offline_simple_qa_answer(references, language, unavailable=False)
     return _natural_qa_outcome(
         request,
         analysis,
@@ -2030,6 +2062,7 @@ def _run_natural_qa(
         delivery_source="offline",
         selected=selected,
         local_lookup_performed=True,
+        source_references=references,
     )
 
 
@@ -2061,6 +2094,8 @@ def _natural_qa_outcome(
     delivery_source: str,
     selected: tuple[Any, ...],
     local_lookup_performed: bool,
+    source_references: tuple[PublicReferenceSource, ...] = (),
+    fallback_stage: str | None = None,
 ) -> _NaturalQaOutcome:
     target_summary = build_demo_target_summary(state.report_plans, request.target)
     total_ms = max(0, round((perf_counter() - started) * 1000))
@@ -2089,56 +2124,111 @@ def _natural_qa_outcome(
         delivery_source=delivery_source,
         local_record_count=len(selected),
         local_lookup_performed=local_lookup_performed,
+        source_references=source_references,
+        fallback_stage=fallback_stage,
     )
 
 
-def _adaptive_final_fallback(draft_answer: str, selected: tuple[Any, ...], language: str) -> str:
+def _plain_qa_references(
+    selected: tuple[Any, ...], plan: ReviewedReportPlan, settings: ServiceSettings
+) -> tuple[PublicReferenceSource, ...]:
+    """Resolve retrieval hits back to their bound Facts; never display index text."""
+    if not selected or settings.corpus_root is None or settings.manifest_path is None:
+        return ()
+    try:
+        manifest = load_corpus_manifest(settings.manifest_path)
+        entry = next(
+            item
+            for item in manifest.entries
+            if item.identity == plan.document_identity
+            and item.source_kb_sha256 == plan.source_kb_sha256
+        )
+        kb_path = resolve_registered_corpus_kb_path(settings.corpus_root, entry.kb_path)
+        kb = load_document_kb(kb_path)
+        if kb.manifest.identity != plan.document_identity:
+            return ()
+    except (CorpusAuditError, CorpusManifestError, DocumentKnowledgeBaseError, StopIteration):
+        return ()
+    facts = {fact.fact_id: fact for fact in kb.facts}
+    references: list[PublicReferenceSource] = []
+    seen: set[str] = set()
+    characters = 0
+    for record in selected:
+        fact_id = getattr(record, "fact_id", None)
+        fact = facts.get(fact_id)
+        if (
+            fact is None
+            or fact_id in seen
+            or getattr(record, "document_id", None) != plan.document_identity.document_id
+            or tuple(fact.source_pages) != tuple(getattr(record, "source_pages", ()))
+            or tuple(fact.section_path) != tuple(getattr(record, "section_path", ()))
+            or not fact.text.strip()
+            or len(fact.text) > 20_000
+        ):
+            continue
+        title = (
+            fact.title.strip() or (fact.section_path[-1] if fact.section_path else "官方原文")
+        )[:500]
+        text = fact.text.strip()
+        added = len(text) + len(title)
+        if characters + added > MAX_CONSOLIDATED_EVIDENCE_CHARACTERS:
+            continue
+        references.append(
+            PublicReferenceSource(title=title, text=text, source_pages=tuple(fact.source_pages))
+        )
+        seen.add(fact_id)
+        characters += added
+        if len(references) == MAX_CONSOLIDATED_EVIDENCE_RECORDS:
+            break
+    return tuple(references)
+
+
+def _adaptive_final_fallback(
+    draft_answer: str, references: tuple[PublicReferenceSource, ...], language: str
+) -> str:
     status = _localized_message(
         language,
         "在线最终整理未完成。下面依次列出本地检索状态和第一阶段模型的一般说明：",
         "オンラインでの最終整理が完了しませんでした。以下にローカル検索の状態と第一段階モデルの一般説明を順に示します：",
     )
-    if selected:
+    if references:
         retrieval = _localized_message(
             language,
-            "本地募集要项检索到了以下相关片段，但尚未由最终模型整合：",
-            "ローカル募集要項では次の関連断片が見つかりましたが、最終モデルでは統合されていません：",
+            "本地原文参考单独列在下方，尚未由最终模型整合；第一阶段模型的一般说明仅供参考：",
+            "ローカルの原文は下に別掲します。最終モデルでは統合されていません。第一段階モデルの一般説明は参考情報です：",
         )
-        excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
     else:
         retrieval = _localized_message(
             language,
-            "当前选择的本地募集要项没有确认相关学校规则，请查看结构化功能、官方原文或向学校确认。",
-            "選択したローカル募集要項では学校固有の規則を確認できませんでした。構造化機能、公式原文、または学校への確認が必要です。",
+            "当前没有可核对的本地原文；学校规则未获确认，请查看结构化功能或官方原文。",
+            "確認可能なローカル原文はありません。学校固有の規則は未確認です。構造化機能または公式原文を確認してください。",
         )
-        excerpts = ()
-    return _bounded_reference_answer((status, retrieval, draft_answer, *excerpts))
+    return _bounded_reference_answer((status, retrieval, draft_answer))
 
 
 def _offline_simple_qa_answer(
-    selected: tuple[Any, ...], language: str, *, unavailable: bool
+    references: tuple[PublicReferenceSource, ...], language: str, *, unavailable: bool
 ) -> str:
-    if not selected:
+    if not references:
         return _localized_message(
             language,
-            "在线自然语言整理暂时不可用；当前选择的本地募集要项也没有检索到相关内容。请查看结构化功能、官方原文或向学校确认。"
+            "在线自然语言整理暂时不可用；当前没有可核对的本地原文。请查看结构化功能、官方原文或向学校确认。"
             if unavailable
-            else "当前选择的本地募集要项没有检索到相关内容。请查看结构化功能、官方原文或向学校确认。",
-            "オンラインでの文章整理を利用できず、選択したローカル募集要項にも関連内容が見つかりませんでした。構造化機能、公式原文、または学校への確認が必要です。"
+            else "离线模式未启用 AI 整理；当前没有可核对的本地原文。请查看结构化功能、官方原文或向学校确认。",
+            "オンラインでの文章整理を利用できず、確認可能なローカル原文もありません。構造化機能、公式原文、または学校への確認が必要です。"
             if unavailable
-            else "選択したローカル募集要項に関連内容が見つかりませんでした。構造化機能、公式原文、または学校への確認が必要です。",
+            else "オフラインでは AI による文章整理は行いません。確認可能なローカル原文はありません。構造化機能または公式原文を確認してください。",
         )
     prefix = _localized_message(
         language,
-        "在线自然语言整理暂时不可用；本地检索到以下相关内容："
+        "在线自然语言整理暂时不可用；相关本地原文单独列在下方，尚未整理成答案。"
         if unavailable
-        else "本地检索到以下相关内容：",
-        "オンラインでの文章整理を利用できません。ローカル検索では次の関連内容が見つかりました："
+        else "离线模式未启用 AI 整理；相关本地原文单独列在下方，尚未整理成答案。",
+        "オンラインでの文章整理を利用できません。関連するローカル原文を下に別掲します。回答には整理していません。"
         if unavailable
-        else "ローカル検索では次の関連内容が見つかりました：",
+        else "オフラインでは AI による文章整理は行いません。関連するローカル原文を下に別掲します。回答には整理していません。",
     )
-    excerpts = tuple(record.text.strip() for record in selected[:3] if record.text.strip())
-    return _bounded_reference_answer((prefix, *excerpts))
+    return prefix
 
 
 def _bounded_reference_answer(parts: tuple[str, ...]) -> str:

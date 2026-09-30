@@ -193,8 +193,10 @@ runtime。两者职责不同，不能因为使用同一 PDF 和 BGE-M3 revision 
 `needs_review=true`，不包含模型生成的 Claim ID、Evidence ID、页码或 hash。
 
 完全相同且版本仍有效的成功结果可命中进程内有界 TTL/LRU cache，此时不再调用模型；cache 不写
-磁盘，服务重启即失效。失败或回退结果不缓存。默认生成器 `reviewed-state-offline` 完全离线并显示
-有界本地检索片段；可选 OpenAI Responses provider 使用同一自适应规划和参考回答边界：
+磁盘，服务重启即失效。失败或回退结果不缓存。默认生成器 `reviewed-state-offline` 完全离线；
+页面先说明模式，再将可核对的官方原文与回答分开展示。使用现有 391 runtime 启动和确认模式时，
+请按 [QA-01 启动说明](docs/onboarding/qa-mode-startup.md) 操作。可选 OpenAI Responses provider
+使用同一自适应规划和参考回答边界：
 
 ```powershell
 $env:OPENAI_API_KEY = "<set-locally; never commit>"

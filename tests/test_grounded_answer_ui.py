@@ -19,7 +19,9 @@ def test_grounded_answer_is_independent_and_reuses_current_target_and_profile() 
     assert 'const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers"' in javascript
     assert 'const GENERATION_STATUS_ENDPOINT = "/v1/generation-status"' in javascript
     assert "在线问答暂时不可用" in javascript
-    assert "generationModeLabel.textContent = generationStatus.label" in javascript
+    assert 'id="generation-mode-detail"' in html
+    assert "在线问答已配置" in javascript
+    assert "离线：仅检索本地资料" in javascript
     assert 'appendGroundedList(container, "回答限制", answer.limitations)' in javascript
     assert "label.textContent = claim.kind" not in javascript
 
@@ -36,10 +38,12 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
         "document.cookie",
     ):
         assert forbidden not in javascript
-    assert "responseText.textContent = answer.answer" in javascript
-    assert javascript.index("responseText.textContent = answer.answer") < javascript.index(
+    assert "appendReadableAnswer(responseText, answer.answer)" in javascript
+    assert javascript.index("appendReadableAnswer(responseText, answer.answer)") < javascript.index(
         "for (const claim of answer.claims"
     )
+    assert "document.createTextNode(part)" in javascript
+    assert "appendSourceReferences(groundedOutput, payload.source_references)" in javascript
     assert "groundedController.abort" in javascript
     assert 'abort("timeout")' in javascript
     assert "15000" not in javascript
@@ -51,13 +55,13 @@ def test_grounded_answer_ui_fails_closed_and_uses_safe_dom_only() -> None:
     assert "openDemoEvidence" in javascript
     assert "verifiedLocalPdfHref" in javascript
     assert "payload.subanswers" in javascript
-    assert "缓存的参考回答" in javascript
-    assert "在线整理不可用，已使用本地检索参考内容" in javascript
+    assert "在线回答 · 缓存命中" in javascript
+    assert "在线整理失败 · 已降级" in javascript
     assert 'answer.kind === "reference_answer"' in javascript
     assert "正在理解问题；需要学校规则时会检索本地募集要项" in javascript
-    assert "已生成低保证参考回答" in javascript
+    assert "在线整理完成；学校规则请核对官方原文" in javascript
     assert "引用闭合校验" not in javascript
-    assert "本地离线参考回答" in javascript
+    assert "离线模式 · 未启用 AI 整理" in javascript
     assert "服务重启后会清除" not in javascript
     assert "if (payload.result) appendGroundedResult" in javascript
     assert "item.result" not in javascript
