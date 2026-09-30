@@ -540,7 +540,12 @@ def test_formal_cli_process_serves_real_http_without_a_test_handler(tmp_path: Pa
         "--port",
         str(port),
     ]
-    env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    checkout_src = str(Path(__file__).resolve().parents[1] / "src")
+    env = {
+        **os.environ,
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": checkout_src + os.pathsep + os.environ.get("PYTHONPATH", ""),
+    }
     process = subprocess.Popen(
         command,
         cwd=Path(__file__).resolve().parents[1],

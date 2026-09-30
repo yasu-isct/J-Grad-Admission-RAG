@@ -52,7 +52,7 @@ def test_visual_system_uses_local_fonts_states_focus_and_reduced_motion() -> Non
     assert "--color-warning:" in css
     assert "--color-review:" in css
     assert "--color-focus: #9b6500" in css
-    assert 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI"' in css
+    assert 'font-family: "Segoe UI", "Microsoft YaHei", "Yu Gothic UI"' in css
     assert "summary:focus-visible" in css
     assert "outline: 3px solid var(--color-focus)" in css
     assert '.comparison-card[data-action-group="recorded"]' in css

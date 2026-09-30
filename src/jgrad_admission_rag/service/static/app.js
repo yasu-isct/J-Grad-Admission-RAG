@@ -54,6 +54,9 @@ const evidenceDrawer = byId("evidence-drawer");
 const drawerClose = byId("drawer-close");
 const drawerContent = byId("drawer-content");
 const applicantForm = byId("applicant-form");
+const materialInputs = Array.from(applicantForm.querySelectorAll("[data-material-code]"));
+const materialInputOriginalNames = new Map(materialInputs.map((select) =>
+  [select, select.parentElement.firstChild.textContent.trim()]));
 const comparisonSubmit = byId("comparison-submit");
 const comparisonRetry = byId("comparison-retry");
 const comparisonStatus = byId("comparison-status");
@@ -257,7 +260,16 @@ function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
   groundedQuestion.disabled = !baseRequirementsLoaded || !configured || !supported;
   groundedSubmit.disabled = !baseRequirementsLoaded || !configured || !supported;
   setMessage(groundedStatus, "initial", !supported ? "当前材料切片暂不支持检索或问答。"
-    : generationStatus && !configured ? generationStatus.label : message);
+    : generationStatus && !configured
+      ? `${generationAvailabilityLabel(generationStatus)}；已审核基础要求仍可查看。` : message);
+}
+
+function generationAvailabilityLabel(status) {
+  if (!status?.configured) return status?.mode === "offline_rules"
+    ? "离线资料暂不可用" : "在线问答暂不可用";
+  if (status.mode === "online_model") return "在线问答可用";
+  if (status.mode === "offline_rules") return "仅离线资料";
+  return "问答可用";
 }
 
 function updateGroundedContext() {
@@ -289,7 +301,7 @@ function groundedFailureMessage(code, status) {
   if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
   if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
   if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答未通过证据或引用校验，因此已安全隐藏。请重试或查看基础要求。";
-  if (code === "unsupported_question" || status === 422) return "问题超出当前人工审核范围，或未包含可识别的资格、语言、日期、费用等主题。";
+  if (code === "unsupported_question" || status === 422) return "当前资料未覆盖这个问题，或问题中没有明确的申请事项；请换一种问法。";
   return "暂时无法生成有依据的回答，请重试。";
 }
 
@@ -308,16 +320,67 @@ function appendGroundedList(container, title, values) {
   container.append(section);
 }
 
-function appendGroundedResult(container, payload, delivery, mode) {
+function appendAnswerInline(container, value) {
+  for (const part of String(value).split(/(\*\*[^*]+\*\*)/g)) {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const strong = document.createElement("strong");
+      strong.textContent = part.slice(2, -2);
+      container.append(strong);
+    } else container.append(document.createTextNode(part));
+  }
+}
+
+function appendReadableAnswer(container, value) {
+  const lines = String(value || "").replace(/\r\n?/g, "\n").split("\n");
+  let paragraph = [];
+  let list = null;
+  const flush = () => {
+    if (!paragraph.length) return;
+    const text = document.createElement("p");
+    appendAnswerInline(text, paragraph.join(" "));
+    container.append(text);
+    paragraph = [];
+  };
+  for (const line of lines) {
+    const value = line.trim();
+    if (!value) { flush(); list = null; continue; }
+    const bullet = value.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+    if (bullet) {
+      flush();
+      const ordered = /^\d/.test(value);
+      if (!list || list.tagName !== (ordered ? "OL" : "UL")) {
+        list = document.createElement(ordered ? "ol" : "ul");
+        container.append(list);
+      }
+      const item = document.createElement("li");
+      appendAnswerInline(item, bullet[1]);
+      list.append(item);
+      continue;
+    }
+    const headingMatch = value.match(/^#{1,4}\s+(.+)$/);
+    if (headingMatch) {
+      flush(); list = null;
+      const title = document.createElement("h4");
+      appendAnswerInline(title, headingMatch[1]);
+      container.append(title);
+      continue;
+    }
+    list = null;
+    paragraph.push(value);
+  }
+  flush();
+}
+
+function appendGroundedResult(container, payload, offline) {
   const answer = payload.answer;
   const referenceOnly = answer.kind === "reference_answer";
-  const evidenceByFact = new Map((payload.evidence || []).map((item) => [item.fact_id, item]));
   const response = document.createElement("section");
   response.className = "grounded-response";
-  response.append(heading(3, referenceOnly ? "参考回答" : "综合回答"));
-  const responseText = document.createElement("p");
+  response.append(heading(3, offline ? "离线资料参考"
+    : referenceOnly ? "参考回答" : "综合回答"));
+  const responseText = document.createElement("div");
   responseText.className = "grounded-response-text";
-  responseText.textContent = answer.answer;
+  appendReadableAnswer(responseText, answer.answer);
   response.append(responseText);
   container.append(response);
   if (!referenceOnly && (!Array.isArray(answer.claims) || !answer.claims.length)) {
@@ -326,81 +389,33 @@ function appendGroundedResult(container, payload, delivery, mode) {
     empty.textContent = "已完成检索，但没有可安全展示的肯定性结论。";
     container.append(empty);
   }
-  for (const claim of answer.claims || []) {
-    if (!Array.isArray(claim.citations) || !claim.citations.length) continue;
-    const card = document.createElement("article");
-    card.className = "grounded-claim";
-    card.dataset.kind = claim.kind;
-    const controls = document.createElement("div");
-    controls.className = "grounded-citations";
-    for (const citation of claim.citations || []) {
-      const evidence = evidenceByFact.get(citation.fact_id);
-      if (!evidence) continue;
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = `官方依据 · 第 ${citation.source_pages.join("、")} 页`;
-      button.addEventListener("click", () => openDemoEvidence({ title: "回答的官方依据" }, evidence, button));
-      controls.append(button);
-    }
-    if (controls.childElementCount) card.append(controls);
-    container.append(card);
-  }
-  appendGroundedList(
-    container,
-    referenceOnly ? "本地检索范围" : "审核范围",
-    [payload.local_scope_statement || payload.reviewed_scope_statement]
-  );
-  appendGroundedList(container, "仍缺少的信息", answer.missing_information);
-  appendGroundedList(container, "回答限制", answer.limitations);
-  const links = document.createElement("p");
-  links.className = "grounded-boundary";
-  try {
-    const official = new URL(payload.official_source_url);
-    if (official.protocol === "https:" && !official.username && !official.password) {
-      const link = document.createElement("a");
-      link.href = official.href;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = "打开官方来源";
-      links.append(link);
-    }
-  } catch { /* No verified official link was supplied. */ }
-  const local = payload.local_pdf_url;
-  if (typeof local === "string" && /^\/documents\/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?\/source\.pdf$/.test(local)) {
-    const link = document.createElement("a");
-    link.href = local;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "查看本地官方 PDF";
-    links.append(link);
-  }
-  if (links.childElementCount) container.append(links);
+  appendGroundedList(container, "仍需确认", answer.missing_information);
+  appendGroundedList(container, "回答范围", (answer.limitations || []).filter((item) =>
+    !String(item).includes("低保证参考回答")));
 }
 
 function renderGroundedAnswer(payload) {
   groundedOutput.replaceChildren();
+  const offline = ["offline", "fallback"].includes(payload.delivery?.source)
+    || payload.mode?.mode === "offline_rules";
   const meta = document.createElement("p");
   meta.className = "grounded-answer-meta";
-  const deliveryLabels = {cache_hit: "缓存的参考回答", live: "在线整理的参考回答",
-    fallback: "在线整理不可用，已使用本地检索参考内容", offline: "本地离线参考回答"};
-  for (const text of [deliveryLabels[payload.delivery?.source] || "当前范围的参考回答"]) {
+  const deliveryLabels = {cache_hit: "已复用上次结果", live: "在线回答",
+    fallback: "在线服务不可用 · 离线参考资料", offline: "离线参考资料"};
+  for (const text of [deliveryLabels[payload.delivery?.source] || "当前参考内容"]) {
     const badge = document.createElement("span");
     badge.textContent = text;
     meta.append(badge);
   }
   groundedOutput.append(meta);
-  if (payload.result) appendGroundedResult(groundedOutput, payload.result, payload.delivery, payload.mode);
-  const scope = document.createElement("section");
-  scope.className = "grounded-boundary";
-  scope.append(heading(3, "处理概况"));
-  const summary = document.createElement("p");
-  summary.textContent = payload.summary;
-  scope.append(summary);
-  groundedOutput.append(scope);
+  if (payload.result) appendGroundedResult(groundedOutput, payload.result, offline);
+  if (!payload.result && payload.summary) appendGroundedList(groundedOutput, "本次结果", [payload.summary]);
   if (!payload.result) appendGroundedList(groundedOutput, "回答限制", ["本次没有可安全展示的引用回答，请核对官方依据。"]);
-  appendGroundedList(groundedOutput, "需要补充的信息", payload.missing_context);
-  appendGroundedList(groundedOutput, "不支持的请求部分", payload.unsupported_parts);
-  appendGroundedList(groundedOutput, "分项处理说明", (payload.subanswers || [])
+  const missing = [...new Set((payload.missing_context || []).filter((value) =>
+    !(payload.result?.answer?.missing_information || []).includes(value)))];
+  appendGroundedList(groundedOutput, "需要补充的信息", missing);
+  appendGroundedList(groundedOutput, "当前未覆盖", payload.unsupported_parts);
+  appendGroundedList(groundedOutput, "未回答的部分", (payload.subanswers || [])
     .filter((part) => part.status !== "answered").map((part) => part.message));
   groundedOutput.hidden = false;
 }
@@ -414,7 +429,7 @@ async function loadGenerationStatus() {
   } catch (_) {
     generationStatus = { configured: false, label: "生成模式状态不可用" };
   }
-  generationModeLabel.textContent = generationStatus.label;
+  generationModeLabel.textContent = generationAvailabilityLabel(generationStatus);
   clearGroundedAnswer(baseRequirementsLoaded ? "可针对当前目标和本页个人情况提问。" : "加载基础要求后即可提问。");
 }
 
@@ -447,7 +462,11 @@ async function submitGroundedAnswer() {
     }
     if (!body.mode || !body.analysis || !Array.isArray(body.subanswers)) throw new Error("invalid response");
     renderGroundedAnswer(body);
-    setMessage(groundedStatus, "success", "已生成低保证参考回答；学校规则请结合结构化结果和官方原文核对。", true);
+    const offline = ["offline", "fallback"].includes(body.delivery?.source)
+      || body.mode?.mode === "offline_rules";
+    setMessage(groundedStatus, body.result ? "success" : "initial", body.result
+      ? offline ? "已显示离线参考资料；本次未获得在线回答。" : "回答已显示。"
+      : "本次没有可展示的回答；请查看下方说明。", true);
   } catch (error) {
     if (requestId !== groundedRequestId) return;
     const timedOut = groundedController && groundedController.signal.reason === "timeout";
@@ -1528,6 +1547,16 @@ function currentReferenceScope() {
   return scopes.find((scope) => JSON.stringify(scope.request) === JSON.stringify(request)) || null;
 }
 
+function refreshMaterialInputLabels(scope) {
+  for (const select of materialInputs) {
+    const display = referenceCore.materialDisplay(scope, select.dataset.materialCode,
+      materialInputOriginalNames.get(select));
+    const label = display.verified
+      ? `${display.name} · ${display.official}` : `${display.name} · ${display.description}`;
+    select.parentElement.replaceChildren(document.createTextNode(`${label} `), select);
+  }
+}
+
 async function loadDemoCatalog() {
   discardEvidenceDrawer();
   cancelPendingRequirements();
@@ -1695,14 +1724,29 @@ function renderRequirementCard(requirement, options = {}) {
   const card = document.createElement("article");
   card.className = `requirement-card${options.compact ? " requirement-card-compact" : ""}`;
   card.dataset.category = requirement.category;
-  card.append(heading(4, requirement.title));
+  const material = requirement.category === "materials"
+    ? referenceCore.materialDisplay(options.scope,
+      requirement.material_code || requirement.requirement_id, requirement.title) : null;
+  card.append(heading(4, material ? material.name : requirement.title));
+  if (material?.official) {
+    const official = document.createElement("p");
+    official.className = "material-official-name";
+    official.textContent = material.official;
+    card.append(official);
+  }
   const status = document.createElement("span");
   status.className = "requirement-status";
   status.dataset.status = requirement.official_status;
-  status.textContent = requirementStatusLabel(requirement.official_status);
+  status.textContent = material
+    ? ({required: "当前规则：需提交", needs_information: "适用条件待确认",
+      submission_not_required: "本项无需提交", rule_not_applicable: "本条条件不适用",
+      submission_required: "当前条件：需提交", not_covered: "当前资料未覆盖"})[requirement.official_status]
+      || "适用条件待确认"
+    : requirementStatusLabel(requirement.official_status);
   const description = document.createElement("p");
   description.className = "requirement-description";
-  description.textContent = String(requirement.description || "").replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
+  description.textContent = material ? material.description
+    : String(requirement.description || "").replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
   card.append(status, description);
   if (requirement.deadline) {
     const deadline = document.createElement("p");
@@ -1806,14 +1850,14 @@ function renderKeyDates(requirements, emptyMessage = "暂无已审核数据") {
   return section;
 }
 
-function renderRequirementSection(title, entries, className) {
+function renderRequirementSection(title, entries, className, scope) {
   const section = document.createElement("section");
   section.className = `result-section ${className}`;
   section.append(heading(3, title));
   const list = document.createElement("div");
   list.className = "requirement-list";
   if (entries.length) {
-    for (const requirement of entries) list.append(renderRequirementCard(requirement));
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, {scope}));
   } else {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
@@ -1824,10 +1868,10 @@ function renderRequirementSection(title, entries, className) {
   return section;
 }
 
-function renderPendingRequirements(entries, overview) {
+function renderPendingRequirements(entries, overview, scope) {
   const section = document.createElement("section");
   section.className = "result-section pending-section";
-  const count = overview.needsInformationCount;
+  const count = overview.needsInformationCount === null ? null : entries.length;
   section.append(heading(3, count === null
     ? "仍需进一步确认的基础要求"
     : `仍需进一步确认的基础要求：${count} 项`));
@@ -1835,7 +1879,7 @@ function renderPendingRequirements(entries, overview) {
   explanation.className = "section-intro";
   explanation.textContent = count === null
     ? "当前暂无已审核数据，不会推断要求是否满足。"
-    : `其中 ${overview.profileComparableCount} 项可进入现有个人对照；${overview.otherConfirmationCount} 项需另行确认。待确认不等于不符合，填写个人情况也不保证所有项目都能得出结论。`;
+    : "这里列出尚需核对的资格与语言要求；材料适用性和准备情况在材料清单中分别查看。";
   section.append(explanation);
   if (overview.otherConfirmationRequirements.length) {
     const otherNotice = document.createElement("p");
@@ -1866,14 +1910,14 @@ function renderPendingRequirements(entries, overview) {
     summary.textContent = `查看待确认的 ${entries.length} 项要求`;
     const list = document.createElement("div");
     list.className = "requirement-list";
-    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true }));
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true, scope }));
     details.append(summary, list);
     section.append(details);
   }
   return section;
 }
 
-function renderRequirements(payload) {
+function renderRequirements(payload, scope) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
   targetSummary.hidden = true;
@@ -1884,7 +1928,8 @@ function renderRequirements(payload) {
   const requirements = payload.requirements;
   const dateRequirements = requirements.filter((item) => item.category === "dates");
   const materialRequirements = requirements.filter((item) => item.category === "materials");
-  const pending = requirements.filter((item) => item.official_status === "needs_information");
+  const pending = requirements.filter((item) => item.category !== "materials"
+    && item.official_status === "needs_information");
   const secondary = requirements.filter((item) => (
     item.category !== "dates"
     && item.category !== "materials"
@@ -1894,8 +1939,8 @@ function renderRequirements(payload) {
   requirementsOutput.append(
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
-    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section"),
-    renderPendingRequirements(pending, overview)
+    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
+    renderPendingRequirements(pending, overview, scope)
   );
 
   const next = document.createElement("section");
@@ -1914,7 +1959,7 @@ function renderRequirements(payload) {
   otherSummary.textContent = `其他说明与已审核要求${secondary.length ? `（${secondary.length} 项）` : ""}`;
   const otherList = document.createElement("div");
   otherList.className = "requirement-list";
-  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement));
+  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement, {scope}));
   if (!secondary.length) {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
@@ -1926,7 +1971,7 @@ function renderRequirements(payload) {
 
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
-  boundary.textContent = `审核覆盖：${payload.coverage_statement} 限制：${payload.limitation_statement}`;
+  boundary.textContent = "当前只整理已审核的部分要求；其他申请条件、材料提交与学校受理结果请核对完整募集要项。";
   requirementsOutput.append(boundary);
 }
 
@@ -1956,14 +2001,14 @@ function renderSliceRequirements(mapped) {
   label.textContent = referenceCore.scopeLabel(scope);
   const limit = document.createElement("p");
   limit.className = "final-notice";
-  limit.textContent = `${mapped.coverage}。${mapped.limitation}`;
+  limit.textContent = `历史招生资料；当前只覆盖 ${mapped.topics.length} 个材料主题，未覆盖日期或完整材料清单。请核对最新官方要项。`;
   copy.append(label, limit);
   const action = document.createElement("aside");
   action.className = "overview-action";
   action.append(profileCta("overview-cta"));
   overview.append(copy, action);
   const requirements = mapped.topics.map((topic) => ({
-    category: "materials", title: topic.title, description: topic.summary,
+    category: "materials", title: topic.title, material_code: topic.id, description: topic.summary,
     official_status: "needs_information", deadline: "",
     evidence: topic.sources.map((source) => sourceAsEvidence(source, scope)),
     graphTopic: topic, graphScope: scope
@@ -1971,7 +2016,7 @@ function renderSliceRequirements(mapped) {
   requirementsOutput.append(
     overview,
     renderKeyDates([], "当前资料尚未覆盖日期"),
-    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section")
+    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section", scope)
   );
   const next = document.createElement("section");
   next.className = "result-section next-step-section";
@@ -2327,8 +2372,36 @@ function resetChecklistProgress() {
   }
 }
 
-function renderPriorityActions(entries) {
+function materialPreparationState(item) {
+  if (item.preparation_status === "available") return "已准备（自报）";
+  if (item.preparation_status === "not_yet") return item.official_status === "required"
+    ? "待准备" : "个人填写：尚未准备";
+  return "尚未填写准备情况";
+}
+
+function materialOfficialState(item) {
+  const labels = {
+    required: "当前规则：需提交",
+    not_applicable: "当前规则：本项无需提交",
+    eligibility_review_path: "适用条件：资格审查路径待确认",
+    needs_information: "适用条件：待确认",
+    not_covered: "当前资料未覆盖适用条件"
+  };
+  return labels[item.official_status] || "适用条件：待确认";
+}
+
+function materialNextAction(item) {
+  if (item.official_status === "not_applicable") return "本项当前无需提交。";
+  if (item.official_status === "not_covered") return "查看完整官方要项或向学校确认。";
+  if (item.official_status !== "required") return "先确认自己的申请条件是否适用。";
+  if (item.preparation_status === "not_yet") return "按官方说明准备并核对提交要求。";
+  if (item.preparation_status === "available") return "核对文件内容是否符合官方要求。";
+  return "填写准备情况，再核对官方说明。";
+}
+
+function renderPriorityActions(entries, scope) {
   const container = byId("priority-actions");
+  container.hidden = false;
   container.replaceChildren();
   const pending = entries.filter(({ item }) => item.action_group !== "recorded");
   const title = heading(4, "优先处理");
@@ -2344,7 +2417,9 @@ function renderPriorityActions(entries) {
     const row = document.createElement("li");
     const link = document.createElement("a");
     link.href = `#${cardId}`;
-    link.textContent = item.title;
+    const material = item.category === "materials"
+      ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
+    link.textContent = material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
       readinessFilters.querySelector('[value="all"]').checked = true;
@@ -2356,7 +2431,9 @@ function renderPriorityActions(entries) {
       target.focus({ preventScroll: true });
     });
     const action = document.createElement("span");
-    action.textContent = `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
+    action.textContent = material
+      ? `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`
+      : `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
     row.append(link, action);
     list.append(row);
   }
@@ -2369,14 +2446,14 @@ function renderPriorityActions(entries) {
   }
 }
 
-function renderComparison(payload) {
+function renderComparison(payload, scope) {
   byId("readiness-panel").classList.remove("slice-readiness");
   byId("readiness-filters").hidden = false;
   byId("readiness-panel").querySelector(".readiness-counts").hidden = false;
   byId("readiness-panel").querySelector(".action-summary-total").hidden = false;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
-  partialChecklistStatement.textContent = payload.partial_checklist_statement;
+  partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
   byId("count-total").textContent = String(payload.counts.total);
   byId("count-recorded").textContent = String(payload.counts.recorded);
   byId("count-action").textContent = String(payload.counts.action_required);
@@ -2386,10 +2463,16 @@ function renderComparison(payload) {
   const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
     .filter((item) => item.action_group === actionGroup)
     .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
-  renderPriorityActions(entriesWithIds);
+  renderPriorityActions(entriesWithIds, scope);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
-  for (const [actionGroup, label] of groups) {
-    const entries = entriesWithIds.filter(({ item }) => item.action_group === actionGroup);
+  const materialEntries = entriesWithIds.filter(({ item }) => item.category === "materials");
+  const sections = [
+    ["materials", `材料准备（${materialEntries.length} 项）`, materialEntries],
+    ...groups.map(([actionGroup, label]) => [actionGroup, label,
+      entriesWithIds.filter(({ item }) => item.action_group === actionGroup
+        && item.category !== "materials")])
+  ];
+  for (const [actionGroup, label, entries] of sections) {
     if (!entries.length) continue;
     const section = document.createElement("section");
     section.className = "requirement-group comparison-group";
@@ -2403,27 +2486,44 @@ function renderComparison(payload) {
       card.id = cardId;
       card.tabIndex = -1;
       card.dataset.actionGroup = item.action_group;
+      card.dataset.category = item.category;
+      const material = item.category === "materials"
+        ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
       const category = document.createElement("p");
       category.className = "comparison-category";
       category.textContent = categoryLabels[item.category] || item.category;
       card.append(category);
-      card.append(heading(4, item.title));
+      card.append(heading(4, material ? material.name : item.title));
+      if (material) {
+        const officialName = document.createElement("p");
+        officialName.className = "material-official-name";
+        officialName.textContent = material.official || "正式名称待核实";
+        const what = document.createElement("p");
+        what.className = "material-explanation";
+        what.textContent = material.description;
+        const applicability = document.createElement("p");
+        applicability.className = "material-applicability";
+        applicability.textContent = materialOfficialState(item);
+        card.append(officialName, what, applicability);
+      }
       const statusLabel = document.createElement("p");
       statusLabel.className = "comparison-state-label";
-      statusLabel.textContent = "系统对照状态";
+      statusLabel.textContent = material ? "准备情况" : "当前核对结果";
       const status = document.createElement("span");
       status.className = "requirement-status";
       status.dataset.status = item.comparison_status;
-      status.textContent = comparisonStatusLabel(item.comparison_status);
+      status.textContent = material ? materialPreparationState(item)
+        : comparisonStatusLabel(item.comparison_status);
       const description = document.createElement("p");
       description.className = "comparison-reason";
       description.textContent = `原因：${item.description}`;
-      card.append(statusLabel, status, description);
+      card.append(statusLabel, status);
+      if (!material) card.append(description);
       const nextAction = document.createElement("p");
       nextAction.className = "next-action";
-      nextAction.textContent = `下一步：${item.next_action}`;
+      nextAction.textContent = `下一步：${material ? materialNextAction(item) : item.next_action}`;
       card.append(nextAction);
-      if (item.official_status) {
+      if (item.official_status && !material) {
         const officialLabels = { required: "适用", eligibility_review_path: "由个别资格审查路径承接", needs_information: "需要学历路径信息", not_covered: "当前未覆盖" };
         const preparationLabels = { available: "已有", not_yet: "尚未准备", unknown: "未提供／不确定" };
         const official = document.createElement("p");
@@ -2434,18 +2534,19 @@ function renderComparison(payload) {
       const progress = document.createElement("p");
       progress.className = "personal-progress";
       progress.textContent = item.action_group === "recorded" ? "我的处理进度：此项没有待勾选行动" : "我的处理进度：待处理";
-      card.append(progress);
+      if (!material) card.append(progress);
       if (item.action_group !== "recorded") {
         const label = document.createElement("label");
         label.className = "personal-check";
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.addEventListener("change", () => {
-          progress.textContent = checkbox.checked ? "我的处理进度：已标记处理（仅个人记录）" : "我的处理进度：待处理";
+          if (!material) progress.textContent = checkbox.checked
+            ? "我的处理进度：已标记处理（仅个人记录）" : "我的处理进度：待处理";
           card.dataset.handled = checkbox.checked ? "true" : "false";
         });
         const labelText = document.createElement("span");
-        labelText.textContent = "我已处理（仅记录个人进度）";
+        labelText.textContent = material ? "已处理（仅本页记录）" : "我已处理（仅记录个人进度）";
         label.append(checkbox, labelText);
         card.append(label);
       }
@@ -2462,11 +2563,11 @@ function renderComparison(payload) {
         }
         card.append(actions);
       }
-      if (item.limitation) {
+      if (item.limitation && !material && item.comparison_status !== "recorded") {
         const limit = document.createElement("details");
         limit.className = "comparison-limit";
         const summary = document.createElement("summary");
-        summary.textContent = "判断边界";
+        summary.textContent = "需要确认";
         const text = document.createElement("p");
         text.textContent = item.limitation;
         limit.append(summary, text);
@@ -2479,7 +2580,7 @@ function renderComparison(payload) {
   }
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
-  boundary.textContent = `${payload.comparison_statement} 限制：${payload.limitation_statement}`;
+  boundary.textContent = "准备状态不代表材料已提交或学校受理。";
   comparisonOutput.append(boundary);
   filterEmpty.hidden = true;
   comparisonComplete = true;
@@ -2495,16 +2596,10 @@ function renderSliceReadiness(report, mapped) {
   byId("readiness-filters").hidden = true;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = referenceCore.scopeLabel(mapped.scope);
-  partialChecklistStatement.textContent = "只核对当前已覆盖的 3 个材料主题；这里没有完整材料清单或准备统计。";
+  partialChecklistStatement.textContent = "当前只覆盖这三个材料主题，不是完整清单；计划书适用性取决于本次填写的在职条件。";
   const priority = byId("priority-actions");
-  priority.replaceChildren(heading(4, "已审核条件结果"));
-  const list = document.createElement("ul");
-  for (const topic of report.topics) {
-    const item = document.createElement("li");
-    item.textContent = `${topic.title}：${topic.status}。${topic.explanation}`;
-    list.append(item);
-  }
-  priority.append(list);
+  priority.replaceChildren();
+  priority.hidden = true;
   for (const topic of report.topics) {
     const mappedTopic = mapped.topics.find((entry) => entry.title === topic.title);
     const sources = mappedTopic?.sources || [];
@@ -2513,11 +2608,24 @@ function renderSliceReadiness(report, mapped) {
       return sourceAsEvidence(source, mapped.scope);
     });
     const requirement = {
-      category: "materials", title: topic.title, description: topic.explanation,
+      category: "materials", title: topic.title, material_code: topic.id,
+      description: topic.explanation,
       official_status: topic.status_code, evidence, graphTopic: mappedTopic,
       graphScope: mapped.scope
     };
-    const card = renderRequirementCard(requirement);
+    const card = renderRequirementCard(requirement, {scope: mapped.scope});
+    if (topic.explanation) {
+      const result = document.createElement("p");
+      result.className = "material-condition";
+      result.textContent = topic.explanation;
+      card.append(result);
+    }
+    if (topic.status_code === "rule_not_applicable") {
+      const boundary = document.createElement("p");
+      boundary.className = "material-condition";
+      boundary.textContent = "本条规则不适用，不能推定一般性免交。";
+      card.append(boundary);
+    }
     for (const value of topic.missing_fields) {
       const note = document.createElement("p");
       note.className = "comparison-reason";
@@ -2609,8 +2717,8 @@ function renderReferenceReport(report) {
         content.append(dateNote);
       }
     }
-    if (selected.materials) addSection("材料准备清单", view.materials.map((item) =>
-      `${item.title}｜${item.state}。${item.action}`), "当前所选资料没有可整理的材料主题。");
+    if (selected.materials) addSection("材料准备清单", view.materials.map((item) => item.line),
+      "当前所选资料没有可整理的材料主题。");
     if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
       `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
     const limit = document.createElement("p");
@@ -2787,7 +2895,7 @@ async function submitApplicantComparison() {
       || ["school_name", "degree_name", "intake_name", "college_name", "department_name", "application_route_name"]
         .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
-    renderComparison(payload);
+    renderComparison(payload, scope);
     comparisonResponse = payload;
     setMessage(comparisonStatus, "success", "个人情况已完成保守对照。");
     activateStep(4, true);
@@ -2888,10 +2996,11 @@ async function submitBaseRequirements() {
     const mapped = scope.kind === "legacy_applicant"
       ? referenceCore.mapLegacyBase(scope, payload) : referenceCore.mapSliceEvidence(scope, payload);
     if (requestId !== requirementsRequestId || referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot) return;
-    if (scope.kind === "legacy_applicant") renderRequirements(payload);
+    if (scope.kind === "legacy_applicant") renderRequirements(payload, scope);
     else renderSliceRequirements(mapped);
     loadedReference = mapped;
     baseResponse = payload;
+    refreshMaterialInputLabels(scope);
     baseRequirementsLoaded = true;
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;

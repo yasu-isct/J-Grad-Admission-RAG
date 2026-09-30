@@ -3,7 +3,7 @@ import test from "node:test";
 import {
   readyEntries, scopesFor, scopeKey, comparisonRequest, hasSuppliedProfile,
   sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport,
-  readerReportOptions, readerReport
+  readerReportOptions, readerReport, materialDisplay
 } from "../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const legacy = {
@@ -188,8 +188,8 @@ test("reader projection separates missing, self-reported ready, unfilled, and co
   assert.deepEqual(options, {dates: true, materials: true, other: false});
   const view = readerReport(supplied, {dates: true, materials: true, other: false});
   assert.deepEqual(view.materials.map((item) => item.state),
-    ["待补材料", "已自报准备", "待填写准备情况", "待确认适用"]);
-  assert.ok(view.priorities.some((line) => line.includes("未准备材料：待补材料")));
+    ["待准备", "已准备（自报）", "尚未填写准备情况", "待确认适用"]);
+  assert.ok(view.priorities.some((line) => line.includes("未准备材料：待准备")));
   assert.ok(!view.priorities.some((line) => line.includes("已有材料")));
   assert.match(view.text, /已准备不代表有效、已提交或学校受理/);
   assert.match(view.dateNote, /具体时刻不作推测/);
@@ -197,20 +197,20 @@ test("reader projection separates missing, self-reported ready, unfilled, and co
   const onlyDates = readerReport(supplied, {dates: true, materials: false, other: false});
   assert.equal(onlyDates.priorityRows.length, 0);
   assert.match(onlyDates.text, /关键时间/);
-  assert.doesNotMatch(onlyDates.text, /接下来先做什么|待补材料|未准备材料|材料准备清单|已准备不代表/);
+  assert.doesNotMatch(onlyDates.text, /接下来先做什么|待准备|未准备材料|材料准备清单|已准备不代表/);
   const materialsOnly = readerReport(supplied, {dates: false, materials: true, other: false});
-  assert.match(materialsOnly.text, /未准备材料：待补材料/);
-  assert.match(view.text, /未准备材料：待补材料/);
+  assert.match(materialsOnly.text, /未准备材料：待准备/);
+  assert.match(view.text, /未准备材料：待准备/);
   const settledOther = legacyReport(mapLegacyBase(scope, {...base, requirements: [
     {...base.requirements[1], official_status: "required"}
   ]}));
   const otherOnly = readerReport(settledOther, {dates: false, materials: false, other: true});
   assert.equal(otherOnly.priorityRows.length, 0);
   assert.match(otherOnly.text, /其他已加载要求/);
-  assert.doesNotMatch(otherOnly.text, /接下来先做什么|待补材料|材料准备清单|已准备不代表/);
+  assert.doesNotMatch(otherOnly.text, /接下来先做什么|待准备|材料准备清单|已准备不代表/);
   const noProfile = readerReport(legacyReport(mapped), {dates: true, materials: true, other: false});
   assert.match(noProfile.text, /未填写准备情况，暂不能判断还缺哪些材料/);
-  assert.ok(noProfile.materials.every((item) => item.state !== "待补材料"));
+  assert.ok(noProfile.materials.every((item) => item.state !== "待准备"));
   assert.throws(() => readerReport(supplied, {dates: false, materials: false, other: false}));
 });
 
@@ -225,7 +225,7 @@ test("slice reader projection respects conditional and non-submission results", 
     [{...report.report.topic_results[0], disposition: "submission_required"}]}};
   const required = readerReport(sliceReport(scope, mapped, requiredPayload,
     {current: "yes", retain: "yes"}), {dates: false, materials: true, other: false});
-  assert.match(required.text, /需要准备，完成情况未填写/);
+  assert.match(required.text, /需提交，尚未填写准备情况/);
   const exemptPayload = {...report, report: {...report.report, topic_results:
     [{...report.report.topic_results[0], disposition: "rule_not_applicable"}]}};
   const exempt = readerReport(sliceReport(scope, mapped, exemptPayload,
@@ -233,4 +233,47 @@ test("slice reader projection respects conditional and non-submission results", 
   assert.match(exempt.text, /本条条件不适用/);
   assert.equal(exempt.materials[0].state, "本条条件不适用");
   assert.equal(exempt.priorities.length, 0);
+});
+
+test("all reviewed material codes have scoped explanations and unknown codes keep their original name", () => {
+  const isctScope = {kind: "legacy_applicant", item: {kind: "legacy_applicant",
+    legacy_catalog: {school_id: "isct"}}, request: {school_id: "isct",
+    document_id: "isct_2027_4_2026_9_master"}};
+  const gsfsScope = {kind: "reviewed_material_slice", item: {kind: "reviewed_material_slice",
+    snapshot_id: "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98",
+    target: {institution_id: "utokyo", organization_id: "utokyo-gsfs",
+      program_id: "utokyo-gsfs-complex"}}};
+  const isct = ["address_label", "application_form", "statement_of_purpose",
+    "bachelor_transcript", "graduation_or_expected_graduation_certificate"];
+  const gsfs = ["english-score-sheets", "checklist-submission", "work-study-plan"];
+  for (const code of isct) {
+    const display = materialDisplay(isctScope, `material:${code}`, "原名");
+    assert.equal(display.verified, true);
+    assert.ok(display.name && display.official && display.description);
+    assert.equal(materialDisplay(gsfsScope, code, "原名").verified, false);
+  }
+  for (const code of gsfs) {
+    const display = materialDisplay(gsfsScope, code, "原名");
+    assert.equal(display.verified, true);
+    assert.ok(display.name && display.official && display.description);
+    assert.equal(materialDisplay(isctScope, code, "原名").verified, false);
+  }
+  const fallback = {name: "另一校原名", official: "", description: "说明待核实。", verified: false};
+  assert.deepEqual(materialDisplay(isctScope, "new-material", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...isctScope, request: {...isctScope.request,
+    school_id: "another-school"}}, "address_label", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...isctScope, request: {...isctScope.request,
+    document_id: "another-document"}}, "address_label", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay({...gsfsScope, item: {...gsfsScope.item,
+    snapshot_id: "another-snapshot"}}, "work-study-plan", "另一校原名"), fallback);
+  assert.deepEqual(materialDisplay(null, "address_label", "另一校原名"), fallback);
+  const otherSchool = {...isctScope, item: {...isctScope.item,
+    legacy_catalog: {school_id: "another-school"}}, request: {...isctScope.request,
+    school_id: "another-school"}};
+  const copied = readerReport({kind: "legacy_applicant", scope: otherSchool,
+    topics: [{id: "material:address_label", category: "materials", title: "另一校原名",
+      status_code: "required"}]}, {dates: false, materials: true, other: false});
+  assert.equal(copied.materials[0].verified, false);
+  assert.match(copied.text, /另一校原名.*说明待核实/);
+  assert.doesNotMatch(copied.text, /宛名ラベル|邮寄地址标签/);
 });
