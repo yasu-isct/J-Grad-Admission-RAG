@@ -1,0 +1,72 @@
+{
+  "service_startups": 1,
+  "base_comparison_posts": 2,
+  "gsfs_report_posts": 0,
+  "paid_calls": 0,
+  "downloads": 0,
+  "parser_runs": 0,
+  "builds": 0,
+  "asset_hashes_before": {
+    "outputs/m10-09-deepseek-live/runtime-v1/corpus.json": "f7c491e94d53aa379dd934fc6a5e328ef6fd11c64f7d16622eb738ccbd6dff51",
+    "outputs/m10-09-deepseek-live/runtime-v1/policy.json": "3528705a953e8bd3c425093accfa4faedd94465c144ec1b784d37a2150e38aa3",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/reviewed_report_plan.json": "c8aacfa69d6cebb7774cf8cb000047c68e5f8ec58fe07e40889968e3f2c90680",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/page_scope_manifest.json": "85db320d441f9b268108cb6d3b44297599fdff38465842874e22f62fc631c417",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/query_intent_catalog.json": "adcde558b81f67817f38dea8dc4349d2bef36dba8f3883980aaa1125557660da",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/reviewed_date_presentation.json": "ed1bd60c6ad4fe32ccb1f97a4121b3ecee218e62721bdbd951a3a300c2e4bf91",
+    "outputs/m10-09-deepseek-live/runtime-v1/documents/isct_2027_4_2026_9_master/document_kb.json": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/manifest.json": "30225479016303ebc8bce2d6080a5c0f75224b5c5c920351aa4e1d247be8dae1",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/payloads.jsonl": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/embeddings.npy": "56508cad1dbf13c5e3258353676608cf4b6a174ac9c879983be9bdc8cd415df7",
+    "outputs/real_pdf/isct_2027_4_2026_9_master.pdf": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "outputs/display-01/real-config.json": "cf624f61fdff7b4d061e551b9c68878fb083dc94d99f89e75d81e013111676ed"
+  },
+  "cases": [
+    {
+      "width": 1440,
+      "routed_saved_posts": [
+        "base-requirements",
+        "applicant-comparison"
+      ],
+      "materials_copy_sha256": "c872f4971f4f4427d04f05985b5cc7bd314156b2073f87bc68f70950fa51f022"
+    }
+  ],
+  "port": 52251,
+  "service_stopped": true,
+  "asset_hashes_after": {
+    "outputs/m10-09-deepseek-live/runtime-v1/corpus.json": "f7c491e94d53aa379dd934fc6a5e328ef6fd11c64f7d16622eb738ccbd6dff51",
+    "outputs/m10-09-deepseek-live/runtime-v1/policy.json": "3528705a953e8bd3c425093accfa4faedd94465c144ec1b784d37a2150e38aa3",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/reviewed_report_plan.json": "c8aacfa69d6cebb7774cf8cb000047c68e5f8ec58fe07e40889968e3f2c90680",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/page_scope_manifest.json": "85db320d441f9b268108cb6d3b44297599fdff38465842874e22f62fc631c417",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/query_intent_catalog.json": "adcde558b81f67817f38dea8dc4349d2bef36dba8f3883980aaa1125557660da",
+    "outputs/m10-09-deepseek-live/runtime-v1/config/reviewed_date_presentation.json": "ed1bd60c6ad4fe32ccb1f97a4121b3ecee218e62721bdbd951a3a300c2e4bf91",
+    "outputs/m10-09-deepseek-live/runtime-v1/documents/isct_2027_4_2026_9_master/document_kb.json": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/manifest.json": "30225479016303ebc8bce2d6080a5c0f75224b5c5c920351aa4e1d247be8dae1",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/payloads.jsonl": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397",
+    "outputs/m10-09-deepseek-live/runtime-v1/indexes/isct_2027_4_2026_9_master/embeddings.npy": "56508cad1dbf13c5e3258353676608cf4b6a174ac9c879983be9bdc8cd415df7",
+    "outputs/real_pdf/isct_2027_4_2026_9_master.pdf": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "outputs/display-01/real-config.json": "cf624f61fdff7b4d061e551b9c68878fb083dc94d99f89e75d81e013111676ed"
+  },
+  "assets_unchanged": true,
+  "saved_response_replay": {
+    "cases": [
+      {
+        "width": 1440,
+        "routed_saved_posts": [
+          "base-requirements",
+          "applicant-comparison"
+        ],
+        "materials_copy_sha256": "7f58c8186ff1da59bda4aa6dff0f455ae6de16f7c3d3cc37405f54e24f0aad36"
+      },
+      {
+        "width": 390,
+        "routed_saved_posts": [
+          "base-requirements",
+          "applicant-comparison"
+        ],
+        "materials_copy_sha256": "7f58c8186ff1da59bda4aa6dff0f455ae6de16f7c3d3cc37405f54e24f0aad36"
+      }
+    ],
+    "product_service_starts": 0,
+    "product_api_posts": 0
+  }
+}

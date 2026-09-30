@@ -1267,6 +1267,14 @@ legend {
 .profile-grid .profile-group label { margin: 16px 0 3px; color: #273b36; }
 .profile-grid .profile-group select,
 .profile-grid .profile-group input { min-width: 0; }
+.english-proof-fields { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #fff; }
+.english-proof-fields[hidden], .english-proof-fields [hidden] { display: none; }
+.preparation-steps, .english-guide-list { margin: 12px 0; padding-left: 1.5em; line-height: 1.65; }
+.preparation-steps li + li, .english-guide-list li + li { margin-top: 5px; }
+.preparation-warning { margin: 10px 0; color: #6b4a17; }
+.preparation-conditions { margin: 12px 0; }
+.preparation-conditions p { margin: 9px 0; line-height: 1.65; }
+.evidence-chinese-summary { padding: 12px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: #f9fcfa; }
 .field-help { margin: 0 0 7px; color: var(--color-text-muted); font-size: 12px; line-height: 1.55; }
 .linked-field-hint,
 .profile-limit {

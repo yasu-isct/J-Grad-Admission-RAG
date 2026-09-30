@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import test from "node:test";
 import {
   readyEntries, scopesFor, scopeKey, comparisonRequest, hasSuppliedProfile,
   sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport,
-  readerReportOptions, readerReport, materialDisplay
+  readerReportOptions, readerReport, materialDisplay, materialGuide
 } from "../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const legacy = {
@@ -276,4 +277,43 @@ test("all reviewed material codes have scoped explanations and unknown codes kee
   assert.equal(copied.materials[0].verified, false);
   assert.match(copied.text, /另一校原名.*说明待核实/);
   assert.doesNotMatch(copied.text, /宛名ラベル|邮寄地址标签/);
+});
+
+test("PREP-01 guides require the exact reviewed p.10 fact and keep September date scoped", () => {
+  const scope = {kind: "legacy_applicant", item: {kind: "legacy_applicant",
+    legacy_catalog: {school_id: "isct"}}, request: {school_id: "isct",
+    document_id: "isct_2027_4_2026_9_master", intake: {year: 2027, month: 4}}};
+  const rows = {
+    address_label: "①宛名ラベル", application_form: "②入学志願票",
+    statement_of_purpose: "③志望理由書", bachelor_transcript: "④学士課程の成績証\n明書",
+    graduation_or_expected_graduation_certificate: "⑤学士課程の卒業証\n明書\n又は\n卒業見込み証明書"
+  };
+  for (const [code, row] of Object.entries(rows)) {
+    const topic = {id: `material:${code}`, evidence: [{fact_id: "fact:00104",
+      document_id: scope.request.document_id, pages: [10], official_text: `第10頁 ${row}`} ]};
+    const guide = materialGuide(scope, topic);
+    assert.ok(guide?.purpose && guide.steps.length <= 3 && guide.warnings.length);
+    assert.equal(materialGuide(scope, {...topic, evidence: [{...topic.evidence[0], fact_id: "fact:00110"}]}), null);
+    if (code === "graduation_or_expected_graduation_certificate") {
+      assert.equal(guide.conditions.some((row) => row.text.includes("9月27日")), false);
+      assert.equal(materialGuide({...scope, request: {...scope.request,
+        intake: {year: 2026, month: 9}}}, topic).conditions.some((row) =>
+        row.text.includes("9月27日")), true);
+    }
+  }
+});
+
+test("all five guides bind to the saved real p.10 response despite OCR line breaks", () => {
+  const saved = (name) => JSON.parse(readFileSync(new URL(`../docs/onboarding/prep01-evidence/${name}`, import.meta.url)));
+  const catalog = saved("reference-targets.json");
+  const base = saved("isct-base.json");
+  const item = readyEntries(catalog).find((entry) => entry.entry_id === "legacy-isct");
+  const scope = scopesFor(item).find((entry) => entry.request.document_id === "isct_2027_4_2026_9_master"
+    && entry.request.department_id === "情報工学系" && entry.request.intake.month === 4
+    && entry.request.application_route === "b_schedule");
+  const topics = mapLegacyBase(scope, base).topics.filter((topic) => topic.category === "materials");
+  assert.equal(topics.length, 5);
+  assert.ok(topics.every((topic) => topic.guide?.purpose && topic.guide.steps.length));
+  assert.equal(topics.find((topic) => topic.id === "material:graduation_or_expected_graduation_certificate")
+    .guide.conditions.some((row) => row.text.includes("9月27日")), false);
 });

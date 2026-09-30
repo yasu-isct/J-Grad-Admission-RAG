@@ -411,7 +411,22 @@ def create_app(
         return _error_response(error.status_code, error.envelope)
 
     @app.exception_handler(RequestValidationError)
-    async def validation_handler(_: Request, __: RequestValidationError) -> JSONResponse:
+    async def validation_handler(request: Request, error: RequestValidationError) -> JSONResponse:
+        if request.url.path == "/v1/applicant-comparison":
+            for issue in error.errors():
+                if issue.get("type") == "english_proof_kind_mismatch":
+                    context = issue.get("ctx") or {}
+                    return _error_response(
+                        422,
+                        _error(
+                            "invalid_request",
+                            str(issue["msg"]),
+                            {
+                                "field": context.get("field"),
+                                "expected_test_kind": context.get("expected_test_kind"),
+                            },
+                        ),
+                    )
         return _error_response(422, _error("invalid_request", "request validation failed"))
 
     @app.exception_handler(StarletteHTTPException)
