@@ -4,7 +4,19 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 release: PREP-01 preparation guidance
+## Current M17 handoff: PREP-01 accepted; prepare user acceptance
+
+[#254](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/254) / PR #256 was independently accepted
+at `358abd6ea0c382dbb0b07ed244c2c8efe8c46a36`, merged `3afa83c4acfa97f9e2148f284749fdefd985bd57`.
+[Acceptance, compatibility and evidence limits](onboarding/prep01-design-acceptance.md).
+Existing ISCT materials now have Chinese preparation guidance and opt-in English-proof checks.
+Mathematics exemption, missing QR and unknown inputs agree across actions and filters.
+No new Ready implementation: prepare user acceptance and the school demonstration. M17 remains open.
+Stage B/C, QA #233/#236, GSFS expansion, M13 and MinerU remain unreleased.
+8004 remains at1a36683 and8003 at29a91ac; do not switch or restart their source directories automatically.
+This section supersedes the historical #254 Ready release below.
+
+## Previous M17 release: PREP-01 preparation guidance
 
 User follow-up to UX-02 prioritizes useful Chinese material instructions and explicit English proof checks.
 After this design merge, only [#254](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/254) is Ready:
