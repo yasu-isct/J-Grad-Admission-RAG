@@ -13,9 +13,10 @@ def test_step_four_separates_system_counts_from_personal_progress() -> None:
     assert 'aria-label="当前核对结果统计"' in html
     for field in ("total", "recorded", "action", "review"):
         assert f'id="count-{field}"' in html
-    assert "payload.counts.action_required" in js
-    assert "payload.counts.review_required" in js
-    assert "payload.counts.recorded" in js
+    assert "payload.counts.total !== payload.items.length" in js
+    assert 'visibleGroups.filter((group) => group === "action_required").length' in js
+    assert 'visibleGroups.filter((group) => group === "review_required").length' in js
+    assert 'visibleGroups.filter((group) => group === "recorded").length' in js
     assert 'item.action_group === "recorded"' in js
     assert "item.next_action" in js
     assert "item.description" in js
