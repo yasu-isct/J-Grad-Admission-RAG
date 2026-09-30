@@ -497,6 +497,70 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         browser.close()
 
 
+def test_question_counter_tracks_input_edit_and_clear():
+    catalog, base, _, _, _ = _data()
+    requests = []
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True, executable_path=str(EDGE))
+        try:
+            page = browser.new_page()
+            errors = []
+            page.on("pageerror", lambda error: errors.append(str(error)))
+
+            def route_request(route):
+                path = urlparse(route.request.url).path
+                requests.append(f"{route.request.method} {path}")
+                if path == "/app":
+                    route.fulfill(
+                        body=(STATIC / "advanced.html").read_bytes(),
+                        content_type="text/html",
+                    )
+                elif path.startswith("/assets/"):
+                    name = path.rsplit("/", 1)[-1]
+                    route.fulfill(
+                        body=(STATIC / name).read_bytes(),
+                        content_type="text/css" if name.endswith(".css") else "text/javascript",
+                    )
+                elif path == "/v1/reference-targets":
+                    route.fulfill(json=catalog)
+                elif path == "/v1/generation-status":
+                    route.fulfill(
+                        json={
+                            "configured": True,
+                            "mode": "online_model",
+                            "label": "合成在线配置",
+                            "request_timeout_seconds": 30,
+                        }
+                    )
+                elif path == "/v1/base-requirements":
+                    route.fulfill(json=base)
+                else:
+                    route.abort()
+
+            page.route("**/*", route_request)
+            page.goto("http://ui02.test/app")
+            page.locator("#school-select option").nth(2).wait_for(state="attached")
+            _select_legacy(page)
+            page.locator("#requirements-submit").click()
+            page.locator(".key-dates-section .date-event").first.wait_for()
+            question = page.locator("#grounded-question")
+            assert question.is_enabled()
+            count = page.locator("#grounded-question-count")
+            assert count.inner_text() == "0 / 1000"
+
+            question.fill("托业是什么")
+            assert count.inner_text() == "5 / 1000"
+            question.fill("托业是什么？")
+            assert count.inner_text() == "6 / 1000"
+            question.fill("")
+            assert count.inner_text() == "0 / 1000"
+            assert not errors
+            assert requests.count("POST /v1/base-requirements") == 1
+            assert not any("natural-language-answers" in request for request in requests)
+        finally:
+            browser.close()
+
+
 def test_ui02_question_boundaries_and_school_isolation():
     catalog, base, _, evidence, _ = _data()
     questions = []

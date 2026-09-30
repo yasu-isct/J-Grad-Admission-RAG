@@ -2608,6 +2608,9 @@ collegeSelect.addEventListener("change", () => handleDemoTargetChange(populateDe
 departmentSelect.addEventListener("change", () => handleDemoTargetChange(populateRouteSelect));
 routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequirementsSubmit));
 requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
+groundedQuestion.addEventListener("input", () => {
+  groundedQuestionCount.textContent = `${groundedQuestion.value.length} / ${MAX_QUERY_LENGTH}`;
+});
 groundedForm.addEventListener("submit", (event) => { event.preventDefault(); submitGroundedAnswer(); });
 groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
 referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
