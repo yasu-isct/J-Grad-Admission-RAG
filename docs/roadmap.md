@@ -4,7 +4,23 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 handoff: PREP-01 accepted; prepare user acceptance
+
+## Current M17 handoff: PREP-02 #258 uniquely Ready after design merge
+
+2026-09-30 user authorized three bounded follow-ups after accepted PREP-01 #254.
+[Plan and ordered Issues](onboarding/m17-preparation-followups.md):
+only [#258](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/258) is released after this design merge:
+existing graduation-date and submission fields/rules into the four-step page and optional report.
+M17 Main implements; design independently reviews. #259 advanced-tools cleanup is blocked on #258;
+#260 written-exam presentation additionally awaits source/table/year and final field-contract review.
+An open Issue is not permission to start it. No parallel implementation release.
+Each Spec records compatibility, actual-data evidence, bounded budgets and rollback; no production code changed here.
+No paid calls/downloads/parser reruns/KB or index builds. QA #233/#236, GSFS expansion, M13/MinerU remain paused.
+8005 is now the user online preview at cd4064 in outputs/design-prep; do not switch its checkout or stop it.
+Preserve8004/8003 and other live workspaces,334/391 and reference_only. Architecture replacement is not authorized.
+This section supersedes historical no-Ready/B-C-unapproved instructions for these three tasks only.
+
+## Previous M17 handoff: PREP-01 accepted; prepare user acceptance
 
 [#254](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/254) / PR #256 was independently accepted
 at `358abd6ea0c382dbb0b07ed244c2c8efe8c46a36`, merged `3afa83c4acfa97f9e2148f284749fdefd985bd57`.
