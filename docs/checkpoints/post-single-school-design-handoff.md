@@ -1,6 +1,19 @@
 # Post-single-school Design Handoff
 
-## Current handoff: UX-02 accepted; no new Ready implementation
+## Current handoff: PREP-01 #254 uniquely Ready after design merge
+
+2026-09-30 user requested developer instructions after reviewing the first-stage Chinese samples and field map.
+Only [#254](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/254) is released by this design merge;
+[Spec](../onboarding/prep01-preparation-guidance-spec.md) binds samples to existing p.10/11/12/52 evidence,
+five optional proof fields to existing LanguageTestResult, and an opt-in compatible English result projection.
+M17 Main implements; design reviews. Two internal checkpoints, one Issue/PR. Ordinary rule CONFIRMED
+is not generic approval; follow the Spec's predicate/target/polarity mapping and preserve unknowns.
+Development/design each starts at0/1 real sessions,0/6 base/comparison POSTs;GSFS reports0;paid/download/build0.
+Keep old requests and334/391 unchanged. B/C, QA #233/#236, GSFS expansion, M13 and MinerU are not released.
+8004 is user preview at1a36683 inoutputs/design-usability;8003 stays29a91ac inoutputs/design-report02.
+Do not switch or stop either preview. This section supersedes older no-Ready/draft handoffs.
+
+## Previous handoff: UX-02 accepted; no new Ready implementation
 
 2026-09-30: #250 / PR #252 accepted at `ea4379808ba68251c1d59a1a73ae7b29340262bf`,
 merged `fa99392860b51bfa92cc4abdd1268f2199a43bd2`.
