@@ -45,7 +45,6 @@ def test_checkmarks_are_ephemeral_and_do_not_enter_api_payload() -> None:
     assert 'checkbox.type = "checkbox"' in comparison
     assert 'checkbox.addEventListener("change"' in comparison
     assert 'card.dataset.handled = checkbox.checked ? "true" : "false"' in comparison
-    assert "resetChecklistProgress(); activateStep(1, true)" in js
     assert "resetChecklistProgress(); activateStep(3, true)" in js
     assert "comparisonOutput.replaceChildren();" in js
     assert 'byId("priority-actions").replaceChildren();' in js
@@ -59,7 +58,7 @@ def test_limitations_are_visible_without_conflating_recorded_with_satisfied() ->
     js = (STATIC / "app.js").read_text(encoding="utf-8")
 
     assert "材料实际到达、最终资格、申请完整性和录取均未由此验证" in html
-    assert "刷新、修改目标、返回修改个人情况或重新对照都会清空勾选" in html
+    assert "刷新、实际更改目标、返回修改个人情况或重新对照都会清空勾选" in html
     assert "已记录仍不等于学校确认或完成出愿" in js
     assert 'progress.textContent = item.action_group === "recorded"' in js
     assert "official.textContent = `官方适用性：" in js

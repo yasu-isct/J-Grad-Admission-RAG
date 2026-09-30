@@ -1,0 +1,21 @@
+{
+  "method": "same saved real responses in baseline and current browser code",
+  "baseline": "3cdc26e8ebbec73a81de9cf4a1c7f90932e2021f",
+  "service_starts": 0,
+  "real_posts": 0,
+  "baseline_replayed": {
+    "base": 1,
+    "comparison": 1,
+    "evidence": 0,
+    "gsfs_report": 0
+  },
+  "current_replayed": {
+    "base": 2,
+    "comparison": 1,
+    "evidence": 1,
+    "gsfs_report": 2
+  },
+  "current_wait_failure_retry": true,
+  "current_switch": "ISCT → GSFS → ISCT",
+  "report_copy_matches_saved_projection": true
+}
