@@ -1327,6 +1327,7 @@ function updateApplicantStepSummary() {
   }
   const categories = [
     ["学历", profileGroupHasProvidedValue("education")],
+    ["网上手续与寄送", profileGroupHasProvidedValue("submission")],
     ["英语", profileGroupHasProvidedValue("english")],
     ["日语", profileGroupHasProvidedValue("japanese")],
     ["材料", profileGroupHasProvidedValue("materials")]
@@ -1423,6 +1424,40 @@ function updateEnglishProofVisibility() {
   byId("demo-toefl-proof-fields").hidden = !toefl;
 }
 
+function updateApplicationPreparationVisibility() {
+  const state = byId("demo-completion-state").value;
+  byId("demo-completion-date-field").hidden = state !== "completed";
+  byId("demo-expected-completion-date-field").hidden = state !== "expected";
+  const basis = byId("demo-credential-basis").value;
+  byId("demo-review-status-field").hidden = !["foreign_15_year_education",
+    "university_three_year_enrollment"].includes(basis);
+}
+
+function applicationPreparationInput() {
+  return {
+    completion_date: nullableDemoValue("demo-completion-date"),
+    expected_completion_date: nullableDemoValue("demo-expected-completion-date"),
+    individual_review_status: nullableDemoValue("demo-review-status"),
+    materials_dispatched_date: nullableDemoValue("demo-dispatched-date"),
+    materials_arrival_date: nullableDemoValue("demo-arrival-date"),
+    online_steps_completed: nullableDemoBoolean("demo-online-steps")
+  };
+}
+
+function applicationDatesReconcile() {
+  const dispatched = byId("demo-dispatched-date").value;
+  const arrival = byId("demo-arrival-date").value;
+  const hint = byId("demo-submission-hint");
+  if (dispatched && arrival && arrival < dispatched) {
+    hint.dataset.state = "attention";
+    hint.textContent = "实际送达日期不能早于寄出日期，请核对这两项。";
+    return false;
+  }
+  hint.dataset.state = "info";
+  hint.textContent = "实际送达日期可以留空；寄出日期不会当作送达日期。";
+  return true;
+}
+
 function englishPreparationInput() {
   return {
     downloaded_online_pdf: nullableDemoBoolean("demo-english-online-pdf"),
@@ -1441,6 +1476,7 @@ function initializeProfileGroups() {
   updateProfileGroupStates();
   updateEnglishInputHint();
   updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
 }
 
 function resetApplicantInputs() {
@@ -1448,6 +1484,8 @@ function resetApplicantInputs() {
   updateProfileGroupStates();
   updateEnglishInputHint();
   updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
+  applicationDatesReconcile();
 }
 
 function populateDegreeSelect() {
@@ -2426,7 +2464,8 @@ function demoApplicantInput() {
 
 function demoComparisonRequest() {
   return { schema_version: "1.0", target: demoTargetRequest(), applicant: demoApplicantInput(),
-    english_preparation: englishPreparationInput() };
+    english_preparation: englishPreparationInput(),
+    application_preparation: applicationPreparationInput() };
 }
 
 function cancelPendingComparison() {
@@ -2506,14 +2545,17 @@ function englishActionGroup(check) {
   return "recorded";
 }
 
-function renderPriorityActions(entries, scope, englishEntries = []) {
+function renderPriorityActions(entries, scope, englishEntries = [], applicationEntries = []) {
   const container = byId("priority-actions");
   container.hidden = false;
   container.replaceChildren();
   const pending = entries.filter(({ item }) => item.action_group !== "recorded");
   const englishPending = englishEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
+  const applicationPending = applicationEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
   const prioritized = [
+    ...applicationPending.filter(({ actionGroup }) => actionGroup === "action_required"),
     ...englishPending.filter(({ actionGroup }) => actionGroup === "action_required"),
+    ...applicationPending.filter(({ actionGroup }) => actionGroup === "review_required"),
     ...englishPending.filter(({ actionGroup }) => actionGroup === "review_required"),
     ...pending
   ];
@@ -2533,7 +2575,8 @@ function renderPriorityActions(entries, scope, englishEntries = []) {
     link.href = `#${cardId}`;
     const material = item?.category === "materials"
       ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
-    link.textContent = check ? `英语 · ${check.title}` : material ? material.name : item.title;
+    link.textContent = check ? `${entry.kind === "application" ? "毕业与提交" : "英语"} · ${check.title}`
+      : material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
       readinessFilters.querySelector('[value="all"]').checked = true;
@@ -2597,6 +2640,43 @@ function renderEnglishPreparation(result, entries) {
   return section;
 }
 
+function renderApplicationPreparation(result, entries) {
+  const section = document.createElement("section");
+  section.className = "requirement-group application-preparation-group";
+  section.append(heading(3, "毕业与提交提醒"));
+  const scope = document.createElement("p");
+  scope.className = "field-detail";
+  scope.textContent = result.scope_statement;
+  section.append(scope);
+  const list = document.createElement("div");
+  list.className = "requirement-list";
+  const labels = {reported_match: "按填写已记录", action_needed: "需要处理",
+    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  for (const { check, cardId, actionGroup } of entries) {
+    const card = document.createElement("article");
+    card.className = "requirement-card comparison-card";
+    card.id = cardId;
+    card.tabIndex = -1;
+    card.dataset.actionGroup = actionGroup;
+    card.dataset.category = "application";
+    card.append(heading(4, check.title));
+    const status = document.createElement("span");
+    status.className = "requirement-status";
+    status.dataset.status = check.status;
+    status.textContent = labels[check.status];
+    const explanation = document.createElement("p");
+    explanation.textContent = check.explanation;
+    const action = document.createElement("p");
+    action.className = "next-action";
+    action.textContent = `下一步：${check.next_action}`;
+    card.append(status, explanation, action);
+    appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
+    list.append(card);
+  }
+  section.append(list);
+  return section;
+}
+
 function renderComparison(payload, scope) {
   byId("readiness-panel").classList.remove("slice-readiness");
   byId("readiness-filters").hidden = false;
@@ -2616,15 +2696,21 @@ function renderComparison(payload, scope) {
   const englishEntries = (detailed?.checks || []).map((check, index) => ({
     check, cardId: `comparison-english-${index}`, actionGroup: englishActionGroup(check)
   }));
+  const application = payload.application_preparation_result;
+  const applicationEntries = (application?.checks || []).map((check, index) => ({
+    check, cardId: `comparison-application-${index}`, actionGroup: englishActionGroup(check),
+    kind: "application"
+  }));
   const visibleGroups = [
     ...visibleEntries.map(({ item }) => item.action_group),
-    ...englishEntries.map(({ actionGroup }) => actionGroup)
+    ...englishEntries.map(({ actionGroup }) => actionGroup),
+    ...applicationEntries.map(({ actionGroup }) => actionGroup)
   ];
   byId("count-total").textContent = String(visibleGroups.length);
   byId("count-recorded").textContent = String(visibleGroups.filter((group) => group === "recorded").length);
   byId("count-action").textContent = String(visibleGroups.filter((group) => group === "action_required").length);
   byId("count-review").textContent = String(visibleGroups.filter((group) => group === "review_required").length);
-  renderPriorityActions(visibleEntries, scope, englishEntries);
+  renderPriorityActions(visibleEntries, scope, englishEntries, applicationEntries);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
   const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
   const sections = [
@@ -2635,6 +2721,8 @@ function renderComparison(payload, scope) {
   ];
   if (detailed)
     comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
+  if (application)
+    comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
   for (const [actionGroup, label, entries] of sections) {
     if (!entries.length) continue;
     const section = document.createElement("section");
@@ -2894,6 +2982,8 @@ function renderReferenceReport(report) {
       "当前所选资料没有可整理的材料主题。");
     if (selected.materials && view.english.length)
       addSection("英语成绩与证明", view.english, "");
+    if (selected.materials && view.submission.length)
+      addSection("毕业与提交提醒", view.submission, "");
     if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
       `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
     const limit = document.createElement("p");
@@ -2938,6 +3028,10 @@ async function generateReferenceReport(event) {
     setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
     return;
   }
+  if (currentReferenceScope()?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
+    byId("demo-arrival-date").focus();
+    return;
+  }
   const trigger = event.currentTarget;
   const scope = currentReferenceScope();
   if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
@@ -2953,14 +3047,14 @@ async function generateReferenceReport(event) {
   clearReferenceReport("正在整理当前已审核结果和官方依据。");
   const requestId = referenceReportRequestId;
   const profileSnapshot = scope.kind === "legacy_applicant"
-    ? JSON.stringify(demoApplicantInput())
+    ? JSON.stringify(demoComparisonRequest())
     : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
   const scopeSnapshot = referenceCore.scopeKey(scope);
   referenceReportController = new AbortController();
   setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
   const current = () => requestId === referenceReportRequestId
     && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
-    && (scope.kind === "legacy_applicant" ? JSON.stringify(demoApplicantInput())
+    && (scope.kind === "legacy_applicant" ? JSON.stringify(demoComparisonRequest())
       : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value])) === profileSnapshot
     && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
   try {
@@ -2978,6 +3072,8 @@ async function generateReferenceReport(event) {
         comparison = await response.json();
         if (comparison.english_preparation_result)
           referenceCore.validateEnglishPreparationResult(scope, comparison);
+        if (comparison.application_preparation_result)
+          referenceCore.validateApplicationPreparationResult(scope, comparison);
       }
       if (!current()) return;
       report = referenceCore.legacyReport(loadedReference, disclosure.length ? comparison : null,
@@ -3031,7 +3127,7 @@ function applyReadinessFilter() {
     card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;
     if (!card.hidden) visible += 1;
   }
-  for (const group of comparisonOutput.querySelectorAll(".comparison-group, .english-preparation-group")) {
+  for (const group of comparisonOutput.querySelectorAll(".comparison-group, .english-preparation-group, .application-preparation-group")) {
     group.hidden = !Array.from(group.querySelectorAll(".comparison-card")).some((card) => !card.hidden);
   }
   filterEmpty.hidden = visible !== 0;
@@ -3039,6 +3135,10 @@ function applyReadinessFilter() {
 
 async function submitApplicantComparison() {
   if (comparisonPending || !baseRequirementsLoaded || !demoTargetComplete()) return;
+  if (currentReferenceScope()?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
+    byId("demo-arrival-date").focus();
+    return;
+  }
   clearReferenceReport("个人条件正在重新对照；旧报告已失效。");
   const scope = currentReferenceScope();
   if (scope?.kind === "reviewed_material_slice") {
@@ -3063,6 +3163,8 @@ async function submitApplicantComparison() {
         .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
     if (payload.english_preparation_result)
       referenceCore.validateEnglishPreparationResult(scope, payload);
+    if (payload.application_preparation_result)
+      referenceCore.validateApplicationPreparationResult(scope, payload);
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload, scope);
     comparisonResponse = payload;
@@ -3243,6 +3345,7 @@ applicantForm.addEventListener("submit", (event) => { event.preventDefault(); su
 applicantForm.addEventListener("input", () => {
   updateProfileGroupStates();
   updateEnglishInputHint();
+  applicationDatesReconcile();
   invalidateComparison("个人输入已改变，请重新对照。");
   clearGroundedAnswer("个人情况已改变；下次提交将使用最新的本页输入。");
   updateGroundedContext();
@@ -3252,6 +3355,29 @@ applicantForm.addEventListener("change", () => {
   updateProfileGroupStates();
   updateEnglishInputHint();
   updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
+  applicationDatesReconcile();
+});
+let previousCompletionState = byId("demo-completion-state").value;
+byId("demo-completion-state").addEventListener("change", () => {
+  const state = byId("demo-completion-state").value;
+  if (state !== previousCompletionState) {
+    byId("demo-completion-date").value = "";
+    byId("demo-expected-completion-date").value = "";
+    previousCompletionState = state;
+  }
+  updateApplicationPreparationVisibility();
+  updateProfileGroupStates();
+});
+let previousCredentialBasis = byId("demo-credential-basis").value;
+byId("demo-credential-basis").addEventListener("change", () => {
+  const basis = byId("demo-credential-basis").value;
+  if (basis !== previousCredentialBasis) {
+    byId("demo-review-status").value = "";
+    previousCredentialBasis = basis;
+  }
+  updateApplicationPreparationVisibility();
+  updateProfileGroupStates();
 });
 let previousEnglishKind = byId("demo-english-kind").value;
 byId("demo-english-kind").addEventListener("change", () => {

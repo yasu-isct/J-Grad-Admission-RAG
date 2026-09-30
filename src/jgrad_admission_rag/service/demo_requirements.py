@@ -29,9 +29,10 @@ from ..reasoning.applicant_profile import (
     ApplicantProfile,
     CompletionState,
     CredentialBasis,
+    IndividualReviewStatus,
     LanguageTestKind,
 )
-from ..reasoning.applicant_report import build_applicant_report
+from ..reasoning.applicant_report import ApplicantReport, build_applicant_report
 from ..reasoning.query_intent import (
     IntentCategory,
     IntentMention,
@@ -243,11 +244,67 @@ class DemoEnglishPreparationInput(DemoModel):
     toefl_di_code_g179_set: StrictBool | None = None
 
 
+class DemoApplicationPreparationInput(DemoModel):
+    completion_date: date | None = None
+    expected_completion_date: date | None = None
+    individual_review_status: IndividualReviewStatus | None = None
+    materials_dispatched_date: date | None = None
+    materials_arrival_date: date | None = None
+    online_steps_completed: StrictBool | None = None
+
+
 class DemoApplicantComparisonRequest(DemoModel):
     schema_version: Literal["1.0"] = "1.0"
     target: DemoTargetRequest
     applicant: DemoApplicantInput
     english_preparation: DemoEnglishPreparationInput | None = None
+    application_preparation: DemoApplicationPreparationInput | None = None
+
+    @model_validator(mode="after")
+    def application_fields_must_reconcile(self) -> "DemoApplicantComparisonRequest":
+        preparation = self.application_preparation
+        if preparation is None:
+            return self
+        state = self.applicant.completion_state
+        if preparation.completion_date is not None and state is not CompletionState.COMPLETED:
+            raise PydanticCustomError(
+                "completion_date_state_mismatch",
+                "Graduation date requires completion_state=completed",
+                {"field": "application_preparation.completion_date"},
+            )
+        if (
+            preparation.expected_completion_date is not None
+            and state is not CompletionState.EXPECTED
+        ):
+            raise PydanticCustomError(
+                "expected_completion_date_state_mismatch",
+                "Expected graduation date requires completion_state=expected",
+                {"field": "application_preparation.expected_completion_date"},
+            )
+        if (
+            preparation.materials_dispatched_date is not None
+            and preparation.materials_arrival_date is not None
+            and preparation.materials_arrival_date < preparation.materials_dispatched_date
+        ):
+            raise PydanticCustomError(
+                "arrival_before_dispatch",
+                "Materials arrival cannot be before dispatch",
+                {"field": "application_preparation.materials_arrival_date"},
+            )
+        if (
+            preparation.individual_review_status is not None
+            and self.applicant.credential_basis
+            not in {
+                CredentialBasis.FOREIGN_15_YEAR_EDUCATION,
+                CredentialBasis.UNIVERSITY_THREE_YEAR_ENROLLMENT,
+            }
+        ):
+            raise PydanticCustomError(
+                "individual_review_path_mismatch",
+                "Individual review progress requires a supported review path",
+                {"field": "application_preparation.individual_review_status"},
+            )
+        return self
 
     @model_validator(mode="after")
     def english_fields_must_match_test_kind(self) -> "DemoApplicantComparisonRequest":
@@ -293,6 +350,25 @@ class DemoEnglishPreparationResult(DemoModel):
     target: DemoTargetSummary
     scope_statement: str
     checks: tuple[DemoEnglishPreparationCheck, ...]
+
+
+class DemoApplicationPreparationCheck(DemoModel):
+    check_id: str
+    title: str
+    status: Literal[
+        "reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"
+    ]
+    explanation: str
+    next_action: str
+    rule_ids: tuple[str, ...] = ()
+    evidence: tuple[DemoEvidence, ...] = ()
+
+
+class DemoApplicationPreparationResult(DemoModel):
+    document_id: str
+    target: DemoTargetSummary
+    scope_statement: str
+    checks: tuple[DemoApplicationPreparationCheck, ...]
 
 
 class DemoComparisonItem(DemoModel):
@@ -350,12 +426,15 @@ class DemoApplicantComparisonResponse(DemoModel):
     items: tuple[DemoComparisonItem, ...]
     counts: DemoReadinessCounts
     english_preparation_result: DemoEnglishPreparationResult | None = None
+    application_preparation_result: DemoApplicationPreparationResult | None = None
 
     @model_serializer(mode="wrap")
     def omit_unrequested_english_result(self, handler):
         payload = handler(self)
         if self.english_preparation_result is None:
             payload.pop("english_preparation_result", None)
+        if self.application_preparation_result is None:
+            payload.pop("application_preparation_result", None)
         return payload
 
     @model_validator(mode="after")
@@ -912,6 +991,15 @@ def build_demo_applicant_comparison(
         action_required=sum(item.action_group == "action_required" for item in items),
         review_required=sum(item.action_group == "review_required" for item in items),
     )
+    preparation_report = None
+    if (
+        request.english_preparation is not None or request.application_preparation is not None
+    ) and (
+        request.target.school_id == "isct"
+        and request.target.document_id == "isct_2027_4_2026_9_master"
+        and plan.document_identity.document_id == request.target.document_id
+    ):
+        preparation_report = _reviewed_preparation_report(request, plan, evidence_bundle)
     return DemoApplicantComparisonResponse(
         target=base.target,
         comparison_statement="服务端已将个人自报信息与当前审核规则进行保守对照。",
@@ -920,10 +1008,487 @@ def build_demo_applicant_comparison(
         items=tuple(items),
         counts=counts,
         english_preparation_result=(
-            _english_preparation_result(request, plan, evidence_bundle, base.target)
+            _english_preparation_result(
+                request, plan, evidence_bundle, base.target, preparation_report
+            )
             if request.english_preparation is not None
             else None
         ),
+        application_preparation_result=(
+            _application_preparation_result(
+                request, plan, evidence_bundle, base.target, preparation_report
+            )
+            if request.application_preparation is not None
+            else None
+        ),
+    )
+
+
+def _reviewed_preparation_report(
+    request: DemoApplicantComparisonRequest,
+    plan: ReviewedReportPlan,
+    evidence_bundle: ReviewedReportEvidenceBundle,
+) -> ApplicantReport:
+    categories = (
+        [IntentCategory.ELIGIBILITY, IntentCategory.APPLICATION_DATES]
+        if request.application_preparation is not None
+        else []
+    )
+    if request.english_preparation is not None:
+        categories.append(IntentCategory.LANGUAGE_TESTS)
+    categories = sorted(categories, key=lambda item: item.value)
+    query = " ".join(item.value for item in categories)
+    offsets = []
+    offset = 0
+    for category in categories:
+        offsets.append((category, offset))
+        offset += len(category.value) + 1
+    intent = QueryIntent(
+        schema_version="1.0",
+        parser_version="lexical-ja-v1",
+        catalog_version="prep02-v1",
+        query=query,
+        requested_categories=tuple(categories),
+        requested_scope=RequestedScope(
+            department_or_program_targets=(),
+            parent_college_values=(),
+            target_degree_level=None,
+            intake_year=None,
+            intake_month=None,
+        ),
+        matched_mentions=tuple(
+            IntentMention(
+                canonical_value=category.value,
+                mention_kind=MentionKind.INTENT,
+                start_offset=start,
+                end_offset=start + len(category.value),
+                surface=category.value,
+            )
+            for category, start in offsets
+        ),
+        diagnostics=(),
+    )
+    return build_applicant_report(
+        f"prep02-{uuid4().hex}",
+        _demo_applicant_profile(
+            request.target,
+            request.applicant,
+            request.english_preparation,
+            request.application_preparation,
+        ),
+        intent,
+        plan,
+        evidence_bundle,
+    )
+
+
+def _application_preparation_result(
+    request: DemoApplicantComparisonRequest,
+    plan: ReviewedReportPlan,
+    evidence_bundle: ReviewedReportEvidenceBundle,
+    target: DemoTargetSummary,
+    report: ApplicantReport | None,
+) -> DemoApplicationPreparationResult:
+    scope = "仅按本次填写核对毕业时间和提交进度；不认定资格、材料送达证明或学校受理。"
+    if report is None or (
+        plan.document_identity.institution_id != "isct"
+        or plan.document_identity.document_id != "isct_2027_4_2026_9_master"
+        or plan.document_identity.source_pdf_sha256
+        != "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
+        or plan.source_kb_sha256
+        != "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+    ):
+        return DemoApplicationPreparationResult(
+            document_id=request.target.document_id,
+            target=target,
+            scope_statement=scope,
+            checks=(
+                DemoApplicationPreparationCheck(
+                    check_id="application:coverage",
+                    title="毕业与提交提醒",
+                    status="not_covered",
+                    explanation="当前资料未覆盖这一目标的毕业与提交进度核对。",
+                    next_action="请查看当前目标的官方原文。",
+                ),
+            ),
+        )
+
+    preparation = request.application_preparation
+    assert preparation is not None
+    decisions = {item.rule_id: item for item in report.reasoning_trace.source_decisions}
+    resolutions = {item.rule_id: item for item in report.reasoning_trace.resolution_steps}
+    conflicts = {
+        rule_id
+        for item in report.reasoning_trace.interaction_steps
+        if item.outcome.value in {"conflict", "ambiguity", "unreviewed_interaction"}
+        for rule_id in item.rule_ids
+    }
+    rules = {item.rule_id: item for item in plan.rules}
+    records = {item.fact_id: item for item in evidence_bundle.evidence_records}
+    suffix = "apr" if request.target.intake.month == 4 else "sep"
+
+    def bound(stem: str, *, append_suffix: bool = True):
+        rule_id = f"isct-master-{stem}{f'-{suffix}' if append_suffix else ''}"
+        rule, decision, resolution = (
+            rules.get(rule_id),
+            decisions.get(rule_id),
+            resolutions.get(rule_id),
+        )
+        if (
+            rule is None
+            or decision is None
+            or resolution is None
+            or rule_id in conflicts
+            or resolution.disposition.value == "overridden"
+            or decision.scope_status.value != "confirmed"
+            or not _rule_matches_target(rule, request.target)
+        ):
+            return None
+        evidence = tuple(
+            _demo_evidence(plan, records[binding.fact_id], scope, request.target.intake)
+            for binding in rule.evidence_bindings
+            if binding.fact_id in records
+        )
+        if len(evidence) != len(rule.evidence_bindings):
+            return None
+        return rule, decision, evidence
+
+    def result(
+        check_id: str, title: str, status: str, explanation: str, next_action: str, source=None
+    ):
+        return DemoApplicationPreparationCheck(
+            check_id=check_id,
+            title=title,
+            status=status,
+            explanation=explanation,
+            next_action=next_action,
+            rule_ids=(source[0].rule_id,) if source else (),
+            evidence=source[2] if source else (),
+        )
+
+    checks = []
+    basis = request.applicant.credential_basis
+    state = request.applicant.completion_state
+    graduation = (
+        preparation.completion_date
+        if state is CompletionState.COMPLETED
+        else preparation.expected_completion_date
+        if state is CompletionState.EXPECTED
+        else None
+    )
+    path = {
+        CredentialBasis.UNIVERSITY_GRADUATION: "direct-path-1-university",
+        CredentialBasis.FOREIGN_16_YEAR_BACHELOR_EQUIVALENT: "direct-path-3-foreign_16_year",
+    }.get(basis)
+    source = (
+        bound(f"{path}-{suffix}-{state.value}", append_suffix=False)
+        if path and state in {CompletionState.COMPLETED, CompletionState.EXPECTED}
+        else None
+    )
+    field = (
+        "academic_credentials.first.completion_date"
+        if state is CompletionState.COMPLETED
+        else "academic_credentials.first.expected_completion_date"
+    )
+    date_predicates = (
+        tuple(outcome for outcome in source[1].predicate_outcomes if outcome.field_path == field)
+        if source
+        else ()
+    )
+    deadline = (
+        next(
+            (
+                str(predicate.expected_value)
+                for predicate in source[0].predicates
+                if predicate.field_path == field
+            ),
+            None,
+        )
+        if source
+        else None
+    )
+    label = "毕业日期" if state is CompletionState.COMPLETED else "预计毕业日期"
+    if basis in {
+        CredentialBasis.FOREIGN_15_YEAR_EDUCATION,
+        CredentialBasis.UNIVERSITY_THREE_YEAR_ENROLLMENT,
+    }:
+        checks.append(
+            result(
+                "application:graduation",
+                "毕业时间",
+                "needs_information",
+                "当前学历路径需按个别资格审查条件核对，不能套用普通毕业期限作资格结论。",
+                "请查看已有资格审查提醒并向学校确认适用路径。",
+            )
+        )
+    elif basis is None or state is None or graduation is None:
+        checks.append(
+            result(
+                "application:graduation",
+                "毕业时间",
+                "needs_information",
+                "毕业路径、状态或日期尚未填全；不会视为未毕业。",
+                "请补充适用的毕业日期或预计毕业日期。",
+                source,
+            )
+        )
+    elif not source or len(date_predicates) != 1 or not deadline:
+        checks.append(
+            result(
+                "application:graduation",
+                "毕业时间",
+                "not_covered",
+                "当前路径的毕业日期无法可靠对照已审核规则。",
+                "请查看官方原文并确认适用路径。",
+            )
+        )
+    else:
+        special = (
+            bound(f"{path}-sep-special-contact", append_suffix=False)
+            if suffix == "sep" and state is CompletionState.EXPECTED
+            else None
+        )
+        special_dates = (
+            tuple(item for item in special[1].predicate_outcomes if item.field_path == field)
+            if special
+            else ()
+        )
+        if (
+            special
+            and len(special_dates) == 2
+            and all(item.status.value == "confirmed" for item in special_dates)
+        ):
+            checks.append(
+                result(
+                    "application:graduation",
+                    "预计毕业日期",
+                    "needs_information",
+                    "预计毕业日期落在本批次的特殊联系期间，不能直接按一般超期判断。",
+                    "请按官方说明在出愿前联系学校确认适用方式。",
+                    special,
+                )
+            )
+        elif date_predicates[0].status.value == "confirmed":
+            checks.append(
+                result(
+                    "application:graduation",
+                    label,
+                    "reported_match",
+                    f"{label}在本批次规定的{deadline}期限内。这里只核对日期这一项，学历资格仍需结合其他条件确认。",
+                    "继续核对学历证明和其他申请条件。",
+                    source,
+                )
+            )
+        elif date_predicates[0].status.value == "not_applicable":
+            checks.append(
+                result(
+                    "application:graduation",
+                    label,
+                    "action_needed",
+                    f"{label}晚于本批次要求的{deadline}；这里只核对日期，不判断整个人是否有资格。",
+                    "请向学校确认适用的申请方式。",
+                    source,
+                )
+            )
+        else:
+            checks.append(
+                result(
+                    "application:graduation",
+                    label,
+                    "needs_information",
+                    "毕业时间与当前路径的对应关系尚待确认。",
+                    "请核对毕业日期及适用路径。",
+                    source,
+                )
+            )
+
+    arrival = bound("materials-arrival-window")
+    arrival_date = preparation.materials_arrival_date
+    dispatched = preparation.materials_dispatched_date
+    if arrival is None:
+        checks.append(
+            result(
+                "application:arrival",
+                "材料送达",
+                "not_covered",
+                "当前目标缺少可核对的送达期间依据。",
+                "请查看官方原文。",
+            )
+        )
+    elif arrival_date is None:
+        dispatch_text = f"已记录{dispatched.isoformat()}寄出；" if dispatched else ""
+        checks.append(
+            result(
+                "application:arrival",
+                "材料送达",
+                "needs_information",
+                f"{dispatch_text}材料实际送达日期尚未确认；寄出不等于按时送达。",
+                "请核实材料能否在必着截止前送达，并确认实际送达日期。",
+                arrival,
+            )
+        )
+    else:
+        predicates = {
+            item.operator.value: item
+            for item in arrival[1].predicate_outcomes
+            if item.field_path == "application_submission.materials_arrival_date"
+        }
+        boundaries = {
+            item.operator.value: str(item.expected_value)
+            for item in arrival[0].predicates
+            if item.field_path == "application_submission.materials_arrival_date"
+        }
+        start, end = predicates.get("on_or_after"), predicates.get("on_or_before")
+        if (
+            not start
+            or not end
+            or not boundaries.get("on_or_after")
+            or not boundaries.get("on_or_before")
+        ):
+            checks.append(
+                result(
+                    "application:arrival",
+                    "材料送达",
+                    "not_covered",
+                    "送达期间的审核条件不完整。",
+                    "请查看官方原文。",
+                )
+            )
+        elif start.status.value == end.status.value == "confirmed":
+            checks.append(
+                result(
+                    "application:arrival",
+                    "材料送达",
+                    "reported_match",
+                    f"按你填写的日期，材料在公布的{boundaries['on_or_after']}至{boundaries['on_or_before']}接收期间内送达；是否受理请查看学校通知。",
+                    "保留送达记录，核对学校的受理通知。",
+                    arrival,
+                )
+            )
+        elif start.status.value == "not_applicable":
+            checks.append(
+                result(
+                    "application:arrival",
+                    "材料送达",
+                    "action_needed",
+                    f"填写的送达日期早于{boundaries['on_or_after']}接收期开始日；不能据此判断已受理。",
+                    "请向学校确认该次送达如何处理。",
+                    arrival,
+                )
+            )
+        elif end.status.value == "not_applicable":
+            checks.append(
+                result(
+                    "application:arrival",
+                    "材料送达",
+                    "action_needed",
+                    f"填写的送达日期晚于{boundaries['on_or_before']}必着截止日；不能据此判断已受理。",
+                    "请向学校确认该次送达如何处理。",
+                    arrival,
+                )
+            )
+        else:
+            checks.append(
+                result(
+                    "application:arrival",
+                    "材料送达",
+                    "needs_information",
+                    "送达日期与已审核期间暂无法可靠核对。",
+                    "请查看官方原文。",
+                    arrival,
+                )
+            )
+
+    online = bound("online-steps-not-completion")
+    if online is None:
+        checks.append(
+            result(
+                "application:online",
+                "网上手续",
+                "not_covered",
+                "当前目标缺少网上手续的审核依据。",
+                "请查看官方原文。",
+            )
+        )
+    elif preparation.online_steps_completed is True and online[1].status.value == "confirmed":
+        checks.append(
+            result(
+                "application:online",
+                "网上手续",
+                "reported_match",
+                "按你的填写，网上注册、照片上传及缴费均已完成；纸质材料送达仍需单独确认。",
+                "继续核对材料实际送达和学校通知。",
+                online,
+            )
+        )
+    elif preparation.online_steps_completed is False:
+        checks.append(
+            result(
+                "application:online",
+                "网上手续",
+                "action_needed",
+                "按你的填写，网上手续尚未全部完成。",
+                "请核对注册、照片上传及缴费步骤。",
+                online,
+            )
+        )
+    else:
+        checks.append(
+            result(
+                "application:online",
+                "网上手续",
+                "needs_information",
+                "尚未确认网上注册、照片上传及缴费是否均已完成。",
+                "请确认网上手续进度。",
+                online,
+            )
+        )
+
+    if basis in {
+        CredentialBasis.FOREIGN_15_YEAR_EDUCATION,
+        CredentialBasis.UNIVERSITY_THREE_YEAR_ENROLLMENT,
+    }:
+        review_status = preparation.individual_review_status
+        review_text = {
+            IndividualReviewStatus.NOT_REQUESTED: (
+                "action_needed",
+                "你填写为尚未申请个别资格审查。",
+                "请查看该路径的资格审查要求。",
+            ),
+            IndividualReviewStatus.REQUESTED: (
+                "needs_information",
+                "你填写为已申请、等待结果；不能视为审查通过。",
+                "请关注学校的审查结果。",
+            ),
+            IndividualReviewStatus.COMPLETED: (
+                "needs_information",
+                "你填写为办理流程已完成；这不表示审查通过。",
+                "请核对学校的正式审查结果。",
+            ),
+            None: (
+                "needs_information",
+                "尚未填写个别资格审查办理进度。",
+                "请确认是否已申请及学校的处理情况。",
+            ),
+        }[review_status]
+        qualification = _qualification_rules_for_input(plan, request.target, request.applicant)
+        evidence = _rules_evidence(plan, qualification, evidence_bundle, request.target.intake)
+        checks.append(
+            DemoApplicationPreparationCheck(
+                check_id="application:review",
+                title="个别资格审查",
+                status=review_text[0],
+                explanation=review_text[1],
+                next_action=review_text[2],
+                rule_ids=tuple(rule.rule_id for rule in qualification),
+                evidence=evidence,
+            )
+        )
+    return DemoApplicationPreparationResult(
+        document_id=request.target.document_id,
+        target=target,
+        scope_statement=scope,
+        checks=tuple(checks),
     )
 
 
@@ -932,6 +1497,7 @@ def _english_preparation_result(
     plan: ReviewedReportPlan,
     evidence_bundle: ReviewedReportEvidenceBundle,
     target: DemoTargetSummary,
+    preparation_report: ApplicantReport | None,
 ) -> DemoEnglishPreparationResult:
     """Translate the existing reviewed report trace into bounded preparation checks."""
 
@@ -955,38 +1521,9 @@ def _english_preparation_result(
             ),
         )
 
-    token = "language_tests"
-    intent = QueryIntent(
-        schema_version="1.0",
-        parser_version="lexical-ja-v1",
-        catalog_version="prep01-v1",
-        query=token,
-        requested_categories=(IntentCategory.LANGUAGE_TESTS,),
-        requested_scope=RequestedScope(
-            department_or_program_targets=(),
-            parent_college_values=(),
-            target_degree_level=None,
-            intake_year=None,
-            intake_month=None,
-        ),
-        matched_mentions=(
-            IntentMention(
-                canonical_value=token,
-                mention_kind=MentionKind.INTENT,
-                start_offset=0,
-                end_offset=len(token),
-                surface=token,
-            ),
-        ),
-        diagnostics=(),
-    )
-    report = build_applicant_report(
-        f"prep01-{uuid4().hex}",
-        _demo_applicant_profile(request.target, request.applicant, request.english_preparation),
-        intent,
-        plan,
-        evidence_bundle,
-    )
+    report = preparation_report
+    if report is None:
+        raise ValueError("reviewed preparation report missing for supported target")
     decisions = {item.rule_id: item for item in report.reasoning_trace.source_decisions}
     resolution = {item.rule_id: item for item in report.reasoning_trace.resolution_steps}
     conflicts = {
@@ -1242,17 +1779,36 @@ def _demo_applicant_profile(
     target: DemoTargetRequest,
     applicant: DemoApplicantInput,
     english_preparation: DemoEnglishPreparationInput | None = None,
+    application_preparation: DemoApplicationPreparationInput | None = None,
 ) -> ApplicantProfile:
     credentials = None
-    if applicant.credential_basis is not None or applicant.completion_state is not None:
+    if (
+        applicant.credential_basis is not None
+        or applicant.completion_state is not None
+        or (
+            application_preparation is not None
+            and (
+                application_preparation.completion_date is not None
+                or application_preparation.expected_completion_date is not None
+            )
+        )
+    ):
         credentials = (
             {
                 "institution_country_code": None,
                 "degree_level": "bachelor",
                 "credential_basis": applicant.credential_basis,
                 "completion_state": applicant.completion_state,
-                "completion_date": None,
-                "expected_completion_date": None,
+                "completion_date": (
+                    application_preparation.completion_date
+                    if application_preparation is not None
+                    else None
+                ),
+                "expected_completion_date": (
+                    application_preparation.expected_completion_date
+                    if application_preparation is not None
+                    else None
+                ),
                 "years_of_education": None,
             },
         )
@@ -1298,11 +1854,24 @@ def _demo_applicant_profile(
                 "age_at_enrollment": None,
                 "professional_experience_months": None,
                 "research_experience_months": None,
-                "individual_review_status": None,
+                "individual_review_status": (
+                    application_preparation.individual_review_status
+                    if application_preparation is not None
+                    else None
+                ),
                 "individual_review_requested": None,
                 "individual_review_completed": None,
             },
             "language_test_results": language_results,
+            "application_submission": (
+                {
+                    "materials_dispatched_date": application_preparation.materials_dispatched_date,
+                    "materials_arrival_date": application_preparation.materials_arrival_date,
+                    "online_steps_completed": application_preparation.online_steps_completed,
+                }
+                if application_preparation is not None
+                else None
+            ),
         }
     )
 
