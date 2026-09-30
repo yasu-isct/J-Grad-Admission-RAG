@@ -1,6 +1,19 @@
 # Post-single-school Design Handoff
 
-## Current handoff: UX-01 accepted; UX-02 uniquely Ready after design merge
+## Current handoff: UX-02 accepted; no new Ready implementation
+
+2026-09-30: #250 / PR #252 accepted at `ea4379808ba68251c1d59a1a73ae7b29340262bf`,
+merged `fa99392860b51bfa92cc4abdd1268f2199a43bd2`.
+[Independent acceptance](../onboarding/ux02-design-acceptance.md) closes both scoped-material and
+user-copy findings. Final-head independent pytest11/Node6 and targeted saved-response replay passed;
+CI passed. Neither side used real UX-02 starts/POSTs/paid calls. This does not certify live QA quality.
+No new Ready task: M17 Main waits; design prepares the existing demo and school presentation.
+M17 overall remains open. Keep QA #233/#236 paused, GSFS ordinary-student expansion stopped,
+M13 paused, #177 closed, 334/391 and reference_only unchanged.
+8003 remains on rollback commit29a91ac; do not switch or stop that service without user instruction.
+This current section supersedes all historical Ready/Changes requested handoffs below.
+
+## Previous handoff: UX-01 accepted; UX-02 uniquely Ready after design merge
 
 - #247 / PR #249 accepted at `e86318b01c408ec64aaa85cee611df0b6439dd8e`, merged `be01eccbc078816b09945cb2866f8294a8ab767d`.
   [Independent evidence and ledger](../onboarding/ux01-design-acceptance.md). Report feedback and school navigation complete;
