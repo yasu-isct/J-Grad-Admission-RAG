@@ -1,6 +1,20 @@
 # Post-single-school Design Handoff
 
-## Current handoff: fixed rollback baseline; UX-01 uniquely Ready after design merge
+## Current handoff: UX-01 accepted; UX-02 uniquely Ready after design merge
+
+- #247 / PR #249 accepted at `e86318b01c408ec64aaa85cee611df0b6439dd8e`, merged `be01eccbc078816b09945cb2866f8294a8ab767d`.
+  [Independent evidence and ledger](../onboarding/ux01-design-acceptance.md). Report feedback and school navigation complete;
+  the original reported failure was not reproduced, so do not claim all causes are known.
+- Only [#250 UX-02](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/250) is Ready after this design merge.
+  [Spec](../onboarding/demo-readability-spec.md): existing page typography/copy/material explanations/QA display;
+  M17 Main implements, design reviews. No new school coverage or QA semantic repair.
+- UX-01 developer cumulative starts/base-personalPOST/GSFSreport: 1/1, 3/4, 1/1; design: 0/1, 0/4, 0/1; paid0.
+  UX-02 starts with its own explicit Spec budget at0. Historical QA/report/evidence ledgers stay unchanged.
+- 8003 still runs rollback commit29a91ac from outputs/design-report02; do not update or stop it without user instruction.
+  Preserve the remote rollback tag, 334/391, current user services, reference_only and paused #236/M13/MinerU.
+- After UX-02 acceptance stop expansion and prepare school-presentation materials. This section supersedes #247 Ready below.
+
+## Previous handoff: rollback baseline and UX-01 release
 
 2026-09-30: user requested saving the current version and designing the next development direction.
 This section supersedes earlier no-Ready handoffs. [Rollback record](demo-before-usability-20260930.md):

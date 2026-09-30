@@ -1,6 +1,6 @@
 # UX-01：报告反馈与更换学校入口
 
-Issue [#247](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247)。状态：设计文档合并后唯一 Ready。属于 M17 演示准备，开发责任方 M17 Main，设计独立验收。
+Issue [#247](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247)。状态：Accepted/merged（PR #249，`be01eccbc078816b09945cb2866f8294a8ab767d`）；[独立验收](ux01-design-acceptance.md)。以下为历史实施规格，不再次放行。属于 M17 演示准备，开发责任方 M17 Main，设计独立验收。
 基线 `29a91ac9280349300c0d1890f48cf9e4244cd68c`；从包含本 Spec 的最新 main 开始。
 [完整方针](demo-usability-development-plan.md)；[回滚点](../checkpoints/demo-before-usability-20260930.md)。
 
