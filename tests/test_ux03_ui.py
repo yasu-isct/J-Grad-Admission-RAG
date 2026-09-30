@@ -201,7 +201,7 @@ def test_result_hierarchy_cta_profile_schema_and_reset_are_explicit() -> None:
     assert "renderApplicationOverview(payload, overview)" in javascript
     assert "renderKeyDates(dateRequirements)" in javascript
     assert 'renderRequirementSection("当前已审核的材料"' in javascript
-    assert "renderPendingRequirements(pending, overview)" in javascript
+    assert "renderPendingRequirements(pending, overview, scope)" in javascript
     assert '"基础要求待确认"' in javascript
     assert "材料适用性和准备情况在材料清单中分别查看" in javascript
     assert "当前个人情况步骤不处理" in javascript
