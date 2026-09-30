@@ -53,3 +53,15 @@
 - 本地定向 Python **64 passed**，Node **8 passed**；`ruff check`、`ruff format --check`、`compileall`、`git diff --check`、语义检索门禁、M9 门禁均通过。全仓离线测试一次运行得到 **1846 passed、301 skipped**，唯一失败是 Windows 工作区 `build/lib` 的写入权限；同一 wheel 用例在隔离临时目录单独重跑 **1 passed**。PR 的 Linux CI 将提供最终完整套件结果。
 - 本任务不验证用户上传文件、二维码真伪、ETS 账户或学校实际受理。已准备仅表示用户自报；未知条件不会写成不符合或豁免。
 - 累计预算：真实产品服务 **1/1** 次、基础及个人对照 POST **2/6** 次、GSFS 报告 POST **0**；付费调用、下载、解析重跑、构建均 **0**。本轮不再启动真实服务。
+
+## PR #256 R1 增量修复：第四步待办与筛选
+
+按设计审查，仅修第四步展示整合。详细英语结果存在时，页面以其检查项替代旧 `english` item 参与**可见**统计、优先待办和筛选；API 的 `items/counts` 原样保留，材料数量仍只按材料 item 计算。`action_needed` 进入“需要补充”，`needs_information/not_covered` 进入“待确认／需审核”，`reported_match/not_applicable` 进入“已记录”。每个英语卡有实际 DOM 目标和键盘焦点，优先项统一使用可定位链接。
+
+使用现有 391 审核资产直接执行旧规则，生成数学例外、TOEIC 二维码明确为 false、考试类型未填三种结果；再让同一四步页面在静态服务器回放这些结果，拦截基础／对照请求，产品服务启动与产品 API POST 均为 0。[回放记录](prep01-evidence/r1-browser.json)核对提交的目标与英语字段、优先链接的存在／可见／焦点、四种筛选及报告无矛盾；[数学系截图](prep01-evidence/r1-math.png)、[二维码缺项截图](prep01-evidence/r1-qr_missing.png)、[类型未填截图](prep01-evidence/r1-kind_unknown.png)可直接查看。
+
+- 数学：仅 `english:math = not_applicable`，无外部英语待办；英语卡只出现在“已记录”。
+- 二维码明确为无：`english:toeic_verification_qr_present = action_needed`，卡片在“需要补充”可见；日期／PDF 未填保持待确认。
+- 考试类型未填：`english:kind = needs_information`，卡片在“待确认／需审核”可见；没有误列成明确缺材料。
+- `PREP01_REVIEWED_ASSET_ROOT=D:\J-Grad-Admission-RAG\outputs\m10-09-deepseek-live\runtime-v1` 下定向 Python **19 passed**；既有四步／个人对照 UI 回归 **12 passed**；Node **8 passed**。`ruff`、JavaScript 语法与补丁空白检查通过。12 项受保护资产在回放前后与原账本哈希一致。累计预算仍为真实服务 **1/1**、基础／个人对照 POST **2/6**、其他真实 POST／付费／下载／解析／KB 或索引构建 **0**。
+- 原保存响应的桌面／手机浏览器回放和报告复制重新核对通过；报告复制 SHA-256 仍为 `7f58c8186ff1da59bda4aa6dff0f455ae6de16f7c3d3cc37405f54e24f0aad36`，本次未修改报告内容。

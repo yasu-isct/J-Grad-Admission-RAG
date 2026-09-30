@@ -1,0 +1,152 @@
+{
+  "math": {
+    "checks": [
+      {
+        "id": "english:math",
+        "status": "not_applicable"
+      }
+    ],
+    "priority": "优先处理\n学历与资格路径\n需要补充 · 补充最接近的学历路径和毕业状态后重新对照。\n日语学习或证明情况\n需要补充 · 如有相关学习或证明，可记录；当前不会据此判断满足要求。\n邮寄地址标签\n当前规则：需提交；尚未填写准备情况。填写准备情况，再核对官方说明。\n\n下方还有 4 项需要逐项核对。",
+    "priority_links": [
+      "#comparison-action_required-0",
+      "#comparison-action_required-2",
+      "#comparison-action_required-3"
+    ],
+    "api_counts_unchanged": {
+      "total": 8,
+      "recorded": 0,
+      "action_required": 8,
+      "review_required": 0
+    },
+    "visible_counts": {
+      "total": 8,
+      "recorded": 1,
+      "action_required": 7,
+      "review_required": 0
+    },
+    "material_cards": 5,
+    "english_cards_by_filter": {
+      "all": [
+        "comparison-english-0"
+      ],
+      "action_required": [],
+      "review_required": [],
+      "recorded": [
+        "comparison-english-0"
+      ]
+    },
+    "product_service_starts": 0,
+    "product_api_posts": 0
+  },
+  "qr_missing": {
+    "checks": [
+      {
+        "id": "english:kind",
+        "status": "reported_match"
+      },
+      {
+        "id": "english:date",
+        "status": "needs_information"
+      },
+      {
+        "id": "english:downloaded_online_pdf",
+        "status": "needs_information"
+      },
+      {
+        "id": "english:toeic_verification_qr_present",
+        "status": "action_needed"
+      },
+      {
+        "id": "english:toeic_digital_official_score_certificate",
+        "status": "needs_information"
+      }
+    ],
+    "priority": "优先处理\n英语 · TOEIC真伪验证二维码\n按你的填写，当前尚未具备本项要求。 下一步：请核对TOEIC真伪验证二维码后再准备提交。\n英语 · 考试日期\n尚未填写考试日期。 下一步：请填写考试日期并核对当前募集版本。\n英语 · 在线下载的官方PDF\n尚未确认本项准备情况。 下一步：请核对在线下载的官方PDF后再准备提交。\n\n下方还有 8 项需要逐项核对。",
+    "priority_links": [
+      "#comparison-english-3",
+      "#comparison-english-1",
+      "#comparison-english-2"
+    ],
+    "api_counts_unchanged": {
+      "total": 8,
+      "recorded": 1,
+      "action_required": 7,
+      "review_required": 0
+    },
+    "visible_counts": {
+      "total": 12,
+      "recorded": 1,
+      "action_required": 8,
+      "review_required": 3
+    },
+    "material_cards": 5,
+    "english_cards_by_filter": {
+      "all": [
+        "comparison-english-0",
+        "comparison-english-1",
+        "comparison-english-2",
+        "comparison-english-3",
+        "comparison-english-4"
+      ],
+      "action_required": [
+        "comparison-english-3"
+      ],
+      "review_required": [
+        "comparison-english-1",
+        "comparison-english-2",
+        "comparison-english-4"
+      ],
+      "recorded": [
+        "comparison-english-0"
+      ]
+    },
+    "product_service_starts": 0,
+    "product_api_posts": 0
+  },
+  "kind_unknown": {
+    "checks": [
+      {
+        "id": "english:kind",
+        "status": "needs_information"
+      }
+    ],
+    "priority": "优先处理\n英语 · 考试类型\n尚未填写考试类型。 下一步：请选择本次拟提交的考试类型。\n学历与资格路径\n需要补充 · 补充最接近的学历路径和毕业状态后重新对照。\n日语学习或证明情况\n需要补充 · 如有相关学习或证明，可记录；当前不会据此判断满足要求。\n\n下方还有 5 项需要逐项核对。",
+    "priority_links": [
+      "#comparison-english-0",
+      "#comparison-action_required-0",
+      "#comparison-action_required-2"
+    ],
+    "api_counts_unchanged": {
+      "total": 8,
+      "recorded": 0,
+      "action_required": 8,
+      "review_required": 0
+    },
+    "visible_counts": {
+      "total": 8,
+      "recorded": 0,
+      "action_required": 7,
+      "review_required": 1
+    },
+    "material_cards": 5,
+    "english_cards_by_filter": {
+      "all": [
+        "comparison-english-0"
+      ],
+      "action_required": [],
+      "review_required": [
+        "comparison-english-0"
+      ],
+      "recorded": []
+    },
+    "product_service_starts": 0,
+    "product_api_posts": 0
+  },
+  "resource_audit": {
+    "protected_asset_hashes_unchanged": true,
+    "protected_asset_count": 12,
+    "additional_product_service_starts": 0,
+    "additional_product_api_posts": 0,
+    "additional_paid_calls": 0
+  }
+}

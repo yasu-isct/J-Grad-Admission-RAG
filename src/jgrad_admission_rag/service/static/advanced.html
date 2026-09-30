@@ -212,7 +212,7 @@
             <div class="action-summary-heading"><div><p class="section-label">先看下一步</p><h3 id="action-summary-heading">当前行动摘要</h3></div><p class="action-summary-total">本次对照 <span id="count-total">0</span> 项</p></div>
             <dl class="readiness-counts" aria-label="当前核对结果统计">
               <div data-group="action_required"><dt>需补充或处理</dt><dd id="count-action">0</dd></div>
-              <div data-group="review_required"><dt>需学校／人工确认</dt><dd id="count-review">0</dd></div>
+              <div data-group="review_required"><dt>待确认／需审核</dt><dd id="count-review">0</dd></div>
               <div data-group="recorded"><dt>已记录／可能匹配</dt><dd id="count-recorded">0</dd></div>
             </dl>
             <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
@@ -224,7 +224,7 @@
             <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
             <label><input type="radio" name="readiness-filter" value="action_required"> 需要补充</label>
             <label><input type="radio" name="readiness-filter" value="recorded"> 已记录</label>
-            <label><input type="radio" name="readiness-filter" value="review_required"> 需审核／未覆盖</label>
+            <label><input type="radio" name="readiness-filter" value="review_required"> 待确认／需审核</label>
           </fieldset>
           <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
           <div id="comparison-output" class="comparison-output"></div>

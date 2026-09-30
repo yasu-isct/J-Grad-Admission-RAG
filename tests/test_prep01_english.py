@@ -1,6 +1,7 @@
 """PREP-01 request-to-reviewed-rule checks over the existing read-only 391 asset."""
 
 from importlib import import_module
+import os
 from pathlib import Path
 
 import pytest
@@ -24,7 +25,11 @@ from jgrad_admission_rag.service.demo_requirements import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSET = ROOT.parent / "ux02-review/workspace/runtime-v1"
+ASSET = Path(
+    os.environ.get(
+        "PREP01_REVIEWED_ASSET_ROOT", str(ROOT.parent / "ux02-review/workspace/runtime-v1")
+    )
+)
 
 
 @pytest.fixture(scope="module")

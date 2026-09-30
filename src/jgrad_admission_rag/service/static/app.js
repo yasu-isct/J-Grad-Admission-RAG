@@ -2500,33 +2500,40 @@ function materialNextAction(item) {
   return "填写准备情况，再核对官方说明。";
 }
 
-function renderPriorityActions(entries, scope, englishChecks = []) {
+function englishActionGroup(check) {
+  if (check.status === "action_needed") return "action_required";
+  if (check.status === "needs_information" || check.status === "not_covered") return "review_required";
+  return "recorded";
+}
+
+function renderPriorityActions(entries, scope, englishEntries = []) {
   const container = byId("priority-actions");
   container.hidden = false;
   container.replaceChildren();
   const pending = entries.filter(({ item }) => item.action_group !== "recorded");
+  const englishPending = englishEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
+  const prioritized = [
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "action_required"),
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "review_required"),
+    ...pending
+  ];
   const title = heading(4, "优先处理");
   container.append(title);
-  const urgentEnglish = englishChecks.filter((check) => check.status === "action_needed");
-  if (!pending.length && !urgentEnglish.length) {
+  if (!prioritized.length) {
     const empty = document.createElement("p");
-    empty.textContent = "当前没有被系统归入补充或人工确认的项目；已记录仍不等于学校确认或完成出愿。";
+    empty.textContent = "当前没有需要补充或待确认的项目；已记录仍不等于学校确认或完成出愿。";
     container.append(empty);
     return;
   }
   const list = document.createElement("ol");
-  for (const check of urgentEnglish.slice(0, 3)) {
-    const row = document.createElement("li");
-    row.textContent = `英语 · ${check.title}：${check.explanation} 下一步：${check.next_action}`;
-    list.append(row);
-  }
-  for (const { item, cardId } of pending.slice(0, Math.max(0, 3 - urgentEnglish.length))) {
+  for (const entry of prioritized.slice(0, 3)) {
+    const { item, check, cardId } = entry;
     const row = document.createElement("li");
     const link = document.createElement("a");
     link.href = `#${cardId}`;
-    const material = item.category === "materials"
+    const material = item?.category === "materials"
       ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
-    link.textContent = material ? material.name : item.title;
+    link.textContent = check ? `英语 · ${check.title}` : material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
       readinessFilters.querySelector('[value="all"]').checked = true;
@@ -2538,22 +2545,22 @@ function renderPriorityActions(entries, scope, englishChecks = []) {
       target.focus({ preventScroll: true });
     });
     const action = document.createElement("span");
-    action.textContent = material
-      ? `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`
-      : `${item.action_group === "action_required" ? "需要补充" : "需学校／人工确认"} · ${item.next_action}`;
+    if (check) action.textContent = `${check.explanation} 下一步：${check.next_action}`;
+    else if (material) action.textContent = `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`;
+    else action.textContent = `${item.action_group === "action_required" ? "需要补充" : "待确认／需审核"} · ${item.next_action}`;
     row.append(link, action);
     list.append(row);
   }
   container.append(list);
-  if (pending.length + urgentEnglish.length > 3) {
+  if (prioritized.length > 3) {
     const remainder = document.createElement("p");
     remainder.className = "field-detail";
-    remainder.textContent = `下方还有 ${pending.length + urgentEnglish.length - 3} 项需要逐项核对。`;
+    remainder.textContent = `下方还有 ${prioritized.length - 3} 项需要逐项核对。`;
     container.append(remainder);
   }
 }
 
-function renderEnglishPreparation(result) {
+function renderEnglishPreparation(result, entries) {
   const section = document.createElement("section");
   section.className = "requirement-group english-preparation-group";
   section.append(heading(3, "英语成绩准备"));
@@ -2565,9 +2572,13 @@ function renderEnglishPreparation(result) {
   list.className = "requirement-list";
   const statusLabels = {reported_match: "按填写已具备", action_needed: "需要处理",
     needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
-  for (const check of result.checks) {
+  for (const { check, cardId, actionGroup } of entries) {
     const card = document.createElement("article");
     card.className = "requirement-card comparison-card";
+    card.id = cardId;
+    card.tabIndex = -1;
+    card.dataset.actionGroup = actionGroup;
+    card.dataset.category = "english";
     card.append(heading(4, check.title));
     const status = document.createElement("span");
     status.className = "requirement-status";
@@ -2594,26 +2605,36 @@ function renderComparison(payload, scope) {
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
   partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
-  byId("count-total").textContent = String(payload.counts.total);
-  byId("count-recorded").textContent = String(payload.counts.recorded);
-  byId("count-action").textContent = String(payload.counts.action_required);
-  byId("count-review").textContent = String(payload.counts.review_required);
   readinessFilters.querySelector('[value="all"]').checked = true;
-  const groups = [["action_required", "需要补充"], ["review_required", "需学校／人工确认"], ["recorded", "已记录／可能匹配"]];
+  const groups = [["action_required", "需要补充"], ["review_required", "待确认／需审核"], ["recorded", "已记录／可能匹配"]];
   const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
     .filter((item) => item.action_group === actionGroup)
     .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
-  renderPriorityActions(entriesWithIds, scope, payload.english_preparation_result?.checks || []);
+  const detailed = payload.english_preparation_result;
+  const visibleEntries = detailed
+    ? entriesWithIds.filter(({ item }) => item.category !== "english") : entriesWithIds;
+  const englishEntries = (detailed?.checks || []).map((check, index) => ({
+    check, cardId: `comparison-english-${index}`, actionGroup: englishActionGroup(check)
+  }));
+  const visibleGroups = [
+    ...visibleEntries.map(({ item }) => item.action_group),
+    ...englishEntries.map(({ actionGroup }) => actionGroup)
+  ];
+  byId("count-total").textContent = String(visibleGroups.length);
+  byId("count-recorded").textContent = String(visibleGroups.filter((group) => group === "recorded").length);
+  byId("count-action").textContent = String(visibleGroups.filter((group) => group === "action_required").length);
+  byId("count-review").textContent = String(visibleGroups.filter((group) => group === "review_required").length);
+  renderPriorityActions(visibleEntries, scope, englishEntries);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
-  const materialEntries = entriesWithIds.filter(({ item }) => item.category === "materials");
+  const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
   const sections = [
     ["materials", `材料准备（${materialEntries.length} 项）`, materialEntries],
     ...groups.map(([actionGroup, label]) => [actionGroup, label,
-      entriesWithIds.filter(({ item }) => item.action_group === actionGroup
-        && item.category !== "materials" && (!payload.english_preparation_result || item.category !== "english"))])
+      visibleEntries.filter(({ item }) => item.action_group === actionGroup
+        && item.category !== "materials")])
   ];
-  if (payload.english_preparation_result)
-    comparisonOutput.append(renderEnglishPreparation(payload.english_preparation_result));
+  if (detailed)
+    comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
   for (const [actionGroup, label, entries] of sections) {
     if (!entries.length) continue;
     const section = document.createElement("section");
@@ -3010,7 +3031,7 @@ function applyReadinessFilter() {
     card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;
     if (!card.hidden) visible += 1;
   }
-  for (const group of comparisonOutput.querySelectorAll(".comparison-group")) {
+  for (const group of comparisonOutput.querySelectorAll(".comparison-group, .english-preparation-group")) {
     group.hidden = !Array.from(group.querySelectorAll(".comparison-card")).some((card) => !card.hidden);
   }
   filterEmpty.hidden = visible !== 0;
