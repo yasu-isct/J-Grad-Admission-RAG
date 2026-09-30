@@ -1,7 +1,18 @@
 # Post-single-school Design Handoff
 
 
-## Current M17 handoff: PREP-02 #258 uniquely Ready after design merge
+
+## Current M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
+
+2026-10-01: #258 / PR #262 independently accepted at5dc8878, merged6b59cb3. [Review and budgets](../onboarding/prep02-tools01-design-review.md).
+Only next implementation is M17 Main repairing #259 / Draft #263: restore the retained QA textarea input counter.
+Advanced-tools removal otherwise passed targeted review; PR base is now main, head1bd4c95 remains unmerged.
+#260 / Draft #264 source candidate was reviewed:2026 examination year via fixed-booklet cross-page evidence,
+existing CS B route only, field-level table bindings. Final API/config contract and implementation release remain blocked.
+Do not start #260 or expand schools. No new service/paid calls/builds; preserve8005/8004/8003 and334/391.
+QA233/236,GSFS expansion,M13/MinerU remain paused. This supersedes historical #258 Ready and unreviewed-night handoffs.
+
+## Previous M17 handoff: PREP-02 #258 uniquely Ready after design merge
 
 2026-09-30 user authorized three bounded follow-ups after accepted PREP-01 #254.
 [Plan and ordered Issues](../onboarding/m17-preparation-followups.md):
