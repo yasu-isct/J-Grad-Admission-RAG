@@ -4,7 +4,17 @@ This document is the planning source of truth for J-Grad Admission RAG. GitHub I
 executable tasks and explicitly blocked planning records; an open Issue is not permission to
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
-## Current M17 release: UX-01 accepted, UX-02 reader experience
+## Current M17 handoff: UX-02 accepted; prepare the demonstration
+
+UX-02 #250 / PR #252 was independently accepted at `ea4379808ba68251c1d59a1a73ae7b29340262bf`,
+merged `fa99392860b51bfa92cc4abdd1268f2199a43bd2`.
+[Acceptance and evidence limits](onboarding/ux02-design-acceptance.md).
+The existing two-school page now has clearer typography, scoped material explanations, concise
+wording and readable answer rendering. No new Ready implementation; M17 Main waits and design
+prepares the school demonstration. M17 remains open; paused QA is not declared restored.
+Keep 8003 on its rollback version. No ordinary-student expansion, M13 or MinerU restart.
+
+## Previous M17 release: UX-01 accepted, UX-02 reader experience
 
 UX-01 [#247](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/247) was independently accepted in
 [PR #249](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/249), reviewed `e86318b01c408ec64aaa85cee611df0b6439dd8e`,
