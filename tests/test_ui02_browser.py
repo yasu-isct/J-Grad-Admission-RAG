@@ -377,7 +377,7 @@ def test_ui02_four_step_synthetic_visual_checkpoint(tmp_path):
         assert page.locator("#reference-report-body").inner_text() == ""
         assert page.locator('[data-material-code="application_form"]').input_value() == ""
         assert page.locator("#grounded-answer-panel").is_hidden()
-        assert page.locator("#advanced-tools").is_hidden()
+        assert page.locator("#advanced-tools").count() == 0
         page.locator("#requirements-submit").click()
         page.locator(".materials-section .requirement-card").first.wait_for()
         assert page.locator(".materials-section .requirement-card").count() == 3
