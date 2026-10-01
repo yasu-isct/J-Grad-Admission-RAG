@@ -402,9 +402,15 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = [], 
       validateEnglishPreparationResult(mapped.scope, comparison);
     if (comparison.application_preparation_result)
       validateApplicationPreparationResult(mapped.scope, comparison);
-    for (const item of comparison.items)
-      if (!["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
+    for (const item of comparison.items) {
+      // This field records only the applicant's Japanese background; it makes no official finding.
+      const applicantOnlyJapanese = item.item_id === "japanese:background"
+        && item.category === "japanese" && item.comparison_status === "recorded"
+        && item.official_status == null;
+      if (!applicantOnlyJapanese
+        && !["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
         requireValue(array(item.evidence).length > 0, "个人对照引用缺失");
+    }
   }
   const intro = [
     "募集要项参考报告", scopeLabel(mapped.scope), "",
