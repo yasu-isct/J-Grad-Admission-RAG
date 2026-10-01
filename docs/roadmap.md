@@ -7,15 +7,18 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 
 
-## Current M17 handoff: PREP-02 and TOOLS-01 accepted; EXAM-01 contract next
+## Current M17 handoff: EXAM-01 #260 sole implementation after design merge
 
-2026-10-01: #259 / PR #263 accepted at `b9058ff906f5358986d1e0f7b3ee49e58dc57d08` and merged `5d5e30a5cba655a7355f375811d57896cada93ca`.
-[Incremental acceptance, prior evidence and budgets](onboarding/prep02-tools01-design-review.md). QA input counter R1 is resolved.
-#258 is already accepted. Advanced-tools cleanup is complete in main; existing8005/8004/8003 previews were not switched.
-Only next responsibility is design: finalize #260 field/API/config contract using the reviewed2026 CS B source slice.
-M17 Main waits for explicit Ready. #260 / Draft #264 remains a source candidate, not released implementation.
-No new product service,POST,paid calls,downloads or builds. Preserve334/391,reference_only and rollback assets.
-QA233/236,GSFS ordinary-student expansion,M13/MinerU remain paused. M17 is not declared complete.
+2026-10-01: #258 / #262 and #259 / #263 are accepted and merged. #259 QA counter R1 is resolved.
+The source/field/API contract for #260 is now frozen in [the formal Spec](onboarding/exam01-written-exam-spec.md)
+and [reviewed field map](onboarding/exam01-reviewed-field-map.json). This supersedes the earlier A/B candidate.
+After design PR #264 merges and #191 records Ready, M17 Main implements only #260 in one new implementation PR.
+Display the existing ISCT CS B examination slice in step two and an optional report theme; reuse the same KB,
+identity selection, evidence dialog and report projection. Fixed examination year2026 for both supported intakes.
+No A route or new school coverage. Old base API requests remain unchanged; the new page opts into exam data.
+Developer/design each start at0/1 real product sessions and0/4 base/comparison POSTs; paid/QA/download/build0.
+Keep8005/8004/8003 and other live previews unchanged. Preserve334/391,reference_only and rollback assets.
+QA233/236,GSFS ordinary-student expansion,M13/MinerU remain paused. After this slice, prepare the demonstration.
 
 ## Previous M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
 

@@ -1,5 +1,16 @@
 # M17 overnight work: independent design review, 2026-10-01
 
+## EXAM-01 design closeout (supersedes historical Blocked contract statements below)
+
+2026-10-01: source review is complete and [the final contract](exam01-written-exam-spec.md) freezes
+the optional API response, configuration validation, B-only card/report projection and bounded acceptance.
+[Machine-readable source mapping](exam01-reviewed-field-map.json) contains five existing KB Fact records,
+one explicitly identified cover-page context, and13 field bindings. All exact text anchors were independently
+matched against the unchanged391 KB SHA256. Earlier full-page visual review supplies the table-cell and year context.
+No parser/model/product service was run for this design closeout; no implementation was accepted here.
+After #264 merges and #191 records Ready, only #260 is released to M17 Main. #258/#259 remain accepted.
+The following sections preserve earlier review decisions and budgets; their then-pending #260 contract is now resolved.
+
 ## TOOLS-01 incremental re-review: Accepted/merged
 
 2026-10-01: reviewed exact head `b9058ff906f5358986d1e0f7b3ee49e58dc57d08`; merge `5d5e30a5cba655a7355f375811d57896cada93ca`.
