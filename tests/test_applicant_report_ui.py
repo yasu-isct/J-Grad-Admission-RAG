@@ -150,10 +150,11 @@ def test_demo02_ui_collects_minimal_profile_and_invalidates_stale_comparisons() 
 
 def test_current_report_uses_loaded_evidence_and_validated_comparison() -> None:
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
+    core = (STATIC_ROOT / "unified-core.mjs").read_text(encoding="utf-8")
     assert "referenceCore.legacyReport(loadedReference" in javascript
     assert "referenceCore.sliceReport(scope, loadedReference" in javascript
-    assert "referenceCore.validateEnglishPreparationResult(scope, comparison)" in javascript
-    assert "referenceCore.validateApplicationPreparationResult(scope, comparison)" in javascript
+    assert "validateEnglishPreparationResult(mapped.scope, comparison)" in core
+    assert "validateApplicationPreparationResult(mapped.scope, comparison)" in core
     assert 'const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison"' in javascript
     assert 'const REPORT_ENDPOINT = "/v1/applicant-reports"' not in javascript
     assert "parse_query_intent" not in javascript
