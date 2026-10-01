@@ -305,13 +305,10 @@ def test_local_ui_contract_has_accessible_states_and_safe_rendering() -> None:
     javascript = (static_root / "app.js").read_text(encoding="utf-8")
 
     assert 'lang="zh-CN"' in html
-    assert '<label for="document-select">' in html
-    assert '<label for="query-input">' in html
-    assert 'maxlength="1000"' in html
+    assert '<label for="school-select">' in html
+    assert '<label for="grounded-question">' in html
     assert 'role="status"' in html
     assert 'aria-live="polite"' in html
-    assert 'type="submit"' in html
-    assert 'type="button" hidden' in html
     assert "官方依据" in html
     assert "不保证出愿资格、材料受理或录取结果" in html
     assert "@media (max-width: 760px)" in css
@@ -332,12 +329,8 @@ def test_local_ui_contract_has_accessible_states_and_safe_rendering() -> None:
         assert forbidden not in javascript
     assert "textContent" in javascript
     assert "replaceChildren" in javascript
-    assert "document_ids: [item.identity.document_id]" in javascript
-    assert "allow_multiple_documents: false" in javascript
-    assert "body: JSON.stringify(searchRequest(item, query))" in javascript
     assert 'cache: "no-store"' in javascript
     assert "window.location" not in javascript
-    assert "URLSearchParams" not in javascript
 
 
 def test_ui_and_catalog_do_not_change_report_or_query_routes(tmp_path: Path) -> None:

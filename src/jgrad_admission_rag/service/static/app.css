@@ -1388,28 +1388,6 @@ button.quiet { border-color: #6c7d78; color: #2d4841; background: #ffffff; }
 button.secondary:hover:not(:disabled),
 button.quiet:hover:not(:disabled) { color: #ffffff; background: var(--color-primary-strong); }
 
-.advanced-tools {
-  margin-top: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-}
-.advanced-tools > summary {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  color: var(--color-primary-strong);
-}
-.advanced-tools > summary::after { content: "+"; font-size: 24px; line-height: 1; }
-.advanced-tools[open] > summary::after { content: "−"; }
-.advanced-tools > summary span { display: grid; gap: 3px; }
-.advanced-tools > summary strong { font-size: 17px; }
-.advanced-tools > summary small { color: var(--color-text-muted); font-size: 12px; font-weight: 500; }
-.advanced-tools-content { padding: 0 24px 28px; border-top: 1px solid var(--color-border); }
-.advanced-tools .secondary-heading { margin-top: 0; padding-top: 24px; border-top: 0; }
-
 @media (max-width: 760px) {
   .header-inner,
   .workspace { width: min(100% - 28px, 680px); }
@@ -1441,8 +1419,6 @@ button.quiet:hover:not(:disabled) { color: #ffffff; background: var(--color-prim
   .step-primary-action .reference-generate { width: 100%; }
   .current-target-bar { align-items: stretch; flex-direction: column; gap: 10px; }
   .current-target-bar button { width: 100%; }
-  .advanced-tools > summary { padding: 18px; }
-  .advanced-tools-content { padding: 0 18px 22px; }
   .source-actions { display: grid; }
   .source-actions .source-link { text-align: center; }
   .application-overview { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px 16px 16px; }

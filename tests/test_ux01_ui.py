@@ -31,16 +31,29 @@ def test_progressive_flow_has_four_stateful_steps_and_safe_summaries() -> None:
     assert "sessionStorage" not in javascript
 
 
-def test_advanced_tools_are_native_collapsed_and_existing_functions_remain() -> None:
+def test_advanced_tools_are_removed_without_breaking_core_entrypoints() -> None:
     html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
 
-    assert '<details id="advanced-tools" class="advanced-tools">' in html
-    assert "<strong>高级工具</strong>" in html
-    assert '<form id="evidence-form"' in html
-    assert '<form id="report-form"' in html
-    assert 'const QUERY_ENDPOINT = "/v1/corpus/query"' in javascript
-    assert 'const REPORT_ENDPOINT = "/v1/applicant-reports"' in javascript
+    for obsolete in (
+        'id="advanced-tools"',
+        'id="evidence-form"',
+        'id="report-form"',
+        'id="query-input"',
+        'id="document-select"',
+    ):
+        assert obsolete not in html
+    for retained in (
+        'id="target-form"',
+        'id="applicant-form"',
+        'id="grounded-answer-form"',
+        'id="reference-report"',
+        'id="evidence-drawer"',
+    ):
+        assert retained in html
+    assert "loadCatalog()" not in javascript
+    assert "loadDemoCatalog()" in javascript
+    assert "loadGenerationStatus()" in javascript
     assert "innerHTML" not in javascript
 
 
