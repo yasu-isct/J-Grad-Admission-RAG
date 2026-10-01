@@ -164,6 +164,75 @@ test("full base export preserves dates, all categories, citations and optional c
   assert.throws(() => mapLegacyBase(scope, {...base, requirements: [{...base.requirements[0], evidence: [], date_events: []}]}));
 });
 
+test("Japanese background is exported as applicant input without a school conclusion", () => {
+  const scope = scopesFor(legacy)[0];
+  const mapped = mapLegacyBase(scope, base);
+  for (const [input, status, label] of [
+    [null, "needs_information", "未填写"],
+    ["studied", "recorded", "学过日语"],
+    ["certificate_available", "recorded", "有日语能力证明"],
+    ["not_studied", "recorded", "未学过／尚无证明"]
+  ]) {
+    const request = comparisonRequest(scope, {japanese_background: input, materials: []});
+    assert.equal(request.applicant.japanese_background, input);
+    const item = {item_id: "japanese:background", category: "japanese",
+      title: "日语学习或证明情况", comparison_status: status,
+      action_group: status === "recorded" ? "recorded" : "action_required",
+      description: input === null ? "尚未提供日语情况；当前审核证据也不足以生成满足结论。"
+        : "日语情况已记录；当前审核证据不足以判断是否满足任何项目要求。",
+      next_action: "向学校确认项目是否另有日语要求。",
+      official_status: null, evidence: [],
+      limitation: "本项只记录申请人输入，不推断日语能力、免除、项目资格或录取结果。"};
+    const personal = {...comparison, counts: {total: 1, recorded: status === "recorded" ? 1 : 0,
+      action_required: status === "recorded" ? 0 : 1, review_required: 0}, items: [item]};
+    const report = legacyReport(mapped, personal, [{label: "日语学习或证明情况", value: label}]);
+    assert.match(report.text, new RegExp(`日语学习或证明情况：${label}`));
+    assert.match(report.text, /当前审核证据不足以判断是否满足任何项目要求|尚未提供日语情况/);
+    assert.match(report.text, /不推断日语能力、免除、项目资格或录取结果/);
+    assert.doesNotMatch(report.text, /已满足日语要求|学校认可日语能力/);
+    assert.equal(report.presentation.comparison.items[0].references.length, 0);
+    const selected = readerReport(report, {dates: true, materials: false, other: false});
+    assert.ok(selected.text.length > 0);
+  }
+});
+
+test("Japanese self-report exception retains official citation checks", () => {
+  const scope = scopesFor(legacy)[0];
+  const mapped = mapLegacyBase(scope, base);
+  const selfReport = {item_id: "japanese:background", category: "japanese",
+    title: "日语学习或证明情况", comparison_status: "recorded", action_group: "recorded",
+    description: "仅记录本人填写", next_action: "向学校确认项目是否另有日语要求。",
+    official_status: null, evidence: [], limitation: "不推断满足要求"};
+  const withItem = (item) => ({...comparison,
+    counts: {total: 1, recorded: 1, action_required: 0, review_required: 0}, items: [item]});
+  assert.doesNotThrow(() => legacyReport(mapped, withItem(selfReport)));
+
+  const material = {...selfReport, item_id: "material:address_label", category: "materials",
+    title: "邮寄地址标签", official_status: "required"};
+  assert.throws(() => legacyReport(mapped, withItem(material)), /个人对照引用缺失/);
+  assert.throws(() => legacyReport(mapped, withItem({...selfReport, official_status: "required"})),
+    /个人对照引用缺失/);
+  assert.throws(() => legacyReport(mapped, withItem({...selfReport, category: "english"})),
+    /个人对照引用缺失/);
+
+  for (const invalid of [
+    {...source, school_name: "另一所学校"},
+    {...source, document_id: "another-document"},
+    {...source, intake_name: "2026 年 9 月"}
+  ]) assert.throws(() => legacyReport(mapped, withItem({...selfReport, evidence: [invalid]})),
+    /官方依据不完整/);
+  assert.throws(() => legacyReport(mapped, withItem({...selfReport, evidence: [{...source,
+    highlights: [{start: 0, end: 2, exact_text: "错误"}]}]})), /官方引文与原文不一致/);
+  assert.equal(legacyReport(mapped, withItem({...selfReport, evidence: [source]}))
+    .presentation.comparison.items[0].references.length, 1);
+
+  const officialMaterial = {requirement_id: "material:address_label", category: "materials",
+    title: "邮寄地址标签", description: "必须提交", official_status: "required",
+    evidence: [], date_events: []};
+  assert.throws(() => mapLegacyBase(scope, {...base,
+    requirements: [...base.requirements, officialMaterial]}), /已审核要求缺少引用/);
+});
+
 test("slice evidence and canonical report keep unknown status, citation and raw Markdown", () => {
   const scope = scopesFor(slice)[0];
   const mapped = mapSliceEvidence(scope, evidence);

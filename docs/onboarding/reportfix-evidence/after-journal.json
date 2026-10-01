@@ -1,0 +1,90 @@
+[
+  {
+    "phase": "after",
+    "viewport": "desktop",
+    "japanese": "unfilled",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2465,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "desktop",
+    "japanese": "studied",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "desktop",
+    "japanese": "certificate",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "desktop",
+    "japanese": "not_studied",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "mobile",
+    "japanese": "unfilled",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2465,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "mobile",
+    "japanese": "studied",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "mobile",
+    "japanese": "certificate",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  },
+  {
+    "phase": "after",
+    "viewport": "mobile",
+    "japanese": "not_studied",
+    "comparison_posts": 1,
+    "report_open": true,
+    "default_copy_chars": 2742,
+    "exam_copy_chars": 413,
+    "page_errors": [],
+    "horizontal_overflow": false
+  }
+]

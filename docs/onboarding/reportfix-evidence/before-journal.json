@@ -1,0 +1,20 @@
+[
+  {
+    "phase": "before",
+    "viewport": "desktop",
+    "japanese": "certificate",
+    "comparison_posts": 1,
+    "report_open": false,
+    "baseline_error": "报告生成失败或依据不完整",
+    "page_errors": []
+  },
+  {
+    "phase": "before",
+    "viewport": "mobile",
+    "japanese": "certificate",
+    "comparison_posts": 1,
+    "report_open": false,
+    "baseline_error": "报告生成失败或依据不完整",
+    "page_errors": []
+  }
+]
