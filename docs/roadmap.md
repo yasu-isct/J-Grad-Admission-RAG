@@ -1,16 +1,20 @@
 # Project Roadmap
 
-## 2026-10-01：UX-03 紧急可读性修整已验收
+## Current M17 handoff: EXAM-02A #274 design checkpoint
+
+2026-10-01: #276 was accepted and merged; #272 is closed. #274 is the only released M17 task. M17 Main is preparing the fixed-booklet 18-department × 2-intake examination source matrix and four-step-page display candidate for independent design review. [Candidate matrix](onboarding/exam02a-source-matrix.md), [source ledger](onboarding/exam02a-source-ledger.md), and [display contract](onboarding/exam02a-display-contract-candidate.md) are **not approved production rules**. #275 remains blocked pending #274 source and display contract acceptance; do not start its implementation. No service, product POST, paid call, download, parser rerun, KB/index build, or online preview switch is authorized for this checkpoint. The older no-Ready statements below are historical.
+
+This document is the planning source of truth for J-Grad Admission RAG. GitHub Issues represent
+executable tasks and explicitly blocked planning records; an open Issue is not permission to
+start it. Future work stays here until its dependencies and acceptance scope are defined.
+
+## Previous M17 handoff: UX-03 accepted
 
 #269 / PR #270 已独立验收合并。完成步骤压缩为短摘要、英语核对点按状态展开、顶部行动最多三条短链接、材料指南和多来源依据按需展开；保持两校四步页与原规则/报告语义。
 
 精确实现 head `c98720e2377a7238b763874ff2b5886dce8fffd2`，merge `7a2b5c5c4a948f045ceb969bef137cd35db78e8c`。[独立验收记录](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/270#issuecomment-5926649058)。设计验证为两校两视口精确提交回放、筛选/定位/折叠/依据/报告回归及12项定向测试，精确CI通过。回放使用保存响应，缺QR为标注的合成变体，不等于新实时规则或在线问答验证。
 
-验收资源为真实服务/产品POST/付费/下载/构建0。验收后依用户要求单独启动已验收前端的本地在线演示预览1次，GET确认页面和在线配置；复用391只读资产，没有设计代发问答。当前无新Ready，下一步用户演示体验，不自动开始QA修复、东大普通学生扩覆盖、M13或MinerU。
-
-This document is the planning source of truth for J-Grad Admission RAG. GitHub Issues represent
-executable tasks and explicitly blocked planning records; an open Issue is not permission to
-start it. Future work stays here until its dependencies and acceptance scope are defined.
+验收资源为真实服务/产品POST/付费/下载/构建0。验收后依用户要求单独启动已验收前端的本地在线演示预览1次，GET确认页面和在线配置；复用391只读资产，没有设计代发问答。以下为旧交接记录；当前唯一任务以本页顶部 #274 段为准。
 
 
 
