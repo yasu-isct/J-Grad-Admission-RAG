@@ -45,3 +45,9 @@ M9 的绑定文件差异仅为 `service/app.py` 中考试展示配置的启动�
 [R1 保存响应回放脚本](exam01-r1-browser-replay.py)使用上文同一 CS April 基础响应及既有个人对照保存响应，全程拦截本地 URL，**没有启动真实服务**。桌面 1440 与手机 390 的 [失败后考试单选截图](exam01-evidence/r1-report-recovery-desktop.png)、[手机截图](exam01-evidence/r1-report-recovery-mobile.png)、[个人主题复制样张](exam01-evidence/r1-report-personal-copy.txt)及 [断言日志](exam01-evidence/r1-report-recovery.json)记录：考试单选各为 0 次模拟个人对照 POST；主动核对返回 503 后，考试复制文本与失败前逐字相同；桌面端重试 200 后，日期／材料／考试混合报告可复制，重开复用，不重复请求；切换目标清除考试安排。两个视口没有脚本错误或横向溢出。
 
 增量验证：现有考试与四步合成浏览器测试 **7 通过**，Node reader 测试 **10 通过**，新增保存响应回放两个视口通过；JS 语法、Ruff 检查与格式、`git diff --check` 通过。真实预算维持上述累计数，新增付费、下载、解析或构建均为 0。最终以本次 PR 精确 head 的 CI 与设计 Agent 增量复审为准。
+
+## R1.1 增量修复：关闭等待中的个人对照
+
+设计复审确认 R1 已通过，另发现个人对照尚在等待时关闭报告窗口，旧请求会继续占用全局报告控制器，阻止立即重开。本次仅在报告窗口的关闭按钮、Esc 和 close 事件中清理该窗口的个人对照请求状态：递增请求代次、解除控制器并调用浏览器端 abort。迟到的成功、失败和 finally 只能对应旧代次，不能覆盖新窗口或清掉新请求。已发出的服务端请求仍按既有预算计数；浏览器端 abort 不保证服务端处理被取消。
+
+[R1.1 保存响应回放](exam01-r11-close-browser-replay.py)使用同一真实保存的 CS April 基础响应和既有个人对照响应，模拟慢请求，并分别在 1440/390 两视口用 X/Esc 关闭。四组 [断言日志](exam01-evidence/r11-close-pending.json)和截图：[桌面 X](exam01-evidence/r11-close-pending-1440-x.png)、[桌面 Esc](exam01-evidence/r11-close-pending-1440-esc.png)、[手机 X](exam01-evidence/r11-close-pending-390-x.png)、[手机 Esc](exam01-evidence/r11-close-pending-390-esc.png)。每组均验证关闭后立即重开、仅考试预览/复制且没有第二次个人 POST；向旧请求送出迟到 503 或 200 后，新窗口仍未被旧结果污染；随后明确点击个人核对只产生一次新 POST，成功结果重开可复用。全部为浏览器拦截请求，真实服务、真实 POST 和付费累计不变。

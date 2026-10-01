@@ -129,6 +129,14 @@ function clearReferenceReport(message = "当前目标或个人情况已改变，
   if (referenceDialog.open) referenceDialog.close();
 }
 
+function cancelPendingReferenceComparison() {
+  if (!referenceReportController || referenceReport?.kind !== "legacy_applicant") return;
+  const controller = referenceReportController;
+  referenceReportRequestId += 1;
+  referenceReportController = null;
+  controller.abort();
+}
+
 function updateProfileCapability() {
   const slice = currentReferenceEntry()?.kind === "reviewed_material_slice";
   byId("legacy-profile-grid").hidden = slice;
@@ -2744,8 +2752,13 @@ groundedForm.addEventListener("submit", (event) => { event.preventDefault(); sub
 groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
 referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
 byId("reference-copy").addEventListener("click", copyReferenceReport);
-byId("reference-close").addEventListener("click", () => referenceDialog.close());
+byId("reference-close").addEventListener("click", () => {
+  cancelPendingReferenceComparison();
+  referenceDialog.close();
+});
+referenceDialog.addEventListener("cancel", cancelPendingReferenceComparison);
 referenceDialog.addEventListener("close", () => {
+  cancelPendingReferenceComparison();
   if (referenceTrigger?.isConnected && !referenceTrigger.disabled && referenceReport
     && currentReferenceScope() && referenceCore.scopeKey(referenceReport.scope)
       === referenceCore.scopeKey(currentReferenceScope())) referenceTrigger.focus({preventScroll: true});
