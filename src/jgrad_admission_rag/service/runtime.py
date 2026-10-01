@@ -17,6 +17,7 @@ from ..reasoning.query_intent import QueryIntentCatalog
 from ..reasoning.reviewed_report_plan import ReviewedReportPlan
 from ..schemas.page_scope_manifest import PageScopeManifest
 from .date_presentation import ReviewedDatePresentation
+from .exam_presentation import ReviewedExamPresentation
 from .response_cache import ExactResponseCache
 
 
@@ -30,6 +31,7 @@ class ServiceSettings(BaseModel):
     page_scope_manifest_paths: tuple[Path, ...] = ()
     query_intent_catalog_path: Path | None = None
     date_presentation_paths: tuple[Path, ...] = ()
+    exam_presentation_paths: tuple[Path, ...] = ()
     source_pdf_path: Path | None = None
     source_pdf_document_id: str | None = Field(
         default=None,
@@ -73,6 +75,8 @@ class ServiceSettings(BaseModel):
             raise ValueError("query intent catalog path must be absolute")
         if any(not path.is_absolute() for path in self.date_presentation_paths):
             raise ValueError("reviewed date presentation paths must be absolute")
+        if any(not path.is_absolute() for path in self.exam_presentation_paths):
+            raise ValueError("reviewed exam presentation paths must be absolute")
         source_fields = (
             self.source_pdf_path,
             self.source_pdf_document_id,
@@ -143,6 +147,8 @@ class ServiceState:
     query_intent_catalog: QueryIntentCatalog | None = None
     query_intent_initialization_failed: bool = False
     date_presentations: tuple[ReviewedDatePresentation, ...] = ()
+    exam_presentations: tuple[ReviewedExamPresentation, ...] = ()
+    exam_presentation_initialization_failed: bool = False
     date_presentation_initialization_failed: bool = False
     source_document: VerifiedSourceDocument | None = None
     source_document_initialization_failed: bool = False

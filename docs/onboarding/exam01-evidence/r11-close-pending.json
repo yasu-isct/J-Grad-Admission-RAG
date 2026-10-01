@@ -1,0 +1,38 @@
+[
+  {
+    "viewport": 1440,
+    "closed_with": "x",
+    "late_status": 503,
+    "late_delivery": "delivered",
+    "posts_after_close": 1,
+    "posts_after_explicit_retry": 2,
+    "reopened_without_waiting": true
+  },
+  {
+    "viewport": 1440,
+    "closed_with": "esc",
+    "late_status": 200,
+    "late_delivery": "delivered",
+    "posts_after_close": 1,
+    "posts_after_explicit_retry": 2,
+    "reopened_without_waiting": true
+  },
+  {
+    "viewport": 390,
+    "closed_with": "x",
+    "late_status": 503,
+    "late_delivery": "delivered",
+    "posts_after_close": 1,
+    "posts_after_explicit_retry": 2,
+    "reopened_without_waiting": true
+  },
+  {
+    "viewport": 390,
+    "closed_with": "esc",
+    "late_status": 200,
+    "late_delivery": "delivered",
+    "posts_after_close": 1,
+    "posts_after_explicit_retry": 2,
+    "reopened_without_waiting": true
+  }
+]

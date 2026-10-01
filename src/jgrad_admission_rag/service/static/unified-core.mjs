@@ -269,6 +269,75 @@ export function mapLegacyBase(scope, base) {
   };
 }
 
+const examSource = {
+  institution_id: "isct", document_id: "isct_2027_4_2026_9_master",
+  source_pdf_sha256: "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+  source_kb_sha256: "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+};
+const examPresentationSha = "368ed4de43dd2dde8eda986d2ad2d6922e8cfb7c3640583381b1b559a4170aa7";
+
+export function validateExamInformation(scope, info) {
+  try {
+    requireValue(scope?.kind === "legacy_applicant" && info?.schema_version === "1.0"
+      && ["available", "not_covered", "unavailable"].includes(info.status), "考试信息状态无效");
+    const request = scope.request;
+    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "考试信息目标不匹配");
+    if (info.status !== "available") {
+      requireValue(info.schedule === null && same(info.evidence, []), "未知考试信息含肯定内容");
+      return {status: info.status, message: info.message_zh};
+    }
+    requireValue(request.school_id === "isct" && request.document_id === examSource.document_id
+      && request.college_id === "情報理工学院" && request.department_id === "情報工学系"
+      && request.degree_id === "master" && request.application_route === "b_schedule"
+      && [[2026, 9], [2027, 4]].some(([year, month]) => request.intake.year === year && request.intake.month === month)
+      && info.presentation_id === "isct-cs-b-exams-2026-v1"
+      && info.presentation_sha256 === examPresentationSha
+      && same(info.source_identity, examSource), "考试信息来源不匹配");
+    const s = info.schedule;
+    requireValue(s && s.route === "b_schedule" && s.exam_year === 2026 && s.timezone === "Asia/Tokyo"
+      && s.written_date === "2026-08-18" && s.written_start_time === "09:30"
+      && s.written_end_time === "12:00" && s.duration_minutes === 150
+      && s.questions_per_group === 1 && s.total_questions === 3
+      && s.answer_language === "ja" && s.specialist_points === 900 && s.english_points === 100
+      && s.english_assessment === "external_score" && s.oral_date === "2026-08-24"
+      && s.oral_announcement_date === "2026-08-20" && s.oral_announcement_time === "17:00"
+      && s.oral_announcement_time_qualifier === "around_from"
+      && same(s.subject_groups, [
+        {group: "A", subjects_zh: ["微积分", "线性代数", "概率统计"]},
+        {group: "B", subjects_zh: ["数理逻辑", "自动机与形式语言"]},
+        {group: "C", subjects_zh: ["数据结构与算法", "编程"]}
+      ]) && nonempty(s.oral_selection_note_zh), "考试安排不完整");
+    requireValue(info.year_basis?.kind === "reviewed_cross_page_context"
+      && info.year_basis.exam_year === 2026 && same(info.year_basis.physical_pages, [1, 2, 52])
+      && same(info.year_basis.source_ids, ["pdf:cover:1", "fact:00002", "fact:00004", "fact:00288"]), "考试年份依据不完整");
+    const evidence = array(info.evidence);
+    requireValue(evidence.length === 3 && same(evidence.map((row) => row.fact_id),
+      ["fact:00288", "fact:00289", "fact:00287"]), "考试原文依据不完整");
+    for (const row of evidence) {
+      validateLegacyEvidence(row, scope);
+      requireValue(same(row.pages, [52]) && row.scope_type === "department"
+        && same(row.scope_targets, ["情報工学系"]) && row.parent_college === "情報理工学院", "考试原文作用域不匹配");
+    }
+    return {status: "available", schedule: s, evidence, year_basis: info.year_basis};
+  } catch { return null; }
+}
+
+export function examReportRows(exam) {
+  if (exam?.status !== "available") return [];
+  const s = exam.schedule;
+  const dateZh = (value, year = true) => {
+    const [y, m, d] = value.split("-").map(Number);
+    return `${year ? `${y}年` : ""}${m}月${d}日`;
+  };
+  return [
+    `专业笔试：${dateZh(s.written_date)} ${s.written_start_time}–${s.written_end_time}（日本时间，${s.duration_minutes}分钟）。`,
+    ...s.subject_groups.map((group) => `${group.group}组：${group.subjects_zh.join("、")}。`),
+    `每组各出${s.questions_per_group}题，共${s.total_questions}题；专业笔试用日语作答。`,
+    `专业笔试${s.specialist_points}分，英语${s.english_points}分；英语不另设笔试，按指定外部英语成绩评价，仍需按规定提交证明。`,
+    `口述对象：${dateZh(s.oral_announcement_date, false)}${Number(s.oral_announcement_time.split(":")[0])}时左右起公布；口述日期${dateZh(s.oral_date, false)}。${s.oral_selection_note_zh}`
+  ];
+}
+
 export function mapSliceEvidence(scope, evidence) {
   requireValue(scope.kind === "reviewed_material_slice"
     && evidence?.schema_version === "1.0"
@@ -321,7 +390,7 @@ function sourceLines(source) {
     `官方原文：${source.quote}`, `官方链接：${source.source_url}`].filter(Boolean);
 }
 
-export function legacyReport(mapped, comparison = null, profileDisclosure = []) {
+export function legacyReport(mapped, comparison = null, profileDisclosure = [], exam = null) {
   requireValue(mapped?.scope?.kind === "legacy_applicant" && mapped.topics?.length, "当前要求尚未加载");
   if (comparison) {
     requireValue(Array.isArray(profileDisclosure), "个人情况展示无效");
@@ -391,6 +460,7 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = []) 
   const conclusion = "请逐项核对未覆盖内容、未知条件与官方原文；材料准备不代表学校已受理。";
   lines.push("", conclusion);
   return {kind: "legacy_applicant", scope: mapped.scope, topics: mapped.topics,
+    ...(exam?.status === "available" ? {exam} : {}),
     comparison, profileDisclosure, text: lines.join("\n"), raw: {base: mapped.raw, comparison},
     presentation: {intro: intro.slice(3), topics, comparison: comparisonPresentation, conclusion}};
 }
@@ -443,7 +513,7 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
     canonicalMarkdown: payload.markdown, raw: payload.report};
 }
 
-const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"};
+const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"};
 
 // Presentation only. Code meanings are bound to reviewed document/snapshot identity;
 // applicability and preparation still come from reviewed responses.
@@ -572,11 +642,13 @@ function readerMaterialLine(item) {
 
 export function readerReportOptions(report) {
   requireValue(report?.scope && Array.isArray(report.topics), "报告尚未校验");
-  return {
+  const options = {
     dates: report.kind === "legacy_applicant" && report.topics.some((topic) => topic.category === "dates"),
     materials: report.topics.some((topic) => report.kind === "reviewed_material_slice" || topic.category === "materials"),
     other: report.kind === "legacy_applicant" && report.topics.some((topic) => !["dates", "materials"].includes(topic.category))
   };
+  if (report.kind === "legacy_applicant" && report.exam?.status === "available") options.exams = true;
+  return options;
 }
 
 function legacyMaterialState(topic, comparisonItem) {
@@ -639,13 +711,15 @@ function readerText(view) {
     section("其他已加载要求", view.other.length
       ? view.other.map((item) => `${item.title}：${item.summary}（${item.status}）`)
       : ["当前已加载资料没有其他主题。"]);
+  if (view.selected.includes("exams")) section("考试安排", view.exams);
   lines.push("", `范围说明：${view.limitation}`);
   return lines.join("\n");
 }
 
 export function readerReport(report, selected) {
   const available = readerReportOptions(report);
-  requireValue(selected && ["dates", "materials", "other"].every((key) => typeof selected[key] === "boolean"), "报告主题选择无效");
+  requireValue(selected && ["dates", "materials", "other"].every((key) => typeof selected[key] === "boolean")
+    && (selected.exams === undefined || typeof selected.exams === "boolean"), "报告主题选择无效");
   requireValue(Object.keys(available).every((key) => !selected[key] || available[key]), "选中主题未加载");
   const chosen = Object.keys(available).filter((key) => selected[key]);
   requireValue(chosen.length > 0, "请至少选择一类报告内容");
@@ -653,6 +727,7 @@ export function readerReport(report, selected) {
   const dates = [];
   const materials = [];
   const other = [];
+  const exams = selected.exams ? examReportRows(report.exam) : [];
   const english = [];
   const submission = [];
   const priorities = [];
@@ -742,7 +817,8 @@ export function readerReport(report, selected) {
       : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
   const priorityRows = priorities.length ? priorities : selected.materials
     ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
-  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, submission, other, limitation};
+  const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, submission, other,
+    ...(selected.exams ? {exams} : {}), limitation};
   return {...view, text: readerText(view)};
 }
 

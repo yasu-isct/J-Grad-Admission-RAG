@@ -183,6 +183,17 @@ def _serve(
             page_scope_manifest_paths=(runtime.page_scope_manifest_path,),
             query_intent_catalog_path=runtime.query_intent_catalog_path,
             date_presentation_paths=(runtime.date_presentation_path,),
+            exam_presentation_paths=(
+                (
+                    Path(__file__).resolve().parent
+                    / "demo_config"
+                    / "reviewed_exam_presentation.json",
+                )
+                if runtime.identity.document_id == "isct_2027_4_2026_9_master"
+                and runtime.identity.source_pdf_sha256
+                == "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
+                else ()
+            ),
             source_pdf_path=runtime.source_pdf_path,
             source_pdf_document_id=runtime.identity.document_id,
             source_pdf_sha256=runtime.identity.source_pdf_sha256,

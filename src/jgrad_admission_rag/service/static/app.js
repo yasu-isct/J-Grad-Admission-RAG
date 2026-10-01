@@ -129,6 +129,14 @@ function clearReferenceReport(message = "当前目标或个人情况已改变，
   if (referenceDialog.open) referenceDialog.close();
 }
 
+function cancelPendingReferenceComparison() {
+  if (!referenceReportController || referenceReport?.kind !== "legacy_applicant") return;
+  const controller = referenceReportController;
+  referenceReportRequestId += 1;
+  referenceReportController = null;
+  controller.abort();
+}
+
 function updateProfileCapability() {
   const slice = currentReferenceEntry()?.kind === "reviewed_material_slice";
   byId("legacy-profile-grid").hidden = slice;
@@ -1249,7 +1257,72 @@ function renderPendingRequirements(entries, overview, scope) {
   return section;
 }
 
-function renderRequirements(payload, scope) {
+function renderExamCard(exam) {
+  const section = document.createElement("section");
+  section.className = "result-section exam-arrangement";
+  section.append(heading(3, exam?.status === "available" ? "考试安排 · B日程" : "考试安排"));
+  if (exam?.status !== "available") {
+    const note = document.createElement("p");
+    note.textContent = exam?.message || "考试资料暂不可用，请查看官方募集要项。";
+    section.append(note);
+    return section;
+  }
+  const rows = referenceCore.examReportRows(exam);
+  const lead = document.createElement("p");
+  lead.className = "exam-lead";
+  lead.textContent = rows[0];
+  section.append(lead, heading(4, "考什么"));
+  const subjects = document.createElement("ul");
+  for (const row of rows.slice(1, 4)) {
+    const item = document.createElement("li");
+    item.textContent = row;
+    subjects.append(item);
+  }
+  section.append(subjects);
+  for (const row of rows.slice(4, 6)) {
+    const text = document.createElement("p");
+    text.textContent = row;
+    section.append(text);
+  }
+  const after = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "笔试之后：口述对象与日期";
+  const oral = document.createElement("p");
+  oral.textContent = rows[6];
+  after.append(summary, oral);
+  const oralSource = document.createElement("button");
+  oralSource.type = "button";
+  oralSource.className = "quiet";
+  oralSource.textContent = "查看口述对象公布原文";
+  oralSource.addEventListener("click", () => openDemoEvidence({title: "口述对象公布"},
+    exam.evidence[1], oralSource, {examYearNote: "公告的是口述对象，时间为17时左右起；不是最终合格公布。"}));
+  after.append(oralSource);
+  section.append(after);
+  const actions = document.createElement("div");
+  actions.className = "source-actions";
+  const source = document.createElement("button");
+  source.type = "button";
+  source.className = "secondary";
+  source.textContent = "查看官方原文";
+  source.addEventListener("click", () => openDemoEvidence({title: "B日程考试安排"}, exam.evidence[0], source,
+    {examYearNote: "考试年份按本册封面、出愿流程与信息工学系考试页交叉核对。", examYearPages: [1, 2]}));
+  const english = document.createElement("button");
+  english.type = "button";
+  english.className = "secondary";
+  english.textContent = "查看英语证明要求";
+  english.addEventListener("click", () => {
+    const target = requirementsOutput.querySelector(".english-section");
+    if (!target) return;
+    target.scrollIntoView({behavior: "smooth", block: "start"});
+    target.setAttribute("tabindex", "-1");
+    target.focus({preventScroll: true});
+  });
+  actions.append(source, english);
+  section.append(actions);
+  return section;
+}
+
+function renderRequirements(payload, scope, exam) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
   targetSummary.hidden = true;
@@ -1275,6 +1348,7 @@ function renderRequirements(payload, scope) {
     renderKeyDates(dateRequirements),
     renderRequirementSection("英语考试与证明", englishRequirements, "english-section", scope),
     renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
+    renderExamCard(exam),
     renderPendingRequirements(pending, overview, scope)
   );
 
@@ -1546,6 +1620,12 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     drawerContent.append(back);
   }
   drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
+  if (options.examYearNote) {
+    const yearNote = document.createElement("p");
+    yearNote.className = "evidence-chinese-summary";
+    yearNote.textContent = options.examYearNote;
+    drawerContent.append(yearNote);
+  }
   const guidance = referenceCore?.materialGuide(currentReferenceScope(), {
     id: requirement.requirement_id || requirement.item_id || requirement.material_code,
     evidence: requirement.evidence
@@ -1628,6 +1708,17 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
       pdfLink.target = "_blank";
       pdfLink.rel = "noopener noreferrer";
       pdfLink.textContent = `在 PDF 中查看第 ${page} 页`;
+      sourceActions.append(pdfLink);
+    }
+    for (const page of options.examYearPages || []) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const pdfLink = document.createElement("a");
+      pdfLink.className = "source-link pdf-source-link";
+      pdfLink.href = href;
+      pdfLink.target = "_blank";
+      pdfLink.rel = "noopener noreferrer";
+      pdfLink.textContent = page === 1 ? "查看封面年份" : "查看出愿与考试流程";
       sourceActions.append(pdfLink);
     }
   }
@@ -2133,7 +2224,7 @@ function renderReferenceReport(report) {
   referenceBody.replaceChildren();
   byId("reference-report-title").textContent = "出愿准备参考";
   const available = referenceCore.readerReportOptions(report);
-  const selected = {...available};
+  const selected = {...available, exams: false};
   const options = document.createElement("fieldset");
   options.className = "reader-report-options";
   const legend = document.createElement("legend");
@@ -2141,6 +2232,10 @@ function renderReferenceReport(report) {
   options.append(legend);
   const content = document.createElement("article");
   content.className = "reader-report-paper";
+  const compareButton = document.createElement("button");
+  compareButton.type = "button";
+  compareButton.className = "secondary";
+  compareButton.textContent = "核对个人情况并生成所选报告";
   const addSection = (title, rows, empty) => {
     const section = document.createElement("section");
     section.className = "reader-report-section";
@@ -2171,6 +2266,19 @@ function renderReferenceReport(report) {
     content.replaceChildren();
     if (!Object.values(selected).some(Boolean)) {
       content.append(heading(3, "请至少选择一类报告内容。"));
+      compareButton.hidden = true;
+      return;
+    }
+    const needsComparison = report.kind === "legacy_applicant"
+      && report.profileDisclosure.length > 0 && !report.comparison
+      && (selected.dates || selected.materials || selected.other);
+    compareButton.hidden = !needsComparison;
+    if (needsComparison) {
+      const note = document.createElement("p");
+      note.className = "reader-report-note";
+      note.textContent = "已填写个人情况。所选日期、材料或其他要求需先核对个人情况。"
+        + (available.exams ? "仅考试安排可直接查看和复制。" : "核对失败时可在此重试。");
+      content.append(note);
       return;
     }
     const view = referenceCore.readerReport(report, selected);
@@ -2178,7 +2286,7 @@ function renderReferenceReport(report) {
     title.className = "reader-report-title";
     title.append(heading(3, view.target));
     const focus = document.createElement("p");
-    focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"})[key]).join("、")}`;
+    focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})[key]).join("、")}`;
     title.append(focus);
     content.append(title);
     if (view.priorityRows.length) addSection("接下来先做什么", view.priorityRows, "");
@@ -2201,6 +2309,7 @@ function renderReferenceReport(report) {
       addSection("毕业与提交提醒", view.submission, "");
     if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
       `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
+    if (selected.exams) addSection("考试安排", view.exams, "");
     const limit = document.createElement("p");
     limit.className = "reader-report-note";
     limit.textContent = `范围说明：${view.limitation}`;
@@ -2208,7 +2317,7 @@ function renderReferenceReport(report) {
     referenceReader = view;
     byId("reference-copy").disabled = false;
   };
-  for (const [key, label] of Object.entries({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求"})) {
+  for (const [key, label] of Object.entries({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})) {
     if (!available[key]) continue;
     const wrapper = document.createElement("label");
     const checkbox = document.createElement("input");
@@ -2218,6 +2327,47 @@ function renderReferenceReport(report) {
     wrapper.append(checkbox, document.createTextNode(label));
     options.append(wrapper);
   }
+  compareButton.addEventListener("click", async () => {
+    if (referenceReportController || !applicationDatesReconcile()) {
+      if (!referenceReportController) byId("reference-report-status").textContent = "请先核对毕业与送达日期，再进行个人对照。";
+      return;
+    }
+    const requestId = referenceReportRequestId;
+    const scopeSnapshot = referenceCore.scopeKey(report.scope);
+    const profileSnapshot = JSON.stringify(demoComparisonRequest());
+    const controller = new AbortController();
+    referenceReportController = controller;
+    compareButton.disabled = true;
+    byId("reference-report-status").textContent = "正在核对个人情况，请稍候。";
+    const current = () => requestId === referenceReportRequestId && referenceDialog.open
+      && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
+      && JSON.stringify(demoComparisonRequest()) === profileSnapshot
+      && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
+    try {
+      const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
+        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+        body: profileSnapshot, cache: "no-store", credentials: "same-origin", signal: controller.signal
+      });
+      if (!response.ok) throw new Error();
+      const comparison = await response.json();
+      if (!current()) return;
+      report = referenceCore.legacyReport(loadedReference, comparison,
+        legacyProfileDisclosure(), loadedReference.exam || null);
+      referenceReport = report;
+      draw();
+      byId("reference-report-status").textContent = "个人情况已核对，可查看和复制所选报告。";
+    } catch (error) {
+      if (error?.name !== "AbortError" && current())
+        byId("reference-report-status").textContent = "个人对照失败；所选个人报告尚未生成。可重试"
+          + (available.exams ? "，或只选考试安排直接查看和复制。" : "。");
+    } finally {
+      if (requestId === referenceReportRequestId) {
+        referenceReportController = null;
+        compareButton.disabled = false;
+      }
+    }
+  });
+  options.append(compareButton);
   referenceBody.append(options, content);
   referenceDialog.showModal();
   draw();
@@ -2243,10 +2393,6 @@ async function generateReferenceReport(event) {
     setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
     return;
   }
-  if (currentReferenceScope()?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
-    byId("demo-arrival-date").focus();
-    return;
-  }
   const trigger = event.currentTarget;
   const scope = currentReferenceScope();
   if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
@@ -2254,55 +2400,43 @@ async function generateReferenceReport(event) {
     return;
   }
   referenceTrigger = trigger;
-  if (referenceReport?.kind === "reviewed_material_slice" && scope.kind === "reviewed_material_slice") {
+  if (referenceReport && referenceReport.kind === scope.kind
+    && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)) {
     renderReferenceReport(referenceReport);
     setReferenceActionState("success", "报告已打开，可选择内容并复制。");
     return;
   }
   clearReferenceReport("正在整理当前已审核结果和官方依据。");
+  if (scope.kind === "legacy_applicant") {
+    const disclosure = legacyProfileDisclosure();
+    try {
+      referenceReport = referenceCore.legacyReport(loadedReference,
+        disclosure.length ? comparisonResponse : null, disclosure, loadedReference.exam || null);
+      renderReferenceReport(referenceReport);
+      setReferenceActionState("success", "报告已打开，可选择内容；个人相关主题按需核对后复制。");
+    } catch {
+      setReferenceActionState("error", "报告生成失败或依据不完整，请重新加载当前目标。", true);
+    }
+    return;
+  }
   const requestId = referenceReportRequestId;
-  const profileSnapshot = scope.kind === "legacy_applicant"
-    ? JSON.stringify(demoComparisonRequest())
-    : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
+  const profileSnapshot = JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
   const scopeSnapshot = referenceCore.scopeKey(scope);
   referenceReportController = new AbortController();
   setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
   const current = () => requestId === referenceReportRequestId
     && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
-    && (scope.kind === "legacy_applicant" ? JSON.stringify(demoComparisonRequest())
-      : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value])) === profileSnapshot
+    && JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]) === profileSnapshot
     && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
   try {
-    let report;
-    if (scope.kind === "legacy_applicant") {
-      const disclosure = legacyProfileDisclosure();
-      let comparison = comparisonResponse;
-      if (disclosure.length && !comparison) {
-        const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
-          method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
-          body: JSON.stringify(demoComparisonRequest()), cache: "no-store", credentials: "same-origin",
-          signal: referenceReportController.signal
-        });
-        if (!response.ok) throw new Error();
-        comparison = await response.json();
-        if (comparison.english_preparation_result)
-          referenceCore.validateEnglishPreparationResult(scope, comparison);
-        if (comparison.application_preparation_result)
-          referenceCore.validateApplicationPreparationResult(scope, comparison);
-      }
-      if (!current()) return;
-      report = referenceCore.legacyReport(loadedReference, disclosure.length ? comparison : null,
-        disclosure.length ? disclosure : []);
-    } else {
-      const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
-      const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
-        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
-        body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
-        cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
-      });
-      if (!response.ok) throw new Error();
-      report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
-    }
+    const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
+    const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+      method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+      cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+    });
+    if (!response.ok) throw new Error();
+    const report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
     if (!current()) return;
     referenceReport = report;
     renderReferenceReport(report);
@@ -2475,16 +2609,19 @@ async function submitBaseRequirements() {
   setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
   try {
     const response = scope.kind === "legacy_applicant"
-      ? await fetch(BASE_REQUIREMENTS_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
+      ? await fetch(`${BASE_REQUIREMENTS_ENDPOINT}?include_examination_information=true`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
       : await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/evidence`, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
     if (!response.ok) throw new Error();
     const payload = await response.json();
     const mapped = scope.kind === "legacy_applicant"
       ? referenceCore.mapLegacyBase(scope, payload) : referenceCore.mapSliceEvidence(scope, payload);
     if (requestId !== requirementsRequestId || referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot) return;
-    if (scope.kind === "legacy_applicant") renderRequirements(payload, scope);
+    const exam = scope.kind === "legacy_applicant"
+      ? referenceCore.validateExamInformation(scope, payload.examination_information) : null;
+    if (scope.kind === "legacy_applicant") renderRequirements(payload, scope, exam);
     else renderSliceRequirements(mapped);
     loadedReference = mapped;
+    if (scope.kind === "legacy_applicant") loadedReference.exam = exam;
     baseResponse = payload;
     refreshMaterialInputLabels(scope);
     baseRequirementsLoaded = true;
@@ -2615,8 +2752,13 @@ groundedForm.addEventListener("submit", (event) => { event.preventDefault(); sub
 groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
 referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
 byId("reference-copy").addEventListener("click", copyReferenceReport);
-byId("reference-close").addEventListener("click", () => referenceDialog.close());
+byId("reference-close").addEventListener("click", () => {
+  cancelPendingReferenceComparison();
+  referenceDialog.close();
+});
+referenceDialog.addEventListener("cancel", cancelPendingReferenceComparison);
 referenceDialog.addEventListener("close", () => {
+  cancelPendingReferenceComparison();
   if (referenceTrigger?.isConnected && !referenceTrigger.disabled && referenceReport
     && currentReferenceScope() && referenceCore.scopeKey(referenceReport.scope)
       === referenceCore.scopeKey(currentReferenceScope())) referenceTrigger.focus({preventScroll: true});

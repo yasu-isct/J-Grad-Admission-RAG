@@ -1,0 +1,33 @@
+{
+  "real_product_sessions": 1,
+  "base_or_applicant_posts": 4,
+  "paid_calls": 0,
+  "downloads": 0,
+  "parser_or_index_builds": 0,
+  "before": {
+    "pdf": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "kb": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+  },
+  "results": {
+    "cs_april": {
+      "status_code": 200,
+      "exam_status": "available"
+    },
+    "cs_september": {
+      "status_code": 200,
+      "exam_status": "available"
+    },
+    "non_cs": {
+      "status_code": 200,
+      "exam_status": "not_covered"
+    },
+    "legacy": {
+      "status_code": 200,
+      "exam_status": null
+    }
+  },
+  "after": {
+    "pdf": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "kb": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+  }
+}
