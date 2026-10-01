@@ -1,29 +1,22 @@
-# M17 后续三项：准备提醒、入口清理、笔试信息
+# M17 演示补充：准备提醒、工具整理与考试信息
 
-2026-09-30 用户授权继续设计这三项；尚未选择更换为Claude/PDF方案，也没有授权东大扩覆盖。
-审计基线 `cd406405fcce1380e9bcb7f346b494e299dd9a3e`，PREP-01 #254已完成。本次仅设计文档与Issue，不修改生产代码或运行预览。
+当前状态（2026-10-01）：#258、#259已经独立验收合并。#260正式来源、字段和API合同已完成；
+本设计PR #264合并并更新#191为Ready后，只有#260可进入开发。M17 Main沿用原对话，一份实现PR交设计验收。
 
-| 顺序 | Issue与用户效果 | 放行条件 |
+| 任务 | 用户效果 | 状态 |
 |---|---|---|
-| 1 | [#258 PREP-02](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/258)：毕业日期、网上手续、寄出/实际到达转为清晰提醒 | 本设计合并后唯一Ready |
-| 2 | [#259 TOOLS-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/259)：移除高级工具面板，保留主流程与共享功能 | 第一项验收合并，设计明确放行 |
-| 3 | [#260 EXAM-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/260)：信息工学系A/B考试安排与笔试科目卡 | 前两项合并，设计补齐原页/年份/字段审核后放行 |
+| [#258 PREP-02](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/258) | 毕业日期、网上手续、寄出与实际送达提醒 | Accepted/merged，PR #262 |
+| [#259 TOOLS-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/259) | 移除旧高级工具，保留报告、问答与原文窗口 | Accepted/merged，PR #263；问答计数回归已复核 |
+| [#260 EXAM-01](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/260) | 第二步展示信息工学系B日程笔试，报告可选考试主题 | 设计PR合并后唯一Ready；尚无生产实现 |
 
-顺序原因：先将实用字段接到主流程，再撤下旧入口；最后增加独立考试信息。
-同一M17 Main对话可串行实施，每项独立PR和交接，不同时开展，不要求为每个检查点开新对话。
+[前两项独立验收与来源审核](prep02-tools01-design-review.md)。
+[EXAM-01正式规格](exam01-written-exam-spec.md)与[逐字段来源](exam01-reviewed-field-map.json)是开发依据，
+旧A/B并列候选已收窄为当前目录已有的B日程；2026考试年按固定册p.1、p.2、p.52跨页审核。
 
-复用：已有ApplicantProfile日期/提交字段、审核规则和predicate_outcomes、PREP-01可选投影、
-四步页/报告/原文窗口。高级工具需要清理app.js旧DOM依赖，不能只删HTML。
-考试p.52已有Fact和表格，但结构化展示配置尚未审核完成，不能把样板当成已完成招生事实验收。
-主页面 /app 实际返回advanced.html；/app/advanced旧入口需保持访问兼容。
+继续复用原两校四步页、现有KB/目标选择、原文窗口和共享报告。只添加小型审核展示配置和可选响应，
+不重建向量库、不用问答临时生成考试事实，也不制作独立考试页面。
 
-具体规格：
-- [PREP-02字段、中文样板、验收](prep02-graduation-submission-spec.md)
-- [TOOLS-01依赖清理表](tools01-advanced-cleanup-spec.md)
-- [EXAM-01范围与放行前审核](exam01-written-exam-spec.md)
-
-共同边界：334/391、PDF、模型缓存、reference_only与回滚版本保持；付费/下载/构库0。
-QA #233/#236继续暂停，东大普通学生扩覆盖、M13、MinerU不启动。
-用户在线预览8005固定cd4064，目录outputs/design-prep正在使用；8004/8003及其他预览也不自动切换/停止。
-各任务独立有界预算见Spec；上一任务累计台账不重置。每项只做与风险相关的验证，优先复用真实保存响应。
-实现完成后准备演示，不自动进入普通学生扩覆盖或改变系统架构。
+每项累计预算见各自Spec，不因换对话重置。EXAM-01开发/设计各最多1次真实产品会话、4次基础/个人POST；
+付费、真实问答、下载、解析重跑及KB/索引构建均0。直接读取已有KB与保存响应回放优先。
+用户8005固定cd4064及其他预览保持，不自动升级或停止。334/391、PDF、模型缓存、reference_only与回滚点不变。
+完成后准备私塾演示；QA #233/#236、东大普通学生扩覆盖、M13/MinerU保持暂停，不自动改为Claude/PDF架构。

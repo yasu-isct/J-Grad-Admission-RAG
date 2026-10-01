@@ -1,3 +1,14 @@
+# EXAM-01 source candidate: design review completed
+
+2026-10-01: this historical candidate has been independently reviewed. The final
+[implementation contract](exam01-written-exam-spec.md) and
+[reviewed field map](exam01-reviewed-field-map.json) supersede its open questions and A/B card proposal.
+The examination year is 2026 by reviewed p.1/p.2/p.52 context; the only released target is the existing CS B route.
+No A-route expansion or past-paper link is included. This PR contains design documents only, not the implementation.
+See [source review and acceptance history](prep02-tools01-design-review.md).
+
+## Historical developer candidate (preserved; not the final implementation instruction)
+
 # EXAM-01 #260：信息工学系考试资料核对与中文展示候选
 
 **状态：仅供设计审核的文档草案。** #260 的生产实施仍为 Blocked；本文件不批准招生事实、不冻结 API 字段，也不接入第二步或报告。基于 main `304243df805032a6a030aa82bf85bc05cbcdf355` 独立整理；#258 / PR #262 和 #259 / Draft PR #263 均尚待设计独立验收。

@@ -4,16 +4,16 @@ from pathlib import Path
 STATIC_ROOT = Path(__file__).parents[1] / "src" / "jgrad_admission_rag" / "service" / "static"
 
 
-def test_step_three_uses_four_native_keyboard_groups_with_text_states() -> None:
+def test_step_three_uses_five_native_keyboard_groups_with_text_states() -> None:
     html = (STATIC_ROOT / "advanced.html").read_text(encoding="utf-8")
     javascript = (STATIC_ROOT / "app.js").read_text(encoding="utf-8")
     css = (STATIC_ROOT / "app.css").read_text(encoding="utf-8")
 
-    assert html.count('data-profile-group="') == 4
-    for key in ("education", "english", "japanese", "materials"):
+    assert html.count('data-profile-group="') == 5
+    for key in ("education", "submission", "english", "japanese", "materials"):
         assert '<details class="profile-group' in html
         assert f'data-profile-group="{key}"' in html
-    assert html.count('class="profile-group-state" data-state="empty"') == 4
+    assert html.count('class="profile-group-state" data-state="empty"') == 5
     assert "initializeProfileGroups()" in javascript
     assert 'window.matchMedia("(min-width: 761px)")' in javascript
     assert ".profile-group > summary" in css

@@ -5,7 +5,32 @@ executable tasks and explicitly blocked planning records; an open Issue is not p
 start it. Future work stays here until its dependencies and acceptance scope are defined.
 
 
-## Current M17 handoff: PREP-02 #258 uniquely Ready after design merge
+
+
+## Current M17 handoff: EXAM-01 #260 sole implementation after design merge
+
+2026-10-01: #258 / #262 and #259 / #263 are accepted and merged. #259 QA counter R1 is resolved.
+The source/field/API contract for #260 is now frozen in [the formal Spec](onboarding/exam01-written-exam-spec.md)
+and [reviewed field map](onboarding/exam01-reviewed-field-map.json). This supersedes the earlier A/B candidate.
+After design PR #264 merges and #191 records Ready, M17 Main implements only #260 in one new implementation PR.
+Display the existing ISCT CS B examination slice in step two and an optional report theme; reuse the same KB,
+identity selection, evidence dialog and report projection. Fixed examination year2026 for both supported intakes.
+No A route or new school coverage. Old base API requests remain unchanged; the new page opts into exam data.
+Developer/design each start at0/1 real product sessions and0/4 base/comparison POSTs; paid/QA/download/build0.
+Keep8005/8004/8003 and other live previews unchanged. Preserve334/391,reference_only and rollback assets.
+QA233/236,GSFS ordinary-student expansion,M13/MinerU remain paused. After this slice, prepare the demonstration.
+
+## Previous M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
+
+2026-10-01: #258 / PR #262 independently accepted at5dc8878, merged6b59cb3. [Review and budgets](onboarding/prep02-tools01-design-review.md).
+Only next implementation is M17 Main repairing #259 / Draft #263: restore the retained QA textarea input counter.
+Advanced-tools removal otherwise passed targeted review; PR base is now main, head1bd4c95 remains unmerged.
+#260 / Draft #264 source candidate was reviewed:2026 examination year via fixed-booklet cross-page evidence,
+existing CS B route only, field-level table bindings. Final API/config contract and implementation release remain blocked.
+Do not start #260 or expand schools. No new service/paid calls/builds; preserve8005/8004/8003 and334/391.
+QA233/236,GSFS expansion,M13/MinerU remain paused. This supersedes historical #258 Ready and unreviewed-night handoffs.
+
+## Previous M17 handoff: PREP-02 #258 uniquely Ready after design merge
 
 2026-09-30 user authorized three bounded follow-ups after accepted PREP-01 #254.
 [Plan and ordered Issues](onboarding/m17-preparation-followups.md):

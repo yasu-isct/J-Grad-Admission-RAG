@@ -1,0 +1,147 @@
+{
+  "source": "saved real ISCT PREP-02 response and synthetic GSFS fixture",
+  "product_service_starts": 0,
+  "product_api_posts": 0,
+  "cases": [
+    {
+      "case": "before-isct-1440",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /v1/reviewed-documents",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 0,
+      "real_product_post_count": 0,
+      "copy_sha256": null
+    },
+    {
+      "case": "after-isct-1440",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets",
+        "POST /v1/base-requirements",
+        "POST /v1/applicant-comparison"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 2,
+      "real_product_post_count": 0,
+      "copy_sha256": "e22bbf5be9c0010664a943fe5f3b15af32103ef72dee585698c5de79587d2a1c"
+    },
+    {
+      "case": "before-gsfs-1440",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /v1/reviewed-documents",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 0,
+      "real_product_post_count": 0,
+      "copy_sha256": null
+    },
+    {
+      "case": "after-gsfs-1440",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets",
+        "GET /v1/reference-slices/slice-two/evidence",
+        "POST /v1/reference-slices/slice-two/reports"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 1,
+      "real_product_post_count": 0,
+      "copy_sha256": "d8700abf2173664050e85d2d215ffe8228406671745752420be64bcfd037754c"
+    },
+    {
+      "case": "before-isct-390",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /v1/reviewed-documents",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 0,
+      "real_product_post_count": 0,
+      "copy_sha256": null
+    },
+    {
+      "case": "after-isct-390",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets",
+        "POST /v1/base-requirements",
+        "POST /v1/applicant-comparison"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 2,
+      "real_product_post_count": 0,
+      "copy_sha256": "e22bbf5be9c0010664a943fe5f3b15af32103ef72dee585698c5de79587d2a1c"
+    },
+    {
+      "case": "before-gsfs-390",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /v1/reviewed-documents",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 0,
+      "real_product_post_count": 0,
+      "copy_sha256": null
+    },
+    {
+      "case": "after-gsfs-390",
+      "requests": [
+        "GET /app",
+        "GET /assets/app.css",
+        "GET /assets/overview.js",
+        "GET /assets/app.js",
+        "GET /v1/generation-status",
+        "GET /assets/unified-core.mjs",
+        "GET /v1/reference-targets",
+        "GET /v1/reference-slices/slice-two/evidence",
+        "POST /v1/reference-slices/slice-two/reports"
+      ],
+      "console_errors": [],
+      "mocked_post_count": 1,
+      "real_product_post_count": 0,
+      "copy_sha256": "d8700abf2173664050e85d2d215ffe8228406671745752420be64bcfd037754c"
+    }
+  ]
+}

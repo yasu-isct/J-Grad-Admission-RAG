@@ -1,0 +1,367 @@
+{
+  "items": [
+    {
+      "availability": "ready",
+      "capabilities": {
+        "applicant_check": true,
+        "evidence_browse": true,
+        "reference_report": true
+      },
+      "entry_id": "legacy-isct",
+      "href": "/app",
+      "institution_name": "東京科学大学",
+      "kind": "legacy_applicant",
+      "legacy_catalog": {
+        "degrees": [
+          {
+            "degree_id": "master",
+            "degree_name": "修士课程",
+            "intakes": [
+              {
+                "colleges": [
+                  {
+                    "college_id": "工学院",
+                    "college_name": "工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "システム制御系",
+                        "department_name": "システム制御系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "情報通信系",
+                        "department_name": "情報通信系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "機械系",
+                        "department_name": "機械系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "経営工学系",
+                        "department_name": "経営工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "電気電子系",
+                        "department_name": "電気電子系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "情報理工学院",
+                    "college_name": "情報理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [
+                          {
+                            "route_id": "b_schedule",
+                            "route_name": "B 日程"
+                          }
+                        ],
+                        "department_id": "情報工学系",
+                        "department_name": "情報工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "数理・計算科学系",
+                        "department_name": "数理・計算科学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "物質理工学院",
+                    "college_name": "物質理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "応用化学系",
+                        "department_name": "応用化学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "材料系",
+                        "department_name": "材料系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "理学院",
+                    "college_name": "理学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "化学系",
+                        "department_name": "化学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "地球惑星科学系",
+                        "department_name": "地球惑星科学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "数学系",
+                        "department_name": "数学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "物理学系",
+                        "department_name": "物理学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "環境・社会理工学院",
+                    "college_name": "環境・社会理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "土木・環境工学系",
+                        "department_name": "土木・環境工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "建築学系",
+                        "department_name": "建築学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "社会・人間科学系",
+                        "department_name": "社会・人間科学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "融合理工学系",
+                        "department_name": "融合理工学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "生命理工学院",
+                    "college_name": "生命理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "生命理工学系",
+                        "department_name": "生命理工学系"
+                      }
+                    ]
+                  }
+                ],
+                "document_id": "isct_2027_4_2026_9_master",
+                "intake_name": "2026年9月入学",
+                "month": 9,
+                "year": 2026
+              },
+              {
+                "colleges": [
+                  {
+                    "college_id": "工学院",
+                    "college_name": "工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "システム制御系",
+                        "department_name": "システム制御系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "情報通信系",
+                        "department_name": "情報通信系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "機械系",
+                        "department_name": "機械系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "経営工学系",
+                        "department_name": "経営工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "電気電子系",
+                        "department_name": "電気電子系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "情報理工学院",
+                    "college_name": "情報理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [
+                          {
+                            "route_id": "b_schedule",
+                            "route_name": "B 日程"
+                          }
+                        ],
+                        "department_id": "情報工学系",
+                        "department_name": "情報工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "数理・計算科学系",
+                        "department_name": "数理・計算科学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "物質理工学院",
+                    "college_name": "物質理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "応用化学系",
+                        "department_name": "応用化学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "材料系",
+                        "department_name": "材料系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "理学院",
+                    "college_name": "理学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "化学系",
+                        "department_name": "化学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "地球惑星科学系",
+                        "department_name": "地球惑星科学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "数学系",
+                        "department_name": "数学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "物理学系",
+                        "department_name": "物理学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "環境・社会理工学院",
+                    "college_name": "環境・社会理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "土木・環境工学系",
+                        "department_name": "土木・環境工学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "建築学系",
+                        "department_name": "建築学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "社会・人間科学系",
+                        "department_name": "社会・人間科学系"
+                      },
+                      {
+                        "application_routes": [],
+                        "department_id": "融合理工学系",
+                        "department_name": "融合理工学系"
+                      }
+                    ]
+                  },
+                  {
+                    "college_id": "生命理工学院",
+                    "college_name": "生命理工学院",
+                    "departments": [
+                      {
+                        "application_routes": [],
+                        "department_id": "生命理工学系",
+                        "department_name": "生命理工学系"
+                      }
+                    ]
+                  }
+                ],
+                "document_id": "isct_2027_4_2026_9_master",
+                "intake_name": "2027年4月入学",
+                "month": 4,
+                "year": 2027
+              }
+            ]
+          }
+        ],
+        "school_id": "isct",
+        "school_name": "東京科学大学"
+      },
+      "legacy_edition_labels": {
+        "isct_2027_4_2026_9_master": "2027 April / 2026 September Master's Program Admission Guidelines"
+      },
+      "limitations_zh": [],
+      "organization_name": null,
+      "program_alias": null,
+      "program_display_name": null,
+      "program_name": null,
+      "reason_code": null,
+      "request_profile_target": null,
+      "revision": null,
+      "snapshot_id": null,
+      "target": null
+    },
+    {
+      "availability": "ready",
+      "capabilities": {
+        "applicant_check": false,
+        "evidence_browse": true,
+        "reference_report": true
+      },
+      "entry_id": "gsfs-complex-2027-a",
+      "href": null,
+      "institution_name": "东京大学",
+      "kind": "reviewed_material_slice",
+      "legacy_catalog": null,
+      "legacy_edition_labels": {},
+      "limitations_zh": [
+        "固定历史招生切片，不是当前开放申请窗口。",
+        "仅覆盖英语成绩单、检查表本身和在职计划书三个主题，不是完整材料清单或资格判断。",
+        "申请人信息为自报；中文说明是审核解释，日文引用来自官方原文。",
+        "单位同意书仅作入学手续阶段的关联提示，未核验其完整要求。",
+        "未验证原PDF精确高亮坐标；页码指物理页，印刷页码另列。"
+      ],
+      "organization_name": "新领域创成科学研究科",
+      "program_alias": "CBMS",
+      "program_display_name": "複雑理工学専攻",
+      "program_name": "複雑理工学专攻",
+      "reason_code": null,
+      "request_profile_target": {
+        "application_route": "general-ordinary",
+        "department_or_program": "utokyo-gsfs-complex",
+        "graduate_school_or_college": "utokyo-gsfs"
+      },
+      "revision": 1,
+      "snapshot_id": "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98",
+      "target": {
+        "admission_cycle": 2027,
+        "degree_level": "master",
+        "examination_schedule_id": "A",
+        "institution_id": "utokyo",
+        "intake": {
+          "month": 4,
+          "year": 2027
+        },
+        "organization_id": "utokyo-gsfs",
+        "program_id": "utokyo-gsfs-complex",
+        "selection_route_id": "general-ordinary",
+        "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+      }
+    }
+  ],
+  "schema_version": "1.0"
+}
