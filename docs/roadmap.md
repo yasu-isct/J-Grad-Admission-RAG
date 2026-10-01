@@ -7,18 +7,19 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 
 
-## Current M17 handoff: EXAM-01 #260 sole implementation after design merge
+## Current M17 handoff: three presentation follow-ups accepted; demonstration preparation next
 
-2026-10-01: #258 / #262 and #259 / #263 are accepted and merged. #259 QA counter R1 is resolved.
-The source/field/API contract for #260 is now frozen in [the formal Spec](onboarding/exam01-written-exam-spec.md)
-and [reviewed field map](onboarding/exam01-reviewed-field-map.json). This supersedes the earlier A/B candidate.
-After design PR #264 merges and #191 records Ready, M17 Main implements only #260 in one new implementation PR.
-Display the existing ISCT CS B examination slice in step two and an optional report theme; reuse the same KB,
-identity selection, evidence dialog and report projection. Fixed examination year2026 for both supported intakes.
-No A route or new school coverage. Old base API requests remain unchanged; the new page opts into exam data.
-Developer/design each start at0/1 real product sessions and0/4 base/comparison POSTs; paid/QA/download/build0.
-Keep8005/8004/8003 and other live previews unchanged. Preserve334/391,reference_only and rollback assets.
-QA233/236,GSFS ordinary-student expansion,M13/MinerU remain paused. After this slice, prepare the demonstration.
+2026-10-01: EXAM-01 #260 / PR #267 independently accepted at `9e43e6b3ce621357b23446ddc3115d71cf50bf69`, merged `c89363589e18ac9f3206af8e6b7d088de72b86b7`.
+[Acceptance, source validation, resolved report issues and final budgets](onboarding/exam01-design-acceptance.md).
+#258 graduation/submission reminders and #259 advanced-tools cleanup are already accepted. All three are in main.
+The original four-step page shows the fixed ISCT CS B examination slice and an optional report topic;
+exam-only export is independent of personal comparison, including failure/close/reopen cases.
+No new Ready implementation; M17 Main stops. Next design activity is school-demonstration preparation.
+Existing8005/8004/8003 and other previews were not switched; do not move their source worktrees.
+Final EXAM-01 development sessions1/1, POST4/4; design0/1,0/4. Paid/download/parser/build0.
+Preserve334/391, reference_only and rollback assets. QA233/236, GSFS ordinary-student expansion,
+M13 and MinerU remain paused; no automatic school expansion or architecture replacement. M17 stays open.
+This supersedes the earlier #260 Ready/contract-pending state; the remaining sections are historical context.
 
 ## Previous M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
 
