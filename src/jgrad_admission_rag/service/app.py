@@ -185,6 +185,7 @@ from .date_presentation import (
     load_reviewed_date_presentation,
     validate_highlights_against_official_text,
 )
+from .exam_presentation import load_exam_presentation, exam_response
 from .jobs import (
     BuildJobRecord,
     BuildJobRepository,
@@ -365,6 +366,27 @@ def create_app(
             except Exception:
                 state.source_document_initialization_failed = True
                 state.source_document = None
+        if selected_settings.exam_presentation_paths:
+            try:
+                if (
+                    len(selected_settings.exam_presentation_paths) != 1
+                    or selected_settings.corpus_root is None
+                    or selected_settings.manifest_path is None
+                ):
+                    raise ValueError("ambiguous examination configuration")
+                state.exam_presentations = (
+                    await to_thread.run_sync(
+                        partial(
+                            load_exam_presentation,
+                            selected_settings.exam_presentation_paths[0],
+                            selected_settings.corpus_root,
+                            selected_settings.manifest_path,
+                        )
+                    ),
+                )
+            except Exception:
+                state.exam_presentations = ()
+                state.exam_presentation_initialization_failed = True
         if selected_settings.query_intent_catalog_path is not None:
             try:
                 state.query_intent_catalog = await to_thread.run_sync(
@@ -394,6 +416,7 @@ def create_app(
             state.page_scope_manifests = ()
             state.query_intent_catalog = None
             state.date_presentations = ()
+            state.exam_presentations = ()
             state.source_document = None
             state.natural_answer_cache = None
 
@@ -591,7 +614,9 @@ def create_app(
         responses=REPORT_ERROR_RESPONSES,
         operation_id="postV1BaseRequirements",
     )
-    async def base_requirements(request: DemoTargetRequest) -> DemoBaseRequirementsResponse:
+    async def base_requirements(
+        request: DemoTargetRequest, include_examination_information: bool = False
+    ) -> DemoBaseRequirementsResponse:
         if not _report_service_ready(state):
             raise ApiProblem(
                 503,
@@ -599,7 +624,13 @@ def create_app(
                 "base requirements service is unavailable",
             )
         return await to_thread.run_sync(
-            partial(_build_demo_base_requirements_response, request, selected_settings, state)
+            partial(
+                _build_demo_base_requirements_response,
+                request,
+                selected_settings,
+                state,
+                include_examination_information,
+            )
         )
 
     @app.post(
@@ -1391,10 +1422,11 @@ def _build_demo_base_requirements_response(
     request: DemoTargetRequest,
     settings: ServiceSettings,
     state: ServiceState,
+    include_examination_information: bool = False,
 ) -> DemoBaseRequirementsResponse:
     plan, evidence, date_presentation = _load_demo_context(request, settings, state)
     try:
-        return build_demo_base_requirements(
+        response = build_demo_base_requirements(
             request,
             plan,
             evidence,
@@ -1403,6 +1435,22 @@ def _build_demo_base_requirements_response(
                 state.source_document.document_id if state.source_document is not None else None
             ),
         )
+        if include_examination_information:
+            presentation = (
+                state.exam_presentations[0] if len(state.exam_presentations) == 1 else None
+            )
+            response = response.model_copy(
+                update={
+                    "examination_information": exam_response(
+                        request,
+                        presentation,
+                        state.exam_presentation_initialization_failed,
+                        plan,
+                        state.source_document,
+                    )
+                }
+            )
+        return response
     except (KeyError, ValueError):
         raise ApiProblem(422, "invalid_request", "target selection is invalid") from None
 

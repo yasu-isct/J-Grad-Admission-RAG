@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import date, time
 from enum import Enum
-from typing import Literal
+from typing import Any, Literal
 from uuid import uuid4
 
 from pydantic import (
@@ -193,6 +193,14 @@ class DemoBaseRequirementsResponse(DemoModel):
     coverage_statement: str
     limitation_statement: str
     requirements: tuple[DemoRequirement, ...]
+    examination_information: dict[str, Any] | None = None
+
+    @model_serializer(mode="wrap")
+    def omit_unrequested_exam(self, handler):
+        result = handler(self)
+        if "examination_information" not in self.model_fields_set:
+            result.pop("examination_information", None)
+        return result
 
 
 class DemoJapaneseBackground(str, Enum):

@@ -1,0 +1,408 @@
+{
+  "artifact_kind": "reviewed_exam_presentation",
+  "schema_version": "1.0",
+  "presentation_id": "isct-cs-b-exams-2026-v1",
+  "note": "Installed read-only presentation of the design-reviewed #260 field map.",
+  "source_identity": {
+    "institution_id": "isct",
+    "document_id": "isct_2027_4_2026_9_master",
+    "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "source_kb_sha256": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+  },
+  "target_scope": {
+    "school_id": "isct",
+    "document_id": "isct_2027_4_2026_9_master",
+    "college_id": "情報理工学院",
+    "department_id": "情報工学系",
+    "degree_id": "master",
+    "application_route": "b_schedule",
+    "intakes": [
+      {
+        "year": 2026,
+        "month": 9
+      },
+      {
+        "year": 2027,
+        "month": 4
+      }
+    ]
+  },
+  "schedule": {
+    "route": "b_schedule",
+    "exam_year": 2026,
+    "timezone": "Asia/Tokyo",
+    "written_date": "2026-08-18",
+    "written_start_time": "09:30",
+    "written_end_time": "12:00",
+    "duration_minutes": 150,
+    "subject_groups": [
+      {
+        "group": "A",
+        "subjects_zh": [
+          "微积分",
+          "线性代数",
+          "概率统计"
+        ]
+      },
+      {
+        "group": "B",
+        "subjects_zh": [
+          "数理逻辑",
+          "自动机与形式语言"
+        ]
+      },
+      {
+        "group": "C",
+        "subjects_zh": [
+          "数据结构与算法",
+          "编程"
+        ]
+      }
+    ],
+    "questions_per_group": 1,
+    "total_questions": 3,
+    "answer_language": "ja",
+    "specialist_points": 900,
+    "english_points": 100,
+    "english_assessment": "external_score",
+    "oral_date": "2026-08-24",
+    "oral_selection_note_zh": "原文说明专业笔试与英语成绩上位者为口述对象，并非所有考生都参加。",
+    "oral_announcement_date": "2026-08-20",
+    "oral_announcement_time": "17:00",
+    "oral_announcement_time_qualifier": "around_from"
+  },
+  "year_basis": {
+    "kind": "reviewed_cross_page_context",
+    "exam_year": 2026,
+    "source_ids": [
+      "pdf:cover:1",
+      "fact:00002",
+      "fact:00004",
+      "fact:00288"
+    ],
+    "physical_pages": [
+      1,
+      2,
+      52
+    ],
+    "review_note_zh": "固定同册封面2026刊行/出愿，流程页连接随后B考试与9月入学，系内页给具体月日。p.2/p.52不直接印年份；不按入学年或星期独立推年。"
+  },
+  "timezone_basis": {
+    "kind": "reviewed_display_convention",
+    "value": "Asia/Tokyo",
+    "note_zh": "本固定日本校内考试按日本当地时间展示，不声称原页印有IANA时区代码。"
+  },
+  "source_records": [
+    {
+      "source_id": "fact:00002",
+      "kind": "kb_fact",
+      "source_pages": [
+        2
+      ],
+      "fact_type": "exams",
+      "scope_type": "unknown",
+      "scope_targets": [],
+      "parent_college": null,
+      "fact_text_sha256": "b2a796d36fc3f06b3cfbde66dca622e6d69b3eef57ee1dffc0ce3b2d9753bc55",
+      "role": "year_context_only"
+    },
+    {
+      "source_id": "fact:00004",
+      "kind": "kb_fact",
+      "source_pages": [
+        2
+      ],
+      "fact_type": "exams",
+      "scope_type": "unknown",
+      "scope_targets": [],
+      "parent_college": null,
+      "fact_text_sha256": "ececdb6f87f5f2144740fc247609690209657891db656337b4bf5cdf14d824a7",
+      "role": "year_context_only"
+    },
+    {
+      "source_id": "fact:00287",
+      "kind": "kb_fact",
+      "source_pages": [
+        52
+      ],
+      "fact_type": "english",
+      "scope_type": "department",
+      "scope_targets": [
+        "情報工学系"
+      ],
+      "parent_college": "情報理工学院",
+      "fact_text_sha256": "73354a5736459c3cd20748cc423aa19c197a59f4ebe0743bbd51c36023787abd",
+      "role": "department_basis"
+    },
+    {
+      "source_id": "fact:00288",
+      "kind": "kb_fact",
+      "source_pages": [
+        52
+      ],
+      "fact_type": "english",
+      "scope_type": "department",
+      "scope_targets": [
+        "情報工学系"
+      ],
+      "parent_college": "情報理工学院",
+      "fact_text_sha256": "6a4f70f005d53676176528a98a9050a2cd0285bb35386e745dbf5330f3fc92b6",
+      "role": "department_basis"
+    },
+    {
+      "source_id": "fact:00289",
+      "kind": "kb_fact",
+      "source_pages": [
+        52
+      ],
+      "fact_type": "general",
+      "scope_type": "department",
+      "scope_targets": [
+        "情報工学系"
+      ],
+      "parent_college": "情報理工学院",
+      "fact_text_sha256": "7880f45dae3f44ebc0951bfca69a761e8b2be1c8bb673f07db92d64a31dafa2b",
+      "role": "department_basis"
+    },
+    {
+      "source_id": "pdf:cover:1",
+      "kind": "pdf_page",
+      "physical_page": 1,
+      "fact_id": null,
+      "role": "year_context_only",
+      "reviewed_context_zh": "封面载2026年4月刊行及2026年6月4日至10日出愿。",
+      "verification": "Previously independently visually reviewed against the fixed full PDF hash; no invented KB Fact."
+    }
+  ],
+  "field_bindings": [
+    {
+      "fields": [
+        "written_date",
+        "written_start_time",
+        "written_end_time"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答試験／試験日",
+      "anchors": [
+        {
+          "start": 261,
+          "end": 272,
+          "exact_text": "8 月 18 日（火）"
+        },
+        {
+          "start": 329,
+          "end": 339,
+          "exact_text": "9:30～12:00"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "duration_minutes"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答試験／試験内容",
+      "anchors": [
+        {
+          "start": 343,
+          "end": 350,
+          "exact_text": "（150 分）"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "subject_groups.A"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答専門試験科目A",
+      "anchors": [
+        {
+          "start": 356,
+          "end": 374,
+          "exact_text": "A) 微積分学、線形代数学、確率統計"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "subject_groups.B"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答専門試験科目B",
+      "anchors": [
+        {
+          "start": 375,
+          "end": 395,
+          "exact_text": "B) 数理論理学、オートマトンと形式言語"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "subject_groups.C"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答専門試験科目C",
+      "anchors": [
+        {
+          "start": 396,
+          "end": 419,
+          "exact_text": "C) データ構造とアルゴリズム、プログラミング"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "questions_per_group",
+        "total_questions"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／校方出題，不是考生选答规则",
+      "anchors": [
+        {
+          "start": 278,
+          "end": 305,
+          "exact_text": "A 群、B 群、C 群から各 1 問、合計 3 問出題"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "answer_language"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答試験／備考；跨抽取行，按原表确认",
+      "anchors": [
+        {
+          "start": 316,
+          "end": 323,
+          "exact_text": "日本語で解答す"
+        },
+        {
+          "start": 351,
+          "end": 355,
+          "exact_text": "ること。"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "specialist_points",
+        "english_points"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／筆答試験／配点",
+      "anchors": [
+        {
+          "start": 423,
+          "end": 444,
+          "exact_text": "筆答専門試験：900 点、英語：100 点"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "english_assessment"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／試験内容／英語",
+      "anchors": [
+        {
+          "start": 204,
+          "end": 226,
+          "exact_text": "筆答試験は実施せずに、本学の指定する英語外部"
+        },
+        {
+          "start": 227,
+          "end": 244,
+          "exact_text": "試験のスコアに基づいて評価します。"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "oral_date"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／口頭試問／試験日",
+      "anchors": [
+        {
+          "start": 491,
+          "end": 502,
+          "exact_text": "8 月 24 日（月）"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "oral_selection_note_zh"
+      ],
+      "source_id": "fact:00288",
+      "physical_page": 52,
+      "visual_cell": "B日程／口頭試問／備考",
+      "anchors": [
+        {
+          "start": 471,
+          "end": 485,
+          "exact_text": "筆答専門試験成績及び英語成績"
+        },
+        {
+          "start": 538,
+          "end": 545,
+          "exact_text": "上位者を口頭試"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "oral_announcement_date",
+        "oral_announcement_time",
+        "oral_announcement_time_qualifier"
+      ],
+      "source_id": "fact:00289",
+      "physical_page": 52,
+      "visual_cell": "口頭試問受験資格者の発表",
+      "anchors": [
+        {
+          "start": 15,
+          "end": 32,
+          "exact_text": "8 月 20 日（木）１７時頃より"
+        }
+      ]
+    },
+    {
+      "fields": [
+        "english_submission_link"
+      ],
+      "source_id": "fact:00287",
+      "physical_page": 52,
+      "visual_cell": "英語外部試験のスコアシートの取扱い",
+      "anchors": [
+        {
+          "start": 20,
+          "end": 42,
+          "exact_text": "スコアシートを必ず出願時に提出してください。"
+        }
+      ]
+    }
+  ],
+  "source_review": "https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/264#issuecomment-5920736505",
+  "non_goals": [
+    "A route expansion",
+    "fact:00292 OCR table repair",
+    "score conversion",
+    "new past-paper link",
+    "GSFS exam coverage"
+  ]
+}

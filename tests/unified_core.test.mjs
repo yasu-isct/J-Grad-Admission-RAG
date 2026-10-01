@@ -4,7 +4,8 @@ import test from "node:test";
 import {
   readyEntries, scopesFor, scopeKey, comparisonRequest, hasSuppliedProfile,
   sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport,
-  readerReportOptions, readerReport, materialDisplay, materialGuide
+  readerReportOptions, readerReport, materialDisplay, materialGuide,
+  validateExamInformation, examReportRows
 } from "../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const legacy = {
@@ -342,4 +343,43 @@ test("all five guides bind to the saved real p.10 response despite OCR line brea
   assert.ok(topics.every((topic) => topic.guide?.purpose && topic.guide.steps.length));
   assert.equal(topics.find((topic) => topic.id === "material:graduation_or_expected_graduation_certificate")
     .guide.conditions.some((row) => row.text.includes("9月27日")), false);
+});
+
+test("EXAM-01 validates source and target before offering an opt-in report topic", () => {
+  const saved = (name) => JSON.parse(readFileSync(new URL(`../docs/onboarding/prep01-evidence/${name}`, import.meta.url)));
+  const catalog = saved("reference-targets.json");
+  const item = readyEntries(catalog).find((entry) => entry.entry_id === "legacy-isct");
+  const scope = scopesFor(item).find((entry) => entry.request.document_id === "isct_2027_4_2026_9_master"
+    && entry.request.department_id === "情報工学系" && entry.request.intake.month === 4
+    && entry.request.application_route === "b_schedule");
+  const config = JSON.parse(readFileSync(new URL("../src/jgrad_admission_rag/demo_config/reviewed_exam_presentation.json", import.meta.url)));
+  const evidence = ["fact:00288", "fact:00289", "fact:00287"].map((fact_id) => ({
+    document_id: scope.request.document_id, fact_id, official_title: "2027 April / 2026 September Master's Program Admission Guidelines",
+    school_name: scope.school, intake_name: scope.intake, pages: [52], official_text: "已核验原文",
+    source_url: "https://example.edu/guidelines.pdf", scope_type: "department",
+    scope_targets: ["情報工学系"], parent_college: "情報理工学院"
+  }));
+  const info = {schema_version: "1.0", status: "available", target_identity: scope.request,
+    presentation_id: config.presentation_id,
+    presentation_sha256: "368ed4de43dd2dde8eda986d2ad2d6922e8cfb7c3640583381b1b559a4170aa7",
+    source_identity: config.source_identity, schedule: config.schedule,
+    year_basis: config.year_basis, evidence};
+  const exam = validateExamInformation(scope, info);
+  assert.equal(exam?.status, "available");
+  assert.equal(examReportRows(exam).length, 7);
+  assert.equal(validateExamInformation(scope, {...info, evidence: evidence.slice(0, 2)}), null);
+  assert.equal(validateExamInformation(scope, {...info, target_identity: {...scope.request,
+    department_id: "別系"}}), null);
+  assert.equal(validateExamInformation(scope, {...info, source_identity: {...config.source_identity,
+    source_kb_sha256: "0".repeat(64)}}), null);
+  const mapped = mapLegacyBase(scope, saved("isct-base.json"));
+  const report = legacyReport(mapped, null, [], exam);
+  assert.equal(readerReportOptions(report).exams, true);
+  const onlyExam = readerReport(report, {dates: false, materials: false, other: false, exams: true});
+  assert.match(onlyExam.text, /2026年8月18日/);
+  assert.doesNotMatch(onlyExam.text, /待补材料/);
+  const onlyDates = readerReport(report, {dates: true, materials: false, other: false, exams: false});
+  assert.doesNotMatch(onlyDates.text, /专业笔试/);
+  const old = legacyReport(mapped);
+  assert.equal(Object.hasOwn(readerReportOptions(old), "exams"), false);
 });
