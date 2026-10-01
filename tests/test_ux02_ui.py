@@ -26,7 +26,8 @@ def test_direct_evidence_is_highlighted_without_html_injection() -> None:
     assert 'document.createElement("mark")' in javascript
     assert 'label.textContent = "直接依据"' in javascript
     assert 'requirement.title || requirement.label || "官方依据"' in javascript
-    assert "for (const evidence of event.evidence)" in javascript
+    assert "appendEvidenceChoices(card, event)" in javascript
+    assert "evidenceRows.forEach((evidence, index) =>" in javascript
     assert "for (const highlight of highlights)" in javascript
     assert "innerHTML" not in javascript
 
