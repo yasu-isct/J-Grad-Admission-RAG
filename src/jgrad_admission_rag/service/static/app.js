@@ -2224,6 +2224,10 @@ function renderReferenceReport(report) {
   options.append(legend);
   const content = document.createElement("article");
   content.className = "reader-report-paper";
+  const compareButton = document.createElement("button");
+  compareButton.type = "button";
+  compareButton.className = "secondary";
+  compareButton.textContent = "核对个人情况并生成所选报告";
   const addSection = (title, rows, empty) => {
     const section = document.createElement("section");
     section.className = "reader-report-section";
@@ -2254,6 +2258,19 @@ function renderReferenceReport(report) {
     content.replaceChildren();
     if (!Object.values(selected).some(Boolean)) {
       content.append(heading(3, "请至少选择一类报告内容。"));
+      compareButton.hidden = true;
+      return;
+    }
+    const needsComparison = report.kind === "legacy_applicant"
+      && report.profileDisclosure.length > 0 && !report.comparison
+      && (selected.dates || selected.materials || selected.other);
+    compareButton.hidden = !needsComparison;
+    if (needsComparison) {
+      const note = document.createElement("p");
+      note.className = "reader-report-note";
+      note.textContent = "已填写个人情况。所选日期、材料或其他要求需先核对个人情况。"
+        + (available.exams ? "仅考试安排可直接查看和复制。" : "核对失败时可在此重试。");
+      content.append(note);
       return;
     }
     const view = referenceCore.readerReport(report, selected);
@@ -2302,6 +2319,47 @@ function renderReferenceReport(report) {
     wrapper.append(checkbox, document.createTextNode(label));
     options.append(wrapper);
   }
+  compareButton.addEventListener("click", async () => {
+    if (referenceReportController || !applicationDatesReconcile()) {
+      if (!referenceReportController) byId("reference-report-status").textContent = "请先核对毕业与送达日期，再进行个人对照。";
+      return;
+    }
+    const requestId = referenceReportRequestId;
+    const scopeSnapshot = referenceCore.scopeKey(report.scope);
+    const profileSnapshot = JSON.stringify(demoComparisonRequest());
+    const controller = new AbortController();
+    referenceReportController = controller;
+    compareButton.disabled = true;
+    byId("reference-report-status").textContent = "正在核对个人情况，请稍候。";
+    const current = () => requestId === referenceReportRequestId && referenceDialog.open
+      && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
+      && JSON.stringify(demoComparisonRequest()) === profileSnapshot
+      && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
+    try {
+      const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
+        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+        body: profileSnapshot, cache: "no-store", credentials: "same-origin", signal: controller.signal
+      });
+      if (!response.ok) throw new Error();
+      const comparison = await response.json();
+      if (!current()) return;
+      report = referenceCore.legacyReport(loadedReference, comparison,
+        legacyProfileDisclosure(), loadedReference.exam || null);
+      referenceReport = report;
+      draw();
+      byId("reference-report-status").textContent = "个人情况已核对，可查看和复制所选报告。";
+    } catch (error) {
+      if (error?.name !== "AbortError" && current())
+        byId("reference-report-status").textContent = "个人对照失败；所选个人报告尚未生成。可重试"
+          + (available.exams ? "，或只选考试安排直接查看和复制。" : "。");
+    } finally {
+      if (requestId === referenceReportRequestId) {
+        referenceReportController = null;
+        compareButton.disabled = false;
+      }
+    }
+  });
+  options.append(compareButton);
   referenceBody.append(options, content);
   referenceDialog.showModal();
   draw();
@@ -2327,10 +2385,6 @@ async function generateReferenceReport(event) {
     setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
     return;
   }
-  if (currentReferenceScope()?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
-    byId("demo-arrival-date").focus();
-    return;
-  }
   const trigger = event.currentTarget;
   const scope = currentReferenceScope();
   if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
@@ -2338,55 +2392,43 @@ async function generateReferenceReport(event) {
     return;
   }
   referenceTrigger = trigger;
-  if (referenceReport?.kind === "reviewed_material_slice" && scope.kind === "reviewed_material_slice") {
+  if (referenceReport && referenceReport.kind === scope.kind
+    && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)) {
     renderReferenceReport(referenceReport);
     setReferenceActionState("success", "报告已打开，可选择内容并复制。");
     return;
   }
   clearReferenceReport("正在整理当前已审核结果和官方依据。");
+  if (scope.kind === "legacy_applicant") {
+    const disclosure = legacyProfileDisclosure();
+    try {
+      referenceReport = referenceCore.legacyReport(loadedReference,
+        disclosure.length ? comparisonResponse : null, disclosure, loadedReference.exam || null);
+      renderReferenceReport(referenceReport);
+      setReferenceActionState("success", "报告已打开，可选择内容；个人相关主题按需核对后复制。");
+    } catch {
+      setReferenceActionState("error", "报告生成失败或依据不完整，请重新加载当前目标。", true);
+    }
+    return;
+  }
   const requestId = referenceReportRequestId;
-  const profileSnapshot = scope.kind === "legacy_applicant"
-    ? JSON.stringify(demoComparisonRequest())
-    : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
+  const profileSnapshot = JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
   const scopeSnapshot = referenceCore.scopeKey(scope);
   referenceReportController = new AbortController();
   setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
   const current = () => requestId === referenceReportRequestId
     && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
-    && (scope.kind === "legacy_applicant" ? JSON.stringify(demoComparisonRequest())
-      : JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value])) === profileSnapshot
+    && JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]) === profileSnapshot
     && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
   try {
-    let report;
-    if (scope.kind === "legacy_applicant") {
-      const disclosure = legacyProfileDisclosure();
-      let comparison = comparisonResponse;
-      if (disclosure.length && !comparison) {
-        const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
-          method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
-          body: JSON.stringify(demoComparisonRequest()), cache: "no-store", credentials: "same-origin",
-          signal: referenceReportController.signal
-        });
-        if (!response.ok) throw new Error();
-        comparison = await response.json();
-        if (comparison.english_preparation_result)
-          referenceCore.validateEnglishPreparationResult(scope, comparison);
-        if (comparison.application_preparation_result)
-          referenceCore.validateApplicationPreparationResult(scope, comparison);
-      }
-      if (!current()) return;
-      report = referenceCore.legacyReport(loadedReference, disclosure.length ? comparison : null,
-        disclosure.length ? disclosure : [], loadedReference.exam || null);
-    } else {
-      const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
-      const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
-        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
-        body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
-        cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
-      });
-      if (!response.ok) throw new Error();
-      report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
-    }
+    const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
+    const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+      method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+      cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+    });
+    if (!response.ok) throw new Error();
+    const report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
     if (!current()) return;
     referenceReport = report;
     renderReferenceReport(report);

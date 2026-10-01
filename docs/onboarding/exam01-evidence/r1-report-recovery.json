@@ -1,0 +1,16 @@
+[
+  {
+    "viewport": "desktop",
+    "comparison_posts": 2,
+    "exam_only_posts": 0,
+    "exam_copy_chars": 413,
+    "failure_kept_exam_copy": true
+  },
+  {
+    "viewport": "mobile",
+    "comparison_posts": 1,
+    "exam_only_posts": 0,
+    "exam_copy_chars": 413,
+    "failure_kept_exam_copy": true
+  }
+]
