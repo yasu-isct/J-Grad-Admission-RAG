@@ -192,6 +192,7 @@ function updateFlowPresentation() {
   }
   const showTarget = activeStep >= 2 && baseRequirementsLoaded && loadedReference;
   currentTargetBar.hidden = !showTarget;
+  currentTargetBar.dataset.compact = activeStep === 4 ? "true" : "false";
   if (showTarget) currentTargetName.textContent = [loadedReference.scope.school,
     loadedReference.scope.program].filter(Boolean).join(" · ");
 }
@@ -538,7 +539,7 @@ function updateRequirementsStepSummary(payload) {
     return `${label} ${count} 项`;
   });
   const hasDates = payload.requirements.some((item) => item.category === "dates");
-  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? "；请优先核对关键日期与截止说明。" : ""}`;
+  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? " · 日期见第2步" : ""}`;
 }
 
 function updateApplicantStepSummary() {
@@ -957,22 +958,32 @@ function renderDateEvent(event) {
     note.textContent = event.uncertainty_note;
     card.append(note);
   }
-  if (Array.isArray(event.evidence) && event.evidence.length) {
-    const actions = document.createElement("div");
-    actions.className = "actions";
-    for (const evidence of event.evidence) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "secondary";
-      button.textContent = event.evidence.length === 1
-        ? "核对直接依据"
-        : `核对直接依据 · 第 ${evidence.pages.join("、")} 页`;
-      button.addEventListener("click", () => openDemoEvidence(event, evidence, button));
-      actions.append(button);
-    }
-    card.append(actions);
-  }
+  appendEvidenceChoices(card, event);
   return card;
+}
+
+function appendEvidenceChoices(card, requirement) {
+  const evidenceRows = Array.isArray(requirement.evidence) ? requirement.evidence : [];
+  if (!evidenceRows.length) return;
+  const choices = document.createElement("details");
+  choices.className = "evidence-choice-list";
+  const summary = document.createElement("summary");
+  summary.textContent = `查看依据（${evidenceRows.length}条）`;
+  choices.append(summary);
+  const actions = document.createElement("div");
+  actions.className = "actions requirement-evidence-actions";
+  evidenceRows.forEach((evidence, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    const quote = evidence.highlights?.[0]?.exact_text || evidence.official_text || "查看原文";
+    const excerpt = String(quote).replace(/\s+/g, " ").slice(0, 42);
+    button.textContent = `第${index + 1}条 · ${evidence.official_title || "官方文件"} · PDF第${(evidence.pages || []).join("、")}页 · ${excerpt}`;
+    button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
+    actions.append(button);
+  });
+  choices.append(actions);
+  card.append(choices);
 }
 
 function appendRequirementEvidence(card, requirement) {
@@ -982,31 +993,26 @@ function appendRequirementEvidence(card, requirement) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary";
-    const count = new Set(requirement.graphTopic.sources.map((source) => source.source_id || source.source_url)).size;
-    button.textContent = `查看依据关系（${count}份文件）`;
+    button.textContent = `查看依据（${requirement.graphTopic.sources.length}条）`;
     button.addEventListener("click", () => openEvidenceGraph(requirement, button));
     actions.append(button);
     card.append(actions);
     return;
   }
-  if (!Array.isArray(requirement.evidence) || !requirement.evidence.length) return;
-  const actions = document.createElement("div");
-  actions.className = "actions requirement-evidence-actions";
-  for (const evidence of requirement.evidence) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "secondary";
-    button.textContent = requirement.evidence.length === 1
-      ? "查看官方依据"
-      : `查看官方依据 · 第 ${evidence.pages.join("、")} 页`;
-    button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
-    actions.append(button);
-  }
-  card.append(actions);
+  appendEvidenceChoices(card, requirement);
 }
 
-function appendPreparationGuide(card, guide) {
+function appendPreparationGuide(card, guide, officialName = null) {
   if (!guide) return;
+  const collapse = card.classList.contains("requirement-card");
+  const container = collapse ? document.createElement("details") : card;
+  if (collapse) {
+    container.className = "preparation-guide-details";
+    const summary = document.createElement("summary");
+    summary.textContent = "如何准备";
+    container.append(summary);
+  }
+  if (officialName) container.append(officialName);
   const steps = document.createElement("ol");
   steps.className = "preparation-steps";
   for (const line of guide.steps) {
@@ -1014,12 +1020,12 @@ function appendPreparationGuide(card, guide) {
     item.textContent = line;
     steps.append(item);
   }
-  card.append(steps);
+  container.append(steps);
   for (const line of guide.warnings) {
     const note = document.createElement("p");
     note.className = "preparation-warning";
     note.textContent = `注意：${line}`;
-    card.append(note);
+    container.append(note);
   }
   if (guide.conditions.length) {
     const details = document.createElement("details");
@@ -1032,8 +1038,9 @@ function appendPreparationGuide(card, guide) {
       note.textContent = `${condition.title}：${condition.text}`;
       details.append(note);
     }
-    card.append(details);
+    container.append(details);
   }
+  if (collapse) card.append(container);
 }
 
 function renderRequirementCard(requirement, options = {}) {
@@ -1047,11 +1054,11 @@ function renderRequirementCard(requirement, options = {}) {
     id: requirement.material_code || requirement.requirement_id, evidence: requirement.evidence
   }) : null;
   card.append(heading(4, material ? material.name : requirement.title));
-  if (material?.official) {
-    const official = document.createElement("p");
+  const official = material?.official ? document.createElement("p") : null;
+  if (official) {
     official.className = "material-official-name";
     official.textContent = material.official;
-    card.append(official);
+    if (!guide) card.append(official);
   }
   const status = document.createElement("span");
   status.className = "requirement-status";
@@ -1075,7 +1082,7 @@ function renderRequirementCard(requirement, options = {}) {
     conditional.textContent = "适用条件仍需确认；以下是需要提交时的准备方法。";
     card.append(conditional);
   }
-  if (guide) appendPreparationGuide(card, guide);
+  if (guide) appendPreparationGuide(card, guide, official);
   if (requirement.requirement_id === "language:preparation-guide") {
     description.remove();
     const list = document.createElement("ul");
@@ -1889,15 +1896,13 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
       applyReadinessFilter();
       const target = byId(cardId);
       if (!target) return;
+      for (let parent = target.parentElement; parent; parent = parent.parentElement)
+        if (parent.tagName === "DETAILS") parent.open = true;
       window.history.replaceState(null, "", `#${cardId}`);
       target.scrollIntoView({ block: "start", behavior: "auto" });
       target.focus({ preventScroll: true });
     });
-    const action = document.createElement("span");
-    if (check) action.textContent = `${check.explanation} 下一步：${check.next_action}`;
-    else if (material) action.textContent = `${materialOfficialState(item)}；${materialPreparationState(item)}。${materialNextAction(item)}`;
-    else action.textContent = `${item.action_group === "action_required" ? "需要补充" : "待确认／需审核"} · ${item.next_action}`;
-    row.append(link, action);
+    row.append(link);
     list.append(row);
   }
   container.append(list);
@@ -1911,19 +1916,27 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
 
 function renderEnglishPreparation(result, entries) {
   const section = document.createElement("section");
-  section.className = "requirement-group english-preparation-group";
-  section.append(heading(3, "英语成绩准备"));
+  section.className = "requirement-group english-preparation-group comparison-topic-group";
+  section.append(heading(3, "英语证明"));
+  const pending = entries.filter(({actionGroup}) => actionGroup !== "recorded");
+  const reference = entries.filter(({actionGroup}) => actionGroup === "recorded");
+  const overview = document.createElement("p");
+  overview.className = "english-topic-overview";
+  overview.textContent = pending.length
+    ? `${pending.length} 个核对点需要处理或确认；下方逐项列出。`
+    : "当前没有明确待处理的英语核对点；仍需核对官方证明要求。";
+  section.append(overview);
   const scope = document.createElement("p");
   scope.className = "field-detail";
   scope.textContent = result.scope_statement;
   section.append(scope);
   const list = document.createElement("div");
-  list.className = "requirement-list";
+  list.className = "english-check-list";
   const statusLabels = {reported_match: "按填写已具备", action_needed: "需要处理",
     needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
-  for (const { check, cardId, actionGroup } of entries) {
+  const renderRow = ({ check, cardId, actionGroup }) => {
     const card = document.createElement("article");
-    card.className = "requirement-card comparison-card";
+    card.className = "english-check-row comparison-card";
     card.id = cardId;
     card.tabIndex = -1;
     card.dataset.actionGroup = actionGroup;
@@ -1940,16 +1953,29 @@ function renderEnglishPreparation(result, entries) {
     action.textContent = `下一步：${check.next_action}`;
     card.append(status, explanation, action);
     appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
-    list.append(card);
-  }
+    return card;
+  };
+  for (const entry of pending) list.append(renderRow(entry));
   section.append(list);
+  if (reference.length) {
+    const details = document.createElement("details");
+    details.className = "english-reference-details";
+    const summary = document.createElement("summary");
+    summary.textContent = `查看已记录／不适用等参考核对点（${reference.length}）`;
+    details.append(summary);
+    const rows = document.createElement("div");
+    rows.className = "english-check-list";
+    for (const entry of reference) rows.append(renderRow(entry));
+    details.append(rows);
+    section.append(details);
+  }
   return section;
 }
 
 function renderApplicationPreparation(result, entries) {
   const section = document.createElement("section");
-  section.className = "requirement-group application-preparation-group";
-  section.append(heading(3, "毕业与提交提醒"));
+  section.className = "requirement-group application-preparation-group comparison-topic-group";
+  section.append(heading(3, "资格与手续 · 毕业与提交"));
   const scope = document.createElement("p");
   scope.className = "field-detail";
   scope.textContent = result.scope_statement;
@@ -2019,20 +2045,21 @@ function renderComparison(payload, scope) {
   renderPriorityActions(visibleEntries, scope, englishEntries, applicationEntries);
   const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
   const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
+  const educationEntries = visibleEntries.filter(({ item }) => item.category === "education");
+  const otherEntries = visibleEntries.filter(({ item }) => !["materials", "education"].includes(item.category));
   const sections = [
-    ["materials", `材料准备（${materialEntries.length} 项）`, materialEntries],
-    ...groups.map(([actionGroup, label]) => [actionGroup, label,
-      visibleEntries.filter(({ item }) => item.action_group === actionGroup
-        && item.category !== "materials")])
+    ["materials", `出愿材料准备（${materialEntries.length} 项）`, materialEntries],
+    ["education", "资格与手续 · 学历", educationEntries],
+    ["other", "其他已审核要求", otherEntries]
   ];
-  if (detailed)
-    comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
-  if (application)
-    comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
+  if (!materialEntries.length) {
+    if (detailed) comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
+    if (application) comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
+  }
   for (const [actionGroup, label, entries] of sections) {
     if (!entries.length) continue;
     const section = document.createElement("section");
-    section.className = "requirement-group comparison-group";
+    section.className = "requirement-group comparison-group comparison-topic-group";
     section.dataset.actionGroup = actionGroup;
     section.append(heading(3, label));
     const list = document.createElement("div");
@@ -2064,14 +2091,15 @@ function renderComparison(payload, scope) {
         const applicability = document.createElement("p");
         applicability.className = "material-applicability";
         applicability.textContent = materialOfficialState(item);
-        card.append(officialName, what, applicability);
+        card.append(what, applicability);
         if (guide && item.official_status !== "required") {
           const conditional = document.createElement("p");
           conditional.className = "preparation-warning";
           conditional.textContent = "当前路径是否须交这项仍待确认；以下是需要提交时的准备方法。";
           card.append(conditional);
         }
-        appendPreparationGuide(card, guide);
+        if (guide) appendPreparationGuide(card, guide, officialName);
+        else card.append(officialName);
       }
       const statusLabel = document.createElement("p");
       statusLabel.className = "comparison-state-label";
@@ -2117,19 +2145,7 @@ function renderComparison(payload, scope) {
         label.append(checkbox, labelText);
         card.append(label);
       }
-      if (item.evidence.length) {
-        const actions = document.createElement("div");
-        actions.className = "actions";
-        for (const evidence of item.evidence) {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "secondary";
-          button.textContent = "查看官方依据";
-          button.addEventListener("click", () => openDemoEvidence(item, evidence, button));
-          actions.append(button);
-        }
-        card.append(actions);
-      }
+      appendRequirementEvidence(card, item);
       if (item.limitation && !material && item.comparison_status !== "recorded") {
         const limit = document.createElement("details");
         limit.className = "comparison-limit";
@@ -2144,6 +2160,10 @@ function renderComparison(payload, scope) {
     }
     section.append(list);
     comparisonOutput.append(section);
+    if (actionGroup === "materials") {
+      if (detailed) comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
+      if (application) comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
+    }
   }
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
@@ -2471,6 +2491,8 @@ async function copyReferenceReport() {
 
 function applyReadinessFilter() {
   const selected = readinessFilters.querySelector('input[name="readiness-filter"]:checked').value;
+  const englishReference = comparisonOutput.querySelector(".english-reference-details");
+  if (englishReference && selected === "recorded") englishReference.open = true;
   let visible = 0;
   for (const card of comparisonOutput.querySelectorAll(".comparison-card")) {
     card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;

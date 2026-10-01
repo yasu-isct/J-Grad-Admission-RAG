@@ -1,0 +1,52 @@
+{
+  "phase": "before",
+  "baseline": "57463a0282fdeb992b1d1f3daec203b76c7ffc93",
+  "source_data": [
+    "docs/onboarding/exam01-evidence/cs-april-response.json",
+    "docs/onboarding/prep01-evidence/isct-comparison.json",
+    "docs/onboarding/prep01-evidence/reference-targets.json",
+    "outputs/ui02-real/final-head-cd09bd4/gsfs-evidence.json"
+  ],
+  "synthetic_variant": "Saved PREP-01 comparison; QR check alone set to action_needed for an explicit user 'no'.",
+  "product_service_starts": 0,
+  "product_posts": 0,
+  "paid_calls": 0,
+  "results": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "screenshot_bytes": 550513,
+      "horizontal_overflow": false,
+      "gsfs_horizontal_overflow": false,
+      "priority_sha256": "161692a2ea57fd65e407697a9cdce8451bbe1d1f9ff54b90ba64e5d04f135ec2",
+      "readiness_sha256": "4b55cdc3fd1d1fde74028b1c9622a371e3a5e15c70b1e18e5d078c95436f00ef",
+      "calls": {
+        "base": 1,
+        "comparison": 1,
+        "gsfs_evidence": 1,
+        "gsfs_report": 1
+      },
+      "relation_window_reopened_original": true
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "screenshot_bytes": 519006,
+      "horizontal_overflow": false,
+      "gsfs_horizontal_overflow": false,
+      "priority_sha256": "161692a2ea57fd65e407697a9cdce8451bbe1d1f9ff54b90ba64e5d04f135ec2",
+      "readiness_sha256": "4b55cdc3fd1d1fde74028b1c9622a371e3a5e15c70b1e18e5d078c95436f00ef",
+      "calls": {
+        "base": 1,
+        "comparison": 1,
+        "gsfs_evidence": 1,
+        "gsfs_report": 1
+      },
+      "relation_window_reopened_original": true
+    }
+  ]
+}

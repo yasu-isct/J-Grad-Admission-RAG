@@ -1464,3 +1464,137 @@ button.quiet:hover:not(:disabled) { color: #ffffff; background: var(--color-prim
   .grounded-source-actions .source-link { overflow-wrap: anywhere; text-align: center; }
   .requirement-evidence-actions button { flex: 1 1 125px; min-width: 125px; white-space: normal; }
 }
+
+/* UX-03: completed steps keep their identity and edit action in a short row. */
+.application-flow > .flow-step[data-step-state="complete"] {
+  min-width: 0;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border-color: #d8e4df;
+  background: #f9fcfa;
+}
+.application-flow > .flow-step[data-step-state="complete"] > .flow-step-header { display: none; }
+.application-flow > .flow-step[data-step-state="complete"] > .completed-summary {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  gap: 12px;
+}
+.application-flow > .flow-step[data-step-state="complete"] > .completed-summary > div { min-width: 0; }
+.application-flow > .flow-step[data-step-state="complete"] .summary-label {
+  margin: 0 0 2px;
+  font-size: 12px;
+}
+.application-flow > .flow-step[data-step-state="complete"] .completed-summary p:last-child {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.application-flow > .flow-step[data-step-state="complete"] .edit-step {
+  min-width: 82px;
+  min-height: 36px;
+  padding: 6px 10px;
+}
+.current-target-bar[data-compact="true"] { position: relative; box-shadow: none; }
+
+/* One visible English topic: action rows stay outside the optional reference list. */
+.comparison-topic-group,
+.english-preparation-group {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+.comparison-topic-group > h3,
+.english-preparation-group > h3 {
+  margin: 0 0 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-primary-strong);
+  font-size: 19px;
+}
+.comparison-topic-group .requirement-list { min-width: 0; }
+.english-preparation-group { border-color: #b8d7ce; background: #f9fcfa; }
+.english-preparation-group .requirement-list { grid-template-columns: minmax(0, 1fr); }
+.english-topic-overview { margin: 0 0 6px; font-weight: 700; line-height: 1.5; }
+.english-check-list { display: grid; gap: 10px; min-width: 0; }
+.english-check-row {
+  min-width: 0;
+  scroll-margin-top: 24px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+}
+.english-check-row[data-action-group="action_required"] { border-left-color: var(--color-warning); }
+.english-check-row[data-action-group="review_required"] { border-left-color: var(--color-review); }
+.english-check-row h4 { margin: 0 0 6px; font-size: 16px; }
+.english-check-row p { margin: 6px 0 0; line-height: 1.55; }
+.english-check-row .next-action { padding: 8px 10px; }
+.english-reference-details,
+.preparation-guide-details,
+.evidence-choice-list {
+  min-width: 0;
+  margin-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+.english-reference-details > summary,
+.preparation-guide-details > summary,
+.evidence-choice-list > summary {
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 0;
+  color: var(--color-primary-strong);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.english-reference-details[open] > summary,
+.preparation-guide-details[open] > summary,
+.evidence-choice-list[open] > summary { margin-bottom: 6px; }
+.preparation-guide-details .material-official-name { margin-top: 0; }
+.preparation-guide-details .preparation-steps { margin-top: 8px; }
+.evidence-choice-list .actions,
+.evidence-choice-list .evidence-choice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 8px;
+}
+.evidence-choice-list button,
+.requirement-evidence-actions button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .application-flow > .flow-step[data-step-state="complete"] { padding: 10px 12px; }
+  .application-flow > .flow-step[data-step-state="complete"] > .completed-summary {
+    align-items: center;
+    gap: 8px;
+  }
+  .application-flow > .flow-step[data-step-state="complete"] .edit-step { min-width: 70px; }
+  .comparison-topic-group,
+  .english-preparation-group { padding: 15px 13px; }
+  .comparison-topic-group .requirement-list,
+  .english-preparation-group .requirement-list { grid-template-columns: minmax(0, 1fr); }
+  .english-check-row { padding: 10px 11px; }
+  .evidence-choice-list .actions,
+  .evidence-choice-list .evidence-choice-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .evidence-choice-list button,
+  .requirement-evidence-actions button {
+    width: 100%;
+    min-width: 0;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+}
