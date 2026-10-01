@@ -1,5 +1,20 @@
 # M17 overnight work: independent design review, 2026-10-01
 
+## TOOLS-01 incremental re-review: Accepted/merged
+
+2026-10-01: reviewed exact head `b9058ff906f5358986d1e0f7b3ee49e58dc57d08`; merge `5d5e30a5cba655a7355f375811d57896cada93ca`.
+[Original review updated in place](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/263#issuecomment-5920735734).
+R1 is closed. Delta from1bd4c95 contains only the three-line QA input listener and one real-DOM browser test.
+Independent exact-head test passed: initial0, type5, edit6, clear0/1000. JavaScript syntax, diff check and exact-head
+Quality CI passed; no unresolved review threads. Previous30 targeted checks, eight before/after browser cases
+and12 protected hashes remain applicable to unchanged code. No repeated full experiment or new product service.
+PR #263 was marked ready only after design acceptance and merged with expected-head validation; #259 is closed.
+Developer/design real service,productPOST,paid,download,parser/index-build counts remain0 for this task.
+This is saved/synthetic browser verification, not a new live online-model quality result. User previews unchanged.
+Next responsibility: design finalizes #260 optional API/config fields and source validation contract before Ready.
+#260 candidate PR #264 remains Draft; no exam implementation is released by this acceptance.
+This section supersedes the historical Changes requested result below.
+
 ## PREP-02 #258 / PR #262 — Accepted/merged
 
 Reviewed exact head `5dc887846268fbceac8b21db328e381c40d26ab9`; merge `6b59cb3392625c58998ed8d53f48d223dd4db2c8`.

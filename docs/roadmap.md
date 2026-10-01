@@ -6,7 +6,18 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 
 
-## Current M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
+
+## Current M17 handoff: PREP-02 and TOOLS-01 accepted; EXAM-01 contract next
+
+2026-10-01: #259 / PR #263 accepted at `b9058ff906f5358986d1e0f7b3ee49e58dc57d08` and merged `5d5e30a5cba655a7355f375811d57896cada93ca`.
+[Incremental acceptance, prior evidence and budgets](onboarding/prep02-tools01-design-review.md). QA input counter R1 is resolved.
+#258 is already accepted. Advanced-tools cleanup is complete in main; existing8005/8004/8003 previews were not switched.
+Only next responsibility is design: finalize #260 field/API/config contract using the reviewed2026 CS B source slice.
+M17 Main waits for explicit Ready. #260 / Draft #264 remains a source candidate, not released implementation.
+No new product service,POST,paid calls,downloads or builds. Preserve334/391,reference_only and rollback assets.
+QA233/236,GSFS ordinary-student expansion,M13/MinerU remain paused. M17 is not declared complete.
+
+## Previous M17 handoff: PREP-02 accepted; repair TOOLS-01 QA counter
 
 2026-10-01: #258 / PR #262 independently accepted at5dc8878, merged6b59cb3. [Review and budgets](onboarding/prep02-tools01-design-review.md).
 Only next implementation is M17 Main repairing #259 / Draft #263: restore the retained QA textarea input counter.
