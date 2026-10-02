@@ -79,20 +79,32 @@ def run_case(browser, name: str, department: str, filename: str, copy: str) -> d
         if request.method == "GET":
             path = urlparse(request.url).path
             if path == "/app/advanced":
-                route.fulfill(body=(STATIC / "advanced.html").read_bytes(), content_type="text/html")
+                route.fulfill(
+                    body=(STATIC / "advanced.html").read_bytes(), content_type="text/html"
+                )
             elif path.startswith("/assets/") and path.rsplit("/", 1)[-1] in {
-                "app.css", "overview.js", "app.js", "unified-core.mjs"
+                "app.css",
+                "overview.js",
+                "app.js",
+                "unified-core.mjs",
             }:
                 filename = path.rsplit("/", 1)[-1]
-                route.fulfill(body=(STATIC / filename).read_bytes(), content_type=(
-                    "text/css" if filename.endswith(".css") else "text/javascript"
-                ))
+                route.fulfill(
+                    body=(STATIC / filename).read_bytes(),
+                    content_type=("text/css" if filename.endswith(".css") else "text/javascript"),
+                )
             elif path == "/v1/reference-targets":
-                route.fulfill(body=(ROOT / "docs/onboarding/prep01-evidence/reference-targets.json").read_bytes(),
-                              content_type="application/json")
+                route.fulfill(
+                    body=(
+                        ROOT / "docs/onboarding/prep01-evidence/reference-targets.json"
+                    ).read_bytes(),
+                    content_type="application/json",
+                )
             elif path == "/v1/generation-status":
-                route.fulfill(body='{"configured":false,"request_timeout_seconds":60,"label":"离线"}',
-                              content_type="application/json")
+                route.fulfill(
+                    body='{"configured":false,"request_timeout_seconds":60,"label":"离线"}',
+                    content_type="application/json",
+                )
             else:
                 route.abort()
                 raise AssertionError(f"unexpected GET: {path}")
@@ -121,7 +133,10 @@ def run_case(browser, name: str, department: str, filename: str, copy: str) -> d
     assert page.locator(".exam-arrangement").count() == 1
     exam_text = page.locator(".exam-arrangement").inner_text()
     assert "学校公布的 A/B 日程" in exam_text
-    assert "本人" in exam_text or "适用" in exam_text or "目录为 B 日程" in exam_text, (name, exam_text[:500])
+    assert "本人" in exam_text or "适用" in exam_text or "目录为 B 日程" in exam_text, (
+        name,
+        exam_text[:500],
+    )
     assert "fact_type" not in exam_text and "section_path" not in exam_text
     if name == "social-human":
         assert "不举行笔试" in exam_text

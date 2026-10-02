@@ -36,18 +36,26 @@ def route_request(route) -> None:
     if path == "/app/advanced":
         route.fulfill(body=(STATIC / "advanced.html").read_bytes(), content_type="text/html")
     elif path.startswith("/assets/") and path.rsplit("/", 1)[-1] in {
-        "app.css", "overview.js", "app.js", "unified-core.mjs"
+        "app.css",
+        "overview.js",
+        "app.js",
+        "unified-core.mjs",
     }:
         name = path.rsplit("/", 1)[-1]
-        route.fulfill(body=(STATIC / name).read_bytes(), content_type=(
-            "text/css" if name.endswith(".css") else "text/javascript"
-        ))
+        route.fulfill(
+            body=(STATIC / name).read_bytes(),
+            content_type=("text/css" if name.endswith(".css") else "text/javascript"),
+        )
     elif path == "/v1/reference-targets":
-        route.fulfill(body=(ROOT / "docs/onboarding/prep01-evidence/reference-targets.json").read_bytes(),
-                      content_type="application/json")
+        route.fulfill(
+            body=(ROOT / "docs/onboarding/prep01-evidence/reference-targets.json").read_bytes(),
+            content_type="application/json",
+        )
     elif path == "/v1/generation-status":
-        route.fulfill(body='{"configured":false,"request_timeout_seconds":60,"label":"离线"}',
-                      content_type="application/json")
+        route.fulfill(
+            body='{"configured":false,"request_timeout_seconds":60,"label":"离线"}',
+            content_type="application/json",
+        )
     else:
         route.abort()
         raise AssertionError(f"unexpected GET: {path}")
@@ -60,7 +68,8 @@ def run_case(browser, name: str, overlay: dict, course_notice: bool, width: int)
     page.route("**/*", route_request)
     assert page.goto(f"{ORIGIN}/app/advanced").status == 200
     page.wait_for_function("referenceCore !== null")
-    page.evaluate("""(response) => {
+    page.evaluate(
+        """(response) => {
       const card = renderExamCardV2({...response, status: 'available'});
       document.body.append(document.querySelector('#evidence-drawer'));
       document.querySelector('.app-header').remove();
@@ -69,7 +78,9 @@ def run_case(browser, name: str, overlay: dict, course_notice: bool, width: int)
       const style = document.createElement('style');
       style.textContent = '.exam-arrangement { max-width: 960px; margin: 20px auto; }';
       document.head.append(style);
-    }""", overlay)
+    }""",
+        overlay,
+    )
     card = page.locator(".exam-arrangement")
     assert card.is_visible()
     if course_notice:
@@ -89,7 +100,10 @@ def run_case(browser, name: str, overlay: dict, course_notice: bool, width: int)
         assert drawer.is_visible()
         direct = "\n".join(drawer.locator(".direct-evidence mark").all_inner_texts())
         if name == "earth":
-            assert all(text in direct for text in ["（１）数学", "（２）物理", "（３）化学・地球科学", "３問を選択し解答"])
+            assert all(
+                text in direct
+                for text in ["（１）数学", "（２）物理", "（３）化学・地球科学", "３問を選択し解答"]
+            )
             assert "英語で行います" not in direct
             assert drawer.locator(".relation-node").count() == 4
         else:
@@ -102,9 +116,14 @@ def run_case(browser, name: str, overlay: dict, course_notice: bool, width: int)
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
     assert not errors, errors
     page.close()
-    return {"case": name, "width": width, "default_course_notice": course_notice,
-            "source_checked": name in {"earth", "system-control"},
-            "product_post": 0, "page_errors": errors}
+    return {
+        "case": name,
+        "width": width,
+        "default_course_notice": course_notice,
+        "source_checked": name in {"earth", "system-control"},
+        "product_post": 0,
+        "page_errors": errors,
+    }
 
 
 def main() -> None:

@@ -64,13 +64,16 @@ def main(corpus_root: Path, source_pdf: Path) -> None:
         ("direct-life", "生命理工学系"),
     ):
         item = next(
-            row for row in presentation.data["departments"]
-            if row["department_id"] == department_id
+            row for row in presentation.data["departments"] if row["department_id"] == department_id
         )
         target = DemoTargetRequest(
-            school_id="isct", document_id=source_id, degree_id="master",
-            intake={"year": 2027, "month": 4}, college_id=item["college_id"],
-            department_id=department_id, application_route=None,
+            school_id="isct",
+            document_id=source_id,
+            degree_id="master",
+            intake={"year": 2027, "month": 4},
+            college_id=item["college_id"],
+            department_id=department_id,
+            application_route=None,
         )
         overlays[key] = exam_response_v2(target, presentation, False, plan, identity)
         assert overlays[key]["status"] == "available_official_paths"
