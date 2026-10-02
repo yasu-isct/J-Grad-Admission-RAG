@@ -1,0 +1,566 @@
+{
+  "artifact_role": "reviewed-source-evidence-design-seed",
+  "bundle_id": "utokyo-gsfs-complex-2027-material-evidence",
+  "limitations_zh": [
+    "固定历史切片，不是当前开放申请窗口。",
+    "仅四个材料话题，不是完整材料清单。",
+    "不进行申请人资格或材料适用性判定。",
+    "中文说明是审核注释，不是官方引文。",
+    "页码可核对，未验证精确高亮坐标。"
+  ],
+  "normalization_policy": "Whitespace and line-wrap joining only; fragments remain separate; preserve punctuation, digits, conditions and negation.",
+  "production_enabled": false,
+  "records": [
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E01-1",
+          "role": "context",
+          "text": "7. 英語のスコアシートについて"
+        },
+        {
+          "fragment_id": "E01-2",
+          "role": "clause",
+          "text": "専攻により，TOEFL，IELTS，TOEIC 等のスコアシートの提出が必要な場合があります。どのスコアシートが必要か，各スコアシートの提出期限とともに，必ず志望専攻の入試案内書を確認してください。"
+        }
+      ],
+      "manual_anchor": "Section 7 heading and opening two sentences",
+      "parser_locator": null,
+      "physical_page": 6,
+      "printed_page_label": "6",
+      "record_id": "E01",
+      "required_fragment_ids": [
+        "E01-1",
+        "E01-2"
+      ],
+      "review_note_zh": "研究科共通文件要求按专攻确认是否需要提交及期限，不能据此推定所有人都要交。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "gsfs-master-2027",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "topic_id": "english-score-sheets"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E02-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E02-2",
+          "role": "clause",
+          "text": "修士課程一般選抜試験では、TOEFL iBTやTOEIC L&Rなどの英語のスコアシートを提出する必要はない。"
+        }
+      ],
+      "manual_anchor": "Masters general heading and first bullet under other notes",
+      "parser_locator": null,
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "record_id": "E02",
+      "required_fragment_ids": [
+        "E02-1",
+        "E02-2"
+      ],
+      "review_note_zh": "此处明确不需要提交英语成绩单，范围是这份案内书中的修士一般选拔；不等于免除任何英语相关考查。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "topic_id": "english-score-sheets"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E03-1",
+          "role": "context",
+          "text": "【複雑理工学専攻】"
+        },
+        {
+          "fragment_id": "E03-2",
+          "role": "cross_reference",
+          "text": "注：英語スコアの送付方法については，募集要項を熟読すること。"
+        }
+      ],
+      "manual_anchor": "Footer immediately below additional-material table",
+      "parser_locator": null,
+      "physical_page": 1,
+      "printed_page_label": null,
+      "record_id": "E03",
+      "required_fragment_ids": [
+        "E03-1",
+        "E03-2"
+      ],
+      "review_note_zh": "这是送付方法的引用提示。结合 E01 和 E02 审核，不把它当成第四项所有人必交的材料。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-master-a-additional",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "topic_id": "english-score-sheets"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E04-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E04-2",
+          "role": "clause",
+          "text": "本案内書添付のチェックリストを参照し、募集要項に記載された全ての書類を提出すること。"
+        }
+      ],
+      "manual_anchor": "Masters general heading and last bullet under other notes",
+      "parser_locator": null,
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "record_id": "E04",
+      "required_fragment_ids": [
+        "E04-1",
+        "E04-2"
+      ],
+      "review_note_zh": "参照清单核对材料，并不意味着要上传清单本身；须连同 E05 查看。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "topic_id": "checklist-submission"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E05-1",
+          "role": "clause",
+          "text": "このチェックシートの提出は不要"
+        },
+        {
+          "fragment_id": "E05-2",
+          "role": "context",
+          "text": "提出書類等チェックシート（修士課程一般選抜用）"
+        }
+      ],
+      "manual_anchor": "Top notice and checklist heading",
+      "parser_locator": null,
+      "physical_page": 40,
+      "printed_page_label": "38",
+      "record_id": "E05",
+      "required_fragment_ids": [
+        "E05-1",
+        "E05-2"
+      ],
+      "review_note_zh": "免提交的是清单这张表，不是清单中列出的各项材料。原解析结果漏掉的文字来自页面人工转录，不伪称解析器自动提取。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "topic_id": "checklist-submission"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E06-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E06-2",
+          "role": "context",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E06-3",
+          "role": "clause",
+          "text": "企業・官公庁・団体等に在職する者で、在職の身分のまま入学を希望する者は、学業・職務両立計画書を提出すること。"
+        }
+      ],
+      "manual_anchor": "Work-study plan heading and first paragraph",
+      "parser_locator": null,
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "record_id": "E06",
+      "required_fragment_ids": [
+        "E06-1",
+        "E06-2",
+        "E06-3"
+      ],
+      "review_note_zh": "保留在职且希望保持在职身份入学两个条件。当前工具只展示条件，不判断具体申请人是否符合。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "topic_id": "work-study-plan"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E07-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E07-2",
+          "role": "context",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E07-3",
+          "role": "clause",
+          "text": "また、入学手続きの際に、勤務先の承諾書（様式任意、研究科募集要項 11. (8)を参照）を提出すること。"
+        }
+      ],
+      "manual_anchor": "Second paragraph under work-study plan heading",
+      "parser_locator": null,
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "record_id": "E07",
+      "required_fragment_ids": [
+        "E07-1",
+        "E07-2",
+        "E07-3"
+      ],
+      "review_note_zh": "与 E06 的人群条件连用。单位承诺书是在入学手续时提交的另一份材料，不将它改写为所有人出愿时上传。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "topic_id": "work-study-plan"
+    },
+    {
+      "bbox": null,
+      "capture_method": "manual_transcription",
+      "fact_id": null,
+      "fragments": [
+        {
+          "fragment_id": "E08-1",
+          "role": "context",
+          "text": "【複雑理工学専攻】"
+        },
+        {
+          "fragment_id": "E08-2",
+          "role": "table_group_header",
+          "text": "出願期間中に「オンライン出願システム」により提出する書類等"
+        },
+        {
+          "fragment_id": "E08-3",
+          "role": "table_group_note",
+          "text": "（※PDFファイルのアップロードによる）"
+        },
+        {
+          "fragment_id": "E08-4",
+          "role": "table_column_header",
+          "text": "提出物"
+        },
+        {
+          "fragment_id": "E08-5",
+          "role": "table_row_label",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E08-6",
+          "role": "table_column_header",
+          "text": "対象者，備考"
+        },
+        {
+          "fragment_id": "E08-7",
+          "role": "table_cell",
+          "text": "【対象者】企業・官公庁・団体等に在職する者で，在職の身分のまま入学を希望する者。"
+        }
+      ],
+      "manual_anchor": "Left upload group and final material row; right group is empty",
+      "parser_locator": null,
+      "physical_page": 1,
+      "printed_page_label": null,
+      "record_id": "E08",
+      "required_fragment_ids": [
+        "E08-1",
+        "E08-2",
+        "E08-3",
+        "E08-4",
+        "E08-5",
+        "E08-6",
+        "E08-7"
+      ],
+      "review_note_zh": "这些分段来自左侧上传栏目同一行的表头、材料名和对象单元格；并非一段连续正文。右侧专攻指定方法栏目为空，不复制邻行的“全员”。",
+      "review_record_id": "design-review-20260927",
+      "revision": 1,
+      "source_id": "complex-master-a-additional",
+      "source_kb_sha256": null,
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "topic_id": "work-study-plan"
+    },
+    {
+      "record_id": "E09",
+      "revision": 1,
+      "topic_id": "application-essay",
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+      "fragments": [
+        {
+          "fragment_id": "E09-1",
+          "role": "context",
+          "text": "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧"
+        },
+        {
+          "fragment_id": "E09-2",
+          "role": "context",
+          "text": "【複雑理工学専攻】"
+        },
+        {
+          "fragment_id": "E09-3",
+          "role": "table_group_header",
+          "text": "出願期間中に「オンライン出願システム」により提出する書類等"
+        },
+        {
+          "fragment_id": "E09-4",
+          "role": "table_group_note",
+          "text": "(※PDFファイルのアップロードによる）"
+        },
+        {
+          "fragment_id": "E09-5",
+          "role": "table_column_header",
+          "text": "提出物"
+        },
+        {
+          "fragment_id": "E09-6",
+          "role": "table_row_label",
+          "text": "小論文"
+        },
+        {
+          "fragment_id": "E09-7",
+          "role": "table_column_header",
+          "text": "対象者，備考"
+        },
+        {
+          "fragment_id": "E09-8",
+          "role": "table_cell",
+          "text": "【対象者】全員"
+        },
+        {
+          "fragment_id": "E09-9",
+          "role": "table_cell",
+          "text": "日本語又は英語で作成すること。"
+        }
+      ],
+      "required_fragment_ids": [
+        "E09-1",
+        "E09-2",
+        "E09-3",
+        "E09-4",
+        "E09-5",
+        "E09-6",
+        "E09-7",
+        "E09-8",
+        "E09-9"
+      ],
+      "review_note_zh": "仅本次修士一般选拔A固定目标；保持原文、表头归属和提交阶段。中文准备指南另由开发按字段映射整理。",
+      "review_record_id": "design-author01-source-20261003",
+      "capture_method": "manual_transcription",
+      "parser_locator": null,
+      "bbox": null,
+      "fact_id": null,
+      "source_kb_sha256": null
+    },
+    {
+      "record_id": "E10",
+      "revision": 1,
+      "topic_id": "application-essay",
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+      "fragments": [
+        {
+          "fragment_id": "E10-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E10-2",
+          "role": "context",
+          "text": "小論文の作成・提出要領"
+        },
+        {
+          "fragment_id": "E10-3",
+          "role": "clause",
+          "text": "以下の(A)(B)を、当専攻ホームページで指定するフォーマットに日本語または英語で書くこと。文字数や書式などはフォーマットに指示する。オンライン出願サイトより提出せよ。"
+        },
+        {
+          "fragment_id": "E10-4",
+          "role": "clause",
+          "text": "（A) 取り組みたい研究テーマとそのテーマに興味を持った理由"
+        },
+        {
+          "fragment_id": "E10-5",
+          "role": "clause",
+          "text": "（B) 自己アピール：これまでの学修・研究・課外活動などの経験に基づき、修士課程での学修・研究に活かせる自分の強みを具体的に記述"
+        }
+      ],
+      "required_fragment_ids": [
+        "E10-1",
+        "E10-2",
+        "E10-3",
+        "E10-4",
+        "E10-5"
+      ],
+      "review_note_zh": "仅本次修士一般选拔A固定目标；保持原文、表头归属和提交阶段。中文准备指南另由开发按字段映射整理。",
+      "review_record_id": "design-author01-source-20261003",
+      "capture_method": "manual_transcription",
+      "parser_locator": null,
+      "bbox": null,
+      "fact_id": null,
+      "source_kb_sha256": null
+    }
+  ],
+  "relations": [
+    {
+      "from": "E01",
+      "kind": "department_specific_detail",
+      "to": "E02"
+    },
+    {
+      "from": "E03",
+      "kind": "cross_reference",
+      "to": "E01"
+    },
+    {
+      "from": "E04",
+      "kind": "consulting_is_distinct_from_submitting",
+      "to": "E05"
+    },
+    {
+      "from": "E07",
+      "kind": "shares_employment_context_but_separate_enrollment_stage",
+      "to": "E06"
+    },
+    {
+      "from": "E08",
+      "kind": "corroborates_condition_with_submission_method",
+      "to": "E06"
+    },
+    {
+      "from": "E09",
+      "kind": "supplements",
+      "to": "E10"
+    }
+  ],
+  "required_source_ids": [
+    "gsfs-master-2027",
+    "complex-guide-2027-revised",
+    "complex-master-a-additional"
+  ],
+  "review_records": [
+    {
+      "method": "Locked local source hashes and rendered PDF page visual inspection; existing MS02 text used only as transcription aid.",
+      "review_record_id": "design-review-20260927",
+      "reviewed_on": "2026-09-27",
+      "reviewer_id": "design-main-agent",
+      "reviewer_kind": "agent",
+      "status": "design_reviewed_not_production_approved"
+    },
+    {
+      "review_record_id": "design-author01-source-20261003",
+      "reviewer_kind": "agent",
+      "reviewer_id": "design-main-agent",
+      "reviewed_on": "2026-10-03",
+      "method": "Reused 2026-10-02 visually inspected locked PDF pages; rechecked hashes and whitespace-normalized excerpts on 2026-10-03. Masters ordinary general selection A / April 2027 only; source approval is not implementation acceptance.",
+      "status": "design_reviewed_for_author01_isolated_candidate_not_production_activation"
+    }
+  ],
+  "revision": 2,
+  "schema_version": "1.0",
+  "source_manifest": {
+    "file": "utokyo-gsfs-complex-2027.sources.json",
+    "sha256": "0065233d6179e25d1896de3252946fea82dc430c7101d872093948bef42625d7"
+  },
+  "source_set": {
+    "revision": 1,
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1"
+  },
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {
+      "month": 4,
+      "year": 2027
+    },
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  },
+  "target_contract": {
+    "file": "gsfs-source-set-contract-v0.1.examples.json",
+    "sha256": "b86e7b61aa43cfc4705234a450fd8993e0c1ac86a6b730ca10d750b6427238e3"
+  },
+  "topics": [
+    {
+      "record_ids": [
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "title_zh": "英语成绩单",
+      "topic_id": "english-score-sheets"
+    },
+    {
+      "record_ids": [
+        "E04",
+        "E05"
+      ],
+      "title_zh": "清单本身是否提交",
+      "topic_id": "checklist-submission"
+    },
+    {
+      "record_ids": [
+        "E06",
+        "E07",
+        "E08"
+      ],
+      "title_zh": "在职申请人的学业与职务両立计划书",
+      "topic_id": "work-study-plan"
+    },
+    {
+      "topic_id": "application-essay",
+      "title_zh": "申请小论文",
+      "record_ids": [
+        "E09",
+        "E10"
+      ]
+    }
+  ]
+}
