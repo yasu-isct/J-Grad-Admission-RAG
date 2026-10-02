@@ -1,0 +1,114 @@
+[
+  {
+    "sample": "simple",
+    "state": "exam",
+    "viewport": [
+      1440,
+      900
+    ],
+    "screenshot": "simple-exam-desktop.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "simple",
+    "state": "exam",
+    "viewport": [
+      390,
+      844
+    ],
+    "screenshot": "simple-exam-mobile.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "simple",
+    "state": "readiness",
+    "viewport": [
+      1440,
+      900
+    ],
+    "screenshot": "simple-readiness-desktop.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "simple",
+    "state": "readiness",
+    "viewport": [
+      390,
+      844
+    ],
+    "screenshot": "simple-readiness-mobile.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "complex",
+    "state": "exam",
+    "viewport": [
+      1440,
+      900
+    ],
+    "screenshot": "complex-exam-desktop.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "complex",
+    "state": "exam",
+    "viewport": [
+      390,
+      844
+    ],
+    "screenshot": "complex-exam-mobile.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "complex",
+    "state": "readiness",
+    "viewport": [
+      1440,
+      900
+    ],
+    "screenshot": "complex-readiness-desktop.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  },
+  {
+    "sample": "complex",
+    "state": "readiness",
+    "viewport": [
+      390,
+      844
+    ],
+    "screenshot": "complex-readiness-mobile.png",
+    "requests": [
+      "GET /app",
+      "GET /assets/app.css"
+    ],
+    "page_errors": []
+  }
+]
