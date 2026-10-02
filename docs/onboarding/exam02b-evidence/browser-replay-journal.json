@@ -1,0 +1,72 @@
+[
+  {
+    "case": "system-control",
+    "department": "システム制御系",
+    "saved_response": "system-control-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "1bd5b94dbcf530a7757bc713774ff113ffee45c0177035b81613bcd6918ef857",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "math",
+    "department": "数学系",
+    "saved_response": "math-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "213c02dee95fdf991d6b7a5a797e077805fb26f68692bc0f6cbf2acdca147e6d",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "materials",
+    "department": "材料系",
+    "saved_response": "materials-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "9ee42b661c2523f4baae5598ac23e3ab6921861a75945ea7ce9399679b194631",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "architecture",
+    "department": "建築学系",
+    "saved_response": "architecture-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "bc8456e14f71bc5fad875fceed49ca6f00bb563c88d0a0c58ba80446a64b3ed7",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "transdisciplinary",
+    "department": "融合理工学系",
+    "saved_response": "transdisciplinary-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "bc306f881ce0f6397af7904154e28f2157abb3e3d41ed5613fd56611e7773bda",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "social-human",
+    "department": "社会・人間科学系",
+    "saved_response": "social-human-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "7d02d1bdfe8e0661d5e9ef135acfd8a03cab582ed84e303da731c4a7a2244028",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  },
+  {
+    "case": "computer-science",
+    "department": "情報工学系",
+    "saved_response": "computer-science-base-v2.json",
+    "intercepted_product_post": 1,
+    "actual_product_post": 0,
+    "copy_sha256": "baa2265245ec5b953ab235f535933d04d5c71bba6fef3b01646e10a10e35780a",
+    "desktop_and_mobile_no_overflow": true,
+    "page_errors": []
+  }
+]

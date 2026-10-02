@@ -275,8 +275,104 @@ const examSource = {
   source_kb_sha256: "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
 };
 const examPresentationSha = "368ed4de43dd2dde8eda986d2ad2d6922e8cfb7c3640583381b1b559a4170aa7";
+const examPresentationV2Sha = "c724d2e228a128fff1cc863aca68e72cd10ee02bbe4c4ce67c835f7e2d632ef3";
+
+function validateExamInformationV2(scope, info) {
+  try {
+    requireValue(scope?.kind === "legacy_applicant" && info?.schema_version === "2.0"
+      && ["available_official_paths", "not_covered", "not_covered_course", "unavailable"].includes(info.status), "考试信息状态无效");
+    const request = scope.request;
+    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "考试信息目标不匹配");
+    if (info.status !== "available_official_paths") {
+      requireValue(same(info.pathways, []) && same(info.evidence, []) && same(info.field_bindings, []), "未覆盖考试信息含肯定结论");
+      if (info.status === "not_covered_course") requireValue(info.applicability?.course_state === "excluded"
+        || info.applicability?.course_state === "unknown", "课程排除状态无效");
+      return {status: info.status, message: info.message_zh};
+    }
+    requireValue(request.school_id === "isct" && request.document_id === examSource.document_id
+      && request.degree_id === "master" && [[2026, 9], [2027, 4]].some(([year, month]) =>
+        request.intake.year === year && request.intake.month === month)
+      && info.presentation_id === "isct-18-departments-exams-2026-v2"
+      && info.presentation_sha256 === examPresentationV2Sha
+      && same(info.source_identity, examSource), "考试来源身份不匹配");
+    const applicability = info.applicability;
+    requireValue(applicability?.catalog_route === request.application_route
+      && applicability.personal_route_state === (request.application_route === "b_schedule" ? "catalog_b" : "unconfirmed")
+      && ["unspecified", "covered"].includes(applicability.course_state)
+      && Array.isArray(applicability.covered_course_ids) && Array.isArray(applicability.excluded_course_ids)
+      && (applicability.covered_course_ids.length === 0
+        ? applicability.excluded_course_ids.length === 0
+        : same(applicability.excluded_course_ids, ["地球生命コース"])), "考试路径或课程作用域不匹配");
+    requireValue(info.year_basis?.exam_year === 2026
+      && info.year_basis.kind === "reviewed_cross_page_context"
+      && same(info.year_basis.physical_pages, [1, 2])
+      && Number.isSafeInteger(info.year_basis.department_page), "考试年份来源不完整");
+    const evidence = array(info.evidence);
+    const evidenceById = new Map();
+    for (const row of evidence) {
+      validateLegacyEvidence(row, scope);
+      requireValue(nonempty(row.fact_id) && row.scope_type === "department"
+        && row.parent_college === request.college_id
+        && array(row.scope_targets).includes(request.department_id), "考试证据作用域不匹配");
+      requireValue(!evidenceById.has(row.fact_id), "考试证据重复");
+      evidenceById.set(row.fact_id, row);
+    }
+    const bindings = new Map();
+    for (const field of array(info.field_bindings)) {
+      requireValue(nonempty(field.field_path) && !bindings.has(field.field_path), "考试字段重复");
+      if (field.value_zh === null)
+        requireValue(nonempty(field.missing_reason_zh) && same(field.sources, []), "未知字段伪装为有依据");
+      else {
+        requireValue(nonempty(field.value_zh) && array(field.sources).length > 0, "考试字段来源缺失");
+        for (const source of field.sources) {
+          requireValue(nonempty(source.exact_text) && array(source.physical_pages).length > 0, "考试原文锚点缺失");
+          if (source.source_id === "fact:00002") requireValue(field.field_path === "exam.year", "年份来源越界");
+          else if (source.source_id.startsWith("fact:")) {
+            const row = evidenceById.get(source.source_id);
+            requireValue(row && same(row.pages, source.physical_pages)
+              && row.official_text.includes(source.exact_text), "考试原文与字段不符");
+          } else requireValue(source.source_id === `pdf_page:${source.physical_pages[0]}`
+            && source.physical_pages.length === 1, "PDF页锚点不符");
+        }
+      }
+      bindings.set(field.field_path, field);
+    }
+    const required = ["exam.year", "a.oral", "b.written_status", "b.written_sessions", "b.subjects",
+      "b.selection_rule", "b.points", "english.submission", "b.oral", "b.answer_language"];
+    requireValue(required.every((key) => bindings.has(key))
+      && (applicability.covered_course_ids.length === 0 || bindings.has("course.coverage_exclusion")), "考试字段覆盖不足");
+    const value = (key) => bindings.get(key)?.value_zh?.replaceAll("**", "") ?? null;
+    const paths = array(info.pathways);
+    requireValue(paths.length === 2 && paths[0].source_route === "a_schedule"
+      && paths[1].source_route === "b_schedule"
+      && paths.every((path) => path.personal_eligibility === (request.application_route === "b_schedule"
+        && path.source_route === "b_schedule" ? "catalog_b" : "unconfirmed")), "官方路径与个人适用性混淆");
+    const a = paths[0];
+    const b = paths[1];
+    requireValue(a.oral?.description_zh === value("a.oral")
+      && a.oral.status === (value("a.oral").includes("明确不举行") ? "not_held" : "held")
+      && a.written.status === "unknown" && b.oral?.description_zh === value("b.oral")
+      && b.written?.status === value("b.written_status")
+      && b.written.points_zh === value("b.points")
+      && b.english?.submission_zh === value("english.submission"), "考试路径内容与来源映射不一致");
+    if (b.written.status === "held") requireValue(
+      b.written.time_zh === value("b.written_sessions")
+      && array(b.written.subjects_zh).length > 0
+      && b.written.subjects_zh.join("；") === value("b.subjects")
+      && b.written.selection_rule_zh === value("b.selection_rule")
+      && b.written.answer_language_zh === value("b.answer_language")
+      && b.written.administration_language_zh === value("exam.administration_language"), "笔试科目或时段与来源不符");
+    else requireValue(b.written.status === "not_held" && b.written.time_zh === null
+      && same(b.written.subjects_zh, []), "无笔试状态含笔试内容");
+    return {status: "available", schema_version: "2.0", pathways: paths,
+      applicability, evidence, field_bindings: info.field_bindings, year_basis: info.year_basis,
+      message: info.message_zh, official_title: info.official_title,
+      official_source_url: info.official_source_url, local_pdf_url: info.local_pdf_url};
+  } catch { return null; }
+}
 
 export function validateExamInformation(scope, info) {
+  if (info?.schema_version === "2.0") return validateExamInformationV2(scope, info);
   try {
     requireValue(scope?.kind === "legacy_applicant" && info?.schema_version === "1.0"
       && ["available", "not_covered", "unavailable"].includes(info.status), "考试信息状态无效");
@@ -324,6 +420,11 @@ export function validateExamInformation(scope, info) {
 
 export function examReportRows(exam) {
   if (exam?.status !== "available") return [];
+  if (exam.schema_version === "2.0") {
+    const view = examV2View(exam);
+    return [view.lead, ...view.subjects, view.selection, view.points, view.aOral,
+      view.bOral, view.specialist, view.english, view.language, view.course].filter(Boolean);
+  }
   const s = exam.schedule;
   const dateZh = (value, year = true) => {
     const [y, m, d] = value.split("-").map(Number);
@@ -336,6 +437,34 @@ export function examReportRows(exam) {
     `专业笔试${s.specialist_points}分，英语${s.english_points}分；英语不另设笔试，按指定外部英语成绩评价，仍需按规定提交证明。`,
     `口述对象：${dateZh(s.oral_announcement_date, false)}${Number(s.oral_announcement_time.split(":")[0])}时左右起公布；口述日期${dateZh(s.oral_date, false)}。${s.oral_selection_note_zh}`
   ];
+}
+
+export function examV2View(exam) {
+  requireValue(exam?.schema_version === "2.0" && exam.status === "available", "考试资料尚未校验");
+  const [a, b] = exam.pathways;
+  const written = b.written;
+  const scope = exam.applicability.personal_route_state === "catalog_b"
+    ? "信息工学系目录为 B 日程；A 日程仅作为同册官方资料查阅。"
+    : "学校公布的 A/B 日程可查阅；本人参加路径与资格须由学校确认。";
+  const lead = written.status === "not_held"
+    ? `学校公布的 B 日程明确不举行笔试。${scope}`
+    : `学校公布的 B 日程笔试：2026年8月18日 ${written.time_zh
+      .replace(/^8\/18\s*/, "").split("；时长（分钟）：")[0]}。${scope}`;
+  const subjects = written.status === "held" ? [written.subjects_zh.join("；")] : [];
+  const selection = written.status === "held" && written.selection_rule_zh
+    ? `选答方式：${written.selection_rule_zh}` : null;
+  const points = written.points_zh ? `评价与英语：${written.points_zh}` : null;
+  const aOral = `${a.label_zh}口述：${a.oral.description_zh.replace(/^A：/, "")}。`;
+  const bOral = `${b.label_zh}口述：${b.oral.description_zh.split("；")[0]}。`;
+  const condition = exam.field_bindings.find((field) => field.field_path === "b.specialist_condition")?.value_zh;
+  const specialist = condition ? `专门科目条件：${condition.replaceAll("**", "")}。` : null;
+  const english = b.english.submission_zh ? `本系英语证明原文：${b.english.submission_zh}。材料准备结果仍按既有规则核对。` : null;
+  const language = written.answer_language_zh
+    ? `笔试作答语言：${written.answer_language_zh}。`
+    : written.administration_language_zh ? `考试实施语言：${written.administration_language_zh}；原文未另载笔试答案语言。` : null;
+  const course = exam.applicability.excluded_course_ids.length
+    ? `本册仅整理所列课程；${exam.applicability.excluded_course_ids.join("、")}采用另册，当前未覆盖。` : null;
+  return {lead, subjects, selection, points, aOral, bOral, specialist, english, language, course};
 }
 
 export function mapSliceEvidence(scope, evidence) {

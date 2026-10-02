@@ -452,3 +452,29 @@ test("EXAM-01 validates source and target before offering an opt-in report topic
   const old = legacyReport(mapped);
   assert.equal(Object.hasOwn(readerReportOptions(old), "exams"), false);
 });
+
+test("EXAM-02B validates a real-source v2 projection and rejects altered anchors", () => {
+  const saved = (name) => JSON.parse(readFileSync(new URL(`../docs/onboarding/prep01-evidence/${name}`, import.meta.url)));
+  const catalog = saved("reference-targets.json");
+  const info = JSON.parse(readFileSync(new URL("../docs/onboarding/exam02b-evidence/system-control-v2-source-projection.json", import.meta.url)));
+  const item = readyEntries(catalog).find((entry) => entry.entry_id === "legacy-isct");
+  const scope = scopesFor(item).find((entry) => entry.request.department_id === info.target_identity.department_id
+    && entry.request.intake.year === 2027 && entry.request.intake.month === 4);
+  const exam = validateExamInformation(scope, info);
+  assert.equal(exam?.schema_version, "2.0");
+  assert.equal(exam?.status, "available");
+  assert.equal(exam.pathways[0].personal_eligibility, "unconfirmed");
+  assert.equal(exam.pathways[1].personal_eligibility, "unconfirmed");
+  const rows = examReportRows(exam).join("\n");
+  assert.match(rows, /微积分/);
+  assert.match(rows, /本人参加路径与资格须由学校确认/);
+  assert.equal(validateExamInformation(scope, {...info, source_identity: {...info.source_identity,
+    source_kb_sha256: "0".repeat(64)}}), null);
+  assert.equal(validateExamInformation(scope, {...info, field_bindings: info.field_bindings.map((field) =>
+    field.field_path === "b.subjects" ? {...field, value_zh: "已改写"} : field)}), null);
+  assert.equal(validateExamInformation(scope, {...info, evidence: info.evidence.slice(1)}), null);
+  const excluded = {...info, status: "not_covered_course", pathways: [], evidence: [], field_bindings: [],
+    applicability: {...info.applicability, course_state: "excluded"}};
+  assert.equal(validateExamInformation(scope, excluded)?.status, "not_covered_course");
+  assert.equal(validateExamInformation(scope, {...excluded, pathways: info.pathways}), null);
+});

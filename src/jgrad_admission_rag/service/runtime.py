@@ -32,6 +32,7 @@ class ServiceSettings(BaseModel):
     query_intent_catalog_path: Path | None = None
     date_presentation_paths: tuple[Path, ...] = ()
     exam_presentation_paths: tuple[Path, ...] = ()
+    exam_presentation_v2_path: Path | None = None
     source_pdf_path: Path | None = None
     source_pdf_document_id: str | None = Field(
         default=None,
@@ -77,6 +78,11 @@ class ServiceSettings(BaseModel):
             raise ValueError("reviewed date presentation paths must be absolute")
         if any(not path.is_absolute() for path in self.exam_presentation_paths):
             raise ValueError("reviewed exam presentation paths must be absolute")
+        if (
+            self.exam_presentation_v2_path is not None
+            and not self.exam_presentation_v2_path.is_absolute()
+        ):
+            raise ValueError("examination v2 presentation path must be absolute")
         source_fields = (
             self.source_pdf_path,
             self.source_pdf_document_id,
@@ -149,6 +155,8 @@ class ServiceState:
     date_presentations: tuple[ReviewedDatePresentation, ...] = ()
     exam_presentations: tuple[ReviewedExamPresentation, ...] = ()
     exam_presentation_initialization_failed: bool = False
+    exam_presentation_v2: ReviewedExamPresentation | None = None
+    exam_presentation_v2_initialization_failed: bool = False
     date_presentation_initialization_failed: bool = False
     source_document: VerifiedSourceDocument | None = None
     source_document_initialization_failed: bool = False

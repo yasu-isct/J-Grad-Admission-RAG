@@ -995,6 +995,12 @@ legend {
 .exam-arrangement li { margin: 5px 0; overflow-wrap: anywhere; }
 .exam-arrangement details { margin-top: 14px; }
 .exam-arrangement .source-actions button { max-width: 100%; }
+.requirements-jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.requirements-jump button { width: auto; }
+.requirements-jump + .result-section { margin-top: 0; }
+@media (max-width: 600px) {
+  .requirements-jump button { flex: 1 1 auto; min-width: 0; }
+}
 .result-section > h3 { margin: 0 0 8px; color: #263d37; font-size: 19px; }
 .section-intro { max-width: 76ch; margin: 0 0 16px; color: var(--color-text-muted); line-height: 1.65; }
 .empty-reviewed-data {

@@ -194,6 +194,13 @@ def _serve(
                 == "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
                 else ()
             ),
+            exam_presentation_v2_path=(
+                Path(__file__).resolve().parent / "demo_config" / "exam02b_source_bindings.json"
+                if runtime.identity.document_id == "isct_2027_4_2026_9_master"
+                and runtime.identity.source_pdf_sha256
+                == "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
+                else None
+            ),
             source_pdf_path=runtime.source_pdf_path,
             source_pdf_document_id=runtime.identity.document_id,
             source_pdf_sha256=runtime.identity.source_pdf_sha256,
