@@ -1,0 +1,627 @@
+{
+  "artifact_role": "agent-authored-source-samples-design-only",
+  "schema_status": "draft_authoring_envelope_not_production_contract",
+  "production_enabled": false,
+  "base_main": "eb4ccf76a2898f0757c6ffd09a05a9930920521d",
+  "target": {
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704",
+    "institution_id": "utokyo",
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "degree_level": "master",
+    "admission_cycle": 2027,
+    "selection_route_id": "general-ordinary",
+    "examination_schedule_id": "A",
+    "intake": {
+      "year": 2027,
+      "month": 4
+    }
+  },
+  "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1",
+  "sources": [
+    {
+      "source_id": "gsfs-master-2027",
+      "official_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.392145+00:00",
+      "sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "bytes": 941862,
+      "http_last_modified": "Mon, 23 Mar 2026 02:43:57 GMT",
+      "physical_page_count": 22
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "official_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.665616+00:00",
+      "sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "bytes": 9053105,
+      "http_last_modified": "Wed, 01 Apr 2026 13:26:42 GMT",
+      "physical_page_count": 45
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "official_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+      "resolved_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+      "retrieved_at": "2026-09-27T06:03:52.751887+00:00",
+      "sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "bytes": 491374,
+      "http_last_modified": "Tue, 21 Apr 2026 00:34:57 GMT",
+      "physical_page_count": 1
+    }
+  ],
+  "normalization": "whitespace-only comparison; existing manual normalization exceptions explicitly recorded",
+  "samples": [
+    {
+      "sample_id": "ordinary-questionnaire",
+      "kind": "ordinary_material",
+      "material_key": "application_questionnaire",
+      "title_zh": "报考志愿调查表",
+      "official_name_ja": "志望調査票（修士）",
+      "coverage_status": "new_design_candidate_not_in_current_runtime",
+      "profile_fields": [],
+      "reader": {
+        "summary": "本范围内申请人需提交修士一般选拔用的志愿调查表。",
+        "steps": [
+          "到专攻网站指定的一般选拔用调查表填写入口完成填写。",
+          "保存该表单生成的 PDF。",
+          "在出愿期间，将 PDF 上传到网上出愿系统。"
+        ],
+        "note": "不要只填写表单而漏传 PDF。最新表单入口和具体截止时刻未在本样本核验。"
+      },
+      "claims": [
+        {
+          "field": "required_for",
+          "value": "all_in_exact_target",
+          "evidence_refs": [
+            "DRAFT-Q1-audience",
+            "DRAFT-Q2-scope"
+          ]
+        },
+        {
+          "field": "official_name_ja",
+          "value": "志望調査票（修士）",
+          "evidence_refs": [
+            "DRAFT-Q1-label"
+          ]
+        },
+        {
+          "field": "stage",
+          "value": "application",
+          "evidence_refs": [
+            "DRAFT-Q1-group"
+          ]
+        },
+        {
+          "field": "submission.method",
+          "value": "online_application_pdf_upload",
+          "evidence_refs": [
+            "DRAFT-Q1-group",
+            "DRAFT-Q1-format",
+            "DRAFT-Q2-upload"
+          ]
+        },
+        {
+          "field": "preparation.method",
+          "value": "specified_general_selection_questionnaire_form",
+          "evidence_refs": [
+            "DRAFT-Q2-form"
+          ]
+        },
+        {
+          "field": "submission.window",
+          "value": "application_period",
+          "evidence_refs": [
+            "DRAFT-Q1-group"
+          ]
+        }
+      ],
+      "condition": {
+        "mode": "all",
+        "predicates": [],
+        "effect_if_scope_and_evidence_valid": "required",
+        "preparation_status": "separate_user_self_report_not_inferred"
+      },
+      "relations": [
+        {
+          "from": "DRAFT-Q1",
+          "to": "DRAFT-Q2",
+          "kind": "supplements",
+          "explanation_zh": "附表说明全员提交及PDF上传；专攻案内补充一般选拔专用表单和生成后的上传步骤。"
+        }
+      ],
+      "unknowns": [
+        "本样本未核验最新在线表单是否开放",
+        "未整理完整出愿材料清单",
+        "未绑定具体截止日期/时区/时刻"
+      ],
+      "integration": "Reuse evidence-record authoring and reviewed-fragment import after independent review. Current three-topic report plan does not accept this new topic; it requires a bounded follow-up mapping. No current Fact ID is fabricated."
+    },
+    {
+      "sample_id": "conditional-work-study",
+      "kind": "conditional_material",
+      "material_key": "work_study_plan",
+      "title_zh": "在职学习计划书",
+      "official_name_ja": "学業・職務両立計画書",
+      "coverage_status": "existing_reviewed_condition_reused",
+      "profile_fields": [
+        "employment.currently_employed_in_organization",
+        "employment.retain_employment_at_enrollment"
+      ],
+      "reader": {
+        "summary": "目前在企业、机关或团体等单位任职，并希望入学后保留在职身份的申请人，需要提交这份计划书。",
+        "steps": [
+          "确认目前是否在职，以及入学后是否继续保留在职身份。",
+          "若两项均为“是”，在出愿期间通过网上出愿系统上传计划书 PDF。"
+        ],
+        "note": "单位承诺书属于另一个入学手续阶段的事项；本样本不把它加入当前出愿待办。计划书模板及具体写作要求尚未核验。"
+      },
+      "claims": [
+        {
+          "field": "required_when",
+          "value": "currently_employed AND retain_employment_at_enrollment",
+          "evidence_refs": [
+            "E06-3",
+            "E08-7"
+          ]
+        },
+        {
+          "field": "official_name_ja",
+          "value": "学業・職務両立計画書",
+          "evidence_refs": [
+            "E06-2",
+            "E08-5"
+          ]
+        },
+        {
+          "field": "stage",
+          "value": "application",
+          "evidence_refs": [
+            "E08-2"
+          ]
+        },
+        {
+          "field": "submission.method",
+          "value": "online_application_pdf_upload",
+          "evidence_refs": [
+            "E08-2",
+            "E08-3"
+          ]
+        },
+        {
+          "field": "related_material.stage",
+          "value": "enrollment_procedure_reference_only",
+          "evidence_refs": [
+            "E07-3"
+          ]
+        }
+      ],
+      "condition": {
+        "reuse_policy_rule_id": "utokyo-gsfs-2027-a-work-study-plan",
+        "mode": "all",
+        "predicates": [
+          {
+            "field_path": "employment.currently_employed_in_organization",
+            "operator": "equals",
+            "expected_value": true
+          },
+          {
+            "field_path": "employment.retain_employment_at_enrollment",
+            "operator": "equals",
+            "expected_value": true
+          }
+        ],
+        "effect_if_matched": "required_after_evidence_validation",
+        "not_matched_meaning": "this_condition_does_not_apply_not_a_complete_exemption",
+        "unknown_meaning": "ask_missing_profile_fields"
+      },
+      "relations": [
+        {
+          "from": "E08",
+          "to": "E06",
+          "kind": "supplements",
+          "explanation_zh": "附表重申两项在职条件，补充出愿期间PDF上传方式。"
+        },
+        {
+          "from": "E07",
+          "to": "E06",
+          "kind": "reference_only",
+          "explanation_zh": "同一人群但不同材料、不同阶段；共通11.(8)尚未完成引用闭包，不推出完整单位承诺书结论。"
+        }
+      ],
+      "unknowns": [
+        "计划书模板和写作要求未核验",
+        "单位承诺书的共通11.(8)完整要求不在本样本覆盖内"
+      ],
+      "integration": "Reuse existing E06/E08, employment fields, material_conditions.evaluate and material-slice report. No replacement rule engine or employment inference from student status."
+    },
+    {
+      "sample_id": "cross-source-english",
+      "kind": "cross_document_interpretation",
+      "material_key": "english_score_sheet",
+      "title_zh": "英语成绩单需要提交吗？",
+      "official_name_ja": "英語のスコアシート",
+      "coverage_status": "existing_reviewed_relation_reused",
+      "profile_fields": [],
+      "reader": {
+        "summary": "在本次複雑理工学修士一般选拔范围内，不需要提交 TOEFL、TOEIC 等英语成绩单。",
+        "steps": [
+          "本项不加入“待提交的英语成绩单”清单。"
+        ],
+        "note": "这只说明不用交成绩单，不代表免除英语相关考查，也不适用于其他专攻、选拔路线或年度。"
+      },
+      "claims": [
+        {
+          "field": "common_rule",
+          "value": "consult_program_requirements",
+          "evidence_refs": [
+            "E01-2"
+          ]
+        },
+        {
+          "field": "submission.required",
+          "value": false,
+          "evidence_refs": [
+            "E02-1",
+            "E02-2"
+          ]
+        },
+        {
+          "field": "additional_note",
+          "value": "references_score_sending_instructions",
+          "evidence_refs": [
+            "E03-2"
+          ]
+        }
+      ],
+      "condition": {
+        "reuse_policy_rule_id": "utokyo-gsfs-2027-a-english-score-sheet",
+        "mode": "all",
+        "predicates": [],
+        "effect_if_scope_and_evidence_valid": "not_required",
+        "english_exam_exempt": null
+      },
+      "relations": [
+        {
+          "from": "E01",
+          "to": "E02",
+          "kind": "delegates_to",
+          "explanation_zh": "共通文件明确要求按专攻确认；专攻案内给出本范围不用交成绩单的具体规定。"
+        },
+        {
+          "from": "E03",
+          "to": "E01",
+          "kind": "reference_only",
+          "explanation_zh": "附表脚注只指向送分方法，不自行建立提交义务，也不是覆盖专攻条款的新规则。"
+        }
+      ],
+      "unknowns": [
+        "本样本不推断英语考试是否免除",
+        "不决定其他年度或路线的英语要求"
+      ],
+      "integration": "Reuse E01/E02/E03, existing report plan and evidence-relation dialog. Relation labels here are a design mapping, not a new runtime schema or automatic precedence policy."
+    }
+  ],
+  "evidence": [
+    {
+      "record_id": "E01",
+      "revision": 1,
+      "source_id": "gsfs-master-2027",
+      "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "physical_page": 6,
+      "printed_page_label": "6",
+      "fragments": [
+        {
+          "fragment_id": "E01-1",
+          "role": "context",
+          "text": "7. 英語のスコアシートについて"
+        },
+        {
+          "fragment_id": "E01-2",
+          "role": "clause",
+          "text": "専攻により，TOEFL，IELTS，TOEIC 等のスコアシートの提出が必要な場合があります。どのスコアシートが必要か，各スコアシートの提出期限とともに，必ず志望専攻の入試案内書を確認してください。"
+        }
+      ],
+      "manual_anchor": "Section 7 heading and opening two sentences",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "E02",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "fragments": [
+        {
+          "fragment_id": "E02-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E02-2",
+          "role": "clause",
+          "text": "修士課程一般選抜試験では、TOEFL iBTやTOEIC L&Rなどの英語のスコアシートを提出する必要はない。"
+        }
+      ],
+      "manual_anchor": "Masters general heading and first bullet under other notes",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "E03",
+      "revision": 1,
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "fragments": [
+        {
+          "fragment_id": "E03-1",
+          "role": "context",
+          "text": "【複雑理工学専攻】"
+        },
+        {
+          "fragment_id": "E03-2",
+          "role": "cross_reference",
+          "text": "注：英語スコアの送付方法については，募集要項を熟読すること。"
+        }
+      ],
+      "manual_anchor": "Footer immediately below additional-material table",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "E06",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "fragments": [
+        {
+          "fragment_id": "E06-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E06-2",
+          "role": "context",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E06-3",
+          "role": "clause",
+          "text": "企業・官公庁・団体等に在職する者で、在職の身分のまま入学を希望する者は、学業・職務両立計画書を提出すること。"
+        }
+      ],
+      "manual_anchor": "Work-study plan heading and first paragraph",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "E07",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "fragments": [
+        {
+          "fragment_id": "E07-1",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "E07-2",
+          "role": "context",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E07-3",
+          "role": "clause",
+          "text": "また、入学手続きの際に、勤務先の承諾書（様式任意、研究科募集要項 11. (8)を参照）を提出すること。"
+        }
+      ],
+      "manual_anchor": "Second paragraph under work-study plan heading",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "E08",
+      "revision": 1,
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "fragments": [
+        {
+          "fragment_id": "E08-1",
+          "role": "context",
+          "text": "【複雑理工学専攻】"
+        },
+        {
+          "fragment_id": "E08-2",
+          "role": "table_group_header",
+          "text": "出願期間中に「オンライン出願システム」により提出する書類等"
+        },
+        {
+          "fragment_id": "E08-3",
+          "role": "table_group_note",
+          "text": "（※PDFファイルのアップロードによる）"
+        },
+        {
+          "fragment_id": "E08-4",
+          "role": "table_column_header",
+          "text": "提出物"
+        },
+        {
+          "fragment_id": "E08-5",
+          "role": "table_row_label",
+          "text": "学業・職務両立計画書"
+        },
+        {
+          "fragment_id": "E08-6",
+          "role": "table_column_header",
+          "text": "対象者，備考"
+        },
+        {
+          "fragment_id": "E08-7",
+          "role": "table_cell",
+          "text": "【対象者】企業・官公庁・団体等に在職する者で，在職の身分のまま入学を希望する者。"
+        }
+      ],
+      "manual_anchor": "Left upload group and final material row; right group is empty",
+      "origin": "existing_reviewed_record_referenced_without_modification"
+    },
+    {
+      "record_id": "DRAFT-Q1",
+      "revision": 1,
+      "source_id": "complex-master-a-additional",
+      "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page": 1,
+      "printed_page_label": null,
+      "origin": "new_design_transcription_not_imported",
+      "manual_anchor": "Left upload table: group heading, questionnaire row, same-row audience and note; not the adjacent essay/work-plan rows",
+      "fragments": [
+        {
+          "fragment_id": "DRAFT-Q1-group",
+          "role": "table_group_header",
+          "text": "出願期間中に「オンライン出願システム」により提出する書類等"
+        },
+        {
+          "fragment_id": "DRAFT-Q1-format",
+          "role": "table_group_note",
+          "text": "(※PDFファイルのアップロードによる）"
+        },
+        {
+          "fragment_id": "DRAFT-Q1-label",
+          "role": "table_row_label",
+          "text": "志望調査票（修士）"
+        },
+        {
+          "fragment_id": "DRAFT-Q1-audience",
+          "role": "same_row_audience",
+          "text": "【対象者】全員"
+        },
+        {
+          "fragment_id": "DRAFT-Q1-note",
+          "role": "same_row_note",
+          "text": "【備考】修士課程用の調査票を提出すること。"
+        }
+      ]
+    },
+    {
+      "record_id": "DRAFT-Q2",
+      "revision": 1,
+      "source_id": "complex-guide-2027-revised",
+      "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page": 28,
+      "printed_page_label": "26",
+      "origin": "new_design_transcription_not_imported",
+      "manual_anchor": "Masters ordinary-selection heading; other-notes questionnaire bullet",
+      "fragments": [
+        {
+          "fragment_id": "DRAFT-Q2-scope",
+          "role": "context",
+          "text": "修士課程 一般選抜"
+        },
+        {
+          "fragment_id": "DRAFT-Q2-form",
+          "role": "clause",
+          "text": "一般選抜用「志望調査票」は、当専攻のホームページで指定する一般選抜用「調査票入力フォーム」で作成すること。"
+        },
+        {
+          "fragment_id": "DRAFT-Q2-upload",
+          "role": "clause",
+          "text": "出力された「志望調査票」のPDFファイルを、オンライン出願サイトより提出すること。"
+        }
+      ]
+    }
+  ],
+  "condition_scenarios": [
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.retain_employment_at_enrollment"
+      ]
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": [
+        "employment.retain_employment_at_enrollment"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.currently_employed_in_organization"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": [
+        "employment.currently_employed_in_organization"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.currently_employed_in_organization",
+        "employment.retain_employment_at_enrollment"
+      ]
+    }
+  ],
+  "target_isolation_examples": [
+    {
+      "changed_target_field": "institution_id",
+      "value": "isct",
+      "actual_status": "not_covered",
+      "entry_count": 0
+    },
+    {
+      "changed_target_field": "admission_cycle",
+      "value": 2028,
+      "actual_status": "not_covered",
+      "entry_count": 0
+    },
+    {
+      "changed_target_field": "selection_route_id",
+      "value": "special-oral",
+      "actual_status": "not_covered",
+      "entry_count": 0
+    }
+  ],
+  "unknown_handling": "unknown/null never means no requirement; unsupported target yields no conclusions",
+  "versioning_proposal": "Keep source revisions, authoring revision and display wording revision distinct; changed evidence invalidates dependent claims until re-reviewed."
+}
