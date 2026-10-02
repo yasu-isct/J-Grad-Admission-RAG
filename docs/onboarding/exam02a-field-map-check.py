@@ -34,14 +34,19 @@ def main(kb_path: Path, pdf_path: Path) -> None:
     data = json.loads((HERE / "exam02a-field-bindings.json").read_text(encoding="utf-8"))
     kb_bytes = kb_path.read_bytes()
     assert hashlib.sha256(kb_bytes).hexdigest() == data["source_identity"]["source_kb_sha256"]
-    assert hashlib.sha256(pdf_path.read_bytes()).hexdigest() == data["source_identity"]["source_pdf_sha256"]
+    assert (
+        hashlib.sha256(pdf_path.read_bytes()).hexdigest()
+        == data["source_identity"]["source_pdf_sha256"]
+    )
     pdf = fitz.open(pdf_path)
     facts = {fact["fact_id"]: fact for fact in json.loads(kb_bytes)["facts"]}
     assert len(facts) == 391
     departments = data["departments"]
     assert len(departments) == 18
     assert len({item["department_id"] for item in departments}) == 18
-    matrix = list(csv.DictReader((HERE / "exam02a-target-matrix.csv").open(encoding="utf-8-sig", newline="")))
+    matrix = list(
+        csv.DictReader((HERE / "exam02a-target-matrix.csv").open(encoding="utf-8-sig", newline=""))
+    )
     assert len(matrix) == 36
     targets = {(r["department_id"], int(r["intake_year"]), int(r["intake_month"])) for r in matrix}
     assert len(targets) == 36
@@ -69,7 +74,10 @@ def main(kb_path: Path, pdf_path: Path) -> None:
             assert "b.specialist_condition" in fields
         for field in fields.values():
             if field["value_zh"] is None:
-                assert not field["sources"] and field["missing_reason_zh"], (name, field["field_path"])
+                assert not field["sources"] and field["missing_reason_zh"], (
+                    name,
+                    field["field_path"],
+                )
                 field_count += 1
                 continue
             assert field["value_zh"] and field["sources"], (name, field["field_path"])
@@ -85,10 +93,16 @@ def main(kb_path: Path, pdf_path: Path) -> None:
                     else:
                         assert fact["parent_college"] == item["college_id"]
                         assert name in fact["scope_targets"]
-                    assert hashlib.sha256(fact["text"].encode("utf-8")).hexdigest() == source["fact_text_sha256"]
+                    assert (
+                        hashlib.sha256(fact["text"].encode("utf-8")).hexdigest()
+                        == source["fact_text_sha256"]
+                    )
                     assert source["exact_text"] in fact["text"]
                 else:
-                    assert source["source_id"].startswith("pdf_page:") and source["manual_pdf_visual_check"]
+                    assert (
+                        source["source_id"].startswith("pdf_page:")
+                        and source["manual_pdf_visual_check"]
+                    )
                     page = int(source["source_id"].split(":")[1])
                     assert source["physical_pages"] == [page]
                     # The p.40 right-hand vertical note is visually legible but split
@@ -96,7 +110,9 @@ def main(kb_path: Path, pdf_path: Path) -> None:
                     if page != 40:
                         assert source["exact_text"] in pdf[page - 1].get_text(sort=True)
                 anchor_count += 1
-    print(f"{len(departments)} departments / {len(targets)} targets / {field_count} fields / {anchor_count} source anchors checked")
+    print(
+        f"{len(departments)} departments / {len(targets)} targets / {field_count} fields / {anchor_count} source anchors checked"
+    )
 
 
 if __name__ == "__main__":
