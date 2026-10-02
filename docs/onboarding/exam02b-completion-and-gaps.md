@@ -1,4 +1,4 @@
-# EXAM-02B：18 系考试信息完成与缺口（待集中设计验收）
+# EXAM-02B：18 系考试信息完成与缺口（已独立验收合并）
 
 ## 用户能看到的内容
 
@@ -15,11 +15,11 @@
 | 报告与复制 | [本版36目标仅考试报告样张](exam02b-evidence/review-36-direct-exam-report-samples.txt)由真实来源直接投影、前端校验和正式 `readerReport` 文本路径生成；[10系保存基础响应＋只读考试投影复制文本](exam02b-evidence/review-exam-only-report-copy-samples.txt)与七类浏览器回放逐字一致。前版[18系真实HTTP复制文本](exam02b-evidence/exam-only-report-copy-samples.txt)保留作历史对照。直接投影样张不冒充新HTTP。 |
 | 桌面与手机 | [7 类保存基础响应＋本版直接投影回放记录](exam02b-evidence/browser-replay-journal.json)：简单、数学、材料双组、建筑导师选科、融合双题、社会人文无笔试、旧 CS。示例：[建筑第二步桌面](exam02b-evidence/architecture-step2-desktop.png)、[手机](exam02b-evidence/architecture-step2-mobile.png)、[仅考试报告桌面](exam02b-evidence/architecture-report-desktop.png)、[手机](exam02b-evidence/architecture-report-mobile.png)；[无笔试报告](exam02b-evidence/social-human-report-desktop.png)。回放中所有 GET/POST 均由本地浏览器拦截，实际新服务／POST 0；[四类考试卡两视口增量回放](exam02b-evidence/review-card-replay.json)核对三系默认课程提示，以及地球惑星笔试四组原文与系统控制多 Fact 口述，[地球惑星手机原文](exam02b-evidence/review-earth-390-source.png)、[应用化学手机课程提示](exam02b-evidence/review-applied-chemistry-390-card.png)。 |
 | 旧接口与负例 | [4 次真实 HTTP](exam02b-evidence/api-compat-journal.json)：旧 CS 1.0 考试字段及要求与历史响应精确一致；无参数旧请求无考试字段；另册课程不继承系表；错校目标不产生肯定结论。 |
-| 受影响回归 | 前版41 项 Python 通过、16 项现有条件跳过；本轮新旧考试定向 Python 6 项、Node 13 项，36目标只读投影与7类完整四步页＋4类考试卡双视口回放通过。M9 policy 写入被自动审批拦截，不能称当前 CI 绿。PDF、391 KB、payload、vector 的 [SHA 与登记清单一致](exam02b-evidence/protected-asset-hashes.json)。 |
+| 受影响回归 | 前版41 项 Python 通过、16 项现有条件跳过；本轮新旧考试定向 Python 6 项、Node 13 项，36目标只读投影与7类完整四步页＋4类考试卡双视口回放通过。M9 policy 已按精确授权仅更新 implementation_sha256；设计独立复核通过，精确 head `bc84bc9c7fc91f325ff7bacb844c40b07501dc08` Quality CI 通过。PDF、391 KB、payload、vector 的 [SHA 与登记清单一致](exam02b-evidence/protected-asset-hashes.json)。 |
 
 ## 未完成、限制与验收顺序
 
-1. **来源仍待设计独立批准。** #277 R1–R3 已按原审查修正并自检，#275 先从原 head `eb969b1b74929f4976b9e622a0e84f020109d2fc` 建立，并已重放到来源返修 head `416f2e88d7375933e8c0513cf0abc76ac6f44612` 的依赖分支。设计先核对 #277 的 2026 年跨页推定、原文/范围/语言、A/B 路径和课程排除，再审本 PR 的目标匹配、页面与报告。未验收前不合并、不切换在线网页。
+1. **来源与实现已独立批准并合并。** 来源 #277 head `416f2e88d7375933e8c0513cf0abc76ac6f44612`，实现 #278 head `bc84bc9c7fc91f325ff7bacb844c40b07501dc08`，按此顺序完成独立验收。科目/口述条件、字段完整原文入口和三系默认课程提示均已复核；在线网页未切换。[设计验收与最终资源账本](exam02-design-acceptance.md)。
 2. **真实来源缺口隔离。** 地球生命课程另册不在本次 PDF，显式选择即返回 `not_covered_course` 且无考试路径；本册未载的选答数、配分保持未载。建筑专门科目依全部志愿导师共同指定，页面不代选。机械/应用化学另见网页的细节未下载补充。官方 A/B 日程不证明个人参加资格。
 3. **英语规则交界。** 数学不要求外部成绩单，物理在考试日携带，土木有条件性提前邮寄；考试卡转述本系原文，现有个人英语准备规则仍独立核对。若未来要改变材料规则，应另行审核，不由考试卡暗改。
 4. **M9 单字段指纹已获直接授权并更新。** 用户在当前对话明确批准只把 `config/grounded_rag_release_gate_v1.json` 的 `implementation_sha256` 从 `f0906681edf8bf657008a882888f62915ee1866a7734a97c773ae3bc748874b2` 更新为 `e96cb087a5291dec157f6f2a6b8a2212a46c62ed813fe3e95ef19ef49975d213`。写入前重新核对四个跟踪文件与原审查版一致，摘要重新计算完全相同；仅此字段变更，历史数据、路径和阈值未动。M9 与新旧考试定向测试 16 项通过；精确 CI 以本 PR 最新 head 为准。

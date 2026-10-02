@@ -1,6 +1,6 @@
 # EXAM-02A #274：四步页展示与来源合同候选
 
-**#277 来源与 #278 隔离实现正在集中增量复审，尚未验收或合并。** 审核材料：[36 目标矩阵](exam02a-target-matrix.csv)、[187 项字段绑定](exam02a-field-bindings.json)、[原文账本](exam02a-source-ledger.md)、[逐系中文候选](exam02a-source-matrix.md)。#277 是来源候选，#278 已另设依赖分支实施只读 v2；规则、知识库及用户正在使用的网页未切换。
+**#277 来源与 #278 实现已于2026-10-02独立验收并合并。** [设计验收](exam02-design-acceptance.md)记录最终范围、证据与限制；文件名保留以维护既有链接。 审核材料：[36 目标矩阵](exam02a-target-matrix.csv)、[187 项字段绑定](exam02a-field-bindings.json)、[原文账本](exam02a-source-ledger.md)、[逐系中文候选](exam02a-source-matrix.md)。#277 是来源候选，#278 已另设依赖分支实施只读 v2；规则、知识库及用户正在使用的网页未切换。
 
 ## 老师先看到什么
 
@@ -10,7 +10,7 @@
 
 ## 建议的通用只读记录形状
 
-下列对应 #278 当前隔离实现的**只读 v2 字段形状**，仍待设计验收。当前 `POST /v1/base-requirements?include_examination_information=true` 的 1.0 响应保持原样，包括信息工学系 B 日程两批次。只有新调用显式请求 `include_examination_information=true&exam_presentation_version=2` 时返回下面的 v2 考试信息；不带参数、旧 `true` 请求、两校既有基础规则及报告 API 均不变。可选 `course_id` 也只在显式 v2 查询参数中提供（例：`&course_id=地球生命コース`），不加入旧 `DemoTargetRequest` 的目标身份；缺省为 `unspecified`。未知课程 ID fail closed，不能通过改写部门 ID 绕过排除。本设计不要求第一步新增路线或课程必填项。
+下列对应 #278 当前隔离实现的**只读 v2 字段形状**，已随本包验收。当前 `POST /v1/base-requirements?include_examination_information=true` 的 1.0 响应保持原样，包括信息工学系 B 日程两批次。只有新调用显式请求 `include_examination_information=true&exam_presentation_version=2` 时返回下面的 v2 考试信息；不带参数、旧 `true` 请求、两校既有基础规则及报告 API 均不变。可选 `course_id` 也只在显式 v2 查询参数中提供（例：`&course_id=地球生命コース`），不加入旧 `DemoTargetRequest` 的目标身份；缺省为 `unspecified`。未知课程 ID fail closed，不能通过改写部门 ID 绕过排除。本设计不要求第一步新增路线或课程必填项。
 
 ```json
 {
