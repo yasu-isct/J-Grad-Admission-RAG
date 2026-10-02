@@ -2,7 +2,7 @@
 
 ## 2026-10-02：EXAM-02 来源与实现集中返修中
 
-[#277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) 的来源候选与依赖它的 [#278](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/278) 隔离实现已提交，设计集中审查为 Changes requested。当前修正科目／口述条件、字段完整原文入口、三系课程范围默认提示和授权的 M9 单字段指纹；两 PR 均未验收或合并，在线页未切换。此前“#275 Blocked／不得实施”是早期单项检查点要求，已由用户批准的连续开发、成果集中验收安排取代；后续旧段落作为历史保留。
+[#277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) 的来源候选与依赖它的 [#278](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/278) 隔离实现已提交，设计集中审查为 Changes requested。当前修正科目／口述条件、字段完整原文入口、三系课程范围默认提示；M9 单字段指纹获设计审查授权，但自动审批仍要求用户在当前对话直接批准写入。两 PR 均未验收或合并，在线页未切换。此前“#275 Blocked／不得实施”是早期单项检查点要求，已由用户批准的连续开发、成果集中验收安排取代；后续旧段落作为历史保留。
 
 
 ## 2026-10-01：EXAM-02A #274 来源与展示设计候选
