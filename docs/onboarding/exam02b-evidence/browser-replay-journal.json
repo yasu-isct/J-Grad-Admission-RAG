@@ -5,7 +5,7 @@
     "saved_response": "system-control-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "1bd5b94dbcf530a7757bc713774ff113ffee45c0177035b81613bcd6918ef857",
+    "copy_sha256": "1505e6f75af7a0a05e11b793d9ad1d49d8acb3fcc4d0200d3405690f4e1ad8ab",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -15,7 +15,7 @@
     "saved_response": "math-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "213c02dee95fdf991d6b7a5a797e077805fb26f68692bc0f6cbf2acdca147e6d",
+    "copy_sha256": "f7ecc43acd6b0bb40a6461167448acf2d6c9f31b58205f82fdebf76652df8662",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -25,7 +25,7 @@
     "saved_response": "materials-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "9ee42b661c2523f4baae5598ac23e3ab6921861a75945ea7ce9399679b194631",
+    "copy_sha256": "6739b8a8fcdf9092a15ce1be3077819666e35337098110e7a99d8d1c54d4f56a",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -35,7 +35,7 @@
     "saved_response": "architecture-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "bc8456e14f71bc5fad875fceed49ca6f00bb563c88d0a0c58ba80446a64b3ed7",
+    "copy_sha256": "916cc8c0a15ba709375cd9720561d9923f96896d442fb665b0fef056b9e6f902",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -45,7 +45,7 @@
     "saved_response": "transdisciplinary-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "bc306f881ce0f6397af7904154e28f2157abb3e3d41ed5613fd56611e7773bda",
+    "copy_sha256": "a4c25eefe160fc5d55104b9caab6489b577331adec71f08b55f44634a56bef34",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -55,7 +55,7 @@
     "saved_response": "social-human-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "7d02d1bdfe8e0661d5e9ef135acfd8a03cab582ed84e303da731c4a7a2244028",
+    "copy_sha256": "c601aa763d439dd4817583c1db172779aa5be5e0b3665ed509e8499cd4b9f4f4",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   },
@@ -65,7 +65,7 @@
     "saved_response": "computer-science-base-v2.json",
     "intercepted_product_post": 1,
     "actual_product_post": 0,
-    "copy_sha256": "baa2265245ec5b953ab235f535933d04d5c71bba6fef3b01646e10a10e35780a",
+    "copy_sha256": "869fa926c06a51fd126f834b312778da53c3cfb21aec8839723ba7f6c3874bbd",
     "desktop_and_mobile_no_overflow": true,
     "page_errors": []
   }

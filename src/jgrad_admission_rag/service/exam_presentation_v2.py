@@ -18,7 +18,7 @@ from .demo_requirements import DemoEvidence
 from .exam_presentation import ExamPresentationError, ReviewedExamPresentation
 
 
-SOURCE_SHA256 = "c724d2e228a128fff1cc863aca68e72cd10ee02bbe4c4ce67c835f7e2d632ef3"
+SOURCE_SHA256 = "906ceaa57ac615f1d2acb1da1265f93c690e8574b31fc8a2303e2b12605acfad"
 PRESENTATION_ID = "isct-18-departments-exams-2026-v2"
 DOCUMENT_ID = "isct_2027_4_2026_9_master"
 INTAKES = [{"year": 2026, "month": 9}, {"year": 2027, "month": 4}]

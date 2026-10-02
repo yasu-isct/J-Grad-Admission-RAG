@@ -456,7 +456,8 @@ test("EXAM-01 validates source and target before offering an opt-in report topic
 test("EXAM-02B validates a real-source v2 projection and rejects altered anchors", () => {
   const saved = (name) => JSON.parse(readFileSync(new URL(`../docs/onboarding/prep01-evidence/${name}`, import.meta.url)));
   const catalog = saved("reference-targets.json");
-  const info = JSON.parse(readFileSync(new URL("../docs/onboarding/exam02b-evidence/system-control-v2-source-projection.json", import.meta.url)));
+  const overlays = JSON.parse(readFileSync(new URL("../docs/onboarding/exam02b-evidence/review-v2-exam-overlays.json", import.meta.url)));
+  const info = overlays["system-control-base-v2.json"];
   const item = readyEntries(catalog).find((entry) => entry.entry_id === "legacy-isct");
   const scope = scopesFor(item).find((entry) => entry.request.department_id === info.target_identity.department_id
     && entry.request.intake.year === 2027 && entry.request.intake.month === 4);
@@ -467,6 +468,7 @@ test("EXAM-02B validates a real-source v2 projection and rejects altered anchors
   assert.equal(exam.pathways[1].personal_eligibility, "unconfirmed");
   const rows = examReportRows(exam).join("\n");
   assert.match(rows, /微积分/);
+  assert.match(rows, /事先准备的资料发表/);
   assert.match(rows, /本人参加路径与资格须由学校确认/);
   assert.equal(validateExamInformation(scope, {...info, source_identity: {...info.source_identity,
     source_kb_sha256: "0".repeat(64)}}), null);

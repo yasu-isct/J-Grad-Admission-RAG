@@ -26,6 +26,16 @@ for (const response of responses) {
   assert.ok(rows.length >= 5);
   assert.ok(rows.some((row) => row.includes("学校公布的 A 日程")));
   assert.ok(rows.some((row) => row.includes("学校公布的 B 日程")));
+  const joined = rows.join("\n");
+  if (["地球惑星科学系", "応用化学系", "生命理工学系"].includes(target.department_id)) {
+    assert.match(rows[1], /本册覆盖课程：/);
+    assert.match(rows[1], /地球生命コース采用另册，当前未覆盖/);
+  }
+  if (target.department_id === "情報通信系") assert.match(joined, /微积分、线性代数.*信息通信领域论述题/);
+  if (target.department_id === "数学系") assert.match(joined, /第12学季课程同等程度/);
+  if (target.department_id === "社会・人間科学系") assert.match(joined, /线上以日语口头问答/);
+  if (target.department_id === "システム制御系") assert.match(joined, /事先准备的资料发表/);
+  if (target.department_id === "地球惑星科学系") assert.match(joined, /A 日程口述.*以英语口述/);
   summary.push({department_id: target.department_id, intake: target.intake,
     written_status: exam.pathways[1].written.status,
     subject_components: exam.pathways[1].written.subjects_zh.length,

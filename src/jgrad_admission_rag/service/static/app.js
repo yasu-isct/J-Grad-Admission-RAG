@@ -1330,21 +1330,79 @@ function renderExamCard(exam) {
   return section;
 }
 
-function examSourceForField(exam, fieldPath) {
+function examSourcesForField(exam, fieldPath) {
   const field = exam.field_bindings.find((item) => item.field_path === fieldPath);
-  if (!field) return null;
+  if (!field) return [];
+  const groups = new Map();
   for (const source of field.sources) {
     const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
-    if (fact) return fact;
-    if (source.source_id.startsWith("pdf_page:")) return {
+    const evidence = fact || (source.source_id.startsWith("pdf_page:") ? {
       official_title: exam.official_title, school_name: currentReferenceScope()?.school || "当前学校",
       intake_name: currentReferenceScope()?.intake || "本册目标", pages: source.physical_pages,
       official_text: source.exact_text, source_url: exam.official_source_url,
       local_pdf_url: exam.local_pdf_url,
       limitation: "这是已核对PDF页的原文锚点；请结合完整原页与学校通知阅读。"
-    };
+    } : null);
+    if (!evidence) continue;
+    const key = `${source.source_id}:${source.physical_pages.join(",")}`;
+    if (!groups.has(key)) groups.set(key, {evidence, anchors: []});
+    const group = groups.get(key);
+    if (!group.anchors.includes(source.exact_text)) group.anchors.push(source.exact_text);
   }
-  return null;
+  return [...groups.values()];
+}
+
+function openExamFieldEvidence(label, sources, trigger) {
+  drawerTrigger = trigger;
+  drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+  drawerGraph = null;
+  evidenceDrawer.classList.remove("relationship-window");
+  byId("drawer-title").textContent = "官方依据";
+  drawerContent.replaceChildren(heading(3, label));
+  const note = document.createElement("p");
+  note.className = "evidence-chinese-summary";
+  note.textContent = "以下按原文页和片段列出这项考试说明的全部依据；本人适用路径与资格仍以学校通知为准。";
+  drawerContent.append(note);
+  const cards = document.createElement("div");
+  cards.className = "relation-nodes";
+  for (const {evidence, anchors} of sources) {
+    const card = document.createElement("article");
+    card.className = "relation-node";
+    card.append(heading(4, `PDF 第 ${evidence.pages.join("、")} 页`));
+    for (const anchor of anchors) {
+      const quote = document.createElement("blockquote");
+      quote.className = "direct-evidence";
+      const mark = document.createElement("mark");
+      mark.textContent = anchor;
+      quote.append(mark);
+      card.append(quote);
+    }
+    const context = document.createElement("details");
+    context.className = "official-context";
+    const summary = document.createElement("summary");
+    summary.textContent = "展开该页原文上下文";
+    const full = document.createElement("blockquote");
+    full.className = "evidence-text";
+    full.textContent = evidence.official_text;
+    context.append(summary, full);
+    card.append(context);
+    for (const page of evidence.pages) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const link = document.createElement("a");
+      link.className = "source-link pdf-source-link";
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `在 PDF 中查看第 ${page} 页`;
+      card.append(link);
+    }
+    cards.append(card);
+  }
+  drawerContent.append(cards);
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = 0;
+  drawerClose.focus({preventScroll: true});
 }
 
 function renderExamCardV2(exam) {
@@ -1356,6 +1414,12 @@ function renderExamCardV2(exam) {
   lead.className = "exam-lead";
   lead.textContent = view.lead;
   section.append(lead);
+  if (view.course) {
+    const course = document.createElement("p");
+    course.className = "exam-course-notice";
+    course.textContent = view.course;
+    section.append(course);
+  }
   if (view.subjects.length) {
     section.append(heading(4, "考什么"));
     const list = document.createElement("ul");
@@ -1373,9 +1437,9 @@ function renderExamCardV2(exam) {
   }
   const more = document.createElement("details");
   const summary = document.createElement("summary");
-  summary.textContent = "口述、英语、语言与适用范围";
+  summary.textContent = "口述、英语与语言";
   more.append(summary);
-  for (const text of [view.aOral, view.bOral, view.specialist, view.english, view.language, view.course]) if (text) {
+  for (const text of [view.aOral, view.bOral, view.specialist, view.english, view.language]) if (text) {
     const row = document.createElement("p");
     row.textContent = text;
     more.append(row);
@@ -1385,15 +1449,13 @@ function renderExamCardV2(exam) {
   actions.className = "source-actions";
   for (const [path, label] of [["b.subjects", "查看笔试原文"], ["a.oral", "查看 A 日程原文"],
     ["b.oral", "查看 B 口述原文"], ["english.submission", "查看英语原文"]]) {
-    const evidence = examSourceForField(exam, path);
-    if (!evidence) continue;
+    const sources = examSourcesForField(exam, path);
+    if (!sources.length) continue;
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary";
     button.textContent = label;
-    button.addEventListener("click", () => openDemoEvidence({title: label}, evidence, button,
-      {examYearNote: "考试年份由本册封面、共通流程和本系原页交叉核对；查看官方路径不代表本人获得参加资格。",
-        examYearPages: [1, 2]}));
+    button.addEventListener("click", () => openExamFieldEvidence(label, sources, button));
     actions.append(button);
   }
   section.append(actions);

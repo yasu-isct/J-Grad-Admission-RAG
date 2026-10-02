@@ -275,7 +275,7 @@ const examSource = {
   source_kb_sha256: "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
 };
 const examPresentationSha = "368ed4de43dd2dde8eda986d2ad2d6922e8cfb7c3640583381b1b559a4170aa7";
-const examPresentationV2Sha = "c724d2e228a128fff1cc863aca68e72cd10ee02bbe4c4ce67c835f7e2d632ef3";
+const examPresentationV2Sha = "906ceaa57ac615f1d2acb1da1265f93c690e8574b31fc8a2303e2b12605acfad";
 
 function validateExamInformationV2(scope, info) {
   try {
@@ -422,8 +422,8 @@ export function examReportRows(exam) {
   if (exam?.status !== "available") return [];
   if (exam.schema_version === "2.0") {
     const view = examV2View(exam);
-    return [view.lead, ...view.subjects, view.selection, view.points, view.aOral,
-      view.bOral, view.specialist, view.english, view.language, view.course].filter(Boolean);
+    return [view.lead, view.course, ...view.subjects, view.selection, view.points, view.aOral,
+      view.bOral, view.specialist, view.english, view.language].filter(Boolean);
   }
   const s = exam.schedule;
   const dateZh = (value, year = true) => {
@@ -455,7 +455,7 @@ export function examV2View(exam) {
     ? `选答方式：${written.selection_rule_zh}` : null;
   const points = written.points_zh ? `评价与英语：${written.points_zh}` : null;
   const aOral = `${a.label_zh}口述：${a.oral.description_zh.replace(/^A：/, "")}。`;
-  const bOral = `${b.label_zh}口述：${b.oral.description_zh.split("；")[0]}。`;
+  const bOral = `${b.label_zh}口述：${b.oral.description_zh.replaceAll("**", "")}。`;
   const condition = exam.field_bindings.find((field) => field.field_path === "b.specialist_condition")?.value_zh;
   const specialist = condition ? `专门科目条件：${condition.replaceAll("**", "")}。` : null;
   const english = b.english.submission_zh ? `本系英语证明原文：${b.english.submission_zh}。材料准备结果仍按既有规则核对。` : null;
@@ -463,7 +463,7 @@ export function examV2View(exam) {
     ? `笔试作答语言：${written.answer_language_zh}。`
     : written.administration_language_zh ? `考试实施语言：${written.administration_language_zh}；原文未另载笔试答案语言。` : null;
   const course = exam.applicability.excluded_course_ids.length
-    ? `本册仅整理所列课程；${exam.applicability.excluded_course_ids.join("、")}采用另册，当前未覆盖。` : null;
+    ? `本册覆盖课程：${exam.applicability.covered_course_ids.join("、")}；${exam.applicability.excluded_course_ids.join("、")}采用另册，当前未覆盖其考试安排。` : null;
   return {lead, subjects, selection, points, aOral, bOral, specialist, english, language, course};
 }
 

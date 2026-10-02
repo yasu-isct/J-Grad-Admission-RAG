@@ -991,6 +991,7 @@ legend {
 .result-section { min-width: 0; scroll-margin-top: 20px; }
 .exam-arrangement { padding: 20px; border: 1px solid #c8ded5; border-radius: 14px; background: #f6faf8; scroll-margin-top: 180px; }
 .exam-arrangement .exam-lead { font-weight: 700; color: #183d32; }
+.exam-arrangement .exam-course-notice { padding: 10px 12px; border-left: 4px solid #916e2c; background: #fff8e6; line-height: 1.55; overflow-wrap: anywhere; }
 .exam-arrangement h4 { margin: 16px 0 6px; }
 .exam-arrangement li { margin: 5px 0; overflow-wrap: anywhere; }
 .exam-arrangement details { margin-top: 14px; }

@@ -1,7 +1,7 @@
 """Replay saved EXAM-02B real responses on the current four-step page.
 
-Only GETs reach the isolated development server. Every product POST is
-intercepted; the base response is fulfilled from a saved real HTTP response.
+Every GET and POST is intercepted. Saved real base responses are paired in
+memory with current direct examination projections from the protected assets.
 """
 
 from __future__ import annotations
@@ -10,12 +10,16 @@ import hashlib
 import json
 import re
 from pathlib import Path
+from urllib.parse import urlparse
 
 from playwright.sync_api import sync_playwright
 
 
 HERE = Path(__file__).resolve().parent
 EDGE = Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")
+ROOT = HERE.parents[2]
+STATIC = ROOT / "src/jgrad_admission_rag/service/static"
+# Loopback is a secure clipboard context; all requests are fulfilled by route_post.
 ORIGIN = "http://127.0.0.1:8010"
 CASES = {
     "system-control": ("システム制御系", "system-control-base-v2.json"),
@@ -26,10 +30,11 @@ CASES = {
     "social-human": ("社会・人間科学系", "social-human-base-v2.json"),
     "computer-science": ("情報工学系", "computer-science-base-v2.json"),
 }
+OVERLAYS = json.loads((HERE / "review-v2-exam-overlays.json").read_text(encoding="utf-8"))
 
 
 def expected_copies() -> dict[str, str]:
-    raw = (HERE / "exam-only-report-copy-samples.txt").read_text(encoding="utf-8")
+    raw = (HERE / "review-exam-only-report-copy-samples.txt").read_text(encoding="utf-8")
     chunks = re.split(r"(?=^===== \d+\. )", raw, flags=re.M)
     result = {}
     for chunk in chunks:
@@ -56,6 +61,7 @@ def choose(page, target: dict) -> None:
 
 def run_case(browser, name: str, department: str, filename: str, copy: str) -> dict:
     payload = json.loads((HERE / filename).read_text(encoding="utf-8"))
+    payload["examination_information"] = OVERLAYS[filename]
     target = payload["examination_information"]["target_identity"]
     assert target["department_id"] == department
     requests = []
@@ -70,9 +76,30 @@ def run_case(browser, name: str, department: str, filename: str, copy: str) -> d
 
     def route_post(route) -> None:
         request = route.request
-        if request.method != "POST":
-            route.continue_()
+        if request.method == "GET":
+            path = urlparse(request.url).path
+            if path == "/app/advanced":
+                route.fulfill(body=(STATIC / "advanced.html").read_bytes(), content_type="text/html")
+            elif path.startswith("/assets/") and path.rsplit("/", 1)[-1] in {
+                "app.css", "overview.js", "app.js", "unified-core.mjs"
+            }:
+                filename = path.rsplit("/", 1)[-1]
+                route.fulfill(body=(STATIC / filename).read_bytes(), content_type=(
+                    "text/css" if filename.endswith(".css") else "text/javascript"
+                ))
+            elif path == "/v1/reference-targets":
+                route.fulfill(body=(ROOT / "docs/onboarding/prep01-evidence/reference-targets.json").read_bytes(),
+                              content_type="application/json")
+            elif path == "/v1/generation-status":
+                route.fulfill(body='{"configured":false,"request_timeout_seconds":60,"label":"离线"}',
+                              content_type="application/json")
+            else:
+                route.abort()
+                raise AssertionError(f"unexpected GET: {path}")
             return
+        if request.method != "POST":
+            route.abort()
+            raise AssertionError(f"unexpected method: {request.method}")
         requests.append({"method": request.method, "url": request.url})
         if "/v1/base-requirements?" not in request.url:
             route.abort()
@@ -94,7 +121,7 @@ def run_case(browser, name: str, department: str, filename: str, copy: str) -> d
     assert page.locator(".exam-arrangement").count() == 1
     exam_text = page.locator(".exam-arrangement").inner_text()
     assert "学校公布的 A/B 日程" in exam_text
-    assert "本人" in exam_text or "适用" in exam_text
+    assert "本人" in exam_text or "适用" in exam_text or "目录为 B 日程" in exam_text, (name, exam_text[:500])
     assert "fact_type" not in exam_text and "section_path" not in exam_text
     if name == "social-human":
         assert "不举行笔试" in exam_text
