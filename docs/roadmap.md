@@ -1,11 +1,17 @@
 # Project Roadmap
 
-## 2026-10-02：EXAM-02 来源与实现集中返修中
 
-[#277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) 的来源候选与依赖它的 [#278](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/278) 隔离实现已提交，设计集中审查为 Changes requested。当前修正科目／口述条件、字段完整原文入口、三系课程范围默认提示；M9 单字段指纹已获设计审查及用户当前对话的直接授权；精确更新放在依赖 #278，来源候选 #277 不修改该 policy。两 PR 均未验收或合并，在线页未切换。此前“#275 Blocked／不得实施”是早期单项检查点要求，已由用户批准的连续开发、成果集中验收安排取代；后续旧段落作为历史保留。
+## 2026-10-02：EXAM-02 成果包已独立验收并合并
 
+#274 / [PR #277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) 来源与 #275 / [PR #278](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/278) 实现已按依赖顺序验收合并。原两校四步页可查东科大18系、2026年9月/2027年4月共36目标的同册考试安排，并可选择生成中文考试报告。科目和口述条件、全部原文片段、三系默认课程范围提示已复核；M9仅更新获准指纹，精确CI与独立定向验证通过。
 
-## Current M17 handoff: EXAM-02A #274 design checkpoint
+当前没有新 Ready 实现；M17 Main 本包停止，下一步为用户体验已验收成果，在线演示页尚未切换。M17整体未宣告完成；QA后续、东大普通学生扩覆盖、M13与MinerU不自动恢复。地球生命另册仍不覆盖，建筑科目依导师指定；官方A/B安排不代表个人资格。
+
+开发累计服务1、产品POST44/60；设计本轮服务0/POST0（12次预留未用），付费/下载/解析重跑/KB或索引构建0。保存响应回放及真实源只读投影不冒充最新实时HTTP；334/391资产和既有预览保持不变。
+
+完整验收及证据限制见 [EXAM-02 设计验收](onboarding/exam02-design-acceptance.md)。以下交接均为历史，不再作为当前放行状态。
+
+## Historical M17 handoff: EXAM-02A #274 design checkpoint
 
 2026-10-01: #276 was accepted and merged; #272 is closed. #274 was the only released M17 task. M17 Main has submitted the 18-department × 2-intake source and four-step-page display candidate in [PR #277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) for independent design review; it is not yet accepted or merged. [Candidate matrix](onboarding/exam02a-source-matrix.md), [source ledger](onboarding/exam02a-source-ledger.md), and [display contract](onboarding/exam02a-display-contract-candidate.md) are **not approved production rules**. #275 remains blocked pending #274 source and display contract acceptance; do not start its implementation. This checkpoint used no service, product POST, paid call, download, parser rerun, KB/index build, or online preview switch. The older no-Ready statements below are historical.
 
@@ -24,7 +30,7 @@ start it. Future work stays here until its dependencies and acceptance scope are
 
 
 
-## Current M17 handoff: three presentation follow-ups accepted; demonstration preparation next
+## Historical M17 handoff: three presentation follow-ups accepted; demonstration preparation next
 
 2026-10-01: EXAM-01 #260 / PR #267 independently accepted at `9e43e6b3ce621357b23446ddc3115d71cf50bf69`, merged `c89363589e18ac9f3206af8e6b7d088de72b86b7`.
 [Acceptance, source validation, resolved report issues and final budgets](onboarding/exam01-design-acceptance.md).
