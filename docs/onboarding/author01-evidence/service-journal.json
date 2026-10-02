@@ -1,0 +1,21 @@
+[
+  {
+    "started_utc": "2026-10-02T15:54:26.090473+00:00",
+    "port": 55482,
+    "config": "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\author01-reference-workspace-preview-v2.json",
+    "offline": true,
+    "product_post_attempts": [
+      {
+        "at_utc": "2026-10-02T15:54:55.142998+00:00",
+        "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+        "status": 200
+      },
+      {
+        "at_utc": "2026-10-02T15:58:26.371248+00:00",
+        "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+        "status": 200
+      }
+    ],
+    "stopped_utc": "2026-10-02T16:10:00.845951+00:00"
+  }
+]

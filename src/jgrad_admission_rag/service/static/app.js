@@ -141,6 +141,8 @@ function updateProfileCapability() {
   const slice = currentReferenceEntry()?.kind === "reviewed_material_slice";
   byId("legacy-profile-grid").hidden = slice;
   byId("slice-profile").hidden = !slice;
+  byId("slice-material-preparation").replaceChildren();
+  byId("slice-material-preparation").hidden = true;
   comparisonSubmit.textContent = slice ? "核对已覆盖材料条件" : "对照个人情况";
   byId("readiness-filters").hidden = slice;
   byId("grounded-answer-panel").hidden = slice;
@@ -546,7 +548,10 @@ function updateApplicantStepSummary() {
   if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
     const current = byId("slice-current-employed").selectedOptions[0].textContent;
     const retain = byId("slice-retain-employed").selectedOptions[0].textContent;
-    byId("step-3-summary-text").textContent = `目前任职：${current}；入学后继续任职：${retain}`;
+    const preparations = Array.from(byId("slice-material-preparation").querySelectorAll("select"),
+      (control) => `申请小论文：${control.selectedOptions[0].textContent}`);
+    byId("step-3-summary-text").textContent = [`目前任职：${current}；入学后继续任职：${retain}`,
+      ...preparations].join("；");
     return;
   }
   const categories = [
@@ -923,7 +928,7 @@ function profileCta(className = "") {
   button.type = "button";
   button.className = className;
   button.textContent = currentReferenceEntry()?.kind === "reviewed_material_slice"
-    ? "填写在职条件，核对已覆盖材料" : "填写个人情况，检查我还缺什么";
+    ? "填写个人情况，核对已覆盖材料" : "填写个人情况，检查我还缺什么";
   button.addEventListener("click", () => {
     if (baseRequirementsLoaded) activateStep(3, true);
   });
@@ -1051,8 +1056,10 @@ function renderRequirementCard(requirement, options = {}) {
     ? referenceCore.materialDisplay(options.scope,
       requirement.material_code || requirement.requirement_id, requirement.title) : null;
   const guide = material ? referenceCore.materialGuide(options.scope, {
-    id: requirement.material_code || requirement.requirement_id, evidence: requirement.evidence
+    id: requirement.material_code || requirement.requirement_id,
+    sources: requirement.graphTopic?.sources || requirement.evidence
   }) : null;
+  const pendingSliceGuide = guide && requirement.graphTopic && !requirement.conditionResultLoaded;
   card.append(heading(4, material ? material.name : requirement.title));
   const official = material?.official ? document.createElement("p") : null;
   if (official) {
@@ -1063,7 +1070,7 @@ function renderRequirementCard(requirement, options = {}) {
   const status = document.createElement("span");
   status.className = "requirement-status";
   status.dataset.status = requirement.official_status;
-  status.textContent = material
+  status.textContent = pendingSliceGuide ? "材料条件尚未核对" : material
     ? ({required: "当前规则：需提交", needs_information: "适用条件待确认",
       submission_not_required: "本项无需提交", rule_not_applicable: "本条条件不适用",
       submission_required: "当前条件：需提交", not_covered: "当前资料未覆盖"})[requirement.official_status]
@@ -1076,7 +1083,8 @@ function renderRequirementCard(requirement, options = {}) {
       ? requirement.reviewed_summary || requirement.description : requirement.description || "")
       .replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
   card.append(status, description);
-  if (guide && requirement.official_status !== "required") {
+  if (guide && !pendingSliceGuide
+    && !["required", "submission_required"].includes(requirement.official_status)) {
     const conditional = document.createElement("p");
     conditional.className = "preparation-warning";
     conditional.textContent = "适用条件仍需确认；以下是需要提交时的准备方法。";
@@ -1592,8 +1600,56 @@ function renderSliceRequirements(mapped) {
   );
   const next = document.createElement("section");
   next.className = "result-section next-step-section";
-  next.append(heading(3, "下一步：核对在职条件"), profileCta("next-step-cta"));
+  next.append(heading(3, "下一步：核对个人情况"), profileCta("next-step-cta"));
   requirementsOutput.append(next);
+  renderSlicePreparation(mapped);
+}
+
+function slicePreparationValues() {
+  return Object.fromEntries(Array.from(byId("slice-material-preparation").querySelectorAll("select"),
+    (control) => [control.dataset.sliceMaterialCode, control.value]));
+}
+
+function renderSlicePreparation(mapped) {
+  byId("slice-profile-coverage").textContent = `当前只对照已覆盖的 ${mapped.topics.length} 个材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。`;
+  const container = byId("slice-material-preparation");
+  container.replaceChildren();
+  const essay = mapped.topics.find((topic) => topic.id === "application-essay"
+    && referenceCore.materialGuide(mapped.scope, topic));
+  container.hidden = !essay;
+  if (!essay) return;
+  const legend = document.createElement("legend");
+  legend.textContent = "材料准备（本次自报）";
+  const note = document.createElement("p");
+  note.className = "field-help";
+  note.id = "slice-material-help";
+  note.textContent = "准备情况只在本页记录，不改变官方提交要求；已准备不代表内容有效、已提交或学校受理。";
+  const label = document.createElement("label");
+  label.textContent = "申请小论文";
+  const select = document.createElement("select");
+  select.dataset.sliceMaterialCode = essay.id;
+  select.setAttribute("aria-describedby", note.id);
+  for (const [value, text] of [["unknown", "不知道／未填写"], ["available", "我已准备"], ["not_yet", "尚未准备"]]) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = text;
+    select.append(option);
+  }
+  label.append(select);
+  const inputs = document.createElement("div");
+  inputs.className = "material-inputs";
+  inputs.append(label);
+  container.append(legend, note, inputs);
+}
+
+function refreshSlicePreparation() {
+  updateApplicantStepSummary();
+  if (!referenceReport || referenceReport.kind !== "reviewed_material_slice" || !loadedReference
+    || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
+  referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
+  referenceReader = null;
+  renderSliceReadiness(referenceReport, loadedReference);
+  setReferenceActionState("success", "准备自报已更新；官方材料条件保持，可按需预览和复制报告。", true);
 }
 
 function appendDefinition(list, term, value) {
@@ -1640,6 +1696,7 @@ const relationMeanings = {
   department_specific_detail: "具体要求按专攻确认",
   consulting_is_distinct_from_submitting: "参照清单与提交表不同",
   corroborates_condition_with_submission_method: "补充条件与上传方式共同说明",
+  supplements: "补充说明",
   shares_employment_context_but_separate_enrollment_stage: "入学手续相关，非本次出愿提交义务"
 };
 
@@ -1791,7 +1848,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   }
   const guidance = referenceCore?.materialGuide(currentReferenceScope(), {
     id: requirement.requirement_id || requirement.item_id || requirement.material_code,
-    evidence: requirement.evidence
+    sources: requirement.graphTopic?.sources || requirement.evidence
   });
   if (guidance) {
     const summary = document.createElement("section");
@@ -1803,7 +1860,8 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     appendPreparationGuide(summary, guidance);
     const context = document.createElement("p");
     context.className = "field-detail";
-    context.textContent = "下方原文是第10页共通材料表，包含其他材料行；中文要点只整理当前这项。";
+    context.textContent = guidance.sourceNote
+      || "下方原文是第10页共通材料表，包含其他材料行；中文要点只整理当前这项。";
     summary.append(context);
     drawerContent.append(summary);
   }
@@ -2339,7 +2397,7 @@ function renderSliceReadiness(report, mapped) {
   byId("readiness-filters").hidden = true;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = referenceCore.scopeLabel(mapped.scope);
-  partialChecklistStatement.textContent = "当前只覆盖这三个材料主题，不是完整清单；计划书适用性取决于本次填写的在职条件。";
+  partialChecklistStatement.textContent = `当前只覆盖 ${report.topics.length} 个材料主题，不是完整清单；计划书适用性取决于本次填写的在职条件。`;
   const priority = byId("priority-actions");
   priority.replaceChildren();
   priority.hidden = true;
@@ -2354,9 +2412,16 @@ function renderSliceReadiness(report, mapped) {
       category: "materials", title: topic.title, material_code: topic.id,
       description: topic.explanation,
       official_status: topic.status_code, evidence, graphTopic: mappedTopic,
-      graphScope: mapped.scope
+      graphScope: mapped.scope, conditionResultLoaded: true
     };
     const card = renderRequirementCard(requirement, {scope: mapped.scope});
+    if (Object.hasOwn(report.preparation || {}, topic.id)) {
+      const preparation = document.createElement("p");
+      preparation.className = "material-condition";
+      const names = {unknown: "尚未填写准备情况", available: "已准备（自报）", not_yet: "待准备（自报尚未准备）"};
+      preparation.textContent = `准备情况：${names[report.preparation[topic.id]]}；自报不代表已提交或学校受理。`;
+      card.append(preparation);
+    }
     if (topic.explanation) {
       const result = document.createElement("p");
       result.className = "material-condition";
@@ -2612,7 +2677,8 @@ async function generateReferenceReport(event) {
       cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
     });
     if (!response.ok) throw new Error();
-    const report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment);
+    const report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment,
+      slicePreparationValues());
     if (!current()) return;
     referenceReport = report;
     renderReferenceReport(report);
@@ -2662,12 +2728,24 @@ function applyReadinessFilter() {
 
 async function submitApplicantComparison() {
   if (comparisonPending || !baseRequirementsLoaded || !demoTargetComplete()) return;
-  if (currentReferenceScope()?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
+  const scope = currentReferenceScope();
+  if (scope?.kind === "reviewed_material_slice" && referenceReport?.kind === scope.kind
+    && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)
+    && loadedReference && referenceCore.scopeKey(loadedReference.scope) === referenceCore.scopeKey(scope)
+    && referenceReport.employment.current === byId("slice-current-employed").value
+    && referenceReport.employment.retain === byId("slice-retain-employed").value) {
+    referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
+    renderSliceReadiness(referenceReport, loadedReference);
+    setReferenceActionState("success", "准备自报已更新；已核对的官方条件保持，可按需预览和复制报告。", true);
+    setMessage(comparisonStatus, "success", `已复用当前 ${referenceReport.topics.length} 个材料主题的核对结果；准备情况仅为本次自报。`);
+    activateStep(4, true);
+    return;
+  }
+  if (scope?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
     byId("demo-arrival-date").focus();
     return;
   }
   clearReferenceReport("个人条件正在重新对照；旧报告已失效。");
-  const scope = currentReferenceScope();
   if (scope?.kind === "reviewed_material_slice") {
     await submitSliceComparison(scope);
     return;
@@ -2736,11 +2814,12 @@ async function submitSliceComparison(scope) {
       referenceCore.scopeKey(currentReferenceScope()),
       {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value}
     ])) return;
-    const report = referenceCore.sliceReport(scope, loadedReference, payload, employment);
+    const report = referenceCore.sliceReport(scope, loadedReference, payload, employment,
+      slicePreparationValues());
     renderSliceReadiness(report, loadedReference);
     referenceReport = report;
     setReferenceActionState("success", "当前条件结果已加载；可按需预览和复制参考报告。", true);
-    setMessage(comparisonStatus, "success", "已核对当前 3 个材料主题；报告可按需预览和复制。");
+    setMessage(comparisonStatus, "success", `已核对当前 ${report.topics.length} 个材料主题；报告可按需预览和复制。`);
     activateStep(4, true);
   } catch (error) {
     if (error?.name === "AbortError" || requestId !== comparisonRequestId) return;
@@ -2859,7 +2938,11 @@ function handleDemoTargetChange(next) {
 
 targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
 applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
-applicantForm.addEventListener("input", () => {
+applicantForm.addEventListener("input", (event) => {
+  if (event.target.matches("[data-slice-material-code]")) {
+    refreshSlicePreparation();
+    return;
+  }
   updateProfileGroupStates();
   updateEnglishInputHint();
   applicationDatesReconcile();

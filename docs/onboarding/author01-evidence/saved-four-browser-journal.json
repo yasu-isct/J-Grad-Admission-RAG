@@ -1,0 +1,32 @@
+{
+  "started_utc": "2026-10-02T16:13:48.295966+00:00",
+  "ended_utc": "2026-10-02T16:13:51.446219+00:00",
+  "results": [
+    {
+      "viewport": "desktop",
+      "actual_product_post": 0,
+      "saved_real_response_replay": true,
+      "all_traffic_intercepted": true,
+      "status": 200,
+      "copied_sha256": "3797bfd246dc14b33e9f49e2a95502390178e9e9970654fc3ebf347c87104e40",
+      "errors": [],
+      "four_steps": true,
+      "four_topics": true,
+      "all_essay_fragments": 14,
+      "no_horizontal_overflow": true
+    },
+    {
+      "viewport": "mobile",
+      "actual_product_post": 0,
+      "saved_real_response_replay": true,
+      "all_traffic_intercepted": true,
+      "status": 200,
+      "copied_sha256": "e71b17d34d1bb1263f7bcc6af4a9e69915a0c4d9f2f0e90eb06886598d019240",
+      "errors": [],
+      "four_steps": true,
+      "four_topics": true,
+      "all_essay_fragments": 14,
+      "no_horizontal_overflow": true
+    }
+  ]
+}
