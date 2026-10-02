@@ -1,5 +1,10 @@
 # Project Roadmap
 
+## 2026-10-02：EXAM-02 来源与实现集中返修中
+
+[#277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) 的来源候选与依赖它的 [#278](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/278) 隔离实现已提交，设计集中审查为 Changes requested。当前修正科目／口述条件、字段完整原文入口、三系课程范围默认提示和授权的 M9 单字段指纹；两 PR 均未验收或合并，在线页未切换。此前“#275 Blocked／不得实施”是早期单项检查点要求，已由用户批准的连续开发、成果集中验收安排取代；后续旧段落作为历史保留。
+
+
 ## Current M17 handoff: EXAM-02A #274 design checkpoint
 
 2026-10-01: #276 was accepted and merged; #272 is closed. #274 was the only released M17 task. M17 Main has submitted the 18-department × 2-intake source and four-step-page display candidate in [PR #277](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/277) for independent design review; it is not yet accepted or merged. [Candidate matrix](onboarding/exam02a-source-matrix.md), [source ledger](onboarding/exam02a-source-ledger.md), and [display contract](onboarding/exam02a-display-contract-candidate.md) are **not approved production rules**. #275 remains blocked pending #274 source and display contract acceptance; do not start its implementation. This checkpoint used no service, product POST, paid call, download, parser rerun, KB/index build, or online preview switch. The older no-Ready statements below are historical.

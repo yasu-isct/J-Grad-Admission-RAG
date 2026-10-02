@@ -205,7 +205,7 @@
         },
         {
           "field_path": "b.subjects",
-          "value_zh": "数学，范围见原文；选答数未载",
+          "value_zh": "数学笔试以数学系截至第12学季课程同等程度的内容为基础；原文提示参考本系课程纲要，具体纲要细目未在本项目整理；选答数未载",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -358,7 +358,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/20，资格者；**待路线确认**",
+          "value_zh": "8/20，资格者现场口头问答",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -420,6 +420,18 @@
               "fact_text_sha256": "726b8e13e4b6fcfad94e75c3ae7a6900f7ef2c698131b3617d7af534c30a7565",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "その際に口頭試問のスケジュールや集合場所についても合わせてお知らせします。"
+            },
+            {
+              "source_id": "fact:00150",
+              "physical_pages": [
+                19
+              ],
+              "printed_pages": [
+                "19"
+              ],
+              "fact_text_sha256": "f71fdb4aecc6565a5fd1c2a053fcfa836eab3d8ce85ab1ddc994a6f9de30a9c6",
+              "table_scope": "b.oral",
+              "exact_text": "(対面)"
             }
           ]
         },
@@ -1513,7 +1525,7 @@
         },
         {
           "field_path": "a.oral",
-          "value_zh": "A：7 月 10 日或 13 日",
+          "value_zh": "A：7月10日或13日，以英语口述",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -1539,6 +1551,18 @@
               "fact_text_sha256": "2bc6974b77721436ef3455d9ef9462e002725f3da88b2edd107bcd39f01d83ce",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "口述試験"
+            },
+            {
+              "source_id": "fact:00197",
+              "physical_pages": [
+                25
+              ],
+              "printed_pages": [
+                "25"
+              ],
+              "fact_text_sha256": "2bc6974b77721436ef3455d9ef9462e002725f3da88b2edd107bcd39f01d83ce",
+              "table_scope": "a.oral",
+              "exact_text": "または 13 日（月） 画を中心とした試問（英語で行います）。"
             }
           ]
         },
@@ -1609,18 +1633,6 @@
           "value_zh": "数学 1、物理 2、化学／地球 3；共出 6 选答 3",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
-            {
-              "source_id": "fact:00197",
-              "physical_pages": [
-                25
-              ],
-              "printed_pages": [
-                "25"
-              ],
-              "fact_text_sha256": "2bc6974b77721436ef3455d9ef9462e002725f3da88b2edd107bcd39f01d83ce",
-              "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
-              "exact_text": "または 13 日（月） 画を中心とした試問（英語で行います）。"
-            },
             {
               "source_id": "fact:00198",
               "physical_pages": [
@@ -1716,18 +1728,6 @@
               "fact_text_sha256": "117f982f466bf106597d1e930f21fded3896bac149b45a16e4bf1e5a7605f4e0",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "年代学、宇宙化学、⼤気化学、海洋化学、有機地球化学、"
-            },
-            {
-              "source_id": "fact:00202",
-              "physical_pages": [
-                25
-              ],
-              "printed_pages": [
-                "25"
-              ],
-              "fact_text_sha256": "bc481ba0258e48520ecc66c9315bd713f8cc91b1c54533f13c1a7b9cbd3a0f65",
-              "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
-              "exact_text": "口頭試問 8 月 20 日（木） 研究能力および学力（英語を含む）を問う内容"
             }
           ]
         },
@@ -2811,7 +2811,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/24，资格者、线上；**待路线确认**",
+          "value_zh": "8/24，资格者线上口头问答；须用事先准备的资料发表，内容围绕正在开展的毕业研究或类似研究",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -3691,7 +3691,7 @@
         },
         {
           "field_path": "b.subjects",
-          "value_zh": "数学 1 题与通信短文 1 题，均须作答",
+          "value_zh": "数学（微积分、线性代数）1题与信息通信领域论述题1题，均须作答",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -3923,7 +3923,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/24 或 25，资格者；**待路线确认**",
+          "value_zh": "8/24或25，笔试成绩靠前者参加个人面谈；口头问答以日语进行，可用日语或英语回答",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -4057,6 +4057,18 @@
               "fact_text_sha256": "5bdc35b5ed66f4191da3e704b3ac7f6fb25e94ce0ec1ce9e63c745a67979de32",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "|  | 口頭試問 | 8月24（月）、 25日(火) | 学力ならびに適性に関する試問を個人面接の形式で行う。 合否は、筆答試験および口頭試問の結果を総合的に評価し決定する （口述試験の結果は考慮しません）。（口頭試問は日本語で行いますが、 回答する言語は日本語・英語どちらでも可） | ・筆答試験成績上位者を受 験資格者とします。 |"
+            },
+            {
+              "source_id": "fact:00238",
+              "physical_pages": [
+                37
+              ],
+              "printed_pages": [
+                "37"
+              ],
+              "fact_text_sha256": "9c149f65fc1f149f3a245b6d8cbfd385362ef647ac140cdc3694b933ef6ef04a",
+              "table_scope": "b.oral",
+              "exact_text": "回答する言語は日本語・英語どちらでも可"
             }
           ]
         },
@@ -6631,7 +6643,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/24，资格者、线上；**地球生命课程另册缺失**",
+          "value_zh": "8/24，资格者线上口头问答；当日9:00前进入指定线上会场",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -7205,7 +7217,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/25；**专门科目依导师，路线和科目需确认**",
+          "value_zh": "8/25口头问答；须携带可展示过往设计或研究的作品集，内容含图纸或毕业研究等资料",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -7279,6 +7291,18 @@
               "fact_text_sha256": "3b279166de2c8a41f3eadd84303e89e2aa2c1fcd79e373f5c96e04bc23f298b5",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "| 口頭試問 | 8月25日 （火） | 専門的知識ならびに大学院における研究計画、持参 した資料についての試問 | ポートフォリオ（設計製図の作品(図面)または卒業研究 など、これまでの取組や活動を自己アピールできる資 料）を持参すること。なお、学部(学士課程)において設 計製図、卒業制作を行っている者は、図面を含むポー トフォリオを持参することが望ましい。 |"
+            },
+            {
+              "source_id": "fact:00312",
+              "physical_pages": [
+                61
+              ],
+              "printed_pages": [
+                "61"
+              ],
+              "fact_text_sha256": "3b279166de2c8a41f3eadd84303e89e2aa2c1fcd79e373f5c96e04bc23f298b5",
+              "table_scope": "b.oral",
+              "exact_text": "ポートフォリオ（設計製図の作品(図面)または卒業研究"
             }
           ]
         },
@@ -7961,7 +7985,7 @@
         },
         {
           "field_path": "a.oral",
-          "value_zh": "A：7 月 11 日",
+          "value_zh": "A：7月11日线上口述，可用日语或英语",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -8430,7 +8454,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/25，线上；**待路线确认**",
+          "value_zh": "8/25线上口头问答，可用日语或英语",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -8717,7 +8741,7 @@
         },
         {
           "field_path": "b.subjects",
-          "value_zh": "书面筛选可能有，后续线上日语口述；不存在笔试科目／时长",
+          "value_zh": "明确不举行笔试；不存在笔试科目／时长",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -8865,7 +8889,7 @@
         },
         {
           "field_path": "b.oral",
-          "value_zh": "8/18 **或** 19；**待路线确认**",
+          "value_zh": "8/18或19，线上以日语口头问答；可能根据出愿材料筛选口头问答对象",
           "applicability_zh": "本系本册学校公布路径；仅供查阅，不判断本人获准参加",
           "sources": [
             {
@@ -8915,6 +8939,18 @@
               "fact_text_sha256": "a957e0d9148294890273547bdfe9a7c9c2007af0993b0e3d90e6028519a1f084",
               "table_scope": "本系试验表的相应A/B行及备注；按PDF原页行列校准",
               "exact_text": "口頭試問受験資格者は、7 月 31 日（金）10 時までに、系ウェブサイトにて発表します。"
+            },
+            {
+              "source_id": "fact:00330",
+              "physical_pages": [
+                70
+              ],
+              "printed_pages": [
+                "70"
+              ],
+              "fact_text_sha256": "e0ea3dba8b4e94157e092d1085542a07186989ba6e5b1872d092a358c07d5e33",
+              "table_scope": "b.oral",
+              "exact_text": "試験はオンラインにて、日本\n口頭試問 あるいは 研究に関連する専門分野の基礎学力、研究を遂行するうえ\n語で行います。"
             }
           ]
         },
