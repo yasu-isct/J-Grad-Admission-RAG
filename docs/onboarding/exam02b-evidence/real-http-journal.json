@@ -1,0 +1,633 @@
+{
+  "new_post_attempts": 35,
+  "records": [
+    {
+      "department_id": "システム制御系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "情報通信系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 1,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "機械系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "経営工学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "電気電子系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "情報工学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": "b_schedule",
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 4,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "数理・計算科学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "応用化学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "材料系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "化学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "地球惑星科学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 8
+    },
+    {
+      "department_id": "数学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "物理学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3,
+      "english_cards": [
+        {
+          "title": "英语考试要求",
+          "summary": null,
+          "official_status": "required"
+        },
+        {
+          "title": "英语成绩单提交方式",
+          "summary": null,
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩怎么准备",
+          "summary": "可用考试：TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition。\nTOEIC-IP、TOEFL-ITP等团体考试不能用于本轮申请。\n考试日期须为2024年6月11日或之后（仅本募集版本）。\n打印在线下载的官方PDF；ETS寄给本人或学校的纸质成绩单不能替代。\nTOEIC：核对数字官方成绩证明或同等形式及真伪验证二维码；无二维码的纸质证明不接受。\nTOEFL：打印Test Taker Score Report PDF，并为本次成绩设置学校DI代码G179。",
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩评价配点",
+          "summary": null,
+          "official_status": "conditional"
+        }
+      ]
+    },
+    {
+      "department_id": "土木・環境工学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3,
+      "english_cards": [
+        {
+          "title": "英语考试要求",
+          "summary": null,
+          "official_status": "required"
+        },
+        {
+          "title": "英语成绩单提交方式",
+          "summary": null,
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩怎么准备",
+          "summary": "可用考试：TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition。\nTOEIC-IP、TOEFL-ITP等团体考试不能用于本轮申请。\n考试日期须为2024年6月11日或之后（仅本募集版本）。\n打印在线下载的官方PDF；ETS寄给本人或学校的纸质成绩单不能替代。\nTOEIC：核对数字官方成绩证明或同等形式及真伪验证二维码；无二维码的纸质证明不接受。\nTOEFL：打印Test Taker Score Report PDF，并为本次成绩设置学校DI代码G179。",
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩评价配点",
+          "summary": null,
+          "official_status": "conditional"
+        }
+      ]
+    },
+    {
+      "department_id": "建築学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "社会・人間科学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "not_held",
+      "subject_components": 0,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "融合理工学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "生命理工学系",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 1,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "システム制御系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": true,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "情報通信系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 1,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "機械系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "経営工学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "電気電子系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "情報工学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": "b_schedule",
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 4,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "数理・計算科学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "応用化学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "材料系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "化学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "地球惑星科学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 8
+    },
+    {
+      "department_id": "数学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "物理学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 10,
+      "evidence_facts": 3,
+      "english_cards": [
+        {
+          "title": "英语考试要求",
+          "summary": null,
+          "official_status": "required"
+        },
+        {
+          "title": "英语成绩单提交方式",
+          "summary": null,
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩怎么准备",
+          "summary": "可用考试：TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition。\nTOEIC-IP、TOEFL-ITP等团体考试不能用于本轮申请。\n考试日期须为2024年6月11日或之后（仅本募集版本）。\n打印在线下载的官方PDF；ETS寄给本人或学校的纸质成绩单不能替代。\nTOEIC：核对数字官方成绩证明或同等形式及真伪验证二维码；无二维码的纸质证明不接受。\nTOEFL：打印Test Taker Score Report PDF，并为本次成绩设置学校DI代码G179。",
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩评价配点",
+          "summary": null,
+          "official_status": "conditional"
+        }
+      ]
+    },
+    {
+      "department_id": "土木・環境工学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3,
+      "english_cards": [
+        {
+          "title": "英语考试要求",
+          "summary": null,
+          "official_status": "required"
+        },
+        {
+          "title": "英语成绩单提交方式",
+          "summary": null,
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩怎么准备",
+          "summary": "可用考试：TOEIC L&R、TOEFL iBT、TOEFL iBT Home Edition。\nTOEIC-IP、TOEFL-ITP等团体考试不能用于本轮申请。\n考试日期须为2024年6月11日或之后（仅本募集版本）。\n打印在线下载的官方PDF；ETS寄给本人或学校的纸质成绩单不能替代。\nTOEIC：核对数字官方成绩证明或同等形式及真伪验证二维码；无二维码的纸质证明不接受。\nTOEFL：打印Test Taker Score Report PDF，并为本次成绩设置学校DI代码G179。",
+          "official_status": "conditional"
+        },
+        {
+          "title": "英语成绩评价配点",
+          "summary": null,
+          "official_status": "conditional"
+        }
+      ]
+    },
+    {
+      "department_id": "建築学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 2,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "社会・人間科学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "not_held",
+      "subject_components": 0,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "融合理工学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 3,
+      "field_bindings": 10,
+      "evidence_facts": 3
+    },
+    {
+      "department_id": "生命理工学系",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "route": null,
+      "http_status": 200,
+      "reused_saved_response": false,
+      "examination_status": "available_official_paths",
+      "written_status": "held",
+      "subject_components": 1,
+      "field_bindings": 11,
+      "evidence_facts": 3
+    }
+  ]
+}

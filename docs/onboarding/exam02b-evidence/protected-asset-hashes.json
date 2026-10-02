@@ -1,0 +1,22 @@
+[
+  {
+    "name": "source_pdf",
+    "sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "matches_manifest": true
+  },
+  {
+    "name": "391_kb",
+    "sha256": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce",
+    "matches_manifest": true
+  },
+  {
+    "name": "391_payloads",
+    "sha256": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397",
+    "matches_manifest": true
+  },
+  {
+    "name": "391_vectors",
+    "sha256": "56508cad1dbf13c5e3258353676608cf4b6a174ac9c879983be9bdc8cd415df7",
+    "matches_manifest": true
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "slug": "physics",
+    "http_status": 200,
+    "english_items": [],
+    "english_preparation_result": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "target": {
+        "school_name": "東京科学大学",
+        "degree_name": "修士课程",
+        "intake_name": "2027年4月入学",
+        "college_name": "理学院",
+        "department_name": "物理学系",
+        "application_route_name": null
+      },
+      "scope_statement": "只核对当前已审核资料与本次自报；不判断整份成绩、资格或学校受理。",
+      "checks": [
+        {
+          "check_id": "english:kind",
+          "title": "考试类型",
+          "status": "needs_information",
+          "explanation": "尚未填写考试类型。",
+          "next_action": "请选择本次拟提交的考试类型。",
+          "rule_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  },
+  {
+    "slug": "civil-environment",
+    "http_status": 200,
+    "english_items": [],
+    "english_preparation_result": {
+      "document_id": "isct_2027_4_2026_9_master",
+      "target": {
+        "school_name": "東京科学大学",
+        "degree_name": "修士课程",
+        "intake_name": "2027年4月入学",
+        "college_name": "環境・社会理工学院",
+        "department_name": "土木・環境工学系",
+        "application_route_name": null
+      },
+      "scope_statement": "只核对当前已审核资料与本次自报；不判断整份成绩、资格或学校受理。",
+      "checks": [
+        {
+          "check_id": "english:kind",
+          "title": "考试类型",
+          "status": "needs_information",
+          "explanation": "尚未填写考试类型。",
+          "next_action": "请选择本次拟提交的考试类型。",
+          "rule_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  },
+  {
+    "slug": "physics",
+    "scenario": "toeic_proof_supplied",
+    "http_status": 200,
+    "english_items": [
+      {
+        "title": "英语考试与官方成绩单",
+        "description": "英语考试信息已记录并与该目标的审核规则并列展示；仍需核对考试类型、有效期和提交方式。",
+        "next_action": "核对考试类型、有效期、官方成绩单与该系提交方式。",
+        "comparison_status": "recorded"
+      }
+    ],
+    "english_preparation_result": {
+      "checks": [
+        {
+          "check_id": "english:kind",
+          "status": "reported_match",
+          "explanation": "该考试类型属于本轮接受范围；仍需核对日期与证明。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:date",
+          "status": "needs_information",
+          "explanation": "尚未填写考试日期。",
+          "next_action": "请填写考试日期并核对当前募集版本。"
+        },
+        {
+          "check_id": "english:downloaded_online_pdf",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:toeic_verification_qr_present",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:toeic_digital_official_score_certificate",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        }
+      ]
+    }
+  },
+  {
+    "slug": "civil-environment",
+    "scenario": "toeic_proof_supplied",
+    "http_status": 200,
+    "english_items": [
+      {
+        "title": "英语考试与官方成绩单",
+        "description": "英语考试信息已记录并与该目标的审核规则并列展示；仍需核对考试类型、有效期和提交方式。",
+        "next_action": "核对考试类型、有效期、官方成绩单与该系提交方式。",
+        "comparison_status": "recorded"
+      }
+    ],
+    "english_preparation_result": {
+      "checks": [
+        {
+          "check_id": "english:kind",
+          "status": "reported_match",
+          "explanation": "该考试类型属于本轮接受范围；仍需核对日期与证明。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:date",
+          "status": "needs_information",
+          "explanation": "尚未填写考试日期。",
+          "next_action": "请填写考试日期并核对当前募集版本。"
+        },
+        {
+          "check_id": "english:downloaded_online_pdf",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:toeic_verification_qr_present",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        },
+        {
+          "check_id": "english:toeic_digital_official_score_certificate",
+          "status": "reported_match",
+          "explanation": "按你的填写，已准备本项；仍需核对证明内容。",
+          "next_action": "继续核对证明内容与提交方式。"
+        }
+      ]
+    }
+  }
+]

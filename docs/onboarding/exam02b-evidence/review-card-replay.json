@@ -1,0 +1,66 @@
+[
+  {
+    "case": "earth",
+    "width": 1440,
+    "default_course_notice": true,
+    "source_checked": true,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "earth",
+    "width": 390,
+    "default_course_notice": true,
+    "source_checked": true,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "applied-chemistry",
+    "width": 1440,
+    "default_course_notice": true,
+    "source_checked": false,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "applied-chemistry",
+    "width": 390,
+    "default_course_notice": true,
+    "source_checked": false,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "life",
+    "width": 1440,
+    "default_course_notice": true,
+    "source_checked": false,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "life",
+    "width": 390,
+    "default_course_notice": true,
+    "source_checked": false,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "system-control",
+    "width": 1440,
+    "default_course_notice": false,
+    "source_checked": true,
+    "product_post": 0,
+    "page_errors": []
+  },
+  {
+    "case": "system-control",
+    "width": 390,
+    "default_course_notice": false,
+    "source_checked": true,
+    "product_post": 0,
+    "page_errors": []
+  }
+]

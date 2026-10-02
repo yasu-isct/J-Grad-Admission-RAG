@@ -1,0 +1,456 @@
+{
+  "schema_version": "2.0",
+  "status": "available_official_paths",
+  "target_identity": {
+    "schema_version": "1.0",
+    "school_id": "isct",
+    "document_id": "isct_2027_4_2026_9_master",
+    "degree_id": "master",
+    "intake": {
+      "year": 2027,
+      "month": 4
+    },
+    "college_id": "工学院",
+    "department_id": "システム制御系",
+    "application_route": null
+  },
+  "message_zh": "学校公布的路径可查阅；实际参加路径和资格以学校通知为准。",
+  "presentation_id": "isct-18-departments-exams-2026-v2",
+  "presentation_sha256": "c724d2e228a128fff1cc863aca68e72cd10ee02bbe4c4ce67c835f7e2d632ef3",
+  "source_identity": {
+    "institution_id": "isct",
+    "document_id": "isct_2027_4_2026_9_master",
+    "source_pdf_sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735",
+    "source_kb_sha256": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+  },
+  "year_basis": {
+    "exam_year": 2026,
+    "kind": "reviewed_cross_page_context",
+    "physical_pages": [
+      1,
+      2
+    ],
+    "department_page_required": true,
+    "department_page": 31
+  },
+  "applicability": {
+    "catalog_route": null,
+    "personal_route_state": "unconfirmed",
+    "course_state": "unspecified",
+    "covered_course_ids": [],
+    "excluded_course_ids": []
+  },
+  "pathways": [
+    {
+      "source_route": "a_schedule",
+      "label_zh": "学校公布的 A 日程",
+      "personal_eligibility": "unconfirmed",
+      "written": {
+        "status": "unknown",
+        "time_zh": null,
+        "subjects_zh": []
+      },
+      "oral": {
+        "status": "held",
+        "description_zh": "A：7 月 11 日"
+      }
+    },
+    {
+      "source_route": "b_schedule",
+      "label_zh": "学校公布的 B 日程",
+      "personal_eligibility": "unconfirmed",
+      "written": {
+        "status": "held",
+        "time_zh": "8/18 9:30–11:30；时长（分钟）：120",
+        "subjects_zh": [
+          "数学：微积分、线代、Fourier/Laplace、微分方程、概率统计",
+          "选答数未载"
+        ],
+        "selection_rule_zh": null,
+        "points_zh": "专业 150、外部英语 50",
+        "answer_language_zh": null,
+        "administration_language_zh": null
+      },
+      "oral": {
+        "status": "held",
+        "description_zh": "8/24，资格者、线上；待路线确认"
+      },
+      "english": {
+        "submission_zh": "按本系原文在出愿时提交英语外部考试成绩单；具体形式与截止仍由已有英语规则核对"
+      }
+    }
+  ],
+  "field_bindings": [
+    {
+      "field_path": "exam.year",
+      "value_zh": "本册所列选拔发生于2026年；两入学批次共用，不能按2027年4月入学替换考试年",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "pdf_page:1",
+          "physical_pages": [
+            1
+          ],
+          "exact_text": "2027年４月入学・2026年9月入学"
+        },
+        {
+          "source_id": "pdf_page:1",
+          "physical_pages": [
+            1
+          ],
+          "exact_text": "2026年４月"
+        },
+        {
+          "source_id": "pdf_page:1",
+          "physical_pages": [
+            1
+          ],
+          "exact_text": "出願期間：2026 年6 月4 日（木）～6 月10 日（水）"
+        },
+        {
+          "source_id": "fact:00002",
+          "physical_pages": [
+            2
+          ],
+          "exact_text": "筆答試験 ８月１８日（火）"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "8月18日(火)"
+        }
+      ]
+    },
+    {
+      "field_path": "a.oral",
+      "value_zh": "A：7 月 11 日",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "口述試験 学士課程で身につけた学力、研究能力ならびに適性"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "日 7月11日(土) 試験の結果を総合的に評価し決定します。"
+        }
+      ]
+    },
+    {
+      "field_path": "b.written_status",
+      "value_zh": "held",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "筆答試験 ラス変換、微分方程式、確率統計など」から出題） ・Ｂ日程試験の合否は出願書類、筆答試験"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "程 ・口頭試問は筆答試験に基づいて口頭試問"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "※注 筆答試験は対面実施を予定していますが、災害・感染症・擾乱等によって筆答試験を中止した場合には、代替として出願書類を"
+        }
+      ]
+    },
+    {
+      "field_path": "b.written_sessions",
+      "value_zh": "8/18 9:30–11:30；时长（分钟）：120",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "8月18日(火)"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "Ｂ 9:30～11:30 および口頭試問の結果を総合的に評価し決"
+        }
+      ]
+    },
+    {
+      "field_path": "b.subjects",
+      "value_zh": "数学：微积分、线代、Fourier/Laplace、微分方程、概率统计；选答数未载",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "数学（120分）"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "（応用数学一般「微分積分、線形代数、フーリエ／ラプ"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "筆答試験 ラス変換、微分方程式、確率統計など」から出題） ・Ｂ日程試験の合否は出願書類、筆答試験"
+        }
+      ]
+    },
+    {
+      "field_path": "b.points",
+      "value_zh": "专业 150、外部英语 50",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "配点："
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "筆答専門試験：150点、英語（英語外部試験）：50点"
+        },
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "【英語外部試験のスコアシートの取扱い】"
+        },
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "スコアシートは必ず出願時に提出してください。出願受付締切後の提出は一切認めません。"
+        },
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "一度提出したスコアシートの差し替えは一切認めません。また、スコアシートは返却しません。"
+        }
+      ]
+    },
+    {
+      "field_path": "english.submission",
+      "value_zh": "按本系原文在出愿时提交英语外部考试成绩单；具体形式与截止仍由已有英语规则核对",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "【英語外部試験のスコアシートの取扱い】"
+        },
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "スコアシートは必ず出願時に提出してください。出願受付締切後の提出は一切認めません。"
+        },
+        {
+          "source_id": "fact:00218",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "一度提出したスコアシートの差し替えは一切認めません。また、スコアシートは返却しません。"
+        }
+      ]
+    },
+    {
+      "field_path": "b.oral",
+      "value_zh": "8/24，资格者、线上；**待路线确认**",
+      "missing_reason_zh": null,
+      "sources": [
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "・Ａ日程受験資格者は出願書類によって決"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "Ｂ 9:30～11:30 および口頭試問の結果を総合的に評価し決"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "程 ・口頭試問は筆答試験に基づいて口頭試問"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "※ 受験資格者となった者のみが受験します。"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "注 あらかじめ受験者が準備した資料を用いた発表に基 ・口頭試問はオンライン（遠隔）にて実施しま"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "口頭試問 づき、工学の基礎学力、研究能力ならびに適性に関 す． 8月24日(月)"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "（オンライン） する試問を行います。なお、発表内容は現在行ってい"
+        },
+        {
+          "source_id": "fact:00220",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "元に口頭試問受験資格者を選抜することがあります。口頭試問で課される発表内容等の詳細は、システム制御系のホームページ"
+        },
+        {
+          "source_id": "fact:00221",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "【口頭試問受験資格者の発表】"
+        },
+        {
+          "source_id": "fact:00221",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "8 月 20 日（木）17 時頃、システム制御系ホームページ https://educ.titech.ac.jp/sc/admissions/に掲載します。"
+        },
+        {
+          "source_id": "fact:00221",
+          "physical_pages": [
+            31
+          ],
+          "exact_text": "・『B 日程』口頭試問ではあらかじめ受験者が準備した資料を用いた発表を課します。"
+        }
+      ]
+    },
+    {
+      "field_path": "b.selection_rule",
+      "value_zh": null,
+      "missing_reason_zh": "本册该系表未载明确的考生选答数量／方式；不能推断全答",
+      "sources": []
+    },
+    {
+      "field_path": "b.answer_language",
+      "value_zh": null,
+      "missing_reason_zh": "系表未明确笔试答案语言；实施语言不等于答案语言",
+      "sources": []
+    }
+  ],
+  "evidence": [
+    {
+      "document_id": "isct_2027_4_2026_9_master",
+      "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+      "school_name": "東京科学大学",
+      "intake_name": "2027年4月入学",
+      "fact_id": "fact:00218",
+      "pages": [
+        31
+      ],
+      "official_text": "【英語外部試験のスコアシートの取扱い】\nスコアシートは必ず出願時に提出してください。出願受付締切後の提出は一切認めません。\n一度提出したスコアシートの差し替えは一切認めません。また、スコアシートは返却しません。",
+      "source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+      "scope_type": "department",
+      "scope_targets": [
+        "システム制御系"
+      ],
+      "parent_college": "工学院",
+      "limitation": "仅为本册官方路径的资料整理；本人参加资格和课程适用性须按学校通知核对。",
+      "highlights": [],
+      "local_pdf_url": null
+    },
+    {
+      "document_id": "isct_2027_4_2026_9_master",
+      "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+      "school_name": "東京科学大学",
+      "intake_name": "2027年4月入学",
+      "fact_id": "fact:00220",
+      "pages": [
+        31
+      ],
+      "official_text": "試験区分 試験日 試験内容等 備考\n・Ａ日程受験資格者は出願書類によって決\n定します。\nＡ ・Ａ日程試験の合否は出願書類および口述\n口述試験 学士課程で身につけた学力、研究能力ならびに適性\n日 7月11日(土) 試験の結果を総合的に評価し決定します。\n（オンライン） に関する試問を行います。\n程 ・Ａ日程試験が不合格となった場合はＢ日程\n試験を受験できます。\n・オンライン（遠隔）にて実施します．\n数学（120分）\n（応用数学一般「微分積分、線形代数、フーリエ／ラプ\n8月18日(火)\n筆答試験 ラス変換、微分方程式、確率統計など」から出題） ・Ｂ日程試験の合否は出願書類、筆答試験\nＢ 9:30～11:30 および口頭試問の結果を総合的に評価し決\n配点：\n日 定します。\n筆答専門試験：150点、英語（英語外部試験）：50点\n程 ・口頭試問は筆答試験に基づいて口頭試問\n※ 受験資格者となった者のみが受験します。\n注 あらかじめ受験者が準備した資料を用いた発表に基 ・口頭試問はオンライン（遠隔）にて実施しま\n口頭試問 づき、工学の基礎学力、研究能力ならびに適性に関 す． 8月24日(月)\n（オンライン） する試問を行います。なお、発表内容は現在行ってい\nる卒業研究またはそれに準じたものとなります。\n※注 筆答試験は対面実施を予定していますが、災害・感染症・擾乱等によって筆答試験を中止した場合には、代替として出願書類を\n元に口頭試問受験資格者を選抜することがあります。口頭試問で課される発表内容等の詳細は、システム制御系のホームページ\n( https://educ.titech.ac.jp/sc/admissions/ ）の入学案内に掲載します。",
+      "source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+      "scope_type": "department",
+      "scope_targets": [
+        "システム制御系"
+      ],
+      "parent_college": "工学院",
+      "limitation": "仅为本册官方路径的资料整理；本人参加资格和课程适用性须按学校通知核对。",
+      "highlights": [],
+      "local_pdf_url": null
+    },
+    {
+      "document_id": "isct_2027_4_2026_9_master",
+      "official_title": "2027 April / 2026 September Master's Program Admission Guidelines",
+      "school_name": "東京科学大学",
+      "intake_name": "2027年4月入学",
+      "fact_id": "fact:00221",
+      "pages": [
+        31
+      ],
+      "official_text": "【口頭試問受験資格者の発表】\n8 月 20 日（木）17 時頃、システム制御系ホームページ https://educ.titech.ac.jp/sc/admissions/に掲載します。\n31\n工学院 システム制御系\nhttps://educ.titech.ac.jp/sc/\nシステム制御コース、エンジニアリングデザインコース、人間医療科学技術コース\n５６名\n以下の(a)～(e)について、合計1000 字から1500 字程度で分かりやすく記述してください。\n(a) 卒業研究の概要、実施していない場合には学士課程で身につけた専門知識の概要\n(b) 修士課程で予定している学修・研究の目的・内容・計画\n(c) 修士課程で予定している学修・研究を志望する理由およびこれまでの学修との関連\n(d) 修士課程で予定している学修・研究に対する自身の能力・適性\n(e) 修了後の将来の希望\n・『B 日程』筆答試験の試験科目は「数学」のみになります。\n・『B 日程』口頭試問ではあらかじめ受験者が準備した資料を用いた発表を課します。\n・『志望する指導教員氏名欄』については、【指導教員及びその研究分野一覧】を参照してください。\n・志望指導教員の欄には第１０志望まで入力できます。必ずしも全ての枠を埋める必要はありません。\n・志望指導教員の入力にあたってはhttps://educ.titech.ac.jp/sc/admissions/ にある「志望指導教員および補足調査票の記入に\nついて」を参照して下さい。\n第１志望とする履修コース（システム制御コース、エンジニアリングデザインコースまたは人間医療科学技術コース）を記入してくだ\nさい。",
+      "source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+      "scope_type": "department",
+      "scope_targets": [
+        "システム制御系"
+      ],
+      "parent_college": "工学院",
+      "limitation": "仅为本册官方路径的资料整理；本人参加资格和课程适用性须按学校通知核对。",
+      "highlights": [],
+      "local_pdf_url": null
+    }
+  ],
+  "local_pdf_url": null,
+  "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+  "official_title": "2027 April / 2026 September Master's Program Admission Guidelines"
+}

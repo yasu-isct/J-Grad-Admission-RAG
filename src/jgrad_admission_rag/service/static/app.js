@@ -1265,6 +1265,7 @@ function renderPendingRequirements(entries, overview, scope) {
 }
 
 function renderExamCard(exam) {
+  if (exam?.schema_version === "2.0" && exam.status === "available") return renderExamCardV2(exam);
   const section = document.createElement("section");
   section.className = "result-section exam-arrangement";
   section.append(heading(3, exam?.status === "available" ? "考试安排 · B日程" : "考试安排"));
@@ -1329,6 +1330,160 @@ function renderExamCard(exam) {
   return section;
 }
 
+function examSourcesForField(exam, fieldPath) {
+  const field = exam.field_bindings.find((item) => item.field_path === fieldPath);
+  if (!field) return [];
+  const groups = new Map();
+  for (const source of field.sources) {
+    const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
+    const evidence = fact || (source.source_id.startsWith("pdf_page:") ? {
+      official_title: exam.official_title, school_name: currentReferenceScope()?.school || "当前学校",
+      intake_name: currentReferenceScope()?.intake || "本册目标", pages: source.physical_pages,
+      official_text: source.exact_text, source_url: exam.official_source_url,
+      local_pdf_url: exam.local_pdf_url,
+      limitation: "这是已核对PDF页的原文锚点；请结合完整原页与学校通知阅读。"
+    } : null);
+    if (!evidence) continue;
+    const key = `${source.source_id}:${source.physical_pages.join(",")}`;
+    if (!groups.has(key)) groups.set(key, {evidence, anchors: []});
+    const group = groups.get(key);
+    if (!group.anchors.includes(source.exact_text)) group.anchors.push(source.exact_text);
+  }
+  return [...groups.values()];
+}
+
+function openExamFieldEvidence(label, sources, trigger) {
+  drawerTrigger = trigger;
+  drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+  drawerGraph = null;
+  evidenceDrawer.classList.remove("relationship-window");
+  byId("drawer-title").textContent = "官方依据";
+  drawerContent.replaceChildren(heading(3, label));
+  const note = document.createElement("p");
+  note.className = "evidence-chinese-summary";
+  note.textContent = "以下按原文页和片段列出这项考试说明的全部依据；本人适用路径与资格仍以学校通知为准。";
+  drawerContent.append(note);
+  const cards = document.createElement("div");
+  cards.className = "relation-nodes";
+  for (const {evidence, anchors} of sources) {
+    const card = document.createElement("article");
+    card.className = "relation-node";
+    card.append(heading(4, `PDF 第 ${evidence.pages.join("、")} 页`));
+    for (const anchor of anchors) {
+      const quote = document.createElement("blockquote");
+      quote.className = "direct-evidence";
+      const mark = document.createElement("mark");
+      mark.textContent = anchor;
+      quote.append(mark);
+      card.append(quote);
+    }
+    const context = document.createElement("details");
+    context.className = "official-context";
+    const summary = document.createElement("summary");
+    summary.textContent = "展开该页原文上下文";
+    const full = document.createElement("blockquote");
+    full.className = "evidence-text";
+    full.textContent = evidence.official_text;
+    context.append(summary, full);
+    card.append(context);
+    for (const page of evidence.pages) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const link = document.createElement("a");
+      link.className = "source-link pdf-source-link";
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `在 PDF 中查看第 ${page} 页`;
+      card.append(link);
+    }
+    cards.append(card);
+  }
+  drawerContent.append(cards);
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = 0;
+  drawerClose.focus({preventScroll: true});
+}
+
+function renderExamCardV2(exam) {
+  const view = referenceCore.examV2View(exam);
+  const section = document.createElement("section");
+  section.className = "result-section exam-arrangement";
+  section.append(heading(3, "考试安排 · 学校公布的 A/B 日程"));
+  const lead = document.createElement("p");
+  lead.className = "exam-lead";
+  lead.textContent = view.lead;
+  section.append(lead);
+  if (view.course) {
+    const course = document.createElement("p");
+    course.className = "exam-course-notice";
+    course.textContent = view.course;
+    section.append(course);
+  }
+  if (view.subjects.length) {
+    section.append(heading(4, "考什么"));
+    const list = document.createElement("ul");
+    for (const text of view.subjects) {
+      const item = document.createElement("li");
+      item.textContent = text;
+      list.append(item);
+    }
+    section.append(list);
+  }
+  for (const text of [view.selection, view.points]) if (text) {
+    const row = document.createElement("p");
+    row.textContent = text;
+    section.append(row);
+  }
+  const more = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "口述、英语与语言";
+  more.append(summary);
+  for (const text of [view.aOral, view.bOral, view.specialist, view.english, view.language]) if (text) {
+    const row = document.createElement("p");
+    row.textContent = text;
+    more.append(row);
+  }
+  section.append(more);
+  const actions = document.createElement("div");
+  actions.className = "source-actions";
+  for (const [path, label] of [["b.subjects", "查看笔试原文"], ["a.oral", "查看 A 日程原文"],
+    ["b.oral", "查看 B 口述原文"], ["english.submission", "查看英语原文"]]) {
+    const sources = examSourcesForField(exam, path);
+    if (!sources.length) continue;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = label;
+    button.addEventListener("click", () => openExamFieldEvidence(label, sources, button));
+    actions.append(button);
+  }
+  section.append(actions);
+  return section;
+}
+
+function requirementsJumpNav() {
+  const nav = document.createElement("nav");
+  nav.className = "requirements-jump";
+  nav.setAttribute("aria-label", "本页要求定位");
+  for (const [selector, label] of [[".key-dates-section", "关键时间"],
+    [".materials-section", "出愿材料"], [".exam-arrangement", "考试安排"]]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      const section = requirementsOutput.querySelector(selector);
+      if (!section) return;
+      section.scrollIntoView({behavior: "smooth", block: "start"});
+      section.tabIndex = -1;
+      section.focus({preventScroll: true});
+    });
+    nav.append(button);
+  }
+  return nav;
+}
+
 function renderRequirements(payload, scope, exam) {
   requirementsOutput.replaceChildren();
   const target = payload.target;
@@ -1351,6 +1506,7 @@ function renderRequirements(payload, scope, exam) {
   ));
 
   requirementsOutput.append(
+    ...(scope.request.school_id === "isct" ? [requirementsJumpNav()] : []),
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
     renderRequirementSection("英语考试与证明", englishRequirements, "english-section", scope),
@@ -2631,7 +2787,7 @@ async function submitBaseRequirements() {
   setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
   try {
     const response = scope.kind === "legacy_applicant"
-      ? await fetch(`${BASE_REQUIREMENTS_ENDPOINT}?include_examination_information=true`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
+      ? await fetch(`${BASE_REQUIREMENTS_ENDPOINT}?include_examination_information=true${scope.request.school_id === "isct" ? "&exam_presentation_version=2" : ""}`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
       : await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/evidence`, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
     if (!response.ok) throw new Error();
     const payload = await response.json();

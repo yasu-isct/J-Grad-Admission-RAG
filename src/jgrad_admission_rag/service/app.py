@@ -186,6 +186,7 @@ from .date_presentation import (
     validate_highlights_against_official_text,
 )
 from .exam_presentation import load_exam_presentation, exam_response
+from .exam_presentation_v2 import exam_response_v2, load_exam_presentation_v2
 from .jobs import (
     BuildJobRecord,
     BuildJobRepository,
@@ -387,6 +388,26 @@ def create_app(
             except Exception:
                 state.exam_presentations = ()
                 state.exam_presentation_initialization_failed = True
+        if selected_settings.exam_presentation_v2_path is not None:
+            try:
+                if (
+                    selected_settings.corpus_root is None
+                    or selected_settings.manifest_path is None
+                    or selected_settings.source_pdf_path is None
+                ):
+                    raise ValueError("incomplete examination v2 source configuration")
+                state.exam_presentation_v2 = await to_thread.run_sync(
+                    partial(
+                        load_exam_presentation_v2,
+                        selected_settings.exam_presentation_v2_path,
+                        selected_settings.corpus_root,
+                        selected_settings.manifest_path,
+                        selected_settings.source_pdf_path,
+                    )
+                )
+            except Exception:
+                state.exam_presentation_v2 = None
+                state.exam_presentation_v2_initialization_failed = True
         if selected_settings.query_intent_catalog_path is not None:
             try:
                 state.query_intent_catalog = await to_thread.run_sync(
@@ -417,6 +438,7 @@ def create_app(
             state.query_intent_catalog = None
             state.date_presentations = ()
             state.exam_presentations = ()
+            state.exam_presentation_v2 = None
             state.source_document = None
             state.natural_answer_cache = None
 
@@ -615,8 +637,17 @@ def create_app(
         operation_id="postV1BaseRequirements",
     )
     async def base_requirements(
-        request: DemoTargetRequest, include_examination_information: bool = False
+        request: DemoTargetRequest,
+        include_examination_information: bool = False,
+        exam_presentation_version: int | None = None,
+        course_id: str | None = None,
     ) -> DemoBaseRequirementsResponse:
+        if (
+            exam_presentation_version not in (None, 2)
+            or (course_id is not None and (exam_presentation_version != 2 or len(course_id) > 80))
+            or (exam_presentation_version == 2 and not include_examination_information)
+        ):
+            raise ApiProblem(422, "invalid_request", "examination presentation option is invalid")
         if not _report_service_ready(state):
             raise ApiProblem(
                 503,
@@ -630,6 +661,8 @@ def create_app(
                 selected_settings,
                 state,
                 include_examination_information,
+                exam_presentation_version,
+                course_id,
             )
         )
 
@@ -1423,6 +1456,8 @@ def _build_demo_base_requirements_response(
     settings: ServiceSettings,
     state: ServiceState,
     include_examination_information: bool = False,
+    exam_presentation_version: int | None = None,
+    course_id: str | None = None,
 ) -> DemoBaseRequirementsResponse:
     plan, evidence, date_presentation = _load_demo_context(request, settings, state)
     try:
@@ -1436,20 +1471,27 @@ def _build_demo_base_requirements_response(
             ),
         )
         if include_examination_information:
-            presentation = (
-                state.exam_presentations[0] if len(state.exam_presentations) == 1 else None
-            )
-            response = response.model_copy(
-                update={
-                    "examination_information": exam_response(
-                        request,
-                        presentation,
-                        state.exam_presentation_initialization_failed,
-                        plan,
-                        state.source_document,
-                    )
-                }
-            )
+            if exam_presentation_version == 2:
+                exam = exam_response_v2(
+                    request,
+                    state.exam_presentation_v2,
+                    state.exam_presentation_v2_initialization_failed,
+                    plan,
+                    state.source_document,
+                    course_id,
+                )
+            else:
+                presentation = (
+                    state.exam_presentations[0] if len(state.exam_presentations) == 1 else None
+                )
+                exam = exam_response(
+                    request,
+                    presentation,
+                    state.exam_presentation_initialization_failed,
+                    plan,
+                    state.source_document,
+                )
+            response = response.model_copy(update={"examination_information": exam})
         return response
     except (KeyError, ValueError):
         raise ApiProblem(422, "invalid_request", "target selection is invalid") from None

@@ -1,0 +1,25 @@
+{
+  "attempted_product_posts": 4,
+  "cases": [
+    {
+      "case": "cs-old-explicit-1.0",
+      "http_status": 200,
+      "exam_status": "available"
+    },
+    {
+      "case": "cs-old-default",
+      "http_status": 200,
+      "exam_status": null
+    },
+    {
+      "case": "earth-life-excluded",
+      "http_status": 200,
+      "exam_status": "not_covered_course"
+    },
+    {
+      "case": "wrong-school-fails-closed",
+      "http_status": 422,
+      "exam_status": null
+    }
+  ]
+}
