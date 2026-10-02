@@ -2,7 +2,7 @@
 // This reads a stream, and does not save or copy full KB response payloads.
 import assert from "node:assert/strict";
 import {readFileSync, writeFileSync} from "node:fs";
-import {readyEntries, scopesFor, validateExamInformation, examReportRows, examV2View} from
+import {readyEntries, scopesFor, validateExamInformation, examReportRows, examV2View, readerReport} from
   "../../../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const input = [];
@@ -13,6 +13,7 @@ const item = readyEntries(catalog).find((entry) => entry.entry_id === "legacy-is
 const scopes = scopesFor(item);
 const summary = [];
 const cards = [];
+const directCopies = [];
 for (const response of responses) {
   const target = response.target_identity;
   const scope = scopes.find((entry) => entry.request.document_id === target.document_id
@@ -36,6 +37,11 @@ for (const response of responses) {
   if (target.department_id === "社会・人間科学系") assert.match(joined, /线上以日语口头问答/);
   if (target.department_id === "システム制御系") assert.match(joined, /事先准备的资料发表/);
   if (target.department_id === "地球惑星科学系") assert.match(joined, /A 日程口述.*以英语口述/);
+  const copy = readerReport({kind: "legacy_applicant", scope, topics: [], exam},
+    {dates: false, materials: false, other: false, exams: true}).text;
+  assert.match(copy, /考试安排/);
+  assert.doesNotMatch(copy, /待补材料/);
+  directCopies.push(`===== ${target.department_id} / ${target.intake.year}年${target.intake.month}月入学 =====\n${copy}`);
   summary.push({department_id: target.department_id, intake: target.intake,
     written_status: exam.pathways[1].written.status,
     subject_components: exam.pathways[1].written.subjects_zh.length,
@@ -51,6 +57,9 @@ for (const response of responses) {
 assert.equal(summary.length, 36);
 assert.equal(new Set(summary.map((item) => item.department_id)).size, 18);
 assert.equal(cards.length, 18);
+assert.equal(directCopies.length, 36);
 writeFileSync("docs/onboarding/exam02b-evidence/teacher-card-samples.txt", `${cards.join("\n\n")}\n`, "utf8");
 writeFileSync("docs/onboarding/exam02b-evidence/projection-summary.json", `${JSON.stringify(summary, null, 2)}\n`, "utf8");
-process.stdout.write("36 real-source projections validated; 18 teacher-card samples saved\n");
+writeFileSync("docs/onboarding/exam02b-evidence/review-36-direct-exam-report-samples.txt",
+  `${directCopies.join("\n\n")}\n`, "utf8");
+process.stdout.write("36 real-source projections and direct exam-only copies validated; 18 teacher cards saved\n");
