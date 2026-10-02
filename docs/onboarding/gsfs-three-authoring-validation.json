@@ -1,0 +1,310 @@
+{
+  "reviewer": "design-main-agent",
+  "review_kind": "design_self_check_not_independent_acceptance",
+  "blind_extraction_trial": false,
+  "basis": "Two existing reviewed topics reused; questionnaire newly authored with locked PDF page review. Does not measure authoring speed advantage.",
+  "source_checks": [
+    {
+      "source_id": "gsfs-master-2027",
+      "pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "pages_viewed": [
+        6
+      ],
+      "page_count": 22
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "pages_viewed": [
+        28
+      ],
+      "page_count": 45
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "pages_viewed": [
+        1
+      ],
+      "page_count": 1
+    }
+  ],
+  "anchor_checks": [
+    {
+      "fragment_id": "E01-1",
+      "normalized_text_found": false,
+      "visual_review": "matched_on_locked_page_image",
+      "note": "existing manual heading/parenthesis normalization"
+    },
+    {
+      "fragment_id": "E01-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E02-1",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E02-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E03-1",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E03-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E06-1",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E06-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E06-3",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E07-1",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E07-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E07-3",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-1",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-2",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-3",
+      "normalized_text_found": false,
+      "visual_review": "matched_on_locked_page_image",
+      "note": "existing manual heading/parenthesis normalization"
+    },
+    {
+      "fragment_id": "E08-4",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-5",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-6",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "E08-7",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q1-group",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q1-format",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q1-label",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q1-audience",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q1-note",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q2-scope",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q2-form",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    },
+    {
+      "fragment_id": "DRAFT-Q2-upload",
+      "normalized_text_found": true,
+      "visual_review": "matched_on_locked_page_image",
+      "note": null
+    }
+  ],
+  "claims_with_resolving_evidence_refs": 14,
+  "existing_condition_engine_cases": [
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": true,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.retain_employment_at_enrollment"
+      ]
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": []
+    },
+    {
+      "currently_employed": false,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": [
+        "employment.retain_employment_at_enrollment"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": true,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.currently_employed_in_organization"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": false,
+      "actual_existing_engine_status": "not_matched",
+      "missing_fields": [
+        "employment.currently_employed_in_organization"
+      ]
+    },
+    {
+      "currently_employed": null,
+      "retain_at_enrollment": null,
+      "actual_existing_engine_status": "needs_information",
+      "missing_fields": [
+        "employment.currently_employed_in_organization",
+        "employment.retain_employment_at_enrollment"
+      ]
+    }
+  ],
+  "target_isolation_examples": [
+    {
+      "changed_target_field": "institution_id",
+      "value": "isct",
+      "actual_status": "not_covered",
+      "entry_count": 0
+    },
+    {
+      "changed_target_field": "admission_cycle",
+      "value": 2028,
+      "actual_status": "not_covered",
+      "entry_count": 0
+    },
+    {
+      "changed_target_field": "selection_route_id",
+      "value": "special-oral",
+      "actual_status": "not_covered",
+      "entry_count": 0
+    }
+  ],
+  "production_files_changed": 0,
+  "real_service_starts": 0,
+  "product_post": 0,
+  "paid_calls": 0,
+  "downloads": 0,
+  "kb_or_index_builds": 0,
+  "browser_preview_checks": [
+    {
+      "width": 1440,
+      "three_cards": true,
+      "condition_switches": 3,
+      "all_details_open_close": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "network": "local file only"
+    },
+    {
+      "width": 390,
+      "three_cards": true,
+      "condition_switches": 3,
+      "all_details_open_close": true,
+      "horizontal_overflow": false,
+      "page_errors": [],
+      "network": "local file only"
+    }
+  ]
+}
