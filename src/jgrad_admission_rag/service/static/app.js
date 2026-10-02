@@ -1337,7 +1337,7 @@ function examSourceForField(exam, fieldPath) {
     const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
     if (fact) return fact;
     if (source.source_id.startsWith("pdf_page:")) return {
-      official_title: exam.official_title, school_name: "東京科学大学",
+      official_title: exam.official_title, school_name: currentReferenceScope()?.school || "当前学校",
       intake_name: currentReferenceScope()?.intake || "本册目标", pages: source.physical_pages,
       official_text: source.exact_text, source_url: exam.official_source_url,
       local_pdf_url: exam.local_pdf_url,
