@@ -1,0 +1,18 @@
+[
+  {
+    "width": 1440,
+    "actual_product_post": 0,
+    "intercepted_product_post": 1,
+    "saved_real_response": "computer-science-base-v2.json + accepted review-v2 overlay",
+    "copy_sha256": "869fa926c06a51fd126f834b312778da53c3cfb21aec8839723ba7f6c3874bbd",
+    "no_horizontal_overflow": true
+  },
+  {
+    "width": 390,
+    "actual_product_post": 0,
+    "intercepted_product_post": 1,
+    "saved_real_response": "computer-science-base-v2.json + accepted review-v2 overlay",
+    "copy_sha256": "869fa926c06a51fd126f834b312778da53c3cfb21aec8839723ba7f6c3874bbd",
+    "no_horizontal_overflow": true
+  }
+]

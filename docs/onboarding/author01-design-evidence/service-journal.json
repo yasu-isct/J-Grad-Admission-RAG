@@ -1,0 +1,21 @@
+[
+  {
+    "started_utc": "2026-10-03T01:45:29.258898+00:00",
+    "port": 55954,
+    "config": "D:\\J-Grad-Admission-RAG\\outputs\\design-author01-review\\head-e7cf52c\\docs\\onboarding\\author01-reference-workspace-preview-v2.json",
+    "offline": true,
+    "product_post_attempts": [
+      {
+        "at_utc": "2026-10-03T01:45:31.401029+00:00",
+        "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+        "status": 200
+      },
+      {
+        "at_utc": "2026-10-03T01:45:32.607297+00:00",
+        "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+        "status": 200
+      }
+    ],
+    "stopped_utc": "2026-10-03T01:45:33.269189+00:00"
+  }
+]
