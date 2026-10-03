@@ -1,0 +1,94 @@
+[
+  {
+    "started_utc": "2026-10-02T15:47:35.607506+00:00",
+    "build_id": "7ea490375de4c28859ca38dd76bb3952aa8b3d601aa3ccc9eeb5f4ee93cad752",
+    "status": "generated",
+    "candidate_root": "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\7ea490375de4c28859ca38dd76bb3952aa8b3d601aa3ccc9eeb5f4ee93cad752",
+    "input_sha256": [
+      "96b5944a18e24cb2f65020dd3e7affb909522322ab8172ca5d9b375c56aea5ab",
+      "0065233d6179e25d1896de3252946fea82dc430c7101d872093948bef42625d7",
+      "b86e7b61aa43cfc4705234a450fd8993e0c1ac86a6b730ca10d750b6427238e3",
+      "66ded26e0d840857bba1310cb5d4e895c0584c402fd66b995dc29e6a19c6f271"
+    ],
+    "ended_utc": "2026-10-02T15:47:35.640528+00:00",
+    "seconds": 0.030999999959021807,
+    "peak_working_set_bytes": 91537408,
+    "candidate_bytes": 94232,
+    "files_sha256": {
+      "candidate.json": "de6158a87072594934a945b37b2d42c5e8de40d71342b1c5d37362864470246b",
+      "documents/complex-guide-2027-revised/document_kb.json": "9f873054669c9cca9f93e684bbaf46f19cc886a8d047ce1fa16ed11008f74e1d",
+      "documents/complex-master-a-additional/document_kb.json": "52da3cae0c5e2043cc60dad40049fdb08bdbed35e32f75c9bbeef2635c3e9c19",
+      "documents/gsfs-master-2027/document_kb.json": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+      "lineage.json": "5946592c25c22fd274da8d51da148f6c295f13cd09c70653a0e32cd1ac682977"
+    },
+    "same_identity_reuse_unchanged": null,
+    "file_state": {
+      "documents/complex-guide-2027-revised/document_kb.json": {
+        "sha256": "9f873054669c9cca9f93e684bbaf46f19cc886a8d047ce1fa16ed11008f74e1d",
+        "mtime_ns": 1790956055626082500
+      },
+      "documents/complex-master-a-additional/document_kb.json": {
+        "sha256": "52da3cae0c5e2043cc60dad40049fdb08bdbed35e32f75c9bbeef2635c3e9c19",
+        "mtime_ns": 1790956055626082500
+      },
+      "documents/gsfs-master-2027/document_kb.json": {
+        "sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+        "mtime_ns": 1790956055628082600
+      },
+      "lineage.json": {
+        "sha256": "5946592c25c22fd274da8d51da148f6c295f13cd09c70653a0e32cd1ac682977",
+        "mtime_ns": 1790956055628082600
+      },
+      "candidate.json": {
+        "sha256": "de6158a87072594934a945b37b2d42c5e8de40d71342b1c5d37362864470246b",
+        "mtime_ns": 1790956055628082600
+      }
+    }
+  },
+  {
+    "started_utc": "2026-10-02T15:47:47.351359+00:00",
+    "build_id": "7ea490375de4c28859ca38dd76bb3952aa8b3d601aa3ccc9eeb5f4ee93cad752",
+    "status": "reused",
+    "candidate_root": "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\7ea490375de4c28859ca38dd76bb3952aa8b3d601aa3ccc9eeb5f4ee93cad752",
+    "input_sha256": [
+      "96b5944a18e24cb2f65020dd3e7affb909522322ab8172ca5d9b375c56aea5ab",
+      "0065233d6179e25d1896de3252946fea82dc430c7101d872093948bef42625d7",
+      "b86e7b61aa43cfc4705234a450fd8993e0c1ac86a6b730ca10d750b6427238e3",
+      "66ded26e0d840857bba1310cb5d4e895c0584c402fd66b995dc29e6a19c6f271"
+    ],
+    "ended_utc": "2026-10-02T15:47:47.376767+00:00",
+    "seconds": 0.03200000000651926,
+    "peak_working_set_bytes": 91713536,
+    "candidate_bytes": 94232,
+    "files_sha256": {
+      "candidate.json": "de6158a87072594934a945b37b2d42c5e8de40d71342b1c5d37362864470246b",
+      "documents/complex-guide-2027-revised/document_kb.json": "9f873054669c9cca9f93e684bbaf46f19cc886a8d047ce1fa16ed11008f74e1d",
+      "documents/complex-master-a-additional/document_kb.json": "52da3cae0c5e2043cc60dad40049fdb08bdbed35e32f75c9bbeef2635c3e9c19",
+      "documents/gsfs-master-2027/document_kb.json": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+      "lineage.json": "5946592c25c22fd274da8d51da148f6c295f13cd09c70653a0e32cd1ac682977"
+    },
+    "same_identity_reuse_unchanged": true,
+    "file_state": {
+      "documents/complex-guide-2027-revised/document_kb.json": {
+        "sha256": "9f873054669c9cca9f93e684bbaf46f19cc886a8d047ce1fa16ed11008f74e1d",
+        "mtime_ns": 1790956055626082500
+      },
+      "documents/complex-master-a-additional/document_kb.json": {
+        "sha256": "52da3cae0c5e2043cc60dad40049fdb08bdbed35e32f75c9bbeef2635c3e9c19",
+        "mtime_ns": 1790956055626082500
+      },
+      "documents/gsfs-master-2027/document_kb.json": {
+        "sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+        "mtime_ns": 1790956055628082600
+      },
+      "lineage.json": {
+        "sha256": "5946592c25c22fd274da8d51da148f6c295f13cd09c70653a0e32cd1ac682977",
+        "mtime_ns": 1790956055628082600
+      },
+      "candidate.json": {
+        "sha256": "de6158a87072594934a945b37b2d42c5e8de40d71342b1c5d37362864470246b",
+        "mtime_ns": 1790956055628082600
+      }
+    }
+  }
+]

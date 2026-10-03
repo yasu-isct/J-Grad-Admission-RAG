@@ -5,7 +5,7 @@ import {
   readyEntries, scopesFor, scopeKey, comparisonRequest, hasSuppliedProfile,
   sliceReportRequest, mapLegacyBase, mapSliceEvidence, legacyReport, sliceReport,
   readerReportOptions, readerReport, materialDisplay, materialGuide,
-  validateExamInformation, examReportRows
+  validateExamInformation, examReportRows, withSlicePreparation
 } from "../src/jgrad_admission_rag/service/static/unified-core.mjs";
 
 const legacy = {
@@ -373,6 +373,142 @@ test("all reviewed material codes have scoped explanations and unknown codes kee
   assert.equal(copied.materials[0].verified, false);
   assert.match(copied.text, /另一校原名.*说明待核实/);
   assert.doesNotMatch(copied.text, /宛名ラベル|邮寄地址标签/);
+});
+
+test("reviewed material report cardinality follows the configured three or four topics", () => {
+  const scope = scopesFor(slice)[0];
+  for (const count of [3, 4]) {
+    const fixture = structuredClone(evidence);
+    const payload = structuredClone(report);
+    fixture.topics = [];
+    payload.report.topic_results = [];
+    payload.report.evidence_inventory = [];
+    for (let index = 1; index <= count; index++) {
+      const topic = structuredClone(evidence.topics[0]);
+      topic.topic_id = `topic-${index}`;
+      topic.material_name_zh = `材料${index}`;
+      topic.records[0].record_id = `record-${index}`;
+      fixture.topics.push(topic);
+      payload.report.topic_results.push({...report.report.topic_results[0],
+        topic_id: topic.topic_id, material_name_zh: topic.material_name_zh,
+        basis_citation_keys: [`C${index}`]});
+      payload.report.evidence_inventory.push({...report.report.evidence_inventory[0],
+        citation_key: `C${index}`, record_id: `record-${index}`});
+    }
+    const mapped = mapSliceEvidence(scope, fixture);
+    const reader = readerReport(sliceReport(scope, mapped, payload),
+      {dates: false, materials: true, other: false});
+    assert.equal(mapped.topics.length, count);
+    assert.equal(reader.materials.length, count);
+    assert.match(mapped.coverage, new RegExp(`${count} 个材料主题`));
+    assert.match(reader.text, new RegExp(`${count} 个材料主题`));
+    assert.doesNotMatch(reader.text, /完整清单已完成/);
+  }
+});
+
+test("slice preparation self-report remains separate from official findings and needs no new request fields", () => {
+  const scope = scopesFor(slice)[0];
+  const mapped = mapSliceEvidence(scope, evidence);
+  const payload = structuredClone(report);
+  payload.report.topic_results[0] = {...payload.report.topic_results[0],
+    topic_id: "english", disposition: "submission_required", missing_fields: []};
+  const official = sliceReport(scope, mapped, payload);
+  const selected = {dates: false, materials: true, other: false};
+  for (const [preparation, expected] of [["unknown", "需提交，尚未填写准备情况"],
+    ["available", "已准备（自报）"], ["not_yet", "待准备"]]) {
+    const projected = withSlicePreparation(official, {english: preparation});
+    assert.equal(projected.topics[0].status_code, "submission_required");
+    assert.equal(projected.raw, official.raw);
+    assert.equal(readerReport(projected, selected).materials[0].state, expected);
+  }
+  const originalRequest = sliceReportRequest(scope, {current: "unknown", retain: "unknown"});
+  assert.equal("preparation" in originalRequest, false);
+  assert.equal("materials" in originalRequest.applicant_profile, false);
+  assert.throws(() => withSlicePreparation(official, {english: "school_accepted"}));
+  assert.throws(() => withSlicePreparation(official, {another_material: "available"}));
+  const noSubmission = {...official, topics: [{...official.topics[0], status_code: "submission_not_required"}]};
+  assert.equal(readerReport(withSlicePreparation(noSubmission, {english: "not_yet"}), selected)
+    .materials[0].state, "本项无需提交");
+});
+
+test("AUTHOR-01 guide and copied report require the exact target, snapshot, and all fourteen frozen fragments", () => {
+  const read = (name) => JSON.parse(readFileSync(new URL(`../docs/onboarding/${name}`, import.meta.url), "utf8"));
+  const seed = read("author01-essay-evidence-seed-v2.json");
+  const plan = read("author01-material-slice-report-plan-v2.json");
+  const input = read("author01-essay-authoring-input.json");
+  const scope = scopesFor({...slice, entry_id: "gsfs-complex-2027-a-author01",
+    revision: 2, target: seed.target,
+    snapshot_id: "a729b19705be68c9a4e79bc71d6dbaaed12710989aeac79b90cf34347bf89164"})[0];
+  const fixture = {schema_version: "1.0", revision: 2, snapshot_id: scope.item.snapshot_id,
+    target: seed.target, limitations_zh: plan.limitations_zh,
+    topics: plan.topics.map((topic) => ({topic_id: topic.topic_id,
+      material_name_zh: topic.material_name_zh, context_note_zh: topic.context_note_zh,
+      relations: plan.relations.filter((relation) => topic.required_context_record_ids.includes(relation.from)
+        && topic.required_context_record_ids.includes(relation.to)),
+      records: topic.required_context_record_ids.map((id) => {
+        const origin = seed.records.find((record) => record.record_id === id);
+        const review = plan.scope_reviews.find((record) => record.record_id === id);
+        const source = plan.sources.find((source) => source.source_id === origin.source_id);
+        return {record_id: id, source_id: origin.source_id,
+          role: topic.basis_record_ids.includes(id) ? "basis" : "context", stage: review.stage,
+          source_title: source.identity.official_title, physical_page: origin.physical_page,
+          printed_page_label: origin.printed_page_label,
+          official_source_url: source.identity.official_source_url,
+          fragments: origin.fragments.map((fragment) => ({fragment_id: fragment.fragment_id,
+            quote_text: fragment.text}))};
+      })}))};
+  const mapped = mapSliceEvidence(scope, fixture);
+  const essay = mapped.topics.find((topic) => topic.id === "application-essay");
+  const guide = materialGuide(scope, essay);
+  assert.equal(guide.purpose, input.guide.what);
+  assert.deepEqual(guide.steps, input.guide.preparation);
+  assert.deepEqual(guide.warnings, input.guide.attention);
+  assert.equal(materialDisplay(scope, "application_essay", "旧名").name, "申请小论文");
+  for (const field of ["institution_id", "organization_id", "program_id", "degree_level",
+    "admission_cycle", "selection_route_id", "examination_schedule_id", "target_id"]) {
+    const wrong = {...scope, item: {...scope.item, target: {...scope.item.target, [field]: "wrong"}}};
+    assert.equal(materialGuide(wrong, essay), null);
+    assert.equal(materialDisplay(wrong, "application-essay", "原名").verified, false);
+    assert.throws(() => mapSliceEvidence(wrong, {...fixture, target: wrong.item.target}));
+  }
+  for (const intake of [{year: 2026, month: 4}, {year: 2027, month: 10}]) {
+    const wrong = {...scope, item: {...scope.item, target: {...scope.item.target, intake}}};
+    assert.equal(materialGuide(wrong, essay), null);
+  }
+  const anotherSnapshot = {...scope, item: {...scope.item, snapshot_id: "b".repeat(64)}};
+  assert.equal(materialGuide(anotherSnapshot, essay), null);
+  assert.equal(materialDisplay(anotherSnapshot, "application-essay", "原名").verified, false);
+  const essayIndex = fixture.topics.findIndex((topic) => topic.topic_id === "application-essay");
+  for (const [recordIndex, record] of fixture.topics[essayIndex].records.entries()) {
+    for (const [fragmentIndex] of record.fragments.entries()) {
+      const missing = structuredClone(fixture);
+      missing.topics[essayIndex].records[recordIndex].fragments.splice(fragmentIndex, 1);
+      assert.throws(() => mapSliceEvidence(scope, missing));
+      const changed = structuredClone(fixture);
+      changed.topics[essayIndex].records[recordIndex].fragments[fragmentIndex].quote_text += "改変";
+      assert.throws(() => mapSliceEvidence(scope, changed));
+    }
+  }
+  const citations = fixture.topics.flatMap((topic) => topic.records.flatMap((record) =>
+    record.fragments.map((fragment) => ({citation_key: fragment.fragment_id, record_id: record.record_id,
+      quote_text: fragment.quote_text, source_title: record.source_title,
+      physical_pages: [record.physical_page], printed_page_label: record.printed_page_label}))));
+  const payload = {schema_version: "1.0", slice_id: scope.entry_id, snapshot_id: scope.item.snapshot_id,
+    markdown: "# 已审核材料", report: {status: "evaluated", target: seed.target,
+      evidence_inventory: citations,
+      topic_results: fixture.topics.map((topic) => ({topic_id: topic.topic_id,
+        material_name_zh: topic.material_name_zh,
+        disposition: topic.topic_id === "application-essay" ? "submission_required" : "needs_information",
+        explanation_zh: "保留既有规则结论", basis_citation_keys: topic.records.filter((record) => record.role === "basis")
+          .flatMap((record) => record.fragments.map((fragment) => fragment.fragment_id)), context_citation_keys: []}))}};
+  const official = sliceReport(scope, mapped, payload);
+  const copied = readerReport(withSlicePreparation(official, {"application-essay": "available"}),
+    {dates: false, materials: true, other: false});
+  for (const line of [...input.guide.preparation, ...input.guide.attention])
+    assert.ok(copied.text.includes(line.replace(/[。；]$/, "")));
+  assert.match(copied.text, /申请小论文.*已准备（自报）/);
+  assert.doesNotMatch(copied.text, /snapshot_id|record_id|E09-1|学校已确认完成/);
+  assert.equal(official.topics.at(-1).status_code, "submission_required");
 });
 
 test("PREP-01 guides require the exact reviewed p.10 fact and keep September date scoped", () => {

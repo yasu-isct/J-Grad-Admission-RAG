@@ -487,6 +487,7 @@ export function mapSliceEvidence(scope, evidence) {
         printed: record.printed_page_label, quote: quotes.join("\n\n"),
         source_url: record.official_source_url, local_pdf_url: null,
         source_id: record.source_id, role: record.role, stage: record.stage,
+        fragments: record.fragments,
         heading: array(record.official_heading_path).join(" › "),
         context: [record.scope_note_zh, array(record.official_heading_path).join(" › "),
           record.role === "basis" ? "本条依据" : "关联上下文",
@@ -505,6 +506,14 @@ export function mapSliceEvidence(scope, evidence) {
       deadline: "", limitation: "", dates: [], sources, relations
     };
   });
+  if (scope.item.snapshot_id === authorEssayIdentity.snapshot_id) {
+    requireValue(authorEssayScopeMatches(scope)
+      && topics.length === 4 && new Set(topics.map((topic) => topic.id)).size === 4
+      && ["english-score-sheets", "checklist-submission", "work-study-plan", "application-essay"]
+        .every((id) => topics.some((topic) => topic.id === id)), "新材料切片范围不匹配");
+    const essay = topics.find((topic) => topic.id === "application-essay");
+    requireValue(authorEssaySourcesMatch(essay.sources), "小论文原文或表头缺失");
+  }
   return {
     scope, topics, coverage: `历史招生资料 · 已审核的 ${topics.length} 个材料主题`,
     limitation: array(evidence.limitations_zh).join("；"), target: evidence.target,
@@ -600,7 +609,7 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = [], 
     presentation: {intro: intro.slice(3), topics, comparison: comparisonPresentation, conclusion}};
 }
 
-export function sliceReport(scope, mapped, payload, employment = {current: "unknown", retain: "unknown"}) {
+export function sliceReport(scope, mapped, payload, employment = {current: "unknown", retain: "unknown"}, preparation = {}) {
   requireValue(scope.kind === "reviewed_material_slice" && mapped?.raw?.snapshot_id === scope.item.snapshot_id
     && payload?.schema_version === "1.0" && payload.slice_id === scope.entry_id
     && payload.snapshot_id === scope.item.snapshot_id && same(payload.report?.target, scope.item.target)
@@ -620,6 +629,7 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
         && source.pages.length === row.physical_pages.length
         && source.pages.every((page, index) => page === row.physical_pages[index])
         && source.quote.includes(row.quote_text)), "报告引文与已加载原文不一致");
+    const mappedTopic = mapped.topics.find((topic) => topic.id === result.topic_id);
     return {
       id: result.topic_id, material_code: result.material_code,
       title: result.material_name_zh,
@@ -627,7 +637,8 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
       status_code: result.disposition, condition: result.condition_status,
       explanation: result.explanation_zh, missing_fields: array(result.missing_fields),
       limitations: array(result.limitations_zh),
-      citations: sourceRecords
+      citations: sourceRecords,
+      guide: mappedTopic ? materialGuide(scope, mappedTopic) : null
     };
   });
   requireValue(topics.length === mapped.topics.length, "材料主题数量不匹配");
@@ -644,11 +655,72 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
       cite.quote_text
     ])])
   ].join("\n");
-  return {kind: "reviewed_material_slice", scope, topics, employment, text: wrapper,
-    canonicalMarkdown: payload.markdown, raw: payload.report};
+  return withSlicePreparation({kind: "reviewed_material_slice", scope, topics, employment, text: wrapper,
+    canonicalMarkdown: payload.markdown, raw: payload.report}, preparation);
+}
+
+// Applicant input is a page-local projection; it never changes the reviewed disposition.
+export function withSlicePreparation(report, preparation = {}) {
+  requireValue(report?.kind === "reviewed_material_slice" && Array.isArray(report.topics)
+    && preparation && typeof preparation === "object" && !Array.isArray(preparation)
+    && Object.entries(preparation).every(([key, value]) =>
+      report.topics.some((topic) => topic.id === key)
+      && ["unknown", "available", "not_yet"].includes(value)), "材料准备自报无效");
+  return {...report, preparation: {...preparation}};
 }
 
 const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"};
+
+const authorEssayIdentity = {
+  kind: "reviewed_material_slice", institution_id: "utokyo", organization_id: "utokyo-gsfs",
+  program_id: "utokyo-gsfs-complex", degree_level: "master", admission_cycle: 2027,
+  selection_route_id: "general-ordinary", examination_schedule_id: "A", intake_year: 2027,
+  intake_month: 4, target_id: "utokyo-gsfs-complex-master-2027-general-a-202704",
+  snapshot_id: "a729b19705be68c9a4e79bc71d6dbaaed12710989aeac79b90cf34347bf89164"
+};
+const authorEssayGuide = {
+  purpose: "本固定目标范围内申请人需要提交的小论文，用于说明希望研究的主题、动机和自身优势。",
+  steps: ["使用专攻网站指定格式，以日语或英语填写。",
+    "第一部分：写明希望研究的主题，以及对该主题感兴趣的理由。",
+    "第二部分：结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。",
+    "出愿期间，通过网上出愿系统上传PDF。"],
+  warnings: ["字数和版式以指定模板为准；本次资料未包含模板细目。",
+    "本项来源只明确出愿期间，未核定具体截止日期或时刻。",
+    "准备情况由本人填写，不代表学校确认材料已完成或申请资格成立。"],
+  conditions: [],
+  sourceNote: "中文要点整理自专攻追加材料表第1页与入试案内第28页（印刷26）；下方分别保留两份原文。"
+};
+const authorEssayFragments = {
+  E09: ["令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+    "【複雑理工学専攻】", "出願期間中に「オンライン出願システム」により提出する書類等",
+    "(※PDFファイルのアップロードによる）", "提出物", "小論文", "対象者，備考",
+    "【対象者】全員", "日本語又は英語で作成すること。"],
+  E10: ["修士課程 一般選抜", "小論文の作成・提出要領",
+    "以下の(A)(B)を、当専攻ホームページで指定するフォーマットに日本語または英語で書くこと。文字数や書式などはフォーマットに指示する。オンライン出願サイトより提出せよ。",
+    "（A) 取り組みたい研究テーマとそのテーマに興味を持った理由",
+    "（B) 自己アピール：これまでの学修・研究・課外活動などの経験に基づき、修士課程での学修・研究に活かせる自分の強みを具体的に記述"]
+};
+
+function authorEssayScopeMatches(scope) {
+  const identity = materialScopeIdentity(scope);
+  return identity && Object.entries(authorEssayIdentity).every(([key, value]) => identity[key] === value);
+}
+
+function authorEssaySourcesMatch(sources) {
+  const normalize = (value) => text(value).replace(/\s+/g, "");
+  return array(sources).length === 2 && Object.entries(authorEssayFragments).every(([recordId, quotes]) => {
+    const source = sources.find((row) => row.record_id === recordId);
+    if (!source || source.role !== "basis" || source.stage !== "application"
+      || source.source_id !== (recordId === "E09" ? "complex-master-a-additional" : "complex-guide-2027-revised")
+      || !same(source.pages, [recordId === "E09" ? 1 : 28])
+      || (recordId === "E10" && source.printed !== "26")
+      || array(source.fragments).length !== quotes.length) return false;
+    return quotes.every((quote, index) => {
+      const matches = source.fragments.filter((fragment) => fragment.fragment_id === `${recordId}-${index + 1}`);
+      return matches.length === 1 && normalize(matches[0].quote_text) === normalize(quote);
+    });
+  });
+}
 
 // Presentation only. Code meanings are bound to reviewed document/snapshot identity;
 // applicability and preparation still come from reviewed responses.
@@ -667,6 +739,13 @@ const materialDisplays = [
     "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
     "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
     "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"]
+  }},
+  {identity: authorEssayIdentity, materials: {
+    "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
+    "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
+    "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"],
+    "application-essay": ["申请小论文", "小論文", authorEssayGuide.purpose],
+    application_essay: ["申请小论文", "小論文", authorEssayGuide.purpose]
   }}
 ];
 
@@ -736,7 +815,11 @@ function materialScopeIdentity(scope) {
     kind: scope.kind, institution_id: scope.item.target?.institution_id,
     organization_id: scope.item.target?.organization_id,
     program_id: scope.item.target?.program_id,
-    snapshot_id: scope.item.snapshot_id
+    snapshot_id: scope.item.snapshot_id, target_id: scope.item.target?.target_id,
+    degree_level: scope.item.target?.degree_level, admission_cycle: scope.item.target?.admission_cycle,
+    selection_route_id: scope.item.target?.selection_route_id,
+    examination_schedule_id: scope.item.target?.examination_schedule_id,
+    intake_year: scope.item.target?.intake?.year, intake_month: scope.item.target?.intake?.month
   };
   return null;
 }
@@ -753,6 +836,8 @@ export function materialDisplay(scope, rawCode, originalName) {
 
 export function materialGuide(scope, topic) {
   const identity = materialScopeIdentity(scope);
+  if (authorEssayScopeMatches(scope) && ["application-essay", "application_essay"].includes(topic?.id))
+    return authorEssaySourcesMatch(topic.sources) ? authorEssayGuide : null;
   if (identity?.kind !== "legacy_applicant" || identity.school_id !== "isct"
     || identity.document_id !== "isct_2027_4_2026_9_master") return null;
   const code = String(topic?.id || "").replace(/^material:/, "");
@@ -806,11 +891,15 @@ function legacyMaterialState(topic, comparisonItem) {
   return {state: "尚未填写准备情况", action: "请填写准备情况；目前不计为缺材料。"};
 }
 
-function sliceMaterialState(topic, employment) {
+function sliceMaterialState(topic, employment, preparation = "unknown") {
   if (topic.status_code === "submission_not_required")
     return {state: "本项无需提交", action: topic.explanation};
   if (topic.status_code === "rule_not_applicable")
     return {state: "本条条件不适用", action: topic.explanation};
+  if (topic.status_code === "submission_required" && preparation === "available")
+    return {state: "已准备（自报）", action: "官方仍需提交；请核对材料内容、格式与提交情况，自报不代表学校受理。"};
+  if (topic.status_code === "submission_required" && preparation === "not_yet")
+    return {state: "待准备", action: "你填写为尚未准备；请按本项要求准备并提交，自报不改变官方提交要求。"};
   if (topic.status_code === "submission_required")
     return {state: "需提交，尚未填写准备情况", action: topic.explanation};
   if (topic.status_code === "not_covered")
@@ -918,7 +1007,7 @@ export function readerReport(report, selected) {
       if (report.kind === "legacy_applicant" && topic.category !== "materials") continue;
       const state = report.kind === "legacy_applicant"
         ? legacyMaterialState(topic, comparison.get(topic.id) || comparison.get(topic.title))
-        : sliceMaterialState(topic, report.employment);
+        : sliceMaterialState(topic, report.employment, report.preparation?.[topic.id]);
       const display = materialDisplay(report.scope, topic.id || topic.material_code, topic.title);
       const item = {title: display.name, official: display.official,
         description: display.description, verified: display.verified, guide: topic.guide, ...state};

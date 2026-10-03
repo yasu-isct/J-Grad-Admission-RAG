@@ -1,0 +1,16 @@
+[
+  {
+    "pid": 11252,
+    "command": "\"D:\\J-Grad-Admission-RAG\\.venv\\Scripts\\python.exe\" docs/onboarding/author01-serve-preview.py",
+    "peak_working_set_bytes": 5111808,
+    "working_set_bytes": 5070848,
+    "observed_utc": "2026-10-02T16:09:56.5213954Z"
+  },
+  {
+    "pid": 27820,
+    "command": "\"C:\\Users\\orangekyuuko\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" docs/onboarding/author01-serve-preview.py",
+    "peak_working_set_bytes": 160419840,
+    "working_set_bytes": 156798976,
+    "observed_utc": "2026-10-02T16:09:56.5700035Z"
+  }
+]

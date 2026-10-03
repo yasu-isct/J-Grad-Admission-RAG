@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-02T15:56:59.008183+00:00",
+  "status": "partial_harness_assertion_failure",
+  "actual_post_attempts": 1,
+  "actual_report_http_status": 200,
+  "completed": [
+    "4 topics/37 fragments actual GET",
+    "desktop essay card",
+    "14 actual source fragments in two records",
+    "relation/back focus",
+    "actual report POST",
+    "unknown-state clipboard",
+    "available-state zero-POST projection and clipboard"
+  ],
+  "not_completed": [
+    "mobile loop"
+  ],
+  "failure": "Harness unnecessarily required literal 已提交 in prepared copy although 学校受理 boundary was present; assertion narrowed to semantic boundary. Saved desktop response will be replayed; no duplicate desktop POST."
+}

@@ -1,0 +1,169 @@
+{
+  "artifact_role": "author01-development-authoring-input",
+  "schema_status": "candidate-authoring-record-not-production-schema",
+  "production_enabled": false,
+  "author_role": "m17-development-agent",
+  "source_approval": "Design supplied and approved the exact revision-2 source seed; this authoring/configuration projection is development work awaiting independent implementation acceptance.",
+  "seed": {
+    "file": "author01-essay-evidence-seed-v2.json",
+    "sha256": "96b5944a18e24cb2f65020dd3e7affb909522322ab8172ca5d9b375c56aea5ab",
+    "revision": 2
+  },
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {"month": 4, "year": 2027},
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  },
+  "source_set": {
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1",
+    "revision": 1,
+    "note": "Source PDF editions did not change; excerpt revision=2 is distinct from source-set revision=1 and the new derived candidate/snapshot."
+  },
+  "topic_id": "application-essay",
+  "material_code": "application_essay",
+  "required_context": {
+    "E09": ["E09-1", "E09-2", "E09-3", "E09-4", "E09-5", "E09-6", "E09-7", "E09-8", "E09-9"],
+    "E10": ["E10-1", "E10-2", "E10-3", "E10-4", "E10-5"]
+  },
+  "claims": [
+    {
+      "field": "material_name",
+      "value": {"zh": "申请小论文", "ja": "小論文"},
+      "fragment_ids": ["E09-6"],
+      "projection": ["plan.topics[].material_name_zh", "identity-bound material display label"]
+    },
+    {
+      "field": "fixed_target_scope",
+      "value": "东京大学新领域创成科学研究科複雑理工学专攻、2027年度修士一般选拔普通路线A日程、2027年4月入学的固定历史切片",
+      "fragment_ids": ["E09-1", "E09-2", "E10-1"],
+      "projection": ["policy.target", "plan.target", "material display full target + snapshot guard"]
+    },
+    {
+      "field": "audience",
+      "value": "仅本固定目标范围内全员需要提交；不是全东大，也不判断申请资格",
+      "fragment_ids": ["E09-1", "E09-2", "E09-5", "E09-6", "E09-7", "E09-8", "E10-1"],
+      "projection": ["condition_rule.mode=all", "condition_rule.predicates=[]", "plan_topic.matched_explanation_zh"]
+    },
+    {
+      "field": "stage",
+      "value": "application",
+      "fragment_ids": ["E09-3"],
+      "projection": ["condition_rule.stage", "plan_topic.stage", "scope_reviews[].stage"]
+    },
+    {
+      "field": "submission_method",
+      "value": "出愿期间，通过网上出愿系统上传PDF",
+      "fragment_ids": ["E09-3", "E09-4", "E09-5", "E09-6", "E10-3"],
+      "projection": ["plan_topic.matched_explanation_zh", "guide.preparation", "concise report material summary"]
+    },
+    {
+      "field": "specified_format",
+      "value": "使用专攻网站指定格式",
+      "fragment_ids": ["E10-3"],
+      "projection": ["plan_topic.matched_explanation_zh", "guide.preparation"]
+    },
+    {
+      "field": "language",
+      "value": ["日语", "英语"],
+      "fragment_ids": ["E09-9", "E10-3"],
+      "projection": ["plan_topic.matched_explanation_zh", "guide.preparation"]
+    },
+    {
+      "field": "content_a",
+      "value": "希望研究的主题及对该主题感兴趣的理由",
+      "fragment_ids": ["E10-4"],
+      "projection": ["plan_topic.matched_explanation_zh", "guide.preparation"]
+    },
+    {
+      "field": "content_b",
+      "value": "结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势",
+      "fragment_ids": ["E10-5"],
+      "projection": ["plan_topic.matched_explanation_zh", "guide.preparation"]
+    },
+    {
+      "field": "word_count",
+      "value": null,
+      "status": "unknown",
+      "reason_zh": "字数在指定模板中说明；本次未持有模板，不补造数值",
+      "fragment_ids": ["E10-3"],
+      "projection": ["plan_topic.context_note_zh", "guide.attention"]
+    },
+    {
+      "field": "format_details",
+      "value": null,
+      "status": "unknown",
+      "reason_zh": "版式细目在指定模板中说明；本次未持有模板，不另行下载",
+      "fragment_ids": ["E10-3"],
+      "projection": ["plan_topic.context_note_zh", "guide.attention"]
+    },
+    {
+      "field": "exact_submission_deadline",
+      "value": null,
+      "status": "unknown",
+      "reason_zh": "本材料片段只明确出愿期间；不从其他页面猜具体截止日期或时刻",
+      "fragment_ids": ["E09-3"],
+      "projection": ["plan_topic.context_note_zh", "guide.attention"]
+    },
+    {
+      "field": "preparation_status",
+      "value": "reuse_existing_self_reported_preparation_status",
+      "status": "self_reported_not_official_completion",
+      "fragment_ids": [],
+      "projection": ["existing preparation selector", "existing report prepared / missing distinction"],
+      "note_zh": "产品的个人自报字段；不作为学校来源事实，不判定官方完成或申请资格"
+    }
+  ],
+  "guide": {
+    "what": "本固定目标范围内申请人需要提交的小论文，用于说明希望研究的主题、动机和自身优势。",
+    "preparation": [
+      "使用专攻网站指定格式，以日语或英语填写。",
+      "第一部分：写明希望研究的主题，以及对该主题感兴趣的理由。",
+      "第二部分：结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。",
+      "出愿期间，通过网上出愿系统上传PDF。"
+    ],
+    "attention": [
+      "字数和版式以指定模板为准；本次资料未包含模板细目。",
+      "本项来源只明确出愿期间，未核定具体截止日期或时刻。",
+      "准备情况由本人填写，不代表学校确认材料已完成或申请资格成立。"
+    ]
+  },
+  "unknowns": ["word_count", "format_details", "exact_submission_deadline"],
+  "relations": [{"from": "E09", "kind": "supplements", "to": "E10", "label_zh": "补充说明"}],
+  "configuration_projection": {
+    "headings_by_record": {
+      "E09": ["修士課程入試（入試日程Ａ）", "出願に関する専攻独自の追加提出物一覧", "複雑理工学専攻", "オンライン出願システムにより提出する書類等", "小論文"],
+      "E10": ["修士課程 一般選抜", "小論文の作成・提出要領"]
+    },
+    "condition_rule": {
+      "basis_record_ids": ["E09", "E10"],
+      "condition_rule_id": "utokyo-gsfs-2027-a-application-essay",
+      "limitation_zh": "仅本精确目标范围内的小论文提交要求；不判断申请资格、写作质量或官方完成，字数及模板细目未知。",
+      "material_code": "application_essay",
+      "mode": "all",
+      "predicates": [],
+      "proposed_effect_when_matched": "required",
+      "stage": "application",
+      "topic_id": "application-essay"
+    },
+    "plan_topic": {
+      "basis_record_ids": ["E09", "E10"],
+      "condition_rule_id": "utokyo-gsfs-2027-a-application-essay",
+      "context_note_zh": "字数和版式以指定模板为准；本次资料未包含模板细目，也未核定本项具体截止日期或时刻。准备情况为个人自报，不代表学校确认完成或申请资格。",
+      "matched_explanation_zh": "本固定目标范围内申请人需要提交申请小论文。请使用专攻网站指定格式，以日语或英语准备两部分内容：①希望研究的主题及感兴趣的理由；②结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。出愿期间通过网上出愿系统上传PDF。",
+      "material_code": "application_essay",
+      "material_name_zh": "申请小论文",
+      "needs_information_explanation_zh": "信息不足，尚不能判断本条条件；不推定申请资格或材料已完成。",
+      "not_matched_explanation_zh": "当前条件不适用；不能据此推定其他材料要求或申请资格。",
+      "proposed_effect_when_matched": "required",
+      "required_context_record_ids": ["E09", "E10"],
+      "stage": "application",
+      "topic_id": "application-essay"
+    }
+  }
+}
