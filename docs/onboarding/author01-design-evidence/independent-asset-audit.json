@@ -1,0 +1,170 @@
+{
+  "protected_count": 31,
+  "protected": {
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\.jgrad-demo-owned.json": {
+      "bytes": 88,
+      "mtime_ns": 1790426989601594800,
+      "sha256": "44ec3799b97e3a972771fbf18dee9c21d0433428a1d14423fac32ca28eb474ff"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\config\\document_identity.json": {
+      "bytes": 625,
+      "mtime_ns": 1790426989603692000,
+      "sha256": "6fc2434751e57fc2c541268eacaf5febe0a4a0275f18960ed2b31a80d7b10f79"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\config\\page_scope_manifest.json": {
+      "bytes": 2009,
+      "mtime_ns": 1790426989605701300,
+      "sha256": "85db320d441f9b268108cb6d3b44297599fdff38465842874e22f62fc631c417"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\config\\query_intent_catalog.json": {
+      "bytes": 3221,
+      "mtime_ns": 1790426989607662200,
+      "sha256": "adcde558b81f67817f38dea8dc4349d2bef36dba8f3883980aaa1125557660da"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\config\\reviewed_date_presentation.json": {
+      "bytes": 5601,
+      "mtime_ns": 1790426989607662200,
+      "sha256": "ed1bd60c6ad4fe32ccb1f97a4121b3ecee218e62721bdbd951a3a300c2e4bf91"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\config\\reviewed_report_plan.json": {
+      "bytes": 542773,
+      "mtime_ns": 1790426989603692000,
+      "sha256": "c8aacfa69d6cebb7774cf8cb000047c68e5f8ec58fe07e40889968e3f2c90680"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\corpus.json": {
+      "bytes": 1950,
+      "mtime_ns": 1790426989598576400,
+      "sha256": "f7c491e94d53aa379dd934fc6a5e328ef6fd11c64f7d16622eb738ccbd6dff51"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\documents\\isct_2027_4_2026_9_master\\document_kb.json": {
+      "bytes": 3361076,
+      "mtime_ns": 1790426553826089100,
+      "sha256": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\indexes\\isct_2027_4_2026_9_master\\embeddings.npy": {
+      "bytes": 1601664,
+      "mtime_ns": 1790426989502089400,
+      "sha256": "56508cad1dbf13c5e3258353676608cf4b6a174ac9c879983be9bdc8cd415df7"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\indexes\\isct_2027_4_2026_9_master\\manifest.json": {
+      "bytes": 832,
+      "mtime_ns": 1790426989503835200,
+      "sha256": "30225479016303ebc8bce2d6080a5c0f75224b5c5c920351aa4e1d247be8dae1"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\indexes\\isct_2027_4_2026_9_master\\payloads.jsonl": {
+      "bytes": 1149440,
+      "mtime_ns": 1790426989485478100,
+      "sha256": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m10-09-deepseek-live\\runtime-v1\\policy.json": {
+      "bytes": 211,
+      "mtime_ns": 1790426989601594800,
+      "sha256": "3528705a953e8bd3c425093accfa4faedd94465c144ec1b784d37a2150e38aa3"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\f1721e7c231140957a884b4bf6c35527c25ef053990736295be7f0f9afb68ff2\\candidate.json": {
+      "bytes": 4233,
+      "mtime_ns": 1790558251188008600,
+      "sha256": "51b7e0c7aa50ca77d252cd173fd3ff63fa11ffdd5577a919ea077c03e630eafc"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\f1721e7c231140957a884b4bf6c35527c25ef053990736295be7f0f9afb68ff2\\lineage.json": {
+      "bytes": 18651,
+      "mtime_ns": 1790558251188008600,
+      "sha256": "703412fe4d42366552ee9fed55b1e4d4c073e83d3434391a8b144e9695857775"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\f1721e7c231140957a884b4bf6c35527c25ef053990736295be7f0f9afb68ff2\\documents\\complex-guide-2027-revised\\document_kb.json": {
+      "bytes": 20746,
+      "mtime_ns": 1790558251185492500,
+      "sha256": "e1a24a5611f80521ad81935c7f1355b14f30f3d6d72a6ec6c45ee2b7f5c33d73"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\f1721e7c231140957a884b4bf6c35527c25ef053990736295be7f0f9afb68ff2\\documents\\complex-master-a-additional\\document_kb.json": {
+      "bytes": 15760,
+      "mtime_ns": 1790558251187500300,
+      "sha256": "81d6a9581ed02ed215fc575790a194eeed210d91ab60fd4e9f568efa8f883484"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\f1721e7c231140957a884b4bf6c35527c25ef053990736295be7f0f9afb68ff2\\documents\\gsfs-master-2027\\document_kb.json": {
+      "bytes": 5640,
+      "mtime_ns": 1790558251188008600,
+      "sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\source-documents\\utokyo-gsfs\\2027\\a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026.pdf": {
+      "bytes": 941862,
+      "mtime_ns": 1790489032392145400,
+      "sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\source-documents\\utokyo-gsfs\\2027\\6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab.pdf": {
+      "bytes": 9053105,
+      "mtime_ns": 1790489032672243800,
+      "sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\source-documents\\utokyo-gsfs\\2027\\3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae.pdf": {
+      "bytes": 491374,
+      "mtime_ns": 1790489032753914000,
+      "sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\real_pdf\\isct_2027_4_2026_9_master.pdf": {
+      "bytes": 5088401,
+      "mtime_ns": 1783240665766293200,
+      "sha256": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\gsfs-material-evidence-seed-v1.json": {
+      "bytes": 14127,
+      "mtime_ns": 1790955614991377200,
+      "sha256": "a5b2bc4e294c52b14c94946886e43928b46fc7f3ff7724ee08a3aa1067aa0b85"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\material-condition-policy-v1.json": {
+      "bytes": 21312,
+      "mtime_ns": 1790955614993378400,
+      "sha256": "3a43af563ebb66840fa804a186779553b451b7474033fbc824f34398ebcf0bb8"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\material-condition-trust-v1.json": {
+      "bytes": 172,
+      "mtime_ns": 1790955614993378400,
+      "sha256": "523d28eae439bd94ba29180cea535649bd05ed395492de5b1e5a9d2d6e38fc62"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\material-slice-report-plan-v1.json": {
+      "bytes": 29901,
+      "mtime_ns": 1790955614995375700,
+      "sha256": "11e3690efec73f8dae81b35ebf63d92055982891147040d20bca165b496c8b4c"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\material-slice-report-trust-v1.json": {
+      "bytes": 162,
+      "mtime_ns": 1790955614995375700,
+      "sha256": "c5cb8e3baff8b437de800efc9b51ede0af403de3e1c8a5afce6e6701e5175995"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\reviewed-fragment-import-v1.json": {
+      "bytes": 4100,
+      "mtime_ns": 1790955615086864900,
+      "sha256": "49782ecb7bdb0c6e9fcbff230c7150587dc80ab769a2f86286f50eb2aaedb7b1"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\docs\\onboarding\\reviewed-fragment-import-trust-v1.json": {
+      "bytes": 262,
+      "mtime_ns": 1790955615086864900,
+      "sha256": "8c593968cba5695df2d64764e4c9498b2d0716dbbc3822ce13798fd0c78ea09e"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\config\\grounded_rag_release_gate_v1.json": {
+      "bytes": 1142,
+      "mtime_ns": 1790955614844739900,
+      "sha256": "363079dda9fc8e539c9418cd1e2b53e5046405115964932ded2f3073d729c9ac"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\tests\\fixtures\\semantic_retrieval_baseline_v1.json": {
+      "bytes": 46509,
+      "mtime_ns": 1790955615313344200,
+      "sha256": "1ba6fb5d0b74b35d13bb5bbf503849b5e1545be7c45d3aa5c8300b884b77623b"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\author01-worktree\\tests\\fixtures\\real_pdf_manifest.json": {
+      "bytes": 5028,
+      "mtime_ns": 1790955615297829500,
+      "sha256": "8824169700383bfc0ac072dce90eabe1fb9c0befe52cda8ac7fae56f8032a42d"
+    }
+  },
+  "candidate": "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\7ea490375de4c28859ca38dd76bb3952aa8b3d601aa3ccc9eeb5f4ee93cad752",
+  "candidate_files": {
+    "documents/complex-guide-2027-revised/document_kb.json": "9f873054669c9cca9f93e684bbaf46f19cc886a8d047ce1fa16ed11008f74e1d",
+    "documents/complex-master-a-additional/document_kb.json": "52da3cae0c5e2043cc60dad40049fdb08bdbed35e32f75c9bbeef2635c3e9c19",
+    "documents/gsfs-master-2027/document_kb.json": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+    "lineage.json": "5946592c25c22fd274da8d51da148f6c295f13cd09c70653a0e32cd1ac682977",
+    "candidate.json": "de6158a87072594934a945b37b2d42c5e8de40d71342b1c5d37362864470246b"
+  },
+  "bytes": 94232,
+  "published": false
+}
