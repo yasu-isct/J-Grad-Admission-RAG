@@ -1,5 +1,13 @@
 # Project Roadmap
 
+## 2026-10-04：AUTHOR-02 减少重复展示配置，设计合并后唯一 Ready #285
+
+用户要求沿AUTHOR-01继续，先减少重复配置。任务 [#285](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/285) 交现有M17 Main：从已审核小论文authoring/seed/plan派生展示目录，中文指南/身份/原文不再手抄进JS；通用准备控件和摘要沿用原四步页。一个成果包完成后集中验收。
+
+[完整Spec](onboarding/author02-generated-presentation-spec.md)固定范围：仅同一小论文，旧3/新4主题及ISCT行为不变；原候选、seed/policy/plan/trust、334/391全部只读，不重签M9、不改生产API必填项、不切换在线页。生成数据受身份与完整来源校验；机器生成不替代语义审查。本包不新增资料，也不迁移所有旧学校配置。
+
+开发服务1/POST4、设计预留服务1/POST2；付费、下载、PDF全解析、新KB/候选/向量构建0。新Ready仅此一项，QA/完整学生扩覆盖/M13/MinerU不恢复。下面为历史记录。
+
 ## 2026-10-03：AUTHOR-01 已独立验收合并，接入试验完成
 
 #281 / [PR #283](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/283) 精确head `e7cf52c81a7ca24ba99f08135f9c7a2d2d49c120` 已验收，merge `af4ca5fcb89349003822bc6e92f57d974e833a20`。东大小论文的中文指南、两份原文、个人准备状态和可复制报告已贯通原四步页；新显式配置4主题，旧配置仍3主题。模板细目/精确截止时间仍未知，不是完整普通学生覆盖。
