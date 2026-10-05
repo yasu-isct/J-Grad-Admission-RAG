@@ -1,0 +1,22 @@
+[
+  {
+    "viewport": 1440,
+    "status": 200,
+    "independent_controls": true,
+    "school_change_clears_both": true,
+    "errors": [],
+    "intercepted_report_posts": 1,
+    "actual_report_posts": 0,
+    "method": "exact-head page with intercepted local-only responses; real saved HTTP checked against fresh read-only source projection"
+  },
+  {
+    "viewport": 390,
+    "status": 200,
+    "independent_controls": true,
+    "school_change_clears_both": true,
+    "errors": [],
+    "intercepted_report_posts": 1,
+    "actual_report_posts": 0,
+    "method": "exact-head page with intercepted local-only responses; real saved HTTP checked against fresh read-only source projection"
+  }
+]

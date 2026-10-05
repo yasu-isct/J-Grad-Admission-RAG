@@ -1,0 +1,15 @@
+{
+  "head": "9858cf37392ccfb6d403efa0a4a3fb461a224d54",
+  "fresh_projection_equals_saved_real_http": true,
+  "five_topic_replay": true,
+  "legacy_v1_v2_isct_replay": true,
+  "wheel_new_modules_verified": true,
+  "design_start_attempts": 1,
+  "design_started_servers": 0,
+  "design_actual_posts": 0,
+  "paid": 0,
+  "downloads": 0,
+  "parser_runs": 0,
+  "new_candidate_builds": 0,
+  "vector_builds": 0
+}

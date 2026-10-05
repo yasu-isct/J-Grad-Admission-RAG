@@ -1,5 +1,13 @@
 # Project Roadmap
 
+## 2026-10-05：M19 已独立验收合并，完整成果包完成
+
+#291 / [PR #293](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/293) 精确head `9858cf37392ccfb6d403efa0a4a3fb461a224d54` 已验收，merge `736e12d48070958e4eaa536ca42d259301a30251`。新调查表接入原四步页，CBMS固定历史切片五主题；审核输入生成import/policy/plan/来源及展示配置，正文/步骤同源。旧三/四主题及ISCT保持。详见[独立验收与证据边界](onboarding/m19-design-acceptance.md)。
+
+独立三次真实来源配置重现、51片段与九种条件投影、32 Python/21 Node及两校双视口回放通过，50资产不变。开发真实HTTP服务1次/POST2次均200，与独立新投影一致。设计服务尝试因自身取证脚本错误失败，按1/1计数，实际POST0/4；未重试，后续独立页面为回放。付费/下载/全解析/向量构建0，用户在线页未切换。
+
+M19及#291成果完成，无新Ready，不自动扩下一材料或全系。尚非完整普通学生覆盖；新来源语义仍需审核。M17暂停QA、M13/MinerU保持。以下为历史记录。
+
 ## 2026-10-05：M19 设计放行，唯一任务 #291
 
 用户批准进入M19，目标是用CBMS志望调查表一项新材料，减少审核输入到import/policy/plan/展示/报告的重复配置。不是东大全系扩展，也不是继续只去重前端。[完整Spec](onboarding/m19-authoring-to-config-spec.md)、[新M19 Main首次指令](onboarding/m19-developer-handoff.md)、[ADR 0017](decisions/0017-reviewed-authoring-config-generation.md)。设计PR合并后唯一Ready为 [#291](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/291)；一个新M19 Main聊天连续完成A→B→C→D，一包集中验收，不要求用户中转小修。

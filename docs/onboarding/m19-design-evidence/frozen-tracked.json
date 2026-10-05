@@ -1,0 +1,22 @@
+{
+  "config/grounded_rag_release_gate_v1.json": "363079dda9fc8e539c9418cd1e2b53e5046405115964932ded2f3073d729c9ac",
+  "config/semantic_retrieval_gate_manifest_v1.json": "04c90a937d61ca9a0c29045bfa5094b1e4bde6ebf21fd585d100887609ad2546",
+  "docs/onboarding/author01-essay-authoring-input.json": "b5805f9483f8c41f1fd8e9477fe1b37234dfcdf50703faeea440db6225c70028",
+  "docs/onboarding/author01-essay-evidence-seed-v2.json": "96b5944a18e24cb2f65020dd3e7affb909522322ab8172ca5d9b375c56aea5ab",
+  "docs/onboarding/author01-essay-review-pin-v2.json": "4f60c33befdedba7bc1ac70d00b703ff3d6d902ca1a61838a43bd760c866a1f0",
+  "docs/onboarding/author01-field-source-map.json": "d1373e1e2649a0d6f37eac04c6208422d318b1e6fdafe0671a64e4d655099c2b",
+  "docs/onboarding/author01-material-condition-policy-v2.json": "ac136e5cfb4db7e805f8584184168de1da9e287994f55bbc0698571d41856f5e",
+  "docs/onboarding/author01-material-condition-trust-v2.json": "6ce4902bb4af0628096cdd43a73ca441a0fe9f835b5206904c3e1abd2b3030e8",
+  "docs/onboarding/author01-material-slice-report-plan-v2.json": "f49717f2cb30ada799f51056d9c78808f25e152b69a3843ac4cadd2b836ff576",
+  "docs/onboarding/author01-material-slice-report-trust-v2.json": "fd7095d803f37b316b707a0cb4cabefe58f1e0b7c8897ffee4c77a30a2898d9d",
+  "docs/onboarding/author01-reference-workspace-preview-v2.json": "1399bdcfdbaef8ae297dbd3649bd03c83205358852f1afcbc49e28720cafd032",
+  "docs/onboarding/author01-reviewed-fragment-import-trust-v2.json": "de7b111f45c91127e078b1e63b1454accdc070ea03e457ec25d7f7a7f9cb20c7",
+  "docs/onboarding/author01-reviewed-fragment-import-v2.json": "66ded26e0d840857bba1310cb5d4e895c0584c402fd66b995dc29e6a19c6f271",
+  "docs/onboarding/author01-source-review.json": "ef510c755de70027251ce748bb43aab0b129b3d1398d3af7cb0349e5108aee1b",
+  "docs/onboarding/m19-design-approval.json": "cd35f92800bc199ec9a20b8ae128077dc749550510485df03f58510cc12e2ac6",
+  "docs/onboarding/m19-questionnaire-authoring.json": "8a174447e6f0ac553420812ae894aeeeba4e68f0c41f5e8548c71063b0e50666",
+  "docs/onboarding/m19-questionnaire-evidence-seed-v3.json": "db1832f0a9a74278cc6d3382aab41fdac349ca6577b965ed47e2bb252ffd9f8d",
+  "docs/onboarding/m19-source-review-pin-v3.json": "724f486472ac3f1232237ebc715113dbcd4c19b6192fb671bf277f906d4b4864",
+  "docs/onboarding/m19-source-review.json": "3d0f477e885008c63d62fa2fe2b4990beefcda3ef557f1accd6960d978cccd54",
+  "src/jgrad_admission_rag/service/app.py": "181f1e7b167fbafb53665b67d5aa237dd8dd10927bc17cb671ab581390eb0a1a"
+}
