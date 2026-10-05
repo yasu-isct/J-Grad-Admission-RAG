@@ -1,5 +1,13 @@
 # Project Roadmap
 
+## 2026-10-05：M18完整开发包交独立验收
+
+新M18 Main在专属 `codex/m18-reviewed-delivery` 完成唯一#285的A→B→C→D成果包。[统一入口](onboarding/m18-delivery/README.md)、[complete/缺口](onboarding/m18-completion-and-gaps.md)、[来源与实际维护成本](onboarding/m18-implementation-review.md)集中交付非Draft PR；精确head/CI见#285同一交接。状态Awaiting review，不声明M18已验收或关闭。
+
+v2四主题统一生成目录；小论文指南/身份/全部原文/控件名不再手抄进JS，旧v1/ISCT保留。3次同源生成含跨工作区逐字一致；实际offline服务1次/3次POST200，桌面手机、37片段和报告复制通过；9就业组合直接投影、旧报告回放、合成换学校/单处guide同步分别记录。50原路径资产及15受保护输入保持；开发累计服务1/1、POST3/4，设计0/1、0/2预留，禁止资源均0。自有服务已停止、在线页未切换。
+
+下一责任方长期设计Agent集中验收；不自行合并、关闭Milestone或放行后续任务。以下Ready/旧责任方安排为历史。
+
 ## 2026-10-05：M18改由新独立开发聊天承接
 
 用户明确选择“一个Milestone一个开发聊天”以控制上下文长度。#285仍唯一Ready，范围与预算不变；由**新M18 Main**核对工作区/分支/旧运行和累计账本后领取，M17 Main不再实施#285。未自动停止旧进程，也未创建新聊天；有并发工作时先交接，不覆盖。新版[首次提示词与交接](onboarding/m18-developer-handoff.md)可直接复制，按A→B→C→D连续完成全包再集中验收。以下旧“现有M17 Main继续”均为历史安排，已被此决定覆盖。

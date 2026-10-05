@@ -32,6 +32,11 @@ is a compatible entry. See the [UI-02 final acceptance](docs/onboarding/ui02-fin
 
 ## What Applicants Can Verify Today
 
+M18 provides the [reviewed material delivery package](docs/onboarding/m18-delivery/README.md):
+generate/check an identity-bound v2 four-topic presentation and opt into an isolated offline
+preview using existing assets. [Developer results and evidence](docs/onboarding/m18-completion-and-gaps.md)
+are awaiting independent design acceptance; this does not switch the current local service.
+
 The local Chinese-language Demo now offers a unified target-to-reference workspace. For the fixed
 official Science Tokyo master's guideline, the existing reviewed workflow still supports:
 

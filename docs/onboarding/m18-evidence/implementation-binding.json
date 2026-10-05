@@ -1,0 +1,46 @@
+{
+  "tested_implementation_head": "501d0dcb7d6fdba9e4566ec97d697ecf17e40db0",
+  "base": "8aa4e812f4e8c5e1483161e6c5074d224d67feb3",
+  "files": {
+    "scripts/m18_asset_audit.py": "a0e7ec1fe6b49aa65a2c1b5a518384a0a7edcbb1bd0babcfc8be790fb915d6b2",
+    "scripts/m18_compare_replay.mjs": "47209742ae002d03672e82e82c639cc47cac6464eb4a636ff62edc2c7d4fcacc",
+    "scripts/m18_evidence.py": "061bd5257ba6216e044954ce1bb57649e9cd3e9f469e1da99e076e9030cc7a37",
+    "scripts/m18_presentation.py": "34e425ce9ee25b5a2bcf1d7e49a24a5252fe72879dce73a3bf701ef86d21e063",
+    "scripts/m18_preview.py": "0260092aa9e2612a8d2ed30994f2a608482c94ca64e0541d573d0b2a46e86861",
+    "src/jgrad_admission_rag/service/reference_app.py": "aff15700a5a09a12edba7643f87187d23357e48847c0b9193bf101ad1a9d8800",
+    "src/jgrad_admission_rag/service/reference_workspace.py": "2c08b6c91fbf713e53169ae319f72345940b0c6ab960c46e3d7979ac71ecf559",
+    "src/jgrad_admission_rag/service/static/app.js": "f0371b63a3e4164b2e290a1fc4c98ede26f7cd6123fed3b645abca566b66e12e",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.manifest.json": "6d384d11fdc24e9db3718b1407f302a63cc68a2c961e448e1ddc2a9bf942251a",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.mjs": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.sources.json": "4da47626d856fed7061362c9e80e4fa8b0ae99ce6df5600def4d4cc52c8a1b74",
+    "src/jgrad_admission_rag/service/static/unified-core.mjs": "1970b3b06fe4d60f2a53873f1cd8846521a403807a507b545dd39e5c30b7648d"
+  },
+  "real_service_seconds": 54.325538,
+  "recorded_generations_seconds": 0.15700000000651926,
+  "nine_direct_projections_seconds": 0.1559999999590218,
+  "actual_product_posts": 3,
+  "service_pid_stopped": 32852,
+  "notes": "files hashes bind Windows checkout bytes; git_lf_files bind committed LF bytes. Runtime/generator code matches live head. Final delivery adds docs/evidence and a packaging-only move to MANIFEST.in; no restart.",
+  "git_lf_files": {
+    "scripts/m18_asset_audit.py": "a0e7ec1fe6b49aa65a2c1b5a518384a0a7edcbb1bd0babcfc8be790fb915d6b2",
+    "scripts/m18_compare_replay.mjs": "47209742ae002d03672e82e82c639cc47cac6464eb4a636ff62edc2c7d4fcacc",
+    "scripts/m18_evidence.py": "061bd5257ba6216e044954ce1bb57649e9cd3e9f469e1da99e076e9030cc7a37",
+    "scripts/m18_presentation.py": "34e425ce9ee25b5a2bcf1d7e49a24a5252fe72879dce73a3bf701ef86d21e063",
+    "scripts/m18_preview.py": "0260092aa9e2612a8d2ed30994f2a608482c94ca64e0541d573d0b2a46e86861",
+    "src/jgrad_admission_rag/service/reference_app.py": "aff15700a5a09a12edba7643f87187d23357e48847c0b9193bf101ad1a9d8800",
+    "src/jgrad_admission_rag/service/reference_workspace.py": "2c08b6c91fbf713e53169ae319f72345940b0c6ab960c46e3d7979ac71ecf559",
+    "src/jgrad_admission_rag/service/static/app.js": "4e0173df102fb2c453c0a3f7d4a7ec6968cdbdf165aacc3ef7eb8412af0fe79b",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.manifest.json": "6d384d11fdc24e9db3718b1407f302a63cc68a2c961e448e1ddc2a9bf942251a",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.mjs": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+    "src/jgrad_admission_rag/service/static/reviewed-material-presentation.sources.json": "4da47626d856fed7061362c9e80e4fa8b0ae99ce6df5600def4d4cc52c8a1b74",
+    "src/jgrad_admission_rag/service/static/unified-core.mjs": "100915355f7ffe4f1ad3f23f59f7463992fb6aa7e3a6a8315c20d095790e297d"
+  },
+  "post_live_packaging_only": {
+    "reason": "Restore exact frozen main pyproject.toml; include generated JSON via existing MANIFEST.in without M9 re-signing.",
+    "tested_head_pyproject_sha256": "02adb875d649c71feb5c95d74f4146548b1ef77c16a84bd6f6772fb2cb54d9b3",
+    "final_pyproject_sha256": "87cad2118c2a53919da2b890892479c5f07db3b36b872cd3074fbe3d1c21e28e",
+    "final_MANIFEST_sha256": "6e453dd9c46b6bb042dd82ad9073c6382a2a735a1e0181a29a58ffbe6cd30a63",
+    "runtime_or_generator_changes": false,
+    "offline_wheel_rechecked": true
+  }
+}

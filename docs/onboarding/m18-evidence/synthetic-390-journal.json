@@ -1,0 +1,24 @@
+[
+  {
+    "synthetic": true,
+    "actual_product_posts": 0,
+    "intercepted_posts": 1,
+    "width": 390,
+    "guide_edit": false,
+    "copy_sha256": "0de625c570adf2efbe82db8e310719fb08a77e958fa349333bad8bc334b86ecb",
+    "guide_visible_in_page_and_report": "使用专攻网站指定格式，以日语或英语填写。",
+    "no_js_branch_added": true,
+    "generated_content_id": "e69e6d9feb98aaf5e2892caf38083e139929bae34c807945d8623e39edfd2d85"
+  },
+  {
+    "synthetic": true,
+    "actual_product_posts": 0,
+    "intercepted_posts": 1,
+    "width": 390,
+    "guide_edit": true,
+    "copy_sha256": "e10f04c69454bcae3b64b30225f7567a2d225e746dd5d6410b91aa013ad91db7",
+    "guide_visible_in_page_and_report": "合成验证：仅修改这一处指南；页面和报告必须同步。",
+    "no_js_branch_added": true,
+    "generated_content_id": "ea561f69d6fb9d1912d0f8e573bbaeac7c5e057d3ebf15e02e77e71f82361bae"
+  }
+]

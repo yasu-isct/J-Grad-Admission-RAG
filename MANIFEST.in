@@ -1,1 +1,3 @@
 recursive-include src/jgrad_admission_rag/service/static *.mjs
+include src/jgrad_admission_rag/service/static/reviewed-material-presentation.manifest.json
+include src/jgrad_admission_rag/service/static/reviewed-material-presentation.sources.json

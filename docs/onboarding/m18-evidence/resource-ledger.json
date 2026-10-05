@@ -1,0 +1,233 @@
+{
+  "issue": 285,
+  "developer_starts": 1,
+  "developer_posts": 3,
+  "design_starts": 0,
+  "design_posts": 0,
+  "limits": {
+    "developer_starts": 1,
+    "developer_posts": 4,
+    "design_starts": 1,
+    "design_posts": 2
+  },
+  "initial_usage_basis": {
+    "github": "#285 complete body, no comments or implementation PR; #191 latest owner correction",
+    "local": "no M18 implementation branch/worktree before claim; AUTHOR-01 clean; author02-design/m18-design publish/merge-only; no Python/Uvicorn processes",
+    "previous_budgets": "AUTHOR-01/IMPORT/EXAM unchanged; not reset"
+  },
+  "prohibited_consumption": {
+    "paid_api": 0,
+    "downloads": 0,
+    "full_pdf_parse": 0,
+    "new_real_candidates": 0,
+    "new_real_kbs": 0,
+    "vector_builds": 0
+  },
+  "sessions": [
+    {
+      "started_utc": "2026-10-05T02:34:33.420514+00:00",
+      "pid": 32852,
+      "port": 56333,
+      "config": "D:\\J-Grad-Admission-RAG\\outputs\\m18-audit\\preview.json",
+      "worktree": "D:\\J-Grad-Admission-RAG\\outputs\\m18-worktree",
+      "offline": true,
+      "role": "developer",
+      "gets": [
+        {
+          "at_utc": "2026-10-05T02:34:58.276077+00:00",
+          "path": "/assets/reviewed-material-presentation.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.281293+00:00",
+          "path": "/v1/reference-targets",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.284989+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.287990+00:00",
+          "path": "/v1/generation-status",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.942495+00:00",
+          "path": "/app/advanced",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.959968+00:00",
+          "path": "/assets/app.css",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.963009+00:00",
+          "path": "/assets/overview.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.964015+00:00",
+          "path": "/assets/app.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.998846+00:00",
+          "path": "/v1/generation-status",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:58.999844+00:00",
+          "path": "/assets/unified-core.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:59.041966+00:00",
+          "path": "/assets/reviewed-material-presentation.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:59.044108+00:00",
+          "path": "/favicon.ico",
+          "status": 404
+        },
+        {
+          "at_utc": "2026-10-05T02:34:59.050792+00:00",
+          "path": "/v1/reference-targets",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:34:59.174362+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.581931+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.764184+00:00",
+          "path": "/app/advanced",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.781872+00:00",
+          "path": "/assets/app.css",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.783872+00:00",
+          "path": "/assets/overview.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.784900+00:00",
+          "path": "/assets/app.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.814244+00:00",
+          "path": "/v1/generation-status",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.814244+00:00",
+          "path": "/assets/unified-core.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.849940+00:00",
+          "path": "/assets/reviewed-material-presentation.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.855106+00:00",
+          "path": "/v1/reference-targets",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:00.916755+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.210848+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.395480+00:00",
+          "path": "/app/advanced",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.412022+00:00",
+          "path": "/assets/app.css",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.414291+00:00",
+          "path": "/assets/overview.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.415304+00:00",
+          "path": "/assets/app.js",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.444017+00:00",
+          "path": "/v1/generation-status",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.445016+00:00",
+          "path": "/assets/unified-core.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.480527+00:00",
+          "path": "/assets/reviewed-material-presentation.mjs",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.487738+00:00",
+          "path": "/v1/reference-targets",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.544488+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:03.027216+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/evidence",
+          "status": 200
+        }
+      ],
+      "posts": [
+        {
+          "at_utc": "2026-10-05T02:35:00.151089+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:01.817076+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+          "status": 200
+        },
+        {
+          "at_utc": "2026-10-05T02:35:02.627651+00:00",
+          "path": "/v1/reference-slices/gsfs-complex-2027-a-author01/reports",
+          "status": 200
+        }
+      ],
+      "stopped_utc": "2026-10-05T02:35:27.746052+00:00"
+    }
+  ],
+  "implementation_head": "501d0dcb7d6fdba9e4566ec97d697ecf17e40db0"
+}

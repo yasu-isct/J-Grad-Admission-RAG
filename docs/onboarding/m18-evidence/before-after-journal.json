@@ -1,0 +1,165 @@
+{
+  "baseline": "8aa4e812f4e8c5e1483161e6c5074d224d67feb3",
+  "displays": [
+    {
+      "id": "english-score-sheets",
+      "before": {
+        "name": "英语成绩单",
+        "official": "英語のスコアシート",
+        "description": "说明英语考试成绩的单据；是否提交按当前专攻要求判断。",
+        "verified": true
+      },
+      "after": {
+        "name": "英语成绩单",
+        "official": "英語のスコアシート",
+        "description": "说明英语考试成绩的单据；是否提交按当前专攻要求判断。",
+        "verified": true
+      },
+      "author_guide_byte_identical": true,
+      "source_note_change": null
+    },
+    {
+      "id": "checklist-submission",
+      "before": {
+        "name": "提交材料检查表",
+        "official": "提出書類等チェックシート（修士課程一般選抜用）",
+        "description": "用于核对待交文件；参照清单不等于要提交清单本身。",
+        "verified": true
+      },
+      "after": {
+        "name": "提交材料检查表",
+        "official": "提出書類等チェックシート（修士課程一般選抜用）",
+        "description": "用于核对待交文件；参照清单不等于要提交清单本身。",
+        "verified": true
+      },
+      "author_guide_byte_identical": true,
+      "source_note_change": null
+    },
+    {
+      "id": "work-study-plan",
+      "before": {
+        "name": "学业与职务兼顾计划书",
+        "official": "学業・職務両立計画書",
+        "description": "说明在职入学时如何兼顾学业与职务的计划书。",
+        "verified": true
+      },
+      "after": {
+        "name": "学业与职务兼顾计划书",
+        "official": "学業・職務両立計画書",
+        "description": "说明在职入学时如何兼顾学业与职务的计划书。",
+        "verified": true
+      },
+      "author_guide_byte_identical": true,
+      "source_note_change": null
+    },
+    {
+      "id": "application-essay",
+      "before": {
+        "name": "申请小论文",
+        "official": "小論文",
+        "description": "本固定目标范围内申请人需要提交的小论文，用于说明希望研究的主题、动机和自身优势。",
+        "verified": true
+      },
+      "after": {
+        "name": "申请小论文",
+        "official": "小論文",
+        "description": "本固定目标范围内申请人需要提交的小论文，用于说明希望研究的主题、动机和自身优势。",
+        "verified": true
+      },
+      "author_guide_byte_identical": true,
+      "source_note_change": "sourceNote now derives complete official titles/pages, body and rules unchanged"
+    }
+  ],
+  "reports": [
+    {
+      "employment": [
+        "yes",
+        "yes"
+      ],
+      "preparation": "unknown",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "yes",
+        "yes"
+      ],
+      "preparation": "available",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "yes",
+        "yes"
+      ],
+      "preparation": "not_yet",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "no",
+        "unknown"
+      ],
+      "preparation": "unknown",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "no",
+        "unknown"
+      ],
+      "preparation": "available",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "no",
+        "unknown"
+      ],
+      "preparation": "not_yet",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "unknown",
+        "unknown"
+      ],
+      "preparation": "unknown",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "unknown",
+        "unknown"
+      ],
+      "preparation": "available",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    },
+    {
+      "employment": [
+        "unknown",
+        "unknown"
+      ],
+      "preparation": "not_yet",
+      "copied_text_byte_identical": true,
+      "method": "same_real_source_direct_projection_in_old_and_new_core",
+      "actual_product_post": 0
+    }
+  ]
+}
