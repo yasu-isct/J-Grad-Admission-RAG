@@ -1,0 +1,36 @@
+[
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "employment": [
+      "yes",
+      "yes"
+    ],
+    "actual_product_post": 1,
+    "intercepted_post": 0,
+    "method": "real_HTTP_browser",
+    "status": 200,
+    "all_37_fragments": true,
+    "preparation_states": 3,
+    "original_source_focus_return": true,
+    "cross_school_clear": true,
+    "errors": []
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "employment": [
+      "no",
+      "unknown"
+    ],
+    "actual_product_post": 1,
+    "intercepted_post": 0,
+    "method": "real_HTTP_browser",
+    "status": 200,
+    "all_37_fragments": true,
+    "preparation_states": 3,
+    "original_source_focus_return": true,
+    "cross_school_clear": true,
+    "errors": []
+  }
+]

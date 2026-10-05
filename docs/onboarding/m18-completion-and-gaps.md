@@ -1,5 +1,7 @@
 # M18 完成与缺口
 
+> 2026-10-05 独立设计验收更新：#289 已验收合并，M18成果完成。见[最终验收及设计证据](m18-design-acceptance.md)。下方 Awaiting review 和设计预留未用等文字是开发交付时记录；当前设计累计服务1/1、POST2/2，不能重复运行真实预览命令。
+
 任务 [#285](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/285)；责任方新 M18 Main；结论 **complete（开发成果包）／Awaiting review（独立设计验收）**。未声明 M18 已获验收或关闭。
 
 branch `codex/m18-reviewed-delivery`；base `8aa4e812f4e8c5e1483161e6c5074d224d67feb3`。真实测试实现 head `501d0dcb7d6fdba9e4566ec97d697ecf17e40db0`；随后补证据/文档并将打包声明移到现有 `MANIFEST.in`，恢复冻结范围内原 `pyproject.toml`。真实运行的前后端及生成器字节不变，[逐文件绑定](m18-evidence/implementation-binding.json)明确列出此打包调整；最终 head 与 Quality CI URL 写在原 Issue 同一交接及非 Draft PR。[最终本地检查](m18-evidence/test-results.json)记录全量结果。
