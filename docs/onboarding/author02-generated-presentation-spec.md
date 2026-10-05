@@ -2,7 +2,7 @@
 
 2026-10-05，M18（由M17迁入，沿用原Issue与预算）。执行 Issue：https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/285。
 基线 main `fb1db534a9f215f33c533ad0d5a3f16d3185c285`，AUTHOR-01 #281/#283 已验收。
-本任务由现有开发Agent（当前聊天名M17 Main）承接。2026-10-05用户要求一次交付较完整里程碑，按 [M18包级计划](m18-reviewed-authoring-delivery.md) 连续完成A→B→C→D；#285仍唯一Ready，不创建重复实现任务。该计划新增v2四主题统一目录、三类真实场景复用和交付入口；本Spec中原小论文技术约束继续适用，冲突处以该计划的显式扩展为准。
+本任务由新独立聊天M18 Main承接，覆盖此前沿用M17 Main的安排；开始时核对所有权和原累计预算。2026-10-05用户要求一次交付较完整里程碑，按 [M18包级计划](m18-reviewed-authoring-delivery.md) 连续完成A→B→C→D；#285仍唯一Ready，不创建重复实现任务。该计划新增v2四主题统一目录、三类真实场景复用和交付入口；本Spec中原小论文技术约束继续适用，冲突处以该计划的显式扩展为准。
 
 ## 背景和用户可见目标
 
