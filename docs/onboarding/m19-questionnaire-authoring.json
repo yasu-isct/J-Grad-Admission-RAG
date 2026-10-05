@@ -1,0 +1,209 @@
+{
+  "artifact_role": "m19-reviewed-authoring-input",
+  "schema_status": "bounded_build_input_not_production_schema",
+  "production_enabled": false,
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {
+      "month": 4,
+      "year": 2027
+    },
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  },
+  "source_set": {
+    "revision": 1,
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1"
+  },
+  "seed": {
+    "file": "m19-questionnaire-evidence-seed-v3.json",
+    "revision": 3,
+    "sha256": "db1832f0a9a74278cc6d3382aab41fdac349ca6577b965ed47e2bb252ffd9f8d"
+  },
+  "topic_id": "application-questionnaire",
+  "material_code": "application_questionnaire",
+  "condition_rule_id": "utokyo-gsfs-2027-a-application-questionnaire",
+  "required_context": {
+    "E11": [
+      "E11-1",
+      "E11-2",
+      "E11-3",
+      "E11-4",
+      "E11-5",
+      "E11-6",
+      "E11-7",
+      "E11-8",
+      "E11-9"
+    ],
+    "E12": [
+      "E12-1",
+      "E12-2",
+      "E12-3",
+      "E12-4",
+      "E12-5"
+    ]
+  },
+  "claims": [
+    {
+      "field": "material_name",
+      "value": {
+        "zh": "报考志愿调查表",
+        "ja": "志望調査票（修士）"
+      },
+      "fragment_ids": [
+        "E11-6"
+      ]
+    },
+    {
+      "field": "audience",
+      "value": "all_in_exact_target",
+      "fragment_ids": [
+        "E11-1",
+        "E11-2",
+        "E11-8",
+        "E12-1"
+      ]
+    },
+    {
+      "field": "stage",
+      "value": "application",
+      "fragment_ids": [
+        "E11-3"
+      ]
+    },
+    {
+      "field": "preparation_form",
+      "value": "specified_general_selection_questionnaire",
+      "fragment_ids": [
+        "E11-9",
+        "E12-2"
+      ]
+    },
+    {
+      "field": "supervisor_preferences",
+      "value": "choices_through_fourth_and_other_assignment_intent",
+      "fragment_ids": [
+        "E12-4",
+        "E12-5"
+      ]
+    },
+    {
+      "field": "submission_method",
+      "value": "online_application_pdf_upload",
+      "fragment_ids": [
+        "E11-3",
+        "E11-4",
+        "E12-3"
+      ]
+    },
+    {
+      "field": "submission_window",
+      "value": "application_period",
+      "fragment_ids": [
+        "E11-3"
+      ]
+    },
+    {
+      "field": "exact_deadline",
+      "value": null,
+      "fragment_ids": [
+        "E11-3"
+      ]
+    },
+    {
+      "field": "live_form_availability",
+      "value": null,
+      "fragment_ids": [
+        "E11-9",
+        "E12-2"
+      ]
+    },
+    {
+      "field": "preparation_status",
+      "value": "self_report_only",
+      "fragment_ids": []
+    }
+  ],
+  "condition": {
+    "template": "required_for_all_in_exact_target",
+    "audience_claim": "audience",
+    "stage_claim": "stage",
+    "basis_record_ids": [
+      "E11",
+      "E12"
+    ]
+  },
+  "reader": {
+    "summary": {
+      "text": "本范围内申请人需要提交修士一般选拔用的报考志愿调查表。请用专攻指定表单生成PDF，并在出愿期间上传到网上出愿系统。",
+      "claims": [
+        "audience",
+        "preparation_form",
+        "submission_method",
+        "submission_window"
+      ]
+    },
+    "steps": [
+      {
+        "text": "进入专攻网站指定的一般选拔用“调查表输入表单”。",
+        "claims": [
+          "preparation_form"
+        ]
+      },
+      {
+        "text": "填写希望的指导教师等信息，选择至第4志愿；填写分配到其他教师时是否愿意入学，选择愿意时继续按表单提示补充信息。",
+        "claims": [
+          "supervisor_preferences"
+        ]
+      },
+      {
+        "text": "保存表单生成的志望调查表PDF。",
+        "claims": [
+          "preparation_form",
+          "submission_method"
+        ]
+      },
+      {
+        "text": "在出愿期间，将该PDF上传到网上出愿系统；不要只填写表单而漏传PDF。",
+        "claims": [
+          "submission_method",
+          "submission_window"
+        ]
+      }
+    ],
+    "notes": [
+      {
+        "text": "当前未核验在线表单是否开放、完整字段及具体截止日期或时刻。",
+        "claims": [
+          "live_form_availability",
+          "exact_deadline"
+        ]
+      },
+      {
+        "text": "准备情况仅为个人记录，不代表已上传或学校已受理。",
+        "claims": [
+          "preparation_status"
+        ]
+      }
+    ]
+  },
+  "control": {
+    "type": "self_report_tri_state",
+    "claim": "preparation_status"
+  },
+  "unknowns": [
+    "exact_deadline",
+    "live_form_availability",
+    "complete_live_form_fields"
+  ],
+  "scope_limitations": [
+    "fixed_historical_target_only",
+    "not_complete_material_checklist",
+    "no_eligibility_or_acceptance_decision"
+  ]
+}

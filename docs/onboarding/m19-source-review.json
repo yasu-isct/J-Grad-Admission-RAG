@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-05",
+  "seed_sha256": "db1832f0a9a74278cc6d3382aab41fdac349ca6577b965ed47e2bb252ffd9f8d",
+  "authoring_sha256": "8a174447e6f0ac553420812ae894aeeeba4e68f0c41f5e8548c71063b0e50666",
+  "old_records_unchanged": 10,
+  "old_fragments_unchanged": 37,
+  "old_relations_unchanged": 6,
+  "new_records": 2,
+  "new_fragments": 14,
+  "total_records": 12,
+  "total_fragments": 51,
+  "total_topics": 5,
+  "source_pdf_audit": [
+    {
+      "source_id": "gsfs-master-2027",
+      "sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+      "physical_page_count": 22
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "physical_page_count": 45
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "physical_page_count": 1
+    }
+  ],
+  "checks": [
+    {
+      "record_id": "E11",
+      "source_id": "complex-master-a-additional",
+      "page": 1,
+      "pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+      "all_fragments_whitespace_located": true,
+      "render_sha256": "b60b1228662e4bb49ee5604b30c73981428ac7b29945b7ca80c61c451f3a497c",
+      "render_origin": "existing locked render visually rechecked 2026-10-05",
+      "fragments": 9
+    },
+    {
+      "record_id": "E12",
+      "source_id": "complex-guide-2027-revised",
+      "page": 28,
+      "pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+      "all_fragments_whitespace_located": true,
+      "render_sha256": "79e4915489dbfdae6252bf446d9ce201c420a5c856e81fed03068a56ec8b19e9",
+      "render_origin": "existing locked render visually rechecked 2026-10-05",
+      "fragments": 5
+    }
+  ],
+  "source_set_revision": 1,
+  "candidate_publications": 0,
+  "service_starts": 0,
+  "posts": 0,
+  "paid": 0,
+  "downloads": 0,
+  "full_parser_runs": 0,
+  "notes": "Read-only selected-page and visual checks; no real candidate/KB/vector created by design."
+}

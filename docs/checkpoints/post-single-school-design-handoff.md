@@ -1,5 +1,13 @@
 # Post-single-school Design Handoff
 
+## 2026-10-05：M19 设计放行，唯一任务 #291
+
+用户批准进入M19，目标是用CBMS志望调查表一项新材料，减少审核输入到import/policy/plan/展示/报告的重复配置。不是东大全系扩展，也不是继续只去重前端。[完整Spec](../onboarding/m19-authoring-to-config-spec.md)、[新M19 Main首次指令](../onboarding/m19-developer-handoff.md)、[ADR 0017](../decisions/0017-reviewed-authoring-config-generation.md)。设计PR合并后唯一Ready为 [#291](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/291)；一个新M19 Main聊天连续完成A→B→C→D，一包集中验收，不要求用户中转小修。
+
+设计已核对原两页PDF：v3摘录仅新增E11/E12共14片段，保留旧37片段，总51片段/5主题；中文作者输入及外部批准已冻结。程序只转换已审语义，不能自行批准来源。原规则/报告引擎、两校四步页、旧v1/v2及334/391保持。开发仅发布1个新小候选（<=8MiB），服务2/POST10；设计服务1/POST4。付费/下载/全PDF解析/向量构建0，旧任务额度不重置。
+
+交付必须包含实际五主题闭环、机械派生和漂移检查、旧配置兼容、维护位置及成本证据；不是完整材料清单，也不宣称自动审核或节省比例。现有在线页不切换，QA/M13/MinerU不恢复。此前M18已完成；下方为历史记录。
+
 ## 2026-10-05：M18 已独立验收合并，完整成果包完成
 
 #285 / [PR #289](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/289) 精确head `0aa1388c9e77b5f27d077125268c395dbcfeb196` 已验收，merge `5b3c9a43ba617b7afaa66f9615ed851eebec1ec9`。四主题共用生成展示目录，小论文中文指南/身份/原文/控件名消除前端手抄；原规则、旧三主题及ISCT兼容保持。详见[独立验收](../onboarding/m18-design-acceptance.md)。
