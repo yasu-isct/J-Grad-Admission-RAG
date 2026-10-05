@@ -439,24 +439,7 @@ test("AUTHOR-01 guide and copied report require the exact target, snapshot, and 
   const scope = scopesFor({...slice, entry_id: "gsfs-complex-2027-a-author01",
     revision: 2, target: seed.target,
     snapshot_id: "a729b19705be68c9a4e79bc71d6dbaaed12710989aeac79b90cf34347bf89164"})[0];
-  const fixture = {schema_version: "1.0", revision: 2, snapshot_id: scope.item.snapshot_id,
-    target: seed.target, limitations_zh: plan.limitations_zh,
-    topics: plan.topics.map((topic) => ({topic_id: topic.topic_id,
-      material_name_zh: topic.material_name_zh, context_note_zh: topic.context_note_zh,
-      relations: plan.relations.filter((relation) => topic.required_context_record_ids.includes(relation.from)
-        && topic.required_context_record_ids.includes(relation.to)),
-      records: topic.required_context_record_ids.map((id) => {
-        const origin = seed.records.find((record) => record.record_id === id);
-        const review = plan.scope_reviews.find((record) => record.record_id === id);
-        const source = plan.sources.find((source) => source.source_id === origin.source_id);
-        return {record_id: id, source_id: origin.source_id,
-          role: topic.basis_record_ids.includes(id) ? "basis" : "context", stage: review.stage,
-          source_title: source.identity.official_title, physical_page: origin.physical_page,
-          printed_page_label: origin.printed_page_label,
-          official_source_url: source.identity.official_source_url,
-          fragments: origin.fragments.map((fragment) => ({fragment_id: fragment.fragment_id,
-            quote_text: fragment.text}))};
-      })}))};
+  const fixture = read("author01-evidence/live-evidence.json");
   const mapped = mapSliceEvidence(scope, fixture);
   const essay = mapped.topics.find((topic) => topic.id === "application-essay");
   const guide = materialGuide(scope, essay);

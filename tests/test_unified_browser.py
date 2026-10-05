@@ -275,7 +275,10 @@ def test_unified_page_explicit_actions_and_state_isolation(tmp_path):
             path = urlparse(route.request.url).path
             if path == "/app":
                 route.fulfill(body=(STATIC / "app.html").read_bytes(), content_type="text/html")
-            elif path.startswith("/assets/unified"):
+            elif (
+                path.startswith("/assets/unified")
+                or path == "/assets/reviewed-material-presentation.mjs"
+            ):
                 name = path.rsplit("/", 1)[-1]
                 media = "text/css" if name.endswith(".css") else "text/javascript"
                 route.fulfill(body=(STATIC / name).read_bytes(), content_type=media)
@@ -416,7 +419,10 @@ def test_unified_question_displays_source_scope_and_actual_boundaries():
             path = urlparse(route.request.url).path
             if path == "/app":
                 route.fulfill(body=(STATIC / "app.html").read_bytes(), content_type="text/html")
-            elif path.startswith("/assets/unified"):
+            elif (
+                path.startswith("/assets/unified")
+                or path == "/assets/reviewed-material-presentation.mjs"
+            ):
                 name = path.rsplit("/", 1)[-1]
                 media = "text/css" if name.endswith(".css") else "text/javascript"
                 route.fulfill(body=(STATIC / name).read_bytes(), content_type=media)

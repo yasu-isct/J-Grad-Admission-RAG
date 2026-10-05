@@ -1,0 +1,58 @@
+{
+  "implementation_head": "501d0dcb7d6fdba9e4566ec97d697ecf17e40db0",
+  "final_checks_before_evidence_commit": true,
+  "full_offline": {
+    "command": "python -m pytest -m 'not real_pdf and not model_integration' -q --tb=short",
+    "passed": 1894,
+    "skipped": 21,
+    "deselected": 313,
+    "seconds": 87.93,
+    "exit_code": 0
+  },
+  "prior_full_attempt": {
+    "passed": 1893,
+    "failed": 1,
+    "skipped": 21,
+    "deselected": 313,
+    "seconds": 71.98,
+    "failure": "frozen semantic gate hash changed via pyproject package-data",
+    "repair": "restore exact main pyproject.toml, use MANIFEST.in; no frozen manifest change"
+  },
+  "packaging_and_frozen_semantic_tests": {
+    "passed": 35,
+    "skipped": 1,
+    "seconds": 4.76,
+    "exit_code": 0,
+    "wheel": "pip wheel . --no-deps --no-cache-dir --no-build-isolation --no-index; closure checked in test_unified_entrypoints"
+  },
+  "node": {
+    "command": "node --test tests/unified_core.test.mjs tests/m18_presentation.test.mjs",
+    "passed": 18,
+    "failed": 0
+  },
+  "ruff_check": "passed; --no-cache",
+  "ruff_format": "311 files already formatted; --no-cache",
+  "compileall": "src tests passed",
+  "git_diff_check": "passed",
+  "semantic_gate": {
+    "passed": true,
+    "implementation_sha256": "36b71fa02c0e9e4fb3cddbd97a4dc1447e3f9747ebfebb3babd9c234d697d5b3"
+  },
+  "grounded_rag_gate": {
+    "passed": true,
+    "implementation_sha256": "e96cb087a5291dec157f6f2a6b8a2212a46c62ed813fe3e95ef19ef49975d213"
+  },
+  "real_http": {
+    "service_starts": 1,
+    "product_posts": 3,
+    "statuses": [
+      200,
+      200,
+      200
+    ],
+    "evidence": "live-browser-journal.json",
+    "runtime_source_unchanged": true
+  },
+  "ci": "Exact final head and Quality run URL are recorded on the PR and original #285 handoff; local checks do not replace CI.",
+  "notes": "Focused suite repeats are not added to unique full-suite count. real_pdf and model integration excluded locally; private PDFs only read by bounded original loader, no full extraction or model calls."
+}

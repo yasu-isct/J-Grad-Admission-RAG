@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "preview_template": "author01-reference-workspace-preview-v2.json",
+  "metadata": {
+    "plan_path": "author01-material-slice-report-plan-v2.json",
+    "trust_path": "author01-material-slice-report-trust-v2.json",
+    "policy_path": "author01-material-condition-policy-v2.json",
+    "policy_trust_path": "author01-material-condition-trust-v2.json",
+    "seed_path": "author01-essay-evidence-seed-v2.json"
+  },
+  "authoring": "author01-essay-authoring-input.json",
+  "displays": "m18-migrated-material-displays.json",
+  "preparation_control": "self_report_tri_state",
+  "guide_bindings": {
+    "guide.what": ["audience", "content_a", "content_b"],
+    "guide.preparation.0": ["specified_format", "language"],
+    "guide.preparation.1": ["content_a"],
+    "guide.preparation.2": ["content_b"],
+    "guide.preparation.3": ["submission_method"],
+    "guide.attention.0": ["word_count", "format_details"],
+    "guide.attention.1": ["exact_submission_deadline"],
+    "guide.attention.2": ["preparation_status"]
+  }
+}

@@ -33,6 +33,7 @@ def test_formal_serve_factory_exposes_unified_dependencies_without_slice_config(
     for path, media_type in (
         ("/assets/unified.js", "text/javascript"),
         ("/assets/unified-core.mjs", "text/javascript"),
+        ("/assets/reviewed-material-presentation.mjs", "text/javascript"),
         ("/assets/unified.css", "text/css"),
         ("/assets/app.js", "text/javascript"),
         ("/assets/app.css", "text/css"),
@@ -168,7 +169,16 @@ def test_offline_wheel_contains_unified_static_dependency_closure(tmp_path: Path
     prefix = "jgrad_admission_rag/service/static/"
     with zipfile.ZipFile(wheels[0]) as wheel:
         names = set(wheel.namelist())
-        for name in ("app.html", "advanced.html", "unified.css", "unified.js", "unified-core.mjs"):
+        for name in (
+            "app.html",
+            "advanced.html",
+            "unified.css",
+            "unified.js",
+            "unified-core.mjs",
+            "reviewed-material-presentation.mjs",
+            "reviewed-material-presentation.manifest.json",
+            "reviewed-material-presentation.sources.json",
+        ):
             assert prefix + name in names
         for resource in resources:
             assert prefix + resource.removeprefix("assets/") in names
