@@ -1,5 +1,5 @@
 /* Pure presentation adapter. The server remains the authority for every finding. */
-import {reviewedMaterialPresentation} from "./reviewed-material-presentation.mjs";
+import {reviewedMaterialPresentation} from "./material-presentation-catalog.mjs";
 const statusNames = {
   required: "需要提交／满足对应条件时适用",
   conditional: "有条件适用",

@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-05T13:30:12.054191+00:00",
+  "base_main": "ae93db63b37732ebb5ef4fe6edcbb81ee9bf33fa",
+  "normal_offline_suite": {
+    "passed": 1936,
+    "skipped": 317,
+    "deselected": 2,
+    "seconds": 116.08,
+    "log": "pytest-full-final.txt"
+  },
+  "final_compiler_suite": {
+    "passed": 26,
+    "seconds": 2.33
+  },
+  "m19_and_unified_browser_targeted_suite": {
+    "passed": 30,
+    "seconds": 9.84
+  },
+  "node_suite": {
+    "passed": 21,
+    "failed": 0,
+    "log": "node-tests.txt"
+  },
+  "ruff_check": "passed",
+  "ruff_format_check": {
+    "passed": true,
+    "files": 319
+  },
+  "compileall_src_tests": "passed",
+  "git_diff_check": "passed",
+  "m9_retrieval_and_grounded_rag_frozen_gates": "passed without re-signing",
+  "coverage_limit": "Normal offline suite precedes final helper staging repair and added committed manifest drift test; final compiler suite covers those. Exact final head CI recorded in the unique PR and original handoff.",
+  "own_service": {
+    "pid": 39500,
+    "port": 53550,
+    "stopped": true
+  },
+  "user_service": {
+    "pid": 34116,
+    "port": 8000,
+    "untouched": true
+  },
+  "independent_design_acceptance": "pending"
+}

@@ -1,0 +1,29 @@
+✔ four real topics share generated displays, full context, and only one self-report control (4.1995ms)
+✔ all 37 fragments and every identity/source field are guarded (12.8021ms)
+✔ v2 and v3 retain their guides; a duplicate catalog identity is refused (3.1319ms)
+✔ all new fragments, table attribution, stage, relations and snapshot are guarded (4.962ms)
+✔ self-report leaves official required results intact; empty topic selection refuses output (3.8872ms)
+✔ catalog and request mapping work for renamed schools and a second slice (1.3488ms)
+✔ PREP-02 request, evidence binding, and report topics stay scoped (1.7714ms)
+✔ full base export preserves dates, all categories, citations and optional comparison (0.5232ms)
+✔ Japanese background is exported as applicant input without a school conclusion (0.4859ms)
+✔ Japanese self-report exception retains official citation checks (0.6089ms)
+✔ slice evidence and canonical report keep unknown status, citation and raw Markdown (0.7848ms)
+✔ reader projection separates missing, self-reported ready, unfilled, and conditional materials (0.8052ms)
+✔ slice reader projection respects conditional and non-submission results (0.3951ms)
+✔ all reviewed material codes have scoped explanations and unknown codes keep their original name (0.4247ms)
+✔ reviewed material report cardinality follows the configured three or four topics (0.7618ms)
+✔ slice preparation self-report remains separate from official findings and needs no new request fields (0.4124ms)
+✔ AUTHOR-01 guide and copied report require the exact target, snapshot, and all fourteen frozen fragments (9.0731ms)
+✔ PREP-01 guides require the exact reviewed p.10 fact and keep September date scoped (0.2376ms)
+✔ all five guides bind to the saved real p.10 response despite OCR line breaks (1.1273ms)
+✔ EXAM-01 validates source and target before offering an opt-in report topic (1.4409ms)
+✔ EXAM-02B validates a real-source v2 projection and rejects altered anchors (1.6434ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.9711

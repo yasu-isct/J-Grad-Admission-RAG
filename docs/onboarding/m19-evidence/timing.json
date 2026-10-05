@@ -1,0 +1,22 @@
+{
+  "claim_utc": "2026-10-05T08:46:19.077566+00:00",
+  "captured_utc": "2026-10-05T09:33:24.141878+00:00",
+  "manual_authoring_seconds": null,
+  "manual_source_review_seconds": null,
+  "agent_coding_seconds": null,
+  "agent_debugging_seconds": null,
+  "waiting_seconds": null,
+  "measured_machine_runs": "reproducibility.json/resources.json/budget-snapshot.json",
+  "environment_setup_cpu_seconds_observed": 101.48,
+  "environment_setup_wall_seconds": null,
+  "efficiency_percentage": null,
+  "rework": [
+    "sandbox dependency startup; stopped own process",
+    "synthetic entry ID test mismatch",
+    "old browser static import allowlist",
+    "Windows RSS ctypes HANDLE parameter",
+    "Windows private tempfile directory moved to owned audit; no ACL edits",
+    "legacy replay raw URL included query; replaced by urlparse",
+    "saved legacy material guide assertion corrected; no product text changes"
+  ]
+}

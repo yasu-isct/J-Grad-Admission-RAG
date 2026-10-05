@@ -278,6 +278,8 @@ def test_unified_page_explicit_actions_and_state_isolation(tmp_path):
             elif (
                 path.startswith("/assets/unified")
                 or path == "/assets/reviewed-material-presentation.mjs"
+                or path == "/assets/material-presentation-catalog.mjs"
+                or path == "/assets/m19-material-presentation.mjs"
             ):
                 name = path.rsplit("/", 1)[-1]
                 media = "text/css" if name.endswith(".css") else "text/javascript"
@@ -422,6 +424,8 @@ def test_unified_question_displays_source_scope_and_actual_boundaries():
             elif (
                 path.startswith("/assets/unified")
                 or path == "/assets/reviewed-material-presentation.mjs"
+                or path == "/assets/material-presentation-catalog.mjs"
+                or path == "/assets/m19-material-presentation.mjs"
             ):
                 name = path.rsplit("/", 1)[-1]
                 media = "text/css" if name.endswith(".css") else "text/javascript"
