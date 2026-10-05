@@ -1,5 +1,13 @@
 # Post-single-school Design Handoff
 
+## 2026-10-05：M18 已独立验收合并，完整成果包完成
+
+#285 / [PR #289](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/289) 精确head `0aa1388c9e77b5f27d077125268c395dbcfeb196` 已验收，merge `5b3c9a43ba617b7afaa66f9615ed851eebec1ec9`。四主题共用生成展示目录，小论文中文指南/身份/原文/控件名消除前端手抄；原规则、旧三主题及ISCT兼容保持。详见[独立验收](../onboarding/m18-design-acceptance.md)。
+
+设计最终代码真实桌面/手机报告各一次均200，37片段原文与报告复制通过；独立25 Python/18 Node及旧两校回放通过，50资产不变。累计开发服务1/1、POST3/4；设计1/1、2/2，付费/下载/解析/新候选/KB/向量均0。独立服务已停止，用户在线页未切换。
+
+M18必需成果全部完成，#285及Milestone收尾关闭；M17暂停QA不连带关闭。当前无新Ready，不自动开启下一里程碑或完整学生扩覆盖。新来源语义审核仍需人工，未证明节省比例。以下为历史记录。
+
 ## 2026-10-05：M18完整开发包交独立验收
 
 新M18 Main在专属 `codex/m18-reviewed-delivery` 完成唯一#285的A→B→C→D成果包。[统一入口](../onboarding/m18-delivery/README.md)、[complete/缺口](../onboarding/m18-completion-and-gaps.md)、[来源与实际维护成本](../onboarding/m18-implementation-review.md)集中交付非Draft PR；精确head/CI见#285同一交接。状态Awaiting review，不声明M18已验收或关闭。
