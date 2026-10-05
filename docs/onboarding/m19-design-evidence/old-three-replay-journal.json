@@ -1,0 +1,56 @@
+[
+  {
+    "case": 1,
+    "width": 1440,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-1.json",
+    "topics": 3,
+    "copy_sha256": "e6e4f9f181045a5bd667483e8b441b274c147766770a8942b90a872522b70c2e"
+  },
+  {
+    "case": 1,
+    "width": 390,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-1.json",
+    "topics": 3,
+    "copy_sha256": "e6e4f9f181045a5bd667483e8b441b274c147766770a8942b90a872522b70c2e"
+  },
+  {
+    "case": 2,
+    "width": 1440,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-2.json",
+    "topics": 3,
+    "copy_sha256": "f4a03877a7ef96b3d73989fdeaf6882fe4197fc5fe454c42070c66d64d9d6312"
+  },
+  {
+    "case": 2,
+    "width": 390,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-2.json",
+    "topics": 3,
+    "copy_sha256": "f4a03877a7ef96b3d73989fdeaf6882fe4197fc5fe454c42070c66d64d9d6312"
+  },
+  {
+    "case": 3,
+    "width": 1440,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-3.json",
+    "topics": 3,
+    "copy_sha256": "0a805179a60ae7d9c45ceba41ab4599af5fcd815f2744faf34cb473971e40275"
+  },
+  {
+    "case": 3,
+    "width": 390,
+    "actual_post": 0,
+    "intercepted_post": 1,
+    "saved_real_response": "real-report-3.json",
+    "topics": 3,
+    "copy_sha256": "0a805179a60ae7d9c45ceba41ab4599af5fcd815f2744faf34cb473971e40275"
+  }
+]

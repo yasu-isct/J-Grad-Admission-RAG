@@ -1,0 +1,678 @@
+{
+  "owner": "M19 Main",
+  "worktree": "D:\\J-Grad-Admission-RAG\\outputs\\m19-worktree",
+  "branch": "codex/m19-reviewed-config-delivery",
+  "base_main": "ae93db63b37732ebb5ef4fe6edcbb81ee9bf33fa",
+  "dev": {
+    "candidate_publications": 1,
+    "service_starts": 1,
+    "posts": 2
+  },
+  "design": {
+    "candidate_publications": 0,
+    "service_starts": 1,
+    "posts": 0
+  },
+  "limits": {
+    "dev_candidate_publications": 1,
+    "dev_service_starts": 2,
+    "dev_posts": 10,
+    "design_service_starts": 1,
+    "design_posts": 4
+  },
+  "paid": 0,
+  "downloads": 0,
+  "full_parser_runs": 0,
+  "vector_builds": 0,
+  "candidate_seconds": 4.280999999726191,
+  "events": [
+    {
+      "at": "2026-10-05T08:46:19.077566+00:00",
+      "action": "ownership and budget audit; claim",
+      "human_seconds": null,
+      "machine_seconds": null,
+      "waiting_seconds": null,
+      "note": "Prior time unknown"
+    },
+    {
+      "at": "2026-10-05T08:55:52.763765+00:00",
+      "action": "generate",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.046999999904073775,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:08:04.620015+00:00",
+      "action": "generate",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.062000000034458935,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:08:05.915221+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.0470000000204891
+    },
+    {
+      "at": "2026-10-05T09:08:05.947200+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.030999999959021807
+    },
+    {
+      "at": "2026-10-05T09:08:06.066164+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.10999999998603016
+    },
+    {
+      "at": "2026-10-05T09:09:03.894865+00:00",
+      "action": "check",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.030999999959021807,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:09:05.004007+00:00",
+      "action": "reserve immutable candidate publication",
+      "resource": "candidate_publications",
+      "identity": "d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca",
+      "machine_seconds": null
+    },
+    {
+      "at": "2026-10-05T09:09:05.092577+00:00",
+      "action": "publish",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.125,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:09:06.210645+00:00",
+      "action": "reserve immutable candidate publication",
+      "resource": null,
+      "identity": "d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca",
+      "machine_seconds": null
+    },
+    {
+      "at": "2026-10-05T09:09:06.294850+00:00",
+      "action": "publish",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.125,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:09:07.448628+00:00",
+      "action": "preview-config",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.10899999993853271,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:09:24.130268+00:00",
+      "action": "reserve developer offline service start",
+      "resource": "service_starts",
+      "identity": null,
+      "machine_seconds": null,
+      "pid": 39500,
+      "worktree": "D:\\J-Grad-Admission-RAG\\outputs\\m19-worktree"
+    },
+    {
+      "at": "2026-10-05T09:09:24.206167+00:00",
+      "action": "offline listener ready",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "pid": 39500,
+      "port": 53550,
+      "config": "D:\\J-Grad-Admission-RAG\\outputs\\m19-audit\\preview.json",
+      "worktree": "D:\\J-Grad-Admission-RAG\\outputs\\m19-worktree",
+      "started_utc": "2026-10-05T09:09:24.206167+00:00",
+      "role": "developer"
+    },
+    {
+      "at": "2026-10-05T09:09:54.961664+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/material-presentation-catalog.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:54.965665+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/m19-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:54.968665+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/reviewed-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:54.972342+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-targets",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:54.975406+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-slices/m19-reviewed-preview/evidence",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:54.978560+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/generation-status",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.620429+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/app/advanced",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.640890+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/app.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.642099+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/overview.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.643293+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/app.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.671810+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/generation-status",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.672814+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/unified-core.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.729358+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/favicon.ico",
+      "status": 404
+    },
+    {
+      "at": "2026-10-05T09:09:55.731366+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/material-presentation-catalog.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.734645+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/reviewed-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.735662+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/m19-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.745902+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-targets",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:55.846111+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-slices/m19-reviewed-preview/evidence",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:56.647243+00:00",
+      "action": "product POST attempt",
+      "resource": "posts",
+      "identity": null,
+      "machine_seconds": null,
+      "path": "/v1/reference-slices/m19-reviewed-preview/reports"
+    },
+    {
+      "at": "2026-10-05T09:09:56.672489+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "POST",
+      "path": "/v1/reference-slices/m19-reviewed-preview/reports",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.165185+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-slices/m19-reviewed-preview/evidence",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.329937+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/app/advanced",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.345305+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/app.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.347687+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/overview.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.347687+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/app.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.376599+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/generation-status",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.377770+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/unified-core.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.411575+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/material-presentation-catalog.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.416572+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/m19-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.417572+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/assets/reviewed-material-presentation.mjs",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.423577+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-targets",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:57.499443+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-slices/m19-reviewed-preview/evidence",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:58.091803+00:00",
+      "action": "product POST attempt",
+      "resource": "posts",
+      "identity": null,
+      "machine_seconds": null,
+      "path": "/v1/reference-slices/m19-reviewed-preview/reports"
+    },
+    {
+      "at": "2026-10-05T09:09:58.113802+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "POST",
+      "path": "/v1/reference-slices/m19-reviewed-preview/reports",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:09:58.519674+00:00",
+      "action": "HTTP response",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "method": "GET",
+      "path": "/v1/reference-slices/m19-reviewed-preview/evidence",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T09:10:37.126188+00:00",
+      "action": "developer service stopped",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "pid": 39500
+    },
+    {
+      "at": "2026-10-05T09:17:53.309568+00:00",
+      "action": "pure compilation RSS measurement",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.03200000000651926,
+      "peak_rss_bytes": 118558720
+    },
+    {
+      "at": "2026-10-05T09:17:53.342302+00:00",
+      "action": "read-only existing candidate reuse proof",
+      "resource": null,
+      "identity": "d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca",
+      "machine_seconds": null
+    },
+    {
+      "at": "2026-10-05T09:28:53.213562+00:00",
+      "action": "generate",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.0470000000204891,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:28:54.348331+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.03100000007543713
+    },
+    {
+      "at": "2026-10-05T09:28:54.378752+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.030999999959021807
+    },
+    {
+      "at": "2026-10-05T09:28:54.446614+00:00",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.0779999999795109
+    },
+    {
+      "at": "2026-10-05T09:33:24.135877+00:00",
+      "action": "backfill successful first pure generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.046,
+      "origin": "tool stdout; before compiler ledger integration"
+    },
+    {
+      "at": "2026-10-05T09:33:24.137872+00:00",
+      "action": "backfill successful static generation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.079,
+      "origin": "tool stdout; before compiler ledger integration"
+    },
+    {
+      "at": "2026-10-05T09:33:24.138874+00:00",
+      "action": "environment setup rework",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "process_cpu_seconds_observed": 101.48,
+      "wall_seconds": null,
+      "pure_mapping_seconds": null,
+      "detail": "Initial default-sandbox Python process produced no result and was stopped; startup/pure-stage split unknown. No publication/service/POST. Two later RSS telemetry attempts failed after successful pure compilation; their elapsed split unknown. No dependent asset was built by those failures."
+    },
+    {
+      "at": "2026-10-05T09:33:24.139872+00:00",
+      "action": "complete independent-review package preparation",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "human_seconds": null,
+      "waiting_seconds": null,
+      "coding_seconds": null,
+      "review_seconds": null,
+      "detail": "Agent elapsed intervals are not teacher/manual measured work; design author/source work prior to this chat unknown."
+    },
+    {
+      "at": "2026-10-05T09:35:07.444542+00:00",
+      "action": "generate",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.03200000000651926,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T09:35:08.386497+00:00",
+      "action": "check",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": 0.046999999904073775,
+      "bytes": 164936,
+      "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942"
+    },
+    {
+      "at": "2026-10-05T13:30:12.051377+00:00",
+      "action": "local validation complete; prepare unique PR",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "human_seconds": null,
+      "waiting_seconds": null
+    },
+    {
+      "at": "2026-10-05T13:35:06.769480+00:00",
+      "action": "exact-head CI success; unique PR awaiting independent review",
+      "resource": null,
+      "identity": null,
+      "machine_seconds": null,
+      "head": "9858cf37392ccfb6d403efa0a4a3fb461a224d54",
+      "pr": "https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/293",
+      "ci": "https://github.com/yasu-isct/J-Grad-Admission-RAG/actions/runs/37317521066",
+      "human_seconds": null,
+      "waiting_seconds": null
+    },
+    {
+      "at": "2026-10-05T13:50:14.639550+00:00",
+      "role": "design",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "machine_seconds": 0.030999999959021807
+    },
+    {
+      "at": "2026-10-05T13:50:14.671549+00:00",
+      "role": "design",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "machine_seconds": 0.03100000007543713
+    },
+    {
+      "at": "2026-10-05T13:50:14.785571+00:00",
+      "role": "design",
+      "action": "pure reproducibility generation",
+      "resource": null,
+      "machine_seconds": 0.10899999993853271
+    },
+    {
+      "at": "2026-10-05T13:50:15.054876+00:00",
+      "role": "design",
+      "action": "reserve design offline service start",
+      "resource": "service_starts",
+      "machine_seconds": null,
+      "pid": 38360,
+      "worktree": "D:\\J-Grad-Admission-RAG\\outputs\\design-m19-review\\head-9858cf3"
+    },
+    {
+      "at": "2026-10-05T13:51:51.417301+00:00",
+      "role": "design",
+      "action": "reserved service attempt failed before uvicorn startup or HTTP",
+      "reason": "Independent harness passed duplicate role keyword when writing listener event. No product defect; no retry, design startup budget consumed.",
+      "actual_http_posts": 0
+    },
+    {
+      "at": "2026-10-05T13:56:05.092244+00:00",
+      "role": "design",
+      "action": "account extra unmeasured pure compile with conservative 3-second upper bound",
+      "accounting_upper_bound_seconds": 3,
+      "actual_seconds": null
+    }
+  ],
+  "initialization_evidence": [
+    "GitHub #291 Ready with no comments or claim",
+    "No M19 implementation PR, branch or worktree before this claim",
+    "Only m19-design local records; source-review records all zero",
+    "Only port 8000 active, PID 34116, user service; untouched",
+    "Existing candidates only v1 f1721e7 and v2 7ea4903"
+  ],
+  "candidate_build_id": "d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca"
+}
