@@ -1,4 +1,5 @@
 /* Pure presentation adapter. The server remains the authority for every finding. */
+import {reviewedMaterialPresentation} from "./reviewed-material-presentation.mjs";
 const statusNames = {
   required: "需要提交／满足对应条件时适用",
   conditional: "有条件适用",
@@ -22,7 +23,12 @@ function publicStatus(value) { return statusNames[value] || "需核对具体说�
 function requireValue(condition, message) {
   if (!condition) throw new Error(message);
 }
-function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+function same(a, b) {
+  const canonical = (value) => Array.isArray(value) ? value.map(canonical)
+    : value && typeof value === "object"
+      ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])])) : value;
+  return JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+}
 function nonempty(value) { return typeof value === "string" && value.trim().length > 0; }
 function array(value) { return Array.isArray(value) ? value : []; }
 function text(value) { return value == null ? "" : String(value); }
@@ -506,13 +512,18 @@ export function mapSliceEvidence(scope, evidence) {
       deadline: "", limitation: "", dates: [], sources, relations
     };
   });
-  if (scope.item.snapshot_id === authorEssayIdentity.snapshot_id) {
-    requireValue(authorEssayScopeMatches(scope)
-      && topics.length === 4 && new Set(topics.map((topic) => topic.id)).size === 4
-      && ["english-score-sheets", "checklist-submission", "work-study-plan", "application-essay"]
-        .every((id) => topics.some((topic) => topic.id === id)), "新材料切片范围不匹配");
-    const essay = topics.find((topic) => topic.id === "application-essay");
-    requireValue(authorEssaySourcesMatch(essay.sources), "小论文原文或表头缺失");
+  const generated = generatedEntry(scope);
+  requireValue(!reviewedMaterialPresentation.entries.some((row) => row.snapshot_id === scope.item.snapshot_id)
+    || generated, "展示目录与完整目标不匹配");
+  if (generated) {
+    requireValue(topics.length === generated.topics.length
+      && new Set(topics.map((topic) => topic.id)).size === topics.length,
+      "新材料切片范围不匹配");
+    for (const row of generated.topics) {
+      const topic = topics.find((topic) => topic.id === row.id);
+      requireValue(topic && generatedSourcesMatch(row, topic.sources)
+        && same(topic.relations, row.relations), "材料原文、表头或关系缺失");
+    }
   }
   return {
     scope, topics, coverage: `历史招生资料 · 已审核的 ${topics.length} 个材料主题`,
@@ -641,7 +652,10 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
       guide: mappedTopic ? materialGuide(scope, mappedTopic) : null
     };
   });
-  requireValue(topics.length === mapped.topics.length, "材料主题数量不匹配");
+  requireValue(topics.length === mapped.topics.length
+    && (!generatedEntry(scope) || (new Set(topics.map((topic) => topic.id)).size === topics.length
+      && topics.every((topic) => mapped.topics.some((row) => row.id === topic.id)))),
+    "材料主题数量或身份不匹配");
   requireValue(["unknown", "yes", "no"].includes(employment.current)
     && ["unknown", "yes", "no"].includes(employment.retain), "个人条件无效");
   const conditionName = {unknown: "未知／待确认", yes: "是", no: "否"};
@@ -671,55 +685,59 @@ export function withSlicePreparation(report, preparation = {}) {
 
 const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"};
 
-const authorEssayIdentity = {
-  kind: "reviewed_material_slice", institution_id: "utokyo", organization_id: "utokyo-gsfs",
-  program_id: "utokyo-gsfs-complex", degree_level: "master", admission_cycle: 2027,
-  selection_route_id: "general-ordinary", examination_schedule_id: "A", intake_year: 2027,
-  intake_month: 4, target_id: "utokyo-gsfs-complex-master-2027-general-a-202704",
-  snapshot_id: "a729b19705be68c9a4e79bc71d6dbaaed12710989aeac79b90cf34347bf89164"
-};
-const authorEssayGuide = {
-  purpose: "本固定目标范围内申请人需要提交的小论文，用于说明希望研究的主题、动机和自身优势。",
-  steps: ["使用专攻网站指定格式，以日语或英语填写。",
-    "第一部分：写明希望研究的主题，以及对该主题感兴趣的理由。",
-    "第二部分：结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。",
-    "出愿期间，通过网上出愿系统上传PDF。"],
-  warnings: ["字数和版式以指定模板为准；本次资料未包含模板细目。",
-    "本项来源只明确出愿期间，未核定具体截止日期或时刻。",
-    "准备情况由本人填写，不代表学校确认材料已完成或申请资格成立。"],
-  conditions: [],
-  sourceNote: "中文要点整理自专攻追加材料表第1页与入试案内第28页（印刷26）；下方分别保留两份原文。"
-};
-const authorEssayFragments = {
-  E09: ["令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
-    "【複雑理工学専攻】", "出願期間中に「オンライン出願システム」により提出する書類等",
-    "(※PDFファイルのアップロードによる）", "提出物", "小論文", "対象者，備考",
-    "【対象者】全員", "日本語又は英語で作成すること。"],
-  E10: ["修士課程 一般選抜", "小論文の作成・提出要領",
-    "以下の(A)(B)を、当専攻ホームページで指定するフォーマットに日本語または英語で書くこと。文字数や書式などはフォーマットに指示する。オンライン出願サイトより提出せよ。",
-    "（A) 取り組みたい研究テーマとそのテーマに興味を持った理由",
-    "（B) 自己アピール：これまでの学修・研究・課外活動などの経験に基づき、修士課程での学修・研究に活かせる自分の強みを具体的に記述"]
-};
-
-function authorEssayScopeMatches(scope) {
-  const identity = materialScopeIdentity(scope);
-  return identity && Object.entries(authorEssayIdentity).every(([key, value]) => identity[key] === value);
+// Generated display data is matched by every target field and snapshot.
+function generatedEntry(scope) {
+  requireValue(reviewedMaterialPresentation?.schema_version === "1.0"
+    && Array.isArray(reviewedMaterialPresentation.entries), "展示目录格式错误，请刷新后重试");
+  const entries = reviewedMaterialPresentation.entries;
+  requireValue(new Set(entries.map((entry) => entry.snapshot_id)).size === entries.length,
+    "展示目录身份重复");
+  if (scope?.kind !== "reviewed_material_slice") return null;
+  const entry = entries.find((row) => row.snapshot_id === scope.item?.snapshot_id);
+  if (!entry) return null;
+  if (!same(entry.target, scope.item.target) || entry.revision !== scope.item.revision) return null;
+  requireValue(Array.isArray(entry.topics) && entry.topics.length > 0
+    && new Set(entry.topics.map((topic) => topic.id)).size === entry.topics.length,
+    "展示目录与完整目标不匹配");
+  return entry;
 }
 
-function authorEssaySourcesMatch(sources) {
+function generatedTopic(scope, code) {
+  return generatedEntry(scope)?.topics.find((row) => row.id === code || row.material_code === code);
+}
+
+function generatedSourcesMatch(topic, sources) {
   const normalize = (value) => text(value).replace(/\s+/g, "");
-  return array(sources).length === 2 && Object.entries(authorEssayFragments).every(([recordId, quotes]) => {
-    const source = sources.find((row) => row.record_id === recordId);
-    if (!source || source.role !== "basis" || source.stage !== "application"
-      || source.source_id !== (recordId === "E09" ? "complex-master-a-additional" : "complex-guide-2027-revised")
-      || !same(source.pages, [recordId === "E09" ? 1 : 28])
-      || (recordId === "E10" && source.printed !== "26")
-      || array(source.fragments).length !== quotes.length) return false;
-    return quotes.every((quote, index) => {
-      const matches = source.fragments.filter((fragment) => fragment.fragment_id === `${recordId}-${index + 1}`);
-      return matches.length === 1 && normalize(matches[0].quote_text) === normalize(quote);
+  if (!topic || array(sources).length !== array(topic.records).length
+    || new Set(sources.map((source) => source.record_id)).size !== sources.length) return false;
+  return topic.records.every((record) => {
+    const source = sources.find((row) => row.record_id === record.record_id);
+    if (!source || source.source_id !== record.source_id || source.title !== record.source_title
+      || source.source_url !== record.official_source_url || source.role !== record.role
+      || source.stage !== record.stage || !same(source.pages, [record.physical_page])
+      || source.printed !== record.printed_page_label
+      || source.heading !== record.official_heading_path.join(" › ")
+      || array(source.fragments).length !== record.fragments.length) return false;
+    return record.fragments.every((fragment) => {
+      const matches = source.fragments.filter((row) => row.fragment_id === fragment.fragment_id);
+      return matches.length === 1 && matches[0].fragment_role === fragment.fragment_role
+        && matches[0].fact_id === fragment.fact_id
+        && matches[0].authoritative_fact_text_sha256 === fragment.authoritative_fact_text_sha256
+        && normalize(matches[0].quote_text) === normalize(fragment.quote_text);
     });
   });
+}
+
+export function slicePreparationControls(mapped) {
+  const entry = generatedEntry(mapped?.scope);
+  if (!entry) return [];
+  return entry.topics.filter((row) => row.preparation_control === "self_report_tri_state")
+    .map((row) => {
+      const topic = mapped.topics.find((topic) => topic.id === row.id);
+      requireValue(topic && generatedSourcesMatch(row, topic.sources) && row.guide,
+        "材料准备控件来源不完整");
+      return {id: row.id, name: row.display[0], type: row.preparation_control};
+    });
 }
 
 // Presentation only. Code meanings are bound to reviewed document/snapshot identity;
@@ -740,13 +758,7 @@ const materialDisplays = [
     "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
     "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"]
   }},
-  {identity: authorEssayIdentity, materials: {
-    "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
-    "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
-    "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"],
-    "application-essay": ["申请小论文", "小論文", authorEssayGuide.purpose],
-    application_essay: ["申请小论文", "小論文", authorEssayGuide.purpose]
-  }}
+
 ];
 
 // Human guidance is attached only to the exact reviewed p.10 table in this edition.
@@ -826,6 +838,9 @@ function materialScopeIdentity(scope) {
 
 export function materialDisplay(scope, rawCode, originalName) {
   const code = String(rawCode || "").replace(/^material:/, "");
+  const generated = generatedTopic(scope, code);
+  if (generated) return {name: generated.display[0], official: generated.display[1],
+    description: generated.display[2], verified: true};
   const identity = materialScopeIdentity(scope);
   const catalog = identity && materialDisplays.find((entry) =>
     Object.entries(entry.identity).every(([key, value]) => identity[key] === value));
@@ -836,8 +851,8 @@ export function materialDisplay(scope, rawCode, originalName) {
 
 export function materialGuide(scope, topic) {
   const identity = materialScopeIdentity(scope);
-  if (authorEssayScopeMatches(scope) && ["application-essay", "application_essay"].includes(topic?.id))
-    return authorEssaySourcesMatch(topic.sources) ? authorEssayGuide : null;
+  const generated = generatedTopic(scope, topic?.id);
+  if (generated) return generatedSourcesMatch(generated, topic.sources) ? generated.guide : null;
   if (identity?.kind !== "legacy_applicant" || identity.school_id !== "isct"
     || identity.document_id !== "isct_2027_4_2026_9_master") return null;
   const code = String(topic?.id || "").replace(/^material:/, "");

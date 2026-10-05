@@ -549,7 +549,7 @@ function updateApplicantStepSummary() {
     const current = byId("slice-current-employed").selectedOptions[0].textContent;
     const retain = byId("slice-retain-employed").selectedOptions[0].textContent;
     const preparations = Array.from(byId("slice-material-preparation").querySelectorAll("select"),
-      (control) => `申请小论文：${control.selectedOptions[0].textContent}`);
+      (control) => `${control.dataset.materialName}：${control.selectedOptions[0].textContent}`);
     byId("step-3-summary-text").textContent = [`目前任职：${current}；入学后继续任职：${retain}`,
       ...preparations].join("；");
     return;
@@ -1614,31 +1614,33 @@ function renderSlicePreparation(mapped) {
   byId("slice-profile-coverage").textContent = `当前只对照已覆盖的 ${mapped.topics.length} 个材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。`;
   const container = byId("slice-material-preparation");
   container.replaceChildren();
-  const essay = mapped.topics.find((topic) => topic.id === "application-essay"
-    && referenceCore.materialGuide(mapped.scope, topic));
-  container.hidden = !essay;
-  if (!essay) return;
+  const controls = referenceCore.slicePreparationControls(mapped);
+  container.hidden = controls.length === 0;
+  if (!controls.length) return;
   const legend = document.createElement("legend");
   legend.textContent = "材料准备（本次自报）";
   const note = document.createElement("p");
   note.className = "field-help";
   note.id = "slice-material-help";
   note.textContent = "准备情况只在本页记录，不改变官方提交要求；已准备不代表内容有效、已提交或学校受理。";
-  const label = document.createElement("label");
-  label.textContent = "申请小论文";
-  const select = document.createElement("select");
-  select.dataset.sliceMaterialCode = essay.id;
-  select.setAttribute("aria-describedby", note.id);
-  for (const [value, text] of [["unknown", "不知道／未填写"], ["available", "我已准备"], ["not_yet", "尚未准备"]]) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = text;
-    select.append(option);
-  }
-  label.append(select);
   const inputs = document.createElement("div");
   inputs.className = "material-inputs";
-  inputs.append(label);
+  for (const control of controls) {
+    const label = document.createElement("label");
+    label.textContent = control.name;
+    const select = document.createElement("select");
+    select.dataset.sliceMaterialCode = control.id;
+    select.dataset.materialName = control.name;
+    select.setAttribute("aria-describedby", note.id);
+    for (const [value, text] of [["unknown", "不知道／未填写"], ["available", "我已准备"], ["not_yet", "尚未准备"]]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = text;
+      select.append(option);
+    }
+    label.append(select);
+    inputs.append(label);
+  }
   container.append(legend, note, inputs);
 }
 

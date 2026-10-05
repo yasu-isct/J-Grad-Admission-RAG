@@ -153,6 +153,13 @@ def create_app(
     def unified_css() -> FileResponse:
         return FileResponse(static / "unified.css", media_type="text/css; charset=utf-8")
 
+    @app.get("/assets/reviewed-material-presentation.mjs", include_in_schema=False)
+    def reviewed_material_presentation() -> FileResponse:
+        return FileResponse(
+            static / "reviewed-material-presentation.mjs",
+            media_type="text/javascript; charset=utf-8",
+        )
+
     @app.get("/assets/reference.js", include_in_schema=False)
     def reference_app_js() -> FileResponse:
         return FileResponse(static / "reference.js", media_type="text/javascript; charset=utf-8")

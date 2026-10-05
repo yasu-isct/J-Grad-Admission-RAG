@@ -225,6 +225,11 @@ class ReferenceSliceSnapshot:
 
 def load_reference_workspace(path: Path) -> tuple[ReferenceSliceSnapshot, ...]:
     config = ReferenceWorkspaceConfig.model_validate(parse_json(_read_metadata(path)))
+    return load_reference_config(config)
+
+
+def load_reference_config(config: ReferenceWorkspaceConfig) -> tuple[ReferenceSliceSnapshot, ...]:
+    """Use the same complete read-only loader for explicit, validated local paths."""
     snapshots = []
     targets = set()
     plan_ids = set()

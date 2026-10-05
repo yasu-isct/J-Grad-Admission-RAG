@@ -1,0 +1,28 @@
+{
+  "provenance": {
+    "base": "8aa4e812f4e8c5e1483161e6c5074d224d67feb3",
+    "file": "src/jgrad_admission_rag/service/static/unified-core.mjs",
+    "fields": "materialDisplays v2 materials[topic_id][0=name,1=official,2=description]",
+    "role": "verbatim accepted display migration; not new official evidence or rules"
+  },
+  "materials": [
+    {
+      "topic_id": "english-score-sheets",
+      "name": "英语成绩单",
+      "official": "英語のスコアシート",
+      "description": "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"
+    },
+    {
+      "topic_id": "checklist-submission",
+      "name": "提交材料检查表",
+      "official": "提出書類等チェックシート（修士課程一般選抜用）",
+      "description": "用于核对待交文件；参照清单不等于要提交清单本身。"
+    },
+    {
+      "topic_id": "work-study-plan",
+      "name": "学业与职务兼顾计划书",
+      "official": "学業・職務両立計画書",
+      "description": "说明在职入学时如何兼顾学业与职务的计划书。"
+    }
+  ]
+}
