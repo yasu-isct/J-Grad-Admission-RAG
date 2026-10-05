@@ -422,3 +422,7 @@ and quality gates require a separately reviewed integration contract before auth
 a distinct evidence projection binds existing Facts to explicit target/section reviews without
 mutating or approving the whole source KB. A deterministic teacher report reuses MAT-01 logic
 and retains partial/historical coverage. The old v1 evidence/report validators remain unchanged.
+
+## M19 reviewed authoring configuration pilot
+
+[ADR 0017](decisions/0017-reviewed-authoring-config-generation.md) introduces a bounded build-time projection from independently reviewed authoring into existing import, policy, plan and presentation formats. It does not replace runtime reasoning or authorize its own inputs. One CBMS questionnaire is the real pilot; implementation is pending. Existing immutable assets and versioned configurations remain intact.

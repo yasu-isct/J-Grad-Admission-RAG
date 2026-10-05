@@ -1,0 +1,57 @@
+{
+  "artifact_role": "design-source-and-semantic-approval",
+  "approval_id": "m19-questionnaire-design-20261005",
+  "reviewer_role": "design-main-agent",
+  "production_activation_approved": false,
+  "target": {
+    "admission_cycle": 2027,
+    "degree_level": "master",
+    "examination_schedule_id": "A",
+    "institution_id": "utokyo",
+    "intake": {
+      "month": 4,
+      "year": 2027
+    },
+    "organization_id": "utokyo-gsfs",
+    "program_id": "utokyo-gsfs-complex",
+    "selection_route_id": "general-ordinary",
+    "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+  },
+  "source_set": {
+    "revision": 1,
+    "source_set_id": "utokyo-gsfs-complex-master-2027-general-a-202704-s1"
+  },
+  "approved_seed_sha256": "db1832f0a9a74278cc6d3382aab41fdac349ca6577b965ed47e2bb252ffd9f8d",
+  "approved_authoring_sha256": "8a174447e6f0ac553420812ae894aeeeba4e68f0c41f5e8548c71063b0e50666",
+  "base_main": "37839bd9c6a88d22a359385478ccfd6c7967d544",
+  "base_inputs": {
+    "author01-essay-evidence-seed-v2.json": "96b5944a18e24cb2f65020dd3e7affb909522322ab8172ca5d9b375c56aea5ab",
+    "author01-reviewed-fragment-import-v2.json": "66ded26e0d840857bba1310cb5d4e895c0584c402fd66b995dc29e6a19c6f271",
+    "author01-reviewed-fragment-import-trust-v2.json": "de7b111f45c91127e078b1e63b1454accdc070ea03e457ec25d7f7a7f9cb20c7",
+    "author01-material-condition-policy-v2.json": "ac136e5cfb4db7e805f8584184168de1da9e287994f55bbc0698571d41856f5e",
+    "author01-material-condition-trust-v2.json": "6ce4902bb4af0628096cdd43a73ca441a0fe9f835b5206904c3e1abd2b3030e8",
+    "author01-material-slice-report-plan-v2.json": "f49717f2cb30ada799f51056d9c78808f25e152b69a3843ac4cadd2b836ff576",
+    "author01-material-slice-report-trust-v2.json": "fd7095d803f37b316b707a0cb4cabefe58f1e0b7c8897ffee4c77a30a2898d9d",
+    "author01-essay-authoring-input.json": "b5805f9483f8c41f1fd8e9477fe1b37234dfcdf50703faeea440db6225c70028",
+    "m18-migrated-material-displays.json": "89519e9b3920f9eb72b570f3d2de2a73afc8a3b99805c75e7a483d7ab58a9164",
+    "m18-presentation-build.json": "cb25281f6489a157298bf17b6fb387bddecd0373f52049faa835f6a657203721"
+  },
+  "allowed_new_condition_template": "required_for_all_in_exact_target",
+  "approved_new_records": [
+    "E11",
+    "E12"
+  ],
+  "old_records_must_remain_identical": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10"
+  ],
+  "trust_boundary": "Compiler may derive hashes and explicit development-only trust artifacts for exact approved inputs. It may not approve changed inputs or treat successful output as semantic review. Final outputs/config/trust reviewed in implementation PR."
+}
