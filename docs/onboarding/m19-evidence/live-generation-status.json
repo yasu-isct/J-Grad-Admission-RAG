@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "provider": "reviewed-state-offline",
+  "model": "grounded-reviewed-v1",
+  "mode": "offline_rules",
+  "configured": false,
+  "label": "离线规则结果",
+  "request_timeout_seconds": 30
+}

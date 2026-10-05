@@ -1,0 +1,22 @@
+{
+  "method": "real_HTTP_GET",
+  "status": 200,
+  "bytes": 22017,
+  "sha256": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+  "headers": {
+    "date": "Mon, 05 Oct 2026 09:09:54 GMT",
+    "server": "uvicorn",
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes",
+    "content-length": "22017",
+    "last-modified": "Mon, 05 Oct 2026 08:44:14 GMT",
+    "etag": "\"c7bbd822823557827075fc04937d611b\"",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "cache-control": "no-store",
+    "content-security-policy": "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+    "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "cross-origin-opener-policy": "same-origin",
+    "x-frame-options": "DENY"
+  }
+}

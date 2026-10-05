@@ -1,0 +1,67 @@
+{
+  "status": "reused",
+  "candidate_root": "D:\\J-Grad-Admission-RAG\\outputs\\reviewed-source-candidates\\d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca",
+  "before": {
+    "candidate.json": {
+      "bytes": 4233,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "fad72043695a2b24eda5f06e01c057bcc8fd3f09773246d0e677a68e1c588c0d"
+    },
+    "lineage.json": {
+      "bytes": 33552,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "32685d44ef7176f68f2c32fce76beeba7e80c565611786909c6cad0d5888f6ff"
+    },
+    "documents\\complex-guide-2027-revised\\document_kb.json": {
+      "bytes": 38095,
+      "mtime_ns": 1791191345019007700,
+      "sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437"
+    },
+    "documents\\complex-master-a-additional\\document_kb.json": {
+      "bytes": 43019,
+      "mtime_ns": 1791191345019007700,
+      "sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df"
+    },
+    "documents\\gsfs-master-2027\\document_kb.json": {
+      "bytes": 5640,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72"
+    }
+  },
+  "after": {
+    "candidate.json": {
+      "bytes": 4233,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "fad72043695a2b24eda5f06e01c057bcc8fd3f09773246d0e677a68e1c588c0d"
+    },
+    "lineage.json": {
+      "bytes": 33552,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "32685d44ef7176f68f2c32fce76beeba7e80c565611786909c6cad0d5888f6ff"
+    },
+    "documents\\complex-guide-2027-revised\\document_kb.json": {
+      "bytes": 38095,
+      "mtime_ns": 1791191345019007700,
+      "sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437"
+    },
+    "documents\\complex-master-a-additional\\document_kb.json": {
+      "bytes": 43019,
+      "mtime_ns": 1791191345019007700,
+      "sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df"
+    },
+    "documents\\gsfs-master-2027\\document_kb.json": {
+      "bytes": 5640,
+      "mtime_ns": 1791191345020062700,
+      "sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72"
+    }
+  },
+  "all_bytes_size_mtime_unchanged": true,
+  "mapper_recomputed_hashes": {
+    "candidate.json": "fad72043695a2b24eda5f06e01c057bcc8fd3f09773246d0e677a68e1c588c0d",
+    "documents/complex-guide-2027-revised/document_kb.json": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+    "documents/complex-master-a-additional/document_kb.json": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+    "documents/gsfs-master-2027/document_kb.json": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+    "lineage.json": "32685d44ef7176f68f2c32fce76beeba7e80c565611786909c6cad0d5888f6ff"
+  },
+  "new_builds": 0
+}

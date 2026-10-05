@@ -1,0 +1,1566 @@
+{
+  "schema_version": "1.0",
+  "slice_id": "m19-reviewed-preview",
+  "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942",
+  "report": {
+    "schema_version": "1.0",
+    "artifact_role": "reviewed-material-slice-report",
+    "production_enabled": false,
+    "audience": "teacher_preview",
+    "authority": "reviewed_material_slice",
+    "coverage": "partial",
+    "historical_reference": true,
+    "plan_id": "utokyo-gsfs-complex-2027-material-report-author01-v2-r3",
+    "revision": 3,
+    "plan_sha256": "e23193cda6d0422cc17f3b20843323cd5022234b74a3b0d78b102ee2a26cb1bd",
+    "policy_sha256": "9335042ea35d2879ec9afb5e10533240d6f1784763b61747785770b4ade6338e",
+    "request_sha256": "1605973d2e841d3d6c018ebdaf31157b1fd85ad16383e27d1563fcf8646309af",
+    "evidence_sha256": "ba4ae8246676d0dcbc205ee290e46ef88319df5677ab615965220bfff2d4d8ce",
+    "target": {
+      "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704",
+      "institution_id": "utokyo",
+      "organization_id": "utokyo-gsfs",
+      "program_id": "utokyo-gsfs-complex",
+      "degree_level": "master",
+      "admission_cycle": 2027,
+      "selection_route_id": "general-ordinary",
+      "examination_schedule_id": "A",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      }
+    },
+    "status": "evaluated",
+    "conflict_fields": [],
+    "topic_results": [
+      {
+        "condition_rule_id": "utokyo-gsfs-2027-a-english-score-sheet",
+        "topic_id": "english-score-sheets",
+        "material_code": "english_score_sheet",
+        "material_name_zh": "英语成绩单",
+        "stage": "application",
+        "condition_status": "matched",
+        "disposition": "submission_not_required",
+        "missing_fields": [],
+        "explanation_zh": "在本报告选定的修士一般选拔范围内，无需提交英语成绩单；这不表示免除英语相关考查。",
+        "limitations_zh": [
+          "共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。"
+        ],
+        "basis_citation_keys": [
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E02:r1:E02-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E02:r1:E02-2"
+        ],
+        "context_citation_keys": [
+          "gsfs-master-2027:fact:reviewed:gsfs-master-2027:E01:r1:E01-1",
+          "gsfs-master-2027:fact:reviewed:gsfs-master-2027:E01:r1:E01-2",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E03:r1:E03-1",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E03:r1:E03-2"
+        ]
+      },
+      {
+        "condition_rule_id": "utokyo-gsfs-2027-a-checklist-form",
+        "topic_id": "checklist-submission",
+        "material_code": "checklist_form",
+        "material_name_zh": "提交书类检查表本身",
+        "stage": "application",
+        "condition_status": "matched",
+        "disposition": "submission_not_required",
+        "missing_fields": [],
+        "explanation_zh": "无需提交检查表本身，但应参照检查表准备其他要求的材料；这不是完整材料清单。",
+        "limitations_zh": [
+          "参照清单与提交清单是两件事。本报告只核对所列材料主题，不判断材料是否全部齐全。"
+        ],
+        "basis_citation_keys": [
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E05:r1:E05-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E05:r1:E05-2"
+        ],
+        "context_citation_keys": [
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E04:r1:E04-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E04:r1:E04-2"
+        ]
+      },
+      {
+        "condition_rule_id": "utokyo-gsfs-2027-a-work-study-plan",
+        "topic_id": "work-study-plan",
+        "material_code": "work_study_plan",
+        "material_name_zh": "学业与职务両立计划书",
+        "stage": "application",
+        "condition_status": "not_matched",
+        "disposition": "rule_not_applicable",
+        "missing_fields": [
+          "employment.currently_employed_in_organization"
+        ],
+        "explanation_zh": "根据所填信息，本条条件不适用；不能据此推定其他材料要求或一般性豁免。",
+        "limitations_zh": [
+          "入学手续时另有单位同意书的相关条款；其所引共通要项11.(8)全文未在本切片核验，不据此给出完整同意书要求。"
+        ],
+        "basis_citation_keys": [
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-2",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-3",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-1",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-2",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-3",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-4",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-5",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-6",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-7"
+        ],
+        "context_citation_keys": [
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-2",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-3"
+        ]
+      },
+      {
+        "condition_rule_id": "utokyo-gsfs-2027-a-application-essay",
+        "topic_id": "application-essay",
+        "material_code": "application_essay",
+        "material_name_zh": "申请小论文",
+        "stage": "application",
+        "condition_status": "matched",
+        "disposition": "submission_required",
+        "missing_fields": [],
+        "explanation_zh": "本固定目标范围内申请人需要提交申请小论文。请使用专攻网站指定格式，以日语或英语准备两部分内容：①希望研究的主题及感兴趣的理由；②结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。出愿期间通过网上出愿系统上传PDF。",
+        "limitations_zh": [
+          "字数和版式以指定模板为准；本次资料未包含模板细目，也未核定本项具体截止日期或时刻。准备情况为个人自报，不代表学校确认完成或申请资格。"
+        ],
+        "basis_citation_keys": [
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-1",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-2",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-3",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-4",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-5",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-6",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-7",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-8",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-9",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-2",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-3",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-4",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-5"
+        ],
+        "context_citation_keys": []
+      },
+      {
+        "condition_rule_id": "utokyo-gsfs-2027-a-application-questionnaire",
+        "topic_id": "application-questionnaire",
+        "material_code": "application_questionnaire",
+        "material_name_zh": "报考志愿调查表",
+        "stage": "application",
+        "condition_status": "matched",
+        "disposition": "submission_required",
+        "missing_fields": [],
+        "explanation_zh": "本范围内申请人需要提交修士一般选拔用的报考志愿调查表。请用专攻指定表单生成PDF，并在出愿期间上传到网上出愿系统。",
+        "limitations_zh": [
+          "当前未核验在线表单是否开放、完整字段及具体截止日期或时刻。 准备情况仅为个人记录，不代表已上传或学校已受理。"
+        ],
+        "basis_citation_keys": [
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-1",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-2",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-3",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-4",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-5",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-6",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-7",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-8",
+          "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-9",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-1",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-2",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-3",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-4",
+          "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-5"
+        ],
+        "context_citation_keys": []
+      }
+    ],
+    "evidence_inventory": [
+      {
+        "citation_key": "gsfs-master-2027:fact:reviewed:gsfs-master-2027:E01:r1:E01-1",
+        "record_id": "E01",
+        "document_id": "gsfs-master-2027",
+        "source_kb_sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+        "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+        "fact_id": "fact:reviewed:gsfs-master-2027:E01:r1:E01-1",
+        "authoritative_fact_text_sha256": "4be70c9c879379c75ced1a76fe2a98b038b46455233e79bb529d2e797cabb9bb",
+        "physical_pages": [
+          6
+        ],
+        "printed_page_label": "6",
+        "source_title": "令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+        "official_heading_path": [
+          "7. 英語のスコアシートについて"
+        ],
+        "manual_anchor": "Section 7 heading and opening two sentences",
+        "fragment_role": "context",
+        "quote_text": "7. 英語のスコアシートについて",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "gsfs-master-2027:fact:reviewed:gsfs-master-2027:E01:r1:E01-2",
+        "record_id": "E01",
+        "document_id": "gsfs-master-2027",
+        "source_kb_sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+        "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+        "fact_id": "fact:reviewed:gsfs-master-2027:E01:r1:E01-2",
+        "authoritative_fact_text_sha256": "67b825106e3157dda93a1b914c1160a54994f600724e28d4e50c6f4ba9250c8d",
+        "physical_pages": [
+          6
+        ],
+        "printed_page_label": "6",
+        "source_title": "令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+        "official_heading_path": [
+          "7. 英語のスコアシートについて"
+        ],
+        "manual_anchor": "Section 7 heading and opening two sentences",
+        "fragment_role": "clause",
+        "quote_text": "専攻により，TOEFL，IELTS，TOEIC 等のスコアシートの提出が必要な場合があります。どのスコアシートが必要か，各スコアシートの提出期限とともに，必ず志望専攻の入試案内書を確認してください。",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E02:r1:E02-1",
+        "record_id": "E02",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E02:r1:E02-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "その他注意事項"
+        ],
+        "manual_anchor": "Masters general heading and first bullet under other notes",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E02:r1:E02-2",
+        "record_id": "E02",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E02:r1:E02-2",
+        "authoritative_fact_text_sha256": "e1024058e91ea35fc149823e29da985f0c5dea1936649d6ab24da45b9563213d",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "その他注意事項"
+        ],
+        "manual_anchor": "Masters general heading and first bullet under other notes",
+        "fragment_role": "clause",
+        "quote_text": "修士課程一般選抜試験では、TOEFL iBTやTOEIC L&Rなどの英語のスコアシートを提出する必要はない。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E03:r1:E03-1",
+        "record_id": "E03",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E03:r1:E03-1",
+        "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】"
+        ],
+        "manual_anchor": "Footer immediately below additional-material table",
+        "fragment_role": "context",
+        "quote_text": "【複雑理工学専攻】",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E03:r1:E03-2",
+        "record_id": "E03",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E03:r1:E03-2",
+        "authoritative_fact_text_sha256": "841dbac0120e65de2fdd9808922081dbc9167007d338ebba880dbbace73bfde8",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】"
+        ],
+        "manual_anchor": "Footer immediately below additional-material table",
+        "fragment_role": "cross_reference",
+        "quote_text": "注：英語スコアの送付方法については，募集要項を熟読すること。",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E04:r1:E04-1",
+        "record_id": "E04",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E04:r1:E04-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "その他注意事項"
+        ],
+        "manual_anchor": "Masters general heading and last bullet under other notes",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E04:r1:E04-2",
+        "record_id": "E04",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E04:r1:E04-2",
+        "authoritative_fact_text_sha256": "84bec195165bb6d52afd6e9435ca015805942243a07bd458271b770124697b35",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "その他注意事項"
+        ],
+        "manual_anchor": "Masters general heading and last bullet under other notes",
+        "fragment_role": "clause",
+        "quote_text": "本案内書添付のチェックリストを参照し、募集要項に記載された全ての書類を提出すること。",
+        "stage": "application",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E05:r1:E05-1",
+        "record_id": "E05",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E05:r1:E05-1",
+        "authoritative_fact_text_sha256": "c4f59897bdfccb7a2824676d023522264aa4ff999f2931348278f61c2f3b189d",
+        "physical_pages": [
+          40
+        ],
+        "printed_page_label": "38",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "提出書類等チェックシート（修士課程一般選抜用）"
+        ],
+        "manual_anchor": "Top notice and checklist heading",
+        "fragment_role": "clause",
+        "quote_text": "このチェックシートの提出は不要",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E05:r1:E05-2",
+        "record_id": "E05",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E05:r1:E05-2",
+        "authoritative_fact_text_sha256": "93465390fe2e05c856be3877638d8e6146334698be2991274899f14c0336c8ad",
+        "physical_pages": [
+          40
+        ],
+        "printed_page_label": "38",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "提出書類等チェックシート（修士課程一般選抜用）"
+        ],
+        "manual_anchor": "Top notice and checklist heading",
+        "fragment_role": "context",
+        "quote_text": "提出書類等チェックシート（修士課程一般選抜用）",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-1",
+        "record_id": "E06",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Work-study plan heading and first paragraph",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-2",
+        "record_id": "E06",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-2",
+        "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Work-study plan heading and first paragraph",
+        "fragment_role": "context",
+        "quote_text": "学業・職務両立計画書",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E06:r1:E06-3",
+        "record_id": "E06",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E06:r1:E06-3",
+        "authoritative_fact_text_sha256": "577ea595d0ae48d0b29a36b7bbba7339dd309f4f19c4f2d5d34f8a36cbbf4180",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Work-study plan heading and first paragraph",
+        "fragment_role": "clause",
+        "quote_text": "企業・官公庁・団体等に在職する者で、在職の身分のまま入学を希望する者は、学業・職務両立計画書を提出すること。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-1",
+        "record_id": "E07",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Second paragraph under work-study plan heading",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "enrollment_context_only",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-2",
+        "record_id": "E07",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-2",
+        "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Second paragraph under work-study plan heading",
+        "fragment_role": "context",
+        "quote_text": "学業・職務両立計画書",
+        "stage": "enrollment_context_only",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E07:r1:E07-3",
+        "record_id": "E07",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E07:r1:E07-3",
+        "authoritative_fact_text_sha256": "a0625ab843b0525c1348c1a3d5aa1f3a551a2b5fe8bdf72326197efbbc1df5d6",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Second paragraph under work-study plan heading",
+        "fragment_role": "clause",
+        "quote_text": "また、入学手続きの際に、勤務先の承諾書（様式任意、研究科募集要項 11. (8)を参照）を提出すること。",
+        "stage": "enrollment_context_only",
+        "use": "context"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-1",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-1",
+        "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "context",
+        "quote_text": "【複雑理工学専攻】",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-2",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-2",
+        "authoritative_fact_text_sha256": "332fe4bb54cc0d19d975f8debbe722e4c74e4916f50c912ebb59e6ba04de1614",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_group_header",
+        "quote_text": "出願期間中に「オンライン出願システム」により提出する書類等",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-3",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-3",
+        "authoritative_fact_text_sha256": "2339aa16d5a0f7588cf4d07656c8cd3c83baa3290f481c96489a4fa30abc7f9c",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_group_note",
+        "quote_text": "（※PDFファイルのアップロードによる）",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-4",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-4",
+        "authoritative_fact_text_sha256": "186be1e910a8b497d048b15548fd87301e7db249daa69e230397b779da9fb77c",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_column_header",
+        "quote_text": "提出物",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-5",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-5",
+        "authoritative_fact_text_sha256": "56ef2f2806a4233b29be497173094a7285f5c4b0d9f2a2d8d5215fc260ff310b",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_row_label",
+        "quote_text": "学業・職務両立計画書",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-6",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-6",
+        "authoritative_fact_text_sha256": "21ebc639b0d4de58d0ae50aeb2b5ebe90ccb74285a1602e0878e4f541046ed6a",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_column_header",
+        "quote_text": "対象者，備考",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E08:r1:E08-7",
+        "record_id": "E08",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E08:r1:E08-7",
+        "authoritative_fact_text_sha256": "0bbfebbd39409448bc442a19294e00fce29a11e8f67253c998663c66b9542442",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "学業・職務両立計画書"
+        ],
+        "manual_anchor": "Left upload group and final material row; right group is empty",
+        "fragment_role": "table_cell",
+        "quote_text": "【対象者】企業・官公庁・団体等に在職する者で，在職の身分のまま入学を希望する者。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-1",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-1",
+        "authoritative_fact_text_sha256": "1ef713046af01485749a0d7395285081ee578d2b6c987d2388b5b3e6f85edd59",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "context",
+        "quote_text": "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-2",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-2",
+        "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "context",
+        "quote_text": "【複雑理工学専攻】",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-3",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-3",
+        "authoritative_fact_text_sha256": "332fe4bb54cc0d19d975f8debbe722e4c74e4916f50c912ebb59e6ba04de1614",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_group_header",
+        "quote_text": "出願期間中に「オンライン出願システム」により提出する書類等",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-4",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-4",
+        "authoritative_fact_text_sha256": "6d5ce7c7b659bb6f6e8e6c31d223886a84ff9ef5017bee6798e66e672228a3e2",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_group_note",
+        "quote_text": "(※PDFファイルのアップロードによる）",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-5",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-5",
+        "authoritative_fact_text_sha256": "186be1e910a8b497d048b15548fd87301e7db249daa69e230397b779da9fb77c",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_column_header",
+        "quote_text": "提出物",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-6",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-6",
+        "authoritative_fact_text_sha256": "f2a2224f067bc2d2be3f8f0ad4a84b781dabef18643c8c15e0382659986d51f7",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_row_label",
+        "quote_text": "小論文",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-7",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-7",
+        "authoritative_fact_text_sha256": "21ebc639b0d4de58d0ae50aeb2b5ebe90ccb74285a1602e0878e4f541046ed6a",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_column_header",
+        "quote_text": "対象者，備考",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-8",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-8",
+        "authoritative_fact_text_sha256": "4ef1a4cb308645c3ee8fc5afea02d1ff4d1f7efb6a5b285edafb3db4f628bf72",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_cell",
+        "quote_text": "【対象者】全員",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E09:r1:E09-9",
+        "record_id": "E09",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E09:r1:E09-9",
+        "authoritative_fact_text_sha256": "03e2f56c8a6727ce896546503ffe0cb7e4aa153d0b4eeb104a0b6bb6aa18df9d",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "修士課程入試（入試日程Ａ）",
+          "出願に関する専攻独自の追加提出物一覧",
+          "複雑理工学専攻",
+          "オンライン出願システムにより提出する書類等",
+          "小論文"
+        ],
+        "manual_anchor": "Left PDF-upload group, essay row only; preserve group/column headings and same-row audience, not work-plan conditions",
+        "fragment_role": "table_cell",
+        "quote_text": "日本語又は英語で作成すること。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-1",
+        "record_id": "E10",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E10:r1:E10-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "小論文の作成・提出要領"
+        ],
+        "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-2",
+        "record_id": "E10",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E10:r1:E10-2",
+        "authoritative_fact_text_sha256": "1abccad1f471d9ebddbf10ad2bf616150ba338f8d2de82dfd5bc89c277e67c04",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "小論文の作成・提出要領"
+        ],
+        "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+        "fragment_role": "context",
+        "quote_text": "小論文の作成・提出要領",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-3",
+        "record_id": "E10",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E10:r1:E10-3",
+        "authoritative_fact_text_sha256": "ce940bb78b92e5392cd3f152bd9a7aba66aff153e28d5ee9f9479bf8bd638e47",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "小論文の作成・提出要領"
+        ],
+        "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+        "fragment_role": "clause",
+        "quote_text": "以下の(A)(B)を、当専攻ホームページで指定するフォーマットに日本語または英語で書くこと。文字数や書式などはフォーマットに指示する。オンライン出願サイトより提出せよ。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-4",
+        "record_id": "E10",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E10:r1:E10-4",
+        "authoritative_fact_text_sha256": "758d22198b4ca946348082eaced439a07a564b72eaff2a7b8c6401c97d47232b",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "小論文の作成・提出要領"
+        ],
+        "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+        "fragment_role": "clause",
+        "quote_text": "（A) 取り組みたい研究テーマとそのテーマに興味を持った理由",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E10:r1:E10-5",
+        "record_id": "E10",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E10:r1:E10-5",
+        "authoritative_fact_text_sha256": "2008e227c0fc0bbef9e296094674db81a9833a9a4fbeb1a2e7706be6d07caf38",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "小論文の作成・提出要領"
+        ],
+        "manual_anchor": "Masters general selection, essay instructions and both A/B writing prompts; not written-exam subjects",
+        "fragment_role": "clause",
+        "quote_text": "（B) 自己アピール：これまでの学修・研究・課外活動などの経験に基づき、修士課程での学修・研究に活かせる自分の強みを具体的に記述",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-1",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-1",
+        "authoritative_fact_text_sha256": "1ef713046af01485749a0d7395285081ee578d2b6c987d2388b5b3e6f85edd59",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "context",
+        "quote_text": "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-2",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-2",
+        "authoritative_fact_text_sha256": "1be1c4c3edb24c5ddf1f69d68a6e875bf5c4c28ee95b371fb13ba9ecaccf18c9",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "context",
+        "quote_text": "【複雑理工学専攻】",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-3",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-3",
+        "authoritative_fact_text_sha256": "332fe4bb54cc0d19d975f8debbe722e4c74e4916f50c912ebb59e6ba04de1614",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_group_header",
+        "quote_text": "出願期間中に「オンライン出願システム」により提出する書類等",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-4",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-4",
+        "authoritative_fact_text_sha256": "6d5ce7c7b659bb6f6e8e6c31d223886a84ff9ef5017bee6798e66e672228a3e2",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_group_note",
+        "quote_text": "(※PDFファイルのアップロードによる）",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-5",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-5",
+        "authoritative_fact_text_sha256": "186be1e910a8b497d048b15548fd87301e7db249daa69e230397b779da9fb77c",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_column_header",
+        "quote_text": "提出物",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-6",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-6",
+        "authoritative_fact_text_sha256": "d22a404c2893cf4233d5793e87b14e79a080fcac10d0f0f967cd2fb09e18a439",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_row_label",
+        "quote_text": "志望調査票（修士）",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-7",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-7",
+        "authoritative_fact_text_sha256": "21ebc639b0d4de58d0ae50aeb2b5ebe90ccb74285a1602e0878e4f541046ed6a",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_column_header",
+        "quote_text": "対象者，備考",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-8",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-8",
+        "authoritative_fact_text_sha256": "4ef1a4cb308645c3ee8fc5afea02d1ff4d1f7efb6a5b285edafb3db4f628bf72",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_cell",
+        "quote_text": "【対象者】全員",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-master-a-additional:fact:reviewed:complex-master-a-additional:E11:r1:E11-9",
+        "record_id": "E11",
+        "document_id": "complex-master-a-additional",
+        "source_kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+        "fact_id": "fact:reviewed:complex-master-a-additional:E11:r1:E11-9",
+        "authoritative_fact_text_sha256": "7b8b36fb819a79209d78a7612d342ae200964381c85600b6d29b7f50c4acd93e",
+        "physical_pages": [
+          1
+        ],
+        "printed_page_label": null,
+        "source_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+        "official_heading_path": [
+          "令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧",
+          "【複雑理工学専攻】",
+          "出願期間中に「オンライン出願システム」により提出する書類等",
+          "志望調査票（修士）"
+        ],
+        "manual_anchor": "Left PDF upload table, questionnaire row; include group/column headers and full same-row note. Not essay/work-study rows or blank right group.",
+        "fragment_role": "table_cell",
+        "quote_text": "【備考】修士課程用の調査票を提出すること。当該調査票は、専攻Web(https://www.k.u-tokyo.ac.jp/complex/html/examinee/examinee.html）で指定する調査票入力フォームで作成すること。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-1",
+        "record_id": "E12",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E12:r1:E12-1",
+        "authoritative_fact_text_sha256": "11650a2de7a2ac2f44dfa354b47c91f20b5ad1afb459054c06e18b3b2a6233bf",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "指導教員の選択"
+        ],
+        "manual_anchor": "Masters general heading; Other notes questionnaire form/PDF bullet; Supervisor selection complete paragraph. Exclude essay, exam and October-entry paragraphs.",
+        "fragment_role": "context",
+        "quote_text": "修士課程 一般選抜",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-2",
+        "record_id": "E12",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E12:r1:E12-2",
+        "authoritative_fact_text_sha256": "9f3751ef167c83ec3f7e3f4b877d2fe983cf4eb3b2ed9708f4949b2ffbd319a8",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "指導教員の選択"
+        ],
+        "manual_anchor": "Masters general heading; Other notes questionnaire form/PDF bullet; Supervisor selection complete paragraph. Exclude essay, exam and October-entry paragraphs.",
+        "fragment_role": "clause",
+        "quote_text": "一般選抜用「志望調査票」は、当専攻のホームページで指定する一般選抜用「調査票入力フォーム」で作成すること。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-3",
+        "record_id": "E12",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E12:r1:E12-3",
+        "authoritative_fact_text_sha256": "22b59241039ec724ec4009ba324c7ebc069978ef902ebd0a3852e6f862299416",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "指導教員の選択"
+        ],
+        "manual_anchor": "Masters general heading; Other notes questionnaire form/PDF bullet; Supervisor selection complete paragraph. Exclude essay, exam and October-entry paragraphs.",
+        "fragment_role": "clause",
+        "quote_text": "出力された「志望調査票」のPDFファイルを、オンライン出願サイトより提出すること。",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-4",
+        "record_id": "E12",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E12:r1:E12-4",
+        "authoritative_fact_text_sha256": "bf94bbe959d017c1e106997e62ceeb8c4e74448a8ebceae7878856c82573c71f",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "指導教員の選択"
+        ],
+        "manual_anchor": "Masters general heading; Other notes questionnaire form/PDF bullet; Supervisor selection complete paragraph. Exclude essay, exam and October-entry paragraphs.",
+        "fragment_role": "context",
+        "quote_text": "指導教員の選択",
+        "stage": "application",
+        "use": "basis"
+      },
+      {
+        "citation_key": "complex-guide-2027-revised:fact:reviewed:complex-guide-2027-revised:E12:r1:E12-5",
+        "record_id": "E12",
+        "document_id": "complex-guide-2027-revised",
+        "source_kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+        "fact_id": "fact:reviewed:complex-guide-2027-revised:E12:r1:E12-5",
+        "authoritative_fact_text_sha256": "1afb8d65dfb77345899766ff5084e96349d5822bf9472e5f0256b1048b8f7d3b",
+        "physical_pages": [
+          28
+        ],
+        "printed_page_label": "26",
+        "source_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+        "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+        "official_heading_path": [
+          "修士課程 一般選抜",
+          "指導教員の選択"
+        ],
+        "manual_anchor": "Masters general heading; Other notes questionnaire form/PDF bullet; Supervisor selection complete paragraph. Exclude essay, exam and October-entry paragraphs.",
+        "fragment_role": "clause",
+        "quote_text": "当専攻のホームページで指定する「調査票入力フォーム」にて、志望指導教員などの情報を入力せよ。まず、複雑理工学専攻所属教員の中から指導を希望する教員を第4志望まで選択すること。次に、志望教員以外に配属された場合に、進学する意思の有無を選択せよ。意思が有る場合、画面の指示に従い必要な情報を入力すること。",
+        "stage": "application",
+        "use": "basis"
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "complex-guide-2027-revised",
+        "source_role": "program_guide",
+        "identity": {
+          "schema_version": "1.0",
+          "document_id": "complex-guide-2027-revised",
+          "document_family_id": "utokyo-gsfs-complex-guide",
+          "edition_id": "2027",
+          "institution_id": "utokyo",
+          "institution_name": "東京大学",
+          "degree_levels": [
+            "doctoral",
+            "master"
+          ],
+          "intake_terms": [
+            {
+              "year": 2026,
+              "month": 10
+            },
+            {
+              "year": 2027,
+              "month": 4
+            },
+            {
+              "year": 2027,
+              "month": 10
+            }
+          ],
+          "official_title": "東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票",
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+          "source_pdf_sha256": "6063571d2ea0318d9af038340da0e8568cdabf18b03f788d41be59bf96e16fab",
+          "publication_date": null,
+          "revision_date": null
+        },
+        "kb_sha256": "6289e02233b7685c299d4881155be67f6453958c75e81d769898814d0c1d6437",
+        "physical_page_count": 45
+      },
+      {
+        "source_id": "complex-master-a-additional",
+        "source_role": "additional_materials",
+        "identity": {
+          "schema_version": "1.0",
+          "document_id": "complex-master-a-additional",
+          "document_family_id": "utokyo-gsfs-complex-master-a-additional",
+          "edition_id": "2027",
+          "institution_id": "utokyo",
+          "institution_name": "東京大学",
+          "degree_levels": [
+            "master"
+          ],
+          "intake_terms": [
+            {
+              "year": 2026,
+              "month": 10
+            },
+            {
+              "year": 2027,
+              "month": 4
+            }
+          ],
+          "official_title": "令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】",
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+          "source_pdf_sha256": "3539ac01805f345592ec391c7b5c7ec4c9dbf21cee738f6ac5e3dfb27592e7ae",
+          "publication_date": null,
+          "revision_date": null
+        },
+        "kb_sha256": "09f6760ab361139f519a6b87c16c684c8b55f4cc74028574b8786136d5b7b1df",
+        "physical_page_count": 1
+      },
+      {
+        "source_id": "gsfs-master-2027",
+        "source_role": "common_guideline",
+        "identity": {
+          "schema_version": "1.0",
+          "document_id": "gsfs-master-2027",
+          "document_family_id": "utokyo-gsfs-master-guidelines",
+          "edition_id": "2027",
+          "institution_id": "utokyo",
+          "institution_name": "東京大学",
+          "degree_levels": [
+            "master"
+          ],
+          "intake_terms": [
+            {
+              "year": 2026,
+              "month": 10
+            },
+            {
+              "year": 2027,
+              "month": 4
+            },
+            {
+              "year": 2027,
+              "month": 10
+            }
+          ],
+          "official_title": "令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項",
+          "official_source_url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+          "source_pdf_sha256": "a7a87219903c333b4fe687a3231a2346a195f7a8d8e7859b3f9e902147070026",
+          "publication_date": null,
+          "revision_date": null
+        },
+        "kb_sha256": "a7c84f35b39f2e0005dfcf7592f3828228e3fc86541fbcd8204590d5ab45ac72",
+        "physical_page_count": 22
+      }
+    ],
+    "limitations_zh": [
+      "固定历史招生切片，不是当前开放申请窗口。",
+      "只覆盖本固定目标的5个已审核材料主题，不是完整材料清单或资格判断。",
+      "申请人信息为自报；中文说明是审核解释，日文引用来自官方原文。",
+      "单位同意书仅作入学手续阶段的关联提示，未核验其完整要求。",
+      "未验证原PDF精确高亮坐标；页码指物理页，印刷页码另列。"
+    ]
+  },
+  "markdown": "# 募集要项参考报告（历史固定切片／部分材料主题）\n\n选定范围：2027 年 4 月入学；master；general\\-ordinary；日程 A。\n\n## 英语成绩单\n\n审核结果：无需提交（仅此材料本身）。\n\n中文审核说明：在本报告选定的修士一般选拔范围内，无需提交英语成绩单；这不表示免除英语相关考查。\n\n关联说明：共通文件要求按专攻确认是否提交；补充文件的送付方法注记不新增普遍提交义务。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程一般選抜試験では、TOEFL iBTやTOEIC L&amp;Rなどの英語のスコアシートを提出する必要はない。\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n### 关联上下文（不构成额外提交义务）\n\n- 令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項（物理页 6；印刷页 6）\n  日文官方原文：\n> 7\\. 英語のスコアシートについて\n  章节：7\\. 英語のスコアシートについて\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf>\n\n- 令和9（2027）年度 東京大学大学院新領域創成科学研究科 修士課程学生募集要項（物理页 6；印刷页 6）\n  日文官方原文：\n> 専攻により，TOEFL，IELTS，TOEIC 等のスコアシートの提出が必要な場合があります。どのスコアシートが必要か，各スコアシートの提出期限とともに，必ず志望専攻の入試案内書を確認してください。\n  章节：7\\. 英語のスコアシートについて\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 【複雑理工学専攻】\n  章节：【複雑理工学専攻】\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 注：英語スコアの送付方法については，募集要項を熟読すること。\n  章节：【複雑理工学専攻】\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n## 提交书类检查表本身\n\n审核结果：无需提交（仅此材料本身）。\n\n中文审核说明：无需提交检查表本身，但应参照检查表准备其他要求的材料；这不是完整材料清单。\n\n关联说明：参照清单与提交清单是两件事。本报告只核对所列材料主题，不判断材料是否全部齐全。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 40；印刷页 38）\n  日文官方原文：\n> このチェックシートの提出は不要\n  章节：提出書類等チェックシート（修士課程一般選抜用）\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 40；印刷页 38）\n  日文官方原文：\n> 提出書類等チェックシート（修士課程一般選抜用）\n  章节：提出書類等チェックシート（修士課程一般選抜用）\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n### 关联上下文（不构成额外提交义务）\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 本案内書添付のチェックリストを参照し、募集要項に記載された全ての書類を提出すること。\n  章节：修士課程 一般選抜 › その他注意事項\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n## 学业与职务両立计划书\n\n审核结果：本条条件不适用；不能据此推定一般性免交。\n\n中文审核说明：根据所填信息，本条条件不适用；不能据此推定其他材料要求或一般性豁免。\n\n尚未填写的事实：employment\\.currently\\_employed\\_in\\_organization\n\n关联说明：入学手续时另有单位同意书的相关条款；其所引共通要项11\\.\\(8\\)全文未在本切片核验，不据此给出完整同意书要求。\n\n### 本条依据的官方原文\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 学業・職務両立計画書\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 企業・官公庁・団体等に在職する者で、在職の身分のまま入学を希望する者は、学業・職務両立計画書を提出すること。\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 【複雑理工学専攻】\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组表头：出願期間中に「オンライン出願システム」により提出する書類等\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组说明：（※PDFファイルのアップロードによる）\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：提出物\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格材料行：学業・職務両立計画書\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：対象者，備考\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格对象单元格：【対象者】企業・官公庁・団体等に在職する者で，在職の身分のまま入学を希望する者。\n  章节：【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n### 关联上下文（不构成额外提交义务）\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26；入学手续关联）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26；入学手续关联）\n  日文官方原文：\n> 学業・職務両立計画書\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26；入学手续关联）\n  日文官方原文：\n> また、入学手続きの際に、勤務先の承諾書（様式任意、研究科募集要項 11\\. \\(8\\)を参照）を提出すること。\n  章节：修士課程 一般選抜 › 学業・職務両立計画書\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n## 申请小论文\n\n审核结果：需要提交（仅此审核条件与主题）。\n\n中文审核说明：本固定目标范围内申请人需要提交申请小论文。请使用专攻网站指定格式，以日语或英语准备两部分内容：①希望研究的主题及感兴趣的理由；②结合过去学习、研究或课外活动经历，具体说明能用于修士阶段学习和研究的自身优势。出愿期间通过网上出愿系统上传PDF。\n\n关联说明：字数和版式以指定模板为准；本次资料未包含模板细目，也未核定本项具体截止日期或时刻。准备情况为个人自报，不代表学校确认完成或申请资格。\n\n### 本条依据的官方原文\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 【複雑理工学専攻】\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组表头：出願期間中に「オンライン出願システム」により提出する書類等\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组说明：\\(※PDFファイルのアップロードによる）\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：提出物\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格材料行：小論文\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：対象者，備考\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格对象单元格：【対象者】全員\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格对象单元格：日本語又は英語で作成すること。\n  章节：修士課程入試（入試日程Ａ） › 出願に関する専攻独自の追加提出物一覧 › 複雑理工学専攻 › オンライン出願システムにより提出する書類等 › 小論文\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › 小論文の作成・提出要領\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 小論文の作成・提出要領\n  章节：修士課程 一般選抜 › 小論文の作成・提出要領\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 以下の\\(A\\)\\(B\\)を、当専攻ホームページで指定するフォーマットに日本語または英語で書くこと。文字数や書式などはフォーマットに指示する。オンライン出願サイトより提出せよ。\n  章节：修士課程 一般選抜 › 小論文の作成・提出要領\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> （A\\) 取り組みたい研究テーマとそのテーマに興味を持った理由\n  章节：修士課程 一般選抜 › 小論文の作成・提出要領\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> （B\\) 自己アピール：これまでの学修・研究・課外活動などの経験に基づき、修士課程での学修・研究に活かせる自分の強みを具体的に記述\n  章节：修士課程 一般選抜 › 小論文の作成・提出要領\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n## 报考志愿调查表\n\n审核结果：需要提交（仅此审核条件与主题）。\n\n中文审核说明：本范围内申请人需要提交修士一般选拔用的报考志愿调查表。请用专攻指定表单生成PDF，并在出愿期间上传到网上出愿系统。\n\n关联说明：当前未核验在线表单是否开放、完整字段及具体截止日期或时刻。 准备情况仅为个人记录，不代表已上传或学校已受理。\n\n### 本条依据的官方原文\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 【複雑理工学専攻】\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组表头：出願期間中に「オンライン出願システム」により提出する書類等\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格上传组说明：\\(※PDFファイルのアップロードによる）\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：提出物\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格材料行：志望調査票（修士）\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格列标题：対象者，備考\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格对象单元格：【対象者】全員\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 令和9年度（2027）年度 修士課程入試（入試日程A）出願に関する専攻独自の追加提出物一覧【複雑理工学専攻】（物理页 1）\n  日文官方原文：\n> 表格对象单元格：【備考】修士課程用の調査票を提出すること。当該調査票は、専攻Web\\(https://www\\.k\\.u\\-tokyo\\.ac\\.jp/complex/html/examinee/examinee\\.html）で指定する調査票入力フォームで作成すること。\n  章节：令和9年度（2027）年度　修士課程入試（入試日程Ａ）出願に関する専攻独自の追加提出物一覧 › 【複雑理工学専攻】 › 出願期間中に「オンライン出願システム」により提出する書類等 › 志望調査票（修士）\n  官方来源：<https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 修士課程 一般選抜\n  章节：修士課程 一般選抜 › 指導教員の選択\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 一般選抜用「志望調査票」は、当専攻のホームページで指定する一般選抜用「調査票入力フォーム」で作成すること。\n  章节：修士課程 一般選抜 › 指導教員の選択\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 出力された「志望調査票」のPDFファイルを、オンライン出願サイトより提出すること。\n  章节：修士課程 一般選抜 › 指導教員の選択\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 指導教員の選択\n  章节：修士課程 一般選抜 › 指導教員の選択\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n- 東京大学大学院 新領域創成科学研究科 複雑理工学専攻 2027年度 入試案内／志望調査票（物理页 28；印刷页 26）\n  日文官方原文：\n> 当専攻のホームページで指定する「調査票入力フォーム」にて、志望指導教員などの情報を入力せよ。まず、複雑理工学専攻所属教員の中から指導を希望する教員を第4志望まで選択すること。次に、志望教員以外に配属された場合に、進学する意思の有無を選択せよ。意思が有る場合、画面の指示に従い必要な情報を入力すること。\n  章节：修士課程 一般選抜 › 指導教員の選択\n  官方来源：<https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf>\n\n## 覆盖范围与限制\n\n- 固定历史招生切片，不是当前开放申请窗口。\n- 只覆盖本固定目标的5个已审核材料主题，不是完整材料清单或资格判断。\n- 申请人信息为自报；中文说明是审核解释，日文引用来自官方原文。\n- 单位同意书仅作入学手续阶段的关联提示，未核验其完整要求。\n- 未验证原PDF精确高亮坐标；页码指物理页，印刷页码另列。\n"
+}

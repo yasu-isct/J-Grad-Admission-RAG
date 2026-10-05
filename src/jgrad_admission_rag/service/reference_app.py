@@ -160,6 +160,20 @@ def create_app(
             media_type="text/javascript; charset=utf-8",
         )
 
+    @app.get("/assets/material-presentation-catalog.mjs", include_in_schema=False)
+    def material_presentation_catalog() -> FileResponse:
+        return FileResponse(
+            static / "material-presentation-catalog.mjs",
+            media_type="text/javascript; charset=utf-8",
+        )
+
+    @app.get("/assets/m19-material-presentation.mjs", include_in_schema=False)
+    def m19_material_presentation() -> FileResponse:
+        return FileResponse(
+            static / "m19-material-presentation.mjs",
+            media_type="text/javascript; charset=utf-8",
+        )
+
     @app.get("/assets/reference.js", include_in_schema=False)
     def reference_app_js() -> FileResponse:
         return FileResponse(static / "reference.js", media_type="text/javascript; charset=utf-8")

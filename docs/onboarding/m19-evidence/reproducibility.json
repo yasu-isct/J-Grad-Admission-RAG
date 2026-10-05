@@ -1,0 +1,128 @@
+{
+  "method": "pure mapping + complete bytes-bound source verification; zero HTTP",
+  "runs": [
+    {
+      "run": 1,
+      "seconds": 0.03100000007543713,
+      "bytes": 164936,
+      "local_paths_excluded_from_identity": true
+    },
+    {
+      "run": 2,
+      "seconds": 0.030999999959021807,
+      "bytes": 164936,
+      "local_paths_excluded_from_identity": true
+    },
+    {
+      "run": 3,
+      "seconds": 0.0779999999795109,
+      "bytes": 164936,
+      "local_paths_excluded_from_identity": true
+    }
+  ],
+  "snapshot_id": "4237c6f910448b2223e40b2f64ad0e9ee2de1e37bcc6c16596368d9879afa942",
+  "build_id": "d54514a43da772bec2609b364b3e3497d02c9b6388c85712a502c746b5ffbaca",
+  "candidate_bytes": 124539,
+  "employment_combinations": [
+    {
+      "current": true,
+      "retain": true,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "submission_required",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": true,
+      "retain": false,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "rule_not_applicable",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": true,
+      "retain": null,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "needs_information",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": false,
+      "retain": true,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "rule_not_applicable",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": false,
+      "retain": false,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "rule_not_applicable",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": false,
+      "retain": null,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "rule_not_applicable",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": null,
+      "retain": true,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "needs_information",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": null,
+      "retain": false,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "rule_not_applicable",
+        "submission_required",
+        "submission_required"
+      ]
+    },
+    {
+      "current": null,
+      "retain": null,
+      "dispositions": [
+        "submission_not_required",
+        "submission_not_required",
+        "needs_information",
+        "submission_required",
+        "submission_required"
+      ]
+    }
+  ],
+  "independent_semantic_acceptance": false
+}

@@ -1,0 +1,28 @@
+{
+  "base_main": "ae93db63b37732ebb5ef4fe6edcbb81ee9bf33fa",
+  "all_frozen_inputs_unchanged": true,
+  "hashes": {
+    "m19-design-approval.json": "cd35f92800bc199ec9a20b8ae128077dc749550510485df03f58510cc12e2ac6",
+    "m19-questionnaire-authoring.json": "8a174447e6f0ac553420812ae894aeeeba4e68f0c41f5e8548c71063b0e50666",
+    "m19-questionnaire-evidence-seed-v3.json": "db1832f0a9a74278cc6d3382aab41fdac349ca6577b965ed47e2bb252ffd9f8d",
+    "m19-source-review.json": "3d0f477e885008c63d62fa2fe2b4990beefcda3ef557f1accd6960d978cccd54",
+    "m19-source-review-pin-v3.json": "724f486472ac3f1232237ebc715113dbcd4c19b6192fb671bf277f906d4b4864"
+  },
+  "original_m18_static_files": {
+    "D:\\J-Grad-Admission-RAG\\outputs\\m18-worktree\\src\\jgrad_admission_rag\\service\\static\\reviewed-material-presentation.mjs": {
+      "bytes": 22017,
+      "mtime_ns": 1791166905212569300,
+      "sha256": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m18-worktree\\src\\jgrad_admission_rag\\service\\static\\reviewed-material-presentation.manifest.json": {
+      "bytes": 1987,
+      "mtime_ns": 1791166905212569300,
+      "sha256": "6d384d11fdc24e9db3718b1407f302a63cc68a2c961e448e1ddc2a9bf942251a"
+    },
+    "D:\\J-Grad-Admission-RAG\\outputs\\m18-worktree\\src\\jgrad_admission_rag\\service\\static\\reviewed-material-presentation.sources.json": {
+      "bytes": 1927,
+      "mtime_ns": 1791166905212569300,
+      "sha256": "4da47626d856fed7061362c9e80e4fa8b0ae99ce6df5600def4d4cc52c8a1b74"
+    }
+  }
+}
