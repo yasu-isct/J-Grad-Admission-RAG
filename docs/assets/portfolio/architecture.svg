@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+<title id="title">検索とルール判定を分離したアーキテクチャ</title><desc id="desc">公式PDFから原文とページを保持した知識を構築。レビュー済み条件と申請者情報で構造化レポートを作り、別経路でBGE-M3とBM25の検索結果から任意のLLM参考回答を生成する。東京大学の限定テーマはレビュー済み関係を直接使用する。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="#52737b"/></marker></defs>
+<rect x="1" y="1" width="1198" height="688" rx="18" fill="#f5f8fa" stroke="#d9e2e8"/>
+<g font-family="'Yu Gothic','Meiryo',sans-serif">
+<text x="40" y="48" font-size="22" font-weight="700" fill="#16313b">根拠を保持し、用途ごとに処理を分ける</text>
+<text x="40" y="77" font-size="15" fill="#526873">構造化された出願支援と、任意の自然言語による参考回答</text>
+<g fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"><path d="M264 168H305"/><path d="M591 168H646"/><path d="M924 168H974"/></g>
+<g fill="#ffffff" stroke="#ccdbe0"><rect x="40" y="116" width="224" height="105" rx="12"/><rect x="310" y="116" width="281" height="105" rx="12"/><rect x="652" y="116" width="272" height="105" rx="12"/><rect x="980" y="116" width="180" height="105" rx="12"/></g>
+<g fill="#153c43" font-size="19" font-weight="700"><text x="61" y="150">公式PDF</text><text x="331" y="150">抽出・資料整理</text><text x="673" y="150">出典付きの知識</text><text x="1001" y="150">意味のレビュー</text></g>
+<g fill="#526873" font-size="14"><text x="61" y="180">学校・年度・版を識別</text><text x="61" y="202">ファイルハッシュを照合</text><text x="331" y="180">PyMuPDF / pdfplumber</text><text x="331" y="202">既存の公式抜粋もレビューして取込</text><text x="673" y="180">原文 / ページ / Fact ID</text><text x="673" y="202">条件・適用範囲・文書間の関係</text><text x="1001" y="180">内容・例外・条件</text><text x="1001" y="202">の妥当性を確認</text></g>
+<path d="M1070 221V259H80V290" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="290" width="1120" height="151" rx="14" fill="#eaf5f0" stroke="#b8d9cc"/>
+<text x="62" y="322" font-size="13" letter-spacing="1" fill="#237259">STRUCTURED SUPPORT / 公式根拠とレビュー済み設定</text>
+<text x="64" y="362" font-size="20" font-weight="700" fill="#123f34">対象 + 申請者情報</text><path d="M292 358H333" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="350" y="362" font-size="20" font-weight="700" fill="#123f34">既存の条件・レポート処理</text><path d="M642 358H690" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="710" y="362" font-size="20" font-weight="700" fill="#123f34">材料・試験情報 / 準備状況 / レポート</text>
+<text x="64" y="410" font-size="15" fill="#365f52">M19：レビュー済み入力から設定を生成。東京大学の限定テーマは、この経路で複数資料の根拠を参照。</text>
+<path d="M788 221V245H1180V497H1160" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="466" width="1120" height="150" rx="14" fill="#edf2fa" stroke="#c5d5e9"/>
+<text x="62" y="498" font-size="13" letter-spacing="1" fill="#3b5f89">REFERENCE QA / 対応する資料範囲での自由質問</text>
+<text x="64" y="539" font-size="20" font-weight="700" fill="#27425f">質問 + 対象の絞り込み</text><path d="M318 535H350" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="369" y="539" font-size="20" font-weight="700" fill="#27425f">BGE-M3 + BM25 → RRF</text><path d="M658 535H690" fill="none" stroke="#52737b" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="710" y="539" font-size="20" font-weight="700" fill="#27425f">LLMの参考回答 / 不足情報を明示</text>
+<text x="64" y="585" font-size="15" fill="#4f6580">検索は根拠の候補を返す。LLMは最終的な出願資格・学校の受理を判断しない。</text>
+<text x="40" y="654" font-size="14" fill="#526873">横断的な検証：資料の識別 · 出典照合 · 版の分離 · 固定回帰評価 · 画面・API検証</text>
+</g></svg>
