@@ -1,0 +1,106 @@
+{
+  "result": "passed",
+  "mode": "public GitHub Pages verification",
+  "cases": [
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "materials",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "dispatched_unknown_arrival",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "late_graduation_arrival",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 1440,
+      "school": "gsfs",
+      "scenario": "working",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 1440,
+      "school": "gsfs",
+      "scenario": "student",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "materials",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "dispatched_unknown_arrival",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "late_graduation_arrival",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 390,
+      "school": "gsfs",
+      "scenario": "working",
+      "report_copy": true,
+      "no_overflow": true
+    },
+    {
+      "viewport": 390,
+      "school": "gsfs",
+      "scenario": "student",
+      "report_copy": true,
+      "no_overflow": true
+    }
+  ],
+  "product_posts": 0,
+  "external_runtime_requests": 0,
+  "browser_errors": 0,
+  "files": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence-preview.png": "2e3f1ce4f1b314badc4ebc6ff75d49a44e8f0da4b298b2ebe6c834d45564bbbf",
+    "index.html": "b83c59d4055a418a58bea81a415312d1f1e1f5804626978828d7b8d31a98349b",
+    "provenance.json": "197d0f7e208939a5410ea472150808fbc2c312b4b0cbe5e028e031a2ffa0e1fa",
+    "README.md": "ece10ca1940ceff58dff2a6c6fbc4dcb23132c0f9cea7b7185d2fca694f4b40d",
+    "showcase.css": "23f084c86d635ca5f61a3a69c719c80dd200d634c58ba67c0f0cc66fcbd89dab",
+    "app/demo-bridge.js": "177728830702133dc60feba24431245f231345eaeb85e5c04ece97499ea0fbbe",
+    "app/demo.css": "552d6f31bad13b4304e465d546db092d8affc31bc66c91a8e47557c9af5f899e",
+    "app/index.html": "355dc809f55068ab4a5aca9fc17b936519383a3049f16e52572dc3da27a80a0c",
+    "data/catalog.json": "770986caca9b3297096a04d34cf106a73c77a79b46ce2b124d0ad9bc904fbffc",
+    "data/dispatched_unknown_arrival.json": "da1e8b3d5007230bfc508228cd849875c6f93523884ecaa70754033539976397",
+    "data/gsfs-evidence.json": "c619907db8d12c07f24aa67b7f3344ef2b7014d1b8d79662fb0efe9ccfff25bf",
+    "data/gsfs-student.json": "e92538adce69d407777f9228d34a48043e963496d64aee78c53e293d81e36100",
+    "data/gsfs-working.json": "1d21372bfa0c8b5f3e963521b491f98a9771e5e9206e5c407e0a2384776eb2f1",
+    "data/isct-base.json": "1fa8df628de0ded0e7b683a7eb2d4b2699ca601a4040f6b37e571eee03e2abb5",
+    "data/isct-materials.json": "13a27cb59172819a3956b6b7fbac6afeb2542d5e7eba2c59cdbaf66cea1822e2",
+    "data/late_graduation_arrival.json": "21882ac1839590c553c021a7234e306bbd451e06cf8502013b21410f30ed7c83",
+    "data/manifest.json": "cc81c145ef45a5ef0f381f60ad455e1aa83287169ba183da76ff558345ae8fcc",
+    "app/assets/app.css": "389d81f193f8354ed4d03b84a0f0e19420737cf68addf0828b9e426f1984bf8c",
+    "app/assets/app.js": "5cca79bbd0a1ee8f79655038c7fd960b728f68d8f849e14deebed724d980afa4",
+    "app/assets/m19-material-presentation.mjs": "bd38123b3f8a35a20d37f97b0184637c61c12c57480e29aa6297a0fef7452165",
+    "app/assets/material-presentation-catalog.mjs": "296f385529fe8a330519f60731ea3b1fecdb63b1872090b526768803f57871ce",
+    "app/assets/overview.js": "e084e2af2fb108f16909d9fd7c91185b6605a24a83505766888ebe9095c27e40",
+    "app/assets/reviewed-material-presentation.mjs": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+    "app/assets/unified-core.mjs": "f6c2e33eec2e6ad6b09daff3b792aa1727dc54ac5b003a7d64a9ece55ffaae24"
+  }
+}
