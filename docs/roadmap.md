@@ -1,5 +1,10 @@
 # Project Roadmap
 
+## 2026-10-16：求职用静态互动演示已发布（不是 M13 后台部署）
+
+用户明确授权公开作品演示。复用 main 33a473bd 的两校四步前端与既有公开保存响应，独立 gh-pages 发布： https://yasu-isct.github.io/J-Grad-Admission-RAG/ 。日本语入口、ISCT信息工学2027AprB三个情境、GSFS CBMS五主题两个情境；仅预设回放，无自由输入审查或实时问答。电脑/手机10条完整流程在本地及公开网址通过，关系原文往返、报告复制和学校状态隔离通过。产品POST/付费/下载/解析/KB与向量构建0，不发布PDF、模型、索引或用户信息。详见 docs/portfolio/interactive-demo-ja.md。未放行下一开发任务；M13继续暂停。
+
+
 ## 2026-10-05：M19 已独立验收合并，完整成果包完成
 
 #291 / [PR #293](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/293) 精确head `9858cf37392ccfb6d403efa0a4a3fb461a224d54` 已验收，merge `736e12d48070958e4eaa536ca42d259301a30251`。新调查表接入原四步页，CBMS固定历史切片五主题；审核输入生成import/policy/plan/来源及展示配置，正文/步骤同源。旧三/四主题及ISCT保持。详见[独立验收与证据边界](onboarding/m19-design-acceptance.md)。
