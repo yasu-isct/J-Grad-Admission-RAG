@@ -1,24 +1,24 @@
 /* Pure presentation adapter. The server remains the authority for every finding. */
 import {reviewedMaterialPresentation} from "./material-presentation-catalog.mjs";
 const statusNames = {
-  required: "需要提交／满足对应条件时适用",
-  conditional: "有条件适用",
-  needs_information: "信息不足，待确认",
-  needs_review: "需要学校或人工确认",
-  not_applicable: "本条条件不适用",
-  not_covered: "当前审核范围未覆盖",
-  recorded: "已记录",
-  possible_match: "可能匹配，仍需核对",
-  submission_required: "需要提交",
-  submission_not_required: "无需提交（仅此材料本身）",
-  rule_not_applicable: "本条条件不适用，不能推定一般性免交",
-  unknown: "未知／待确认",
-  available: "已准备",
-  not_yet: "尚未取得"
+  required: "提出が必要／該当する条件の場合に適用",
+  conditional: "条件付きで対象",
+  needs_information: "情報不足・要確認",
+  needs_review: "大学または担当者による確認が必要",
+  not_applicable: "この条件の対象外",
+  not_covered: "確認済み資料の対象外",
+  recorded: "記録済み",
+  possible_match: "該当する可能性あり・要確認",
+  submission_required: "提出が必要",
+  submission_not_required: "提出不要（この書類自体のみ）",
+  rule_not_applicable: "この条件には該当しません。一般的な提出免除ではありません",
+  unknown: "不明・確認待ち",
+  available: "準備済み",
+  not_yet: "未取得"
 };
-const categoryNames = {dates: "日期", eligibility: "申请资格", language: "语言", materials: "材料"};
+const categoryNames = {dates: "日程", eligibility: "出願資格", language: "語学", materials: "書類"};
 function publicReviewedText(value) { return text(value).replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim(); }
-function publicStatus(value) { return statusNames[value] || "需核对具体说明"; }
+function publicStatus(value) { return statusNames[value] || "詳細の確認が必要"; }
 
 function requireValue(condition, message) {
   if (!condition) throw new Error(message);
@@ -34,15 +34,15 @@ function array(value) { return Array.isArray(value) ? value : []; }
 function text(value) { return value == null ? "" : String(value); }
 
 export function readyEntries(catalog) {
-  requireValue(catalog?.schema_version === "1.0" && Array.isArray(catalog.items), "能力目录无效");
+  requireValue(catalog?.schema_version === "1.0" && Array.isArray(catalog.items), "対象一覧の形式が正しくありません");
   const entries = catalog.items.filter((item) => item.availability === "ready");
   const ids = new Set();
   for (const item of entries) {
-    requireValue(nonempty(item.entry_id) && !ids.has(item.entry_id), "能力目录身份重复");
-    requireValue(["legacy_applicant", "reviewed_material_slice"].includes(item.kind), "能力类型无效");
-    requireValue(item.capabilities?.evidence_browse && item.capabilities?.reference_report, "能力广告与页面不一致");
-    if (item.kind === "legacy_applicant") requireValue(item.legacy_catalog?.school_name, "旧目录缺失");
-    else requireValue(item.target && item.request_profile_target && nonempty(item.snapshot_id), "材料切片身份缺失");
+    requireValue(nonempty(item.entry_id) && !ids.has(item.entry_id), "対象一覧の識別情報が重複しています");
+    requireValue(["legacy_applicant", "reviewed_material_slice"].includes(item.kind), "対象の種類が正しくありません");
+    requireValue(item.capabilities?.evidence_browse && item.capabilities?.reference_report, "利用できる機能と画面が一致しません");
+    if (item.kind === "legacy_applicant") requireValue(item.legacy_catalog?.school_name, "対象一覧がありません");
+    else requireValue(item.target && item.request_profile_target && nonempty(item.snapshot_id), "書類サンプルの識別情報がありません");
     ids.add(item.entry_id);
   }
   return entries;
@@ -59,9 +59,9 @@ export function scopesFor(item) {
         ? `${item.program_alias} / ${item.program_display_name || item.program_name}`
         : item.program_display_name || item.program_name,
       degree: target.degree_level === "master" ? "修士" : target.degree_level,
-      edition: `${target.admission_cycle} 年度 · 历史资料`,
+      edition: `${target.admission_cycle} 年度 · 過去の資料`,
       intake: `${target.intake.year} 年 ${target.intake.month} 月`,
-      route: `${target.selection_route_id === "general-ordinary" ? "一般选拔" : target.selection_route_id} · ${target.examination_schedule_id} 日程`,
+      route: `${target.selection_route_id === "general-ordinary" ? "一般選抜" : target.selection_route_id} · ${target.examination_schedule_id} 日程`,
       request: null,
     }];
   }
@@ -78,8 +78,8 @@ export function scopesFor(item) {
             program: department.department_name, degree: degree.degree_name,
             // The old catalog has an intake and document identity, but no separate admission cycle.
             edition: item.legacy_edition_labels?.[intake.document_id]
-              || "当前已审核募集要项（版本名称未提供）",
-            intake: intake.intake_name, route: route?.route_name || "一般选拔",
+              || "確認済み募集要項（版の名称は未登録）",
+            intake: intake.intake_name, route: route?.route_name || "一般選抜",
             request: {
               schema_version: "1.0", school_id: school.school_id,
               document_id: intake.document_id, degree_id: degree.degree_id,
@@ -89,7 +89,7 @@ export function scopesFor(item) {
             }
           });
         }
-  requireValue(result.length > 0, "审核目标目录为空");
+  requireValue(result.length > 0, "対象一覧が空です");
   return result;
 }
 
@@ -107,9 +107,9 @@ export function legacyApplicant(controls) {
     return selected && !selected.startsWith("ui_") ? selected : null;
   };
   const score = value("english_score");
-  requireValue(!score || concrete("english_test_kind"), "填写英语分数时须选择考试类型");
-  requireValue(!value("english_test_date") || concrete("english_test_kind"), "填写考试日期时须选择考试类型");
-  requireValue(!score || (Number.isFinite(Number(score)) && Number(score) >= 0 && Number(score) <= 10000), "英语分数无效");
+  requireValue(!score || concrete("english_test_kind"), "英語スコアを入力する場合は試験の種類を選んでください");
+  requireValue(!value("english_test_date") || concrete("english_test_kind"), "受験日を入力する場合は試験の種類を選んでください");
+  requireValue(!score || (Number.isFinite(Number(score)) && Number(score) >= 0 && Number(score) <= 10000), "英語スコアの値が正しくありません");
   return {
     credential_basis: concrete("credential_basis"),
     completion_state: concrete("completion_state"),
@@ -133,7 +133,7 @@ export function hasSuppliedProfile(controls) {
 }
 
 export function comparisonRequest(scope, controls) {
-  requireValue(scope.kind === "legacy_applicant" && scope.request, "目标类型不匹配");
+  requireValue(scope.kind === "legacy_applicant" && scope.request, "対象の種類が一致しません");
   return {schema_version: "1.0", target: scope.request, applicant: legacyApplicant(controls),
     ...(controls.english_preparation ? {english_preparation: controls.english_preparation} : {}),
     ...(controls.application_preparation ? {application_preparation: controls.application_preparation} : {})};
@@ -144,16 +144,16 @@ export function validateEnglishPreparationResult(scope, payload) {
   requireValue(scope?.kind === "legacy_applicant" && result
     && result.document_id === scope.request.document_id
     && legacyTargetMatches(scope, result.target) && Array.isArray(result.checks),
-  "英语核对结果与当前目标不匹配");
+  "英語の照合結果と志望先が一致しません");
   const ids = new Set();
   for (const check of result.checks) {
     requireValue(nonempty(check.check_id) && !ids.has(check.check_id)
       && ["reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"].includes(check.status)
       && nonempty(check.title) && nonempty(check.explanation) && nonempty(check.next_action)
-      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "英语核对项无效");
+      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "英語の確認項目が正しくありません");
     ids.add(check.check_id);
     if (["reported_match", "action_needed"].includes(check.status))
-      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "英语核对依据缺失");
+      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "英語の照合に必要な根拠がありません");
     for (const source of check.evidence) validateLegacyEvidence(source, scope);
   }
   return result;
@@ -164,23 +164,23 @@ export function validateApplicationPreparationResult(scope, payload) {
   requireValue(scope?.kind === "legacy_applicant" && result
     && result.document_id === scope.request.document_id
     && legacyTargetMatches(scope, result.target) && Array.isArray(result.checks),
-  "毕业与提交核对结果与当前目标不匹配");
+  "卒業・提出の照合結果と志望先が一致しません");
   const ids = new Set();
   for (const check of result.checks) {
     requireValue(nonempty(check.check_id) && !ids.has(check.check_id)
       && ["reported_match", "action_needed", "needs_information", "not_applicable", "not_covered"].includes(check.status)
       && nonempty(check.title) && nonempty(check.explanation) && nonempty(check.next_action)
-      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "毕业与提交核对项无效");
+      && Array.isArray(check.rule_ids) && Array.isArray(check.evidence), "卒業・提出の確認項目が正しくありません");
     ids.add(check.check_id);
     if (check.status === "reported_match")
-      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "毕业与提交核对依据缺失");
+      requireValue(check.rule_ids.length > 0 && check.evidence.length > 0, "卒業・提出の照合に必要な根拠がありません");
     for (const source of check.evidence) validateLegacyEvidence(source, scope);
   }
   return result;
 }
 
 export function sliceReportRequest(scope, employment) {
-  requireValue(scope.kind === "reviewed_material_slice", "目标类型不匹配");
+  requireValue(scope.kind === "reviewed_material_slice", "対象の種類が一致しません");
   const item = scope.item, target = item.target, alias = item.request_profile_target;
   const condition = (value) => value === "yes" ? true : value === "no" ? false : null;
   return {
@@ -220,9 +220,9 @@ function validateLegacyEvidence(evidence, scope) {
     && evidence.school_name === scope.school
     && evidence.intake_name === scope.intake
     && array(evidence.pages).length > 0
-    && array(evidence.pages).every((page) => Number.isSafeInteger(page) && page > 0), "官方依据不完整");
+    && array(evidence.pages).every((page) => Number.isSafeInteger(page) && page > 0), "公式資料の根拠が不足しています");
   for (const mark of array(evidence.highlights))
-    requireValue(evidence.official_text.slice(mark.start, mark.end) === mark.exact_text, "官方引文与原文不一致");
+    requireValue(evidence.official_text.slice(mark.start, mark.end) === mark.exact_text, "引用と公式原文が一致しません");
   return {
     title: evidence.official_title, pages: evidence.pages,
     fact_id: evidence.fact_id, document_id: evidence.document_id,
@@ -236,17 +236,17 @@ function legacyTargetMatches(scope, target) {
   return target?.school_name === scope.school && target?.degree_name === scope.degree
     && target?.intake_name === scope.intake && target?.college_name === scope.organization
     && target?.department_name === scope.program
-    && (target?.application_route_name || null) === (scope.route === "一般选拔" ? null : scope.route);
+    && (target?.application_route_name || null) === (scope.route === "一般選抜" ? null : scope.route);
 }
 
 export function mapLegacyBase(scope, base) {
   requireValue(scope.kind === "legacy_applicant" && base?.schema_version === "1.0"
-    && legacyTargetMatches(scope, base.target) && Array.isArray(base.requirements), "基础要求目标不匹配");
+    && legacyTargetMatches(scope, base.target) && Array.isArray(base.requirements), "基本要件の志望先が一致しません");
   const topics = base.requirements.map((requirement) => {
     const sources = array(requirement.evidence).map((source) => validateLegacyEvidence(source, scope));
     const dates = array(requirement.date_events).map((event) => {
       const eventSources = array(event.evidence).map((source) => validateLegacyEvidence(source, scope));
-      requireValue(eventSources.length > 0, "日期依据缺失");
+      requireValue(eventSources.length > 0, "日程の根拠がありません");
       return {
         label: event.label, display: event.display_text,
         event_type: event.event_type || null,
@@ -255,7 +255,7 @@ export function mapLegacyBase(scope, base) {
       };
     });
     if (!["not_covered", "needs_review", "needs_information"].includes(requirement.official_status))
-      requireValue(sources.length > 0 || dates.length > 0, "已审核要求缺少引用");
+      requireValue(sources.length > 0 || dates.length > 0, "確認済み要件の引用がありません");
     return {
       id: requirement.requirement_id, category: requirement.category, title: requirement.title,
       summary: publicReviewedText(requirement.reviewed_summary || requirement.description),
@@ -286,13 +286,13 @@ const examPresentationV2Sha = "906ceaa57ac615f1d2acb1da1265f93c690e8574b31fc8a23
 function validateExamInformationV2(scope, info) {
   try {
     requireValue(scope?.kind === "legacy_applicant" && info?.schema_version === "2.0"
-      && ["available_official_paths", "not_covered", "not_covered_course", "unavailable"].includes(info.status), "考试信息状态无效");
+      && ["available_official_paths", "not_covered", "not_covered_course", "unavailable"].includes(info.status), "試験情報の状態が正しくありません");
     const request = scope.request;
-    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "考试信息目标不匹配");
+    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "試験情報の対象が一致しません");
     if (info.status !== "available_official_paths") {
-      requireValue(same(info.pathways, []) && same(info.evidence, []) && same(info.field_bindings, []), "未覆盖考试信息含肯定结论");
+      requireValue(same(info.pathways, []) && same(info.evidence, []) && same(info.field_bindings, []), "未確認の試験情報に確定した記述があります");
       if (info.status === "not_covered_course") requireValue(info.applicability?.course_state === "excluded"
-        || info.applicability?.course_state === "unknown", "课程排除状态无效");
+        || info.applicability?.course_state === "unknown", "コースの除外状態が正しくありません");
       return {status: info.status, message: info.message_zh};
     }
     requireValue(request.school_id === "isct" && request.document_id === examSource.document_id
@@ -300,7 +300,7 @@ function validateExamInformationV2(scope, info) {
         request.intake.year === year && request.intake.month === month)
       && info.presentation_id === "isct-18-departments-exams-2026-v2"
       && info.presentation_sha256 === examPresentationV2Sha
-      && same(info.source_identity, examSource), "考试来源身份不匹配");
+      && same(info.source_identity, examSource), "試験情報の出典が一致しません");
     const applicability = info.applicability;
     requireValue(applicability?.catalog_route === request.application_route
       && applicability.personal_route_state === (request.application_route === "b_schedule" ? "catalog_b" : "unconfirmed")
@@ -308,37 +308,37 @@ function validateExamInformationV2(scope, info) {
       && Array.isArray(applicability.covered_course_ids) && Array.isArray(applicability.excluded_course_ids)
       && (applicability.covered_course_ids.length === 0
         ? applicability.excluded_course_ids.length === 0
-        : same(applicability.excluded_course_ids, ["地球生命コース"])), "考试路径或课程作用域不匹配");
+        : same(applicability.excluded_course_ids, ["地球生命コース"])), "試験日程またはコースの対象範囲が一致しません");
     requireValue(info.year_basis?.exam_year === 2026
       && info.year_basis.kind === "reviewed_cross_page_context"
       && same(info.year_basis.physical_pages, [1, 2])
-      && Number.isSafeInteger(info.year_basis.department_page), "考试年份来源不完整");
+      && Number.isSafeInteger(info.year_basis.department_page), "試験年度の出典が不足しています");
     const evidence = array(info.evidence);
     const evidenceById = new Map();
     for (const row of evidence) {
       validateLegacyEvidence(row, scope);
       requireValue(nonempty(row.fact_id) && row.scope_type === "department"
         && row.parent_college === request.college_id
-        && array(row.scope_targets).includes(request.department_id), "考试证据作用域不匹配");
-      requireValue(!evidenceById.has(row.fact_id), "考试证据重复");
+        && array(row.scope_targets).includes(request.department_id), "試験の根拠資料の対象範囲が一致しません");
+      requireValue(!evidenceById.has(row.fact_id), "試験の根拠が重複しています");
       evidenceById.set(row.fact_id, row);
     }
     const bindings = new Map();
     for (const field of array(info.field_bindings)) {
-      requireValue(nonempty(field.field_path) && !bindings.has(field.field_path), "考试字段重复");
+      requireValue(nonempty(field.field_path) && !bindings.has(field.field_path), "試験項目が重複しています");
       if (field.value_zh === null)
-        requireValue(nonempty(field.missing_reason_zh) && same(field.sources, []), "未知字段伪装为有依据");
+        requireValue(nonempty(field.missing_reason_zh) && same(field.sources, []), "未確認項目に根拠があると記録されています");
       else {
-        requireValue(nonempty(field.value_zh) && array(field.sources).length > 0, "考试字段来源缺失");
+        requireValue(nonempty(field.value_zh) && array(field.sources).length > 0, "試験項目の出典がありません");
         for (const source of field.sources) {
-          requireValue(nonempty(source.exact_text) && array(source.physical_pages).length > 0, "考试原文锚点缺失");
-          if (source.source_id === "fact:00002") requireValue(field.field_path === "exam.year", "年份来源越界");
+          requireValue(nonempty(source.exact_text) && array(source.physical_pages).length > 0, "試験の原文箇所がありません");
+          if (source.source_id === "fact:00002") requireValue(field.field_path === "exam.year", "年度の出典が対象範囲外です");
           else if (source.source_id.startsWith("fact:")) {
             const row = evidenceById.get(source.source_id);
             requireValue(row && same(row.pages, source.physical_pages)
-              && row.official_text.includes(source.exact_text), "考试原文与字段不符");
+              && row.official_text.includes(source.exact_text), "試験の原文と項目が一致しません");
           } else requireValue(source.source_id === `pdf_page:${source.physical_pages[0]}`
-            && source.physical_pages.length === 1, "PDF页锚点不符");
+            && source.physical_pages.length === 1, "PDFの参照ページが一致しません");
         }
       }
       bindings.set(field.field_path, field);
@@ -346,30 +346,30 @@ function validateExamInformationV2(scope, info) {
     const required = ["exam.year", "a.oral", "b.written_status", "b.written_sessions", "b.subjects",
       "b.selection_rule", "b.points", "english.submission", "b.oral", "b.answer_language"];
     requireValue(required.every((key) => bindings.has(key))
-      && (applicability.covered_course_ids.length === 0 || bindings.has("course.coverage_exclusion")), "考试字段覆盖不足");
+      && (applicability.covered_course_ids.length === 0 || bindings.has("course.coverage_exclusion")), "試験項目が不足しています");
     const value = (key) => bindings.get(key)?.value_zh?.replaceAll("**", "") ?? null;
     const paths = array(info.pathways);
     requireValue(paths.length === 2 && paths[0].source_route === "a_schedule"
       && paths[1].source_route === "b_schedule"
       && paths.every((path) => path.personal_eligibility === (request.application_route === "b_schedule"
-        && path.source_route === "b_schedule" ? "catalog_b" : "unconfirmed")), "官方路径与个人适用性混淆");
+        && path.source_route === "b_schedule" ? "catalog_b" : "unconfirmed")), "公式の日程と本人への適用が一致しません");
     const a = paths[0];
     const b = paths[1];
     requireValue(a.oral?.description_zh === value("a.oral")
-      && a.oral.status === (value("a.oral").includes("明确不举行") ? "not_held" : "held")
+      && a.oral.status === (value("a.oral").includes("実施しないと明記") ? "not_held" : "held")
       && a.written.status === "unknown" && b.oral?.description_zh === value("b.oral")
       && b.written?.status === value("b.written_status")
       && b.written.points_zh === value("b.points")
-      && b.english?.submission_zh === value("english.submission"), "考试路径内容与来源映射不一致");
+      && b.english?.submission_zh === value("english.submission"), "試験日程の内容と出典の対応が一致しません");
     if (b.written.status === "held") requireValue(
       b.written.time_zh === value("b.written_sessions")
       && array(b.written.subjects_zh).length > 0
       && b.written.subjects_zh.join("；") === value("b.subjects")
       && b.written.selection_rule_zh === value("b.selection_rule")
       && b.written.answer_language_zh === value("b.answer_language")
-      && b.written.administration_language_zh === value("exam.administration_language"), "笔试科目或时段与来源不符");
+      && b.written.administration_language_zh === value("exam.administration_language"), "筆答試験の科目・時間帯が出典と一致しません");
     else requireValue(b.written.status === "not_held" && b.written.time_zh === null
-      && same(b.written.subjects_zh, []), "无笔试状态含笔试内容");
+      && same(b.written.subjects_zh, []), "筆答試験なしの状態に試験内容があります");
     return {status: "available", schema_version: "2.0", pathways: paths,
       applicability, evidence, field_bindings: info.field_bindings, year_basis: info.year_basis,
       message: info.message_zh, official_title: info.official_title,
@@ -381,11 +381,11 @@ export function validateExamInformation(scope, info) {
   if (info?.schema_version === "2.0") return validateExamInformationV2(scope, info);
   try {
     requireValue(scope?.kind === "legacy_applicant" && info?.schema_version === "1.0"
-      && ["available", "not_covered", "unavailable"].includes(info.status), "考试信息状态无效");
+      && ["available", "not_covered", "unavailable"].includes(info.status), "試験情報の状態が正しくありません");
     const request = scope.request;
-    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "考试信息目标不匹配");
+    requireValue(Object.keys(request).every((key) => same(request[key], info.target_identity?.[key])), "試験情報の対象が一致しません");
     if (info.status !== "available") {
-      requireValue(info.schedule === null && same(info.evidence, []), "未知考试信息含肯定内容");
+      requireValue(info.schedule === null && same(info.evidence, []), "未確認の試験情報に確定した記述があります");
       return {status: info.status, message: info.message_zh};
     }
     requireValue(request.school_id === "isct" && request.document_id === examSource.document_id
@@ -394,7 +394,7 @@ export function validateExamInformation(scope, info) {
       && [[2026, 9], [2027, 4]].some(([year, month]) => request.intake.year === year && request.intake.month === month)
       && info.presentation_id === "isct-cs-b-exams-2026-v1"
       && info.presentation_sha256 === examPresentationSha
-      && same(info.source_identity, examSource), "考试信息来源不匹配");
+      && same(info.source_identity, examSource), "試験情報の出典が一致しません");
     const s = info.schedule;
     requireValue(s && s.route === "b_schedule" && s.exam_year === 2026 && s.timezone === "Asia/Tokyo"
       && s.written_date === "2026-08-18" && s.written_start_time === "09:30"
@@ -405,20 +405,20 @@ export function validateExamInformation(scope, info) {
       && s.oral_announcement_date === "2026-08-20" && s.oral_announcement_time === "17:00"
       && s.oral_announcement_time_qualifier === "around_from"
       && same(s.subject_groups, [
-        {group: "A", subjects_zh: ["微积分", "线性代数", "概率统计"]},
-        {group: "B", subjects_zh: ["数理逻辑", "自动机与形式语言"]},
-        {group: "C", subjects_zh: ["数据结构与算法", "编程"]}
-      ]) && nonempty(s.oral_selection_note_zh), "考试安排不完整");
+        {group: "A", subjects_zh: ["微分積分学", "線形代数学", "確率統計"]},
+        {group: "B", subjects_zh: ["数理論理学", "オートマトンと形式言語"]},
+        {group: "C", subjects_zh: ["データ構造とアルゴリズム", "プログラミング"]}
+      ]) && nonempty(s.oral_selection_note_zh), "試験日程が不足しています");
     requireValue(info.year_basis?.kind === "reviewed_cross_page_context"
       && info.year_basis.exam_year === 2026 && same(info.year_basis.physical_pages, [1, 2, 52])
-      && same(info.year_basis.source_ids, ["pdf:cover:1", "fact:00002", "fact:00004", "fact:00288"]), "考试年份依据不完整");
+      && same(info.year_basis.source_ids, ["pdf:cover:1", "fact:00002", "fact:00004", "fact:00288"]), "試験年度の根拠が不足しています");
     const evidence = array(info.evidence);
     requireValue(evidence.length === 3 && same(evidence.map((row) => row.fact_id),
-      ["fact:00288", "fact:00289", "fact:00287"]), "考试原文依据不完整");
+      ["fact:00288", "fact:00289", "fact:00287"]), "試験の原文が不足しています");
     for (const row of evidence) {
       validateLegacyEvidence(row, scope);
       requireValue(same(row.pages, [52]) && row.scope_type === "department"
-        && same(row.scope_targets, ["情報工学系"]) && row.parent_college === "情報理工学院", "考试原文作用域不匹配");
+        && same(row.scope_targets, ["情報工学系"]) && row.parent_college === "情報理工学院", "試験の原文の対象範囲が一致しません");
     }
     return {status: "available", schedule: s, evidence, year_basis: info.year_basis};
   } catch { return null; }
@@ -437,39 +437,39 @@ export function examReportRows(exam) {
     return `${year ? `${y}年` : ""}${m}月${d}日`;
   };
   return [
-    `专业笔试：${dateZh(s.written_date)} ${s.written_start_time}–${s.written_end_time}（日本时间，${s.duration_minutes}分钟）。`,
-    ...s.subject_groups.map((group) => `${group.group}组：${group.subjects_zh.join("、")}。`),
-    `每组各出${s.questions_per_group}题，共${s.total_questions}题；专业笔试用日语作答。`,
-    `专业笔试${s.specialist_points}分，英语${s.english_points}分；英语不另设笔试，按指定外部英语成绩评价，仍需按规定提交证明。`,
-    `口述对象：${dateZh(s.oral_announcement_date, false)}${Number(s.oral_announcement_time.split(":")[0])}时左右起公布；口述日期${dateZh(s.oral_date, false)}。${s.oral_selection_note_zh}`
+    `専門筆答試験：${dateZh(s.written_date)} ${s.written_start_time}–${s.written_end_time}（日本時間、${s.duration_minutes}分）。`,
+    ...s.subject_groups.map((group) => `${group.group}群：${group.subjects_zh.join("、")}。`),
+    `各群${s.questions_per_group}問、合計${s.total_questions}問を出題。専門筆答試験は日本語で解答します。`,
+    `専門筆答試験${s.specialist_points}点、英語${s.english_points}点。英語の筆答試験は行わず、指定の外部英語試験で評価します。規定に従った証明の提出が必要です。`,
+    `口述対象者：${dateZh(s.oral_announcement_date, false)}${Number(s.oral_announcement_time.split(":")[0])}時頃から発表。口述試験は${dateZh(s.oral_date, false)}。${s.oral_selection_note_zh}`
   ];
 }
 
 export function examV2View(exam) {
-  requireValue(exam?.schema_version === "2.0" && exam.status === "available", "考试资料尚未校验");
+  requireValue(exam?.schema_version === "2.0" && exam.status === "available", "試験資料が未確認です");
   const [a, b] = exam.pathways;
   const written = b.written;
   const scope = exam.applicability.personal_route_state === "catalog_b"
-    ? "信息工学系目录为 B 日程；A 日程仅作为同册官方资料查阅。"
-    : "学校公布的 A/B 日程可查阅；本人参加路径与资格须由学校确认。";
+    ? "情報工学系の選択対象はB日程です。A日程は同じ冊子の参考情報としてのみ表示します。"
+    : "大学が公表したA・B日程を参照できます。本人が受験する日程と資格は大学に確認してください。";
   const lead = written.status === "not_held"
-    ? `学校公布的 B 日程明确不举行笔试。${scope}`
-    : `学校公布的 B 日程笔试：2026年8月18日 ${written.time_zh
-      .replace(/^8\/18\s*/, "").split("；时长（分钟）：")[0]}。${scope}`;
+    ? `大学の案内では、B日程の筆答試験は実施しません。${scope}`
+    : `大学が公表したB日程の筆答試験：2026年8月18日 ${written.time_zh
+      .replace(/^8\/18\s*/, "").split("；所要時間（分）：")[0]}。${scope}`;
   const subjects = written.status === "held" ? [written.subjects_zh.join("；")] : [];
   const selection = written.status === "held" && written.selection_rule_zh
-    ? `选答方式：${written.selection_rule_zh}` : null;
-  const points = written.points_zh ? `评价与英语：${written.points_zh}` : null;
-  const aOral = `${a.label_zh}口述：${a.oral.description_zh.replace(/^A：/, "")}。`;
-  const bOral = `${b.label_zh}口述：${b.oral.description_zh.replaceAll("**", "")}。`;
+    ? `解答方法：${written.selection_rule_zh}` : null;
+  const points = written.points_zh ? `配点・英語：${written.points_zh}` : null;
+  const aOral = `${a.label_zh}の口述試験：${a.oral.description_zh.replace(/^A：/, "")}。`;
+  const bOral = `${b.label_zh}の口述試験：${b.oral.description_zh.replaceAll("**", "")}。`;
   const condition = exam.field_bindings.find((field) => field.field_path === "b.specialist_condition")?.value_zh;
-  const specialist = condition ? `专门科目条件：${condition.replaceAll("**", "")}。` : null;
-  const english = b.english.submission_zh ? `本系英语证明原文：${b.english.submission_zh}。材料准备结果仍按既有规则核对。` : null;
+  const specialist = condition ? `専門科目の条件：${condition.replaceAll("**", "")}。` : null;
+  const english = b.english.submission_zh ? `この系の英語証明について：${b.english.submission_zh}。書類の準備状況は既存の要件に基づいて照合します。` : null;
   const language = written.answer_language_zh
-    ? `笔试作答语言：${written.answer_language_zh}。`
-    : written.administration_language_zh ? `考试实施语言：${written.administration_language_zh}；原文未另载笔试答案语言。` : null;
+    ? `筆答試験の解答言語：${written.answer_language_zh}。`
+    : written.administration_language_zh ? `試験の実施言語：${written.administration_language_zh}。筆答試験の解答言語は原文に別記されていません。` : null;
   const course = exam.applicability.excluded_course_ids.length
-    ? `本册覆盖课程：${exam.applicability.covered_course_ids.join("、")}；${exam.applicability.excluded_course_ids.join("、")}采用另册，当前未覆盖其考试安排。` : null;
+    ? `本冊子の対象コース：${exam.applicability.covered_course_ids.join("、")}。${exam.applicability.excluded_course_ids.join("、")}は別冊のため、試験日程は未収録です。` : null;
   return {lead, subjects, selection, points, aOral, bOral, specialist, english, language, course};
 }
 
@@ -479,13 +479,13 @@ export function mapSliceEvidence(scope, evidence) {
     && evidence.snapshot_id === scope.item.snapshot_id
     && same(evidence.target, scope.item.target)
     && (!Number.isSafeInteger(scope.item.revision) || evidence.revision === scope.item.revision)
-    && Array.isArray(evidence.topics) && evidence.topics.length > 0, "官方依据与当前目标不匹配");
+    && Array.isArray(evidence.topics) && evidence.topics.length > 0, "公式資料の根拠と志望先が一致しません");
   const topics = evidence.topics.map((topic) => {
     const sources = array(topic.records).map((record) => {
       requireValue(nonempty(record.source_title) && Number.isSafeInteger(record.physical_page)
-        && record.physical_page > 0 && array(record.fragments).length > 0, "材料依据不完整");
+        && record.physical_page > 0 && array(record.fragments).length > 0, "書類の根拠が不足しています");
       const quotes = record.fragments.map((fragment) => {
-        requireValue(nonempty(fragment.quote_text), "材料原文缺失");
+        requireValue(nonempty(fragment.quote_text), "書類の原文がありません");
         return fragment.quote_text;
       });
       return {
@@ -496,37 +496,37 @@ export function mapSliceEvidence(scope, evidence) {
         fragments: record.fragments,
         heading: array(record.official_heading_path).join(" › "),
         context: [record.scope_note_zh, array(record.official_heading_path).join(" › "),
-          record.role === "basis" ? "本条依据" : "关联上下文",
-          record.stage === "enrollment_context_only" ? "入学手续关联，非申请阶段义务" : ""].filter(Boolean).join(" · "),
+          record.role === "basis" ? "この項目の根拠" : "関連する記載",
+          record.stage === "enrollment_context_only" ? "入学手続きに関連する記載（出願時の義務ではありません）" : ""].filter(Boolean).join(" · "),
         record_id: record.record_id
       };
     });
-    requireValue(sources.length > 0, "材料主题依据缺失");
+    requireValue(sources.length > 0, "書類項目の根拠がありません");
     const ids = new Set(sources.map((source) => source.record_id));
     const relations = array(topic.relations).filter((relation) => relation
       && ids.has(relation.from) && ids.has(relation.to) && typeof relation.kind === "string");
     return {
       id: topic.topic_id, category: "materials", title: topic.material_name_zh,
       summary: topic.context_note_zh, description: topic.context_note_zh,
-      status: "当前条件待报告判断", status_code: "needs_information",
+      status: "条件の確認にはレポートの表示が必要です", status_code: "needs_information",
       deadline: "", limitation: "", dates: [], sources, relations
     };
   });
   const generated = generatedEntry(scope);
   requireValue(!reviewedMaterialPresentation.entries.some((row) => row.snapshot_id === scope.item.snapshot_id)
-    || generated, "展示目录与完整目标不匹配");
+    || generated, "表示一覧と志望先の情報が一致しません");
   if (generated) {
     requireValue(topics.length === generated.topics.length
       && new Set(topics.map((topic) => topic.id)).size === topics.length,
-      "新材料切片范围不匹配");
+      "新しい書類サンプルの対象範囲が一致しません");
     for (const row of generated.topics) {
       const topic = topics.find((topic) => topic.id === row.id);
       requireValue(topic && generatedSourcesMatch(row, topic.sources)
-        && same(topic.relations, row.relations), "材料原文、表头或关系缺失");
+        && same(topic.relations, row.relations), "書類の原文・表の見出し・関連情報がありません");
     }
   }
   return {
-    scope, topics, coverage: `历史招生资料 · 已审核的 ${topics.length} 个材料主题`,
+    scope, topics, coverage: `過去の募集資料 · 確認済みの書類 ${topics.length}項目`,
     limitation: array(evidence.limitations_zh).join("；"), target: evidence.target,
     raw: evidence
   };
@@ -534,19 +534,19 @@ export function mapSliceEvidence(scope, evidence) {
 
 function sourceLines(source) {
   const page = source.pages.join("、");
-  return [`出处：${source.title} · 物理页 ${page}${source.printed ? `（印刷页 ${source.printed}）` : ""}`,
-    source.context ? `上下文：${source.context}` : "",
-    `官方原文：${source.quote}`, `官方链接：${source.source_url}`].filter(Boolean);
+  return [`出典：${source.title} · PDFページ ${page}${source.printed ? `（印刷页 ${source.printed}）` : ""}`,
+    source.context ? `関連情報：${source.context}` : "",
+    `公式原文：${source.quote}`, `公式リンク：${source.source_url}`].filter(Boolean);
 }
 
 export function legacyReport(mapped, comparison = null, profileDisclosure = [], exam = null) {
-  requireValue(mapped?.scope?.kind === "legacy_applicant" && mapped.topics?.length, "当前要求尚未加载");
+  requireValue(mapped?.scope?.kind === "legacy_applicant" && mapped.topics?.length, "要件が未読み込みです");
   if (comparison) {
-    requireValue(Array.isArray(profileDisclosure), "个人情况展示无效");
+    requireValue(Array.isArray(profileDisclosure), "本人情報の表示が正しくありません");
     requireValue(comparison.schema_version === "1.0"
       && legacyTargetMatches(mapped.scope, comparison.target)
       && Array.isArray(comparison.items)
-      && comparison.counts?.total === comparison.items.length, "个人对照目标不匹配");
+      && comparison.counts?.total === comparison.items.length, "本人情報の照合対象が一致しません");
     if (comparison.english_preparation_result)
       validateEnglishPreparationResult(mapped.scope, comparison);
     if (comparison.application_preparation_result)
@@ -558,47 +558,47 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = [], 
         && item.official_status == null;
       if (!applicantOnlyJapanese
         && !["not_covered", "needs_review", "needs_information"].includes(item.comparison_status))
-        requireValue(array(item.evidence).length > 0, "个人对照引用缺失");
+        requireValue(array(item.evidence).length > 0, "本人情報の照合に必要な引用がありません");
     }
   }
   const intro = [
-    "募集要项参考报告", scopeLabel(mapped.scope), "",
-    "资料性质：当前已审核结果的页面导出；不是最终资格判断。",
-    `审核覆盖：${mapped.coverage}`, `范围限制：${mapped.limitation}`
+    "募集要項の参考レポート", scopeLabel(mapped.scope), "",
+    "確認済みの結果を整理したレポートです。最終的な資格判定ではありません。",
+    `確認済みの範囲：${mapped.coverage}`, `対象範囲の制限：${mapped.limitation}`
   ];
   const topics = mapped.topics.map((topic, index) => {
-    const lines = [`类别：${categoryNames[topic.category] || "其他已审核事项"}；官方状态：${topic.status}`,
-      `说明：${topic.summary}`];
-    if (topic.description !== topic.summary) lines.push(`详情：${topic.description}`);
-    if (topic.deadline) lines.push(`截止说明：${topic.deadline}`);
+    const lines = [`区分：${categoryNames[topic.category] || "その他の確認済み項目"}／公式要件：${topic.status}`,
+      `説明：${topic.summary}`];
+    if (topic.description !== topic.summary) lines.push(`詳細：${topic.description}`);
+    if (topic.deadline) lines.push(`締切について：${topic.deadline}`);
     const references = [];
     for (const date of topic.dates) {
-      lines.push(`日期：${date.label} · ${date.display} · 精度 ${date.precision}`);
-      if (date.unknown.length) lines.push(`未知时间字段：${date.unknown.join("、")}`);
-      if (date.uncertainty) lines.push(`日期限制：${date.uncertainty}`);
+      lines.push(`日程：${date.label} · ${date.display} · 日時の粒度 ${date.precision}`);
+      if (date.unknown.length) lines.push(`未確認の日時項目：${date.unknown.join("、")}`);
+      if (date.uncertainty) lines.push(`日程の注意事項：${date.uncertainty}`);
       references.push(...date.sources);
     }
     references.push(...topic.sources);
-    if (topic.limitation) lines.push(`限制：${topic.limitation}`);
+    if (topic.limitation) lines.push(`留意事項：${topic.limitation}`);
     return {heading: `${index + 1}. ${topic.title}`, lines, references};
   });
-  const lines = [...intro, "", "基础要求"];
+  const lines = [...intro, "", "基本要件"];
   for (const topic of topics)
     lines.push("", topic.heading, ...topic.lines, ...topic.references.flatMap(sourceLines));
   let comparisonPresentation = null;
   if (comparison) {
     const overview = [comparison.comparison_statement,
-      `准备状态：共 ${comparison.counts.total} 项；需补充 ${comparison.counts.action_required}；需审核 ${comparison.counts.review_required}；已记录 ${comparison.counts.recorded}`,
-      "本次自报；未填写／不知道保持未知，自报不适用不代表官方豁免："];
+      `準備状況：全${comparison.counts.total}項目／追加準備${comparison.counts.action_required}／要確認${comparison.counts.review_required}／記録済み${comparison.counts.recorded}`,
+      "今回の自己申告です。未入力・不明は未確認のまま扱います。本人が対象外と申告しても、公式の免除を意味しません。"];
     for (const field of profileDisclosure) {
-      requireValue(nonempty(field.label) && nonempty(field.value), "个人情况展示缺失");
+      requireValue(nonempty(field.label) && nonempty(field.value), "本人情報の表示がありません");
       overview.push(`${field.label}：${field.value}`);
     }
     const items = comparison.items.map((item) => {
-      const itemLines = [item.description, `下一步：${item.next_action}`];
-      if (item.official_status) itemLines.push(`官方适用性：${publicStatus(item.official_status)}`);
-      if (item.preparation_status) itemLines.push(`自报准备状态：${publicStatus(item.preparation_status)}`);
-      if (item.limitation) itemLines.push(`限制：${item.limitation}`);
+      const itemLines = [item.description, `次にすること：${item.next_action}`];
+      if (item.official_status) itemLines.push(`公式要件の適用：${publicStatus(item.official_status)}`);
+      if (item.preparation_status) itemLines.push(`準備状況（自己申告）：${publicStatus(item.preparation_status)}`);
+      if (item.limitation) itemLines.push(`留意事項：${item.limitation}`);
       return {
         heading: `${item.title} · ${publicStatus(item.comparison_status)}`,
         lines: itemLines,
@@ -607,12 +607,12 @@ export function legacyReport(mapped, comparison = null, profileDisclosure = [], 
     });
     const end = [comparison.partial_checklist_statement, comparison.limitation_statement];
     comparisonPresentation = {overview, items, end};
-    lines.push("", "个人情况与规则对照（仅依据本次自报）", ...overview);
+    lines.push("", "本人の状況と要件の照合（今回の自己申告に基づく）", ...overview);
     for (const item of items)
       lines.push("", item.heading, ...item.lines, ...item.references.flatMap(sourceLines));
     lines.push(...end);
-  } else lines.push("", "未加入个人情况；不作个人适用性判断。");
-  const conclusion = "请逐项核对未覆盖内容、未知条件与官方原文；材料准备不代表学校已受理。";
+  } else lines.push("", "本人情報が未入力のため、個別の適用を判断していません。");
+  const conclusion = "未収録の内容や不明な条件を、公式原文で確認してください。書類の準備済みは、大学での受理を意味しません。";
   lines.push("", conclusion);
   return {kind: "legacy_applicant", scope: mapped.scope, topics: mapped.topics,
     ...(exam?.status === "available" ? {exam} : {}),
@@ -625,13 +625,13 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
     && payload?.schema_version === "1.0" && payload.slice_id === scope.entry_id
     && payload.snapshot_id === scope.item.snapshot_id && same(payload.report?.target, scope.item.target)
     && payload.report.status === "evaluated" && Array.isArray(payload.report.topic_results)
-    && nonempty(payload.markdown), "报告与当前目标或证据不匹配");
+    && nonempty(payload.markdown), "レポートの対象または根拠が一致しません");
   const citations = new Map(array(payload.report.evidence_inventory).map((row) => [row.citation_key, row]));
-  requireValue(citations.size === array(payload.report.evidence_inventory).length, "报告引用重复");
+  requireValue(citations.size === array(payload.report.evidence_inventory).length, "レポートの引用が重複しています");
   const loadedSources = mapped.topics.flatMap((topic) => topic.sources);
   const topics = payload.report.topic_results.map((result) => {
     const keys = [...array(result.basis_citation_keys), ...array(result.context_citation_keys)];
-    requireValue(array(result.basis_citation_keys).length > 0 && keys.every((key) => citations.has(key)), "报告引用缺失");
+    requireValue(array(result.basis_citation_keys).length > 0 && keys.every((key) => citations.has(key)), "レポートの引用がありません");
     const sourceRecords = keys.map((key) => citations.get(key));
     for (const row of sourceRecords) requireValue(nonempty(row.quote_text)
       && nonempty(row.source_title) && array(row.physical_pages).length > 0
@@ -639,7 +639,7 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
         && source.title === row.source_title
         && source.pages.length === row.physical_pages.length
         && source.pages.every((page, index) => page === row.physical_pages[index])
-        && source.quote.includes(row.quote_text)), "报告引文与已加载原文不一致");
+        && source.quote.includes(row.quote_text)), "レポートの引用と読み込み済み原文が一致しません");
     const mappedTopic = mapped.topics.find((topic) => topic.id === result.topic_id);
     return {
       id: result.topic_id, material_code: result.material_code,
@@ -655,17 +655,17 @@ export function sliceReport(scope, mapped, payload, employment = {current: "unkn
   requireValue(topics.length === mapped.topics.length
     && (!generatedEntry(scope) || (new Set(topics.map((topic) => topic.id)).size === topics.length
       && topics.every((topic) => mapped.topics.some((row) => row.id === topic.id)))),
-    "材料主题数量或身份不匹配");
+    "書類項目の数または識別情報が一致しません");
   requireValue(["unknown", "yes", "no"].includes(employment.current)
-    && ["unknown", "yes", "no"].includes(employment.retain), "个人条件无效");
-  const conditionName = {unknown: "未知／待确认", yes: "是", no: "否"};
+    && ["unknown", "yes", "no"].includes(employment.retain), "本人の条件が正しくありません");
+  const conditionName = {unknown: "不明・確認待ち", yes: "はい", no: "いいえ"};
   const wrapper = [
-    "募集要项参考报告", scopeLabel(scope),
-    "历史资料、部分材料范围；请核对报告中的条件、未知事项和完整官方出处。",
-    `本次自报：目前受雇 ${conditionName[employment.current]}；入学后继续在职 ${conditionName[employment.retain]}。`,
-    "", payload.markdown, "", "已加载原文引文（与预览一致）",
+    "募集要項の参考レポート", scopeLabel(scope),
+    "過去資料の一部の書類が対象です。条件・未確認事項と公式資料全体を確認してください。",
+    `自己申告：現在在職中 ${conditionName[employment.current]}／入学後も在職 ${conditionName[employment.retain]}。`,
+    "", payload.markdown, "", "読み込み済みの原文（プレビューと同じ内容）",
     ...topics.flatMap((topic) => [topic.title, ...topic.citations.flatMap((cite) => [
-      `${cite.source_title} · 物理页 ${cite.physical_pages.join("、")}${cite.printed_page_label ? ` · 印刷页 ${cite.printed_page_label}` : ""}`,
+      `${cite.source_title} · PDFページ ${cite.physical_pages.join("、")}${cite.printed_page_label ? ` · 印刷页 ${cite.printed_page_label}` : ""}`,
       cite.quote_text
     ])])
   ].join("\n");
@@ -679,26 +679,26 @@ export function withSlicePreparation(report, preparation = {}) {
     && preparation && typeof preparation === "object" && !Array.isArray(preparation)
     && Object.entries(preparation).every(([key, value]) =>
       report.topics.some((topic) => topic.id === key)
-      && ["unknown", "available", "not_yet"].includes(value)), "材料准备自报无效");
+      && ["unknown", "available", "not_yet"].includes(value)), "準備状況の入力が正しくありません");
   return {...report, preparation: {...preparation}};
 }
 
-const readerTopicNames = {dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"};
+const readerTopicNames = {dates: "重要な日程", materials: "書類・次にすること", other: "読み込み済みのその他の要件", exams: "試験日程"};
 
 // Generated display data is matched by every target field and snapshot.
 function generatedEntry(scope) {
   requireValue(reviewedMaterialPresentation?.schema_version === "1.0"
-    && Array.isArray(reviewedMaterialPresentation.entries), "展示目录格式错误，请刷新后重试");
+    && Array.isArray(reviewedMaterialPresentation.entries), "表示一覧を読み込めません。ページを再読み込みしてください");
   const entries = reviewedMaterialPresentation.entries;
   requireValue(new Set(entries.map((entry) => entry.snapshot_id)).size === entries.length,
-    "展示目录身份重复");
+    "表示一覧の識別情報が重複しています");
   if (scope?.kind !== "reviewed_material_slice") return null;
   const entry = entries.find((row) => row.snapshot_id === scope.item?.snapshot_id);
   if (!entry) return null;
   if (!same(entry.target, scope.item.target) || entry.revision !== scope.item.revision) return null;
   requireValue(Array.isArray(entry.topics) && entry.topics.length > 0
     && new Set(entry.topics.map((topic) => topic.id)).size === entry.topics.length,
-    "展示目录与完整目标不匹配");
+    "表示一覧と志望先の情報が一致しません");
   return entry;
 }
 
@@ -735,7 +735,7 @@ export function slicePreparationControls(mapped) {
     .map((row) => {
       const topic = mapped.topics.find((topic) => topic.id === row.id);
       requireValue(topic && generatedSourcesMatch(row, topic.sources) && row.guide,
-        "材料准备控件来源不完整");
+        "準備状況の入力欄の出典が不足しています");
       return {id: row.id, name: row.display[0], type: row.preparation_control};
     });
 }
@@ -745,18 +745,18 @@ export function slicePreparationControls(mapped) {
 const materialDisplays = [
   {identity: {kind: "legacy_applicant", school_id: "isct",
     document_id: "isct_2027_4_2026_9_master"}, materials: {
-    address_label: ["邮寄地址标签", "宛名ラベル", "贴在提交出愿材料的信封上的标签。"],
-    application_form: ["入学申请表", "入学志願票", "本次入学申请使用的正式表格。"],
-    statement_of_purpose: ["志愿理由书", "志望理由書", "说明申请该方向理由的文书。"],
-    bachelor_transcript: ["学士课程成绩证明", "学士課程の成績証明書", "记录学士课程成绩的证明文件。"],
-    graduation_or_expected_graduation_certificate: ["毕业或预计毕业证明", "学士課程の卒業証明書又は卒業見込み証明書", "证明学士课程已毕业或预计毕业的文件。"]
+    address_label: ["宛名ラベル", "宛名ラベル", "出願書類を郵送する封筒に貼るラベルです。"],
+    application_form: ["入学志願票", "入学志願票", "今回の出願に用いる正式な申請用紙です。"],
+    statement_of_purpose: ["志望理由書", "志望理由書", "志望する分野を選んだ理由を説明する書類です。"],
+    bachelor_transcript: ["学士課程の成績証明書", "学士課程の成績証明書", "学士課程の成績を証明する書類です。"],
+    graduation_or_expected_graduation_certificate: ["卒業・卒業見込証明書", "学士課程の卒業証明書又は卒業見込み証明書", "学士課程の卒業または卒業見込みを証明する書類です。"]
   }},
   {identity: {kind: "reviewed_material_slice", institution_id: "utokyo",
     organization_id: "utokyo-gsfs", program_id: "utokyo-gsfs-complex",
     snapshot_id: "2794e4548763e98b36e168cb9a3a062d75008711c313a8a18fbb760bf19a9a98"}, materials: {
-    "english-score-sheets": ["英语成绩单", "英語のスコアシート", "说明英语考试成绩的单据；是否提交按当前专攻要求判断。"],
-    "checklist-submission": ["提交材料检查表", "提出書類等チェックシート（修士課程一般選抜用）", "用于核对待交文件；参照清单不等于要提交清单本身。"],
-    "work-study-plan": ["学业与职务兼顾计划书", "学業・職務両立計画書", "说明在职入学时如何兼顾学业与职务的计划书。"]
+    "english-score-sheets": ["英語スコア証明", "英語のスコアシート", "英語試験のスコアを証明する書類です。提出要否は選択中の専攻の要件に従います。"],
+    "checklist-submission": ["提出書類等チェックシート", "提出書類等チェックシート（修士課程一般選抜用）", "提出書類の確認に用います。参照する指示は、シート自体の提出を求めるものではありません。"],
+    "work-study-plan": ["学業・職務両立計画書", "学業・職務両立計画書", "在職したまま入学する場合に、学業と職務をどう両立するかを説明する計画書です。"]
   }},
 
 ];
@@ -764,45 +764,45 @@ const materialDisplays = [
 // Human guidance is attached only to the exact reviewed p.10 table in this edition.
 const isctMaterialGuides = {
   address_label: {
-    purpose: "标明出愿材料邮寄收件信息的标签。",
-    steps: ["从网上出愿个人页面取得，用A4纸彩色打印。", "贴在角形2号信封上（240×332毫米）。", "寄出前核对标签信息。"],
-    warnings: ["A4彩色打印和信封尺寸只适用于当前资料的这项标签。"],
+    purpose: "出願書類の郵送先を記載したラベルです。",
+    steps: ["オンライン出願のマイページから取得し、A4用紙にカラー印刷します。", "角形2号封筒（240×332mm）に貼り付けます。", "発送前に記載内容を確認します。"],
+    warnings: ["A4カラー印刷と封筒のサイズは、この資料の宛名ラベルに適用される指定です。"],
     conditions: []
   },
   application_form: {
-    purpose: "网上出愿后打印并提交的正式申请表。",
-    steps: ["先完成报名费等付款和证件照片上传，再打印申请表。", "从网上出愿个人页面用A4纸彩色打印。", "核对内容，并与所需出愿材料一并准备。"],
-    warnings: ["若暂时无法打印，先检查付款和照片上传是否完成；本页不核验这两项进度。"],
+    purpose: "オンライン出願後に印刷・提出する正式な志願票です。",
+    steps: ["検定料等の支払いと顔写真のアップロードを完了してから、志願票を印刷します。", "オンライン出願のマイページから、A4用紙にカラー印刷します。", "内容を確認し、必要な出願書類と一緒に準備します。"],
+    warnings: ["印刷できない場合は、支払いと写真のアップロードを確認してください。この画面では両手続きの進捗を確認しません。"],
     conditions: []
   },
   statement_of_purpose: {
-    purpose: "说明申请理由等内容的指定文书。",
-    steps: ["使用募集要项提供的指定格式。", "打印在一张A4纸上，可以双面打印。", "查看目标学系是否指定题目；没有指定题目不等于免交。"],
-    warnings: ["本项是否需要提交，仍按当前学历资格路径的审核结果确认。"],
+    purpose: "志望理由などを記載する所定の書類です。",
+    steps: ["募集要項で指定された書式を使用します。", "A4用紙1枚に印刷します。両面印刷も可能です。", "志望する系にテーマの指定があるか確認します。テーマの指定がなくても提出は必要です。"],
+    warnings: ["この書類の提出要否は、学歴に応じた出願資格の確認結果に従います。"],
     conditions: []
   },
   bachelor_transcript: {
-    purpose: "证明学士课程各科成绩的大学文件。",
-    steps: ["准备大学出具的学士课程成绩证明，不用研究生阶段成绩替代。", "按本资料共同要求准备原件；普通复印件或自行下载打印件不能直接替代。", "无论已毕业或预计毕业，都先核对这项材料在当前路径是否适用。"],
-    warnings: ["成绩证明与毕业证明可合在同一份大学证明中；仍需核对两项内容。"],
+    purpose: "学士課程の各科目の成績を証明する、大学発行の書類です。",
+    steps: ["大学発行の学士課程の成績証明書を準備します。大学院の成績証明書では代用できません。", "共通の指定に従って原本を準備します。通常のコピーや自分でダウンロード・印刷したものでは代用できません。", "卒業済み・卒業見込みにかかわらず、この書類が自分の出願資格区分で必要かを確認します。"],
+    warnings: ["成績と卒業の証明が大学の1つの証明書にまとまっていても構いません。両方の記載を確認してください。"],
     conditions: [
-      {title: "如果有转学经历", text: "一并准备转学前大学等的成绩证明。"},
-      {title: "如果成绩分成教养／专业或本科／专攻科等部分", text: "两部分都要准备。"},
-      {title: "如果因保存期限、学校关闭或受灾等无法开具", text: "应在出愿期间开始前向入试课咨询；本页不认定替代文件已获批准。"},
-      {title: "如果无法提交原件", text: "查看共同要求，由毕业大学或使领馆、公证机关等公共机构完成原本证明；普通复印件不能直接替代。"},
-      {title: "如果证明不是日文或英文", text: "附毕业大学出具的日文或英文翻译；大学无法出具时，按原文办理公共机构的译文内容认证。仅本人翻译或只认证声明、签名不足以代替内容认证。"}
+      {title: "編入学した場合", text: "編入学前の大学等の成績証明書も準備してください。"},
+      {title: "成績が教養・専門、本科・専攻科などに分かれている場合", text: "両方の証明書を準備してください。"},
+      {title: "保存期間の経過、閉校、被災などで発行できない場合", text: "出願期間の開始前に入試課へ相談してください。この画面では代替書類の承認を判断しません。"},
+      {title: "原本を提出できない場合", text: "共通要件を確認し、卒業大学・大使館・領事館・公証機関などの公的機関による原本証明を受けてください。通常のコピーでは代用できません。"},
+      {title: "証明書が日本語・英語以外の場合", text: "卒業大学発行の日本語または英語の翻訳を添付します。大学が発行できない場合は、原文の指定に従い公的機関で訳文の内容の証明を受けます。本人による翻訳のみ、または宣誓・署名のみの証明では代用できません。"}
     ]
   },
   graduation_or_expected_graduation_certificate: {
-    purpose: "证明学士课程已经毕业或预计毕业的大学文件。",
-    steps: ["按自己的毕业状态准备毕业证明或预计毕业证明。", "外国大学申请人还需学位取得或预计取得证明；两类内容可以由同一证明记载。", "使用大学出具的文件，核对原件、语言和翻译要求。"],
-    warnings: ["成绩证明与毕业证明可合在一份大学证明中；本页不判断手中的替代证明是否有效。"],
+    purpose: "学士課程の卒業または卒業見込みを証明する大学発行の書類です。",
+    steps: ["卒業状況に応じて卒業証明書または卒業見込証明書を準備します。", "外国の大学の出願者は、学位の取得または取得見込みの証明も必要です。卒業と学位の証明は1つの書類に記載されていても構いません。", "大学発行の書類を使用し、原本・言語・翻訳の要件を確認します。"],
+    warnings: ["成績と卒業の証明が1つにまとまっていても構いません。手元の代替書類の有効性はこの画面では判断しません。"],
     conditions: [
-      {title: "如果申请2026年9月入学", text: "证明须体现可在2026年9月27日前毕业；该日期不适用于2027年4月入学。", intakeYear: 2026, intakeMonth: 9},
-      {title: "如果毕业证明无法提供", text: "原文允许大学出具载明毕业或预计毕业年月、姓名、出生日期的证明；年月可用入学与毕业年月表示。"},
-      {title: "如果外国大学的毕业或学位证明均无法提供", text: "另有须写明取得或预计取得学位等内容的大学证明要求；不要把两种替代情形合并。"},
-      {title: "如果无法提交原件", text: "按原文由毕业大学或使领馆、公证机关等公共机构完成原本证明；普通复印件不能直接替代。"},
-      {title: "如果证明不是日文或英文", text: "附毕业大学出具的日文或英文翻译；大学无法出具时，按原文办理公共机构的译文内容认证。仅本人翻译或只认证声明、签名不足以代替内容认证。"}
+      {title: "2026年9月入学に出願する場合", text: "2026年9月27日までに卒業できることを示す必要があります。この日付は2027年4月入学には適用しません。", intakeYear: 2026, intakeMonth: 9},
+      {title: "卒業証明書を提出できない場合", text: "原文では、卒業・卒業見込みの年月、氏名、生年月日を記載した大学の証明書を認めています。年月は入学・卒業年月で示すこともできます。"},
+      {title: "外国の大学の卒業・学位証明がいずれも提出できない場合", text: "取得または取得見込みの学位などを記載した大学の証明書に関する別の要件があります。2つの代替条件を混同しないでください。"},
+      {title: "原本を提出できない場合", text: "原文に従い、卒業大学・大使館・領事館・公証機関などの公的機関による原本証明を受けてください。通常のコピーでは代用できません。"},
+      {title: "証明書が日本語・英語以外の場合", text: "卒業大学発行の日本語または英語の翻訳を添付します。大学が発行できない場合は、原文の指定に従い公的機関で訳文の内容の証明を受けます。本人による翻訳のみ、または宣誓・署名のみの証明では代用できません。"}
     ]
   }
 };
@@ -845,7 +845,7 @@ export function materialDisplay(scope, rawCode, originalName) {
   const catalog = identity && materialDisplays.find((entry) =>
     Object.entries(entry.identity).every(([key, value]) => identity[key] === value));
   const row = catalog?.materials[code];
-  if (!row) return {name: originalName, official: "", description: "说明待核实。", verified: false};
+  if (!row) return {name: originalName, official: "", description: "説明は確認中です。", verified: false};
   return {name: row[0], official: row[1], description: row[2], verified: true};
 }
 
@@ -870,13 +870,13 @@ export function materialGuide(scope, topic) {
 function readerMaterialLine(item) {
   const guide = item.guide;
   const joinSentences = (rows) => `${rows.map((row) => row.replace(/[。；]$/, "")).join("；")}。`;
-  return `${item.title}${item.official ? `（${item.official}）` : ""}｜${guide?.purpose || item.description}｜${item.state}。${item.action}`
-    + (guide ? ` 准备方法：${joinSentences(guide.steps)} 注意：${joinSentences(guide.warnings)}`
-      + (guide.conditions.length ? ` 特殊情况：${joinSentences(guide.conditions.map((row) => `${row.title}：${row.text}`))}` : "") : "");
+  return `${item.title}${item.official && item.official !== item.title ? `（${item.official}）` : ""}｜${guide?.purpose || item.description}｜${item.state}。${item.action}`
+    + (guide ? ` 準備方法：${joinSentences(guide.steps)} 注意事項：${joinSentences(guide.warnings)}`
+      + (guide.conditions.length ? ` 条件別の注意事項：${joinSentences(guide.conditions.map((row) => `${row.title}：${row.text}`))}` : "") : "");
 }
 
 export function readerReportOptions(report) {
-  requireValue(report?.scope && Array.isArray(report.topics), "报告尚未校验");
+  requireValue(report?.scope && Array.isArray(report.topics), "レポートが未検証です");
   const options = {
     dates: report.kind === "legacy_applicant" && report.topics.some((topic) => topic.category === "dates"),
     materials: report.topics.some((topic) => report.kind === "reviewed_material_slice" || topic.category === "materials"),
@@ -890,78 +890,78 @@ function legacyMaterialState(topic, comparisonItem) {
   const applicability = comparisonItem?.official_status || topic.status_code;
   const preparation = comparisonItem?.preparation_status || "unknown";
   if (applicability === "not_applicable" || comparisonItem?.comparison_status === "not_applicable")
-    return {state: "本项无需提交", action: "按当前已审核的适用条件，本项无需提交。"};
+    return {state: "この書類の提出は不要", action: "確認済みの適用条件では、この書類の提出は不要です。"};
   if (applicability === "not_covered")
-    return {state: "当前资料未覆盖", action: "当前资料不能判断这一项，请查看完整募集要项。"};
+    return {state: "対象資料の範囲外", action: "この資料だけでは判断できません。募集要項全体を確認してください。"};
   if (applicability !== "required")
-    return {state: "待确认适用", action: preparation === "not_yet"
-      ? "自报尚未准备；先确认适用条件，再决定是否需要补材料。"
+    return {state: "適用条件を要確認", action: preparation === "not_yet"
+      ? "未準備と申告されています。まず適用条件を確認し、書類を追加する必要があるかを確かめてください。"
       : preparation === "available"
-        ? "已自报准备；先确认这一项是否需要提交。"
-        : "尚未填写准备情况；先确认这一项是否需要提交。"};
+        ? "準備済みと申告されています。まず提出が必要かを確認してください。"
+        : "準備状況は未入力です。まず提出が必要かを確認してください。"};
   if (preparation === "not_yet")
-    return {state: "待准备", action: "你填写为尚未准备；请核对该材料的具体要求。"};
+    return {state: "準備が必要", action: "未準備と入力されています。書類の具体的な要件を確認してください。"};
   if (preparation === "available")
-    return {state: "已准备（自报）", action: "请核对材料是否符合要求。"};
-  return {state: "尚未填写准备情况", action: "请填写准备情况；目前不计为缺材料。"};
+    return {state: "準備済み（自己申告）", action: "書類が要件を満たすか確認してください。"};
+  return {state: "準備状況が未入力", action: "準備状況を記録してください。現在は不足書類とは数えていません。"};
 }
 
 function sliceMaterialState(topic, employment, preparation = "unknown") {
   if (topic.status_code === "submission_not_required")
-    return {state: "本项无需提交", action: topic.explanation};
+    return {state: "この書類の提出は不要", action: topic.explanation};
   if (topic.status_code === "rule_not_applicable")
-    return {state: "本条条件不适用", action: topic.explanation};
+    return {state: "この条件の対象外", action: topic.explanation};
   if (topic.status_code === "submission_required" && preparation === "available")
-    return {state: "已准备（自报）", action: "官方仍需提交；请核对材料内容、格式与提交情况，自报不代表学校受理。"};
+    return {state: "準備済み（自己申告）", action: "公式要件では提出が必要です。内容・書式・提出状況を確認してください。自己申告は大学での受理を意味しません。"};
   if (topic.status_code === "submission_required" && preparation === "not_yet")
-    return {state: "待准备", action: "你填写为尚未准备；请按本项要求准备并提交，自报不改变官方提交要求。"};
+    return {state: "準備が必要", action: "未準備と入力されています。この書類の要件に従って準備・提出してください。自己申告で提出要件が変わることはありません。"};
   if (topic.status_code === "submission_required")
-    return {state: "需提交，尚未填写准备情况", action: topic.explanation};
+    return {state: "提出が必要・準備状況は未入力", action: topic.explanation};
   if (topic.status_code === "not_covered")
-    return {state: "当前资料未覆盖", action: "本切片未确认这一项。"};
+    return {state: "対象資料の範囲外", action: "このサンプルでは未確認です。"};
   const missing = [];
-  if (employment.current === "unknown") missing.push("目前是否在职");
-  if (employment.retain === "unknown") missing.push("入学后是否继续在职");
-  return {state: "待确认适用", action: `${topic.explanation}${missing.length ? `请补充${missing.join("、")}。` : "请向学校确认适用条件。"}`};
+  if (employment.current === "unknown") missing.push("現在在職しているか");
+  if (employment.retain === "unknown") missing.push("入学後も在職するか");
+  return {state: "適用条件を要確認", action: `${topic.explanation}${missing.length ? `入力してください：${missing.join("、")}。` : "適用条件を大学に確認してください。"}`};
 }
 
 function readerText(view) {
-  const lines = ["出愿准备参考", `目标：${view.target}`, `本次关注：${view.selected.map((key) => readerTopicNames[key]).join("、")}`];
+  const lines = ["出願準備レポート", `志望先：${view.target}`, `選択した内容：${view.selected.map((key) => readerTopicNames[key]).join("、")}`];
   const section = (title, rows) => {
     lines.push("", title);
     for (const row of rows) lines.push(`- ${row}`);
   };
-  if (view.priorityRows.length) section("接下来先做什么", view.priorityRows);
+  if (view.priorityRows.length) section("次に準備すること", view.priorityRows);
   if (view.selected.includes("dates")) {
-    section("关键时间", view.dates.length
+    section("重要な日程", view.dates.length
       ? view.dates.map((item) => `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`)
-      : ["当前已覆盖资料尚未整理日期，请核对完整募集要项。"]);
+      : ["対象資料の日程はまだ整理されていません。募集要項全体をご確認ください。"]);
     if (view.dateNote) lines.push(view.dateNote);
   }
   if (view.selected.includes("materials"))
-    section("材料准备清单", view.materials.length
+    section("書類の準備リスト", view.materials.length
       ? view.materials.map((item) => item.line)
-      : ["当前所选资料没有可整理的材料主题。"]);
+      : ["選択した資料に、レポートに含められる書類項目がありません。"]);
   if (view.selected.includes("materials") && view.english.length)
-    section("英语成绩与证明", view.english);
+    section("英語スコア・証明書", view.english);
   if (view.selected.includes("materials") && view.submission.length)
-    section("毕业与提交提醒", view.submission);
+    section("卒業・提出に関する確認事項", view.submission);
   if (view.selected.includes("other"))
-    section("其他已加载要求", view.other.length
+    section("読み込み済みのその他の要件", view.other.length
       ? view.other.map((item) => `${item.title}：${item.summary}（${item.status}）`)
-      : ["当前已加载资料没有其他主题。"]);
-  if (view.selected.includes("exams")) section("考试安排", view.exams);
-  lines.push("", `范围说明：${view.limitation}`);
+      : ["その他の項目はありません。"]);
+  if (view.selected.includes("exams")) section("試験日程", view.exams);
+  lines.push("", `対象範囲：${view.limitation}`);
   return lines.join("\n");
 }
 
 export function readerReport(report, selected) {
   const available = readerReportOptions(report);
   requireValue(selected && ["dates", "materials", "other"].every((key) => typeof selected[key] === "boolean")
-    && (selected.exams === undefined || typeof selected.exams === "boolean"), "报告主题选择无效");
-  requireValue(Object.keys(available).every((key) => !selected[key] || available[key]), "选中主题未加载");
+    && (selected.exams === undefined || typeof selected.exams === "boolean"), "レポート項目の選択が正しくありません");
+  requireValue(Object.keys(available).every((key) => !selected[key] || available[key]), "選択した項目が未読み込みです");
   const chosen = Object.keys(available).filter((key) => selected[key]);
-  requireValue(chosen.length > 0, "请至少选择一类报告内容");
+  requireValue(chosen.length > 0, "レポートに含める項目を1つ以上選択してください");
   const target = scopeLabel(report.scope);
   const dates = [];
   const materials = [];
@@ -973,16 +973,16 @@ export function readerReport(report, selected) {
   let dateNote = "";
   if (selected.dates) {
     const seen = new Set();
-    const names = {registration_open: "登记开放", application_window: "出愿期间", arrival_deadline: "材料送达必着", recommended_arrival: "建议提前到达"};
+    const names = {registration_open: "登録開始", application_window: "出願期間", arrival_deadline: "書類の必着期限", recommended_arrival: "早めの到着の目安"};
     for (const topic of report.topics) for (const date of array(topic.dates)) {
       const kind = date.event_type || "other";
       const key = `${kind}:${date.display}`;
       if (seen.has(key)) continue;
       seen.add(key);
       dates.push({label: names[kind] || date.label, value: date.display,
-        note: kind === "recommended_arrival" ? "建议时间不等于强制截止" : ""});
+        note: kind === "recommended_arrival" ? "推奨日は必須の締切日ではありません" : ""});
       if (date.unknown.some((field) => field === "start_time" || field === "end_time") && !dateNote)
-        dateNote = "官方未明确的具体时刻不作推测；请按已审核日期和官方原文核对。";
+        dateNote = "公式に明記されていない時刻は推定していません。確認済みの日程と公式原文を参照してください。";
     }
   }
   if (selected.materials) {
@@ -997,21 +997,21 @@ export function readerReport(report, selected) {
     const detailed = report.comparison?.english_preparation_result;
     if (detailed) {
       for (const check of detailed.checks) {
-        const status = {reported_match: "按填写已具备", action_needed: "待处理",
-          needs_information: "待确认", not_applicable: "不适用", not_covered: "未覆盖"}[check.status];
-        english.push(`${check.title}：${status}。${check.explanation} 下一步：${check.next_action}`);
-        if (check.status === "action_needed") priorities.push(`英语 · ${check.title}：${check.next_action}`);
+        const status = {reported_match: "申告上は準備済み", action_needed: "対応待ち",
+          needs_information: "確認待ち", not_applicable: "対象外", not_covered: "未収録"}[check.status];
+        english.push(`${check.title}：${status}。${check.explanation} 次にすること：${check.next_action}`);
+        if (check.status === "action_needed") priorities.push(`英語 · ${check.title}：${check.next_action}`);
       }
     }
     const application = report.comparison?.application_preparation_result;
     if (application) {
       for (const check of application.checks) {
-        const status = {reported_match: "按填写已记录", action_needed: "需处理",
-          needs_information: "待确认", not_applicable: "不适用", not_covered: "未覆盖"}[check.status];
-        const line = `${check.title}：${status}。${check.explanation} 下一步：${check.next_action}`;
+        const status = {reported_match: "申告内容を記録済み", action_needed: "対応が必要",
+          needs_information: "確認待ち", not_applicable: "対象外", not_covered: "未収録"}[check.status];
+        const line = `${check.title}：${status}。${check.explanation} 次にすること：${check.next_action}`;
         submission.push(line);
         if (check.status === "action_needed" || check.status === "needs_information")
-          priorities.push(`毕业与提交 · ${check.title}：${check.next_action}`);
+          priorities.push(`卒業・提出 · ${check.title}：${check.next_action}`);
       }
     }
     const unfilled = [];
@@ -1028,34 +1028,34 @@ export function readerReport(report, selected) {
         description: display.description, verified: display.verified, guide: topic.guide, ...state};
       item.line = readerMaterialLine(item);
       materials.push(item);
-      if (["待准备", "需提交，尚未填写准备情况"].includes(state.state))
+      if (["準備が必要", "提出が必要・準備状況は未入力"].includes(state.state))
         priorities.push(`${display.name}：${state.state}。${state.action}`);
-      else if (state.state === "尚未填写准备情况") unfilled.push(display.name);
-      else if (state.state === "待确认适用") conditional.push(item);
+      else if (state.state === "準備状況が未入力") unfilled.push(display.name);
+      else if (state.state === "適用条件を要確認") conditional.push(item);
     }
     if (report.kind === "legacy_applicant" && !report.comparison)
-      priorities.unshift("尚未填写准备情况，暂不能判断还缺哪些材料；可先保存基础要求。");
+      priorities.unshift("準備状況が未入力のため、不足している書類は判断できません。基本要件を先に保存できます。");
     else if (unfilled.length)
-      priorities.push(`${unfilled.join("、")}：尚未填写准备情况；不能算作缺失材料。`);
+      priorities.push(`${unfilled.join("、")}：準備状況は未入力です。不足書類とは数えていません。`);
     if (conditional.length) priorities.push(conditional.length === 1
-      ? `${conditional[0].title}：待确认适用。${conditional[0].action}`
-      : `${conditional.map((item) => item.title).join("、")}：待确认适用；请先确认这些材料的适用条件。`);
+      ? `${conditional[0].title}：適用条件を要確認。${conditional[0].action}`
+      : `${conditional.map((item) => item.title).join("、")}：適用条件を要確認。先に各書類が対象となるか確認してください。`);
   }
   if (selected.other) {
     for (const topic of report.topics.filter((item) => !["dates", "materials"].includes(item.category)
       && item.id !== "language:preparation-guide")) {
       other.push({title: topic.title, summary: topic.summary, status: topic.status});
       if (["needs_information", "needs_review", "not_covered"].includes(topic.status_code))
-        priorities.push(`${topic.title}：${topic.status}。请核对该项条件。`);
+        priorities.push(`${topic.title}：${topic.status}。この項目の条件を確認してください。`);
     }
   }
   const limitation = report.kind === "reviewed_material_slice"
-    ? `仅整理当前已审核的 ${report.topics.length} 个材料主题，不是完整清单或资格判断；历史资料请核对官方最新信息。`
+    ? `確認済みの書類${report.topics.length}項目のみを整理しています。完全な一覧や資格判定ではありません。過去資料のため、最新の公式情報を確認してください。`
     : selected.materials
-      ? "仅整理当前已审核资料与本次自报；已准备不代表有效、已提交或学校受理，未覆盖内容请核对完整募集要项。"
-      : "仅整理当前已审核资料；未覆盖内容请核对完整募集要项。";
+      ? "確認済み資料と今回の自己申告のみを整理しています。準備済みは有効・提出済み・受理済みを意味しません。未収録の内容は募集要項全体で確認してください。"
+      : "確認済み資料のみを整理しています。未収録の内容は募集要項全体で確認してください。";
   const priorityRows = priorities.length ? priorities : selected.materials
-    ? ["当前所选范围没有明确的待补材料；这不表示全部申请材料齐全。"] : [];
+    ? ["選択範囲に明確な不足書類はありません。出願書類がすべて揃っていることを意味しません。"] : [];
   const view = {target, selected: chosen, priorities, priorityRows, dates, dateNote, materials, english, submission, other,
     ...(selected.exams ? {exams} : {}), limitation};
   return {...view, text: readerText(view)};

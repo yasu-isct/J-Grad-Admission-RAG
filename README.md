@@ -1,33 +1,46 @@
-# J-Grad interactive portfolio demo
+# J-Grad｜日本語の公開体験デモ
 
-This branch is the isolated, static GitHub Pages distribution of the public portfolio demo. It is not a backend deployment.
+このブランチは GitHub Pages で配信する作品展示用の静的サイトです。
 
-## Audience and scope
+**[デモを開く](https://yasu-isct.github.io/J-Grad-Admission-RAG/)**
 
-Japanese recruiting visitors can open the introduction and then experience the existing Chinese four-step UI. Five fixed sample scenarios cover ISCT Computer Science (2027 April, B schedule) and UTokyo GSFS CBMS (2027 master, general A, April intake, five reviewed material themes). These are historical source snapshots, not current admissions advice.
+## 体験できること
 
-The original frontend displays saved source-bound responses. Reports are projected by the existing frontend and labelled as samples in both the preview and copied text. Applicant controls are replaced by scenario selection. Saved QA examples are explicitly labelled and do not invoke a model. No arbitrary profile is submitted or evaluated.
+既存の二校・四ステップ画面を日本語化しています。学校の選択、募集要項の要点、準備状況との照合、原文・複数資料の関係、参考レポートの表示とコピーを体験できます。
 
-## Reuse and data
+- 東京科学大学：情報工学系、2027年4月入学、B日程の三つの例。
+- 東京大学：新領域創成科学研究科・複雑理工学専攻、2027年度修士・一般選抜A日程・4月入学、五つの書類テーマについて二つの例。
 
-- Product source: `33a473bdb78a6fc08f8e853c192c951bd115d9ad` on `main`.
-- Frontend: the existing four-step HTML, CSS, overview, report/evidence core, and reviewed material presentation modules.
-- Samples: existing public PREP-01/PREP-02, EXAM-02B, M19 and QA-01 online-20 records.
-- `provenance.json` records exact source paths, hashes and publication transformations.
-- Catalog limited to the identities for which saved responses are bundled. Local PDF links removed; official external source links retained.
-- No PDF binaries, KB, vector indexes, model weights, runtime workspaces, student records, credentials or API keys are published.
-- The demo does not call product endpoints, paid APIs, analytics, or build services at runtime. GitHub Pages handles ordinary site delivery and its access logs.
+過去の固定資料とテスト用の準備状況を使います。現在の募集案内や、提出書類の完全な一覧ではありません。
 
-## Files and maintenance
+## 保存例と実システムの違い
 
-`index.html` and `showcase.css` introduce the project in Japanese. `app/` holds the reused UI and the separate `demo-bridge.js` / `demo.css` overlay. `data/manifest.json` defines the supported scenarios and their recorded inputs. JSON files hold the published responses. The bridge rejects unsupported API operations and returns only the selected saved results.
+このサイトは保存済みの結果を表示するデモです。自由入力による審査、リアルタイムの検索、生成AIへの問い合わせは行いません。質問・回答例は、過去のオンラインテスト結果の日本語訳と明記しています。公式の日本語引用はそのまま保持し、説明文と区別します。
 
-Update this distribution deliberately from a reviewed source version; do not publish the project workspace or copy `.env`, runtime directories or source PDFs. A changed source response needs renewed scenario, evidence, report and mobile checks. Rebuilding a model or index is not part of this workflow.
+レポートの表示・コピーには既存のフロントエンドを再利用し、コピー文にも「保存済みサンプル」と表示します。選択や画面内の準備メモは製品APIへ送信しません。
 
-## Rollback
+## 再利用元とデータ
 
-GitHub Pages publishes only the root of `gh-pages`. Restore a previous reviewed distribution by a new commit on this branch, or disable the Pages site. Neither changes the product `main` implementation or the frozen/product runtime assets. This publication does not resume M13 backend deployment.
+- 製品の元バージョン：`33a473bdb78a6fc08f8e853c192c951bd115d9ad`。
+- 元の四ステップ画面、参考レポート、根拠表示、確認済み書類説明を再利用。
+- 保存例：公開済みの PREP-01/02、EXAM-02B、M19、QA-01 online-20。
+- 元ファイルの場所・ハッシュ、公開用の加工内容は `provenance.json` に記録。
+- 対象ID、条件、日付、出典の原文は保持。元の保存記録は変更せず、配信用の表示文を日本語化。
+- 公式PDF全体、KB、ベクトル索引、モデル、実在学生の情報、認証情報は含めません。
+- 実行時に製品APIや有料APIは呼び出しません。サイト配信に伴うアクセス情報は GitHub Pages の取扱いに従います。
 
-## License
+## 構成と更新
 
-Application frontend follows the source repository's license. University source excerpts retain their original attribution; no ownership of those documents is claimed.
+`index.html` が紹介ページ、`app/` が操作画面、`data/manifest.json` が五つのサンプル定義です。`demo-bridge.js` がサンプルを読み込み、対応しないAPI操作を拒否します。
+
+更新時は、画面・保存結果・サンプル入力の組合せを確認し、二校の操作、レポート、根拠の往復、スマートフォン表示を検証します。画面だけを最新製品版に差し替えないでください。
+
+## 戻し方
+
+GitHub Pages は `gh-pages` のルートだけを配信します。過去の確認済み内容を新しいコミットで復元できます。日本語化前の配信版は `f050a911450a46e9fb29b82b7f6e9553b72507e7` です。
+
+この公開展示は M13 バックエンド配備の再開ではありません。製品 main、334回帰基準、391製品資産には影響しません。
+
+## ライセンス
+
+アプリ部分には元リポジトリのライセンスが適用されます。大学の公式資料の引用は出典を保持し、資料自体の権利を主張しません。

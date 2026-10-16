@@ -108,12 +108,12 @@ function setReferenceActionState(state, message, enabled = baseRequirementsLoade
   for (const status of referenceActionStatuses) setMessage(status, state, message);
   for (const button of referenceButtons) {
     button.disabled = !enabled;
-    button.textContent = state === "loading" ? "正在整理…"
-      : state === "error" && enabled ? "重试生成报告" : "生成参考报告";
+    button.textContent = state === "loading" ? "作成中…"
+      : state === "error" && enabled ? "レポートの作成を再試行" : "準備レポートを作成";
   }
 }
 
-function clearReferenceReport(message = "当前目标或个人情况已改变，请按需重新生成。") {
+function clearReferenceReport(message = "志望先または本人情報が変更されました。必要に応じて再作成してください。") {
   referenceReportRequestId += 1;
   if (referenceReportController) referenceReportController.abort();
   referenceReportController = null;
@@ -143,18 +143,18 @@ function updateProfileCapability() {
   byId("slice-profile").hidden = !slice;
   byId("slice-material-preparation").replaceChildren();
   byId("slice-material-preparation").hidden = true;
-  comparisonSubmit.textContent = slice ? "核对已覆盖材料条件" : "对照个人情况";
+  comparisonSubmit.textContent = slice ? "対象書類の条件を確認" : "本人の状況と照合";
   byId("readiness-filters").hidden = slice;
   byId("grounded-answer-panel").hidden = slice;
-  clearGroundedAnswer(slice ? "当前材料切片暂不支持问答。" : "加载基础要求后即可提问。");
+  clearGroundedAnswer(slice ? "この資料の質問機能は未対応です。" : "基本要件を読み込むと質問できます。");
   updateGroundedContext();
 }
 
 const stepStateLabels = {
-  locked: "未开始",
-  current: "当前",
-  complete: "已完成",
-  stale: "需要重新确认"
+  locked: "未実施",
+  current: "現在",
+  complete: "完了",
+  stale: "再確認が必要"
 };
 
 function stepState(number) {
@@ -226,7 +226,7 @@ function heading(level, text) {
   return element;
 }
 
-function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
+function clearGroundedAnswer(message = "基本要件を読み込むと質問できます。") {
   groundedRequestId += 1;
   if (groundedController) groundedController.abort();
   groundedController = null;
@@ -238,31 +238,31 @@ function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
   const supported = currentReferenceEntry()?.kind !== "reviewed_material_slice";
   groundedQuestion.disabled = !baseRequirementsLoaded || !configured || !supported;
   groundedSubmit.disabled = !baseRequirementsLoaded || !configured || !supported;
-  setMessage(groundedStatus, "initial", !supported ? "当前材料切片暂不支持检索或问答。"
+  setMessage(groundedStatus, "initial", !supported ? "この資料の検索・質問機能は未対応です。"
     : generationStatus && !configured
-      ? `${generationAvailabilityLabel(generationStatus)}；已审核基础要求仍可查看。` : message);
+      ? `${generationAvailabilityLabel(generationStatus)}。確認済みの基本要件は引き続き参照できます。` : message);
 }
 
 function generationAvailabilityLabel(status) {
   if (!status?.configured) return status?.mode === "offline_rules"
-    ? "离线资料暂不可用" : "在线问答暂不可用";
-  if (status.mode === "online_model") return "在线问答可用";
-  if (status.mode === "offline_rules") return "仅离线资料";
-  return "问答可用";
+    ? "オフライン資料を利用できません" : "オンライン回答を利用できません";
+  if (status.mode === "online_model") return "オンライン回答が利用できます";
+  if (status.mode === "offline_rules") return "オフライン資料のみ";
+  return "質問機能が利用できます";
 }
 
 function updateGroundedContext() {
   if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
-    groundedContext.textContent = "当前材料切片暂不支持检索或问答；请查看已审核主题和官方原文。";
+    groundedContext.textContent = "この資料の検索・質問機能は未対応です。確認済みの項目と公式原文をご覧ください。";
     return;
   }
   if (!baseRequirementsLoaded || !demoTargetComplete()) {
-    groundedContext.textContent = "请先完成目标选择并加载基础要求。";
+    groundedContext.textContent = "志望先を選択し、出願の基本要件を読み込んでください。";
     return;
   }
   const target = currentDepartment();
   const intake = currentIntake();
-  groundedContext.textContent = `当前复用：${currentSchool().school_name} · ${target ? target.department_name : departmentSelect.value} · ${intake.intake_name}；个人情况取自上方本页表单。`;
+  groundedContext.textContent = `選択中：${currentSchool().school_name} · ${target ? target.department_name : departmentSelect.value} · ${intake.intake_name}。本人情報は上のフォームを使用します。`;
 }
 
 function groundedRequestPayload() {
@@ -275,13 +275,13 @@ function groundedRequestPayload() {
 }
 
 function groundedFailureMessage(code, status) {
-  if (code === "online_generation_not_configured") return "在线问答暂时不可用；已审核要求和官方依据仍可查看。";
-  if (code === "generation_provider_timeout" || status === 504) return "生成服务超时。当前选择和问题仍保留，可重试。";
-  if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
-  if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
-  if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答未通过证据或引用校验，因此已安全隐藏。请重试或查看基础要求。";
-  if (code === "unsupported_question" || status === 422) return "当前资料未覆盖这个问题，或问题中没有明确的申请事项；请换一种问法。";
-  return "暂时无法生成有依据的回答，请重试。";
+  if (code === "online_generation_not_configured") return "オンライン回答は現在利用できません。確認済みの要件と公式資料は引き続き閲覧できます。";
+  if (code === "generation_provider_timeout" || status === 504) return "回答処理がタイムアウトしました。選択内容と質問を保持しています。再試行してください。";
+  if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "回答・検索サービスを利用できません。しばらくしてから再試行してください。";
+  if (code === "insufficient_evidence") return "回答に必要な根拠が不足しています。質問の範囲を絞るか、表現を変えてください。";
+  if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答の根拠・引用を確認できなかったため、表示していません。再試行するか、基本要件をご覧ください。";
+  if (code === "unsupported_question" || status === 422) return "対象資料にない内容、または出願事項を特定できない質問です。表現を変えてください。";
+  return "根拠に基づく回答を生成できませんでした。再試行してください。";
 }
 
 function appendGroundedList(container, title, values) {
@@ -355,8 +355,8 @@ function appendGroundedResult(container, payload, offline) {
   const referenceOnly = answer.kind === "reference_answer";
   const response = document.createElement("section");
   response.className = "grounded-response";
-  response.append(heading(3, offline ? "离线资料参考"
-    : referenceOnly ? "参考回答" : "综合回答"));
+  response.append(heading(3, offline ? "オフラインの参考資料"
+    : referenceOnly ? "参考回答" : "回答のまとめ"));
   const responseText = document.createElement("div");
   responseText.className = "grounded-response-text";
   appendReadableAnswer(responseText, answer.answer);
@@ -365,12 +365,12 @@ function appendGroundedResult(container, payload, offline) {
   if (!referenceOnly && (!Array.isArray(answer.claims) || !answer.claims.length)) {
     const empty = document.createElement("p");
     empty.className = "grounded-boundary";
-    empty.textContent = "已完成检索，但没有可安全展示的肯定性结论。";
+    empty.textContent = "検索は完了しましたが、根拠を確認できる結論はありませんでした。";
     container.append(empty);
   }
-  appendGroundedList(container, "仍需确认", answer.missing_information);
-  appendGroundedList(container, "回答范围", (answer.limitations || []).filter((item) =>
-    !String(item).includes("低保证参考回答")));
+  appendGroundedList(container, "追加確認が必要", answer.missing_information);
+  appendGroundedList(container, "回答の対象範囲", (answer.limitations || []).filter((item) =>
+    !String(item).includes("確認が必要な参考回答")));
 }
 
 function renderGroundedAnswer(payload) {
@@ -379,22 +379,22 @@ function renderGroundedAnswer(payload) {
     || payload.mode?.mode === "offline_rules";
   const meta = document.createElement("p");
   meta.className = "grounded-answer-meta";
-  const deliveryLabels = {cache_hit: "已复用上次结果", live: "在线回答",
-    fallback: "在线服务不可用 · 离线参考资料", offline: "离线参考资料"};
-  for (const text of [deliveryLabels[payload.delivery?.source] || "当前参考内容"]) {
+  const deliveryLabels = {cache_hit: "前回の結果を表示", live: "オンライン回答",
+    fallback: "オンラインサービス停止中 · オフライン参考資料", offline: "オフライン参考資料"};
+  for (const text of [deliveryLabels[payload.delivery?.source] || "今回の参考内容"]) {
     const badge = document.createElement("span");
     badge.textContent = text;
     meta.append(badge);
   }
   groundedOutput.append(meta);
   if (payload.result) appendGroundedResult(groundedOutput, payload.result, offline);
-  if (!payload.result && payload.summary) appendGroundedList(groundedOutput, "本次结果", [payload.summary]);
-  if (!payload.result) appendGroundedList(groundedOutput, "回答限制", ["本次没有可安全展示的引用回答，请核对官方依据。"]);
+  if (!payload.result && payload.summary) appendGroundedList(groundedOutput, "今回の結果", [payload.summary]);
+  if (!payload.result) appendGroundedList(groundedOutput, "回答に関する注意", ["引用を確認できる回答がありません。公式資料をご確認ください。"]);
   const missing = [...new Set((payload.missing_context || []).filter((value) =>
     !(payload.result?.answer?.missing_information || []).includes(value)))];
-  appendGroundedList(groundedOutput, "需要补充的信息", missing);
-  appendGroundedList(groundedOutput, "当前未覆盖", payload.unsupported_parts);
-  appendGroundedList(groundedOutput, "未回答的部分", (payload.subanswers || [])
+  appendGroundedList(groundedOutput, "追加で必要な情報", missing);
+  appendGroundedList(groundedOutput, "現在の対象範囲外", payload.unsupported_parts);
+  appendGroundedList(groundedOutput, "未回答の内容", (payload.subanswers || [])
     .filter((part) => part.status !== "answered").map((part) => part.message));
   groundedOutput.hidden = false;
 }
@@ -406,16 +406,16 @@ async function loadGenerationStatus() {
     if (!response.ok || typeof body.configured !== "boolean" || !Number.isInteger(body.request_timeout_seconds) || body.request_timeout_seconds < 1 || body.request_timeout_seconds > 3600) throw new Error("invalid generation status");
     generationStatus = body;
   } catch (_) {
-    generationStatus = { configured: false, label: "生成模式状态不可用" };
+    generationStatus = { configured: false, label: "回答モードを確認できません" };
   }
   generationModeLabel.textContent = generationAvailabilityLabel(generationStatus);
-  clearGroundedAnswer(baseRequirementsLoaded ? "可针对当前目标和本页个人情况提问。" : "加载基础要求后即可提问。");
+  clearGroundedAnswer(baseRequirementsLoaded ? "選択した志望先と本人情報について質問できます。" : "基本要件を読み込むと質問できます。");
 }
 
 async function submitGroundedAnswer() {
   const question = groundedQuestion.value.trim();
   if (!baseRequirementsLoaded || !demoTargetComplete() || !question || question.length > MAX_QUERY_LENGTH) {
-    setMessage(groundedStatus, "error", "请输入 1–1000 个字符的问题，并先加载基础要求。", true);
+    setMessage(groundedStatus, "error", "基本要件を読み込み、1〜1000文字で質問してください。", true);
     return;
   }
   if (groundedController) groundedController.abort();
@@ -428,7 +428,7 @@ async function submitGroundedAnswer() {
   groundedRetry.hidden = true;
   groundedOutput.hidden = true;
   groundedCanRetry = false;
-  setMessage(groundedStatus, "loading", "正在理解问题；需要学校规则时会检索本地募集要项。");
+  setMessage(groundedStatus, "loading", "質問を確認しています。必要に応じて募集要項を検索します。");
   try {
     const response = await fetch(GROUNDED_ANSWER_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: snapshot, cache: "no-store", credentials: "same-origin", signal: groundedController.signal });
     const body = await response.json().catch(() => ({}));
@@ -444,8 +444,8 @@ async function submitGroundedAnswer() {
     const offline = ["offline", "fallback"].includes(body.delivery?.source)
       || body.mode?.mode === "offline_rules";
     setMessage(groundedStatus, body.result ? "success" : "initial", body.result
-      ? offline ? "已显示离线参考资料；本次未获得在线回答。" : "回答已显示。"
-      : "本次没有可展示的回答；请查看下方说明。", true);
+      ? offline ? "オフライン参考資料を表示しました。今回はオンライン回答を取得できていません。" : "回答を表示しました。"
+      : "表示できる回答がありません。下の説明をご確認ください。", true);
   } catch (error) {
     if (requestId !== groundedRequestId) return;
     const timedOut = groundedController && groundedController.signal.reason === "timeout";
@@ -453,7 +453,7 @@ async function submitGroundedAnswer() {
     groundedRetry.hidden = false;
     groundedOutput.replaceChildren();
     groundedOutput.hidden = true;
-    setMessage(groundedStatus, "error", timedOut ? "生成服务超时。当前选择和问题仍保留，可重试。" : groundedFailureMessage(error && error.code, error && error.status), true);
+    setMessage(groundedStatus, "error", timedOut ? "回答処理がタイムアウトしました。選択内容と質問を保持しています。再試行してください。" : groundedFailureMessage(error && error.code, error && error.status), true);
   } finally {
     globalThis.clearTimeout(timeout);
     if (requestId === groundedRequestId) {
@@ -475,7 +475,7 @@ function resetDemoSelect(select, message) {
   select.disabled = true;
 }
 
-function clearDemoResults(message = "完成左侧选择后，再明确加载要求。") {
+function clearDemoResults(message = "志望先を選択して、出願要件を読み込んでください。") {
   requirementsOutput.replaceChildren();
   targetSummary.hidden = false;
   targetSummary.textContent = message;
@@ -531,17 +531,17 @@ function updateTargetStepSummary(target) {
 
 function updateRequirementsStepSummary(payload) {
   const labels = [
-    ["dates", "关键日期"],
-    ["materials", "核心材料"],
-    ["eligibility", "学历资格"],
-    ["language", "语言要求"]
+    ["dates", "重要な日程"],
+    ["materials", "主な提出書類"],
+    ["eligibility", "学歴・出願資格"],
+    ["language", "語学の要件"]
   ];
   const counts = labels.map(([category, label]) => {
     const count = payload.requirements.filter((item) => item.category === category).length;
-    return `${label} ${count} 项`;
+    return `${label} ${count}項目`;
   });
   const hasDates = payload.requirements.some((item) => item.category === "dates");
-  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? " · 日期见第2步" : ""}`;
+  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? " · 日程はステップ2へ" : ""}`;
 }
 
 function updateApplicantStepSummary() {
@@ -550,22 +550,22 @@ function updateApplicantStepSummary() {
     const retain = byId("slice-retain-employed").selectedOptions[0].textContent;
     const preparations = Array.from(byId("slice-material-preparation").querySelectorAll("select"),
       (control) => `${control.dataset.materialName}：${control.selectedOptions[0].textContent}`);
-    byId("step-3-summary-text").textContent = [`目前任职：${current}；入学后继续任职：${retain}`,
+    byId("step-3-summary-text").textContent = [`現在在職：${current}／入学後も在職：${retain}`,
       ...preparations].join("；");
     return;
   }
   const categories = [
-    ["学历", profileGroupHasProvidedValue("education")],
-    ["网上手续与寄送", profileGroupHasProvidedValue("submission")],
-    ["英语", profileGroupHasProvidedValue("english")],
-    ["日语", profileGroupHasProvidedValue("japanese")],
-    ["材料", profileGroupHasProvidedValue("materials")]
+    ["学歴", profileGroupHasProvidedValue("education")],
+    ["オンライン手続き・郵送", profileGroupHasProvidedValue("submission")],
+    ["英語", profileGroupHasProvidedValue("english")],
+    ["日本語", profileGroupHasProvidedValue("japanese")],
+    ["書類", profileGroupHasProvidedValue("materials")]
   ];
   const provided = categories.filter(([, value]) => value).map(([label]) => label);
   const missing = categories.filter(([, value]) => !value).map(([label]) => label);
   const parts = [
-    `已提供类别：${provided.length ? provided.join("、") : "无"}`,
-    `未提供类别：${missing.length ? missing.join("、") : "无"}`
+    `入力済み：${provided.length ? provided.join("、") : "なし"}`,
+    `未入力：${missing.length ? missing.join("、") : "なし"}`
   ];
   byId("step-3-summary-text").textContent = parts.join("；");
 }
@@ -575,18 +575,18 @@ function updateRequirementsSubmit() {
   const missing = [
     [currentSchool(), "学校"],
     [currentDegree(), "学位"],
-    [currentIntake(), "入学时间"],
-    [currentCollege(), "学院"],
-    [department, "系／专业"],
-    [department && (department.application_routes.length === 0 || routeSelect.value), "出愿日程／方式"]
+    [currentIntake(), "入学時期"],
+    [currentCollege(), "学院・研究科"],
+    [department, "系・専攻"],
+    [department && (department.application_routes.length === 0 || routeSelect.value), "入試日程・選抜区分"]
   ].filter(([complete]) => !complete).map(([, label]) => label);
   requirementsSubmit.disabled = requirementsPending || missing.length > 0;
   targetCompletionHint.dataset.state = missing.length ? "incomplete" : "ready";
   targetCompletionHint.textContent = requirementsPending
-    ? "正在读取官方要求，请稍候。"
+    ? "募集要項を読み込んでいます。"
     : missing.length
-      ? `还需选择：${missing.join("、")}。`
-      : "申请目标已完整，可以查看基础出愿要求。";
+      ? `次の項目を選択してください：${missing.join("、")}。`
+      : "志望先を選択しました。出願の基本要件を確認できます。";
 }
 
 function profileValueState(control) {
@@ -612,7 +612,7 @@ function updateProfileGroupStates() {
       : values.some((value) => value === "provided")
         ? "partial"
         : values.some((value) => value === "unknown") ? "unknown" : "empty";
-    const labels = { complete: "已填写", partial: "已填写部分", unknown: "仍需确认", empty: "待填写" };
+    const labels = { complete: "入力済み", partial: "一部入力済み", unknown: "追加確認が必要", empty: "入力待ち" };
     const badge = group.querySelector(".profile-group-state");
     badge.dataset.state = state;
     badge.textContent = labels[state];
@@ -628,16 +628,16 @@ function updateEnglishInputHint() {
   const hint = byId("english-link-hint");
   if ((score || date) && !concreteKind) {
     hint.dataset.state = "attention";
-    hint.textContent = "已填写成绩或考试日期：服务端还需要考试类型。可先继续填写，但提交前请选类型，或清空成绩与日期。";
+    hint.textContent = "スコア・受験日を入力した場合は試験の種類も必要です。照合する前に種類を選ぶか、スコアと日付を空欄にしてください。";
   } else if (kind === "ui_not_applicable" && report === "true") {
     hint.dataset.state = "attention";
-    hint.textContent = "你选择了未参加考试，同时标记已取得官方成绩单；请核对这两项输入。这里不判断成绩是否有效。";
+    hint.textContent = "「未受験」と「公式スコア証明取得済み」が選択されています。入力内容をご確認ください。スコアの有効性を判定するものではありません。";
   } else if (concreteKind) {
     hint.dataset.state = "info";
-    hint.textContent = "考试类型已记录。成绩、日期和官方成绩单可暂时留空；已填写也不代表成绩有效或学校已受理。";
+    hint.textContent = "試験の種類を記録しました。スコア・受験日・証明書は空欄にできます。入力だけで有効性や大学の受理を認定することはありません。";
   } else {
     hint.dataset.state = "info";
-    hint.textContent = "成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。";
+    hint.textContent = "スコア・受験日は空欄にできます。入力する場合は試験の種類も選択してください。";
   }
 }
 
@@ -679,11 +679,11 @@ function applicationDatesReconcile() {
   const hint = byId("demo-submission-hint");
   if (dispatched && arrival && arrival < dispatched) {
     hint.dataset.state = "attention";
-    hint.textContent = "实际送达日期不能早于寄出日期，请核对这两项。";
+    hint.textContent = "到着日が発送日より前になっています。日付をご確認ください。";
     return false;
   }
   hint.dataset.state = "info";
-  hint.textContent = "实际送达日期可以留空；寄出日期不会当作送达日期。";
+  hint.textContent = "到着日が不明な場合は空欄にしてください。発送日を到着日として扱いません。";
   return true;
 }
 
@@ -718,15 +718,15 @@ function resetApplicantInputs() {
 }
 
 function populateDegreeSelect() {
-  resetDemoSelect(demoDegreeSelect, "请选择学位");
-  resetDemoSelect(intakeSelect, "请先选择学位");
-  resetDemoSelect(collegeSelect, "请先选择入学时间");
-  resetDemoSelect(departmentSelect, "请先选择学院");
-  resetDemoSelect(routeSelect, "请选择日程或方式");
+  resetDemoSelect(demoDegreeSelect, "学位を選択してください");
+  resetDemoSelect(intakeSelect, "学位を選択してください");
+  resetDemoSelect(collegeSelect, "入学時期を選択してください");
+  resetDemoSelect(departmentSelect, "学院・研究科を選択してください");
+  resetDemoSelect(routeSelect, "日程・選抜区分を選択してください");
   routeField.hidden = true;
   const school = currentSchool();
   if (!school) { updateRequirementsSubmit(); return; }
-  demoDegreeSelect.replaceChildren(option("", "请选择学位"));
+  demoDegreeSelect.replaceChildren(option("", "学位を選択してください"));
   for (const degree of school.degrees) demoDegreeSelect.append(option(degree.degree_id, degree.degree_name));
   demoDegreeSelect.disabled = false;
   if (school.degrees.length === 1) demoDegreeSelect.value = school.degrees[0].degree_id;
@@ -734,53 +734,53 @@ function populateDegreeSelect() {
 }
 
 function populateIntakeSelect() {
-  resetDemoSelect(intakeSelect, "请选择入学时间");
-  resetDemoSelect(collegeSelect, "请先选择入学时间");
-  resetDemoSelect(departmentSelect, "请先选择学院");
-  resetDemoSelect(routeSelect, "请选择日程或方式");
+  resetDemoSelect(intakeSelect, "入学時期を選択してください");
+  resetDemoSelect(collegeSelect, "入学時期を選択してください");
+  resetDemoSelect(departmentSelect, "学院・研究科を選択してください");
+  resetDemoSelect(routeSelect, "日程・選抜区分を選択してください");
   routeField.hidden = true;
   const degree = currentDegree();
   if (!degree) { updateRequirementsSubmit(); return; }
-  intakeSelect.replaceChildren(option("", "请选择入学时间"));
+  intakeSelect.replaceChildren(option("", "入学時期を選択してください"));
   for (const intake of degree.intakes) intakeSelect.append(option(`${intake.document_id}:${intake.year}:${intake.month}`, intake.intake_name));
   intakeSelect.disabled = false;
   updateRequirementsSubmit();
 }
 
 function populateCollegeSelect() {
-  resetDemoSelect(collegeSelect, "请选择学院");
-  resetDemoSelect(departmentSelect, "请先选择学院");
-  resetDemoSelect(routeSelect, "请选择日程或方式");
+  resetDemoSelect(collegeSelect, "学院・研究科を選択してください");
+  resetDemoSelect(departmentSelect, "学院・研究科を選択してください");
+  resetDemoSelect(routeSelect, "日程・選抜区分を選択してください");
   routeField.hidden = true;
   const intake = currentIntake();
   if (!intake) { updateRequirementsSubmit(); return; }
-  collegeSelect.replaceChildren(option("", "请选择学院"));
+  collegeSelect.replaceChildren(option("", "学院・研究科を選択してください"));
   for (const college of intake.colleges) collegeSelect.append(option(college.college_id, college.college_name));
   collegeSelect.disabled = false;
   updateRequirementsSubmit();
 }
 
 function populateDepartmentSelect() {
-  resetDemoSelect(departmentSelect, "请选择系／专业");
-  resetDemoSelect(routeSelect, "请选择日程或方式");
+  resetDemoSelect(departmentSelect, "系・専攻を選択してください");
+  resetDemoSelect(routeSelect, "日程・選抜区分を選択してください");
   routeField.hidden = true;
   const college = currentCollege();
   if (!college) { updateRequirementsSubmit(); return; }
-  departmentSelect.replaceChildren(option("", "请选择系／专业"));
+  departmentSelect.replaceChildren(option("", "系・専攻を選択してください"));
   for (const department of college.departments) departmentSelect.append(option(department.department_id, department.department_name));
   departmentSelect.disabled = false;
   updateRequirementsSubmit();
 }
 
 function populateRouteSelect() {
-  resetDemoSelect(routeSelect, "请选择日程或方式");
+  resetDemoSelect(routeSelect, "日程・選抜区分を選択してください");
   const department = currentDepartment();
   if (!department || department.application_routes.length === 0) {
     routeField.hidden = true;
     updateRequirementsSubmit();
     return;
   }
-  routeSelect.replaceChildren(option("", "请选择日程或方式"));
+  routeSelect.replaceChildren(option("", "日程・選抜区分を選択してください"));
   for (const route of department.application_routes) routeSelect.append(option(route.route_id, route.route_name));
   routeSelect.disabled = false;
   routeField.hidden = false;
@@ -789,13 +789,13 @@ function populateRouteSelect() {
 
 function populateDemoCatalog(schools) {
   demoCatalog = schools;
-  schoolSelect.replaceChildren(option("", "请选择学校"));
+  schoolSelect.replaceChildren(option("", "学校を選択してください"));
   for (const school of schools) schoolSelect.append(option(school.school_id, school.school_name));
   schoolSelect.disabled = schools.length === 0;
   if (schools.length === 1) schoolSelect.value = schools[0].school_id;
   populateDegreeSelect();
   requirementsRetry.hidden = true;
-  setMessage(targetStatus, schools.length ? "success" : "empty", schools.length ? "审核目录已就绪，请完成申请目标。" : "当前没有可用的审核目标。", schools.length === 0);
+  setMessage(targetStatus, schools.length ? "success" : "empty", schools.length ? "対象一覧を読み込みました。志望先を選択してください。" : "現在、利用できる対象がありません。", schools.length === 0);
 }
 
 function catalogForReferenceEntry(item) {
@@ -856,17 +856,17 @@ async function loadDemoCatalog() {
   baseResponse = null;
   comparisonResponse = null;
   clearReferenceReport();
-  invalidateComparison("请先加载基础要求。");
+  invalidateComparison("先に出願の基本要件を読み込んでください。");
   activateStep(1);
   demoCatalog = [];
   requirementsRetry.hidden = true;
   clearDemoResults();
-  resetDemoSelect(schoolSelect, "正在读取审核目录");
-  resetDemoSelect(demoDegreeSelect, "请先选择学校");
-  resetDemoSelect(intakeSelect, "请先选择学位");
-  resetDemoSelect(collegeSelect, "请先选择入学时间");
-  resetDemoSelect(departmentSelect, "请先选择学院");
-  setMessage(targetStatus, "loading", "正在读取公开演示的固定目标目录。");
+  resetDemoSelect(schoolSelect, "対象一覧を読み込み中");
+  resetDemoSelect(demoDegreeSelect, "学校を選択してください");
+  resetDemoSelect(intakeSelect, "学位を選択してください");
+  resetDemoSelect(collegeSelect, "入学時期を選択してください");
+  resetDemoSelect(departmentSelect, "学院・研究科を選択してください");
+  setMessage(targetStatus, "loading", "公開デモの対象一覧を読み込んでいます。");
   try {
     const response = await fetch(TARGET_CATALOG_ENDPOINT, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
     if (!response.ok) throw new Error();
@@ -876,7 +876,7 @@ async function loadDemoCatalog() {
     updateProfileCapability();
   } catch (_error) {
     requirementsRetry.hidden = false;
-    setMessage(targetStatus, "error", "审核目录暂时无法读取，请重试。", true);
+    setMessage(targetStatus, "error", "対象一覧を読み込めませんでした。再試行してください。", true);
   }
 }
 
@@ -896,17 +896,17 @@ function demoTargetRequest() {
 
 function requirementStatusLabel(status) {
   const labels = {
-    required: "官方状态：必需",
-    conditional: "官方状态：有条件适用",
-    needs_information: "官方状态：待补充信息",
-    needs_review: "官方状态：需要人工确认",
-    not_applicable: "官方状态：不适用",
-    not_covered: "官方状态：当前未覆盖",
-    submission_required: "当前条件：需准备",
-    submission_not_required: "当前条件：此材料本身无需提交",
-    rule_not_applicable: "当前条件：本条规则不适用，不能推定一般性免交"
+    required: "要件：必須",
+    conditional: "要件：条件付きで対象",
+    needs_information: "要件：追加情報が必要",
+    needs_review: "要件：確認が必要",
+    not_applicable: "要件：対象外",
+    not_covered: "要件：現在の対象範囲外",
+    submission_required: "条件に該当：準備が必要",
+    submission_not_required: "条件に該当：この書類自体の提出は不要",
+    rule_not_applicable: "この条件の対象外です。提出全般が免除される意味ではありません。"
   };
-  return labels[status] || `官方状态：${status}`;
+  return labels[status] || `公式要件：${status}`;
 }
 
 function profileGroupsFromSchema() {
@@ -928,7 +928,7 @@ function profileCta(className = "") {
   button.type = "button";
   button.className = className;
   button.textContent = currentReferenceEntry()?.kind === "reviewed_material_slice"
-    ? "填写个人情况，核对已覆盖材料" : "填写个人情况，检查我还缺什么";
+    ? "本人情報から対象書類を確認" : "本人情報から準備が必要なものを確認";
   button.addEventListener("click", () => {
     if (baseRequirementsLoaded) activateStep(3, true);
   });
@@ -946,10 +946,10 @@ function renderDateEvent(event) {
   nature.className = "date-nature";
   nature.dataset.nature = event.nature;
   const natureLabels = {
-    opens: "开放时间",
-    period: "出愿期间",
-    must_arrive: "必着截止",
-    recommended_arrival: "建议到达"
+    opens: "受付開始",
+    period: "出願期間",
+    must_arrive: "必着期限",
+    recommended_arrival: "推奨到着日"
   };
   nature.textContent = natureLabels[event.nature] || event.nature;
   header.append(nature);
@@ -973,7 +973,7 @@ function appendEvidenceChoices(card, requirement) {
   const choices = document.createElement("details");
   choices.className = "evidence-choice-list";
   const summary = document.createElement("summary");
-  summary.textContent = `查看依据（${evidenceRows.length}条）`;
+  summary.textContent = `根拠を見る（${evidenceRows.length}件）`;
   choices.append(summary);
   const actions = document.createElement("div");
   actions.className = "actions requirement-evidence-actions";
@@ -981,9 +981,9 @@ function appendEvidenceChoices(card, requirement) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary";
-    const quote = evidence.highlights?.[0]?.exact_text || evidence.official_text || "查看原文";
+    const quote = evidence.highlights?.[0]?.exact_text || evidence.official_text || "原文を見る";
     const excerpt = String(quote).replace(/\s+/g, " ").slice(0, 42);
-    button.textContent = `第${index + 1}条 · ${evidence.official_title || "官方文件"} · PDF第${(evidence.pages || []).join("、")}页 · ${excerpt}`;
+    button.textContent = `${index + 1}件目 · ${evidence.official_title || "公式資料"} · PDF ${ (evidence.pages || []).join("、")}ページ · ${excerpt}`;
     button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
     actions.append(button);
   });
@@ -998,7 +998,7 @@ function appendRequirementEvidence(card, requirement) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary";
-    button.textContent = `查看依据（${requirement.graphTopic.sources.length}条）`;
+    button.textContent = `根拠を見る（${requirement.graphTopic.sources.length}件）`;
     button.addEventListener("click", () => openEvidenceGraph(requirement, button));
     actions.append(button);
     card.append(actions);
@@ -1014,7 +1014,7 @@ function appendPreparationGuide(card, guide, officialName = null) {
   if (collapse) {
     container.className = "preparation-guide-details";
     const summary = document.createElement("summary");
-    summary.textContent = "如何准备";
+    summary.textContent = "準備のしかた";
     container.append(summary);
   }
   if (officialName) container.append(officialName);
@@ -1029,14 +1029,14 @@ function appendPreparationGuide(card, guide, officialName = null) {
   for (const line of guide.warnings) {
     const note = document.createElement("p");
     note.className = "preparation-warning";
-    note.textContent = `注意：${line}`;
+    note.textContent = `注意事項：${line}`;
     container.append(note);
   }
   if (guide.conditions.length) {
     const details = document.createElement("details");
     details.className = "preparation-conditions";
     const summary = document.createElement("summary");
-    summary.textContent = "查看特殊情况";
+    summary.textContent = "例外・特別な場合を確認";
     details.append(summary);
     for (const condition of guide.conditions) {
       const note = document.createElement("p");
@@ -1070,11 +1070,11 @@ function renderRequirementCard(requirement, options = {}) {
   const status = document.createElement("span");
   status.className = "requirement-status";
   status.dataset.status = requirement.official_status;
-  status.textContent = pendingSliceGuide ? "材料条件尚未核对" : material
-    ? ({required: "当前规则：需提交", needs_information: "适用条件待确认",
-      submission_not_required: "本项无需提交", rule_not_applicable: "本条条件不适用",
-      submission_required: "当前条件：需提交", not_covered: "当前资料未覆盖"})[requirement.official_status]
-      || "适用条件待确认"
+  status.textContent = pendingSliceGuide ? "書類の適用条件は未確認" : material
+    ? ({required: "提出が必要", needs_information: "適用条件を確認してください",
+      submission_not_required: "この書類の提出は不要", rule_not_applicable: "この条件の対象外",
+      submission_required: "現在の条件では提出が必要", not_covered: "対象資料の範囲外"})[requirement.official_status]
+      || "適用条件を確認してください"
     : requirementStatusLabel(requirement.official_status);
   const description = document.createElement("p");
   description.className = "requirement-description";
@@ -1087,7 +1087,7 @@ function renderRequirementCard(requirement, options = {}) {
     && !["required", "submission_required"].includes(requirement.official_status)) {
     const conditional = document.createElement("p");
     conditional.className = "preparation-warning";
-    conditional.textContent = "适用条件仍需确认；以下是需要提交时的准备方法。";
+    conditional.textContent = "適用条件の確認が必要です。以下は提出が必要な場合の準備方法です。";
     card.append(conditional);
   }
   if (guide) appendPreparationGuide(card, guide, official);
@@ -1105,7 +1105,7 @@ function renderRequirementCard(requirement, options = {}) {
   if (requirement.deadline) {
     const deadline = document.createElement("p");
     deadline.className = "deadline-callout";
-    deadline.textContent = `官方日期／截止：${requirement.deadline}`;
+    deadline.textContent = `公式の日程・締切：${requirement.deadline}`;
     card.append(deadline);
   }
   if (!options.compact && requirement.reviewed_summary
@@ -1113,7 +1113,7 @@ function renderRequirementCard(requirement, options = {}) {
     const detail = document.createElement("details");
     detail.className = "technical-disclosure";
     const summary = document.createElement("summary");
-    summary.textContent = "查看审核日期摘要（日文）";
+    summary.textContent = "確認済みの日程の要約を見る";
     const excerpt = document.createElement("blockquote");
     excerpt.className = "reviewed-summary";
     excerpt.textContent = String(requirement.reviewed_summary).replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
@@ -1132,8 +1132,8 @@ function renderApplicationOverview(payload, overview) {
   copy.className = "application-overview-copy";
   const eyebrow = document.createElement("p");
   eyebrow.className = "section-label";
-  eyebrow.textContent = "申请概览";
-  const title = heading(3, "先确认截止，再开始准备");
+  eyebrow.textContent = "出願の概要";
+  const title = heading(3, "期限を確認してから準備を始める");
   title.id = "application-overview-heading";
   const target = document.createElement("p");
   target.className = "overview-target";
@@ -1143,9 +1143,9 @@ function renderApplicationOverview(payload, overview) {
   const metrics = document.createElement("dl");
   metrics.className = "overview-metrics";
   const metricValues = [
-    ["最重要的必着截止", overview.deadlineText, "deadline"],
-    ["核心材料", overview.materialCount === null ? "暂无已审核数据" : `${overview.materialCount} 项`, "materials"],
-    ["基础要求待确认", overview.needsInformationCount === null ? "暂无已审核数据" : `${overview.needsInformationCount} 项`, "pending"]
+    ["書類の必着期限", overview.deadlineText, "deadline"],
+    ["主な提出書類", overview.materialCount === null ? "確認済みのデータはありません" : `${overview.materialCount}項目`, "materials"],
+    ["確認が必要な基本要件", overview.needsInformationCount === null ? "確認済みのデータはありません" : `${overview.needsInformationCount}項目`, "pending"]
   ];
   for (const [label, value, kind] of metricValues) {
     const item = document.createElement("div");
@@ -1161,7 +1161,7 @@ function renderApplicationOverview(payload, overview) {
     const pendingMetric = metrics.querySelector('[data-metric="pending"]');
     const note = document.createElement("p");
     note.className = "overview-metric-note";
-    note.textContent = `其中 ${overview.profileComparableCount} 项可进入个人对照，${overview.otherConfirmationCount} 项需另行确认`;
+    note.textContent = `うち${overview.profileComparableCount}項目は本人情報と照合でき、${overview.otherConfirmationCount}項目は別途確認が必要です`;
     pendingMetric.append(note);
   }
   copy.append(metrics);
@@ -1169,24 +1169,24 @@ function renderApplicationOverview(payload, overview) {
   const action = document.createElement("aside");
   action.className = "overview-action";
   const actionLabel = document.createElement("p");
-  actionLabel.textContent = "下一步";
+  actionLabel.textContent = "次のステップ";
   const actionHint = document.createElement("p");
   actionHint.className = "field-detail";
-  actionHint.textContent = "填写后会使用现有规则保守对照，不会保存个人资料。";
+  actionHint.textContent = "入力内容を確認済みの条件と照合します。個人情報は保存しません。";
   action.append(actionLabel, profileCta("overview-cta"), actionHint);
   section.append(copy, action);
   return section;
 }
 
-function renderKeyDates(requirements, emptyMessage = "暂无已审核数据") {
+function renderKeyDates(requirements, emptyMessage = "確認済みのデータはありません") {
   const section = document.createElement("section");
   section.className = "result-section key-dates-section";
-  section.append(heading(3, "关键时间"));
+  section.append(heading(3, "重要な日程"));
   const intro = document.createElement("p");
   intro.className = "section-intro";
   intro.textContent = requirements.length
-    ? "“必着”表示材料必须在该时点前送达；“建议到达”只是降低延误风险的建议，不是另一个强制截止。"
-    : "当前资料尚未覆盖日期；请查看完整官方募集要项核对时间。";
+    ? "「必着」はその期限までに書類が到着する必要があるという意味です。「推奨到着日」は遅延を避けるための目安であり、必須の期限ではありません。"
+    : "このサンプルでは日程を整理していません。公式募集要項でご確認ください。";
   section.append(intro);
   const dateList = document.createElement("div");
   dateList.className = "date-event-list";
@@ -1216,7 +1216,7 @@ function renderRequirementSection(title, entries, className, scope) {
   } else {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
-    empty.textContent = "暂无已审核数据";
+    empty.textContent = "確認済みのデータはありません";
     list.append(empty);
   }
   section.append(list);
@@ -1228,21 +1228,21 @@ function renderPendingRequirements(entries, overview, scope) {
   section.className = "result-section pending-section";
   const count = overview.needsInformationCount === null ? null : entries.length;
   section.append(heading(3, count === null
-    ? "仍需进一步确认的基础要求"
-    : `仍需进一步确认的基础要求：${count} 项`));
+    ? "追加確認が必要な基本要件"
+    : `追加確認が必要な基本要件：${count}項目`));
   const explanation = document.createElement("p");
   explanation.className = "section-intro";
   explanation.textContent = count === null
-    ? "当前暂无已审核数据，不会推断要求是否满足。"
-    : "这里列出尚需核对的资格与语言要求；材料适用性和准备情况在材料清单中分别查看。";
+    ? "確認済みデータがないため、要件を満たすかどうかは判定しません。"
+    : "確認が必要な資格・語学の要件です。書類の適用条件と準備状況は書類リストで確認できます。";
   section.append(explanation);
   if (overview.otherConfirmationRequirements.length) {
     const otherNotice = document.createElement("p");
     otherNotice.className = "pending-other-notice";
-    otherNotice.textContent = `当前个人情况步骤不处理：${overview.otherConfirmationRequirements.map((item) => item.title).join("、")}。请核对实际情况及官方要求。`;
+    otherNotice.textContent = `この本人情報の照合では扱わない項目：${overview.otherConfirmationRequirements.map((item) => item.title).join("、")}。状況と公式要件を確認してください。`;
     section.append(otherNotice);
   }
-  const inputHeading = heading(4, "下一步可填写的个人情况");
+  const inputHeading = heading(4, "次のステップで確認する本人情報");
   inputHeading.className = "profile-input-heading";
   section.append(inputHeading);
   const categories = document.createElement("ul");
@@ -1254,7 +1254,7 @@ function renderPendingRequirements(entries, overview, scope) {
   }
   if (!categories.childElementCount) {
     const item = document.createElement("li");
-    item.textContent = "暂无已审核数据";
+    item.textContent = "確認済みのデータはありません";
     categories.append(item);
   }
   section.append(categories);
@@ -1262,7 +1262,7 @@ function renderPendingRequirements(entries, overview, scope) {
     const details = document.createElement("details");
     details.className = "pending-details";
     const summary = document.createElement("summary");
-    summary.textContent = `查看待确认的 ${entries.length} 项要求`;
+    summary.textContent = `要確認の${entries.length}項目を見る`;
     const list = document.createElement("div");
     list.className = "requirement-list";
     for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true, scope }));
@@ -1276,10 +1276,10 @@ function renderExamCard(exam) {
   if (exam?.schema_version === "2.0" && exam.status === "available") return renderExamCardV2(exam);
   const section = document.createElement("section");
   section.className = "result-section exam-arrangement";
-  section.append(heading(3, exam?.status === "available" ? "考试安排 · B日程" : "考试安排"));
+  section.append(heading(3, exam?.status === "available" ? "試験日程 · B日程" : "試験日程"));
   if (exam?.status !== "available") {
     const note = document.createElement("p");
-    note.textContent = exam?.message || "考试资料暂不可用，请查看官方募集要项。";
+    note.textContent = exam?.message || "試験情報を表示できません。公式募集要項をご確認ください。";
     section.append(note);
     return section;
   }
@@ -1287,7 +1287,7 @@ function renderExamCard(exam) {
   const lead = document.createElement("p");
   lead.className = "exam-lead";
   lead.textContent = rows[0];
-  section.append(lead, heading(4, "考什么"));
+  section.append(lead, heading(4, "試験科目"));
   const subjects = document.createElement("ul");
   for (const row of rows.slice(1, 4)) {
     const item = document.createElement("li");
@@ -1302,16 +1302,16 @@ function renderExamCard(exam) {
   }
   const after = document.createElement("details");
   const summary = document.createElement("summary");
-  summary.textContent = "笔试之后：口述对象与日期";
+  summary.textContent = "筆記試験後の口述試験：対象者と日程";
   const oral = document.createElement("p");
   oral.textContent = rows[6];
   after.append(summary, oral);
   const oralSource = document.createElement("button");
   oralSource.type = "button";
   oralSource.className = "quiet";
-  oralSource.textContent = "查看口述对象公布原文";
-  oralSource.addEventListener("click", () => openDemoEvidence({title: "口述对象公布"},
-    exam.evidence[1], oralSource, {examYearNote: "公告的是口述对象，时间为17时左右起；不是最终合格公布。"}));
+  oralSource.textContent = "口述試験対象者の発表について原文を見る";
+  oralSource.addEventListener("click", () => openDemoEvidence({title: "口述試験対象者の発表"},
+    exam.evidence[1], oralSource, {examYearNote: "17時頃から発表されるのは口述試験の対象者です。最終合格発表ではありません。"}));
   after.append(oralSource);
   section.append(after);
   const actions = document.createElement("div");
@@ -1319,13 +1319,13 @@ function renderExamCard(exam) {
   const source = document.createElement("button");
   source.type = "button";
   source.className = "secondary";
-  source.textContent = "查看官方原文";
-  source.addEventListener("click", () => openDemoEvidence({title: "B日程考试安排"}, exam.evidence[0], source,
-    {examYearNote: "考试年份按本册封面、出愿流程与信息工学系考试页交叉核对。", examYearPages: [1, 2]}));
+  source.textContent = "公式原文を見る";
+  source.addEventListener("click", () => openDemoEvidence({title: "B日程の試験日程"}, exam.evidence[0], source,
+    {examYearNote: "試験の実施年は、冊子の表紙・出願フロー・情報工学系の試験ページを照合して確認しています。", examYearPages: [1, 2]}));
   const english = document.createElement("button");
   english.type = "button";
   english.className = "secondary";
-  english.textContent = "查看英语证明要求";
+  english.textContent = "英語スコア証明の要件を見る";
   english.addEventListener("click", () => {
     const target = requirementsOutput.querySelector(".english-section");
     if (!target) return;
@@ -1345,11 +1345,11 @@ function examSourcesForField(exam, fieldPath) {
   for (const source of field.sources) {
     const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
     const evidence = fact || (source.source_id.startsWith("pdf_page:") ? {
-      official_title: exam.official_title, school_name: currentReferenceScope()?.school || "当前学校",
-      intake_name: currentReferenceScope()?.intake || "本册目标", pages: source.physical_pages,
+      official_title: exam.official_title, school_name: currentReferenceScope()?.school || "選択中の学校",
+      intake_name: currentReferenceScope()?.intake || "この冊子の対象", pages: source.physical_pages,
       official_text: source.exact_text, source_url: exam.official_source_url,
       local_pdf_url: exam.local_pdf_url,
-      limitation: "这是已核对PDF页的原文锚点；请结合完整原页与学校通知阅读。"
+      limitation: "確認済みPDFページの該当箇所です。ページ全体と大学の通知も併せてご確認ください。"
     } : null);
     if (!evidence) continue;
     const key = `${source.source_id}:${source.physical_pages.join(",")}`;
@@ -1365,18 +1365,18 @@ function openExamFieldEvidence(label, sources, trigger) {
   drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
   drawerGraph = null;
   evidenceDrawer.classList.remove("relationship-window");
-  byId("drawer-title").textContent = "官方依据";
+  byId("drawer-title").textContent = "公式資料の根拠";
   drawerContent.replaceChildren(heading(3, label));
   const note = document.createElement("p");
   note.className = "evidence-chinese-summary";
-  note.textContent = "以下按原文页和片段列出这项考试说明的全部依据；本人适用路径与资格仍以学校通知为准。";
+  note.textContent = "この試験情報の根拠をページ・該当箇所ごとに表示しています。本人に適用される選抜区分・資格は大学の案内をご確認ください。";
   drawerContent.append(note);
   const cards = document.createElement("div");
   cards.className = "relation-nodes";
   for (const {evidence, anchors} of sources) {
     const card = document.createElement("article");
     card.className = "relation-node";
-    card.append(heading(4, `PDF 第 ${evidence.pages.join("、")} 页`));
+    card.append(heading(4, `PDF ${evidence.pages.join("、")}ページ`));
     for (const anchor of anchors) {
       const quote = document.createElement("blockquote");
       quote.className = "direct-evidence";
@@ -1388,7 +1388,7 @@ function openExamFieldEvidence(label, sources, trigger) {
     const context = document.createElement("details");
     context.className = "official-context";
     const summary = document.createElement("summary");
-    summary.textContent = "展开该页原文上下文";
+    summary.textContent = "このページの前後の文脈を表示";
     const full = document.createElement("blockquote");
     full.className = "evidence-text";
     full.textContent = evidence.official_text;
@@ -1402,7 +1402,7 @@ function openExamFieldEvidence(label, sources, trigger) {
       link.href = href;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = `在 PDF 中查看第 ${page} 页`;
+      link.textContent = `PDFの${page}ページを開く`;
       card.append(link);
     }
     cards.append(card);
@@ -1417,7 +1417,7 @@ function renderExamCardV2(exam) {
   const view = referenceCore.examV2View(exam);
   const section = document.createElement("section");
   section.className = "result-section exam-arrangement";
-  section.append(heading(3, "考试安排 · 学校公布的 A/B 日程"));
+  section.append(heading(3, "試験日程 · 大学が公表したA/B日程"));
   const lead = document.createElement("p");
   lead.className = "exam-lead";
   lead.textContent = view.lead;
@@ -1429,7 +1429,7 @@ function renderExamCardV2(exam) {
     section.append(course);
   }
   if (view.subjects.length) {
-    section.append(heading(4, "考什么"));
+    section.append(heading(4, "試験科目"));
     const list = document.createElement("ul");
     for (const text of view.subjects) {
       const item = document.createElement("li");
@@ -1445,7 +1445,7 @@ function renderExamCardV2(exam) {
   }
   const more = document.createElement("details");
   const summary = document.createElement("summary");
-  summary.textContent = "口述、英语与语言";
+  summary.textContent = "口述試験・英語・使用言語";
   more.append(summary);
   for (const text of [view.aOral, view.bOral, view.specialist, view.english, view.language]) if (text) {
     const row = document.createElement("p");
@@ -1455,8 +1455,8 @@ function renderExamCardV2(exam) {
   section.append(more);
   const actions = document.createElement("div");
   actions.className = "source-actions";
-  for (const [path, label] of [["b.subjects", "查看笔试原文"], ["a.oral", "查看 A 日程原文"],
-    ["b.oral", "查看 B 口述原文"], ["english.submission", "查看英语原文"]]) {
+  for (const [path, label] of [["b.subjects", "筆記試験の原文を見る"], ["a.oral", "A日程の原文を見る"],
+    ["b.oral", "B日程の口述試験の原文を見る"], ["english.submission", "英語の原文を見る"]]) {
     const sources = examSourcesForField(exam, path);
     if (!sources.length) continue;
     const button = document.createElement("button");
@@ -1473,9 +1473,9 @@ function renderExamCardV2(exam) {
 function requirementsJumpNav() {
   const nav = document.createElement("nav");
   nav.className = "requirements-jump";
-  nav.setAttribute("aria-label", "本页要求定位");
-  for (const [selector, label] of [[".key-dates-section", "关键时间"],
-    [".materials-section", "出愿材料"], [".exam-arrangement", "考试安排"]]) {
+  nav.setAttribute("aria-label", "このページの要件");
+  for (const [selector, label] of [[".key-dates-section", "重要な日程"],
+    [".materials-section", "出願書類"], [".exam-arrangement", "試験日程"]]) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary";
@@ -1517,8 +1517,8 @@ function renderRequirements(payload, scope, exam) {
     ...(scope.request.school_id === "isct" ? [requirementsJumpNav()] : []),
     renderApplicationOverview(payload, overview),
     renderKeyDates(dateRequirements),
-    renderRequirementSection("英语考试与证明", englishRequirements, "english-section", scope),
-    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
+    renderRequirementSection("英語試験・スコア証明", englishRequirements, "english-section", scope),
+    renderRequirementSection("確認済みの書類", materialRequirements, "materials-section", scope),
     renderExamCard(exam),
     renderPendingRequirements(pending, overview, scope)
   );
@@ -1526,9 +1526,9 @@ function renderRequirements(payload, scope, exam) {
   const next = document.createElement("section");
   next.className = "result-section next-step-section";
   const nextCopy = document.createElement("div");
-  nextCopy.append(heading(3, "下一步：对照你的个人情况"));
+  nextCopy.append(heading(3, "次のステップ：本人の状況と照合"));
   const nextText = document.createElement("p");
-  nextText.textContent = "继续到现有个人情况步骤，填写后查看还缺哪些材料或信息。";
+  nextText.textContent = "次のステップで本人の状況を選び、準備が必要な書類や情報を確認できます。";
   nextCopy.append(nextText);
   next.append(nextCopy, profileCta("next-step-cta"));
   requirementsOutput.append(next);
@@ -1536,14 +1536,14 @@ function renderRequirements(payload, scope, exam) {
   const other = document.createElement("details");
   other.className = "result-section other-requirements";
   const otherSummary = document.createElement("summary");
-  otherSummary.textContent = `其他说明与已审核要求${secondary.length ? `（${secondary.length} 项）` : ""}`;
+  otherSummary.textContent = `その他の説明・確認済み要件${secondary.length ? `（${secondary.length} 项）` : ""}`;
   const otherList = document.createElement("div");
   otherList.className = "requirement-list";
   for (const requirement of secondary) otherList.append(renderRequirementCard(requirement, {scope}));
   if (!secondary.length) {
     const empty = document.createElement("p");
     empty.className = "empty-reviewed-data";
-    empty.textContent = "暂无其他已审核要求";
+    empty.textContent = "その他の確認済み要件はありません";
     otherList.append(empty);
   }
   other.append(otherSummary, otherList);
@@ -1551,7 +1551,7 @@ function renderRequirements(payload, scope, exam) {
 
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
-  boundary.textContent = "当前只整理已审核的部分要求；其他申请条件、材料提交与学校受理结果请核对完整募集要项。";
+  boundary.textContent = "確認済みの一部要件を整理しています。他の出願条件・提出方法・受理の扱いは、募集要項全体をご確認ください。";
   requirementsOutput.append(boundary);
 }
 
@@ -1570,18 +1570,18 @@ function renderSliceRequirements(mapped) {
   targetSummary.hidden = true;
   targetSummary.textContent = referenceCore.scopeLabel(scope);
   updateTargetStepSummary(scope);
-  byId("step-2-summary-text").textContent = `历史资料；当前已覆盖的 ${mapped.topics.length} 个材料主题；日期尚未覆盖。`;
+  byId("step-2-summary-text").textContent = `過去資料・確認済みの書類${mapped.topics.length}項目。日程は未収録です。`;
   const overview = document.createElement("section");
   overview.className = "application-overview";
   const copy = document.createElement("div");
   copy.className = "application-overview-copy";
-  copy.append(heading(3, "当前已审核的材料范围"));
+  copy.append(heading(3, "確認済み書類の対象範囲"));
   const label = document.createElement("p");
   label.className = "overview-target";
   label.textContent = referenceCore.scopeLabel(scope);
   const limit = document.createElement("p");
   limit.className = "final-notice";
-  limit.textContent = `历史招生资料；当前只覆盖 ${mapped.topics.length} 个材料主题，未覆盖日期或完整材料清单。请核对最新官方要项。`;
+  limit.textContent = `過去資料の書類${mapped.topics.length}項目のみが対象です。日程や全書類の一覧は含みません。最新の公式募集要項を確認してください。`;
   copy.append(label, limit);
   const action = document.createElement("aside");
   action.className = "overview-action";
@@ -1595,12 +1595,12 @@ function renderSliceRequirements(mapped) {
   }));
   requirementsOutput.append(
     overview,
-    renderKeyDates([], "当前资料尚未覆盖日期"),
-    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section", scope)
+    renderKeyDates([], "この資料の日程は未整理です"),
+    renderRequirementSection(`収録している書類 ${requirements.length}項目`, requirements, "materials-section", scope)
   );
   const next = document.createElement("section");
   next.className = "result-section next-step-section";
-  next.append(heading(3, "下一步：核对个人情况"), profileCta("next-step-cta"));
+  next.append(heading(3, "次のステップ：本人の状況を確認"), profileCta("next-step-cta"));
   requirementsOutput.append(next);
   renderSlicePreparation(mapped);
 }
@@ -1611,18 +1611,18 @@ function slicePreparationValues() {
 }
 
 function renderSlicePreparation(mapped) {
-  byId("slice-profile-coverage").textContent = `当前只对照已覆盖的 ${mapped.topics.length} 个材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。`;
+  byId("slice-profile-coverage").textContent = `収録している書類${mapped.topics.length}項目のみを照合します。在職条件の未入力は「いいえ」とせず、全書類の不足件数も算出しません。`;
   const container = byId("slice-material-preparation");
   container.replaceChildren();
   const controls = referenceCore.slicePreparationControls(mapped);
   container.hidden = controls.length === 0;
   if (!controls.length) return;
   const legend = document.createElement("legend");
-  legend.textContent = "材料准备（本次自报）";
+  legend.textContent = "書類の準備（自己申告）";
   const note = document.createElement("p");
   note.className = "field-help";
   note.id = "slice-material-help";
-  note.textContent = "准备情况只在本页记录，不改变官方提交要求；已准备不代表内容有效、已提交或学校受理。";
+  note.textContent = "準備状況はこの画面でのみ記録します。公式の提出要件は変わりません。「準備済み」は有効性・提出済み・受理を意味しません。";
   const inputs = document.createElement("div");
   inputs.className = "material-inputs";
   for (const control of controls) {
@@ -1632,7 +1632,7 @@ function renderSlicePreparation(mapped) {
     select.dataset.sliceMaterialCode = control.id;
     select.dataset.materialName = control.name;
     select.setAttribute("aria-describedby", note.id);
-    for (const [value, text] of [["unknown", "不知道／未填写"], ["available", "我已准备"], ["not_yet", "尚未准备"]]) {
+    for (const [value, text] of [["unknown", "不明・未入力"], ["available", "準備済み"], ["not_yet", "未準備"]]) {
       const option = document.createElement("option");
       option.value = value;
       option.textContent = text;
@@ -1651,7 +1651,7 @@ function refreshSlicePreparation() {
   referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
   referenceReader = null;
   renderSliceReadiness(referenceReport, loadedReference);
-  setReferenceActionState("success", "准备自报已更新；官方材料条件保持，可按需预览和复制报告。", true);
+  setReferenceActionState("success", "準備状況を更新しました。公式の条件は変わりません。レポートを表示・コピーできます。", true);
 }
 
 function appendDefinition(list, term, value) {
@@ -1691,25 +1691,25 @@ function verifiedLocalPdfHref(baseUrl, page) {
 }
 
 const relationMeanings = {
-  cross_reference: "送付方法参照",
-  department_specific_detail: "具体要求按专攻确认",
-  consulting_is_distinct_from_submitting: "参照清单与提交表不同",
-  corroborates_condition_with_submission_method: "补充条件与上传方式共同说明",
-  supplements: "补充说明",
-  shares_employment_context_but_separate_enrollment_stage: "入学手续相关，非本次出愿提交义务"
+  cross_reference: "送付方法を参照",
+  department_specific_detail: "詳細は専攻の要件を確認",
+  consulting_is_distinct_from_submitting: "確認用の一覧と提出する用紙は別",
+  corroborates_condition_with_submission_method: "補足条件とアップロード方法を併せて確認",
+  supplements: "補足説明",
+  shares_employment_context_but_separate_enrollment_stage: "入学手続きに関する背景情報（今回の出願時の提出義務ではありません）"
 };
 
 function graphDocumentLabel(title) {
-  if (title.includes("追加提出物一覧")) return "专攻追加材料表";
-  if (title.includes("入試案内")) return "入试案内";
-  if (title.includes("募集要項")) return "募集要项";
+  if (title.includes("追加提出物一覧")) return "専攻独自の追加提出物一覧";
+  if (title.includes("入試案内")) return "入試案内";
+  if (title.includes("募集要項")) return "募集要項";
   return title.length > 22 ? `…${title.slice(-22)}` : title;
 }
 
 function graphNodeLabel(source) {
-  const role = source.stage === "enrollment_context_only" ? "入学手续背景"
-    : source.role === "basis" ? "出愿直接依据" : "出愿关联说明";
-  return `${role} · ${graphDocumentLabel(source.title)} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
+  const role = source.stage === "enrollment_context_only" ? "入学手続きの背景情報"
+    : source.role === "basis" ? "出願要件の直接の根拠" : "出願に関連する説明";
+  return `${role} · ${graphDocumentLabel(source.title)} · PDF ${source.pages.join("、")}ページ${source.printed ? `／印刷页 ${source.printed}` : ""}`;
 }
 
 function graphSourceCard(source, requirement, cardPosition) {
@@ -1718,14 +1718,14 @@ function graphSourceCard(source, requirement, cardPosition) {
   node.dataset.recordId = source.record_id;
   node.append(heading(4, graphNodeLabel(source)));
   const context = document.createElement("p");
-  context.textContent = (source.context?.split(" · ")[0] || "当前审核范围内的来源")
-    .replace(/\b[A-Z]\d{2,}\b/g, "相关条款");
+  context.textContent = (source.context?.split(" · ")[0] || "確認済みの範囲に含まれる資料")
+    .replace(/\b[A-Z]\d{2,}\b/g, "関連条項");
   const button = document.createElement("button");
   button.type = "button";
   button.className = "secondary";
   button.dataset.recordId = source.record_id;
   button.dataset.graphCard = String(cardPosition);
-  button.textContent = "查看原文";
+  button.textContent = "原文を見る";
   button.addEventListener("click", () => openDemoEvidence(requirement,
     sourceAsEvidence(source, requirement.graphScope), button,
     {fromGraph: true, scrollTop: evidenceDrawer.scrollTop}));
@@ -1763,12 +1763,12 @@ function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0
   }
   const topic = requirement.graphTopic;
   evidenceDrawer.classList.add("relationship-window");
-  byId("drawer-title").textContent = "材料依据关系";
+  byId("drawer-title").textContent = "書類の根拠となる資料の関係";
   drawerContent.replaceChildren();
   drawerContent.append(heading(3, requirement.title));
   const explanation = document.createElement("p");
   explanation.className = "relation-intro";
-  explanation.textContent = `${requirement.description} 图中箭头只说明已审核的文件关系，不表示每份文件都是出愿必交材料。`;
+  explanation.textContent = `${requirement.description} 矢印は確認済みの資料間の関係を示します。各資料がすべて出願時の提出書類であるという意味ではありません。`;
   drawerContent.append(explanation);
   const sources = new Map(topic.sources.map((source) => [source.record_id, source]));
   const known = topic.relations.filter((row) => Object.hasOwn(relationMeanings, row.kind)
@@ -1788,7 +1788,7 @@ function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0
       const edge = document.createElement("div");
       edge.className = row.kind === "shares_employment_context_but_separate_enrollment_stage"
         ? "relation-edge relation-edge-stage" : "relation-edge";
-      edge.setAttribute("aria-label", `${graphNodeLabel(sources.get(row.from))} 指向 ${graphNodeLabel(sources.get(row.to))}：${relationMeanings[row.kind]}`);
+      edge.setAttribute("aria-label", `${graphNodeLabel(sources.get(row.from))} → ${graphNodeLabel(sources.get(row.to))}：${relationMeanings[row.kind]}`);
       const meaning = document.createElement("span");
       meaning.textContent = relationMeanings[row.kind];
       edge.append(meaning);
@@ -1800,7 +1800,7 @@ function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0
   if (independent.length) {
     const nodes = document.createElement("section");
     nodes.className = "relation-nodes";
-    if (paths.length) nodes.append(heading(4, "其他可查看的来源"));
+    if (paths.length) nodes.append(heading(4, "その他の参考資料"));
     for (const source of independent) nodes.append(renderCard(source));
     graph.append(nodes);
   }
@@ -1808,8 +1808,8 @@ function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0
   if (!topic.relations.length || topic.relations.some((row) => !Object.hasOwn(relationMeanings, row.kind))) {
     const note = document.createElement("p");
     note.className = "relation-unknown";
-    note.textContent = topic.relations.length ? "部分关系类型尚未展示；上方来源仍可逐项查看。"
-      : "当前没有可展示的已审核关系；以上来源独立列出。";
+    note.textContent = topic.relations.length ? "一部の関係は図に未表示です。各資料は上から個別に確認できます。"
+      : "図示できる確認済みの関係がないため、資料を個別に表示しています。";
     drawerContent.append(note);
   }
   if (!evidenceDrawer.open) evidenceDrawer.showModal();
@@ -1827,18 +1827,18 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     drawerGraph = null;
     evidenceDrawer.classList.remove("relationship-window");
   }
-  byId("drawer-title").textContent = options.fromGraph ? "官方原文" : "官方依据";
+  byId("drawer-title").textContent = options.fromGraph ? "公式原文" : "公式資料の根拠";
   drawerContent.replaceChildren();
   if (options.fromGraph && drawerGraph) {
     const back = document.createElement("button");
     back.type = "button";
     back.className = "secondary relation-back";
-    back.textContent = "返回依据关系";
+    back.textContent = "資料の関係に戻る";
     back.addEventListener("click", () => openEvidenceGraph(drawerGraph.requirement,
       drawerGraph.trigger, trigger.dataset.graphCard, options.scrollTop));
     drawerContent.append(back);
   }
-  drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
+  drawerContent.append(heading(3, requirement.title || requirement.label || "公式資料の根拠"));
   if (options.examYearNote) {
     const yearNote = document.createElement("p");
     yearNote.className = "evidence-chinese-summary";
@@ -1852,7 +1852,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   if (guidance) {
     const summary = document.createElement("section");
     summary.className = "evidence-chinese-summary";
-    summary.append(heading(4, "这项材料的准备要点"));
+    summary.append(heading(4, "この書類の準備ポイント"));
     const purpose = document.createElement("p");
     purpose.textContent = guidance.purpose;
     summary.append(purpose);
@@ -1860,28 +1860,28 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     const context = document.createElement("p");
     context.className = "field-detail";
     context.textContent = guidance.sourceNote
-      || "下方原文是第10页共通材料表，包含其他材料行；中文要点只整理当前这项。";
+      || "下の原文は10ページの共通書類一覧で、他の書類も含まれます。準備ポイントは現在の書類のみを整理しています。";
     summary.append(context);
     drawerContent.append(summary);
   }
   const meta = document.createElement("dl");
   meta.className = "evidence-meta";
-  appendDefinition(meta, "官方文档", evidence.official_title);
-  appendDefinition(meta, "学校／入学时间", `${evidence.school_name} · ${evidence.intake_name}`);
-  appendDefinition(meta, "页码", `PDF 物理页 ${evidence.pages.join("、")}${evidence.printed ? `／印刷页 ${evidence.printed}` : ""}（来源链接不保证自动定位，请在文件中查看该页）`);
+  appendDefinition(meta, "公式資料", evidence.official_title);
+  appendDefinition(meta, "学校・入学時期", `${evidence.school_name} · ${evidence.intake_name}`);
+  appendDefinition(meta, "ページ", `PDFページ ${evidence.pages.join("、")}${evidence.printed ? `／印刷页 ${evidence.printed}` : ""}（リンクで自動移動しない場合は、ファイル内で該当ページを開いてください）`);
   const highlights = Array.isArray(evidence.highlights) ? evidence.highlights : [];
   const evidenceBody = document.createDocumentFragment();
   if (highlights.length) {
     const directHeading = document.createElement("p");
     directHeading.className = "direct-evidence-heading";
-    directHeading.textContent = "与这条结论直接对应的官方原文";
+    directHeading.textContent = "この説明の直接の根拠となる公式原文";
     evidenceBody.append(directHeading);
     for (const highlight of highlights) {
       const direct = document.createElement("blockquote");
       direct.className = "direct-evidence";
       const label = document.createElement("span");
       label.className = "direct-evidence-label";
-      label.textContent = "直接依据";
+      label.textContent = "直接の根拠";
       const mark = document.createElement("mark");
       mark.textContent = highlight.exact_text;
       direct.append(label, mark);
@@ -1890,7 +1890,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
     const context = document.createElement("details");
     context.className = "official-context";
     const contextSummary = document.createElement("summary");
-    contextSummary.textContent = "展开完整官方原文";
+    contextSummary.textContent = "公式原文を全文表示";
     const quote = document.createElement("blockquote");
     quote.className = "evidence-text";
     appendHighlightedOfficialText(quote, evidence.official_text, highlights);
@@ -1904,10 +1904,10 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   }
   const limitation = document.createElement("p");
   limitation.className = "final-notice";
-  limitation.textContent = `安全限制：${evidence.limitation}`;
+  limitation.textContent = `留意事項：${evidence.limitation}`;
   const details = document.createElement("details");
   const summary = document.createElement("summary");
-  summary.textContent = "技术详情";
+  summary.textContent = "技術情報";
   const technical = document.createElement("dl");
   technical.className = "evidence-meta";
   if (evidence.document_id) {
@@ -1927,7 +1927,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
       pdfLink.href = href;
       pdfLink.target = "_blank";
       pdfLink.rel = "noopener noreferrer";
-      pdfLink.textContent = `在 PDF 中查看第 ${page} 页`;
+      pdfLink.textContent = `PDFの${page}ページを開く`;
       sourceActions.append(pdfLink);
     }
     for (const page of options.examYearPages || []) {
@@ -1938,7 +1938,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
       pdfLink.href = href;
       pdfLink.target = "_blank";
       pdfLink.rel = "noopener noreferrer";
-      pdfLink.textContent = page === 1 ? "查看封面年份" : "查看出愿与考试流程";
+      pdfLink.textContent = page === 1 ? "表紙の年度を見る" : "出願・試験の流れを見る";
       sourceActions.append(pdfLink);
     }
   }
@@ -1947,7 +1947,7 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   source.href = evidence.source_url;
   source.target = "_blank";
   source.rel = "noopener noreferrer";
-  source.textContent = "打开官方招生网页";
+  source.textContent = "大学の入試案内を開く";
   sourceActions.append(source);
   drawerContent.append(meta, evidenceBody, limitation);
   if (evidence.document_id) drawerContent.append(details);
@@ -2002,7 +2002,7 @@ function cancelPendingComparison() {
   comparisonSubmit.disabled = !baseRequirementsLoaded;
 }
 
-function clearComparison(message = "选择预设情境后，可查看已保存的对照结果。") {
+function clearComparison(message = "サンプルケースを選ぶと、保存済みの照合結果を確認できます。") {
   comparisonComplete = false;
   comparisonOutput.replaceChildren();
   byId("priority-actions").replaceChildren();
@@ -2021,12 +2021,12 @@ function clearComparison(message = "选择预设情境后，可查看已保存�
 
 function comparisonStatusLabel(status) {
   const labels = {
-    recorded: "已记录",
-    possible_match: "可能匹配，仍需核对",
-    needs_information: "需要更多信息",
-    needs_review: "需要学校／人工审核",
-    not_applicable: "不适用",
-    not_covered: "当前未覆盖"
+    recorded: "記録済み",
+    possible_match: "該当する可能性あり・要確認",
+    needs_information: "追加情報が必要",
+    needs_review: "大学・担当者の確認が必要",
+    not_applicable: "対象外",
+    not_covered: "現在の対象範囲外"
   };
   return labels[status] || status;
 }
@@ -2039,30 +2039,30 @@ function resetChecklistProgress() {
 }
 
 function materialPreparationState(item) {
-  if (item.preparation_status === "available") return "已准备（自报）";
+  if (item.preparation_status === "available") return "準備済み（自己申告）";
   if (item.preparation_status === "not_yet") return item.official_status === "required"
-    ? "待准备" : "个人填写：尚未准备";
-  return "尚未填写准备情况";
+    ? "準備が必要" : "自己申告：未準備";
+  return "準備状況が未入力";
 }
 
 function materialOfficialState(item) {
   const labels = {
-    required: "当前规则：需提交",
-    not_applicable: "当前规则：本项无需提交",
-    eligibility_review_path: "适用条件：资格审查路径待确认",
-    needs_information: "适用条件：待确认",
-    not_covered: "当前资料未覆盖适用条件"
+    required: "提出が必要",
+    not_applicable: "現在の条件では提出不要",
+    eligibility_review_path: "適用条件：資格審査区分の確認が必要",
+    needs_information: "適用条件：要確認",
+    not_covered: "適用条件は対象資料の範囲外"
   };
-  return labels[item.official_status] || "适用条件：待确认";
+  return labels[item.official_status] || "適用条件：要確認";
 }
 
 function materialNextAction(item) {
-  if (item.official_status === "not_applicable") return "本项当前无需提交。";
-  if (item.official_status === "not_covered") return "查看完整官方要项或向学校确认。";
-  if (item.official_status !== "required") return "先确认自己的申请条件是否适用。";
-  if (item.preparation_status === "not_yet") return "按官方说明准备并核对提交要求。";
-  if (item.preparation_status === "available") return "核对文件内容是否符合官方要求。";
-  return "填写准备情况，再核对官方说明。";
+  if (item.official_status === "not_applicable") return "現在の条件では、この書類の提出は不要です。";
+  if (item.official_status === "not_covered") return "募集要項全体をご覧いただくか、大学へご確認ください。";
+  if (item.official_status !== "required") return "まず自分の出願条件に該当するか確認してください。";
+  if (item.preparation_status === "not_yet") return "公式案内に従って準備し、提出要件を確認してください。";
+  if (item.preparation_status === "available") return "書類の内容が公式要件を満たしているか確認してください。";
+  return "準備状況を入力し、公式案内と照合してください。";
 }
 
 function englishActionGroup(check) {
@@ -2085,11 +2085,11 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
     ...englishPending.filter(({ actionGroup }) => actionGroup === "review_required"),
     ...pending
   ];
-  const title = heading(4, "优先处理");
+  const title = heading(4, "優先する準備");
   container.append(title);
   if (!prioritized.length) {
     const empty = document.createElement("p");
-    empty.textContent = "当前没有需要补充或待确认的项目；已记录仍不等于学校确认或完成出愿。";
+    empty.textContent = "追加準備・確認が必要な項目は現在ありません。ただし、記録済みでも大学の確認済み・出願完了を意味しません。";
     container.append(empty);
     return;
   }
@@ -2101,7 +2101,7 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
     link.href = `#${cardId}`;
     const material = item?.category === "materials"
       ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
-    link.textContent = check ? `${entry.kind === "application" ? "毕业与提交" : "英语"} · ${check.title}`
+    link.textContent = check ? `${entry.kind === "application" ? "卒業・提出" : "英語"} · ${check.title}`
       : material ? material.name : item.title;
     link.addEventListener("click", (event) => {
       event.preventDefault();
@@ -2122,7 +2122,7 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
   if (prioritized.length > 3) {
     const remainder = document.createElement("p");
     remainder.className = "field-detail";
-    remainder.textContent = `下方还有 ${prioritized.length - 3} 项需要逐项核对。`;
+    remainder.textContent = `下にあと${prioritized.length - 3}項目の確認事項があります。`;
     container.append(remainder);
   }
 }
@@ -2130,14 +2130,14 @@ function renderPriorityActions(entries, scope, englishEntries = [], applicationE
 function renderEnglishPreparation(result, entries) {
   const section = document.createElement("section");
   section.className = "requirement-group english-preparation-group comparison-topic-group";
-  section.append(heading(3, "英语证明"));
+  section.append(heading(3, "英語スコア証明"));
   const pending = entries.filter(({actionGroup}) => actionGroup !== "recorded");
   const reference = entries.filter(({actionGroup}) => actionGroup === "recorded");
   const overview = document.createElement("p");
   overview.className = "english-topic-overview";
   overview.textContent = pending.length
-    ? `${pending.length} 个核对点需要处理或确认；下方逐项列出。`
-    : "当前没有明确待处理的英语核对点；仍需核对官方证明要求。";
+    ? `${pending.length}項目が対応・確認待ちです。下に一覧を表示します。`
+    : "英語について明確な未対応項目はありません。公式の証明要件はご確認ください。";
   section.append(overview);
   const scope = document.createElement("p");
   scope.className = "field-detail";
@@ -2145,8 +2145,8 @@ function renderEnglishPreparation(result, entries) {
   section.append(scope);
   const list = document.createElement("div");
   list.className = "english-check-list";
-  const statusLabels = {reported_match: "按填写已具备", action_needed: "需要处理",
-    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  const statusLabels = {reported_match: "申告上は準備済み", action_needed: "対応が必要",
+    needs_information: "確認待ち", not_applicable: "この項目は対象外", not_covered: "未対応"};
   const renderRow = ({ check, cardId, actionGroup }) => {
     const card = document.createElement("article");
     card.className = "english-check-row comparison-card";
@@ -2163,7 +2163,7 @@ function renderEnglishPreparation(result, entries) {
     explanation.textContent = check.explanation;
     const action = document.createElement("p");
     action.className = "next-action";
-    action.textContent = `下一步：${check.next_action}`;
+    action.textContent = `次にすること：${check.next_action}`;
     card.append(status, explanation, action);
     appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
     return card;
@@ -2174,7 +2174,7 @@ function renderEnglishPreparation(result, entries) {
     const details = document.createElement("details");
     details.className = "english-reference-details";
     const summary = document.createElement("summary");
-    summary.textContent = `查看已记录／不适用等参考核对点（${reference.length}）`;
+    summary.textContent = `記録済み・対象外の確認項目を見る（${reference.length}）`;
     details.append(summary);
     const rows = document.createElement("div");
     rows.className = "english-check-list";
@@ -2188,15 +2188,15 @@ function renderEnglishPreparation(result, entries) {
 function renderApplicationPreparation(result, entries) {
   const section = document.createElement("section");
   section.className = "requirement-group application-preparation-group comparison-topic-group";
-  section.append(heading(3, "资格与手续 · 毕业与提交"));
+  section.append(heading(3, "資格・手続き · 卒業・提出"));
   const scope = document.createElement("p");
   scope.className = "field-detail";
   scope.textContent = result.scope_statement;
   section.append(scope);
   const list = document.createElement("div");
   list.className = "requirement-list";
-  const labels = {reported_match: "按填写已记录", action_needed: "需要处理",
-    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  const labels = {reported_match: "申告内容を記録済み", action_needed: "対応が必要",
+    needs_information: "確認待ち", not_applicable: "この項目は対象外", not_covered: "未対応"};
   for (const { check, cardId, actionGroup } of entries) {
     const card = document.createElement("article");
     card.className = "requirement-card comparison-card";
@@ -2213,7 +2213,7 @@ function renderApplicationPreparation(result, entries) {
     explanation.textContent = check.explanation;
     const action = document.createElement("p");
     action.className = "next-action";
-    action.textContent = `下一步：${check.next_action}`;
+    action.textContent = `次にすること：${check.next_action}`;
     card.append(status, explanation, action);
     appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
     list.append(card);
@@ -2229,9 +2229,9 @@ function renderComparison(payload, scope) {
   byId("readiness-panel").querySelector(".action-summary-total").hidden = false;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = targetLabel(payload.target);
-  partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
+  partialChecklistStatement.textContent = "確認済みの範囲のみを整理しています。他の要件は募集要項全体をご確認ください。";
   readinessFilters.querySelector('[value="all"]').checked = true;
-  const groups = [["action_required", "需要补充"], ["review_required", "待确认／需审核"], ["recorded", "已记录／可能匹配"]];
+  const groups = [["action_required", "準備が必要"], ["review_required", "確認・審査が必要"], ["recorded", "申告済み・要件と一致する可能性"]];
   const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
     .filter((item) => item.action_group === actionGroup)
     .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
@@ -2256,14 +2256,14 @@ function renderComparison(payload, scope) {
   byId("count-action").textContent = String(visibleGroups.filter((group) => group === "action_required").length);
   byId("count-review").textContent = String(visibleGroups.filter((group) => group === "review_required").length);
   renderPriorityActions(visibleEntries, scope, englishEntries, applicationEntries);
-  const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
+  const categoryLabels = { education: "学歴", english: "英語", japanese: "日本語", materials: "書類" };
   const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
   const educationEntries = visibleEntries.filter(({ item }) => item.category === "education");
   const otherEntries = visibleEntries.filter(({ item }) => !["materials", "education"].includes(item.category));
   const sections = [
-    ["materials", `出愿材料准备（${materialEntries.length} 项）`, materialEntries],
-    ["education", "资格与手续 · 学历", educationEntries],
-    ["other", "其他已审核要求", otherEntries]
+    ["materials", `出願書類の準備（${materialEntries.length}項目）`, materialEntries],
+    ["education", "資格・手続き · 学歴", educationEntries],
+    ["other", "その他の確認済み要件", otherEntries]
   ];
   if (!materialEntries.length) {
     if (detailed) comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
@@ -2297,7 +2297,7 @@ function renderComparison(payload, scope) {
       if (material) {
         const officialName = document.createElement("p");
         officialName.className = "material-official-name";
-        officialName.textContent = material.official || "正式名称待核实";
+        officialName.textContent = material.official || "正式名称は要確認";
         const what = document.createElement("p");
         what.className = "material-explanation";
         what.textContent = guide?.purpose || material.description;
@@ -2308,7 +2308,7 @@ function renderComparison(payload, scope) {
         if (guide && item.official_status !== "required") {
           const conditional = document.createElement("p");
           conditional.className = "preparation-warning";
-          conditional.textContent = "当前路径是否须交这项仍待确认；以下是需要提交时的准备方法。";
+          conditional.textContent = "この区分での提出要否は確認待ちです。以下は提出が必要な場合の準備方法です。";
           card.append(conditional);
         }
         if (guide) appendPreparationGuide(card, guide, officialName);
@@ -2316,7 +2316,7 @@ function renderComparison(payload, scope) {
       }
       const statusLabel = document.createElement("p");
       statusLabel.className = "comparison-state-label";
-      statusLabel.textContent = material ? "准备情况" : "当前核对结果";
+      statusLabel.textContent = material ? "準備状況" : "確認結果";
       const status = document.createElement("span");
       status.className = "requirement-status";
       status.dataset.status = item.comparison_status;
@@ -2324,24 +2324,24 @@ function renderComparison(payload, scope) {
         : comparisonStatusLabel(item.comparison_status);
       const description = document.createElement("p");
       description.className = "comparison-reason";
-      description.textContent = `原因：${item.description}`;
+      description.textContent = `説明：${item.description}`;
       card.append(statusLabel, status);
       if (!material) card.append(description);
       const nextAction = document.createElement("p");
       nextAction.className = "next-action";
-      nextAction.textContent = `下一步：${material ? materialNextAction(item) : item.next_action}`;
+      nextAction.textContent = `次にすること：${material ? materialNextAction(item) : item.next_action}`;
       card.append(nextAction);
       if (item.official_status && !material) {
-        const officialLabels = { required: "适用", eligibility_review_path: "由个别资格审查路径承接", needs_information: "需要学历路径信息", not_covered: "当前未覆盖" };
-        const preparationLabels = { available: "已有", not_yet: "尚未准备", unknown: "未提供／不确定" };
+        const officialLabels = { required: "対象", eligibility_review_path: "個別資格審査で確認", needs_information: "学歴区分の情報が必要", not_covered: "現在の対象範囲外" };
+        const preparationLabels = { available: "準備済み", not_yet: "未準備", unknown: "未入力・不明" };
         const official = document.createElement("p");
         official.className = "field-detail";
-        official.textContent = `官方适用性：${officialLabels[item.official_status] || item.official_status}；个人准备状态：${preparationLabels[item.preparation_status] || item.preparation_status}`;
+        official.textContent = `公式要件の適用：${officialLabels[item.official_status] || item.official_status}／準備状況：${preparationLabels[item.preparation_status] || item.preparation_status}`;
         card.append(official);
       }
       const progress = document.createElement("p");
       progress.className = "personal-progress";
-      progress.textContent = item.action_group === "recorded" ? "我的处理进度：此项没有待勾选行动" : "我的处理进度：待处理";
+      progress.textContent = item.action_group === "recorded" ? "進捗：記録するアクションはありません" : "進捗：未対応";
       if (!material) card.append(progress);
       if (item.action_group !== "recorded") {
         const label = document.createElement("label");
@@ -2350,11 +2350,11 @@ function renderComparison(payload, scope) {
         checkbox.type = "checkbox";
         checkbox.addEventListener("change", () => {
           if (!material) progress.textContent = checkbox.checked
-            ? "我的处理进度：已标记处理（仅个人记录）" : "我的处理进度：待处理";
+            ? "進捗：対応済み（本人の記録のみ）" : "進捗：未対応";
           card.dataset.handled = checkbox.checked ? "true" : "false";
         });
         const labelText = document.createElement("span");
-        labelText.textContent = material ? "已处理（仅本页记录）" : "我已处理（仅记录个人进度）";
+        labelText.textContent = material ? "対応済み（この画面のみ）" : "対応済みとして記録";
         label.append(checkbox, labelText);
         card.append(label);
       }
@@ -2363,7 +2363,7 @@ function renderComparison(payload, scope) {
         const limit = document.createElement("details");
         limit.className = "comparison-limit";
         const summary = document.createElement("summary");
-        summary.textContent = "需要确认";
+        summary.textContent = "確認が必要";
         const text = document.createElement("p");
         text.textContent = item.limitation;
         limit.append(summary, text);
@@ -2380,7 +2380,7 @@ function renderComparison(payload, scope) {
   }
   const boundary = document.createElement("p");
   boundary.className = "final-notice";
-  boundary.textContent = "准备状态不代表材料已提交或学校受理。";
+  boundary.textContent = "準備状況は書類の提出済み・大学の受理を意味しません。";
   comparisonOutput.append(boundary);
   filterEmpty.hidden = true;
   comparisonComplete = true;
@@ -2396,7 +2396,7 @@ function renderSliceReadiness(report, mapped) {
   byId("readiness-filters").hidden = true;
   comparisonOutput.replaceChildren();
   readinessTarget.textContent = referenceCore.scopeLabel(mapped.scope);
-  partialChecklistStatement.textContent = `当前只覆盖 ${report.topics.length} 个材料主题，不是完整清单；计划书适用性取决于本次填写的在职条件。`;
+  partialChecklistStatement.textContent = `書類${report.topics.length}項目のみが対象で、完全な一覧ではありません。計画書の要否は、今回の在職条件によって変わります。`;
   const priority = byId("priority-actions");
   priority.replaceChildren();
   priority.hidden = true;
@@ -2417,8 +2417,8 @@ function renderSliceReadiness(report, mapped) {
     if (Object.hasOwn(report.preparation || {}, topic.id)) {
       const preparation = document.createElement("p");
       preparation.className = "material-condition";
-      const names = {unknown: "尚未填写准备情况", available: "已准备（自报）", not_yet: "待准备（自报尚未准备）"};
-      preparation.textContent = `准备情况：${names[report.preparation[topic.id]]}；自报不代表已提交或学校受理。`;
+      const names = {unknown: "準備状況が未入力", available: "準備済み（自己申告）", not_yet: "準備が必要（未準備と申告）"};
+      preparation.textContent = `準備状況：${names[report.preparation[topic.id]]}。自己申告は提出済み・受理済みを意味しません。`;
       card.append(preparation);
     }
     if (topic.explanation) {
@@ -2430,13 +2430,13 @@ function renderSliceReadiness(report, mapped) {
     if (topic.status_code === "rule_not_applicable") {
       const boundary = document.createElement("p");
       boundary.className = "material-condition";
-      boundary.textContent = "本条规则不适用，不能推定一般性免交。";
+      boundary.textContent = "この条件の対象外です。提出全般が免除される意味ではありません。";
       card.append(boundary);
     }
     for (const value of topic.missing_fields) {
       const note = document.createElement("p");
       note.className = "comparison-reason";
-      note.textContent = `待确认条件：${sliceConditionLabel(value)}`;
+      note.textContent = `確認待ちの条件：${sliceConditionLabel(value)}`;
       card.append(note);
     }
     for (const value of topic.limitations) {
@@ -2454,28 +2454,28 @@ function renderSliceReadiness(report, mapped) {
 
 function sliceConditionLabel(value) {
   const labels = {
-    "employment.currently_employed_in_organization": "目前是否在组织任职",
-    "employment.retain_employment_at_enrollment": "入学后是否继续任职"
+    "employment.currently_employed_in_organization": "現在、組織に在職していますか",
+    "employment.retain_employment_at_enrollment": "入学後も在職を継続しますか"
   };
-  return labels[value] || "仍需查看完整官方条件";
+  return labels[value] || "公式の条件全体の確認が必要";
 }
 
 function renderReferenceReport(report) {
   referenceBody.replaceChildren();
-  byId("reference-report-title").textContent = "出愿准备参考";
+  byId("reference-report-title").textContent = "出願準備レポート";
   const available = referenceCore.readerReportOptions(report);
   const selected = {...available, exams: false};
   const options = document.createElement("fieldset");
   options.className = "reader-report-options";
   const legend = document.createElement("legend");
-  legend.textContent = "选择报告内容";
+  legend.textContent = "レポートに含める内容";
   options.append(legend);
   const content = document.createElement("article");
   content.className = "reader-report-paper";
   const compareButton = document.createElement("button");
   compareButton.type = "button";
   compareButton.className = "secondary";
-  compareButton.textContent = "核对个人情况并生成所选报告";
+  compareButton.textContent = "本人情報を照合してレポートを作成";
   const addSection = (title, rows, empty) => {
     const section = document.createElement("section");
     section.className = "reader-report-section";
@@ -2505,7 +2505,7 @@ function renderReferenceReport(report) {
     byId("reference-report-status").textContent = "";
     content.replaceChildren();
     if (!Object.values(selected).some(Boolean)) {
-      content.append(heading(3, "请至少选择一类报告内容。"));
+      content.append(heading(3, "レポートに含める項目を1つ以上選択してください。"));
       compareButton.hidden = true;
       return;
     }
@@ -2516,8 +2516,8 @@ function renderReferenceReport(report) {
     if (needsComparison) {
       const note = document.createElement("p");
       note.className = "reader-report-note";
-      note.textContent = "已填写个人情况。所选日期、材料或其他要求需先核对个人情况。"
-        + (available.exams ? "仅考试安排可直接查看和复制。" : "核对失败时可在此重试。");
+      note.textContent = "本人情報が入力されています。日程・書類・その他の要件は、本人情報の照合後に表示します。"
+        + (available.exams ? "試験日程のみであれば、そのまま表示・コピーできます。" : "照合できなかった場合は、ここから再試行できます。");
       content.append(note);
       return;
     }
@@ -2526,14 +2526,14 @@ function renderReferenceReport(report) {
     title.className = "reader-report-title";
     title.append(heading(3, view.target));
     const focus = document.createElement("p");
-    focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})[key]).join("、")}`;
+    focus.textContent = `選択した内容：${view.selected.map((key) => ({dates: "重要な日程", materials: "書類・次にすること", other: "読み込み済みのその他の要件", exams: "試験日程"})[key]).join("、")}`;
     title.append(focus);
     content.append(title);
-    if (view.priorityRows.length) addSection("接下来先做什么", view.priorityRows, "");
+    if (view.priorityRows.length) addSection("次に準備すること", view.priorityRows, "");
     if (selected.dates) {
-      addSection("关键时间", view.dates.map((item) =>
+      addSection("重要な日程", view.dates.map((item) =>
         `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`),
-      "当前已覆盖资料尚未整理日期，请核对完整募集要项。");
+      "対象資料の日程はまだ整理されていません。募集要項全体をご確認ください。");
       if (view.dateNote) {
         const dateNote = document.createElement("p");
         dateNote.className = "reader-report-note";
@@ -2541,20 +2541,20 @@ function renderReferenceReport(report) {
         content.append(dateNote);
       }
     }
-    if (selected.materials) addSection("材料准备清单", view.materials.map((item) => item.line),
-      "当前所选资料没有可整理的材料主题。");
+    if (selected.materials) addSection("書類の準備リスト", view.materials.map((item) => item.line),
+      "選択した資料に、レポートに含められる書類項目がありません。");
     if (selected.materials && view.english.length)
-      addSection("英语成绩与证明", view.english, "");
+      addSection("英語スコア・証明書", view.english, "");
     if (selected.materials && view.submission.length)
-      addSection("毕业与提交提醒", view.submission, "");
-    if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
-      `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
-    if (selected.exams) addSection("考试安排", view.exams, "");
+      addSection("卒業・提出に関する確認事項", view.submission, "");
+    if (selected.other) addSection("読み込み済みのその他の要件", view.other.map((item) =>
+      `${item.title}：${item.summary}（${item.status}）`), "その他の項目はありません。");
+    if (selected.exams) addSection("試験日程", view.exams, "");
     const limit = document.createElement("p");
     limit.className = "reader-report-note";
-    limit.textContent = `范围说明：${view.limitation}`;
+    limit.textContent = `対象範囲：${view.limitation}`;
     content.append(limit);
-    const sampleNotice = "【演示样本 / 保存済みサンプル】历史募集资料与预设情境的整理，不是实时审查或当前完整招生建议。";
+    const sampleNotice = "【保存済みサンプル】過去の募集資料とサンプルケースを整理したものです。リアルタイムの審査や最新の募集情報を網羅するものではありません。";
     const sampleLabel = document.createElement("p");
     sampleLabel.className = "demo-report-label";
     sampleLabel.textContent = sampleNotice;
@@ -2562,7 +2562,7 @@ function renderReferenceReport(report) {
     referenceReader = {...view, text: `${sampleNotice}\n\n${view.text}`};
     byId("reference-copy").disabled = false;
   };
-  for (const [key, label] of Object.entries({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})) {
+  for (const [key, label] of Object.entries({dates: "重要な日程", materials: "書類・次にすること", other: "読み込み済みのその他の要件", exams: "試験日程"})) {
     if (!available[key]) continue;
     const wrapper = document.createElement("label");
     const checkbox = document.createElement("input");
@@ -2574,7 +2574,7 @@ function renderReferenceReport(report) {
   }
   compareButton.addEventListener("click", async () => {
     if (referenceReportController || !applicationDatesReconcile()) {
-      if (!referenceReportController) byId("reference-report-status").textContent = "请先核对毕业与送达日期，再进行个人对照。";
+      if (!referenceReportController) byId("reference-report-status").textContent = "卒業日と書類の到着日を確認してから照合してください。";
       return;
     }
     const requestId = referenceReportRequestId;
@@ -2583,7 +2583,7 @@ function renderReferenceReport(report) {
     const controller = new AbortController();
     referenceReportController = controller;
     compareButton.disabled = true;
-    byId("reference-report-status").textContent = "正在核对个人情况，请稍候。";
+    byId("reference-report-status").textContent = "本人の状況を照合しています。";
     const current = () => requestId === referenceReportRequestId && referenceDialog.open
       && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
       && JSON.stringify(demoComparisonRequest()) === profileSnapshot
@@ -2600,11 +2600,11 @@ function renderReferenceReport(report) {
         legacyProfileDisclosure(), loadedReference.exam || null);
       referenceReport = report;
       draw();
-      byId("reference-report-status").textContent = "个人情况已核对，可查看和复制所选报告。";
+      byId("reference-report-status").textContent = "照合が完了しました。レポートを表示・コピーできます。";
     } catch (error) {
       if (error?.name !== "AbortError" && current())
-        byId("reference-report-status").textContent = "个人对照失败；所选个人报告尚未生成。可重试"
-          + (available.exams ? "，或只选考试安排直接查看和复制。" : "。");
+        byId("reference-report-status").textContent = "本人情報を照合できなかったため、レポートは未作成です。再試行してください"
+          + (available.exams ? "。または試験日程のみを選び、表示・コピーできます。" : "。");
     } finally {
       if (requestId === referenceReportRequestId) {
         referenceReportController = null;
@@ -2635,32 +2635,32 @@ function legacyProfileDisclosure() {
 async function generateReferenceReport(event) {
   if (referenceReportController) return;
   if (!baseRequirementsLoaded || !loadedReference) {
-    setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
+    setReferenceActionState("initial", "志望先の基本要件を読み込んでから、レポートを作成してください。", false);
     return;
   }
   const trigger = event.currentTarget;
   const scope = currentReferenceScope();
   if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
-    setReferenceActionState("error", "当前选择与已加载要求不一致，请重新加载要求。", false);
+    setReferenceActionState("error", "選択内容と読み込み済み要件が一致しません。要件を読み込み直してください。", false);
     return;
   }
   referenceTrigger = trigger;
   if (referenceReport && referenceReport.kind === scope.kind
     && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)) {
     renderReferenceReport(referenceReport);
-    setReferenceActionState("success", "报告已打开，可选择内容并复制。");
+    setReferenceActionState("success", "レポートを開きました。内容を選んでコピーできます。");
     return;
   }
-  clearReferenceReport("正在整理当前已审核结果和官方依据。");
+  clearReferenceReport("確認済みの結果と公式資料を整理しています。");
   if (scope.kind === "legacy_applicant") {
     const disclosure = legacyProfileDisclosure();
     try {
       referenceReport = referenceCore.legacyReport(loadedReference,
         disclosure.length ? comparisonResponse : null, disclosure, loadedReference.exam || null);
       renderReferenceReport(referenceReport);
-      setReferenceActionState("success", "报告已打开，可选择内容；个人相关主题按需核对后复制。");
+      setReferenceActionState("success", "レポートを開きました。本人情報に関する項目は、必要な照合を行ってからコピーできます。");
     } catch {
-      setReferenceActionState("error", "报告生成失败或依据不完整，请重新加载当前目标。", true);
+      setReferenceActionState("error", "レポートを作成できないか、根拠が不足しています。志望先を読み込み直してください。", true);
     }
     return;
   }
@@ -2668,7 +2668,7 @@ async function generateReferenceReport(event) {
   const profileSnapshot = JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
   const scopeSnapshot = referenceCore.scopeKey(scope);
   referenceReportController = new AbortController();
-  setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
+  setReferenceActionState("loading", "レポートを作成しています。再度クリックしても処理は重複しません。", false);
   const current = () => requestId === referenceReportRequestId
     && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
     && JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]) === profileSnapshot
@@ -2686,10 +2686,10 @@ async function generateReferenceReport(event) {
     if (!current()) return;
     referenceReport = report;
     renderReferenceReport(report);
-    setReferenceActionState("success", "报告已打开，可选择内容并复制；修改目标或条件会清除旧报告。");
+    setReferenceActionState("success", "レポートを表示しました。内容を選んでコピーできます。志望先・条件を変えると前のレポートはクリアされます。");
   } catch (error) {
     if (error?.name !== "AbortError" && current())
-      setReferenceActionState("error", "报告生成失败或依据不完整。输入已保留，请再次点击“重试生成报告”。", true);
+      setReferenceActionState("error", "レポートを作成できないか、根拠が不足しています。入力は保持しています。「レポートの作成を再試行」を押してください。", true);
   } finally {
     if (requestId === referenceReportRequestId) {
       referenceReportController = null;
@@ -2703,7 +2703,7 @@ async function copyReferenceReport() {
     || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
   try {
     await navigator.clipboard.writeText(referenceReader.text);
-    byId("reference-report-status").textContent = "已复制当前选中的简洁报告。";
+    byId("reference-report-status").textContent = "選択した内容のレポートをコピーしました。";
   } catch {
     const fallback = byId("reference-copy-fallback");
     fallback.value = referenceReader.text;
@@ -2711,7 +2711,7 @@ async function copyReferenceReport() {
     byId("reference-copy-fallback-label").hidden = false;
     fallback.focus();
     fallback.select();
-    byId("reference-report-status").textContent = "无法自动复制；请按 Ctrl+C 手动复制。";
+    byId("reference-report-status").textContent = "自動コピーできません。Ctrl+Cでコピーしてください。";
   }
 }
 
@@ -2740,8 +2740,8 @@ async function submitApplicantComparison() {
     && referenceReport.employment.retain === byId("slice-retain-employed").value) {
     referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
     renderSliceReadiness(referenceReport, loadedReference);
-    setReferenceActionState("success", "准备自报已更新；已核对的官方条件保持，可按需预览和复制报告。", true);
-    setMessage(comparisonStatus, "success", `已复用当前 ${referenceReport.topics.length} 个材料主题的核对结果；准备情况仅为本次自报。`);
+    setReferenceActionState("success", "準備状況を更新しました。確認済みの公式条件は変わりません。レポートを表示・コピーできます。", true);
+    setMessage(comparisonStatus, "success", `書類${referenceReport.topics.length}項目の確認結果を使用しています。準備状況は今回の自己申告です。`);
     activateStep(4, true);
     return;
   }
@@ -2749,7 +2749,7 @@ async function submitApplicantComparison() {
     byId("demo-arrival-date").focus();
     return;
   }
-  clearReferenceReport("个人条件正在重新对照；旧报告已失效。");
+  clearReferenceReport("本人の条件を再照合しています。前のレポートは無効になりました。");
   if (scope?.kind === "reviewed_material_slice") {
     await submitSliceComparison(scope);
     return;
@@ -2757,11 +2757,11 @@ async function submitApplicantComparison() {
   const requestSnapshot = JSON.stringify(demoComparisonRequest());
   const requestId = ++comparisonRequestId;
   comparisonController = new AbortController();
-  clearComparison("正在载入此示例已保存的对照结果。");
+  clearComparison("このケースの保存済み照合結果を読み込んでいます。");
   comparisonPending = true;
   comparisonSubmit.disabled = true;
   comparisonRetry.hidden = true;
-  setMessage(comparisonStatus, "loading", "正在载入此示例已保存的对照结果。");
+  setMessage(comparisonStatus, "loading", "このケースの保存済み照合結果を読み込んでいます。");
   try {
     const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: comparisonController.signal });
     if (!response.ok) throw new Error();
@@ -2777,14 +2777,14 @@ async function submitApplicantComparison() {
     if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
     renderComparison(payload, scope);
     comparisonResponse = payload;
-    setMessage(comparisonStatus, "success", "已载入此示例的保存结果；不是本次实时审查。");
+    setMessage(comparisonStatus, "success", "保存済みの結果を表示しました。今回の操作で審査を実行したものではありません。");
     activateStep(4, true);
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== comparisonRequestId) return;
-    clearComparison("个人情况暂时无法对照，请检查输入后重试。");
+    clearComparison("本人情報を照合できません。入力内容をご確認のうえ、再試行してください。");
     comparisonRetry.hidden = false;
-    setMessage(comparisonStatus, "error", "个人情况暂时无法对照，请检查输入后重试。", true);
+    setMessage(comparisonStatus, "error", "本人情報を照合できません。入力内容をご確認のうえ、再試行してください。", true);
   } finally {
     if (requestId === comparisonRequestId) {
       comparisonPending = false;
@@ -2804,8 +2804,8 @@ async function submitSliceComparison(scope) {
   comparisonController = new AbortController();
   comparisonPending = true;
   comparisonSubmit.disabled = true;
-  clearComparison("正在核对已覆盖材料的在职条件。");
-  setMessage(comparisonStatus, "loading", "正在核对已覆盖材料的在职条件。");
+  clearComparison("対象書類の在職条件を照合しています。");
+  setMessage(comparisonStatus, "loading", "対象書類の在職条件を照合しています。");
   try {
     const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
       method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
@@ -2822,14 +2822,14 @@ async function submitSliceComparison(scope) {
       slicePreparationValues());
     renderSliceReadiness(report, loadedReference);
     referenceReport = report;
-    setReferenceActionState("success", "当前条件结果已加载；可按需预览和复制参考报告。", true);
-    setMessage(comparisonStatus, "success", `已核对当前 ${report.topics.length} 个材料主题；报告可按需预览和复制。`);
+    setReferenceActionState("success", "条件の確認結果を表示しました。レポートを表示・コピーできます。", true);
+    setMessage(comparisonStatus, "success", `書類${report.topics.length}項目を確認しました。必要に応じてレポートを表示・コピーできます。`);
     activateStep(4, true);
   } catch (error) {
     if (error?.name === "AbortError" || requestId !== comparisonRequestId) return;
-    clearComparison("材料条件暂时无法核对，请保留输入并重试。");
+    clearComparison("書類の条件を照合できません。入力を保持したまま再試行してください。");
     comparisonRetry.hidden = false;
-    setMessage(comparisonStatus, "error", "材料条件暂时无法核对，请保留输入并重试。", true);
+    setMessage(comparisonStatus, "error", "書類の条件を照合できません。入力を保持したまま再試行してください。", true);
   } finally {
     if (requestId === comparisonRequestId) {
       comparisonPending = false;
@@ -2859,15 +2859,15 @@ async function submitBaseRequirements() {
   loadedReference = null;
   baseResponse = null;
   comparisonResponse = null;
-  clearReferenceReport("正在加载当前目标；报告需在要求加载后按需生成。");
-  clearGroundedAnswer("基础要求正在更新，请稍候。");
+  clearReferenceReport("志望先を読み込んでいます。要件の読み込み後にレポートを作成できます。");
+  clearGroundedAnswer("基本要件を更新しています。");
   updateGroundedContext();
-  invalidateComparison("基础要求正在更新，请稍候。");
-  clearDemoResults("正在读取已保存的基础要求。");
+  invalidateComparison("基本要件を更新しています。");
+  clearDemoResults("保存済みの基本要件を読み込んでいます。");
   requirementsPending = true;
   updateRequirementsSubmit();
   requirementsRetry.hidden = true;
-  setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
+  setMessage(targetStatus, "loading", "確認済みの条件と公式資料を照合しています。");
   try {
     const response = scope.kind === "legacy_applicant"
       ? await fetch(`${BASE_REQUIREMENTS_ENDPOINT}?include_examination_information=true${scope.request.school_id === "isct" ? "&exam_presentation_version=2" : ""}`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
@@ -2888,21 +2888,21 @@ async function submitBaseRequirements() {
     baseRequirementsLoaded = true;
     requirementsEverLoaded = true;
     comparisonSubmit.disabled = false;
-    setReferenceActionState("initial", "要求已加载；可在此生成并复制参考报告。", true);
+    setReferenceActionState("initial", "要件を読み込みました。ここからレポートを作成・コピーできます。", true);
     clearComparison();
-    clearGroundedAnswer("可针对当前目标和本页个人情况提问。");
+    clearGroundedAnswer("選択した志望先と本人情報について質問できます。");
     updateGroundedContext();
-    setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。");
+    setMessage(targetStatus, "success", "基本要件を読み込みました。各項目の公式資料をご確認ください。");
     activateStep(2, true);
   } catch (error) {
     if (error && error.name === "AbortError") return;
     if (requestId !== requirementsRequestId) return;
-    clearDemoResults("基础要求暂时无法加载。");
+    clearDemoResults("基本要件を読み込めません。");
     loadedReference = null;
     baseResponse = null;
-    clearReferenceReport("要求尚未加载，暂不能生成报告。");
+    clearReferenceReport("要件が未読み込みのため、レポートを作成できません。");
     requirementsRetry.hidden = false;
-    setMessage(targetStatus, "error", "无法加载基础要求，请检查选择后重试。", true);
+    setMessage(targetStatus, "error", "基本要件を読み込めません。選択内容をご確認のうえ再試行してください。", true);
   } finally {
     if (requestId === requirementsRequestId) {
       requirementsPending = false;
@@ -2928,13 +2928,13 @@ function handleDemoTargetChange(next) {
   baseResponse = null;
   comparisonResponse = null;
   clearReferenceReport();
-  invalidateComparison("申请目标已改变，请重新加载基础要求。");
-  clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
+  invalidateComparison("志望先が変更されました。基本要件を読み込み直してください。");
+  clearDemoResults("志望先が変更されました。選択を完了し、要件を読み込み直してください。");
   resetApplicantInputs();
-  clearGroundedAnswer("申请目标已改变，请重新加载基础要求后提问。");
+  clearGroundedAnswer("志望先が変更されました。基本要件を読み込み直してから質問してください。");
   updateGroundedContext();
   requirementsRetry.hidden = true;
-  setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
+  setMessage(targetStatus, "initial", "志望先が変更されました。選択を完了し、要件を読み込み直してください。");
   activateStep(1);
   next();
   updateProfileCapability();
@@ -2950,8 +2950,8 @@ applicantForm.addEventListener("input", (event) => {
   updateProfileGroupStates();
   updateEnglishInputHint();
   applicationDatesReconcile();
-  invalidateComparison("个人输入已改变，请重新对照。");
-  clearGroundedAnswer("个人情况已改变；下次提交将使用最新的本页输入。");
+  invalidateComparison("本人情報が変更されました。再照合してください。");
+  clearGroundedAnswer("本人情報が変更されました。次回は最新の入力内容を使用します。");
   updateGroundedContext();
   if (baseRequirementsLoaded) activateStep(3);
 });
@@ -3048,4 +3048,4 @@ loadGenerationStatus();
 import("./unified-core.mjs").then((module) => {
   referenceCore = module;
   loadDemoCatalog();
-}).catch(() => setMessage(targetStatus, "error", "审核目录组件暂时无法加载，请刷新页面。"));
+}).catch(() => setMessage(targetStatus, "error", "対象一覧を読み込めません。ページを再読み込みしてください。"));

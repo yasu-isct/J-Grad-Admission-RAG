@@ -1,7 +1,7 @@
 "use strict";
 
 (function exposeApplicationOverview(globalScope) {
-  const UNKNOWN = "暂无已审核数据";
+  const UNKNOWN = "確認済みのデータはありません";
 
   function safeRequirements(payload) {
     return payload && Array.isArray(payload.requirements) ? payload.requirements : null;

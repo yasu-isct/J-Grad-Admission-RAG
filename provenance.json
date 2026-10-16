@@ -7,7 +7,8 @@
     "local_pdf_url removed; original official links retained",
     "original app static assets copied, demo bridge separate",
     "report view and copy use original frontend, prefixed as demonstration",
-    "no PDF/model/KB/vector upload; no live API calls"
+    "no PDF/model/KB/vector upload; no live API calls",
+    "Public-demo presentation localized to Japanese; QA shown as translations of saved responses, not new model outputs"
   ],
   "tracked_sources": [
     {
@@ -136,5 +137,20 @@
       "label"
     ],
     "not_a_new_quality_evaluation": true
+  },
+  "localization": {
+    "language": "ja",
+    "previous_distribution_commit": "f050a911450a46e9fb29b82b7f6e9553b72507e7",
+    "scope": "Japanese UI, saved scenario explanations, report presentation and translated saved QA; original Japanese evidence retained",
+    "live_generation": false,
+    "source_records_modified": false,
+    "exam_saved_projection": {
+      "path": "docs/onboarding/exam02b-evidence/review-v2-exam-overlays.json",
+      "source_commit": "33a473bdb78a6fc08f8e853c192c951bd115d9ad",
+      "git_blob": "4228814daa3007b6ef758049157bacfecd527d43",
+      "sha256": "13ca2f1b1e73eecd67db4491a56158e004ab51837cb619387bdbb4b014e241e3",
+      "key": "computer-science-base-v2.json",
+      "reason": "Reuse already-reviewed matching projection instead of incompatible earlier saved exam payload; not a new HTTP or parsing result"
+    }
   }
 }

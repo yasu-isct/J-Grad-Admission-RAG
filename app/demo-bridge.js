@@ -104,8 +104,8 @@
     target.replaceChildren();
     if (schoolKey() !== "isct") {
       target.textContent = schoolKey() === "gsfs"
-        ? "东京大学此范围的公开演示仅包含已审核材料、条件与文件关系，不提供在线问答。切换东京科学大学可查看其既往问答样例。"
-        : "选择东京科学大学后，可查看该校固定历史目标的既往问答样例。";
+        ? "東京大学の例では、確認済みの提出書類・条件・資料間の関係を体験できます。質問・回答の保存例は、東京科学大学を選ぶと表示されます。"
+        : "東京科学大学を選ぶと、収録した過去の募集資料に関する質問・回答例を確認できます。";
       return;
     }
     const samples = manifest.qaSamples || [];
@@ -127,7 +127,7 @@
       if (sample.sourceUrl?.startsWith("https://github.com/yasu-isct/")) {
         const source = document.createElement("a");
         source.href = sample.sourceUrl; source.target = "_blank"; source.rel = "noopener noreferrer";
-        source.textContent = "保存テストの説明 / 保存测试说明"; body.append(source);
+        source.textContent = "元のテスト記録を見る"; body.append(source);
       }
     }
     if (!samples.length) target.textContent = "この公開デモでは自由質問を実行しません。募集資料の構造化表示と参考レポートをお試しください。";

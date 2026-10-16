@@ -6,10 +6,10 @@ export function combineMaterialCatalogs(...catalogs) {
   const identities = new Set();
   for (const catalog of catalogs) {
     if (catalog?.schema_version !== "1.0" || !Array.isArray(catalog.entries)) {
-      throw new Error("展示目录格式错误，请刷新后重试");
+      throw new Error("表示一覧を読み込めません。ページを再読み込みしてください");
     }
     for (const entry of catalog.entries) {
-      if (identities.has(entry.snapshot_id)) throw new Error("展示目录身份重复");
+      if (identities.has(entry.snapshot_id)) throw new Error("表示一覧の識別情報が重複しています");
       identities.add(entry.snapshot_id);
       entries.push(entry);
     }

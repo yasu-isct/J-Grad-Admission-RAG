@@ -26,3 +26,11 @@
   .demo-scenario-box, .demo-qa { padding: 18px; }
   .demo-banner strong { font-size: 13px; }
 }
+
+/* Japanese portfolio typography; no remote font requests. */
+.public-demo { font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; line-height: 1.75; }
+.public-demo button, .public-demo select, .public-demo input { font-family: inherit; }
+.public-demo button { line-height: 1.5; word-break: normal; overflow-wrap: anywhere; }
+.public-demo h1, .public-demo h2, .public-demo h3 { line-height: 1.5; }
+.public-demo .relation-node { overflow-wrap: anywhere; }
+.public-demo #drawer-close, .public-demo #reference-close { flex-shrink: 0; white-space: nowrap; }
