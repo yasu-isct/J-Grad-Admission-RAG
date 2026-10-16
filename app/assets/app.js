@@ -1,0 +1,3051 @@
+"use strict";
+
+const TARGET_CATALOG_ENDPOINT = "/v1/reference-targets";
+const BASE_REQUIREMENTS_ENDPOINT = "/v1/base-requirements";
+const APPLICANT_COMPARISON_ENDPOINT = "/v1/applicant-comparison";
+const GROUNDED_ANSWER_ENDPOINT = "/v1/natural-language-answers";
+const GENERATION_STATUS_ENDPOINT = "/v1/generation-status";
+const MAX_QUERY_LENGTH = 1000;
+const byId = (id) => document.getElementById(id);
+const targetForm = byId("target-form");
+const schoolSelect = byId("school-select");
+const demoDegreeSelect = byId("demo-degree-select");
+const intakeSelect = byId("intake-select");
+const collegeSelect = byId("college-select");
+const departmentSelect = byId("department-select");
+const routeField = byId("route-field");
+const routeSelect = byId("route-select");
+const requirementsSubmit = byId("requirements-submit");
+const requirementsRetry = byId("requirements-retry");
+const targetCompletionHint = byId("target-completion-hint");
+const targetStatus = byId("target-status");
+const targetSummary = byId("target-summary");
+const requirementsOutput = byId("requirements-output");
+const evidenceDrawer = byId("evidence-drawer");
+const drawerClose = byId("drawer-close");
+const drawerContent = byId("drawer-content");
+const applicantForm = byId("applicant-form");
+const materialInputs = Array.from(applicantForm.querySelectorAll("[data-material-code]"));
+const materialInputOriginalNames = new Map(materialInputs.map((select) =>
+  [select, select.parentElement.firstChild.textContent.trim()]));
+const comparisonSubmit = byId("comparison-submit");
+const comparisonRetry = byId("comparison-retry");
+const comparisonStatus = byId("comparison-status");
+const comparisonOutput = byId("comparison-output");
+const readinessPanel = byId("readiness-panel");
+const readinessTarget = byId("readiness-target");
+const partialChecklistStatement = byId("partial-checklist-statement");
+const readinessFilters = byId("readiness-filters");
+const filterEmpty = byId("filter-empty");
+const requirementsContinue = byId("requirements-continue");
+const editTarget = byId("edit-target");
+const changeSchool = byId("change-school");
+const currentTargetBar = byId("current-target-bar");
+const currentTargetName = byId("current-target-name");
+const editRequirements = byId("edit-requirements");
+const editApplicant = byId("edit-applicant");
+const groundedForm = byId("grounded-answer-form");
+const groundedQuestion = byId("grounded-question");
+const groundedQuestionCount = byId("grounded-question-count");
+const groundedSubmit = byId("grounded-answer-submit");
+const groundedRetry = byId("grounded-answer-retry");
+const groundedStatus = byId("grounded-answer-status");
+const groundedOutput = byId("grounded-answer-output");
+const groundedContext = byId("grounded-context");
+const generationModeLabel = byId("generation-mode-label");
+const flowSteps = [1, 2, 3, 4].map((number) => ({
+  number,
+  panel: byId(number === 3 ? "applicant-panel" : number === 4 ? "readiness-panel" : `step-${number}-panel`),
+  heading: byId(number === 1 ? "demo-heading" : number === 2 ? "requirements-heading" : number === 3 ? "applicant-heading" : "readiness-heading"),
+  content: number < 4 ? byId(`step-${number}-content`) : null,
+  summary: number < 4 ? byId(`step-${number}-summary`) : null,
+  badge: byId(`step-${number}-badge`),
+  nav: byId(`step-nav-${number}`)
+}));
+
+let demoCatalog = [];
+let requirementsPending = false;
+let requirementsController = null;
+let requirementsRequestId = 0;
+let drawerTrigger = null;
+let drawerScopeKey = null;
+let drawerGraph = null;
+
+function discardEvidenceDrawer() {
+  drawerTrigger = null;
+  drawerGraph = null;
+  drawerScopeKey = null;
+  if (evidenceDrawer.open) evidenceDrawer.close();
+}
+let baseRequirementsLoaded = false;
+let comparisonPending = false;
+let comparisonController = null;
+let comparisonRequestId = 0;
+let activeStep = 1;
+let requirementsEverLoaded = false;
+let comparisonComplete = false;
+let comparisonEverLoaded = false;
+let groundedController = null;
+let groundedRequestId = 0;
+let groundedCanRetry = false;
+let generationStatus = null;
+let referenceCore = null;
+let referenceEntries = [];
+let loadedReference = null;
+let referenceReport = null;
+let referenceReader = null;
+let referenceReportController = null;
+let referenceReportRequestId = 0;
+let baseResponse = null;
+let comparisonResponse = null;
+let referenceTrigger = null;
+const referenceButtons = Array.from(document.querySelectorAll(".reference-generate"));
+const referenceDialog = byId("reference-report");
+const referenceBody = byId("reference-report-body");
+const referenceActionStatuses = [byId("reference-inline-status"), byId("reference-step4-status")];
+
+function setReferenceActionState(state, message, enabled = baseRequirementsLoaded) {
+  for (const status of referenceActionStatuses) setMessage(status, state, message);
+  for (const button of referenceButtons) {
+    button.disabled = !enabled;
+    button.textContent = state === "loading" ? "正在整理…"
+      : state === "error" && enabled ? "重试生成报告" : "生成参考报告";
+  }
+}
+
+function clearReferenceReport(message = "当前目标或个人情况已改变，请按需重新生成。") {
+  referenceReportRequestId += 1;
+  if (referenceReportController) referenceReportController.abort();
+  referenceReportController = null;
+  referenceReport = null;
+  referenceReader = null;
+  referenceBody.replaceChildren();
+  byId("reference-copy").disabled = true;
+  byId("reference-copy-fallback").value = "";
+  byId("reference-copy-fallback").hidden = true;
+  byId("reference-copy-fallback-label").hidden = true;
+  byId("reference-report-status").textContent = "";
+  setReferenceActionState("initial", message);
+  if (referenceDialog.open) referenceDialog.close();
+}
+
+function cancelPendingReferenceComparison() {
+  if (!referenceReportController || referenceReport?.kind !== "legacy_applicant") return;
+  const controller = referenceReportController;
+  referenceReportRequestId += 1;
+  referenceReportController = null;
+  controller.abort();
+}
+
+function updateProfileCapability() {
+  const slice = currentReferenceEntry()?.kind === "reviewed_material_slice";
+  byId("legacy-profile-grid").hidden = slice;
+  byId("slice-profile").hidden = !slice;
+  byId("slice-material-preparation").replaceChildren();
+  byId("slice-material-preparation").hidden = true;
+  comparisonSubmit.textContent = slice ? "核对已覆盖材料条件" : "对照个人情况";
+  byId("readiness-filters").hidden = slice;
+  byId("grounded-answer-panel").hidden = slice;
+  clearGroundedAnswer(slice ? "当前材料切片暂不支持问答。" : "加载基础要求后即可提问。");
+  updateGroundedContext();
+}
+
+const stepStateLabels = {
+  locked: "未开始",
+  current: "当前",
+  complete: "已完成",
+  stale: "需要重新确认"
+};
+
+function stepState(number) {
+  if (number === activeStep) return "current";
+  if (number === 1) return baseRequirementsLoaded ? "complete" : "locked";
+  if (number === 2) {
+    if (baseRequirementsLoaded) return activeStep === 2 ? "current" : "complete";
+    return requirementsEverLoaded ? "stale" : "locked";
+  }
+  if (number === 3) {
+    if (comparisonComplete) return activeStep === 3 ? "current" : "complete";
+    if (comparisonEverLoaded) return "stale";
+    return "locked";
+  }
+  if (comparisonComplete) return activeStep === 4 ? "current" : "complete";
+  return comparisonEverLoaded ? "stale" : "locked";
+}
+
+function updateFlowPresentation() {
+  for (const step of flowSteps) {
+    const state = stepState(step.number);
+    const isActive = step.number === activeStep;
+    step.nav.dataset.state = state;
+    step.nav.querySelector("small").textContent = stepStateLabels[state];
+    if (isActive) step.nav.setAttribute("aria-current", "step");
+    else step.nav.removeAttribute("aria-current");
+    step.panel.dataset.stepState = state;
+    step.badge.textContent = stepStateLabels[state];
+
+    const available = step.number === 1
+      || (step.number === 2 && baseRequirementsLoaded)
+      || (step.number === 3 && baseRequirementsLoaded && (activeStep >= 3 || comparisonComplete))
+      || (step.number === 4 && comparisonComplete && activeStep === 4);
+    step.panel.hidden = !available;
+    if (step.content) step.content.hidden = !isActive;
+    if (step.summary) step.summary.hidden = isActive || state !== "complete";
+  }
+  const showTarget = activeStep >= 2 && baseRequirementsLoaded && loadedReference;
+  currentTargetBar.hidden = !showTarget;
+  currentTargetBar.dataset.compact = activeStep === 4 ? "true" : "false";
+  if (showTarget) currentTargetName.textContent = [loadedReference.scope.school,
+    loadedReference.scope.program].filter(Boolean).join(" · ");
+}
+
+function focusStep(number) {
+  const step = flowSteps[number - 1];
+  step.panel.scrollIntoView({ block: "start", behavior: "auto" });
+  step.heading.focus({ preventScroll: true });
+}
+
+function activateStep(number, focus = false) {
+  activeStep = number;
+  updateFlowPresentation();
+  if (focus) requestAnimationFrame(() => focusStep(number));
+}
+
+function setMessage(element, state, message, focus = false) {
+  element.dataset.state = state;
+  element.textContent = message;
+  element.hidden = false;
+  if (focus) {
+    element.focus();
+  }
+}
+
+function heading(level, text) {
+  const element = document.createElement(`h${level}`);
+  element.textContent = text;
+  return element;
+}
+
+function clearGroundedAnswer(message = "加载基础要求后即可提问。") {
+  groundedRequestId += 1;
+  if (groundedController) groundedController.abort();
+  groundedController = null;
+  groundedCanRetry = false;
+  groundedRetry.hidden = true;
+  groundedOutput.replaceChildren();
+  groundedOutput.hidden = true;
+  const configured = Boolean(generationStatus && generationStatus.configured);
+  const supported = currentReferenceEntry()?.kind !== "reviewed_material_slice";
+  groundedQuestion.disabled = !baseRequirementsLoaded || !configured || !supported;
+  groundedSubmit.disabled = !baseRequirementsLoaded || !configured || !supported;
+  setMessage(groundedStatus, "initial", !supported ? "当前材料切片暂不支持检索或问答。"
+    : generationStatus && !configured
+      ? `${generationAvailabilityLabel(generationStatus)}；已审核基础要求仍可查看。` : message);
+}
+
+function generationAvailabilityLabel(status) {
+  if (!status?.configured) return status?.mode === "offline_rules"
+    ? "离线资料暂不可用" : "在线问答暂不可用";
+  if (status.mode === "online_model") return "在线问答可用";
+  if (status.mode === "offline_rules") return "仅离线资料";
+  return "问答可用";
+}
+
+function updateGroundedContext() {
+  if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
+    groundedContext.textContent = "当前材料切片暂不支持检索或问答；请查看已审核主题和官方原文。";
+    return;
+  }
+  if (!baseRequirementsLoaded || !demoTargetComplete()) {
+    groundedContext.textContent = "请先完成目标选择并加载基础要求。";
+    return;
+  }
+  const target = currentDepartment();
+  const intake = currentIntake();
+  groundedContext.textContent = `当前复用：${currentSchool().school_name} · ${target ? target.department_name : departmentSelect.value} · ${intake.intake_name}；个人情况取自上方本页表单。`;
+}
+
+function groundedRequestPayload() {
+  return {
+    schema_version: "1.0",
+    question: groundedQuestion.value.trim(),
+    target: demoTargetRequest(),
+    applicant: demoApplicantInput()
+  };
+}
+
+function groundedFailureMessage(code, status) {
+  if (code === "online_generation_not_configured") return "在线问答暂时不可用；已审核要求和官方依据仍可查看。";
+  if (code === "generation_provider_timeout" || status === 504) return "生成服务超时。当前选择和问题仍保留，可重试。";
+  if (["generation_provider_unavailable", "grounded_service_unavailable", "provider_unavailable"].includes(code) || status === 503) return "生成或检索服务暂时不可用，请稍后重试。";
+  if (code === "insufficient_evidence") return "当前检索证据不足，未生成回答。请缩小或改写问题。";
+  if (["invalid_citation", "evidence_mismatch", "rule_state_mismatch", "unsupported_claim", "malformed_output", "incomplete_response"].includes(code)) return "回答未通过证据或引用校验，因此已安全隐藏。请重试或查看基础要求。";
+  if (code === "unsupported_question" || status === 422) return "当前资料未覆盖这个问题，或问题中没有明确的申请事项；请换一种问法。";
+  return "暂时无法生成有依据的回答，请重试。";
+}
+
+function appendGroundedList(container, title, values) {
+  if (!Array.isArray(values) || !values.length) return;
+  const section = document.createElement("section");
+  section.className = "grounded-boundary";
+  section.append(heading(3, title));
+  const list = document.createElement("ul");
+  for (const value of values) {
+    const item = document.createElement("li");
+    item.textContent = String(value);
+    list.append(item);
+  }
+  section.append(list);
+  container.append(section);
+}
+
+function appendAnswerInline(container, value) {
+  for (const part of String(value).split(/(\*\*[^*]+\*\*)/g)) {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const strong = document.createElement("strong");
+      strong.textContent = part.slice(2, -2);
+      container.append(strong);
+    } else container.append(document.createTextNode(part));
+  }
+}
+
+function appendReadableAnswer(container, value) {
+  const lines = String(value || "").replace(/\r\n?/g, "\n").split("\n");
+  let paragraph = [];
+  let list = null;
+  const flush = () => {
+    if (!paragraph.length) return;
+    const text = document.createElement("p");
+    appendAnswerInline(text, paragraph.join(" "));
+    container.append(text);
+    paragraph = [];
+  };
+  for (const line of lines) {
+    const value = line.trim();
+    if (!value) { flush(); list = null; continue; }
+    const bullet = value.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/);
+    if (bullet) {
+      flush();
+      const ordered = /^\d/.test(value);
+      if (!list || list.tagName !== (ordered ? "OL" : "UL")) {
+        list = document.createElement(ordered ? "ol" : "ul");
+        container.append(list);
+      }
+      const item = document.createElement("li");
+      appendAnswerInline(item, bullet[1]);
+      list.append(item);
+      continue;
+    }
+    const headingMatch = value.match(/^#{1,4}\s+(.+)$/);
+    if (headingMatch) {
+      flush(); list = null;
+      const title = document.createElement("h4");
+      appendAnswerInline(title, headingMatch[1]);
+      container.append(title);
+      continue;
+    }
+    list = null;
+    paragraph.push(value);
+  }
+  flush();
+}
+
+function appendGroundedResult(container, payload, offline) {
+  const answer = payload.answer;
+  const referenceOnly = answer.kind === "reference_answer";
+  const response = document.createElement("section");
+  response.className = "grounded-response";
+  response.append(heading(3, offline ? "离线资料参考"
+    : referenceOnly ? "参考回答" : "综合回答"));
+  const responseText = document.createElement("div");
+  responseText.className = "grounded-response-text";
+  appendReadableAnswer(responseText, answer.answer);
+  response.append(responseText);
+  container.append(response);
+  if (!referenceOnly && (!Array.isArray(answer.claims) || !answer.claims.length)) {
+    const empty = document.createElement("p");
+    empty.className = "grounded-boundary";
+    empty.textContent = "已完成检索，但没有可安全展示的肯定性结论。";
+    container.append(empty);
+  }
+  appendGroundedList(container, "仍需确认", answer.missing_information);
+  appendGroundedList(container, "回答范围", (answer.limitations || []).filter((item) =>
+    !String(item).includes("低保证参考回答")));
+}
+
+function renderGroundedAnswer(payload) {
+  groundedOutput.replaceChildren();
+  const offline = ["offline", "fallback"].includes(payload.delivery?.source)
+    || payload.mode?.mode === "offline_rules";
+  const meta = document.createElement("p");
+  meta.className = "grounded-answer-meta";
+  const deliveryLabels = {cache_hit: "已复用上次结果", live: "在线回答",
+    fallback: "在线服务不可用 · 离线参考资料", offline: "离线参考资料"};
+  for (const text of [deliveryLabels[payload.delivery?.source] || "当前参考内容"]) {
+    const badge = document.createElement("span");
+    badge.textContent = text;
+    meta.append(badge);
+  }
+  groundedOutput.append(meta);
+  if (payload.result) appendGroundedResult(groundedOutput, payload.result, offline);
+  if (!payload.result && payload.summary) appendGroundedList(groundedOutput, "本次结果", [payload.summary]);
+  if (!payload.result) appendGroundedList(groundedOutput, "回答限制", ["本次没有可安全展示的引用回答，请核对官方依据。"]);
+  const missing = [...new Set((payload.missing_context || []).filter((value) =>
+    !(payload.result?.answer?.missing_information || []).includes(value)))];
+  appendGroundedList(groundedOutput, "需要补充的信息", missing);
+  appendGroundedList(groundedOutput, "当前未覆盖", payload.unsupported_parts);
+  appendGroundedList(groundedOutput, "未回答的部分", (payload.subanswers || [])
+    .filter((part) => part.status !== "answered").map((part) => part.message));
+  groundedOutput.hidden = false;
+}
+
+async function loadGenerationStatus() {
+  try {
+    const response = await fetch(GENERATION_STATUS_ENDPOINT, { headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
+    const body = await response.json();
+    if (!response.ok || typeof body.configured !== "boolean" || !Number.isInteger(body.request_timeout_seconds) || body.request_timeout_seconds < 1 || body.request_timeout_seconds > 3600) throw new Error("invalid generation status");
+    generationStatus = body;
+  } catch (_) {
+    generationStatus = { configured: false, label: "生成模式状态不可用" };
+  }
+  generationModeLabel.textContent = generationAvailabilityLabel(generationStatus);
+  clearGroundedAnswer(baseRequirementsLoaded ? "可针对当前目标和本页个人情况提问。" : "加载基础要求后即可提问。");
+}
+
+async function submitGroundedAnswer() {
+  const question = groundedQuestion.value.trim();
+  if (!baseRequirementsLoaded || !demoTargetComplete() || !question || question.length > MAX_QUERY_LENGTH) {
+    setMessage(groundedStatus, "error", "请输入 1–1000 个字符的问题，并先加载基础要求。", true);
+    return;
+  }
+  if (groundedController) groundedController.abort();
+  const payload = groundedRequestPayload();
+  const snapshot = JSON.stringify(payload);
+  const requestId = ++groundedRequestId;
+  groundedController = new AbortController();
+  const timeout = globalThis.setTimeout(() => groundedController && groundedController.abort("timeout"), generationStatus.request_timeout_seconds * 1000);
+  groundedSubmit.disabled = true;
+  groundedRetry.hidden = true;
+  groundedOutput.hidden = true;
+  groundedCanRetry = false;
+  setMessage(groundedStatus, "loading", "正在理解问题；需要学校规则时会检索本地募集要项。");
+  try {
+    const response = await fetch(GROUNDED_ANSWER_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: snapshot, cache: "no-store", credentials: "same-origin", signal: groundedController.signal });
+    const body = await response.json().catch(() => ({}));
+    if (requestId !== groundedRequestId || snapshot !== JSON.stringify(groundedRequestPayload())) return;
+    if (!response.ok) {
+      const failure = new Error("grounded request failed");
+      failure.code = body.code;
+      failure.status = response.status;
+      throw failure;
+    }
+    if (!body.mode || !body.analysis || !Array.isArray(body.subanswers)) throw new Error("invalid response");
+    renderGroundedAnswer(body);
+    const offline = ["offline", "fallback"].includes(body.delivery?.source)
+      || body.mode?.mode === "offline_rules";
+    setMessage(groundedStatus, body.result ? "success" : "initial", body.result
+      ? offline ? "已显示离线参考资料；本次未获得在线回答。" : "回答已显示。"
+      : "本次没有可展示的回答；请查看下方说明。", true);
+  } catch (error) {
+    if (requestId !== groundedRequestId) return;
+    const timedOut = groundedController && groundedController.signal.reason === "timeout";
+    groundedCanRetry = true;
+    groundedRetry.hidden = false;
+    groundedOutput.replaceChildren();
+    groundedOutput.hidden = true;
+    setMessage(groundedStatus, "error", timedOut ? "生成服务超时。当前选择和问题仍保留，可重试。" : groundedFailureMessage(error && error.code, error && error.status), true);
+  } finally {
+    globalThis.clearTimeout(timeout);
+    if (requestId === groundedRequestId) {
+      groundedController = null;
+      groundedSubmit.disabled = !baseRequirementsLoaded || !generationStatus || !generationStatus.configured;
+    }
+  }
+}
+
+function option(value, label) {
+  const item = document.createElement("option");
+  item.value = value;
+  item.textContent = label;
+  return item;
+}
+
+function resetDemoSelect(select, message) {
+  select.replaceChildren(option("", message));
+  select.disabled = true;
+}
+
+function clearDemoResults(message = "完成左侧选择后，再明确加载要求。") {
+  requirementsOutput.replaceChildren();
+  targetSummary.hidden = false;
+  targetSummary.textContent = message;
+}
+
+function currentSchool() {
+  return demoCatalog.find((item) => item.school_id === schoolSelect.value);
+}
+
+function currentDegree() {
+  const school = currentSchool();
+  return school ? school.degrees.find((item) => item.degree_id === demoDegreeSelect.value) : null;
+}
+
+function currentIntake() {
+  const degree = currentDegree();
+  return degree ? degree.intakes.find((item) => `${item.document_id}:${item.year}:${item.month}` === intakeSelect.value) : null;
+}
+
+function currentCollege() {
+  const intake = currentIntake();
+  return intake ? intake.colleges.find((item) => item.college_id === collegeSelect.value) : null;
+}
+
+function currentDepartment() {
+  const college = currentCollege();
+  return college ? college.departments.find((item) => item.department_id === departmentSelect.value) : null;
+}
+
+function demoTargetComplete() {
+  const department = currentDepartment();
+  return Boolean(
+    currentSchool() && currentDegree() && currentIntake() && currentCollege() && department
+    && (department.application_routes.length === 0 || routeSelect.value)
+  );
+}
+
+function targetLabel(target) {
+  if (target?.kind) return referenceCore.scopeLabel(target);
+  return [
+    target.school_name,
+    target.degree_name,
+    target.intake_name,
+    target.college_name,
+    target.department_name,
+    target.application_route_name
+  ].filter(Boolean).join(" · ");
+}
+
+function updateTargetStepSummary(target) {
+  byId("step-1-summary-text").textContent = targetLabel(target);
+}
+
+function updateRequirementsStepSummary(payload) {
+  const labels = [
+    ["dates", "关键日期"],
+    ["materials", "核心材料"],
+    ["eligibility", "学历资格"],
+    ["language", "语言要求"]
+  ];
+  const counts = labels.map(([category, label]) => {
+    const count = payload.requirements.filter((item) => item.category === category).length;
+    return `${label} ${count} 项`;
+  });
+  const hasDates = payload.requirements.some((item) => item.category === "dates");
+  byId("step-2-summary-text").textContent = `${counts.join(" · ")}${hasDates ? " · 日期见第2步" : ""}`;
+}
+
+function updateApplicantStepSummary() {
+  if (currentReferenceEntry()?.kind === "reviewed_material_slice") {
+    const current = byId("slice-current-employed").selectedOptions[0].textContent;
+    const retain = byId("slice-retain-employed").selectedOptions[0].textContent;
+    const preparations = Array.from(byId("slice-material-preparation").querySelectorAll("select"),
+      (control) => `${control.dataset.materialName}：${control.selectedOptions[0].textContent}`);
+    byId("step-3-summary-text").textContent = [`目前任职：${current}；入学后继续任职：${retain}`,
+      ...preparations].join("；");
+    return;
+  }
+  const categories = [
+    ["学历", profileGroupHasProvidedValue("education")],
+    ["网上手续与寄送", profileGroupHasProvidedValue("submission")],
+    ["英语", profileGroupHasProvidedValue("english")],
+    ["日语", profileGroupHasProvidedValue("japanese")],
+    ["材料", profileGroupHasProvidedValue("materials")]
+  ];
+  const provided = categories.filter(([, value]) => value).map(([label]) => label);
+  const missing = categories.filter(([, value]) => !value).map(([label]) => label);
+  const parts = [
+    `已提供类别：${provided.length ? provided.join("、") : "无"}`,
+    `未提供类别：${missing.length ? missing.join("、") : "无"}`
+  ];
+  byId("step-3-summary-text").textContent = parts.join("；");
+}
+
+function updateRequirementsSubmit() {
+  const department = currentDepartment();
+  const missing = [
+    [currentSchool(), "学校"],
+    [currentDegree(), "学位"],
+    [currentIntake(), "入学时间"],
+    [currentCollege(), "学院"],
+    [department, "系／专业"],
+    [department && (department.application_routes.length === 0 || routeSelect.value), "出愿日程／方式"]
+  ].filter(([complete]) => !complete).map(([, label]) => label);
+  requirementsSubmit.disabled = requirementsPending || missing.length > 0;
+  targetCompletionHint.dataset.state = missing.length ? "incomplete" : "ready";
+  targetCompletionHint.textContent = requirementsPending
+    ? "正在读取官方要求，请稍候。"
+    : missing.length
+      ? `还需选择：${missing.join("、")}。`
+      : "申请目标已完整，可以查看基础出愿要求。";
+}
+
+function profileValueState(control) {
+  if (!control.value) return "empty";
+  if (["unknown", "ui_unknown", "ui_not_applicable"].includes(control.value)) return "unknown";
+  return "provided";
+}
+
+function profileGroupControls(group) {
+  return Array.from(group.querySelectorAll("select, input"));
+}
+
+function profileGroupHasProvidedValue(key) {
+  const group = applicantForm.querySelector(`[data-profile-group="${key}"]`);
+  return profileGroupControls(group).some((control) => profileValueState(control) === "provided");
+}
+
+function updateProfileGroupStates() {
+  for (const group of applicantForm.querySelectorAll(".profile-group")) {
+    const values = profileGroupControls(group).map(profileValueState);
+    const state = values.every((value) => value === "provided")
+      ? "complete"
+      : values.some((value) => value === "provided")
+        ? "partial"
+        : values.some((value) => value === "unknown") ? "unknown" : "empty";
+    const labels = { complete: "已填写", partial: "已填写部分", unknown: "仍需确认", empty: "待填写" };
+    const badge = group.querySelector(".profile-group-state");
+    badge.dataset.state = state;
+    badge.textContent = labels[state];
+  }
+}
+
+function updateEnglishInputHint() {
+  const kind = byId("demo-english-kind").value;
+  const score = byId("demo-english-score").value;
+  const date = byId("demo-english-date").value;
+  const report = byId("demo-english-report").value;
+  const concreteKind = kind && !kind.startsWith("ui_");
+  const hint = byId("english-link-hint");
+  if ((score || date) && !concreteKind) {
+    hint.dataset.state = "attention";
+    hint.textContent = "已填写成绩或考试日期：服务端还需要考试类型。可先继续填写，但提交前请选类型，或清空成绩与日期。";
+  } else if (kind === "ui_not_applicable" && report === "true") {
+    hint.dataset.state = "attention";
+    hint.textContent = "你选择了未参加考试，同时标记已取得官方成绩单；请核对这两项输入。这里不判断成绩是否有效。";
+  } else if (concreteKind) {
+    hint.dataset.state = "info";
+    hint.textContent = "考试类型已记录。成绩、日期和官方成绩单可暂时留空；已填写也不代表成绩有效或学校已受理。";
+  } else {
+    hint.dataset.state = "info";
+    hint.textContent = "成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。";
+  }
+}
+
+const englishProofControls = ["demo-english-online-pdf", "demo-toeic-qr",
+  "demo-toeic-certificate", "demo-toefl-report-pdf", "demo-toefl-g179"];
+
+function updateEnglishProofVisibility() {
+  const kind = byId("demo-english-kind").value;
+  const toeic = kind === "toeic_lr";
+  const toefl = kind === "toefl_ibt" || kind === "toefl_ibt_home_edition";
+  byId("demo-english-proof-fields").hidden = !(toeic || toefl);
+  byId("demo-toeic-proof-fields").hidden = !toeic;
+  byId("demo-toefl-proof-fields").hidden = !toefl;
+}
+
+function updateApplicationPreparationVisibility() {
+  const state = byId("demo-completion-state").value;
+  byId("demo-completion-date-field").hidden = state !== "completed";
+  byId("demo-expected-completion-date-field").hidden = state !== "expected";
+  const basis = byId("demo-credential-basis").value;
+  byId("demo-review-status-field").hidden = !["foreign_15_year_education",
+    "university_three_year_enrollment"].includes(basis);
+}
+
+function applicationPreparationInput() {
+  return {
+    completion_date: nullableDemoValue("demo-completion-date"),
+    expected_completion_date: nullableDemoValue("demo-expected-completion-date"),
+    individual_review_status: nullableDemoValue("demo-review-status"),
+    materials_dispatched_date: nullableDemoValue("demo-dispatched-date"),
+    materials_arrival_date: nullableDemoValue("demo-arrival-date"),
+    online_steps_completed: nullableDemoBoolean("demo-online-steps")
+  };
+}
+
+function applicationDatesReconcile() {
+  const dispatched = byId("demo-dispatched-date").value;
+  const arrival = byId("demo-arrival-date").value;
+  const hint = byId("demo-submission-hint");
+  if (dispatched && arrival && arrival < dispatched) {
+    hint.dataset.state = "attention";
+    hint.textContent = "实际送达日期不能早于寄出日期，请核对这两项。";
+    return false;
+  }
+  hint.dataset.state = "info";
+  hint.textContent = "实际送达日期可以留空；寄出日期不会当作送达日期。";
+  return true;
+}
+
+function englishPreparationInput() {
+  return {
+    downloaded_online_pdf: nullableDemoBoolean("demo-english-online-pdf"),
+    toeic_verification_qr_present: nullableDemoBoolean("demo-toeic-qr"),
+    toeic_digital_official_score_certificate: nullableDemoBoolean("demo-toeic-certificate"),
+    toefl_test_taker_score_report_pdf: nullableDemoBoolean("demo-toefl-report-pdf"),
+    toefl_di_code_g179_set: nullableDemoBoolean("demo-toefl-g179")
+  };
+}
+
+function initializeProfileGroups() {
+  const desktop = window.matchMedia("(min-width: 761px)").matches;
+  for (const group of applicantForm.querySelectorAll(".profile-group")) {
+    group.open = desktop || group.dataset.profileGroup === "education";
+  }
+  updateProfileGroupStates();
+  updateEnglishInputHint();
+  updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
+}
+
+function resetApplicantInputs() {
+  applicantForm.reset();
+  updateProfileGroupStates();
+  updateEnglishInputHint();
+  updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
+  applicationDatesReconcile();
+}
+
+function populateDegreeSelect() {
+  resetDemoSelect(demoDegreeSelect, "请选择学位");
+  resetDemoSelect(intakeSelect, "请先选择学位");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const school = currentSchool();
+  if (!school) { updateRequirementsSubmit(); return; }
+  demoDegreeSelect.replaceChildren(option("", "请选择学位"));
+  for (const degree of school.degrees) demoDegreeSelect.append(option(degree.degree_id, degree.degree_name));
+  demoDegreeSelect.disabled = false;
+  if (school.degrees.length === 1) demoDegreeSelect.value = school.degrees[0].degree_id;
+  populateIntakeSelect();
+}
+
+function populateIntakeSelect() {
+  resetDemoSelect(intakeSelect, "请选择入学时间");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const degree = currentDegree();
+  if (!degree) { updateRequirementsSubmit(); return; }
+  intakeSelect.replaceChildren(option("", "请选择入学时间"));
+  for (const intake of degree.intakes) intakeSelect.append(option(`${intake.document_id}:${intake.year}:${intake.month}`, intake.intake_name));
+  intakeSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateCollegeSelect() {
+  resetDemoSelect(collegeSelect, "请选择学院");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const intake = currentIntake();
+  if (!intake) { updateRequirementsSubmit(); return; }
+  collegeSelect.replaceChildren(option("", "请选择学院"));
+  for (const college of intake.colleges) collegeSelect.append(option(college.college_id, college.college_name));
+  collegeSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateDepartmentSelect() {
+  resetDemoSelect(departmentSelect, "请选择系／专业");
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  routeField.hidden = true;
+  const college = currentCollege();
+  if (!college) { updateRequirementsSubmit(); return; }
+  departmentSelect.replaceChildren(option("", "请选择系／专业"));
+  for (const department of college.departments) departmentSelect.append(option(department.department_id, department.department_name));
+  departmentSelect.disabled = false;
+  updateRequirementsSubmit();
+}
+
+function populateRouteSelect() {
+  resetDemoSelect(routeSelect, "请选择日程或方式");
+  const department = currentDepartment();
+  if (!department || department.application_routes.length === 0) {
+    routeField.hidden = true;
+    updateRequirementsSubmit();
+    return;
+  }
+  routeSelect.replaceChildren(option("", "请选择日程或方式"));
+  for (const route of department.application_routes) routeSelect.append(option(route.route_id, route.route_name));
+  routeSelect.disabled = false;
+  routeField.hidden = false;
+  updateRequirementsSubmit();
+}
+
+function populateDemoCatalog(schools) {
+  demoCatalog = schools;
+  schoolSelect.replaceChildren(option("", "请选择学校"));
+  for (const school of schools) schoolSelect.append(option(school.school_id, school.school_name));
+  schoolSelect.disabled = schools.length === 0;
+  if (schools.length === 1) schoolSelect.value = schools[0].school_id;
+  populateDegreeSelect();
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, schools.length ? "success" : "empty", schools.length ? "审核目录已就绪，请完成申请目标。" : "当前没有可用的审核目标。", schools.length === 0);
+}
+
+function catalogForReferenceEntry(item) {
+  if (item.kind === "legacy_applicant") return item.legacy_catalog;
+  const scope = referenceCore.scopesFor(item)[0];
+  const target = item.target;
+  // Selection-only projection. The request retains the slice target and never
+  // sends this UI shape or a fabricated legacy document ID to an API.
+  return {
+    school_id: item.entry_id, school_name: scope.school,
+    degrees: [{
+      degree_id: target.degree_level, degree_name: scope.degree,
+      intakes: [{
+        document_id: null, year: target.intake.year, month: target.intake.month,
+        intake_name: `${scope.intake} · ${scope.edition}`,
+        colleges: [{
+          college_id: target.organization_id || scope.organization, college_name: scope.organization,
+          departments: [{
+            department_id: target.program_id || scope.program, department_name: scope.program,
+            application_routes: [{route_id: target.examination_schedule_id || scope.route, route_name: scope.route}]
+          }]
+        }]
+      }]
+    }]
+  };
+}
+
+function currentReferenceEntry() {
+  return referenceEntries.find((item) => (item.kind === "legacy_applicant"
+    ? item.legacy_catalog.school_id : item.entry_id) === schoolSelect.value) || null;
+}
+
+function currentReferenceScope() {
+  if (!demoTargetComplete() || !referenceCore) return null;
+  const entry = currentReferenceEntry();
+  if (!entry) return null;
+  const scopes = referenceCore.scopesFor(entry);
+  if (entry.kind === "reviewed_material_slice") return scopes[0];
+  const request = demoTargetRequest();
+  return scopes.find((scope) => JSON.stringify(scope.request) === JSON.stringify(request)) || null;
+}
+
+function refreshMaterialInputLabels(scope) {
+  for (const select of materialInputs) {
+    const display = referenceCore.materialDisplay(scope, select.dataset.materialCode,
+      materialInputOriginalNames.get(select));
+    const label = display.verified
+      ? `${display.name} · ${display.official}` : `${display.name} · ${display.description}`;
+    select.parentElement.replaceChildren(document.createTextNode(`${label} `), select);
+  }
+}
+
+async function loadDemoCatalog() {
+  discardEvidenceDrawer();
+  cancelPendingRequirements();
+  baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport();
+  invalidateComparison("请先加载基础要求。");
+  activateStep(1);
+  demoCatalog = [];
+  requirementsRetry.hidden = true;
+  clearDemoResults();
+  resetDemoSelect(schoolSelect, "正在读取审核目录");
+  resetDemoSelect(demoDegreeSelect, "请先选择学校");
+  resetDemoSelect(intakeSelect, "请先选择学位");
+  resetDemoSelect(collegeSelect, "请先选择入学时间");
+  resetDemoSelect(departmentSelect, "请先选择学院");
+  setMessage(targetStatus, "loading", "正在读取公开演示的固定目标目录。");
+  try {
+    const response = await fetch(TARGET_CATALOG_ENDPOINT, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin" });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    referenceEntries = referenceCore.readyEntries(payload);
+    populateDemoCatalog(referenceEntries.map(catalogForReferenceEntry));
+    updateProfileCapability();
+  } catch (_error) {
+    requirementsRetry.hidden = false;
+    setMessage(targetStatus, "error", "审核目录暂时无法读取，请重试。", true);
+  }
+}
+
+function demoTargetRequest() {
+  const intake = currentIntake();
+  return {
+    schema_version: "1.0",
+    school_id: schoolSelect.value,
+    document_id: intake.document_id,
+    degree_id: demoDegreeSelect.value,
+    intake: { year: intake.year, month: intake.month },
+    college_id: collegeSelect.value,
+    department_id: departmentSelect.value,
+    application_route: routeSelect.value || null
+  };
+}
+
+function requirementStatusLabel(status) {
+  const labels = {
+    required: "官方状态：必需",
+    conditional: "官方状态：有条件适用",
+    needs_information: "官方状态：待补充信息",
+    needs_review: "官方状态：需要人工确认",
+    not_applicable: "官方状态：不适用",
+    not_covered: "官方状态：当前未覆盖",
+    submission_required: "当前条件：需准备",
+    submission_not_required: "当前条件：此材料本身无需提交",
+    rule_not_applicable: "当前条件：本条规则不适用，不能推定一般性免交"
+  };
+  return labels[status] || `官方状态：${status}`;
+}
+
+function profileGroupsFromSchema() {
+  return Array.from(document.querySelectorAll("[data-profile-group]"), (group) => ({
+    key: group.dataset.profileGroup,
+    label: group.dataset.profileLabel,
+    requirementCategories: (group.dataset.requirementCategories || "")
+      .split(",")
+      .filter(Boolean)
+  }));
+}
+
+function applicationOverview(payload) {
+  return globalThis.JGradOverview.buildApplicationOverview(payload, profileGroupsFromSchema());
+}
+
+function profileCta(className = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = currentReferenceEntry()?.kind === "reviewed_material_slice"
+    ? "填写个人情况，核对已覆盖材料" : "填写个人情况，检查我还缺什么";
+  button.addEventListener("click", () => {
+    if (baseRequirementsLoaded) activateStep(3, true);
+  });
+  return button;
+}
+
+function renderDateEvent(event) {
+  const card = document.createElement("article");
+  card.className = "date-event";
+  card.dataset.eventType = event.event_type;
+  const header = document.createElement("div");
+  header.className = "date-event-header";
+  header.append(heading(5, event.label));
+  const nature = document.createElement("span");
+  nature.className = "date-nature";
+  nature.dataset.nature = event.nature;
+  const natureLabels = {
+    opens: "开放时间",
+    period: "出愿期间",
+    must_arrive: "必着截止",
+    recommended_arrival: "建议到达"
+  };
+  nature.textContent = natureLabels[event.nature] || event.nature;
+  header.append(nature);
+  const conclusion = document.createElement("p");
+  conclusion.className = "date-conclusion";
+  conclusion.textContent = event.display_text;
+  card.append(header, conclusion);
+  if (event.uncertainty_note) {
+    const note = document.createElement("p");
+    note.className = "date-uncertainty";
+    note.textContent = event.uncertainty_note;
+    card.append(note);
+  }
+  appendEvidenceChoices(card, event);
+  return card;
+}
+
+function appendEvidenceChoices(card, requirement) {
+  const evidenceRows = Array.isArray(requirement.evidence) ? requirement.evidence : [];
+  if (!evidenceRows.length) return;
+  const choices = document.createElement("details");
+  choices.className = "evidence-choice-list";
+  const summary = document.createElement("summary");
+  summary.textContent = `查看依据（${evidenceRows.length}条）`;
+  choices.append(summary);
+  const actions = document.createElement("div");
+  actions.className = "actions requirement-evidence-actions";
+  evidenceRows.forEach((evidence, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    const quote = evidence.highlights?.[0]?.exact_text || evidence.official_text || "查看原文";
+    const excerpt = String(quote).replace(/\s+/g, " ").slice(0, 42);
+    button.textContent = `第${index + 1}条 · ${evidence.official_title || "官方文件"} · PDF第${(evidence.pages || []).join("、")}页 · ${excerpt}`;
+    button.addEventListener("click", () => openDemoEvidence(requirement, evidence, button));
+    actions.append(button);
+  });
+  choices.append(actions);
+  card.append(choices);
+}
+
+function appendRequirementEvidence(card, requirement) {
+  if (requirement.graphTopic) {
+    const actions = document.createElement("div");
+    actions.className = "actions requirement-evidence-actions";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = `查看依据（${requirement.graphTopic.sources.length}条）`;
+    button.addEventListener("click", () => openEvidenceGraph(requirement, button));
+    actions.append(button);
+    card.append(actions);
+    return;
+  }
+  appendEvidenceChoices(card, requirement);
+}
+
+function appendPreparationGuide(card, guide, officialName = null) {
+  if (!guide) return;
+  const collapse = card.classList.contains("requirement-card");
+  const container = collapse ? document.createElement("details") : card;
+  if (collapse) {
+    container.className = "preparation-guide-details";
+    const summary = document.createElement("summary");
+    summary.textContent = "如何准备";
+    container.append(summary);
+  }
+  if (officialName) container.append(officialName);
+  const steps = document.createElement("ol");
+  steps.className = "preparation-steps";
+  for (const line of guide.steps) {
+    const item = document.createElement("li");
+    item.textContent = line;
+    steps.append(item);
+  }
+  container.append(steps);
+  for (const line of guide.warnings) {
+    const note = document.createElement("p");
+    note.className = "preparation-warning";
+    note.textContent = `注意：${line}`;
+    container.append(note);
+  }
+  if (guide.conditions.length) {
+    const details = document.createElement("details");
+    details.className = "preparation-conditions";
+    const summary = document.createElement("summary");
+    summary.textContent = "查看特殊情况";
+    details.append(summary);
+    for (const condition of guide.conditions) {
+      const note = document.createElement("p");
+      note.textContent = `${condition.title}：${condition.text}`;
+      details.append(note);
+    }
+    container.append(details);
+  }
+  if (collapse) card.append(container);
+}
+
+function renderRequirementCard(requirement, options = {}) {
+  const card = document.createElement("article");
+  card.className = `requirement-card${options.compact ? " requirement-card-compact" : ""}`;
+  card.dataset.category = requirement.category;
+  const material = requirement.category === "materials"
+    ? referenceCore.materialDisplay(options.scope,
+      requirement.material_code || requirement.requirement_id, requirement.title) : null;
+  const guide = material ? referenceCore.materialGuide(options.scope, {
+    id: requirement.material_code || requirement.requirement_id,
+    sources: requirement.graphTopic?.sources || requirement.evidence
+  }) : null;
+  const pendingSliceGuide = guide && requirement.graphTopic && !requirement.conditionResultLoaded;
+  card.append(heading(4, material ? material.name : requirement.title));
+  const official = material?.official ? document.createElement("p") : null;
+  if (official) {
+    official.className = "material-official-name";
+    official.textContent = material.official;
+    if (!guide) card.append(official);
+  }
+  const status = document.createElement("span");
+  status.className = "requirement-status";
+  status.dataset.status = requirement.official_status;
+  status.textContent = pendingSliceGuide ? "材料条件尚未核对" : material
+    ? ({required: "当前规则：需提交", needs_information: "适用条件待确认",
+      submission_not_required: "本项无需提交", rule_not_applicable: "本条条件不适用",
+      submission_required: "当前条件：需提交", not_covered: "当前资料未覆盖"})[requirement.official_status]
+      || "适用条件待确认"
+    : requirementStatusLabel(requirement.official_status);
+  const description = document.createElement("p");
+  description.className = "requirement-description";
+  description.textContent = material ? guide?.purpose || material.description
+    : String(requirement.requirement_id?.includes("english-submission-computer-science")
+      ? requirement.reviewed_summary || requirement.description : requirement.description || "")
+      .replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
+  card.append(status, description);
+  if (guide && !pendingSliceGuide
+    && !["required", "submission_required"].includes(requirement.official_status)) {
+    const conditional = document.createElement("p");
+    conditional.className = "preparation-warning";
+    conditional.textContent = "适用条件仍需确认；以下是需要提交时的准备方法。";
+    card.append(conditional);
+  }
+  if (guide) appendPreparationGuide(card, guide, official);
+  if (requirement.requirement_id === "language:preparation-guide") {
+    description.remove();
+    const list = document.createElement("ul");
+    list.className = "english-guide-list";
+    for (const line of String(requirement.reviewed_summary || "").split("\n").filter(Boolean)) {
+      const item = document.createElement("li");
+      item.textContent = line;
+      list.append(item);
+    }
+    card.append(list);
+  }
+  if (requirement.deadline) {
+    const deadline = document.createElement("p");
+    deadline.className = "deadline-callout";
+    deadline.textContent = `官方日期／截止：${requirement.deadline}`;
+    card.append(deadline);
+  }
+  if (!options.compact && requirement.reviewed_summary
+    && requirement.requirement_id !== "language:preparation-guide") {
+    const detail = document.createElement("details");
+    detail.className = "technical-disclosure";
+    const summary = document.createElement("summary");
+    summary.textContent = "查看审核日期摘要（日文）";
+    const excerpt = document.createElement("blockquote");
+    excerpt.className = "reviewed-summary";
+    excerpt.textContent = String(requirement.reviewed_summary).replace(/\bRULE-\d+[A-Z]?\b\s*/g, "").trim();
+    detail.append(summary, excerpt);
+    card.append(detail);
+  }
+  appendRequirementEvidence(card, requirement);
+  return card;
+}
+
+function renderApplicationOverview(payload, overview) {
+  const section = document.createElement("section");
+  section.className = "application-overview";
+  section.setAttribute("aria-labelledby", "application-overview-heading");
+  const copy = document.createElement("div");
+  copy.className = "application-overview-copy";
+  const eyebrow = document.createElement("p");
+  eyebrow.className = "section-label";
+  eyebrow.textContent = "申请概览";
+  const title = heading(3, "先确认截止，再开始准备");
+  title.id = "application-overview-heading";
+  const target = document.createElement("p");
+  target.className = "overview-target";
+  target.textContent = targetLabel(payload.target);
+  copy.append(eyebrow, title, target);
+
+  const metrics = document.createElement("dl");
+  metrics.className = "overview-metrics";
+  const metricValues = [
+    ["最重要的必着截止", overview.deadlineText, "deadline"],
+    ["核心材料", overview.materialCount === null ? "暂无已审核数据" : `${overview.materialCount} 项`, "materials"],
+    ["基础要求待确认", overview.needsInformationCount === null ? "暂无已审核数据" : `${overview.needsInformationCount} 项`, "pending"]
+  ];
+  for (const [label, value, kind] of metricValues) {
+    const item = document.createElement("div");
+    item.dataset.metric = kind;
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    dd.textContent = value;
+    item.append(dt, dd);
+    metrics.append(item);
+  }
+  if (overview.needsInformationCount !== null) {
+    const pendingMetric = metrics.querySelector('[data-metric="pending"]');
+    const note = document.createElement("p");
+    note.className = "overview-metric-note";
+    note.textContent = `其中 ${overview.profileComparableCount} 项可进入个人对照，${overview.otherConfirmationCount} 项需另行确认`;
+    pendingMetric.append(note);
+  }
+  copy.append(metrics);
+
+  const action = document.createElement("aside");
+  action.className = "overview-action";
+  const actionLabel = document.createElement("p");
+  actionLabel.textContent = "下一步";
+  const actionHint = document.createElement("p");
+  actionHint.className = "field-detail";
+  actionHint.textContent = "填写后会使用现有规则保守对照，不会保存个人资料。";
+  action.append(actionLabel, profileCta("overview-cta"), actionHint);
+  section.append(copy, action);
+  return section;
+}
+
+function renderKeyDates(requirements, emptyMessage = "暂无已审核数据") {
+  const section = document.createElement("section");
+  section.className = "result-section key-dates-section";
+  section.append(heading(3, "关键时间"));
+  const intro = document.createElement("p");
+  intro.className = "section-intro";
+  intro.textContent = requirements.length
+    ? "“必着”表示材料必须在该时点前送达；“建议到达”只是降低延误风险的建议，不是另一个强制截止。"
+    : "当前资料尚未覆盖日期；请查看完整官方募集要项核对时间。";
+  section.append(intro);
+  const dateList = document.createElement("div");
+  dateList.className = "date-event-list";
+  for (const requirement of requirements) {
+    for (const event of Array.isArray(requirement.date_events) ? requirement.date_events : []) {
+      dateList.append(renderDateEvent(event));
+    }
+  }
+  if (!dateList.childElementCount) {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = emptyMessage;
+    dateList.append(empty);
+  }
+  section.append(dateList);
+  return section;
+}
+
+function renderRequirementSection(title, entries, className, scope) {
+  const section = document.createElement("section");
+  section.className = `result-section ${className}`;
+  section.append(heading(3, title));
+  const list = document.createElement("div");
+  list.className = "requirement-list";
+  if (entries.length) {
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, {scope}));
+  } else {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = "暂无已审核数据";
+    list.append(empty);
+  }
+  section.append(list);
+  return section;
+}
+
+function renderPendingRequirements(entries, overview, scope) {
+  const section = document.createElement("section");
+  section.className = "result-section pending-section";
+  const count = overview.needsInformationCount === null ? null : entries.length;
+  section.append(heading(3, count === null
+    ? "仍需进一步确认的基础要求"
+    : `仍需进一步确认的基础要求：${count} 项`));
+  const explanation = document.createElement("p");
+  explanation.className = "section-intro";
+  explanation.textContent = count === null
+    ? "当前暂无已审核数据，不会推断要求是否满足。"
+    : "这里列出尚需核对的资格与语言要求；材料适用性和准备情况在材料清单中分别查看。";
+  section.append(explanation);
+  if (overview.otherConfirmationRequirements.length) {
+    const otherNotice = document.createElement("p");
+    otherNotice.className = "pending-other-notice";
+    otherNotice.textContent = `当前个人情况步骤不处理：${overview.otherConfirmationRequirements.map((item) => item.title).join("、")}。请核对实际情况及官方要求。`;
+    section.append(otherNotice);
+  }
+  const inputHeading = heading(4, "下一步可填写的个人情况");
+  inputHeading.className = "profile-input-heading";
+  section.append(inputHeading);
+  const categories = document.createElement("ul");
+  categories.className = "profile-needs-list";
+  for (const group of overview.profileInputGroups) {
+    const item = document.createElement("li");
+    item.textContent = group.label;
+    categories.append(item);
+  }
+  if (!categories.childElementCount) {
+    const item = document.createElement("li");
+    item.textContent = "暂无已审核数据";
+    categories.append(item);
+  }
+  section.append(categories);
+  if (entries.length) {
+    const details = document.createElement("details");
+    details.className = "pending-details";
+    const summary = document.createElement("summary");
+    summary.textContent = `查看待确认的 ${entries.length} 项要求`;
+    const list = document.createElement("div");
+    list.className = "requirement-list";
+    for (const requirement of entries) list.append(renderRequirementCard(requirement, { compact: true, scope }));
+    details.append(summary, list);
+    section.append(details);
+  }
+  return section;
+}
+
+function renderExamCard(exam) {
+  if (exam?.schema_version === "2.0" && exam.status === "available") return renderExamCardV2(exam);
+  const section = document.createElement("section");
+  section.className = "result-section exam-arrangement";
+  section.append(heading(3, exam?.status === "available" ? "考试安排 · B日程" : "考试安排"));
+  if (exam?.status !== "available") {
+    const note = document.createElement("p");
+    note.textContent = exam?.message || "考试资料暂不可用，请查看官方募集要项。";
+    section.append(note);
+    return section;
+  }
+  const rows = referenceCore.examReportRows(exam);
+  const lead = document.createElement("p");
+  lead.className = "exam-lead";
+  lead.textContent = rows[0];
+  section.append(lead, heading(4, "考什么"));
+  const subjects = document.createElement("ul");
+  for (const row of rows.slice(1, 4)) {
+    const item = document.createElement("li");
+    item.textContent = row;
+    subjects.append(item);
+  }
+  section.append(subjects);
+  for (const row of rows.slice(4, 6)) {
+    const text = document.createElement("p");
+    text.textContent = row;
+    section.append(text);
+  }
+  const after = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "笔试之后：口述对象与日期";
+  const oral = document.createElement("p");
+  oral.textContent = rows[6];
+  after.append(summary, oral);
+  const oralSource = document.createElement("button");
+  oralSource.type = "button";
+  oralSource.className = "quiet";
+  oralSource.textContent = "查看口述对象公布原文";
+  oralSource.addEventListener("click", () => openDemoEvidence({title: "口述对象公布"},
+    exam.evidence[1], oralSource, {examYearNote: "公告的是口述对象，时间为17时左右起；不是最终合格公布。"}));
+  after.append(oralSource);
+  section.append(after);
+  const actions = document.createElement("div");
+  actions.className = "source-actions";
+  const source = document.createElement("button");
+  source.type = "button";
+  source.className = "secondary";
+  source.textContent = "查看官方原文";
+  source.addEventListener("click", () => openDemoEvidence({title: "B日程考试安排"}, exam.evidence[0], source,
+    {examYearNote: "考试年份按本册封面、出愿流程与信息工学系考试页交叉核对。", examYearPages: [1, 2]}));
+  const english = document.createElement("button");
+  english.type = "button";
+  english.className = "secondary";
+  english.textContent = "查看英语证明要求";
+  english.addEventListener("click", () => {
+    const target = requirementsOutput.querySelector(".english-section");
+    if (!target) return;
+    target.scrollIntoView({behavior: "smooth", block: "start"});
+    target.setAttribute("tabindex", "-1");
+    target.focus({preventScroll: true});
+  });
+  actions.append(source, english);
+  section.append(actions);
+  return section;
+}
+
+function examSourcesForField(exam, fieldPath) {
+  const field = exam.field_bindings.find((item) => item.field_path === fieldPath);
+  if (!field) return [];
+  const groups = new Map();
+  for (const source of field.sources) {
+    const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
+    const evidence = fact || (source.source_id.startsWith("pdf_page:") ? {
+      official_title: exam.official_title, school_name: currentReferenceScope()?.school || "当前学校",
+      intake_name: currentReferenceScope()?.intake || "本册目标", pages: source.physical_pages,
+      official_text: source.exact_text, source_url: exam.official_source_url,
+      local_pdf_url: exam.local_pdf_url,
+      limitation: "这是已核对PDF页的原文锚点；请结合完整原页与学校通知阅读。"
+    } : null);
+    if (!evidence) continue;
+    const key = `${source.source_id}:${source.physical_pages.join(",")}`;
+    if (!groups.has(key)) groups.set(key, {evidence, anchors: []});
+    const group = groups.get(key);
+    if (!group.anchors.includes(source.exact_text)) group.anchors.push(source.exact_text);
+  }
+  return [...groups.values()];
+}
+
+function openExamFieldEvidence(label, sources, trigger) {
+  drawerTrigger = trigger;
+  drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+  drawerGraph = null;
+  evidenceDrawer.classList.remove("relationship-window");
+  byId("drawer-title").textContent = "官方依据";
+  drawerContent.replaceChildren(heading(3, label));
+  const note = document.createElement("p");
+  note.className = "evidence-chinese-summary";
+  note.textContent = "以下按原文页和片段列出这项考试说明的全部依据；本人适用路径与资格仍以学校通知为准。";
+  drawerContent.append(note);
+  const cards = document.createElement("div");
+  cards.className = "relation-nodes";
+  for (const {evidence, anchors} of sources) {
+    const card = document.createElement("article");
+    card.className = "relation-node";
+    card.append(heading(4, `PDF 第 ${evidence.pages.join("、")} 页`));
+    for (const anchor of anchors) {
+      const quote = document.createElement("blockquote");
+      quote.className = "direct-evidence";
+      const mark = document.createElement("mark");
+      mark.textContent = anchor;
+      quote.append(mark);
+      card.append(quote);
+    }
+    const context = document.createElement("details");
+    context.className = "official-context";
+    const summary = document.createElement("summary");
+    summary.textContent = "展开该页原文上下文";
+    const full = document.createElement("blockquote");
+    full.className = "evidence-text";
+    full.textContent = evidence.official_text;
+    context.append(summary, full);
+    card.append(context);
+    for (const page of evidence.pages) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const link = document.createElement("a");
+      link.className = "source-link pdf-source-link";
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `在 PDF 中查看第 ${page} 页`;
+      card.append(link);
+    }
+    cards.append(card);
+  }
+  drawerContent.append(cards);
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = 0;
+  drawerClose.focus({preventScroll: true});
+}
+
+function renderExamCardV2(exam) {
+  const view = referenceCore.examV2View(exam);
+  const section = document.createElement("section");
+  section.className = "result-section exam-arrangement";
+  section.append(heading(3, "考试安排 · 学校公布的 A/B 日程"));
+  const lead = document.createElement("p");
+  lead.className = "exam-lead";
+  lead.textContent = view.lead;
+  section.append(lead);
+  if (view.course) {
+    const course = document.createElement("p");
+    course.className = "exam-course-notice";
+    course.textContent = view.course;
+    section.append(course);
+  }
+  if (view.subjects.length) {
+    section.append(heading(4, "考什么"));
+    const list = document.createElement("ul");
+    for (const text of view.subjects) {
+      const item = document.createElement("li");
+      item.textContent = text;
+      list.append(item);
+    }
+    section.append(list);
+  }
+  for (const text of [view.selection, view.points]) if (text) {
+    const row = document.createElement("p");
+    row.textContent = text;
+    section.append(row);
+  }
+  const more = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "口述、英语与语言";
+  more.append(summary);
+  for (const text of [view.aOral, view.bOral, view.specialist, view.english, view.language]) if (text) {
+    const row = document.createElement("p");
+    row.textContent = text;
+    more.append(row);
+  }
+  section.append(more);
+  const actions = document.createElement("div");
+  actions.className = "source-actions";
+  for (const [path, label] of [["b.subjects", "查看笔试原文"], ["a.oral", "查看 A 日程原文"],
+    ["b.oral", "查看 B 口述原文"], ["english.submission", "查看英语原文"]]) {
+    const sources = examSourcesForField(exam, path);
+    if (!sources.length) continue;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = label;
+    button.addEventListener("click", () => openExamFieldEvidence(label, sources, button));
+    actions.append(button);
+  }
+  section.append(actions);
+  return section;
+}
+
+function requirementsJumpNav() {
+  const nav = document.createElement("nav");
+  nav.className = "requirements-jump";
+  nav.setAttribute("aria-label", "本页要求定位");
+  for (const [selector, label] of [[".key-dates-section", "关键时间"],
+    [".materials-section", "出愿材料"], [".exam-arrangement", "考试安排"]]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary";
+    button.textContent = label;
+    button.addEventListener("click", () => {
+      const section = requirementsOutput.querySelector(selector);
+      if (!section) return;
+      section.scrollIntoView({behavior: "smooth", block: "start"});
+      section.tabIndex = -1;
+      section.focus({preventScroll: true});
+    });
+    nav.append(button);
+  }
+  return nav;
+}
+
+function renderRequirements(payload, scope, exam) {
+  requirementsOutput.replaceChildren();
+  const target = payload.target;
+  targetSummary.hidden = true;
+  targetSummary.textContent = targetLabel(target);
+  updateTargetStepSummary(target);
+  updateRequirementsStepSummary(payload);
+  const overview = applicationOverview(payload);
+  const requirements = payload.requirements;
+  const dateRequirements = requirements.filter((item) => item.category === "dates");
+  const englishRequirements = requirements.filter((item) => item.category === "language");
+  const materialRequirements = requirements.filter((item) => item.category === "materials");
+  const pending = requirements.filter((item) => item.category !== "materials"
+    && item.official_status === "needs_information");
+  const secondary = requirements.filter((item) => (
+    item.category !== "dates"
+    && item.category !== "materials"
+    && item.category !== "language"
+    && item.official_status !== "needs_information"
+  ));
+
+  requirementsOutput.append(
+    ...(scope.request.school_id === "isct" ? [requirementsJumpNav()] : []),
+    renderApplicationOverview(payload, overview),
+    renderKeyDates(dateRequirements),
+    renderRequirementSection("英语考试与证明", englishRequirements, "english-section", scope),
+    renderRequirementSection("当前已审核的材料", materialRequirements, "materials-section", scope),
+    renderExamCard(exam),
+    renderPendingRequirements(pending, overview, scope)
+  );
+
+  const next = document.createElement("section");
+  next.className = "result-section next-step-section";
+  const nextCopy = document.createElement("div");
+  nextCopy.append(heading(3, "下一步：对照你的个人情况"));
+  const nextText = document.createElement("p");
+  nextText.textContent = "继续到现有个人情况步骤，填写后查看还缺哪些材料或信息。";
+  nextCopy.append(nextText);
+  next.append(nextCopy, profileCta("next-step-cta"));
+  requirementsOutput.append(next);
+
+  const other = document.createElement("details");
+  other.className = "result-section other-requirements";
+  const otherSummary = document.createElement("summary");
+  otherSummary.textContent = `其他说明与已审核要求${secondary.length ? `（${secondary.length} 项）` : ""}`;
+  const otherList = document.createElement("div");
+  otherList.className = "requirement-list";
+  for (const requirement of secondary) otherList.append(renderRequirementCard(requirement, {scope}));
+  if (!secondary.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-reviewed-data";
+    empty.textContent = "暂无其他已审核要求";
+    otherList.append(empty);
+  }
+  other.append(otherSummary, otherList);
+  requirementsOutput.append(other);
+
+  const boundary = document.createElement("p");
+  boundary.className = "final-notice";
+  boundary.textContent = "当前只整理已审核的部分要求；其他申请条件、材料提交与学校受理结果请核对完整募集要项。";
+  requirementsOutput.append(boundary);
+}
+
+function sourceAsEvidence(source, scope) {
+  return {
+    official_title: source.title, school_name: scope.school, intake_name: scope.intake,
+    pages: source.pages, printed: source.printed, official_text: source.quote, source_url: source.source_url,
+    local_pdf_url: source.local_pdf_url, limitation: source.context,
+    highlights: source.highlights || []
+  };
+}
+
+function renderSliceRequirements(mapped) {
+  const scope = mapped.scope;
+  requirementsOutput.replaceChildren();
+  targetSummary.hidden = true;
+  targetSummary.textContent = referenceCore.scopeLabel(scope);
+  updateTargetStepSummary(scope);
+  byId("step-2-summary-text").textContent = `历史资料；当前已覆盖的 ${mapped.topics.length} 个材料主题；日期尚未覆盖。`;
+  const overview = document.createElement("section");
+  overview.className = "application-overview";
+  const copy = document.createElement("div");
+  copy.className = "application-overview-copy";
+  copy.append(heading(3, "当前已审核的材料范围"));
+  const label = document.createElement("p");
+  label.className = "overview-target";
+  label.textContent = referenceCore.scopeLabel(scope);
+  const limit = document.createElement("p");
+  limit.className = "final-notice";
+  limit.textContent = `历史招生资料；当前只覆盖 ${mapped.topics.length} 个材料主题，未覆盖日期或完整材料清单。请核对最新官方要项。`;
+  copy.append(label, limit);
+  const action = document.createElement("aside");
+  action.className = "overview-action";
+  action.append(profileCta("overview-cta"));
+  overview.append(copy, action);
+  const requirements = mapped.topics.map((topic) => ({
+    category: "materials", title: topic.title, material_code: topic.id, description: topic.summary,
+    official_status: "needs_information", deadline: "",
+    evidence: topic.sources.map((source) => sourceAsEvidence(source, scope)),
+    graphTopic: topic, graphScope: scope
+  }));
+  requirementsOutput.append(
+    overview,
+    renderKeyDates([], "当前资料尚未覆盖日期"),
+    renderRequirementSection(`当前已覆盖的 ${requirements.length} 个材料主题`, requirements, "materials-section", scope)
+  );
+  const next = document.createElement("section");
+  next.className = "result-section next-step-section";
+  next.append(heading(3, "下一步：核对个人情况"), profileCta("next-step-cta"));
+  requirementsOutput.append(next);
+  renderSlicePreparation(mapped);
+}
+
+function slicePreparationValues() {
+  return Object.fromEntries(Array.from(byId("slice-material-preparation").querySelectorAll("select"),
+    (control) => [control.dataset.sliceMaterialCode, control.value]));
+}
+
+function renderSlicePreparation(mapped) {
+  byId("slice-profile-coverage").textContent = `当前只对照已覆盖的 ${mapped.topics.length} 个材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。`;
+  const container = byId("slice-material-preparation");
+  container.replaceChildren();
+  const controls = referenceCore.slicePreparationControls(mapped);
+  container.hidden = controls.length === 0;
+  if (!controls.length) return;
+  const legend = document.createElement("legend");
+  legend.textContent = "材料准备（本次自报）";
+  const note = document.createElement("p");
+  note.className = "field-help";
+  note.id = "slice-material-help";
+  note.textContent = "准备情况只在本页记录，不改变官方提交要求；已准备不代表内容有效、已提交或学校受理。";
+  const inputs = document.createElement("div");
+  inputs.className = "material-inputs";
+  for (const control of controls) {
+    const label = document.createElement("label");
+    label.textContent = control.name;
+    const select = document.createElement("select");
+    select.dataset.sliceMaterialCode = control.id;
+    select.dataset.materialName = control.name;
+    select.setAttribute("aria-describedby", note.id);
+    for (const [value, text] of [["unknown", "不知道／未填写"], ["available", "我已准备"], ["not_yet", "尚未准备"]]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = text;
+      select.append(option);
+    }
+    label.append(select);
+    inputs.append(label);
+  }
+  container.append(legend, note, inputs);
+}
+
+function refreshSlicePreparation() {
+  updateApplicantStepSummary();
+  if (!referenceReport || referenceReport.kind !== "reviewed_material_slice" || !loadedReference
+    || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
+  referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
+  referenceReader = null;
+  renderSliceReadiness(referenceReport, loadedReference);
+  setReferenceActionState("success", "准备自报已更新；官方材料条件保持，可按需预览和复制报告。", true);
+}
+
+function appendDefinition(list, term, value) {
+  const dt = document.createElement("dt");
+  dt.textContent = term;
+  const dd = document.createElement("dd");
+  dd.textContent = value;
+  list.append(dt, dd);
+}
+
+function appendHighlightedOfficialText(container, officialText, highlights) {
+  let offset = 0;
+  for (const highlight of highlights) {
+    const valid = Number.isSafeInteger(highlight.start)
+      && Number.isSafeInteger(highlight.end)
+      && highlight.start >= offset
+      && highlight.end > highlight.start
+      && highlight.end <= officialText.length
+      && officialText.slice(highlight.start, highlight.end) === highlight.exact_text;
+    if (!valid) {
+      container.textContent = officialText;
+      return false;
+    }
+    container.append(document.createTextNode(officialText.slice(offset, highlight.start)));
+    const mark = document.createElement("mark");
+    mark.textContent = highlight.exact_text;
+    container.append(mark);
+    offset = highlight.end;
+  }
+  container.append(document.createTextNode(officialText.slice(offset)));
+  return true;
+}
+
+function verifiedLocalPdfHref(baseUrl, page) {
+  // Public sample copy: PDFs are not hosted. Verified excerpts remain visible.
+  return null;
+}
+
+const relationMeanings = {
+  cross_reference: "送付方法参照",
+  department_specific_detail: "具体要求按专攻确认",
+  consulting_is_distinct_from_submitting: "参照清单与提交表不同",
+  corroborates_condition_with_submission_method: "补充条件与上传方式共同说明",
+  supplements: "补充说明",
+  shares_employment_context_but_separate_enrollment_stage: "入学手续相关，非本次出愿提交义务"
+};
+
+function graphDocumentLabel(title) {
+  if (title.includes("追加提出物一覧")) return "专攻追加材料表";
+  if (title.includes("入試案内")) return "入试案内";
+  if (title.includes("募集要項")) return "募集要项";
+  return title.length > 22 ? `…${title.slice(-22)}` : title;
+}
+
+function graphNodeLabel(source) {
+  const role = source.stage === "enrollment_context_only" ? "入学手续背景"
+    : source.role === "basis" ? "出愿直接依据" : "出愿关联说明";
+  return `${role} · ${graphDocumentLabel(source.title)} · PDF 第 ${source.pages.join("、")} 页${source.printed ? `／印刷页 ${source.printed}` : ""}`;
+}
+
+function graphSourceCard(source, requirement, cardPosition) {
+  const node = document.createElement("article");
+  node.className = "relation-node";
+  node.dataset.recordId = source.record_id;
+  node.append(heading(4, graphNodeLabel(source)));
+  const context = document.createElement("p");
+  context.textContent = (source.context?.split(" · ")[0] || "当前审核范围内的来源")
+    .replace(/\b[A-Z]\d{2,}\b/g, "相关条款");
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "secondary";
+  button.dataset.recordId = source.record_id;
+  button.dataset.graphCard = String(cardPosition);
+  button.textContent = "查看原文";
+  button.addEventListener("click", () => openDemoEvidence(requirement,
+    sourceAsEvidence(source, requirement.graphScope), button,
+    {fromGraph: true, scrollTop: evidenceDrawer.scrollTop}));
+  node.append(context, button);
+  return node;
+}
+
+function graphPaths(relations) {
+  const pending = [...relations];
+  const paths = [];
+  while (pending.length) {
+    const targets = new Set(pending.map((edge) => edge.to));
+    const first = pending.find((edge) => !targets.has(edge.from)) || pending[0];
+    const path = [];
+    let current = first.from;
+    const visited = new Set();
+    while (!visited.has(current)) {
+      visited.add(current);
+      const index = pending.findIndex((edge) => edge.from === current);
+      if (index < 0) break;
+      const [edge] = pending.splice(index, 1);
+      path.push(edge);
+      current = edge.to;
+    }
+    paths.push(path);
+  }
+  return paths;
+}
+
+function openEvidenceGraph(requirement, trigger, focusCard = null, scrollTop = 0) {
+  if (focusCard === null) {
+    drawerTrigger = trigger;
+    drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+    drawerGraph = {requirement, trigger};
+  }
+  const topic = requirement.graphTopic;
+  evidenceDrawer.classList.add("relationship-window");
+  byId("drawer-title").textContent = "材料依据关系";
+  drawerContent.replaceChildren();
+  drawerContent.append(heading(3, requirement.title));
+  const explanation = document.createElement("p");
+  explanation.className = "relation-intro";
+  explanation.textContent = `${requirement.description} 图中箭头只说明已审核的文件关系，不表示每份文件都是出愿必交材料。`;
+  drawerContent.append(explanation);
+  const sources = new Map(topic.sources.map((source) => [source.record_id, source]));
+  const known = topic.relations.filter((row) => Object.hasOwn(relationMeanings, row.kind)
+    && sources.has(row.from) && sources.has(row.to));
+  const paths = graphPaths(known);
+  const connected = new Set(known.flatMap((edge) => [edge.from, edge.to]));
+  const graph = document.createElement("div");
+  graph.className = "relation-graph";
+  let cardPosition = 0;
+  const renderCard = (source) => graphSourceCard(source, requirement, cardPosition++);
+  for (const path of paths) {
+    const flow = document.createElement("section");
+    flow.className = "relation-path";
+    if (path.length > 2) flow.classList.add("relation-path-long");
+    flow.append(renderCard(sources.get(path[0].from)));
+    for (const row of path) {
+      const edge = document.createElement("div");
+      edge.className = row.kind === "shares_employment_context_but_separate_enrollment_stage"
+        ? "relation-edge relation-edge-stage" : "relation-edge";
+      edge.setAttribute("aria-label", `${graphNodeLabel(sources.get(row.from))} 指向 ${graphNodeLabel(sources.get(row.to))}：${relationMeanings[row.kind]}`);
+      const meaning = document.createElement("span");
+      meaning.textContent = relationMeanings[row.kind];
+      edge.append(meaning);
+      flow.append(edge, renderCard(sources.get(row.to)));
+    }
+    graph.append(flow);
+  }
+  const independent = topic.sources.filter((source) => !connected.has(source.record_id));
+  if (independent.length) {
+    const nodes = document.createElement("section");
+    nodes.className = "relation-nodes";
+    if (paths.length) nodes.append(heading(4, "其他可查看的来源"));
+    for (const source of independent) nodes.append(renderCard(source));
+    graph.append(nodes);
+  }
+  drawerContent.append(graph);
+  if (!topic.relations.length || topic.relations.some((row) => !Object.hasOwn(relationMeanings, row.kind))) {
+    const note = document.createElement("p");
+    note.className = "relation-unknown";
+    note.textContent = topic.relations.length ? "部分关系类型尚未展示；上方来源仍可逐项查看。"
+      : "当前没有可展示的已审核关系；以上来源独立列出。";
+    drawerContent.append(note);
+  }
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = scrollTop;
+  const focus = focusCard !== null
+    ? Array.from(graph.querySelectorAll("button")).find((button) => button.dataset.graphCard === focusCard)
+    : null;
+  (focus || drawerClose).focus({preventScroll: true});
+}
+
+function openDemoEvidence(requirement, evidence, trigger, options = {}) {
+  if (!options.fromGraph) {
+    drawerTrigger = trigger;
+    drawerScopeKey = currentReferenceScope() ? referenceCore.scopeKey(currentReferenceScope()) : null;
+    drawerGraph = null;
+    evidenceDrawer.classList.remove("relationship-window");
+  }
+  byId("drawer-title").textContent = options.fromGraph ? "官方原文" : "官方依据";
+  drawerContent.replaceChildren();
+  if (options.fromGraph && drawerGraph) {
+    const back = document.createElement("button");
+    back.type = "button";
+    back.className = "secondary relation-back";
+    back.textContent = "返回依据关系";
+    back.addEventListener("click", () => openEvidenceGraph(drawerGraph.requirement,
+      drawerGraph.trigger, trigger.dataset.graphCard, options.scrollTop));
+    drawerContent.append(back);
+  }
+  drawerContent.append(heading(3, requirement.title || requirement.label || "官方依据"));
+  if (options.examYearNote) {
+    const yearNote = document.createElement("p");
+    yearNote.className = "evidence-chinese-summary";
+    yearNote.textContent = options.examYearNote;
+    drawerContent.append(yearNote);
+  }
+  const guidance = referenceCore?.materialGuide(currentReferenceScope(), {
+    id: requirement.requirement_id || requirement.item_id || requirement.material_code,
+    sources: requirement.graphTopic?.sources || requirement.evidence
+  });
+  if (guidance) {
+    const summary = document.createElement("section");
+    summary.className = "evidence-chinese-summary";
+    summary.append(heading(4, "这项材料的准备要点"));
+    const purpose = document.createElement("p");
+    purpose.textContent = guidance.purpose;
+    summary.append(purpose);
+    appendPreparationGuide(summary, guidance);
+    const context = document.createElement("p");
+    context.className = "field-detail";
+    context.textContent = guidance.sourceNote
+      || "下方原文是第10页共通材料表，包含其他材料行；中文要点只整理当前这项。";
+    summary.append(context);
+    drawerContent.append(summary);
+  }
+  const meta = document.createElement("dl");
+  meta.className = "evidence-meta";
+  appendDefinition(meta, "官方文档", evidence.official_title);
+  appendDefinition(meta, "学校／入学时间", `${evidence.school_name} · ${evidence.intake_name}`);
+  appendDefinition(meta, "页码", `PDF 物理页 ${evidence.pages.join("、")}${evidence.printed ? `／印刷页 ${evidence.printed}` : ""}（来源链接不保证自动定位，请在文件中查看该页）`);
+  const highlights = Array.isArray(evidence.highlights) ? evidence.highlights : [];
+  const evidenceBody = document.createDocumentFragment();
+  if (highlights.length) {
+    const directHeading = document.createElement("p");
+    directHeading.className = "direct-evidence-heading";
+    directHeading.textContent = "与这条结论直接对应的官方原文";
+    evidenceBody.append(directHeading);
+    for (const highlight of highlights) {
+      const direct = document.createElement("blockquote");
+      direct.className = "direct-evidence";
+      const label = document.createElement("span");
+      label.className = "direct-evidence-label";
+      label.textContent = "直接依据";
+      const mark = document.createElement("mark");
+      mark.textContent = highlight.exact_text;
+      direct.append(label, mark);
+      evidenceBody.append(direct);
+    }
+    const context = document.createElement("details");
+    context.className = "official-context";
+    const contextSummary = document.createElement("summary");
+    contextSummary.textContent = "展开完整官方原文";
+    const quote = document.createElement("blockquote");
+    quote.className = "evidence-text";
+    appendHighlightedOfficialText(quote, evidence.official_text, highlights);
+    context.append(contextSummary, quote);
+    evidenceBody.append(context);
+  } else {
+    const quote = document.createElement("blockquote");
+    quote.className = "evidence-text";
+    quote.textContent = evidence.official_text;
+    evidenceBody.append(quote);
+  }
+  const limitation = document.createElement("p");
+  limitation.className = "final-notice";
+  limitation.textContent = `安全限制：${evidence.limitation}`;
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "技术详情";
+  const technical = document.createElement("dl");
+  technical.className = "evidence-meta";
+  if (evidence.document_id) {
+    appendDefinition(technical, "Fact ID", evidence.fact_id);
+    appendDefinition(technical, "Document ID", evidence.document_id);
+    appendDefinition(technical, "Scope", `${evidence.scope_type}${evidence.parent_college ? ` · ${evidence.parent_college}` : ""}${evidence.scope_targets?.length ? ` · ${evidence.scope_targets.join("、")}` : ""}`);
+  }
+  details.append(summary, technical);
+  const sourceActions = document.createElement("div");
+  sourceActions.className = "source-actions";
+  if (evidence.local_pdf_url) {
+    for (const page of evidence.pages) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const pdfLink = document.createElement("a");
+      pdfLink.className = "source-link pdf-source-link";
+      pdfLink.href = href;
+      pdfLink.target = "_blank";
+      pdfLink.rel = "noopener noreferrer";
+      pdfLink.textContent = `在 PDF 中查看第 ${page} 页`;
+      sourceActions.append(pdfLink);
+    }
+    for (const page of options.examYearPages || []) {
+      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      if (!href) continue;
+      const pdfLink = document.createElement("a");
+      pdfLink.className = "source-link pdf-source-link";
+      pdfLink.href = href;
+      pdfLink.target = "_blank";
+      pdfLink.rel = "noopener noreferrer";
+      pdfLink.textContent = page === 1 ? "查看封面年份" : "查看出愿与考试流程";
+      sourceActions.append(pdfLink);
+    }
+  }
+  const source = document.createElement("a");
+  source.className = "source-link official-web-link";
+  source.href = evidence.source_url;
+  source.target = "_blank";
+  source.rel = "noopener noreferrer";
+  source.textContent = "打开官方招生网页";
+  sourceActions.append(source);
+  drawerContent.append(meta, evidenceBody, limitation);
+  if (evidence.document_id) drawerContent.append(details);
+  drawerContent.append(sourceActions);
+  if (!evidenceDrawer.open) evidenceDrawer.showModal();
+  evidenceDrawer.scrollTop = 0;
+  (options.fromGraph ? drawerContent.querySelector(".relation-back") : drawerClose).focus();
+}
+
+function nullableDemoValue(id) {
+  const value = byId(id).value;
+  return value && !value.startsWith("ui_") ? value : null;
+}
+
+function nullableDemoNumber(id) {
+  const value = byId(id).value;
+  return value === "" ? null : Number(value);
+}
+
+function nullableDemoBoolean(id) {
+  const value = byId(id).value;
+  return value === "true" ? true : value === "false" ? false : null;
+}
+
+function demoApplicantInput() {
+  return {
+    credential_basis: nullableDemoValue("demo-credential-basis"),
+    completion_state: nullableDemoValue("demo-completion-state"),
+    english_test_kind: nullableDemoValue("demo-english-kind"),
+    english_score: nullableDemoNumber("demo-english-score"),
+    english_test_date: nullableDemoValue("demo-english-date"),
+    english_official_report_available: nullableDemoBoolean("demo-english-report"),
+    japanese_background: nullableDemoValue("demo-japanese-background"),
+    materials: Array.from(document.querySelectorAll("[data-material-code]"), (select) => ({
+      code: select.dataset.materialCode,
+      preparation: ["available", "not_yet"].includes(select.value) ? select.value : "unknown"
+    }))
+  };
+}
+
+function demoComparisonRequest() {
+  return { schema_version: "1.0", target: demoTargetRequest(), applicant: demoApplicantInput(),
+    english_preparation: englishPreparationInput(),
+    application_preparation: applicationPreparationInput() };
+}
+
+function cancelPendingComparison() {
+  comparisonRequestId += 1;
+  if (comparisonController) comparisonController.abort();
+  comparisonController = null;
+  comparisonPending = false;
+  comparisonSubmit.disabled = !baseRequirementsLoaded;
+}
+
+function clearComparison(message = "选择预设情境后，可查看已保存的对照结果。") {
+  comparisonComplete = false;
+  comparisonOutput.replaceChildren();
+  byId("priority-actions").replaceChildren();
+  readinessPanel.hidden = true;
+  readinessTarget.textContent = "";
+  partialChecklistStatement.textContent = "";
+  byId("count-total").textContent = "0";
+  byId("count-recorded").textContent = "0";
+  byId("count-action").textContent = "0";
+  byId("count-review").textContent = "0";
+  readinessFilters.querySelector('[value="all"]').checked = true;
+  filterEmpty.hidden = true;
+  comparisonRetry.hidden = true;
+  setMessage(comparisonStatus, "initial", message);
+}
+
+function comparisonStatusLabel(status) {
+  const labels = {
+    recorded: "已记录",
+    possible_match: "可能匹配，仍需核对",
+    needs_information: "需要更多信息",
+    needs_review: "需要学校／人工审核",
+    not_applicable: "不适用",
+    not_covered: "当前未覆盖"
+  };
+  return labels[status] || status;
+}
+
+function resetChecklistProgress() {
+  for (const checkbox of comparisonOutput.querySelectorAll(".personal-check input")) {
+    checkbox.checked = false;
+    checkbox.dispatchEvent(new Event("change"));
+  }
+}
+
+function materialPreparationState(item) {
+  if (item.preparation_status === "available") return "已准备（自报）";
+  if (item.preparation_status === "not_yet") return item.official_status === "required"
+    ? "待准备" : "个人填写：尚未准备";
+  return "尚未填写准备情况";
+}
+
+function materialOfficialState(item) {
+  const labels = {
+    required: "当前规则：需提交",
+    not_applicable: "当前规则：本项无需提交",
+    eligibility_review_path: "适用条件：资格审查路径待确认",
+    needs_information: "适用条件：待确认",
+    not_covered: "当前资料未覆盖适用条件"
+  };
+  return labels[item.official_status] || "适用条件：待确认";
+}
+
+function materialNextAction(item) {
+  if (item.official_status === "not_applicable") return "本项当前无需提交。";
+  if (item.official_status === "not_covered") return "查看完整官方要项或向学校确认。";
+  if (item.official_status !== "required") return "先确认自己的申请条件是否适用。";
+  if (item.preparation_status === "not_yet") return "按官方说明准备并核对提交要求。";
+  if (item.preparation_status === "available") return "核对文件内容是否符合官方要求。";
+  return "填写准备情况，再核对官方说明。";
+}
+
+function englishActionGroup(check) {
+  if (check.status === "action_needed") return "action_required";
+  if (check.status === "needs_information" || check.status === "not_covered") return "review_required";
+  return "recorded";
+}
+
+function renderPriorityActions(entries, scope, englishEntries = [], applicationEntries = []) {
+  const container = byId("priority-actions");
+  container.hidden = false;
+  container.replaceChildren();
+  const pending = entries.filter(({ item }) => item.action_group !== "recorded");
+  const englishPending = englishEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
+  const applicationPending = applicationEntries.filter(({ actionGroup }) => actionGroup !== "recorded");
+  const prioritized = [
+    ...applicationPending.filter(({ actionGroup }) => actionGroup === "action_required"),
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "action_required"),
+    ...applicationPending.filter(({ actionGroup }) => actionGroup === "review_required"),
+    ...englishPending.filter(({ actionGroup }) => actionGroup === "review_required"),
+    ...pending
+  ];
+  const title = heading(4, "优先处理");
+  container.append(title);
+  if (!prioritized.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "当前没有需要补充或待确认的项目；已记录仍不等于学校确认或完成出愿。";
+    container.append(empty);
+    return;
+  }
+  const list = document.createElement("ol");
+  for (const entry of prioritized.slice(0, 3)) {
+    const { item, check, cardId } = entry;
+    const row = document.createElement("li");
+    const link = document.createElement("a");
+    link.href = `#${cardId}`;
+    const material = item?.category === "materials"
+      ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
+    link.textContent = check ? `${entry.kind === "application" ? "毕业与提交" : "英语"} · ${check.title}`
+      : material ? material.name : item.title;
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      readinessFilters.querySelector('[value="all"]').checked = true;
+      applyReadinessFilter();
+      const target = byId(cardId);
+      if (!target) return;
+      for (let parent = target.parentElement; parent; parent = parent.parentElement)
+        if (parent.tagName === "DETAILS") parent.open = true;
+      window.history.replaceState(null, "", `#${cardId}`);
+      target.scrollIntoView({ block: "start", behavior: "auto" });
+      target.focus({ preventScroll: true });
+    });
+    row.append(link);
+    list.append(row);
+  }
+  container.append(list);
+  if (prioritized.length > 3) {
+    const remainder = document.createElement("p");
+    remainder.className = "field-detail";
+    remainder.textContent = `下方还有 ${prioritized.length - 3} 项需要逐项核对。`;
+    container.append(remainder);
+  }
+}
+
+function renderEnglishPreparation(result, entries) {
+  const section = document.createElement("section");
+  section.className = "requirement-group english-preparation-group comparison-topic-group";
+  section.append(heading(3, "英语证明"));
+  const pending = entries.filter(({actionGroup}) => actionGroup !== "recorded");
+  const reference = entries.filter(({actionGroup}) => actionGroup === "recorded");
+  const overview = document.createElement("p");
+  overview.className = "english-topic-overview";
+  overview.textContent = pending.length
+    ? `${pending.length} 个核对点需要处理或确认；下方逐项列出。`
+    : "当前没有明确待处理的英语核对点；仍需核对官方证明要求。";
+  section.append(overview);
+  const scope = document.createElement("p");
+  scope.className = "field-detail";
+  scope.textContent = result.scope_statement;
+  section.append(scope);
+  const list = document.createElement("div");
+  list.className = "english-check-list";
+  const statusLabels = {reported_match: "按填写已具备", action_needed: "需要处理",
+    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  const renderRow = ({ check, cardId, actionGroup }) => {
+    const card = document.createElement("article");
+    card.className = "english-check-row comparison-card";
+    card.id = cardId;
+    card.tabIndex = -1;
+    card.dataset.actionGroup = actionGroup;
+    card.dataset.category = "english";
+    card.append(heading(4, check.title));
+    const status = document.createElement("span");
+    status.className = "requirement-status";
+    status.dataset.status = check.status;
+    status.textContent = statusLabels[check.status];
+    const explanation = document.createElement("p");
+    explanation.textContent = check.explanation;
+    const action = document.createElement("p");
+    action.className = "next-action";
+    action.textContent = `下一步：${check.next_action}`;
+    card.append(status, explanation, action);
+    appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
+    return card;
+  };
+  for (const entry of pending) list.append(renderRow(entry));
+  section.append(list);
+  if (reference.length) {
+    const details = document.createElement("details");
+    details.className = "english-reference-details";
+    const summary = document.createElement("summary");
+    summary.textContent = `查看已记录／不适用等参考核对点（${reference.length}）`;
+    details.append(summary);
+    const rows = document.createElement("div");
+    rows.className = "english-check-list";
+    for (const entry of reference) rows.append(renderRow(entry));
+    details.append(rows);
+    section.append(details);
+  }
+  return section;
+}
+
+function renderApplicationPreparation(result, entries) {
+  const section = document.createElement("section");
+  section.className = "requirement-group application-preparation-group comparison-topic-group";
+  section.append(heading(3, "资格与手续 · 毕业与提交"));
+  const scope = document.createElement("p");
+  scope.className = "field-detail";
+  scope.textContent = result.scope_statement;
+  section.append(scope);
+  const list = document.createElement("div");
+  list.className = "requirement-list";
+  const labels = {reported_match: "按填写已记录", action_needed: "需要处理",
+    needs_information: "尚待确认", not_applicable: "本项不适用", not_covered: "暂未覆盖"};
+  for (const { check, cardId, actionGroup } of entries) {
+    const card = document.createElement("article");
+    card.className = "requirement-card comparison-card";
+    card.id = cardId;
+    card.tabIndex = -1;
+    card.dataset.actionGroup = actionGroup;
+    card.dataset.category = "application";
+    card.append(heading(4, check.title));
+    const status = document.createElement("span");
+    status.className = "requirement-status";
+    status.dataset.status = check.status;
+    status.textContent = labels[check.status];
+    const explanation = document.createElement("p");
+    explanation.textContent = check.explanation;
+    const action = document.createElement("p");
+    action.className = "next-action";
+    action.textContent = `下一步：${check.next_action}`;
+    card.append(status, explanation, action);
+    appendRequirementEvidence(card, {title: check.title, evidence: check.evidence});
+    list.append(card);
+  }
+  section.append(list);
+  return section;
+}
+
+function renderComparison(payload, scope) {
+  byId("readiness-panel").classList.remove("slice-readiness");
+  byId("readiness-filters").hidden = false;
+  byId("readiness-panel").querySelector(".readiness-counts").hidden = false;
+  byId("readiness-panel").querySelector(".action-summary-total").hidden = false;
+  comparisonOutput.replaceChildren();
+  readinessTarget.textContent = targetLabel(payload.target);
+  partialChecklistStatement.textContent = "本页仅整理已审核范围；其他要求请查看完整募集要项。";
+  readinessFilters.querySelector('[value="all"]').checked = true;
+  const groups = [["action_required", "需要补充"], ["review_required", "待确认／需审核"], ["recorded", "已记录／可能匹配"]];
+  const entriesWithIds = groups.flatMap(([actionGroup]) => payload.items
+    .filter((item) => item.action_group === actionGroup)
+    .map((item, index) => ({ item, cardId: `comparison-${actionGroup}-${index}` })));
+  const detailed = payload.english_preparation_result;
+  const visibleEntries = detailed
+    ? entriesWithIds.filter(({ item }) => item.category !== "english") : entriesWithIds;
+  const englishEntries = (detailed?.checks || []).map((check, index) => ({
+    check, cardId: `comparison-english-${index}`, actionGroup: englishActionGroup(check)
+  }));
+  const application = payload.application_preparation_result;
+  const applicationEntries = (application?.checks || []).map((check, index) => ({
+    check, cardId: `comparison-application-${index}`, actionGroup: englishActionGroup(check),
+    kind: "application"
+  }));
+  const visibleGroups = [
+    ...visibleEntries.map(({ item }) => item.action_group),
+    ...englishEntries.map(({ actionGroup }) => actionGroup),
+    ...applicationEntries.map(({ actionGroup }) => actionGroup)
+  ];
+  byId("count-total").textContent = String(visibleGroups.length);
+  byId("count-recorded").textContent = String(visibleGroups.filter((group) => group === "recorded").length);
+  byId("count-action").textContent = String(visibleGroups.filter((group) => group === "action_required").length);
+  byId("count-review").textContent = String(visibleGroups.filter((group) => group === "review_required").length);
+  renderPriorityActions(visibleEntries, scope, englishEntries, applicationEntries);
+  const categoryLabels = { education: "学历", english: "英语", japanese: "日语", materials: "材料" };
+  const materialEntries = visibleEntries.filter(({ item }) => item.category === "materials");
+  const educationEntries = visibleEntries.filter(({ item }) => item.category === "education");
+  const otherEntries = visibleEntries.filter(({ item }) => !["materials", "education"].includes(item.category));
+  const sections = [
+    ["materials", `出愿材料准备（${materialEntries.length} 项）`, materialEntries],
+    ["education", "资格与手续 · 学历", educationEntries],
+    ["other", "其他已审核要求", otherEntries]
+  ];
+  if (!materialEntries.length) {
+    if (detailed) comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
+    if (application) comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
+  }
+  for (const [actionGroup, label, entries] of sections) {
+    if (!entries.length) continue;
+    const section = document.createElement("section");
+    section.className = "requirement-group comparison-group comparison-topic-group";
+    section.dataset.actionGroup = actionGroup;
+    section.append(heading(3, label));
+    const list = document.createElement("div");
+    list.className = "requirement-list";
+    for (const { item, cardId } of entries) {
+      const card = document.createElement("article");
+      card.className = "requirement-card comparison-card";
+      card.id = cardId;
+      card.tabIndex = -1;
+      card.dataset.actionGroup = item.action_group;
+      card.dataset.category = item.category;
+      const material = item.category === "materials"
+        ? referenceCore.materialDisplay(scope, item.item_id, item.title) : null;
+      const guide = material ? referenceCore.materialGuide(scope, {
+        id: item.item_id, evidence: item.evidence
+      }) : null;
+      const category = document.createElement("p");
+      category.className = "comparison-category";
+      category.textContent = categoryLabels[item.category] || item.category;
+      card.append(category);
+      card.append(heading(4, material ? material.name : item.title));
+      if (material) {
+        const officialName = document.createElement("p");
+        officialName.className = "material-official-name";
+        officialName.textContent = material.official || "正式名称待核实";
+        const what = document.createElement("p");
+        what.className = "material-explanation";
+        what.textContent = guide?.purpose || material.description;
+        const applicability = document.createElement("p");
+        applicability.className = "material-applicability";
+        applicability.textContent = materialOfficialState(item);
+        card.append(what, applicability);
+        if (guide && item.official_status !== "required") {
+          const conditional = document.createElement("p");
+          conditional.className = "preparation-warning";
+          conditional.textContent = "当前路径是否须交这项仍待确认；以下是需要提交时的准备方法。";
+          card.append(conditional);
+        }
+        if (guide) appendPreparationGuide(card, guide, officialName);
+        else card.append(officialName);
+      }
+      const statusLabel = document.createElement("p");
+      statusLabel.className = "comparison-state-label";
+      statusLabel.textContent = material ? "准备情况" : "当前核对结果";
+      const status = document.createElement("span");
+      status.className = "requirement-status";
+      status.dataset.status = item.comparison_status;
+      status.textContent = material ? materialPreparationState(item)
+        : comparisonStatusLabel(item.comparison_status);
+      const description = document.createElement("p");
+      description.className = "comparison-reason";
+      description.textContent = `原因：${item.description}`;
+      card.append(statusLabel, status);
+      if (!material) card.append(description);
+      const nextAction = document.createElement("p");
+      nextAction.className = "next-action";
+      nextAction.textContent = `下一步：${material ? materialNextAction(item) : item.next_action}`;
+      card.append(nextAction);
+      if (item.official_status && !material) {
+        const officialLabels = { required: "适用", eligibility_review_path: "由个别资格审查路径承接", needs_information: "需要学历路径信息", not_covered: "当前未覆盖" };
+        const preparationLabels = { available: "已有", not_yet: "尚未准备", unknown: "未提供／不确定" };
+        const official = document.createElement("p");
+        official.className = "field-detail";
+        official.textContent = `官方适用性：${officialLabels[item.official_status] || item.official_status}；个人准备状态：${preparationLabels[item.preparation_status] || item.preparation_status}`;
+        card.append(official);
+      }
+      const progress = document.createElement("p");
+      progress.className = "personal-progress";
+      progress.textContent = item.action_group === "recorded" ? "我的处理进度：此项没有待勾选行动" : "我的处理进度：待处理";
+      if (!material) card.append(progress);
+      if (item.action_group !== "recorded") {
+        const label = document.createElement("label");
+        label.className = "personal-check";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("change", () => {
+          if (!material) progress.textContent = checkbox.checked
+            ? "我的处理进度：已标记处理（仅个人记录）" : "我的处理进度：待处理";
+          card.dataset.handled = checkbox.checked ? "true" : "false";
+        });
+        const labelText = document.createElement("span");
+        labelText.textContent = material ? "已处理（仅本页记录）" : "我已处理（仅记录个人进度）";
+        label.append(checkbox, labelText);
+        card.append(label);
+      }
+      appendRequirementEvidence(card, item);
+      if (item.limitation && !material && item.comparison_status !== "recorded") {
+        const limit = document.createElement("details");
+        limit.className = "comparison-limit";
+        const summary = document.createElement("summary");
+        summary.textContent = "需要确认";
+        const text = document.createElement("p");
+        text.textContent = item.limitation;
+        limit.append(summary, text);
+        card.append(limit);
+      }
+      list.append(card);
+    }
+    section.append(list);
+    comparisonOutput.append(section);
+    if (actionGroup === "materials") {
+      if (detailed) comparisonOutput.append(renderEnglishPreparation(detailed, englishEntries));
+      if (application) comparisonOutput.append(renderApplicationPreparation(application, applicationEntries));
+    }
+  }
+  const boundary = document.createElement("p");
+  boundary.className = "final-notice";
+  boundary.textContent = "准备状态不代表材料已提交或学校受理。";
+  comparisonOutput.append(boundary);
+  filterEmpty.hidden = true;
+  comparisonComplete = true;
+  comparisonEverLoaded = true;
+  updateApplicantStepSummary();
+}
+
+function renderSliceReadiness(report, mapped) {
+  const panel = byId("readiness-panel");
+  panel.classList.add("slice-readiness");
+  panel.querySelector(".readiness-counts").hidden = true;
+  panel.querySelector(".action-summary-total").hidden = true;
+  byId("readiness-filters").hidden = true;
+  comparisonOutput.replaceChildren();
+  readinessTarget.textContent = referenceCore.scopeLabel(mapped.scope);
+  partialChecklistStatement.textContent = `当前只覆盖 ${report.topics.length} 个材料主题，不是完整清单；计划书适用性取决于本次填写的在职条件。`;
+  const priority = byId("priority-actions");
+  priority.replaceChildren();
+  priority.hidden = true;
+  for (const topic of report.topics) {
+    const mappedTopic = mapped.topics.find((entry) => entry.title === topic.title);
+    const sources = mappedTopic?.sources || [];
+    const evidence = topic.citations.map((cite) => {
+      const source = sources.find((candidate) => candidate.record_id === cite.record_id);
+      return sourceAsEvidence(source, mapped.scope);
+    });
+    const requirement = {
+      category: "materials", title: topic.title, material_code: topic.id,
+      description: topic.explanation,
+      official_status: topic.status_code, evidence, graphTopic: mappedTopic,
+      graphScope: mapped.scope, conditionResultLoaded: true
+    };
+    const card = renderRequirementCard(requirement, {scope: mapped.scope});
+    if (Object.hasOwn(report.preparation || {}, topic.id)) {
+      const preparation = document.createElement("p");
+      preparation.className = "material-condition";
+      const names = {unknown: "尚未填写准备情况", available: "已准备（自报）", not_yet: "待准备（自报尚未准备）"};
+      preparation.textContent = `准备情况：${names[report.preparation[topic.id]]}；自报不代表已提交或学校受理。`;
+      card.append(preparation);
+    }
+    if (topic.explanation) {
+      const result = document.createElement("p");
+      result.className = "material-condition";
+      result.textContent = topic.explanation;
+      card.append(result);
+    }
+    if (topic.status_code === "rule_not_applicable") {
+      const boundary = document.createElement("p");
+      boundary.className = "material-condition";
+      boundary.textContent = "本条规则不适用，不能推定一般性免交。";
+      card.append(boundary);
+    }
+    for (const value of topic.missing_fields) {
+      const note = document.createElement("p");
+      note.className = "comparison-reason";
+      note.textContent = `待确认条件：${sliceConditionLabel(value)}`;
+      card.append(note);
+    }
+    for (const value of topic.limitations) {
+      const note = document.createElement("p");
+      note.className = "final-notice";
+      note.textContent = value;
+      card.append(note);
+    }
+    comparisonOutput.append(card);
+  }
+  comparisonComplete = true;
+  comparisonEverLoaded = true;
+  updateApplicantStepSummary();
+}
+
+function sliceConditionLabel(value) {
+  const labels = {
+    "employment.currently_employed_in_organization": "目前是否在组织任职",
+    "employment.retain_employment_at_enrollment": "入学后是否继续任职"
+  };
+  return labels[value] || "仍需查看完整官方条件";
+}
+
+function renderReferenceReport(report) {
+  referenceBody.replaceChildren();
+  byId("reference-report-title").textContent = "出愿准备参考";
+  const available = referenceCore.readerReportOptions(report);
+  const selected = {...available, exams: false};
+  const options = document.createElement("fieldset");
+  options.className = "reader-report-options";
+  const legend = document.createElement("legend");
+  legend.textContent = "选择报告内容";
+  options.append(legend);
+  const content = document.createElement("article");
+  content.className = "reader-report-paper";
+  const compareButton = document.createElement("button");
+  compareButton.type = "button";
+  compareButton.className = "secondary";
+  compareButton.textContent = "核对个人情况并生成所选报告";
+  const addSection = (title, rows, empty) => {
+    const section = document.createElement("section");
+    section.className = "reader-report-section";
+    section.append(heading(3, title));
+    if (rows.length) {
+      const list = document.createElement("ul");
+      for (const row of rows) {
+        const item = document.createElement("li");
+        item.textContent = row;
+        list.append(item);
+      }
+      section.append(list);
+    } else {
+      const note = document.createElement("p");
+      note.textContent = empty;
+      section.append(note);
+    }
+    content.append(section);
+  };
+  const draw = () => {
+    referenceReader = null;
+    byId("reference-copy").disabled = true;
+    const fallback = byId("reference-copy-fallback");
+    fallback.value = "";
+    fallback.hidden = true;
+    byId("reference-copy-fallback-label").hidden = true;
+    byId("reference-report-status").textContent = "";
+    content.replaceChildren();
+    if (!Object.values(selected).some(Boolean)) {
+      content.append(heading(3, "请至少选择一类报告内容。"));
+      compareButton.hidden = true;
+      return;
+    }
+    const needsComparison = report.kind === "legacy_applicant"
+      && report.profileDisclosure.length > 0 && !report.comparison
+      && (selected.dates || selected.materials || selected.other);
+    compareButton.hidden = !needsComparison;
+    if (needsComparison) {
+      const note = document.createElement("p");
+      note.className = "reader-report-note";
+      note.textContent = "已填写个人情况。所选日期、材料或其他要求需先核对个人情况。"
+        + (available.exams ? "仅考试安排可直接查看和复制。" : "核对失败时可在此重试。");
+      content.append(note);
+      return;
+    }
+    const view = referenceCore.readerReport(report, selected);
+    const title = document.createElement("header");
+    title.className = "reader-report-title";
+    title.append(heading(3, view.target));
+    const focus = document.createElement("p");
+    focus.textContent = `本次关注：${view.selected.map((key) => ({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})[key]).join("、")}`;
+    title.append(focus);
+    content.append(title);
+    if (view.priorityRows.length) addSection("接下来先做什么", view.priorityRows, "");
+    if (selected.dates) {
+      addSection("关键时间", view.dates.map((item) =>
+        `${item.label}：${item.value}${item.note ? `；${item.note}` : ""}`),
+      "当前已覆盖资料尚未整理日期，请核对完整募集要项。");
+      if (view.dateNote) {
+        const dateNote = document.createElement("p");
+        dateNote.className = "reader-report-note";
+        dateNote.textContent = view.dateNote;
+        content.append(dateNote);
+      }
+    }
+    if (selected.materials) addSection("材料准备清单", view.materials.map((item) => item.line),
+      "当前所选资料没有可整理的材料主题。");
+    if (selected.materials && view.english.length)
+      addSection("英语成绩与证明", view.english, "");
+    if (selected.materials && view.submission.length)
+      addSection("毕业与提交提醒", view.submission, "");
+    if (selected.other) addSection("其他已加载要求", view.other.map((item) =>
+      `${item.title}：${item.summary}（${item.status}）`), "当前已加载资料没有其他主题。");
+    if (selected.exams) addSection("考试安排", view.exams, "");
+    const limit = document.createElement("p");
+    limit.className = "reader-report-note";
+    limit.textContent = `范围说明：${view.limitation}`;
+    content.append(limit);
+    const sampleNotice = "【演示样本 / 保存済みサンプル】历史募集资料与预设情境的整理，不是实时审查或当前完整招生建议。";
+    const sampleLabel = document.createElement("p");
+    sampleLabel.className = "demo-report-label";
+    sampleLabel.textContent = sampleNotice;
+    content.prepend(sampleLabel);
+    referenceReader = {...view, text: `${sampleNotice}\n\n${view.text}`};
+    byId("reference-copy").disabled = false;
+  };
+  for (const [key, label] of Object.entries({dates: "关键时间", materials: "材料与待办", other: "其他已加载要求", exams: "考试安排"})) {
+    if (!available[key]) continue;
+    const wrapper = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = selected[key];
+    checkbox.addEventListener("change", () => { selected[key] = checkbox.checked; draw(); });
+    wrapper.append(checkbox, document.createTextNode(label));
+    options.append(wrapper);
+  }
+  compareButton.addEventListener("click", async () => {
+    if (referenceReportController || !applicationDatesReconcile()) {
+      if (!referenceReportController) byId("reference-report-status").textContent = "请先核对毕业与送达日期，再进行个人对照。";
+      return;
+    }
+    const requestId = referenceReportRequestId;
+    const scopeSnapshot = referenceCore.scopeKey(report.scope);
+    const profileSnapshot = JSON.stringify(demoComparisonRequest());
+    const controller = new AbortController();
+    referenceReportController = controller;
+    compareButton.disabled = true;
+    byId("reference-report-status").textContent = "正在核对个人情况，请稍候。";
+    const current = () => requestId === referenceReportRequestId && referenceDialog.open
+      && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
+      && JSON.stringify(demoComparisonRequest()) === profileSnapshot
+      && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
+    try {
+      const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, {
+        method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+        body: profileSnapshot, cache: "no-store", credentials: "same-origin", signal: controller.signal
+      });
+      if (!response.ok) throw new Error();
+      const comparison = await response.json();
+      if (!current()) return;
+      report = referenceCore.legacyReport(loadedReference, comparison,
+        legacyProfileDisclosure(), loadedReference.exam || null);
+      referenceReport = report;
+      draw();
+      byId("reference-report-status").textContent = "个人情况已核对，可查看和复制所选报告。";
+    } catch (error) {
+      if (error?.name !== "AbortError" && current())
+        byId("reference-report-status").textContent = "个人对照失败；所选个人报告尚未生成。可重试"
+          + (available.exams ? "，或只选考试安排直接查看和复制。" : "。");
+    } finally {
+      if (requestId === referenceReportRequestId) {
+        referenceReportController = null;
+        compareButton.disabled = false;
+      }
+    }
+  });
+  options.append(compareButton);
+  referenceBody.append(options, content);
+  referenceDialog.showModal();
+  draw();
+  byId("reference-close").focus();
+}
+
+function legacyProfileDisclosure() {
+  const fields = [];
+  for (const control of byId("legacy-profile-grid").querySelectorAll("select, input")) {
+    if (!control.value) continue;
+    const label = control.closest("label")?.firstChild?.textContent?.trim()
+      || byId("legacy-profile-grid").querySelector(`label[for="${control.id}"]`)?.textContent?.trim();
+    const value = control.tagName === "SELECT"
+      ? control.selectedOptions[0].textContent.trim() : control.value;
+    if (label && value) fields.push({label, value});
+  }
+  return fields;
+}
+
+async function generateReferenceReport(event) {
+  if (referenceReportController) return;
+  if (!baseRequirementsLoaded || !loadedReference) {
+    setReferenceActionState("initial", "请先加载当前目标的基础要求，再生成报告。", false);
+    return;
+  }
+  const trigger = event.currentTarget;
+  const scope = currentReferenceScope();
+  if (!scope || referenceCore.scopeKey(scope) !== referenceCore.scopeKey(loadedReference.scope)) {
+    setReferenceActionState("error", "当前选择与已加载要求不一致，请重新加载要求。", false);
+    return;
+  }
+  referenceTrigger = trigger;
+  if (referenceReport && referenceReport.kind === scope.kind
+    && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)) {
+    renderReferenceReport(referenceReport);
+    setReferenceActionState("success", "报告已打开，可选择内容并复制。");
+    return;
+  }
+  clearReferenceReport("正在整理当前已审核结果和官方依据。");
+  if (scope.kind === "legacy_applicant") {
+    const disclosure = legacyProfileDisclosure();
+    try {
+      referenceReport = referenceCore.legacyReport(loadedReference,
+        disclosure.length ? comparisonResponse : null, disclosure, loadedReference.exam || null);
+      renderReferenceReport(referenceReport);
+      setReferenceActionState("success", "报告已打开，可选择内容；个人相关主题按需核对后复制。");
+    } catch {
+      setReferenceActionState("error", "报告生成失败或依据不完整，请重新加载当前目标。", true);
+    }
+    return;
+  }
+  const requestId = referenceReportRequestId;
+  const profileSnapshot = JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]);
+  const scopeSnapshot = referenceCore.scopeKey(scope);
+  referenceReportController = new AbortController();
+  setReferenceActionState("loading", "正在整理报告，请稍候。重复点击不会发起新请求。", false);
+  const current = () => requestId === referenceReportRequestId
+    && currentReferenceScope() && referenceCore.scopeKey(currentReferenceScope()) === scopeSnapshot
+    && JSON.stringify([byId("slice-current-employed").value, byId("slice-retain-employed").value]) === profileSnapshot
+    && loadedReference && referenceCore.scopeKey(loadedReference.scope) === scopeSnapshot;
+  try {
+    const employment = {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value};
+    const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+      method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+      cache: "no-store", credentials: "same-origin", signal: referenceReportController.signal
+    });
+    if (!response.ok) throw new Error();
+    const report = referenceCore.sliceReport(scope, loadedReference, await response.json(), employment,
+      slicePreparationValues());
+    if (!current()) return;
+    referenceReport = report;
+    renderReferenceReport(report);
+    setReferenceActionState("success", "报告已打开，可选择内容并复制；修改目标或条件会清除旧报告。");
+  } catch (error) {
+    if (error?.name !== "AbortError" && current())
+      setReferenceActionState("error", "报告生成失败或依据不完整。输入已保留，请再次点击“重试生成报告”。", true);
+  } finally {
+    if (requestId === referenceReportRequestId) {
+      referenceReportController = null;
+      if (!referenceDialog.open) trigger.focus();
+    }
+  }
+}
+
+async function copyReferenceReport() {
+  if (!referenceReport || !referenceReader || !loadedReference
+    || referenceCore.scopeKey(referenceReport.scope) !== referenceCore.scopeKey(currentReferenceScope())) return;
+  try {
+    await navigator.clipboard.writeText(referenceReader.text);
+    byId("reference-report-status").textContent = "已复制当前选中的简洁报告。";
+  } catch {
+    const fallback = byId("reference-copy-fallback");
+    fallback.value = referenceReader.text;
+    fallback.hidden = false;
+    byId("reference-copy-fallback-label").hidden = false;
+    fallback.focus();
+    fallback.select();
+    byId("reference-report-status").textContent = "无法自动复制；请按 Ctrl+C 手动复制。";
+  }
+}
+
+function applyReadinessFilter() {
+  const selected = readinessFilters.querySelector('input[name="readiness-filter"]:checked').value;
+  const englishReference = comparisonOutput.querySelector(".english-reference-details");
+  if (englishReference && selected === "recorded") englishReference.open = true;
+  let visible = 0;
+  for (const card of comparisonOutput.querySelectorAll(".comparison-card")) {
+    card.hidden = selected !== "all" && card.dataset.actionGroup !== selected;
+    if (!card.hidden) visible += 1;
+  }
+  for (const group of comparisonOutput.querySelectorAll(".comparison-group, .english-preparation-group, .application-preparation-group")) {
+    group.hidden = !Array.from(group.querySelectorAll(".comparison-card")).some((card) => !card.hidden);
+  }
+  filterEmpty.hidden = visible !== 0;
+}
+
+async function submitApplicantComparison() {
+  if (comparisonPending || !baseRequirementsLoaded || !demoTargetComplete()) return;
+  const scope = currentReferenceScope();
+  if (scope?.kind === "reviewed_material_slice" && referenceReport?.kind === scope.kind
+    && referenceCore.scopeKey(referenceReport.scope) === referenceCore.scopeKey(scope)
+    && loadedReference && referenceCore.scopeKey(loadedReference.scope) === referenceCore.scopeKey(scope)
+    && referenceReport.employment.current === byId("slice-current-employed").value
+    && referenceReport.employment.retain === byId("slice-retain-employed").value) {
+    referenceReport = referenceCore.withSlicePreparation(referenceReport, slicePreparationValues());
+    renderSliceReadiness(referenceReport, loadedReference);
+    setReferenceActionState("success", "准备自报已更新；已核对的官方条件保持，可按需预览和复制报告。", true);
+    setMessage(comparisonStatus, "success", `已复用当前 ${referenceReport.topics.length} 个材料主题的核对结果；准备情况仅为本次自报。`);
+    activateStep(4, true);
+    return;
+  }
+  if (scope?.kind === "legacy_applicant" && !applicationDatesReconcile()) {
+    byId("demo-arrival-date").focus();
+    return;
+  }
+  clearReferenceReport("个人条件正在重新对照；旧报告已失效。");
+  if (scope?.kind === "reviewed_material_slice") {
+    await submitSliceComparison(scope);
+    return;
+  }
+  const requestSnapshot = JSON.stringify(demoComparisonRequest());
+  const requestId = ++comparisonRequestId;
+  comparisonController = new AbortController();
+  clearComparison("正在载入此示例已保存的对照结果。");
+  comparisonPending = true;
+  comparisonSubmit.disabled = true;
+  comparisonRetry.hidden = true;
+  setMessage(comparisonStatus, "loading", "正在载入此示例已保存的对照结果。");
+  try {
+    const response = await fetch(APPLICANT_COMPARISON_ENDPOINT, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: requestSnapshot, cache: "no-store", credentials: "same-origin", signal: comparisonController.signal });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.items) || !payload.counts
+      || payload.counts.total !== payload.items.length || !baseResponse?.target
+      || ["school_name", "degree_name", "intake_name", "college_name", "department_name", "application_route_name"]
+        .some((field) => payload.target?.[field] !== baseResponse.target[field])) throw new Error();
+    if (payload.english_preparation_result)
+      referenceCore.validateEnglishPreparationResult(scope, payload);
+    if (payload.application_preparation_result)
+      referenceCore.validateApplicationPreparationResult(scope, payload);
+    if (requestId !== comparisonRequestId || requestSnapshot !== JSON.stringify(demoComparisonRequest())) return;
+    renderComparison(payload, scope);
+    comparisonResponse = payload;
+    setMessage(comparisonStatus, "success", "已载入此示例的保存结果；不是本次实时审查。");
+    activateStep(4, true);
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    if (requestId !== comparisonRequestId) return;
+    clearComparison("个人情况暂时无法对照，请检查输入后重试。");
+    comparisonRetry.hidden = false;
+    setMessage(comparisonStatus, "error", "个人情况暂时无法对照，请检查输入后重试。", true);
+  } finally {
+    if (requestId === comparisonRequestId) {
+      comparisonPending = false;
+      comparisonController = null;
+      comparisonSubmit.disabled = !baseRequirementsLoaded;
+    }
+  }
+}
+
+async function submitSliceComparison(scope) {
+  const employment = {
+    current: byId("slice-current-employed").value,
+    retain: byId("slice-retain-employed").value
+  };
+  const snapshot = JSON.stringify([referenceCore.scopeKey(scope), employment]);
+  const requestId = ++comparisonRequestId;
+  comparisonController = new AbortController();
+  comparisonPending = true;
+  comparisonSubmit.disabled = true;
+  clearComparison("正在核对已覆盖材料的在职条件。");
+  setMessage(comparisonStatus, "loading", "正在核对已覆盖材料的在职条件。");
+  try {
+    const response = await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/reports`, {
+      method: "POST", headers: {Accept: "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify(referenceCore.sliceReportRequest(scope, employment)),
+      cache: "no-store", credentials: "same-origin", signal: comparisonController.signal
+    });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    if (requestId !== comparisonRequestId || snapshot !== JSON.stringify([
+      referenceCore.scopeKey(currentReferenceScope()),
+      {current: byId("slice-current-employed").value, retain: byId("slice-retain-employed").value}
+    ])) return;
+    const report = referenceCore.sliceReport(scope, loadedReference, payload, employment,
+      slicePreparationValues());
+    renderSliceReadiness(report, loadedReference);
+    referenceReport = report;
+    setReferenceActionState("success", "当前条件结果已加载；可按需预览和复制参考报告。", true);
+    setMessage(comparisonStatus, "success", `已核对当前 ${report.topics.length} 个材料主题；报告可按需预览和复制。`);
+    activateStep(4, true);
+  } catch (error) {
+    if (error?.name === "AbortError" || requestId !== comparisonRequestId) return;
+    clearComparison("材料条件暂时无法核对，请保留输入并重试。");
+    comparisonRetry.hidden = false;
+    setMessage(comparisonStatus, "error", "材料条件暂时无法核对，请保留输入并重试。", true);
+  } finally {
+    if (requestId === comparisonRequestId) {
+      comparisonPending = false;
+      comparisonController = null;
+      comparisonSubmit.disabled = !baseRequirementsLoaded;
+    }
+  }
+}
+
+function invalidateComparison(message) {
+  cancelPendingComparison();
+  comparisonResponse = null;
+  clearReferenceReport();
+  clearComparison(message);
+}
+
+async function submitBaseRequirements() {
+  if (requirementsPending || !demoTargetComplete()) return;
+  discardEvidenceDrawer();
+  const scope = currentReferenceScope();
+  if (!scope) return;
+  activateStep(1);
+  const requestSnapshot = referenceCore.scopeKey(scope);
+  const requestId = ++requirementsRequestId;
+  requirementsController = new AbortController();
+  baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport("正在加载当前目标；报告需在要求加载后按需生成。");
+  clearGroundedAnswer("基础要求正在更新，请稍候。");
+  updateGroundedContext();
+  invalidateComparison("基础要求正在更新，请稍候。");
+  clearDemoResults("正在读取已保存的基础要求。");
+  requirementsPending = true;
+  updateRequirementsSubmit();
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, "loading", "正在核对审核规则与官方依据。");
+  try {
+    const response = scope.kind === "legacy_applicant"
+      ? await fetch(`${BASE_REQUIREMENTS_ENDPOINT}?include_examination_information=true${scope.request.school_id === "isct" ? "&exam_presentation_version=2" : ""}`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(scope.request), cache: "no-store", credentials: "same-origin", signal: requirementsController.signal })
+      : await fetch(`/v1/reference-slices/${encodeURIComponent(scope.entry_id)}/evidence`, { method: "GET", headers: { Accept: "application/json" }, cache: "no-store", credentials: "same-origin", signal: requirementsController.signal });
+    if (!response.ok) throw new Error();
+    const payload = await response.json();
+    const mapped = scope.kind === "legacy_applicant"
+      ? referenceCore.mapLegacyBase(scope, payload) : referenceCore.mapSliceEvidence(scope, payload);
+    if (requestId !== requirementsRequestId || referenceCore.scopeKey(currentReferenceScope()) !== requestSnapshot) return;
+    const exam = scope.kind === "legacy_applicant"
+      ? referenceCore.validateExamInformation(scope, payload.examination_information) : null;
+    if (scope.kind === "legacy_applicant") renderRequirements(payload, scope, exam);
+    else renderSliceRequirements(mapped);
+    loadedReference = mapped;
+    if (scope.kind === "legacy_applicant") loadedReference.exam = exam;
+    baseResponse = payload;
+    refreshMaterialInputLabels(scope);
+    baseRequirementsLoaded = true;
+    requirementsEverLoaded = true;
+    comparisonSubmit.disabled = false;
+    setReferenceActionState("initial", "要求已加载；可在此生成并复制参考报告。", true);
+    clearComparison();
+    clearGroundedAnswer("可针对当前目标和本页个人情况提问。");
+    updateGroundedContext();
+    setMessage(targetStatus, "success", "基础要求已加载。请逐项查看官方依据。");
+    activateStep(2, true);
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    if (requestId !== requirementsRequestId) return;
+    clearDemoResults("基础要求暂时无法加载。");
+    loadedReference = null;
+    baseResponse = null;
+    clearReferenceReport("要求尚未加载，暂不能生成报告。");
+    requirementsRetry.hidden = false;
+    setMessage(targetStatus, "error", "无法加载基础要求，请检查选择后重试。", true);
+  } finally {
+    if (requestId === requirementsRequestId) {
+      requirementsPending = false;
+      requirementsController = null;
+      updateRequirementsSubmit();
+    }
+  }
+}
+
+function cancelPendingRequirements() {
+  requirementsRequestId += 1;
+  if (requirementsController) requirementsController.abort();
+  requirementsController = null;
+  requirementsPending = false;
+  updateRequirementsSubmit();
+}
+
+function handleDemoTargetChange(next) {
+  discardEvidenceDrawer();
+  cancelPendingRequirements();
+  baseRequirementsLoaded = false;
+  loadedReference = null;
+  baseResponse = null;
+  comparisonResponse = null;
+  clearReferenceReport();
+  invalidateComparison("申请目标已改变，请重新加载基础要求。");
+  clearDemoResults("申请目标已改变，请完成选择后重新加载要求。");
+  resetApplicantInputs();
+  clearGroundedAnswer("申请目标已改变，请重新加载基础要求后提问。");
+  updateGroundedContext();
+  requirementsRetry.hidden = true;
+  setMessage(targetStatus, "initial", "申请目标已改变，请完成选择后重新加载要求。");
+  activateStep(1);
+  next();
+  updateProfileCapability();
+}
+
+targetForm.addEventListener("submit", (event) => { event.preventDefault(); submitBaseRequirements(); });
+applicantForm.addEventListener("submit", (event) => { event.preventDefault(); submitApplicantComparison(); });
+applicantForm.addEventListener("input", (event) => {
+  if (event.target.matches("[data-slice-material-code]")) {
+    refreshSlicePreparation();
+    return;
+  }
+  updateProfileGroupStates();
+  updateEnglishInputHint();
+  applicationDatesReconcile();
+  invalidateComparison("个人输入已改变，请重新对照。");
+  clearGroundedAnswer("个人情况已改变；下次提交将使用最新的本页输入。");
+  updateGroundedContext();
+  if (baseRequirementsLoaded) activateStep(3);
+});
+applicantForm.addEventListener("change", () => {
+  updateProfileGroupStates();
+  updateEnglishInputHint();
+  updateEnglishProofVisibility();
+  updateApplicationPreparationVisibility();
+  applicationDatesReconcile();
+});
+let previousCompletionState = byId("demo-completion-state").value;
+byId("demo-completion-state").addEventListener("change", () => {
+  const state = byId("demo-completion-state").value;
+  if (state !== previousCompletionState) {
+    byId("demo-completion-date").value = "";
+    byId("demo-expected-completion-date").value = "";
+    previousCompletionState = state;
+  }
+  updateApplicationPreparationVisibility();
+  updateProfileGroupStates();
+});
+let previousCredentialBasis = byId("demo-credential-basis").value;
+byId("demo-credential-basis").addEventListener("change", () => {
+  const basis = byId("demo-credential-basis").value;
+  if (basis !== previousCredentialBasis) {
+    byId("demo-review-status").value = "";
+    previousCredentialBasis = basis;
+  }
+  updateApplicationPreparationVisibility();
+  updateProfileGroupStates();
+});
+let previousEnglishKind = byId("demo-english-kind").value;
+byId("demo-english-kind").addEventListener("change", () => {
+  const kind = byId("demo-english-kind").value;
+  if (kind !== previousEnglishKind) {
+    for (const id of ["demo-english-score", "demo-english-date", "demo-english-report", ...englishProofControls])
+      byId(id).value = "";
+    previousEnglishKind = kind;
+    updateEnglishInputHint();
+    updateEnglishProofVisibility();
+  }
+});
+comparisonRetry.addEventListener("click", submitApplicantComparison);
+readinessFilters.addEventListener("change", applyReadinessFilter);
+requirementsContinue.addEventListener("click", () => {
+  if (baseRequirementsLoaded) activateStep(3, true);
+});
+editTarget.addEventListener("click", () => activateStep(1, true));
+changeSchool.addEventListener("click", () => activateStep(1, true));
+editRequirements.addEventListener("click", () => activateStep(2, true));
+editApplicant.addEventListener("click", () => { resetChecklistProgress(); activateStep(3, true); });
+schoolSelect.addEventListener("change", () => handleDemoTargetChange(populateDegreeSelect));
+demoDegreeSelect.addEventListener("change", () => handleDemoTargetChange(populateIntakeSelect));
+intakeSelect.addEventListener("change", () => handleDemoTargetChange(populateCollegeSelect));
+collegeSelect.addEventListener("change", () => handleDemoTargetChange(populateDepartmentSelect));
+departmentSelect.addEventListener("change", () => handleDemoTargetChange(populateRouteSelect));
+routeSelect.addEventListener("change", () => handleDemoTargetChange(updateRequirementsSubmit));
+requirementsRetry.addEventListener("click", () => { if (demoCatalog.length) submitBaseRequirements(); else loadDemoCatalog(); });
+groundedQuestion.addEventListener("input", () => {
+  groundedQuestionCount.textContent = `${groundedQuestion.value.length} / ${MAX_QUERY_LENGTH}`;
+});
+groundedForm.addEventListener("submit", (event) => { event.preventDefault(); submitGroundedAnswer(); });
+groundedRetry.addEventListener("click", () => { if (groundedCanRetry) submitGroundedAnswer(); });
+referenceButtons.forEach((button) => button.addEventListener("click", generateReferenceReport));
+byId("reference-copy").addEventListener("click", copyReferenceReport);
+byId("reference-close").addEventListener("click", () => {
+  cancelPendingReferenceComparison();
+  referenceDialog.close();
+});
+referenceDialog.addEventListener("cancel", cancelPendingReferenceComparison);
+referenceDialog.addEventListener("close", () => {
+  cancelPendingReferenceComparison();
+  if (referenceTrigger?.isConnected && !referenceTrigger.disabled && referenceReport
+    && currentReferenceScope() && referenceCore.scopeKey(referenceReport.scope)
+      === referenceCore.scopeKey(currentReferenceScope())) referenceTrigger.focus({preventScroll: true});
+  referenceTrigger = null;
+});
+drawerClose.addEventListener("click", () => evidenceDrawer.close());
+evidenceDrawer.addEventListener("close", () => {
+  const scope = currentReferenceScope();
+  if (drawerTrigger?.isConnected && (!drawerScopeKey || (scope
+    && referenceCore.scopeKey(scope) === drawerScopeKey))) drawerTrigger.focus({preventScroll: true});
+  drawerTrigger = null;
+  drawerGraph = null;
+  drawerScopeKey = null;
+  evidenceDrawer.classList.remove("relationship-window");
+});
+
+updateFlowPresentation();
+initializeProfileGroups();
+clearGroundedAnswer();
+updateGroundedContext();
+loadGenerationStatus();
+import("./unified-core.mjs").then((module) => {
+  referenceCore = module;
+  loadDemoCatalog();
+}).catch(() => setMessage(targetStatus, "error", "审核目录组件暂时无法加载，请刷新页面。"));

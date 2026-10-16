@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+  <meta http-equiv="Content-Security-Policy" content="default-src &#39;self&#39;; script-src &#39;self&#39;; style-src &#39;self&#39; &#39;unsafe-inline&#39;; img-src &#39;self&#39; data:; connect-src &#39;self&#39;; object-src &#39;none&#39;; frame-src &#39;none&#39;; base-uri &#39;self&#39;; form-action &#39;none&#39;">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>J-Grad | 体験デモ · 示例体验</title>
+    <link rel="stylesheet" href="./assets/app.css">
+    <link rel="stylesheet" href="./demo.css">
+    <script src="./demo-bridge.js" defer></script>
+    <script src="./assets/overview.js" defer></script>
+    <script src="./assets/app.js" defer></script>
+  </head>
+  <body class="public-demo">
+    <aside class="demo-banner" aria-label="公開デモの利用範囲">
+      <div class="demo-banner-inner">
+        <div><strong>体験デモ / 示例回放 · 過去資料 / 历史资料</strong><p id="demo-loading-status">保存済みサンプルを読み込んでいます。</p><p>非实时审查 · 无自由输入 · 不是当前招生建议</p></div>
+        <a href="../index.html">← プロジェクト紹介</a>
+      </div>
+    </aside>
+    <header class="app-header">
+      <div class="header-inner">
+        <p class="product-mark" aria-hidden="true">J</p>
+        <div class="header-copy">
+          <h1>J-Grad 申请检查向导</h1>
+          <p>依据审核过的募集要项，分四步整理你的申请准备</p>
+        </div>
+        <span class="runtime-boundary">保存済みサンプル · 示例回放</span>
+      </div>
+    </header>
+
+    <main class="workspace" aria-labelledby="workspace-heading">
+      <section class="intro" aria-labelledby="workspace-heading">
+        <p class="eyebrow">申请准备检查</p>
+        <h2 id="workspace-heading">先选定申请目标，再逐步核对官方要求</h2>
+        <p>体验现有产品的四步流程：选学校 → 看要求 → 选示例情境 → 查看准备清单。此页使用已保存的结果，不执行实时资格审查或模型问答。</p>
+        <p class="essential-boundary"><strong>本工具不是最终资格判断。</strong> 信息不足不会被解释为符合要求。</p>
+        <details class="scope-details">
+          <summary>使用范围</summary>
+          <p>本工具只整理已人工审核的部分规则，不保证出愿资格、材料受理或录取结果。个人输入不保存到浏览器或服务器，最终请以学校官方说明和招生部门确认为准。</p>
+        </details>
+      </section>
+
+      <div id="current-target-bar" class="current-target-bar" hidden>
+        <div><p class="summary-label">当前申请目标</p><strong id="current-target-name"></strong><p class="current-target-hint">更换后将清除当前查询结果。</p></div>
+        <button id="change-school" class="secondary" type="button">更换学校</button>
+      </div>
+
+      <nav class="stepper" aria-label="申请检查步骤">
+        <ol>
+          <li id="step-nav-1" data-state="current" aria-current="step"><span class="step-number">1</span><span><strong>选择目标</strong><small>当前</small></span></li>
+          <li id="step-nav-2" data-state="locked"><span class="step-number">2</span><span><strong>官方要求</strong><small>未开始</small></span></li>
+          <li id="step-nav-3" data-state="locked"><span class="step-number">3</span><span><strong>个人情况</strong><small>未开始</small></span></li>
+          <li id="step-nav-4" data-state="locked"><span class="step-number">4</span><span><strong>准备清单</strong><small>未开始</small></span></li>
+        </ol>
+      </nav>
+
+      <section class="demo-shell application-flow" aria-label="四步申请检查">
+        <section id="step-1-panel" class="flow-step" data-step-state="current" aria-labelledby="demo-heading">
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 1 · 申请目标</p><h2 id="demo-heading" tabindex="-1">你准备申请什么？</h2></div>
+            <span id="step-1-badge" class="step-state-badge">当前</span>
+          </header>
+          <div id="step-1-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已选择的目标</p><p id="step-1-summary-text"></p></div>
+            <button id="edit-target" class="quiet edit-step" type="button">修改目标</button>
+          </div>
+          <div id="step-1-content" class="flow-step-content">
+          <p class="field-detail">本演示各提供一个固定历史目标：东科大信息工学系、东大复杂理工学专攻。选择学校后将自动填入示例范围。</p>
+          <form id="target-form" novalidate>
+            <div class="target-grid">
+              <div><label for="school-select">学校</label><select id="school-select" required disabled><option value="">正在读取审核目录</option></select></div>
+              <div><label for="demo-degree-select">学位</label><select id="demo-degree-select" required disabled><option value="">请先选择学校</option></select></div>
+              <div><label for="intake-select">入学时间</label><select id="intake-select" required disabled><option value="">请先选择学位</option></select></div>
+              <div><label for="college-select">学院</label><select id="college-select" required disabled><option value="">请先选择入学时间</option></select></div>
+              <div><label for="department-select">系／专业</label><select id="department-select" required disabled><option value="">请先选择学院</option></select></div>
+              <div id="route-field" hidden><label for="route-select">出愿日程／方式</label><select id="route-select" disabled><option value="">请选择日程或方式</option></select></div>
+            </div>
+            <div class="actions">
+              <button id="requirements-submit" type="submit" disabled>查看基础出愿要求</button>
+              <button id="requirements-retry" class="secondary" type="button" hidden>重试</button>
+            </div>
+            <p id="target-completion-hint" class="action-hint">请完成申请目标选择，按钮随后会变为可用。</p>
+          </form>
+          <div id="target-status" class="status-message" role="status" aria-live="polite" tabindex="-1">正在读取审核目录。</div>
+          </div>
+        </section>
+
+        <section id="step-2-panel" class="flow-step requirements-panel" data-step-state="locked" aria-labelledby="requirements-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 2 · 官方要求</p><h2 id="requirements-heading" tabindex="-1">基础出愿要求</h2></div>
+            <span id="step-2-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-2-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">已加载的要求</p><p id="step-2-summary-text"></p></div>
+            <button id="edit-requirements" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-2-content" class="flow-step-content">
+          <p id="target-summary" class="target-summary">完成左侧选择后，再明确加载要求。</p>
+          <div id="requirements-output" class="requirements-output"></div>
+          <div class="step-primary-action"><button id="requirements-continue" type="button">继续填写个人情况</button><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
+          <p id="reference-inline-status" class="status-message reference-action-status" role="status" aria-live="polite">要求加载后即可生成参考报告。</p>
+          </div>
+        </section>
+
+        <section id="applicant-panel" class="flow-step applicant-panel" data-step-state="locked" aria-labelledby="applicant-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 3 · 示例情境</p><h2 id="applicant-heading" tabindex="-1">选择一个示例，看准备事项如何变化</h2></div>
+            <span id="step-3-badge" class="step-state-badge">未开始</span>
+          </header>
+          <div id="step-3-summary" class="completed-summary" hidden>
+            <div><p class="summary-label">信息提供情况</p><p id="step-3-summary-text"></p></div>
+            <button id="edit-applicant" class="quiet edit-step" type="button">修改</button>
+          </div>
+          <div id="step-3-content" class="flow-step-content">
+          <p class="field-detail profile-intro">只填写用于本次页面对照的信息，不会保存到浏览器或服务器。可以暂时留空或选择“不知道”；空值不会被判为不符合。</p>
+          <p class="profile-state-guide"><strong>状态怎么理解：</strong>“未填写”是尚未作答；“不知道”是主动标记待确认；“不适用”仅是个人判断，不代表官方豁免；“尚未取得”表示目前没有相应成绩单或材料。最终仍以官方适用性和学校确认结果为准。</p>
+          <form id="applicant-form" novalidate>
+            <div class="demo-scenario-box">
+              <p class="demo-scenario-kicker">保存済みの人物設定 / 已保存的示例申请人</p>
+              <label for="demo-scenario">选择体验情境</label>
+              <select id="demo-scenario" disabled><option>请先选择学校</option></select>
+              <p id="demo-scenario-description" aria-live="polite"></p>
+              <p class="field-help">下方展示该情境的已保存结果。不会发送个人资料，也不会根据任意输入重新计算。</p>
+            </div>
+            <div id="legacy-profile-grid" class="profile-grid">
+              <details class="profile-group" data-profile-group="education" data-profile-label="学历、预计毕业时间与资格审查路径" data-requirement-categories="eligibility" open>
+                <summary><span class="profile-group-title"><strong>1 · 学历与毕业情况</strong><small>用于对照已审核的学历路径；不能替代学校资格认定。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>学历</legend>
+                <label for="demo-credential-basis">最接近的学历路径</label>
+                <p id="credential-help" class="field-help">选择与你最接近的路径，帮助服务端找对应的已审核条件；选不准可以标记不知道。</p>
+                <select id="demo-credential-basis" aria-describedby="credential-help">
+                  <option value="">未填写</option>
+                  <option value="ui_unknown">不知道／需要确认</option>
+                  <option value="university_graduation">日本大学毕业或预计毕业</option>
+                  <option value="foreign_16_year_bachelor_equivalent">外国 16 年教育／学士相当</option>
+                  <option value="foreign_15_year_education">外国 15 年教育（需个别资格审查）</option>
+                  <option value="university_three_year_enrollment">大学在学满 3 年等（需个别资格审查）</option>
+                </select>
+                <label for="demo-completion-state">毕业状态</label>
+                <p id="completion-help" class="field-help">记录你是否已毕业或预计毕业；日期可留空，填写后也只核对毕业时间这一项。</p>
+                <select id="demo-completion-state" aria-describedby="completion-help"><option value="">未填写</option><option value="ui_unknown">不知道／需要确认</option><option value="ui_not_applicable">目前不适用／暂无毕业状态</option><option value="completed">已毕业</option><option value="expected">预计毕业</option><option value="not_completed">尚未完成</option></select>
+                <div id="demo-completion-date-field" hidden><label for="demo-completion-date">毕业日期</label><input id="demo-completion-date" type="date" aria-describedby="completion-help"></div>
+                <div id="demo-expected-completion-date-field" hidden><label for="demo-expected-completion-date">预计毕业日期</label><input id="demo-expected-completion-date" type="date" aria-describedby="completion-help"></div>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="submission" data-profile-label="网上手续与寄送" data-requirement-categories="dates,eligibility">
+                <summary><span class="profile-group-title"><strong>网上手续与寄送</strong><small>寄出不代表送达；自报完成不代表学校受理。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                  <legend>提交进度</legend>
+                  <label for="demo-online-steps">网上注册、照片上传及缴费是否均已完成</label>
+                  <select id="demo-online-steps"><option value="">未填写／不清楚</option><option value="true">均已完成（自报）</option><option value="false">尚未全部完成</option></select>
+                  <label for="demo-dispatched-date">材料寄出日期</label><input id="demo-dispatched-date" type="date">
+                  <label for="demo-arrival-date">材料实际送达日期</label><input id="demo-arrival-date" type="date" aria-describedby="demo-submission-hint">
+                  <p id="demo-submission-hint" class="linked-field-hint" role="status" aria-live="polite">实际送达日期可以留空；寄出日期不会当作送达日期。</p>
+                  <p class="field-help">当前资料要求邮寄材料，不接受窗口递交；请使用速达挂号。建议提前到达日不等于必着截止日。实际送达与受理均须另行核对。</p>
+                  <div id="demo-review-status-field" hidden>
+                    <label for="demo-review-status">资格审查办理进度</label>
+                    <select id="demo-review-status"><option value="">未填写／不清楚</option><option value="not_requested">尚未申请</option><option value="requested">已申请，等待结果</option><option value="completed">流程已完成（仅自报，不表示通过）</option></select>
+                  </div>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="english" data-profile-label="英语考试与成绩" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>2 · 英语考试与成绩单</strong><small>记录考试信息；成绩有效性与提交方式仍需核对。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>英语</legend>
+                <label for="demo-english-kind">考试类型</label>
+                <p id="english-kind-help" class="field-help">若填写成绩或考试日期，服务端也需要知道考试类型；未参加可选择“目前不适用”。</p>
+                <select id="demo-english-kind" aria-describedby="english-kind-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道考试类型</option><option value="ui_not_applicable">未参加／目前不适用</option><option value="toeic_lr">TOEIC L&amp;R</option><option value="toefl_ibt">TOEFL iBT</option><option value="toefl_ibt_home_edition">TOEFL iBT Home Edition</option><option value="toeic_ip">TOEIC-IP（本轮不接受）</option><option value="toefl_itp">TOEFL-ITP（本轮不接受）</option><option value="other">其他</option></select>
+                <label for="demo-english-score">成绩</label>
+                <p id="english-score-help" class="field-help">有成绩时填写数字；没有或不知道可留空。填写分数不会自动判定成绩有效。</p>
+                <input id="demo-english-score" type="number" min="0" max="10000" step="0.01" inputmode="decimal" aria-describedby="english-score-help english-link-hint">
+                <label for="demo-english-date">考试日期</label>
+                <p id="english-date-help" class="field-help">用于之后核对有效期；日期不确定可以留空，不会被当作不符合。</p>
+                <input id="demo-english-date" type="date" aria-describedby="english-date-help english-link-hint">
+                <label for="demo-english-report">官方成绩单</label>
+                <p id="english-report-help" class="field-help">这里只记录你是否已取得官方成绩单；“已取得”不代表学校已收到或受理。</p>
+                <select id="demo-english-report" aria-describedby="english-report-help english-link-hint"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用／未参加考试</option><option value="true">已取得官方成绩单</option><option value="false">尚未取得官方成绩单</option></select>
+                <div id="demo-english-proof-fields" class="english-proof-fields" hidden>
+                  <p class="field-help">以下只记录你目前掌握的证明情况；留空表示待确认，不会当作缺失。</p>
+                  <label for="demo-english-online-pdf">是否取得在线下载的官方PDF</label>
+                  <select id="demo-english-online-pdf"><option value="">尚未确认</option><option value="true">已取得</option><option value="false">尚未取得</option></select>
+                  <div id="demo-toeic-proof-fields" hidden>
+                    <label for="demo-toeic-qr">PDF是否带真伪验证二维码</label>
+                    <select id="demo-toeic-qr"><option value="">尚未确认</option><option value="true">有二维码</option><option value="false">无二维码</option></select>
+                    <label for="demo-toeic-certificate">是否为数字官方成绩证明或符合要求的同等形式</label>
+                    <select id="demo-toeic-certificate"><option value="">尚未确认</option><option value="true">是</option><option value="false">否</option></select>
+                  </div>
+                  <div id="demo-toefl-proof-fields" hidden>
+                    <label for="demo-toefl-report-pdf">是否取得Test Taker Score Report PDF</label>
+                    <select id="demo-toefl-report-pdf"><option value="">尚未确认</option><option value="true">已取得</option><option value="false">尚未取得</option></select>
+                    <label for="demo-toefl-g179">是否为本次成绩设置学校DI代码G179</label>
+                    <select id="demo-toefl-g179"><option value="">尚未确认</option><option value="true">已设置</option><option value="false">尚未设置</option></select>
+                  </div>
+                </div>
+                <p id="english-link-hint" class="linked-field-hint" role="status" aria-live="polite">成绩和考试日期可暂时留空；如果填写其中之一，请先选择考试类型。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group" data-profile-group="japanese" data-profile-label="日语学习或证明情况" data-requirement-categories="language">
+                <summary><span class="profile-group-title"><strong>3 · 日语学习或证明</strong><small>仅记录你的情况，证据不足时不生成满足结论。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>日语</legend>
+                <label for="demo-japanese-background">学习或证明情况</label>
+                <p id="japanese-help" class="field-help">有学习经历或证明可记录；不知道、暂不适用或尚无证明都不会被判为不符合。</p>
+                <select id="demo-japanese-background" aria-describedby="japanese-help japanese-limit"><option value="">未填写</option><option value="ui_unknown">不知道／待确认</option><option value="ui_not_applicable">目前不适用</option><option value="studied">学过日语</option><option value="certificate_available">有日语能力证明</option><option value="not_studied">未学过／尚无证明</option></select>
+                <p id="japanese-limit" class="profile-limit">日语信息目前只记录。现有审核证据不足时，不会给出“已满足日语要求”的结论。</p>
+                </fieldset>
+              </details>
+              <details class="profile-group materials-fieldset" data-profile-group="materials" data-profile-label="已有材料的准备状态" data-requirement-categories="materials">
+                <summary><span class="profile-group-title"><strong>4 · 材料准备情况</strong><small>只记录你是否已准备；是否需要提交会单独显示。</small></span><span class="profile-group-state" data-state="empty">待填写</span></summary>
+                <fieldset>
+                <legend>材料准备</legend>
+                <p id="material-help" class="field-help">“我已准备”仅表示你自报已有材料，不代表内容有效、学校已收到或受理。认为不适用时仍需查看官方适用性。</p>
+                <div class="material-inputs">
+                  <label>宛名标签<select data-material-code="address_label" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>入学志愿票<select data-material-code="application_form" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>志望理由书<select data-material-code="statement_of_purpose" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>学士课程成绩证明书<select data-material-code="bachelor_transcript" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                  <label>毕业（预计）证明书<select data-material-code="graduation_or_expected_graduation_certificate" aria-describedby="material-help"><option value="">未填写</option><option value="unknown">不知道／待确认</option><option value="ui_not_applicable">我认为不适用（待核对）</option><option value="available">我已准备</option><option value="not_yet">尚未取得</option></select></label>
+                </div>
+                </fieldset>
+              </details>
+            </div>
+            <div id="slice-profile" class="slice-profile" hidden>
+              <p id="slice-profile-coverage">当前只对照已覆盖的材料主题。在职条件可留空；未知不会当作否，也不生成完整缺项统计。</p>
+              <div class="target-grid">
+                <div><label for="slice-current-employed">现在是否在组织任职</label><select id="slice-current-employed"><option value="unknown">不知道／未填写</option><option value="yes">是</option><option value="no">否</option></select></div>
+                <div><label for="slice-retain-employed">入学后是否继续任职</label><select id="slice-retain-employed"><option value="unknown">不知道／未填写</option><option value="yes">是</option><option value="no">否</option></select></div>
+              </div>
+              <fieldset id="slice-material-preparation" hidden></fieldset>
+            </div>
+            <p class="profile-submit-help">不必填完所有项目也可以对照。未填写／不知道会保留为未知，不会自动判为不符合；个别资格审查仍需学校确认。</p>
+            <div class="actions"><button id="comparison-submit" type="submit" disabled>查看此情境的准备清单</button><button id="comparison-retry" class="secondary" type="button" hidden>重试</button></div>
+          </form>
+          <div id="comparison-status" class="status-message" role="status" aria-live="polite">请先加载基础要求。</div>
+          </div>
+        </section>
+
+        <section id="readiness-panel" class="flow-step applicant-panel readiness-panel" data-step-state="locked" aria-labelledby="readiness-heading" hidden>
+          <header class="flow-step-header">
+            <div><p class="section-label">STEP 4 · 当前准备视图</p><h2 id="readiness-heading" tabindex="-1">接下来需要做什么？</h2></div>
+            <span id="step-4-badge" class="step-state-badge">未开始</span>
+          </header>
+          <p id="readiness-target" class="target-summary"></p>
+          <section class="action-summary" aria-labelledby="action-summary-heading">
+            <div class="action-summary-heading"><div><p class="section-label">先看下一步</p><h3 id="action-summary-heading">当前行动摘要</h3></div><p class="action-summary-total">本次核对 <span id="count-total">0</span> 个核对点</p></div>
+            <dl class="readiness-counts" aria-label="当前核对结果统计">
+              <div data-group="action_required"><dt>需补充或处理</dt><dd id="count-action">0</dd></div>
+              <div data-group="review_required"><dt>待确认／需审核</dt><dd id="count-review">0</dd></div>
+              <div data-group="recorded"><dt>已记录／可能匹配</dt><dd id="count-recorded">0</dd></div>
+            </dl>
+            <div id="priority-actions" class="priority-actions" aria-live="polite"></div>
+          </section>
+          <p id="partial-checklist-statement" class="final-notice"></p>
+          <p class="progress-boundary">准备情况来自所选示例；“已处理”仅用于体验页面操作，刷新或更换情境后会清空。不会提交申请或更新真实个人资料。</p>
+          <fieldset id="readiness-filters" class="readiness-filters">
+            <legend>筛选显示</legend>
+            <label><input type="radio" name="readiness-filter" value="all" checked> 全部</label>
+            <label><input type="radio" name="readiness-filter" value="action_required"> 需要补充</label>
+            <label><input type="radio" name="readiness-filter" value="recorded"> 已记录</label>
+            <label><input type="radio" name="readiness-filter" value="review_required"> 待确认／需审核</label>
+          </fieldset>
+          <p id="filter-empty" class="status-message" role="status" aria-live="polite" hidden>当前筛选下没有项目。</p>
+          <div id="comparison-output" class="comparison-output"></div>
+          <div class="step-primary-action"><button class="secondary reference-generate" type="button" disabled>生成参考报告</button></div>
+          <p id="reference-step4-status" class="status-message reference-action-status" role="status" aria-live="polite">要求加载后即可生成参考报告。</p>
+        </section>
+      </section>
+
+      <section id="grounded-answer-panel" class="grounded-answer-panel" aria-labelledby="grounded-answer-heading">
+        <header class="grounded-answer-header">
+          <div>
+            <p class="section-label">当前申请目标</p>
+            <h2 id="grounded-answer-heading">智能问答</h2>
+          </div>
+          <span id="generation-mode-label" class="ai-badge">正在核对生成模式</span>
+        </header>
+        <p class="field-detail">自动复用上方已选择的学校、项目、入学时间与本页内个人情况；会拆分多项问题，并分别标记有依据、缺少依据或需要补充的信息。</p>
+        <p id="grounded-context" class="target-summary">请先完成目标选择并加载基础要求。</p>
+        <form id="grounded-answer-form" novalidate>
+          <label for="grounded-question">问题</label>
+          <textarea id="grounded-question" rows="4" maxlength="1000" disabled aria-describedby="grounded-question-help grounded-question-count" placeholder="例如：这个专业笔试考什么？出愿材料怎么准备？英语成绩有什么要求？"></textarea>
+          <div class="input-meta"><p id="grounded-question-help">支持中文、日文和混合表达。有依据部分继续回答，未找到明确依据的部分会单独标记。</p><p id="grounded-question-count">0 / 1000</p></div>
+          <div class="actions"><button id="grounded-answer-submit" type="submit" disabled>生成有依据的回答</button><button id="grounded-answer-retry" class="secondary" type="button" hidden>重试</button></div>
+        </form>
+        <div id="grounded-answer-status" class="status-message" role="status" aria-live="polite">加载基础要求后即可提问。</div>
+        <section id="grounded-answer-output" class="grounded-answer-output" aria-live="polite" hidden></section>
+      </section>
+
+      <section class="demo-qa" aria-labelledby="demo-qa-heading">
+        <p class="section-label">SAVED Q&amp;A / 保存済み回答例</p>
+        <h2 id="demo-qa-heading">智能问答怎样辅助阅读？</h2>
+        <p>以下为保存的问答样例，用于展示表达方式与适用范围。不会调用在线模型；与上方示例情境相互独立。</p>
+        <div id="demo-qa-samples"></div>
+      </section>
+
+      <dialog id="evidence-drawer" class="evidence-drawer" aria-labelledby="drawer-title">
+        <div class="drawer-header">
+          <div><p class="section-label">OFFICIAL EVIDENCE</p><h2 id="drawer-title">官方依据</h2></div>
+          <button id="drawer-close" class="quiet" type="button" aria-label="关闭官方依据">关闭</button>
+        </div>
+        <div id="drawer-content" class="drawer-content"></div>
+      </dialog>
+
+      <dialog id="reference-report" class="evidence-drawer reference-report" aria-labelledby="reference-report-title">
+        <div class="drawer-header"><div><p class="section-label">出愿资料整理</p><h2 id="reference-report-title">出愿准备参考</h2></div>
+          <div class="actions"><button id="reference-copy" type="button">复制报告</button><button id="reference-close" class="quiet" type="button">关闭</button></div></div>
+        <div id="reference-report-body" class="drawer-content"></div>
+        <div id="reference-report-status" class="status-message" role="status" aria-live="polite"></div>
+        <label id="reference-copy-fallback-label" for="reference-copy-fallback" hidden>手动复制报告</label>
+        <textarea id="reference-copy-fallback" readonly hidden></textarea>
+      </dialog>
+
+    </main>
+  </body>
+</html>

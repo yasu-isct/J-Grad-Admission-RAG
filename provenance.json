@@ -1,0 +1,140 @@
+{
+  "source_commit": "33a473bdb78a6fc08f8e853c192c951bd115d9ad",
+  "source_repository": "https://github.com/yasu-isct/J-Grad-Admission-RAG",
+  "mode": "static_saved_response_replay",
+  "transformations": [
+    "catalog restricted to two saved targets",
+    "local_pdf_url removed; original official links retained",
+    "original app static assets copied, demo bridge separate",
+    "report view and copy use original frontend, prefixed as demonstration",
+    "no PDF/model/KB/vector upload; no live API calls"
+  ],
+  "tracked_sources": [
+    {
+      "path": "src/jgrad_admission_rag/service/static/app.css",
+      "git_blob": "912046a14b88aea69829befd3453de6dc62c9f88",
+      "sha256": "389d81f193f8354ed4d03b84a0f0e19420737cf68addf0828b9e426f1984bf8c"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/app.js",
+      "git_blob": "ecd3deb413306294eb14cd6a86abe3eae36ad4b4",
+      "sha256": "4e0173df102fb2c453c0a3f7d4a7ec6968cdbdf165aacc3ef7eb8412af0fe79b"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/overview.js",
+      "git_blob": "65edb89bdd9d4d67e9d99a9125a99cd785138302",
+      "sha256": "e084e2af2fb108f16909d9fd7c91185b6605a24a83505766888ebe9095c27e40"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/unified-core.mjs",
+      "git_blob": "3b6e5d4f36ace6a352edd28dde9fbdc84a4d8fa9",
+      "sha256": "f6c2e33eec2e6ad6b09daff3b792aa1727dc54ac5b003a7d64a9ece55ffaae24"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/material-presentation-catalog.mjs",
+      "git_blob": "068cfee9967e305d0e4937f7d438989ff532721a",
+      "sha256": "296f385529fe8a330519f60731ea3b1fecdb63b1872090b526768803f57871ce"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/reviewed-material-presentation.mjs",
+      "git_blob": "ef7181017dbfabcc9c5c8db9f4e260de9777737d",
+      "sha256": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/m19-material-presentation.mjs",
+      "git_blob": "003d2fe7b21d2de7a11ff6f374fcc78785ece4b9",
+      "sha256": "bd38123b3f8a35a20d37f97b0184637c61c12c57480e29aa6297a0fef7452165"
+    },
+    {
+      "path": "src/jgrad_admission_rag/service/static/advanced.html",
+      "git_blob": "9783d0055d9489aa2c29e7977c0a8ffd91ca6b1e",
+      "sha256": "bcfe7f12d6f6da44780bf565389c6a85b6dd9b07baf864c993997587d6d83b80"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-catalog.json",
+      "git_blob": "c0ac30838b14fffe69430714c84eacbb844a3831",
+      "sha256": "653fc8e5257b0f19a270e92fd3fa86151eb79f843f1a64e136e7386c81f06c2c"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-base-v2.json",
+      "git_blob": "495ffca97d5139adb3f96cfd677dbeeadd57118d",
+      "sha256": "b4ee2690868b0c2d846c85ad3625bdd6cc20cbd837214c7661ad71ae2e029f3d"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-evidence.json",
+      "git_blob": "8a990251653a0bbfb29dbd6709460fdf0e7fdc43",
+      "sha256": "ff8b9e36982d08f656a9835edb18a86e1063dd45e1ef960a93996ec37baa4eec"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/dispatched_unknown_arrival-request.json",
+      "git_blob": "b54ec8f4e046ea6bc53494122e1b8cab0f2686dd",
+      "sha256": "736b9826f09bb3c80f91890ad999a0d8b788f0d700d51911f4fe7f3d82c8904d"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/dispatched_unknown_arrival-response.json",
+      "git_blob": "0d979feac20c14ae878797e826593691025ec239",
+      "sha256": "d641a083a2163a4c34807a30525836209e9f2e0587118935960d15d78c978d7a"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/late_graduation_arrival-request.json",
+      "git_blob": "a9659ff832836bd7ed0a37445938a3384c179565",
+      "sha256": "3c50d628b84c25fc3b29537ecdee9af07081c599d72adf137cb2cfcb77ec33dc"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/late_graduation_arrival-response.json",
+      "git_blob": "0f03f6d8fd82745b9c50729f8c0328829d2fae1e",
+      "sha256": "8c0cd6f3ac032e87effe76c4567bfe5f957e4ca98994f8bfcb3ffc5c5e8ff93d"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/isct-comparison.json",
+      "git_blob": "885831ae76a693aacd922047fd6a1e847205249e",
+      "sha256": "1847cf1890db11a8ad89fdee6ce94403850a31bc6258b0d9c067f049d6677e59"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-desktop-request.json",
+      "git_blob": "d4e9efbca510abe6cf3323bfcf811ba2cc21e38e",
+      "sha256": "095819c4c63b31a07f1f96fa7b5c70c144cd6843ca359e7b0fc2be350c15d6c8"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-desktop-report.json",
+      "git_blob": "0539b4a7f308cb1af5675e915ae638e395299984",
+      "sha256": "4993b245a7e69fdae36f541ce8a4f25e6d856f0da3c53c52ce257fa05bf057cd"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-mobile-request.json",
+      "git_blob": "b5775bb068f5b5c74f58746d1cde4f3e1ca6e87a",
+      "sha256": "dea313a09ebe76f949d156dd34cc9a124314f278f3047c2fb1afabd5c920073f"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/live-mobile-report.json",
+      "git_blob": "1029e6f92727343635e88e80265c4bff4ec63140",
+      "sha256": "cbe6dea6cb2882d33662eb38d13238e26e9c7c55bbeb1f9533a2e033c08685ad"
+    },
+    {
+      "path": "docs/evaluation/qa01-online20/responses.json",
+      "git_blob": "ecd81570bee185b5763f5c8de70e69dbbb9f3ceb",
+      "sha256": "9b4bba0d27c3387eb3371c896c255c20d6a61a79248d597cf59bb2a33c9c2b4f"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-application-questionnaire-relations.png",
+      "git_blob": "dd166f25b1b8818c2c343f6a6bcf71f2fcc44511",
+      "sha256": "2e3f1ce4f1b314badc4ebc6ff75d49a44e8f0da4b298b2ebe6c834d45564bbbf"
+    }
+  ],
+  "qa": {
+    "source": "public docs/evaluation/qa01-online20/responses.json",
+    "selected_cases": [
+      "01",
+      "08",
+      "17"
+    ],
+    "source_sha256": "9b4bba0d27c3387eb3371c896c255c20d6a61a79248d597cf59bb2a33c9c2b4f",
+    "published_fields": [
+      "question",
+      "answer",
+      "scope",
+      "label"
+    ],
+    "not_a_new_quality_evaluation": true
+  }
+}
