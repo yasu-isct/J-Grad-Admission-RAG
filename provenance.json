@@ -152,5 +152,15 @@
       "key": "computer-science-base-v2.json",
       "reason": "Reuse already-reviewed matching projection instead of incompatible earlier saved exam payload; not a new HTTP or parsing result"
     }
+  },
+  "locales": {
+    "default": "ja",
+    "ja": "/",
+    "zh-CN": "/zh/",
+    "chinese_origin": "f050a911450a46e9fb29b82b7f6e9553b72507e7",
+    "japanese_origin": "8cc929348af7c553577bf0915f8473c593b23ae9",
+    "shared_exam_projection": "review-v2-exam-overlays.json / computer-science-base-v2.json",
+    "selection_on_switch": "preserves selected school and saved scenario; opens target-selection step",
+    "live_generation": false
   }
 }

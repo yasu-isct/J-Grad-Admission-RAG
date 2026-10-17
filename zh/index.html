@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="description" content="体验 J-Grad 的资料查询、准备情况对照、跨文件依据与参考报告。基于已保存样例的互动作品演示。">
+<meta name="theme-color" content="#164e48"><title>J-Grad｜互动作品演示</title>
+<link rel="stylesheet" href="../showcase.css"><link rel="stylesheet" href="../language-switch.css"><script src="../language-switch.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="topbar"><a class="brand" href="./"><span class="monogram" aria-hidden="true">J</span>J-Grad <span class="brand-note">INTERACTIVE DEMO</span></a><nav aria-label="相关链接"><a href="https://github.com/yasu-isct/J-Grad-Admission-RAG">源代码 ↗</a><a href="https://github.com/yasu-isct">开发者</a></nav></header>
+<main id="main">
+<section class="hero">
+<div class="hero-copy"><p class="eyebrow"><span class="dot"></span> 无需登录或安装</p><h1>募集要项的要点，<br><span>在一个页面里看清。</span></h1><p class="lead">了解需要准备的材料，对照自己的进度。<br class="desktop-only">遇到复杂条件，随时回到官方资料核对。</p><p class="intro">从留学教务的实际需求出发，搭建可检索、可核对的资料系统。通过保存的样例，体验已经实现的两校四步流程。</p><div class="hero-actions"><a class="button primary" href="./app/?school=isct&amp;scenario=materials">体验东京科学大学案例 →</a><a class="button secondary" href="./app/?school=gsfs&amp;scenario=working">体验东京大学案例</a></div><p class="micro">支持日语、中文切换，沿用实际产品界面。</p></div>
+<div class="hero-visual"><div class="windowbar"><span class="windowdots" aria-hidden="true">● ● ●</span><span>查看官方资料之间的关系</span><span class="image-label">实际界面</span></div><a href="./app/?school=gsfs&amp;scenario=working" aria-label="体验东京大学的资料关系图"><img src="./evidence-preview.png" alt="东京大学资料关系图，将提交物清单与专攻指南连接，说明各份文件的作用。" width="1440" height="900"></a><div class="visual-caption"><span class="caption-marker" aria-hidden="true">↳</span><p>“为什么需要？”可以结合多份资料核对。<small>图中的关系经过审核，并非自动推测。</small></p></div></div>
+</section>
+<aside class="demo-notice"><strong>这个演示能做什么</strong><p>切换学校和案例、展开说明、查看原文摘录、复制参考报告。这是<b>已保存结果的互动回放</b>，使用固定的历史资料，不进行实时检索、AI 回答或资格审查。</p></aside>
+<section class="journey" aria-labelledby="journey-title"><div class="section-top"><p class="eyebrow">THE EXPERIENCE</p><h2 id="journey-title">从了解信息，到明确下一步。</h2><p>不只看截图，还可以亲自操作完整流程。</p></div><ol class="steps"><li><span>01</span><h3>选择申请目标</h3><p>确认学校、专攻和资料适用范围。</p></li><li><span>02</span><h3>查看关键信息</h3><p>了解时间、提交材料和考试安排。</p></li><li><span>03</span><h3>选择准备案例</h3><p>切换预设的个人准备情况。</p></li><li><span>04</span><h3>明确接下来做什么</h3><p>查看待办，生成并复制参考报告。</p></li></ol></section>
+<section class="scenarios" aria-labelledby="scenarios-title"><div class="section-top"><p class="eyebrow">TWO SCHOOLS · FIVE SCENARIOS</p><h2 id="scenarios-title">选一个你感兴趣的案例。</h2></div><div class="school-grid">
+<article class="school-card"><div class="school-title"><span class="school-symbol" aria-hidden="true">01</span><div><h3>东京科学大学</h3><p>信息工学系 · 2027 年 4 月入学 · B 日程</p></div></div><p class="school-description">先了解日期、材料和考试安排，再对照准备情况。</p><div class="scenario-links"><a href="./app/?school=isct&amp;scenario=materials"><span>入学申请表尚未准备，英语证明待确认</span><span aria-hidden="true">↗</span></a><a href="./app/?school=isct&amp;scenario=dispatched_unknown_arrival"><span>材料已经寄出，尚未确认送达</span><span aria-hidden="true">↗</span></a><a href="./app/?school=isct&amp;scenario=late_graduation_arrival"><span>核对预计毕业日期和手续提醒</span><span aria-hidden="true">↗</span></a></div><p class="coverage">此演示仅覆盖上述申请目标，不代表产品全部可选范围。</p></article>
+<article class="school-card"><div class="school-title"><span class="school-symbol" aria-hidden="true">02</span><div><h3>东京大学</h3><p>新领域创成科学研究科 · 复杂理工学专攻</p></div></div><p class="school-description">五个材料主题，以及共通要项、专攻指南和追加提交物之间的关系。</p><div class="scenario-links"><a href="./app/?school=gsfs&amp;scenario=working"><span>入学后继续在职的案例</span><span aria-hidden="true">↗</span></a><a href="./app/?school=gsfs&amp;scenario=student"><span>目前不在职的案例</span><span aria-hidden="true">↗</span></a></div><p class="coverage">采用 2027 年度修士、一般选拔 A 日程、4 月入学的固定资料；不构成完整材料清单或出愿资格判断。</p></article>
+</div></section>
+<section class="engineering" aria-labelledby="engineering-title"><div><p class="eyebrow">BEHIND THE DEMO</p><h2 id="engineering-title">体验之后，<br>也可以了解背后的设计。</h2><p>公开网站展示前端操作体验。完整产品的检索、规则与验证机制，记录在代码仓库中。</p><a class="text-link" href="https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/main/docs/portfolio/engineering-ja.md">阅读技术设计（日语） →</a></div><div class="engineering-details"><div><h3>混合检索</h3><p>结合关键词检索与 BGE-M3 语义检索。</p></div><div><h3>审核后的规则与依据</h3><p>将条件核对与自然语言参考回答分开，保留文件、页码和适用范围。</p></div><div><h3>优先复用已有成果</h3><p>演示沿用已有界面和验证结果，没有重新构建模型或索引。</p></div></div></section>
+<details class="about-demo"><summary>演示范围、数据与隐私</summary><p>案例使用测试输入，不含真实学生个人信息。输入表单已替换为案例选择。选择和准备备注仅在浏览器中处理，不发送至产品 API 或生成 AI。网站访问记录遵循 GitHub Pages 托管服务的处理规则。</p><p>本站不包含完整官方 PDF、模型、知识库或向量索引，只展示原文摘录和官方外链。官方网站当前资料可能与本演示的固定版本不同。</p><p>问答区展示历史在线测试中选取的保存样例，不代表总体正确率或当前模型表现。本网站用于作品体验，请勿用于当前出愿决策。</p><p><a href="../provenance.json">样例来源与转换记录</a> · <a href="https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/main/docs/portfolio/screenshots-ja.md">实际界面验证记录</a></p></details>
+</main>
+<footer><a class="brand" href="./">J-Grad</a><p>Designed &amp; developed by <a href="https://github.com/yasu-isct">CHEN YI AN</a><br><span>基于已实现功能的公开作品演示 · 2026</span></p><a href="https://github.com/yasu-isct/J-Grad-Admission-RAG">GitHub ↗</a></footer>
+</body></html>

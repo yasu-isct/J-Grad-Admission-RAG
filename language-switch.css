@@ -1,0 +1,9 @@
+.language-switch { display:flex; align-items:center; gap:3px!important; padding:3px; border:1px solid #a8bbb5; border-radius:8px; flex-shrink:0; font:600 13px/1.4 "Yu Gothic",Meiryo,sans-serif; }
+.language-switch a { padding:7px 10px; border-radius:5px; text-decoration:none; white-space:nowrap; }
+.language-switch a[aria-current] { background:#16584d; color:white; }
+.demo-banner .language-switch { border-color:#94aaa4; }
+.demo-banner .language-switch a[aria-current] { background:white; color:#143e3b; }
+.demo-banner-inner { flex-wrap:wrap; }
+.topbar { gap:18px; }
+.public-demo #drawer-close,.public-demo #reference-close { flex-shrink:0; white-space:nowrap; }
+@media(max-width:680px) { .topbar { height:auto; min-height:76px; flex-wrap:wrap; padding-top:15px; padding-bottom:15px; gap:12px; } .topbar > nav:not(.language-switch) { margin-left:auto; } .language-switch { margin-left:auto; } .demo-banner-inner .language-switch { margin-left:0; } }

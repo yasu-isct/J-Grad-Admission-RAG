@@ -6,13 +6,15 @@
   <meta name="description" content="J-Grad の公開インタラクティブデモ。出願資料、準備状況、複数文書の根拠と参考レポートを、保存済みのサンプルで体験できます。">
   <meta name="theme-color" content="#164e48"><title>J-Grad｜インタラクティブデモ</title>
   <link rel="stylesheet" href="./showcase.css">
+<link rel="stylesheet" href="./language-switch.css">
+<script src="./language-switch.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">本文へ移動</a>
   <header class="topbar"><a class="brand" href="./"><span class="monogram" aria-hidden="true">J</span>J-Grad <span class="brand-note">INTERACTIVE DEMO</span></a><nav aria-label="関連リンク"><a href="https://github.com/yasu-isct/J-Grad-Admission-RAG">ソースコード <span aria-hidden="true">↗</span></a><a href="https://github.com/yasu-isct">開発者</a></nav></header>
   <main id="main">
     <section class="hero">
-      <div class="hero-copy"><p class="eyebrow"><span class="dot"></span> ログイン・インストール不要</p><h1>募集要項の確認を、<br><span>ひとつの画面で。</span></h1><p class="lead">必要な書類を知る。自分の準備と照らす。<br class="desktop-only">気になる条件は、公式資料までたどる。</p><p class="intro">留学支援の現場から生まれた、資料確認・検索システムの作品デモです。実装済みの四つのステップを、保存されたサンプルで体験できます。</p><div class="hero-actions"><a class="button primary" href="./app/?school=isct&amp;scenario=materials">東京科学大学の例を試す <span aria-hidden="true">→</span></a><a class="button secondary" href="./app/?school=gsfs&amp;scenario=working">東京大学の例を試す</a></div><p class="micro">操作画面・参考レポートは日本語。実際の製品画面を再利用しています。</p></div>
+      <div class="hero-copy"><p class="eyebrow"><span class="dot"></span> ログイン・インストール不要</p><h1>募集要項の確認を、<br><span>ひとつの画面で。</span></h1><p class="lead">必要な書類を知る。自分の準備と照らす。<br class="desktop-only">気になる条件は、公式資料までたどる。</p><p class="intro">留学支援の現場から生まれた、資料確認・検索システムの作品デモです。実装済みの四つのステップを、保存されたサンプルで体験できます。</p><div class="hero-actions"><a class="button primary" href="./app/?school=isct&amp;scenario=materials">東京科学大学の例を試す <span aria-hidden="true">→</span></a><a class="button secondary" href="./app/?school=gsfs&amp;scenario=working">東京大学の例を試す</a></div><p class="micro">日本語・中国語を切り替えられます。実際の製品画面を再利用しています。</p></div>
       <div class="hero-visual"><div class="windowbar"><span class="windowdots" aria-hidden="true">● ● ●</span><span>公式資料の関係を確認</span><span class="image-label">実装画面</span></div><a href="./app/?school=gsfs&amp;scenario=working" aria-label="東京大学の資料関係を操作してみる"><img src="./evidence-preview.png" alt="東京大学の資料関係を表示した実装画面。提出物一覧と専攻案内を結び、各資料の役割を表示。" width="1440" height="900"></a><div class="visual-caption"><span class="caption-marker" aria-hidden="true">↳</span><p>「なぜ必要？」を、複数の資料から確認。<small>図の関係はレビュー済み。自動推測した関係ではありません。</small></p></div></div>
     </section>
     <aside class="demo-notice"><strong>このデモでできること</strong><p>学校と例を切り替える、説明を開く、原文の抜粋を読む、参考レポートをコピーする。<b>保存済み結果の再生</b>であり、その場での検索・AI 回答・資格審査は行いません。過去の固定資料を使用しています。</p></aside>
