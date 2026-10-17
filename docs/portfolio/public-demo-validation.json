@@ -1,91 +1,214 @@
 {
   "result": "passed",
-  "mode": "public GitHub Pages verification",
+  "default_locale": "ja",
+  "locales": [
+    "ja",
+    "zh-CN"
+  ],
+  "switches": [
+    {
+      "viewport": 1440,
+      "from": "ja",
+      "to": "zh-CN",
+      "selection_preserved": true,
+      "starts_at_step": 1
+    },
+    {
+      "viewport": 1440,
+      "from": "zh-CN",
+      "to": "ja",
+      "selection_preserved": true,
+      "starts_at_step": 1
+    },
+    {
+      "viewport": 390,
+      "from": "ja",
+      "to": "zh-CN",
+      "selection_preserved": true,
+      "starts_at_step": 1
+    },
+    {
+      "viewport": 390,
+      "from": "zh-CN",
+      "to": "ja",
+      "selection_preserved": true,
+      "starts_at_step": 1
+    }
+  ],
   "cases": [
     {
       "viewport": 1440,
       "school": "isct",
       "scenario": "materials",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 1440,
       "school": "isct",
       "scenario": "dispatched_unknown_arrival",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 1440,
       "school": "isct",
       "scenario": "late_graduation_arrival",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 1440,
       "school": "gsfs",
       "scenario": "working",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 1440,
       "school": "gsfs",
       "scenario": "student",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 390,
       "school": "isct",
       "scenario": "materials",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 390,
       "school": "isct",
       "scenario": "dispatched_unknown_arrival",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 390,
       "school": "isct",
       "scenario": "late_graduation_arrival",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 390,
       "school": "gsfs",
       "scenario": "working",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
     },
     {
       "viewport": 390,
       "school": "gsfs",
       "scenario": "student",
       "report_copy": true,
-      "no_overflow": true
+      "no_overflow": true,
+      "locale": "ja"
+    },
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "materials",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "dispatched_unknown_arrival",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 1440,
+      "school": "isct",
+      "scenario": "late_graduation_arrival",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 1440,
+      "school": "gsfs",
+      "scenario": "working",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 1440,
+      "school": "gsfs",
+      "scenario": "student",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "materials",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "dispatched_unknown_arrival",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 390,
+      "school": "isct",
+      "scenario": "late_graduation_arrival",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 390,
+      "school": "gsfs",
+      "scenario": "working",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
+    },
+    {
+      "viewport": 390,
+      "school": "gsfs",
+      "scenario": "student",
+      "report_copy": true,
+      "no_overflow": true,
+      "locale": "zh-CN"
     }
   ],
-  "product_posts": 0,
-  "external_runtime_requests": 0,
-  "browser_errors": 0,
   "files": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "evidence-preview.png": "01d7036ee8d8be36b01b35bb17ae3a7baa54f6f1e683cb5dc5af3e81c452b709",
-    "index.html": "87a884d98caaf53c34e595e19ba250476cf7a00a653af38da429b4fc9d2508b3",
-    "provenance.json": "ca354fdc16f0ad0435973ac4142586e636d90218989774c1f603eb1018628b00",
-    "README.md": "45b0ad46b9bdf23b8f6877697b74682bd1c5acf60fc1b1e1189fd5cb678cb847",
+    "index.html": "769dd279f2de17f62dc4d916709677e83b3a8d38f6b1227dcd31c89e4fe3331b",
+    "language-switch.css": "646b8e9315570d81096e010dc23263f514b9edfd7d622474817480ce8d789c25",
+    "language-switch.js": "0f0820e89bd97aae84d3164629a095fe28d608407aa820022c057bb6cc9edd9b",
+    "provenance.json": "b842d0e36a03488851faec1ace6f05187832e0b8996fb4892fcbe034f6d49736",
+    "README.md": "a2c44aa9f1b70432abeaa1a8a340bbd404772bd6fd0d4569789a0f3b10d6b2d2",
     "showcase.css": "23f084c86d635ca5f61a3a69c719c80dd200d634c58ba67c0f0cc66fcbd89dab",
     "app/demo-bridge.js": "631f2fad208c5d23f463e7c19141c785c5852d588690e2c5aa783dff80388866",
     "app/demo.css": "6aeedb84da5fa7f6bb89b290741e65a7f774bf9350eef009c754f9f8c4c90a2c",
-    "app/index.html": "6838a8f6231be0d066a99714d307c68bccabd5eb3292ec2a021c13e84e86ef76",
+    "app/index.html": "7edc9bbbcbf21d22ae8f3497021a48c523779135d13e6eda136b7469f6f54ab5",
     "data/catalog.json": "bcb35798e2d8116c650e82b6b4167994fe39292247fb1157525bd521962d6a1f",
     "data/dispatched_unknown_arrival.json": "33e8dd0b95cc0da921c196eab29002c8e45b3dd8bfa6024eead1cfb5038cca2e",
     "data/gsfs-evidence.json": "56d0dfab63efaaf003f329d427e36ba6543ca7904b18c639e9803bc55afdf91c",
@@ -95,12 +218,35 @@
     "data/isct-materials.json": "ecbe17a132db689e67e87dab43c080697851d8d0c60f15a04ec14950754aa6d2",
     "data/late_graduation_arrival.json": "5eada36b5d4e1005e50a089852b0732104bf0472b8622660052f09bd71292ce0",
     "data/manifest.json": "2748802530793ac6b11186cd97ee4ab86e183c9cdd64a97c70da8260c783f06c",
+    "zh/evidence-preview.png": "2e3f1ce4f1b314badc4ebc6ff75d49a44e8f0da4b298b2ebe6c834d45564bbbf",
+    "zh/index.html": "e6cfd389e8c7200e208162770e96a0e179528356bb528fed20581c35cc2b6b2c",
     "app/assets/app.css": "389d81f193f8354ed4d03b84a0f0e19420737cf68addf0828b9e426f1984bf8c",
     "app/assets/app.js": "bace98dbce90e3c18053c1d255faca8d351b700c0eda22638949fdc367149e73",
     "app/assets/m19-material-presentation.mjs": "bb5fb6ca39745890c0cd26fa66b94e2c6eefb909311edfeec6a2de97f5dba1b5",
     "app/assets/material-presentation-catalog.mjs": "b98d70d543d755fca1ba3ea02cb53a6e51d92e1be2a2ed1a9d03fb0f154da3e7",
     "app/assets/overview.js": "0aef2f36ae4ffdc164f21189b3464dd31a3c9f89fb0e4fe076f21a332968b2e2",
     "app/assets/reviewed-material-presentation.mjs": "cb365679edcc310605685c8f45b3d65863e9e0833248382291152fb07eca66d0",
-    "app/assets/unified-core.mjs": "3d51531ba5febf4a78a9441222c41f148b81cb5ffa1188fbd9139605295e65d1"
-  }
+    "app/assets/unified-core.mjs": "3d51531ba5febf4a78a9441222c41f148b81cb5ffa1188fbd9139605295e65d1",
+    "zh/app/demo-bridge.js": "05194ecb8ef2cbbffec8a633a1edba3f63a1ba7df288a749f0d503ee2c64b7d3",
+    "zh/app/demo.css": "552d6f31bad13b4304e465d546db092d8affc31bc66c91a8e47557c9af5f899e",
+    "zh/app/index.html": "68b32480dadaa7c8fa02491df11bb2a0e002c9522ca530fa754d04697c1b70f3",
+    "zh/data/catalog.json": "770986caca9b3297096a04d34cf106a73c77a79b46ce2b124d0ad9bc904fbffc",
+    "zh/data/dispatched_unknown_arrival.json": "da1e8b3d5007230bfc508228cd849875c6f93523884ecaa70754033539976397",
+    "zh/data/gsfs-evidence.json": "c619907db8d12c07f24aa67b7f3344ef2b7014d1b8d79662fb0efe9ccfff25bf",
+    "zh/data/gsfs-student.json": "e92538adce69d407777f9228d34a48043e963496d64aee78c53e293d81e36100",
+    "zh/data/gsfs-working.json": "1d21372bfa0c8b5f3e963521b491f98a9771e5e9206e5c407e0a2384776eb2f1",
+    "zh/data/isct-base.json": "b0044aee21772149aa14163b1a7509673b2bb58189ead470d0c5cb2f430ff895",
+    "zh/data/isct-materials.json": "13a27cb59172819a3956b6b7fbac6afeb2542d5e7eba2c59cdbaf66cea1822e2",
+    "zh/data/late_graduation_arrival.json": "21882ac1839590c553c021a7234e306bbd451e06cf8502013b21410f30ed7c83",
+    "zh/data/manifest.json": "cc81c145ef45a5ef0f381f60ad455e1aa83287169ba183da76ff558345ae8fcc",
+    "zh/app/assets/app.js": "5cca79bbd0a1ee8f79655038c7fd960b728f68d8f849e14deebed724d980afa4",
+    "zh/app/assets/m19-material-presentation.mjs": "bd38123b3f8a35a20d37f97b0184637c61c12c57480e29aa6297a0fef7452165",
+    "zh/app/assets/material-presentation-catalog.mjs": "296f385529fe8a330519f60731ea3b1fecdb63b1872090b526768803f57871ce",
+    "zh/app/assets/overview.js": "e084e2af2fb108f16909d9fd7c91185b6605a24a83505766888ebe9095c27e40",
+    "zh/app/assets/reviewed-material-presentation.mjs": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+    "zh/app/assets/unified-core.mjs": "f6c2e33eec2e6ad6b09daff3b792aa1727dc54ac5b003a7d64a9ece55ffaae24"
+  },
+  "product_posts": 0,
+  "external_runtime_requests": 0,
+  "browser_errors": 0
 }
