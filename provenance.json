@@ -162,5 +162,14 @@
     "shared_exam_projection": "review-v2-exam-overlays.json / computer-science-base-v2.json",
     "selection_on_switch": "preserves selected school and saved scenario; opens target-selection step",
     "live_generation": false
+  },
+  "visual_edition": {
+    "date": "2026-10-21",
+    "previous_commit": "539f6ff74af79c9823ce428442757f36f2d0b643",
+    "scope": "static portfolio CSS, headings, and actual demo screenshots only",
+    "capture_manifest": "screenshots/capture-manifest.json",
+    "shared_production_code_changed": false,
+    "saved_responses_changed": false,
+    "fonts": "system Japanese Mincho for introduction headings, system Japanese/Chinese sans-serif for app; no font download"
   }
 }

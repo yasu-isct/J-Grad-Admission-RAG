@@ -1,0 +1,98 @@
+/* Public portfolio presentation. No changes to the production UI or data. */
+:root {
+  --ink:#202c3b; --teal:#314d6b; --muted:#56606b; --line:#cecac1;
+  --paper:#f5f3ee; --cream:#ebe7df; --copper:#a76741;
+}
+body { font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif; line-height:1.8; }
+html[lang="zh-CN"] body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; }
+.topbar,main,footer { max-width:1320px; padding-left:40px; padding-right:40px; }
+.topbar { min-height:92px; height:auto; padding-top:20px; padding-bottom:20px; border-bottom:2px solid var(--ink); gap:24px; }
+.brand { font-size:24px; font-weight:700; letter-spacing:0; gap:10px; }
+.monogram { border-radius:2px; width:34px; height:37px; line-height:37px; background:var(--ink); }
+.brand-note { font-size:11px; letter-spacing:.08em; color:var(--muted); border-color:var(--line); }
+.topbar > nav:not(.language-switch) { margin-left:auto; font-size:13px; }
+.hero { padding:60px 0 48px; grid-template-columns:1fr 1.08fr; gap:48px; align-items:center; }
+h1,h2 { font-family:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif; font-weight:600; letter-spacing:0; }
+html[lang="zh-CN"] h1,html[lang="zh-CN"] h2 { font-family:"Songti SC","SimSun","Noto Serif SC",serif; }
+h1 { font-size:clamp(37px,3.6vw,52px); line-height:1.45; margin:0 0 24px; font-weight:600; }
+h1 span { color:var(--ink); }
+.lead { font-size:18px; line-height:1.9; margin:0 0 18px; }
+.intro { font-size:14px; line-height:1.9; max-width:470px; }
+.eyebrow { font-size:12px; letter-spacing:.06em; color:var(--copper); font-weight:600; margin-bottom:22px; }
+.dot { background:var(--copper); width:20px; height:2px; border-radius:0; }
+.hero-actions { margin-top:28px; gap:10px; }
+.button { border-radius:3px; font-weight:600; font-size:13px; padding:13px 16px; gap:10px; transition:background .15s; }
+.button:hover { transform:none; }
+.primary:hover { background:#233c57; }
+.secondary { background:transparent; }
+.secondary:hover { background:#e6e9eb; }
+.micro { color:var(--muted); font-size:12px; }
+.hero-visual { border-radius:2px; border:1px solid var(--line); border-top:3px solid var(--teal); box-shadow:none; transform:none; }
+.windowbar { background:#eeece6; padding:12px 16px; color:var(--ink); font-size:12px; gap:16px; border-color:var(--line); }
+.windowdots { color:var(--copper); font-size:11px; letter-spacing:.04em; font-weight:600; }
+.image-label { font-size:11px; color:var(--muted); }
+.hero-visual img { width:100%; height:auto; }
+.visual-caption { background:white; padding:16px; gap:12px; }
+.visual-caption p { font-size:13px; }
+.visual-caption small { font-size:11px; color:var(--muted); }
+.caption-marker { color:var(--copper); }
+.demo-notice { background:transparent; border:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:18px 0; grid-template-columns:160px 1fr; font-size:13px; }
+.demo-notice p { color:var(--muted); }
+.demo-notice strong { color:var(--ink); }
+.journey,.scenarios { padding-top:60px; }
+.section-top { max-width:760px; }
+.section-top h2,h2 { font-size:30px; line-height:1.5; }
+.section-top>p:last-child { color:var(--muted); }
+.steps { gap:24px; margin-top:28px; }
+.steps li { border-color:var(--line); padding-top:16px; }
+.steps li>span { color:var(--copper); font-size:24px; }
+.steps h3 { font-size:16px; font-weight:600; margin-top:14px; }
+.steps p { font-size:13px; color:var(--muted); }
+.school-grid { gap:42px; margin-top:28px; }
+.school-card { padding:24px 0 0; border:0; border-top:2px solid var(--teal); border-radius:0; background:transparent; }
+.school-title { align-items:flex-start; gap:16px; }
+.school-title h3 { font-size:23px; font-weight:600; }
+.school-title p { font-size:12px; color:var(--muted); }
+.school-symbol { border:0; border-right:1px solid var(--line); border-radius:0; width:38px; height:48px; justify-content:start; color:var(--copper); font-size:24px; }
+.school-description { font-size:14px; margin:18px 0; }
+.scenario-links a { font-size:14px; padding:15px 4px; }
+.scenario-links a:hover { background:#eeece6; text-decoration:none; }
+.coverage { font-size:12px; line-height:1.8; }
+.engineering { background:transparent; margin-top:60px; border-top:2px solid var(--ink); border-bottom:1px solid var(--line); border-radius:0; padding:32px 0; gap:64px; }
+.engineering p,.engineering-details p { font-size:14px; line-height:1.85; }
+.engineering-details h3 { font-weight:600; font-size:15px; }
+.engineering-details>div { border-color:var(--line); }
+.about-demo { margin:30px 0 34px; font-size:13px; }
+summary { font-size:14px; }
+footer { padding-bottom:36px; font-size:13px; }
+footer p span { font-size:12px; }
+.language-switch { border-color:var(--line); border-radius:3px; font-family:inherit; }
+.language-switch a { border-radius:1px; }
+.language-switch a[aria-current] { background:var(--teal); }
+a:focus-visible,summary:focus-visible { outline-color:var(--copper); }
+@media(max-width:1100px) {
+ .hero { gap:28px; } .hero-actions { flex-direction:column; align-items:stretch; }
+ h1 { font-size:38px; } .brand-note { display:none; }
+}
+@media(max-width:680px) {
+ .topbar,main,footer { padding-left:22px; padding-right:22px; }
+ .topbar { padding-top:15px; padding-bottom:15px; gap:14px; }
+ .topbar > nav:not(.language-switch) { font-size:12px; gap:16px; }
+ .brand { font-size:22px; }
+ .hero { grid-template-columns:1fr; padding:34px 0 28px; gap:24px; }
+ h1 { font-size:36px; line-height:1.5; margin-bottom:18px; }
+ .eyebrow { margin-bottom:16px; }
+ .lead { font-size:17px; }
+ .intro { font-size:14px; }
+ .button { font-size:14px; padding:14px 16px; }
+ .windowbar { gap:10px; padding:10px 12px; font-size:11px; }
+ .windowdots,.image-label { font-size:10px; }
+ .demo-notice { display:block; padding:16px 0; }
+ .demo-notice p { margin-top:8px; }
+ .journey,.scenarios { padding-top:38px; }
+ .section-top h2,h2 { font-size:26px; }
+ .steps { grid-template-columns:1fr 1fr; gap:20px; }
+ .school-grid { grid-template-columns:1fr; gap:28px; }
+ .engineering { grid-template-columns:1fr; gap:24px; margin-top:38px; padding:24px 0; }
+ .hero-visual { max-width:none; }
+}

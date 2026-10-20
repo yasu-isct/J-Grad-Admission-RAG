@@ -1,0 +1,199 @@
+{
+  "captures": [
+    {
+      "path": "screenshots/ja/isct-overview.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/ja/isct-examination.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/ja/isct-preparation.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/ja/isct-report.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": "#reference-report"
+    },
+    {
+      "path": "screenshots/ja/gsfs-evidence.png",
+      "lang": "ja",
+      "url_path": "app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": "#evidence-drawer"
+    },
+    {
+      "path": "screenshots/ja/isct-preparation-mobile.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/ja/isct-report-mobile.png",
+      "lang": "ja",
+      "url_path": "app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/zh-CN/isct-overview.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/zh-CN/isct-examination.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/zh-CN/isct-preparation.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/zh-CN/isct-report.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": "#reference-report"
+    },
+    {
+      "path": "screenshots/zh-CN/gsfs-evidence.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "type": "static saved-scenario browser capture",
+      "element": "#evidence-drawer"
+    },
+    {
+      "path": "screenshots/zh-CN/isct-preparation-mobile.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    },
+    {
+      "path": "screenshots/zh-CN/isct-report-mobile.png",
+      "lang": "zh-CN",
+      "url_path": "zh/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "type": "static saved-scenario browser capture",
+      "element": null
+    }
+  ],
+  "product_posts": 0,
+  "paid_calls": 0,
+  "captured_on": "2026-10-21",
+  "previous_public_commit": "539f6ff74af79c9823ce428442757f36f2d0b643",
+  "unchanged_runtime_and_data_files": {
+    "language-switch.js": "0f0820e89bd97aae84d3164629a095fe28d608407aa820022c057bb6cc9edd9b",
+    "app/demo-bridge.js": "631f2fad208c5d23f463e7c19141c785c5852d588690e2c5aa783dff80388866",
+    "data/catalog.json": "bcb35798e2d8116c650e82b6b4167994fe39292247fb1157525bd521962d6a1f",
+    "data/dispatched_unknown_arrival.json": "33e8dd0b95cc0da921c196eab29002c8e45b3dd8bfa6024eead1cfb5038cca2e",
+    "data/gsfs-evidence.json": "56d0dfab63efaaf003f329d427e36ba6543ca7904b18c639e9803bc55afdf91c",
+    "data/gsfs-student.json": "ebd6552b4ae33b0f39a68f0d816c4a994468edf6838e4b40152db4526bcb7e26",
+    "data/gsfs-working.json": "49773f0399db64453807ac6e23e7bf69d3b0150d0bed17898ee1fe6106582875",
+    "data/isct-base.json": "0cd17f3d9f0bbfb1d105ece20eb12deec40bf8300cb85a6a9401fefae240f607",
+    "data/isct-materials.json": "ecbe17a132db689e67e87dab43c080697851d8d0c60f15a04ec14950754aa6d2",
+    "data/late_graduation_arrival.json": "5eada36b5d4e1005e50a089852b0732104bf0472b8622660052f09bd71292ce0",
+    "data/manifest.json": "2748802530793ac6b11186cd97ee4ab86e183c9cdd64a97c70da8260c783f06c",
+    "app/assets/app.css": "389d81f193f8354ed4d03b84a0f0e19420737cf68addf0828b9e426f1984bf8c",
+    "app/assets/app.js": "bace98dbce90e3c18053c1d255faca8d351b700c0eda22638949fdc367149e73",
+    "app/assets/m19-material-presentation.mjs": "bb5fb6ca39745890c0cd26fa66b94e2c6eefb909311edfeec6a2de97f5dba1b5",
+    "app/assets/material-presentation-catalog.mjs": "b98d70d543d755fca1ba3ea02cb53a6e51d92e1be2a2ed1a9d03fb0f154da3e7",
+    "app/assets/overview.js": "0aef2f36ae4ffdc164f21189b3464dd31a3c9f89fb0e4fe076f21a332968b2e2",
+    "app/assets/reviewed-material-presentation.mjs": "cb365679edcc310605685c8f45b3d65863e9e0833248382291152fb07eca66d0",
+    "app/assets/unified-core.mjs": "3d51531ba5febf4a78a9441222c41f148b81cb5ffa1188fbd9139605295e65d1",
+    "zh/app/demo-bridge.js": "05194ecb8ef2cbbffec8a633a1edba3f63a1ba7df288a749f0d503ee2c64b7d3",
+    "zh/data/catalog.json": "770986caca9b3297096a04d34cf106a73c77a79b46ce2b124d0ad9bc904fbffc",
+    "zh/data/dispatched_unknown_arrival.json": "da1e8b3d5007230bfc508228cd849875c6f93523884ecaa70754033539976397",
+    "zh/data/gsfs-evidence.json": "c619907db8d12c07f24aa67b7f3344ef2b7014d1b8d79662fb0efe9ccfff25bf",
+    "zh/data/gsfs-student.json": "e92538adce69d407777f9228d34a48043e963496d64aee78c53e293d81e36100",
+    "zh/data/gsfs-working.json": "1d21372bfa0c8b5f3e963521b491f98a9771e5e9206e5c407e0a2384776eb2f1",
+    "zh/data/isct-base.json": "b0044aee21772149aa14163b1a7509673b2bb58189ead470d0c5cb2f430ff895",
+    "zh/data/isct-materials.json": "13a27cb59172819a3956b6b7fbac6afeb2542d5e7eba2c59cdbaf66cea1822e2",
+    "zh/data/late_graduation_arrival.json": "21882ac1839590c553c021a7234e306bbd451e06cf8502013b21410f30ed7c83",
+    "zh/data/manifest.json": "cc81c145ef45a5ef0f381f60ad455e1aa83287169ba183da76ff558345ae8fcc",
+    "zh/app/assets/app.js": "5cca79bbd0a1ee8f79655038c7fd960b728f68d8f849e14deebed724d980afa4",
+    "zh/app/assets/m19-material-presentation.mjs": "bd38123b3f8a35a20d37f97b0184637c61c12c57480e29aa6297a0fef7452165",
+    "zh/app/assets/material-presentation-catalog.mjs": "296f385529fe8a330519f60731ea3b1fecdb63b1872090b526768803f57871ce",
+    "zh/app/assets/overview.js": "e084e2af2fb108f16909d9fd7c91185b6605a24a83505766888ebe9095c27e40",
+    "zh/app/assets/reviewed-material-presentation.mjs": "e5e37937989bba305b6bad3b878fa16b2ee734d4e805a343d7ae54b1c1db7c5b",
+    "zh/app/assets/unified-core.mjs": "f6c2e33eec2e6ad6b09daff3b792aa1727dc54ac5b003a7d64a9ece55ffaae24"
+  },
+  "new_backend_validation": false
+}
