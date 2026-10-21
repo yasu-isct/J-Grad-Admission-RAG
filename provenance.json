@@ -171,5 +171,14 @@
     "shared_production_code_changed": false,
     "saved_responses_changed": false,
     "fonts": "system Japanese Mincho for introduction headings, system Japanese/Chinese sans-serif for app; no font download"
+  },
+  "official_pdf_navigation": {
+    "mode": "official_site_new_tab_page_fragment",
+    "audit": "pdf-source-audit.json",
+    "local_pdf_files_hosted": false,
+    "pdf_region_highlighting": false,
+    "remote_pdf_byte_identity_reverified": false,
+    "saved_data_modified": false,
+    "previous_distribution": "e2759513c29988a333de8be17ce8c0cc88fcb21e"
   }
 }

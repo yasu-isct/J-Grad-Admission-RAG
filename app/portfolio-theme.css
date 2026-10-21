@@ -690,6 +690,34 @@ html:lang(zh) .public-demo {
   color: var(--color-text);
 }
 
+/* Source titles and excerpts must wrap even inside the desktop date grid.
+   The original date-action rule uses nowrap for short action labels. */
+.public-demo .key-dates-section .date-event > .evidence-choice-list {
+  grid-column: 1 / -1;
+}
+
+.public-demo .evidence-choice-list,
+.public-demo .evidence-choice-list .actions {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.public-demo .evidence-choice-list .actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.public-demo .evidence-choice-list button,
+.public-demo .key-dates-section .date-event .evidence-choice-list button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  text-align: left;
+}
+
 .public-demo .evidence-meta dt,
 .public-demo .relation-intro {
   color: var(--color-text-muted);

@@ -1345,6 +1345,7 @@ function examSourcesForField(exam, fieldPath) {
   for (const source of field.sources) {
     const fact = exam.evidence.find((item) => item.fact_id === source.source_id);
     const evidence = fact || (source.source_id.startsWith("pdf_page:") ? {
+      document_id: currentReferenceScope()?.request?.document_id,
       official_title: exam.official_title, school_name: currentReferenceScope()?.school || "選択中の学校",
       intake_name: currentReferenceScope()?.intake || "この冊子の対象", pages: source.physical_pages,
       official_text: source.exact_text, source_url: exam.official_source_url,
@@ -1395,14 +1396,14 @@ function openExamFieldEvidence(label, sources, trigger) {
     context.append(summary, full);
     card.append(context);
     for (const page of evidence.pages) {
-      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      const href = officialDemoPdfHref(evidence, page);
       if (!href) continue;
       const link = document.createElement("a");
       link.className = "source-link pdf-source-link";
       link.href = href;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = `PDFの${page}ページを開く`;
+      link.textContent = `公式PDF · ${page}ページを開く ↗`;
       card.append(link);
     }
     cards.append(card);
@@ -1557,6 +1558,7 @@ function renderRequirements(payload, scope, exam) {
 
 function sourceAsEvidence(source, scope) {
   return {
+    document_id: source.document_id, source_id: source.source_id,
     official_title: source.title, school_name: scope.school, intake_name: scope.intake,
     pages: source.pages, printed: source.printed, official_text: source.quote, source_url: source.source_url,
     local_pdf_url: source.local_pdf_url, limitation: source.context,
@@ -1685,9 +1687,8 @@ function appendHighlightedOfficialText(container, officialText, highlights) {
   return true;
 }
 
-function verifiedLocalPdfHref(baseUrl, page) {
-  // Public sample copy: PDFs are not hosted. Verified excerpts remain visible.
-  return null;
+function officialDemoPdfHref(evidence, page) {
+  return window.publicDemoPdfHref?.(currentReferenceScope(), evidence, page) || null;
 }
 
 const relationMeanings = {
@@ -1918,20 +1919,20 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   details.append(summary, technical);
   const sourceActions = document.createElement("div");
   sourceActions.className = "source-actions";
-  if (evidence.local_pdf_url) {
+  if (evidence.pages.some((page) => officialDemoPdfHref(evidence, page))) {
     for (const page of evidence.pages) {
-      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      const href = officialDemoPdfHref(evidence, page);
       if (!href) continue;
       const pdfLink = document.createElement("a");
       pdfLink.className = "source-link pdf-source-link";
       pdfLink.href = href;
       pdfLink.target = "_blank";
       pdfLink.rel = "noopener noreferrer";
-      pdfLink.textContent = `PDFの${page}ページを開く`;
+      pdfLink.textContent = `公式PDF · ${page}ページを開く ↗`;
       sourceActions.append(pdfLink);
     }
     for (const page of options.examYearPages || []) {
-      const href = verifiedLocalPdfHref(evidence.local_pdf_url, page);
+      const href = officialDemoPdfHref(evidence, page);
       if (!href) continue;
       const pdfLink = document.createElement("a");
       pdfLink.className = "source-link pdf-source-link";
@@ -1949,9 +1950,15 @@ function openDemoEvidence(requirement, evidence, trigger, options = {}) {
   source.rel = "noopener noreferrer";
   source.textContent = "大学の入試案内を開く";
   sourceActions.append(source);
+  drawerContent.append(sourceActions);
+  if (sourceActions.querySelector(".pdf-source-link")) {
+    const pdfNote = document.createElement("p");
+    pdfNote.className = "field-detail demo-pdf-note";
+    pdfNote.textContent = "大学公式サイトのPDFを開きます。自動移動しない場合は指定ページを入力してください。公開ファイルが更新されている場合、保存例とページが異なることがあります。";
+    drawerContent.append(pdfNote);
+  }
   drawerContent.append(meta, evidenceBody, limitation);
   if (evidence.document_id) drawerContent.append(details);
-  drawerContent.append(sourceActions);
   if (!evidenceDrawer.open) evidenceDrawer.showModal();
   evidenceDrawer.scrollTop = 0;
   (options.fromGraph ? drawerContent.querySelector(".relation-back") : drawerClose).focus();
