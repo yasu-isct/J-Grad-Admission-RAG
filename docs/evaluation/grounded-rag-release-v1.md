@@ -37,7 +37,8 @@ The retrieval metrics are computed directly from the rankings recorded during th
 release cases, including difficult Chinese safety/refusal cases. Each case must exactly match its
 bound benchmark query text; the gate does not substitute the score of another query or reuse the
 standalone report's per-query score. Across all 42 queries, the standalone report records Recall@10
-`0.8495` and MRR `0.8312`.
+`0.8852` and MRR `0.8323` (fixed 42 queries, 391 KB entries; report saved on 2026-09-24).
+此前文中的 0.8495／0.8312 无对应存档报告，已更正。
 
 The accepted observations contain 6 answered cases, 4 needs-information cases, and 10 refusals.
 They are recorded from real loopback HTTP responses, not copied from expected values. Only public,
