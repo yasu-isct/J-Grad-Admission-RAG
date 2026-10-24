@@ -7,152 +7,115 @@
   <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&amp;logoColor=white" alt="CI: Python 3.12">
   <img src="https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&amp;logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/Retrieval-BGE--M3%20%2B%20BM25-164E63" alt="BGE-M3 + BM25">
-</p>
-
-<p align="center">
-  <a href="https://yasu-isct.github.io/J-Grad-Admission-RAG/"><strong>▶ デモを試す</strong></a> ·
-  <a href="#画面で見る">画面で見る</a> ·
-  <a href="#設計のポイント">アーキテクチャ</a> ·
-  <a href="docs/portfolio/engineering-ja.md">技術解説</a> ·
-  <a href="docs/portfolio/local-demo-ja.md">ローカル実行</a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-31516f" alt="MIT License"></a>
 </p>
 
 # J-Grad Admission RAG
 
-<!-- jgrad-interactive-demo -->
-**[▶ インストール不要の体験デモを開く](https://yasu-isct.github.io/J-Grad-Admission-RAG/)**
+**日本の大学院募集要項を、教務担当者が根拠を確認しながら使える出願支援情報に整理するシステムです。**
 
-日本語・中国語の操作画面（初期表示は日本語）で、学校選択、保存済みの五つの準備例、根拠の閲覧、レポートのプレビューとコピーを体験できます。静的なサンプル再生であり、自由入力による審査・検索・AI回答は実行しません。[範囲と検証記録](docs/portfolio/interactive-demo-ja.md)。
+> An evidence-grounded assistant for Japanese graduate admissions.  
+> Built for teachers and academic advisers who repeatedly check requirements across official documents.  
+> Combines BGE-M3 + BM25 retrieval with reviewed rules; LLM answers remain a reference layer.  
+> Covers a fixed Science Tokyo guideline and five document topics for one University of Tokyo program.  
+> Saved evaluation (2026-09-24): 42 fixed queries, 391 KB entries, hybrid Recall@10 **0.8852** / MRR **0.8323**.  
+> [Try the interactive demo](https://yasu-isct.github.io/J-Grad-Admission-RAG/) — saved scenarios, Japanese by default, Chinese available.
 
-**日本の大学院募集要項を、出願条件・提出書類・試験情報として整理し、公式原文まで確認できるシステムです。**
+**[▶ デモを試す](https://yasu-isct.github.io/J-Grad-Admission-RAG/)** · [画面](#画面で見る) · [設計](#設計と処理の流れ) · [評価](#評価結果とその読み方) · [技術解説](docs/portfolio/engineering-ja.md)
 
-留学塾の教務担当者が、研究科共通の募集要項と専攻別資料を往復しながら同じ情報を何度も調べる作業を支援します。対象校の選択、必要情報の確認、申請者の準備状況との照合、参考レポートの作成を一つの画面で行います。
+留学塾の教務現場へのデモとフィードバックをもとに開発しました。研究科共通の要項と専攻別資料を往復して調べる作業を、**対象選択 → 要点確認 → 準備状況との照合 → レポート作成**にまとめています。
 
-RAGによる自由質問と、レビュー済みルールによる構造化表示を分離しています。検索結果やLLMの文章だけで出願資格を確定せず、資料の適用範囲・出典・未確認事項を保持する設計です。
-
-> **本体はM19の設定生成・5テーマ対応まで受入・マージ済み。公開デモの表示・画像は2026年10月21日更新。**
-> 留学塾の教務支援システムの技術と代表機能を紹介する公開デモです。東京科学大学の固定版資料と東京大学・複雑理工学専攻の限定資料を収録。本体の従来UIは中国語です。公開静的デモは日本語・中国語に対応し、初期表示は日本語。公式原文は日本語で保持します。
-
-## 何を支援するか
-
-| 教務担当者の作業 | システムでできること |
-| --- | --- |
-| 日付・提出書類・試験科目を探す | 選択した対象のレビュー済み情報を項目別に表示 |
-| 学生ごとに準備状況を確認する | 公式の提出条件と本人の自己申告を分け、未準備・未確認を整理 |
-| 複数資料を見比べる | 同じ論点に関係する公式資料をまとめ、関係と原文・ページを表示 |
-| 確認内容を学生や同僚に渡す | 必要なテーマを選び、簡潔な参考レポートをプレビュー・コピー |
-| 自由な質問をする | 対応する資料範囲で検索し、任意のLLMが参考回答を生成 |
-
-塾内での利用を想定し、教務現場へのデモとフィードバックを反映して開発した公開展示用の版です。今後の拡張は、利用者の要望と検証結果を踏まえて検討します。公開デモの収録範囲は下記に明記しています。
+2026年10月24日時点の公開作品集です。機能は実装済みの範囲を下記に示し、追加開発とバックエンドの公開運用は保留しています。ブラウザの体験デモは保存済みサンプルを使うため、インストール不要で操作できます。自由入力の検索・AI回答は本体の機能で、公開デモでは実行しません。
 
 ## 画面で見る
 
-**01 — 複数の公式資料を、一つの論点から確認する**
+**複数資料の関係から、公式原文へ。** 東京大学の英語スコア証明を例に、共通要項・専攻案内・追加提出物一覧の役割を一つの画面で確認できます。
 
-![公開デモ：東京大学の英語スコア証明について三つの資料の関係を確認](docs/assets/portfolio/public-demo/gsfs-evidence.png)
-
-東京大学・複雑理工学専攻の英語スコア証明の例。共通要項・専攻案内・追加提出物一覧の役割を整理し、「原文を見る」から該当箇所を確認できます。矢印はレビュー済みの資料関係を示します。
+![東京大学の英語スコア証明について、三つの公式資料の関係を確認する公開デモ](docs/assets/portfolio/public-demo/gsfs-evidence.png)
 
 <table>
 <tr>
 <td width="65%" valign="top">
-<strong>02 — 次にすることを整理する</strong><br>
-<img src="docs/assets/portfolio/public-demo/isct-preparation.png" alt="公開デモ：東京科学大学の準備状況と優先する確認事項" width="100%"><br>
-未準備、確認が必要なこと、申告済みの項目を分けて表示します。
+<strong>準備状況と、次にすること</strong><br>
+<img src="docs/assets/portfolio/public-demo/isct-preparation.png" alt="未準備・要確認・申告済みの項目を整理した画面" width="100%"><br>
+公式の提出条件と本人の自己申告を分けて表示します。
 </td>
 <td width="35%" valign="top">
-<strong>03 — 必要な情報を持ち帰る</strong><br>
-<img src="docs/assets/portfolio/public-demo/isct-report-mobile.png" alt="公開デモ：スマートフォンの出願準備レポートと確認事項" width="100%"><br>
-選んだケースの準備状況を含む参考レポートをコピーできます。
+<strong>必要な情報を持ち帰る</strong><br>
+<img src="docs/assets/portfolio/public-demo/isct-report-mobile.png" alt="スマートフォンの出願準備レポート" width="100%"><br>
+選んだテーマの参考レポートをプレビュー・コピーできます。
 </td>
 </tr>
 </table>
 
-画像は日本語版の公開静的デモを実際に操作して撮影したものです（2026年10月21日）。保存サンプルを表示する操作画面であり、新しい製品API・RAG・生成AIの検証や、本番利用実績を示すものではありません。従来の実装検証画像は元の記録に保持しています。[デモ画面と検証記録](docs/portfolio/screenshots-ja.md)
+画像は2026年10月21日の日本語版公開デモです。[画面と出所](docs/portfolio/screenshots-ja.md) · [デモの収録範囲](docs/portfolio/interactive-demo-ja.md)
 
-## 設計のポイント
+## 実装済みの範囲
 
-![公式PDFからレビュー済み知識を構築し、構造化レポートとRAG参考回答に分けて届けるアーキテクチャ](docs/assets/portfolio/architecture.svg)
-
-### 1. 検索と条件判定を分ける
-
-BGE-M3の意味検索とBM25のキーワード検索をRRFで統合します。検索は関連する根拠の候補を返し、条件の適用は明示的な申請者情報とレビュー済みルールで判定します。構造化された書類表示・レポートは、LLMの回答に依存しません。
-
-### 2. 出典と適用範囲をデータとして保持する
-
-学校・研究科・専攻・年度・入学時期・選抜ルート・資料版を識別します。公式原文、PDFページ、Fact ID、ファイルハッシュを結び付け、異なる対象や版の根拠が混ざらないよう検証します。ハッシュ照合は改変検知であり、内容の正しさは別途レビューします。
-
-### 3. 複数資料の関係を再利用する
-
-東京大学の限定機能は、共通要項・専攻案内・追加提出物一覧の**レビュー済みの関係**を利用します。質問のたびにモデルが自由に関係を発見する仕組みではありません。自動生成は設定の転記を減らし、新しい規則の意味を承認する責任は残します。
-
-### 4. 再現性と資産の再利用を重視する
-
-ベクトル索引はNumPyのローカル成果物として管理し、モデル版・次元・KB・payloadを照合します。通常起動では既存資産を読み取り専用で再利用。固定回帰基準の334ベクトルと製品用391ベクトルを分離し、無用な再構築や上書きを避けます。
-
-## 現在の対応範囲
-
-| 対象 | 実装済み | 範囲・制約 |
+| 対象 | 利用できる機能 | 対応範囲 |
 | --- | --- | --- |
-| 東京科学大学・修士 | 出願日程、共通の提出書類、条件照合、参考質問、レポート。選択可能な18系・2入学時期の同じ要項に記載された試験情報 | 固定版「2027年4月／2026年9月入学」。各機能のレビュー済み範囲に限定。別冊の地球生命コース等は対象外 |
-| 東京大学・新領域創成科学研究科・複雑理工学専攻（CBMS） | 英語成績表、チェックリスト自体、学業と職務の両立計画書、小論文、志望調査票の5テーマ | 2027年度修士・一般選抜A・2027年4月入学の固定資料。新配置を明示選択。全専攻・全提出書類・自由な東大RAG検索には未対応 |
+| 東京科学大学・修士 | 出願日程、共通書類、個人条件との照合、試験情報、RAG参考質問、レポート | 固定版「2027年4月／2026年9月入学」。試験表示は選択可能な18系・2入学時期。別冊の地球生命コース等は対象外 |
+| 東京大学・新領域・複雑理工学専攻（CBMS） | 複数資料の根拠表示、条件照合、準備状況、レポート | 2027年度修士・一般選抜A・2027年4月入学。英語成績表、チェックリスト自体、学業と職務の両立計画書、小論文、志望調査票の5テーマ |
 
-過去の募集要項を使った検証です。現在の出願受付、最終的な出願資格、学校の受理・合否、提出書類の網羅性は保証しません。本体バックエンドの公開配備は保留中です。保存サンプルを使う静的作品デモは公開しています。
+東大全専攻・全書類・自由な東大横断RAG検索には未対応です。過去の固定資料を使い、現在の募集受付や学校の最終的な出願資格・受理・合否を判定するものではありません。
 
-## 検証と品質管理
+## 設計と処理の流れ
 
-| 検証 | 確認していること | 証拠 |
+![公式PDFから原文とページを保持した事実を抽出し、レビュー済みルールによる引用付きレポートと、ハイブリッド検索によるLLM参考回答に分ける構成](docs/assets/portfolio/architecture.svg)
+
+- **事実を保管する。** `ScopedFact`に公式原文とPDFページを保持。学校・研究科・専攻・年度・入学時期・選抜ルート・資料版を識別します。
+- **検索と判定を分ける。** BGE-M3とBM25を順位ベースのRRFで統合。検索は根拠候補を返し、条件の適用は本人情報とレビュー済みルールで評価します。構造化表示は必要なFactを直接参照でき、毎回の類似検索を必要としません。
+- **説明を追跡可能にする。** 引用と文書間の関係を保存し、原文へ戻れるようにします。LLMは参考回答を整理し、資格の確定や未確認の条件の補完は担いません。
+- **資産を再利用する。** 索引はNumPyのローカル成果物。モデル版・次元・KBとの対応を検証して読み取り専用で再利用し、回帰用と製品用の索引を分離します。
+
+[設計判断とトレードオフ](docs/portfolio/engineering-ja.md) · [詳細アーキテクチャ](docs/architecture.md)
+
+## 評価結果とその読み方
+
+**固定42問・391件のKB、2026-09-24保存レポート。** 東京科学大学の同一資料に対する日本語・中国語の検索評価です。下表の「未測」は、この同じ評価集合で比較できる保存結果がないことを示します。
+
+| 検索方式 | Recall@10 | MRR | 保存結果 |
+| --- | ---: | ---: | --- |
+| BM25単独 | 未測 | 未測 | 同一42問での記録なし |
+| ベクトル単独（BGE-M3） | 未測 | 未測 | 同一42問での記録なし |
+| ハイブリッド（BGE-M3 + BM25 / RRF） | **0.8852** | **0.8323** | [原レポート](tests/fixtures/grounded_rag_retrieval_report_v1.json) / [評価説明](docs/evaluation/grounded-rag-release-v1.md) |
+
+Recall@10は「正解と注釈した根拠のうち、上位10件に含まれる割合」の質問ごとの平均、MRRは「最初の正解根拠の順位の逆数」の平均です。回答の正解率を示す値ではありません。[指標の定義](docs/evaluation/retrieval-evaluation-v1.md)
+
+- **Release-subset MRR 0.2455：** 同じリリース評価内の11件のサービス経由ケース（難しい中国語・回答拒否ケースを含む）の実際の検索順位から算出した値で、42問全体のMRRとは対象も実行条件も異なります。
+- **中国語→日本語 hit@10 0.50：** リリース評価内の対象となる中国語質問で、日本語の正解根拠が上位10件に一つ以上入った割合です。全質問のRecall@10や翻訳品質ではありません。
+
+[部分集合の定義](docs/evaluation/grounded-rag-release-v1.md) / [保存された評価結果](tests/fixtures/grounded_rag_evaluation_report_v1.json)。[以前のBM25検証](docs/evaluation/lexical-retrieval.md)は別の34問・298件を対象としたヒット件数の記録なので、この表のRecallやMRRに置き換えていません。現時点ではハイブリッドが単独方式より優れるという比較結論は出していません。
+
+## コード品質を確認する
+
+| 観点 | 確認方法 |
+| --- | --- |
+| 入出力・対象の整合性 | Pydantic契約、資料ID・ハッシュ照合。欠けた根拠や対象の不一致を拒否 |
+| 自動チェック | [Quality CI](.github/workflows/quality.yml)：pytest、Ruff、構文確認、保存済み検索・引用基準の回帰チェック |
+| 条件と検索のテスト | [条件の適用](tests/test_applicability.py)、[複数文書検索](tests/test_corpus_search.py)、[キーワード検索](tests/test_lexical_search.py) |
+| 資料追加の再現性 | [設定生成と互換性の検証](docs/onboarding/m19-design-acceptance.md)：同一入力の再生成、旧設定、別学校の合成ケースを確認 |
+| 表示内容と原文の対応 | [18系の試験情報の検証](docs/onboarding/exam02-design-acceptance.md)：36対象・187項目・611原文アンカーを確認 |
+| ブラウザ操作 | [画面の検証記録](docs/portfolio/screenshots-ja.md)：デスクトップ／スマートフォン、原文往復、レポートコピー |
+
+CIは保存された評価と実装の整合性を確認します。毎回モデルで検索品質を測り直す仕組みではありません。LLMの参考回答を、構造化ルールや引用検証と同じ保証として扱いません。
+
+## 技術とコードの入口
+
+| 領域 | 採用技術 | コード |
 | --- | --- | --- |
-| 固定42クエリの検索評価 | Recall@10 **0.8495**、MRR **0.8312**。固定された日本語・中国語の評価集合での過去の計測 | [M9評価の定義と範囲](docs/evaluation/grounded-rag-release-v1.md) |
-| 回帰ゲート | 検索・根拠付き回答の固定データ、閾値、実装との整合性をCIで確認 | [Quality workflow](.github/workflows/quality.yml) |
-| 18系の試験表示 | 36対象、187フィールド、611原文アンカーの対応を独立確認 | [EXAM-02受入](docs/onboarding/exam02-design-acceptance.md) |
-| M19の設定生成 | 同一入力から同一出力、旧設定との互換、別学校の合成ケース、変更検出 | [M19受入と証拠の制約](docs/onboarding/m19-design-acceptance.md) |
-| Web UI | デスクトップ／スマートフォン、原文往復、状態変更、レポートコピー | [画面の検証区分](docs/portfolio/screenshots-ja.md) |
+| PDF・知識 | PyMuPDF / pdfplumber / Pydantic | [抽出](src/jgrad_admission_rag/builder/extractor.py) / [Factの構造](src/jgrad_admission_rag/schemas/document_kb.py) |
+| 検索 | BGE-M3 / BM25 / RRF / NumPy | [検索の実装](src/jgrad_admission_rag/corpus_search.py) |
+| 条件評価 | レビュー済みルール + Applicant Profile | [適用条件](src/jgrad_admission_rag/reasoning/applicability.py) |
+| API・参考回答 | FastAPI / OpenAI・DeepSeekアダプター | [API入口](src/jgrad_admission_rag/service/app.py) / [質問と検索の計画](src/jgrad_admission_rag/generation/adaptive_qa.py) |
+| 画面・検証 | HTML / CSS / JavaScript / pytest / Playwright / GitHub Actions | [画面](src/jgrad_admission_rag/service/static/advanced.html) / [テスト](tests) |
 
-検索評価は全大学・全質問の正解率ではありません。保存結果のCI検証、新しい実HTTP検証、保存レスポンスの再生、合成テストを区別しています。各検証の範囲と制約は受入記録を参照してください。
+資料・モデルなしで読む場合は、上記のコードと[日本語技術解説](docs/portfolio/engineering-ja.md)から始められます。実資料で動かす手順は[ローカル実行ガイド](docs/portfolio/local-demo-ja.md)を参照してください。
 
-## 技術スタック
+## 開発で重視したこと
 
-| 領域 | 採用技術 |
-| --- | --- |
-| PDF・データ契約 | PyMuPDF / pdfplumber / Pydantic |
-| 検索 | Sentence Transformers / BGE-M3（1,024次元）/ BM25 / RRF / NumPy |
-| API・処理基盤 | FastAPI / ローカルCLI / SQLiteによるビルドジョブ基盤 |
-| 画面 | HTML / CSS / JavaScript（フロントエンドのnpmビルド不要） |
-| 任意の回答生成 | OpenAI / DeepSeek向けアダプター。公式要件の判定とは分離 |
-| 検証 | pytest / Node.js test runner / Playwright / Ruff / GitHub Actions |
+教務の課題設定と仕様の判断を起点に、生成AIによるコーディング支援を活用しました。曖昧な要求を入力・出力・対象外・検証条件に分け、実装後は原資料とテストを照合する進め方です。索引の不要な再構築、画面の作り直し、資料設定の重複といった失敗から、資産の再利用と変更範囲の明確化を重視するようになりました。[判断と改善の記録](docs/portfolio/engineering-ja.md#試行から学んだこと)
 
-MinerUの試行は採用に至らず、現在の実行経路に組み込んでいません。SimpleDocやグラフデータベースも使用していません。[設計判断とトレードオフ](docs/portfolio/engineering-ja.md)
+## ライセンス
 
-## 手元で確認する
-
-**資料・モデルを用意する前に確認できるもの：** このREADMEの画面、[日本語の技術解説](docs/portfolio/engineering-ja.md)、[参考レポートの実例](docs/onboarding/m19-design-evidence/five-topic-replay/desktop-copy-available-not_yet.txt)、CIの検証結果。
-
-コードと合成テストの導入例（PowerShell）：
-
-```powershell
-git clone https://github.com/yasu-isct/J-Grad-Admission-RAG.git
-cd J-Grad-Admission-RAG
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev,service]"
-python -m pytest tests/test_m19_configs.py -q
-```
-
-この対象を絞ったテストに実PDF・モデル・有料APIは不要です。初回のPython依存導入にはネットワーク接続が必要です。
-
-実資料デモには、指定版PDFと対応するローカル資産を別途用意します。PDF・モデル・実索引のバイナリはこのリポジトリから自動取得しません。[日本語の起動ガイド](docs/portfolio/local-demo-ja.md)に、初回構築と既存資産の再利用を分けて記載しています。
-
-## 技術資料と開発記録
-
-| 読みたい内容 | 入口 |
-| --- | --- |
-| 課題設定・設計上の判断・AI支援開発 | [日本語エンジニアリングノート](docs/portfolio/engineering-ja.md) |
-| 全体のデータフロー | [Architecture](docs/architecture.md) |
-| 複数文書を対象にした検索契約 | [Corpus Retrieval v1](docs/corpus-retrieval-v1.md) |
-| 機械生成と意味のレビューの境界 | [ADR 0017](docs/decisions/0017-reviewed-authoring-config-generation.md) |
-| 現在の進捗と過去の判断 | [Roadmap](docs/roadmap.md) / [設計チェックポイント](docs/checkpoints/post-single-school-design-handoff.md) |
-| 初期単校版の固定リリース | [Single-school Portfolio v1](docs/releases/single-school-portfolio-v1.md) |
-
-生成AIによるコーディング支援を活用し、Issueで仕様・対象外・検証条件を定め、開発と受入レビューを分けて進めています。コードだけでなく、出典の整理、適用範囲の判断、失敗した試行、資産管理、変更履歴を残すことを重視しています。詳細な既存技術資料には中国語・英語が含まれます。
-
+[MIT License](LICENSE)。大学の公式PDFは同梱しません。公式資料の引用や第三者のモデル・ライブラリには各権利者の条件が適用されます。
