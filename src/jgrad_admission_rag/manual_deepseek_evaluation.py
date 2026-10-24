@@ -14,17 +14,17 @@ from typing import Any, Callable, Sequence
 from pydantic import ValidationError
 
 from .generation import (
-    AdaptiveQaPlanDraft,
-    ClaimKind,
     DEEPSEEK_DEFAULT_MAX_OUTPUT_TOKENS,
     DEEPSEEK_DEFAULT_TIMEOUT_SECONDS,
+    AdaptiveQaPlanDraft,
+    ClaimKind,
     DeepSeekResponsesConfig,
     DeepSeekResponsesGenerationProvider,
     DeepSeekResponsesQuestionUnderstandingProvider,
     EvidenceRole,
     ExamType,
-    GenerationEvidence,
     GenerationDraft,
+    GenerationEvidence,
     GenerationRequest,
     GenerationRuleFinding,
     GenerationTarget,
@@ -293,13 +293,15 @@ def _synthetic_generation_request() -> GenerationRequest:
 
 
 def _fail(message: str) -> None:
-    print(
-        json.dumps(
-            {"error": message, "kind": "manual_deepseek_evaluation_error"},
-            ensure_ascii=True,
-            separators=(",", ":"),
-        ),
-        file=sys.stderr,
+    sys.stderr.write(
+        (
+            json.dumps(
+                {"error": message, "kind": "manual_deepseek_evaluation_error"},
+                ensure_ascii=True,
+                separators=(",", ":"),
+            )
+        )
+        + "\n"
     )
     raise SystemExit(2)
 
@@ -403,13 +405,16 @@ def _emit_report(
     }
     if extra:
         report.update(extra)
-    print(
-        json.dumps(
-            report,
-            ensure_ascii=True,
-            separators=(",", ":"),
-            sort_keys=True,
+    sys.stdout.write(
+        (
+            json.dumps(
+                report,
+                ensure_ascii=True,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
         )
+        + "\n"
     )
 
 

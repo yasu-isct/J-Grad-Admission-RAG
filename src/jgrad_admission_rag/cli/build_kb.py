@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from ..builder.kb_builder import DocumentBuildError, build_document_kb, write_document_kb
-from ..schemas.document_kb import BuildQualityThresholds, DocumentKnowledgeBase
 from ..schemas.document_identity import DocumentIdentityError, load_document_identity
+from ..schemas.document_kb import BuildQualityThresholds, DocumentKnowledgeBase
 
 
 def _positive_int(value: str) -> int:
@@ -124,7 +125,7 @@ def main() -> None:
     except DocumentBuildError:
         parser.error("source PDF does not match the reviewed document identity")
     write_document_kb(kb, output)
-    print(json.dumps(build_summary(kb, output), ensure_ascii=False, indent=2))
+    sys.stdout.write((json.dumps(build_summary(kb, output), ensure_ascii=False, indent=2)) + "\n")
     if not kb.diagnostics.quality_gate.passed:
         raise SystemExit(2)
 

@@ -20,7 +20,7 @@
 - [旧三主题回放](author01-design-evidence/old-three-replay-journal.json)覆盖三种在职条件×桌面/手机；[东科大考试报告回放](author01-design-evidence/isct-replay-journal.json)覆盖两视口。这些回放全部拦截，不冒充新真实HTTP。
 - [31资产只读检查及新候选hash](author01-design-evidence/independent-asset-audit.json)通过，服务后再次核对一致。334/391、旧GSFS、旧配置及M9指纹未改。
 
-代表性独立截图：[桌面中文卡](author01-design-evidence/desktop-essay-card.png)、[手机报告](author01-design-evidence/mobile-essay-report-content.png)。[复制样张](author01-design-evidence/desktop-copy-not_yet.txt)。本地完整原始响应/截图保存在 `outputs/design-author01-review/design-evidence/`；开发精确head证据已随实现提交，未复制大型资产。
+代表性独立截图：[桌面中文卡](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-design-evidence--desktop-essay-card.png)、[手机报告](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-design-evidence--mobile-essay-report-content.png)。[复制样张](author01-design-evidence/desktop-copy-not_yet.txt)。本地完整原始响应/截图保存在 `outputs/design-author01-review/design-evidence/`；开发精确head证据已随实现提交，未复制大型资产。
 
 ## 架构结论：沿用模块，继续减少重复映射
 

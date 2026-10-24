@@ -67,31 +67,36 @@ def main(argv: Sequence[str] | None = None) -> None:
             )
     except (GenerationError, ValueError) as error:
         _fail(str(error))
-    print(
-        json.dumps(
-            {
-                "calls": len(observations),
-                "model": args.model,
-                "observations": observations,
-                "provider": "openai-responses",
-                "raw_responses_persisted": False,
-                "synthetic_only": True,
-            },
-            ensure_ascii=False,
-            separators=(",", ":"),
-            sort_keys=True,
+    sys.stdout.write(
+        (
+            json.dumps(
+                {
+                    "calls": len(observations),
+                    "model": args.model,
+                    "observations": observations,
+                    "provider": "openai-responses",
+                    "raw_responses_persisted": False,
+                    "synthetic_only": True,
+                },
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
         )
+        + "\n"
     )
 
 
 def _fail(message: str) -> None:
-    print(
-        json.dumps(
-            {"error": message, "kind": "manual_question_analysis_evaluation_error"},
-            ensure_ascii=True,
-            separators=(",", ":"),
-        ),
-        file=sys.stderr,
+    sys.stderr.write(
+        (
+            json.dumps(
+                {"error": message, "kind": "manual_question_analysis_evaluation_error"},
+                ensure_ascii=True,
+                separators=(",", ":"),
+            )
+        )
+        + "\n"
     )
     raise SystemExit(2)
 

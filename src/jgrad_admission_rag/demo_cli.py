@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import logging
 import socket
 import sys
 from pathlib import Path
 from typing import Sequence
 
+from .cli_logging import cli_diagnostics
 from .demo import (
     DemoError,
     DemoRuntime,
@@ -25,7 +27,6 @@ from .demo_embedding import (
     demo_embedding_failure_message,
     resolve_demo_embedding_configuration,
 )
-from .retrieval.embedding import EmbeddingProviderError
 from .generation.config import (
     GenerationRuntimeConfiguration,
     add_generation_arguments,
@@ -33,6 +34,10 @@ from .generation.config import (
     resolve_generation_configuration,
 )
 from .generation.question_analysis import DeterministicQuestionUnderstandingProvider
+from .retrieval.embedding import EmbeddingProviderError
+
+logger = logging.getLogger(__name__)
+
 
 _HOST = "127.0.0.1"
 
@@ -137,10 +142,11 @@ def main(
         else:
             _serve(runtime, args.port, embedding, generation, args.reference_workspace_config)
     except (DemoEmbeddingConfigurationError, DemoError, ValueError) as error:
-        print(f"jgrad-demo: {error}", file=sys.stderr)
+        with cli_diagnostics(logger):
+            logger.error(f"jgrad-demo: {error}")
         raise SystemExit(2) from None
     except KeyboardInterrupt:
-        print("\nJ-Grad Demo stopped.")
+        sys.stdout.write(("\nJ-Grad Demo stopped.") + "\n")
 
 
 def _require_service_extra() -> None:
@@ -226,29 +232,40 @@ def _serve(
         raise DemoError("formal service configuration is unavailable or incompatible") from None
 
     url = f"http://{_HOST}:{port}/app"
-    print(f"J-Grad Demo data: {runtime.identity.document_id}")
-    print(f"Official PDF SHA-256: {runtime.identity.source_pdf_sha256}")
-    print(f"Workspace: {runtime.workspace}")
-    print(
-        "Runtime: "
-        f"mode={runtime.lifecycle_mode} kb={runtime.source_kb_sha256[:12]} "
-        f"payloads={runtime.payload_count} vectors={runtime.vector_count}"
+    sys.stdout.write((f"J-Grad Demo data: {runtime.identity.document_id}") + "\n")
+    sys.stdout.write((f"Official PDF SHA-256: {runtime.identity.source_pdf_sha256}") + "\n")
+    sys.stdout.write((f"Workspace: {runtime.workspace}") + "\n")
+    sys.stdout.write(
+        (
+            "Runtime: "
+            f"mode={runtime.lifecycle_mode} kb={runtime.source_kb_sha256[:12]} "
+            f"payloads={runtime.payload_count} vectors={runtime.vector_count}"
+        )
+        + "\n"
     )
     identity = runtime.embedding_identity
-    print(
-        "Retrieval: "
-        f"provider={identity.provider} model={identity.model} revision={identity.revision or 'none'} "
-        f"dimension={identity.dimension} semantic={str(runtime.semantic).lower()}"
+    sys.stdout.write(
+        (
+            "Retrieval: "
+            f"provider={identity.provider} model={identity.model} revision={identity.revision or 'none'} "
+            f"dimension={identity.dimension} semantic={str(runtime.semantic).lower()}"
+        )
+        + "\n"
     )
-    print(
-        "Generation: "
-        f"provider={generation.provider} model={generation.model or 'reviewed-rules'} "
-        f"online={str(generation.is_online).lower()}"
+    sys.stdout.write(
+        (
+            "Generation: "
+            f"provider={generation.provider} model={generation.model or 'reviewed-rules'} "
+            f"online={str(generation.is_online).lower()}"
+        )
+        + "\n"
     )
     if not runtime.semantic:
-        print("Retrieval quality: offline contract index only; not semantic search quality")
-    print(f"Demo URL: {url}")
-    print("Stop: press Ctrl+C")
+        sys.stdout.write(
+            ("Retrieval quality: offline contract index only; not semantic search quality") + "\n"
+        )
+    sys.stdout.write((f"Demo URL: {url}") + "\n")
+    sys.stdout.write(("Stop: press Ctrl+C") + "\n")
     uvicorn.run(app, host=_HOST, port=port, log_level="info")
 
 

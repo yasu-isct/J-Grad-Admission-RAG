@@ -49,8 +49,8 @@
 
 以下の元画像・記録は上書きしていません。本ページの新しい静的デモ画像と区別して保持します。
 
-- [M19開発時の実HTTPブラウザ記録](../onboarding/m19-evidence/live-browser-journal.json) / [元の志望調査票の関係図](../onboarding/m19-evidence/desktop-application-questionnaire-relations.png)
-- [M19設計側の保存実レスポンス再生](../onboarding/m19-design-evidence/five-topic-replay/replay-browser-journal.json) / [元の準備手順](../onboarding/m19-design-evidence/five-topic-replay/desktop-application-questionnaire-guide.png)
-- [EXAM-02の受入記録](../onboarding/exam02-design-acceptance.md) / [元のシステム制御系表示](../onboarding/exam02b-evidence/review-system-control-1440-card.png)
+- [M19開発時の実HTTPブラウザ記録](../onboarding/m19-evidence/live-browser-journal.json) / [元の志望調査票の関係図](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-questionnaire-relations.png)
+- [M19設計側の保存実レスポンス再生](../onboarding/m19-design-evidence/five-topic-replay/replay-browser-journal.json) / [元の準備手順](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-design-evidence--five-topic-replay--desktop-application-questionnaire-guide.png)
+- [EXAM-02の受入記録](../onboarding/exam02-design-acceptance.md) / [元のシステム制御系表示](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-system-control-1440-card.png)
 
 画像は利用者数、商用運用、全質問への正確性を証明するものではありません。公開QAは過去のテストから選んだ保存回答で、日本語版は翻訳です。新しい生成評価は行っていません。

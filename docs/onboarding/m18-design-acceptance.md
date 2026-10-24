@@ -21,7 +21,7 @@
 - [保护资产核验](m18-design-evidence/asset-audit.json)：50个原路径文件与开发前hash/大小/mtime一致，设计真实服务前后再次一致。15个受保护仓库输入与基线main逐字一致；不重签M9、不改变334/391、原PDF、候选和受信配置。
 - 精确head Quality CI通过、无未解决审查线程。开发前后样张、九就业组合、三次可复现生成和合成单字段编辑的证据已结合源码核验，详见[开发完整成果](m18-completion-and-gaps.md)。
 
-独立样张：[桌面材料卡](m18-design-evidence/desktop-essay-card.png)、[手机报告](m18-design-evidence/mobile-report.png)、[复制文本](m18-design-evidence/desktop-copy-not_yet.txt)。完整独立请求响应保存在本地 `outputs/design-m18-review/evidence/`，不另建知识库。
+独立样张：[桌面材料卡](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-design-evidence--desktop-essay-card.png)、[手机报告](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-design-evidence--mobile-report.png)、[复制文本](m18-design-evidence/desktop-copy-not_yet.txt)。完整独立请求响应保存在本地 `outputs/design-m18-review/evidence/`，不另建知识库。
 
 ## 资源、限制与交接
 

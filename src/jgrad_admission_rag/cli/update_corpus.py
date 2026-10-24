@@ -50,7 +50,7 @@ def _error_kind(error: CorpusUpdateError) -> tuple[str, int]:
 
 
 def _write_json(value: dict[str, object], *, stream) -> None:
-    print(json.dumps(value, ensure_ascii=False, separators=(",", ":")), file=stream)
+    stream.write((json.dumps(value, ensure_ascii=False, separators=(",", ":"))) + "\n")
 
 
 def main(argv: Sequence[str] | None = None) -> None:

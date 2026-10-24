@@ -5,9 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from pathlib import Path
+import sys
 import tempfile
 import time
+from pathlib import Path
 
 from pydantic import ValidationError
 
@@ -53,18 +54,21 @@ def main() -> None:
     except (LegacyAdapterError, ValidationError, ValueError, OSError) as error:
         parser.error(str(error))
 
-    print(
-        json.dumps(
-            {
-                "output": str(args.output),
-                "run_id": document.run_id,
-                "output_digest": document.output_digest,
-                "pages": document.coverage.returned_pages,
-                "elapsed_seconds": round(elapsed, 3),
-            },
-            ensure_ascii=False,
-            sort_keys=True,
+    sys.stdout.write(
+        (
+            json.dumps(
+                {
+                    "output": str(args.output),
+                    "run_id": document.run_id,
+                    "output_digest": document.output_digest,
+                    "pages": document.coverage.returned_pages,
+                    "elapsed_seconds": round(elapsed, 3),
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            )
         )
+        + "\n"
     )
 
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import argparse
-import sys
+import logging
 from pathlib import Path
 from typing import Sequence
 
@@ -13,6 +13,7 @@ from ..cli.provider_config import (
     create_provider,
     resolve_provider_configuration,
 )
+from ..cli_logging import cli_diagnostics
 from ..generation.config import (
     add_generation_arguments,
     create_generation_providers,
@@ -21,6 +22,8 @@ from ..generation.config import (
 from ..generation.question_analysis import DeterministicQuestionUnderstandingProvider
 from .reference_app import create_app
 from .runtime import ServiceDependencies, ServiceSettings
+
+logger = logging.getLogger(__name__)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -126,7 +129,8 @@ def main(argv: Sequence[str] | None = None) -> None:
             generation_max_retries=generation_configuration.max_retries,
         )
     except (CliConfigurationError, ValueError) as error:
-        print(f"configuration error: {error}", file=sys.stderr)
+        with cli_diagnostics(logger):
+            logger.error(f"configuration error: {error}")
         raise SystemExit(2) from None
 
     app = create_app(

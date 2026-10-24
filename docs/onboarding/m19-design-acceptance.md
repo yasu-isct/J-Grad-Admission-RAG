@@ -31,7 +31,7 @@
 
 **设计独立服务尝试失败一次**：取证脚本在写入listener事件时重复传入`role`参数，发生在uvicorn启动和HTTP之前；实际成功服务0、产品POST0。这是设计取证脚本错误，不能归为产品失败，也不能宣称独立真实服务通过。失败按Spec计入启动1/1，未重启或重置预算；后续只完成直接投影及保存响应回放。Spec要求的真实闭环已有可核验开发证据，未要求设计必须再跑一次；结合本轮独立交叉核验，证据足以支持此范围的验收。
 
-独立样张：[桌面调查表](m19-design-evidence/five-topic-replay/desktop-application-questionnaire-guide.png)、[手机报告](m19-design-evidence/five-topic-replay/mobile-report-available-not_yet.png)、[报告复制文本](m19-design-evidence/five-topic-replay/desktop-copy-available-not_yet.txt)。完整本地证据 `outputs/design-m19-review/evidence/`。
+独立样张：[桌面调查表](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-design-evidence--five-topic-replay--desktop-application-questionnaire-guide.png)、[手机报告](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-design-evidence--five-topic-replay--mobile-report-available-not_yet.png)、[报告复制文本](m19-design-evidence/five-topic-replay/desktop-copy-available-not_yet.txt)。完整本地证据 `outputs/design-m19-review/evidence/`。
 
 ## 资源与结束点
 

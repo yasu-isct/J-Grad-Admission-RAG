@@ -80,13 +80,15 @@ def main(argv: Sequence[str] | None = None) -> None:
         EvaluationReportError,
         ImplementationContractError,
     ) as error:
-        print(
-            json.dumps(
-                {"error": str(error), "kind": "grounded_rag_gate_error"},
-                ensure_ascii=True,
-                separators=(",", ":"),
-            ),
-            file=sys.stderr,
+        sys.stderr.write(
+            (
+                json.dumps(
+                    {"error": str(error), "kind": "grounded_rag_gate_error"},
+                    ensure_ascii=True,
+                    separators=(",", ":"),
+                )
+            )
+            + "\n"
         )
         raise SystemExit(2) from None
     sys.stdout.write(canonical_grounded_rag_gate_result_bytes(result).decode("utf-8"))

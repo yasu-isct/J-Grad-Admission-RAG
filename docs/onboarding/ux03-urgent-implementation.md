@@ -18,10 +18,10 @@
 
 | 学校／视口 | 改前完整第四步 | 改后完整第四步 |
 | --- | --- | --- |
-| 东科大 1440×900 | [before](ux03-urgent-evidence/before-isct-step4-1440.png) | [after](ux03-urgent-evidence/after-isct-step4-1440.png) |
-| 东科大 390×844 | [before](ux03-urgent-evidence/before-isct-step4-390.png) | [after](ux03-urgent-evidence/after-isct-step4-390.png) |
-| 东大 1440×900 | [before](ux03-urgent-evidence/before-gsfs-step4-1440.png) | [after](ux03-urgent-evidence/after-gsfs-step4-1440.png) |
-| 东大 390×844 | [before](ux03-urgent-evidence/before-gsfs-step4-390.png) | [after](ux03-urgent-evidence/after-gsfs-step4-390.png) |
+| 东科大 1440×900 | [before](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-isct-step4-1440.png) | [after](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-isct-step4-1440.png) |
+| 东科大 390×844 | [before](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-isct-step4-390.png) | [after](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-isct-step4-390.png) |
+| 东大 1440×900 | [before](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-1440.png) | [after](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-1440.png) |
+| 东大 390×844 | [before](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-390.png) | [after](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-390.png) |
 
 [改前账本](ux03-urgent-evidence/before-journal.json)和[改后账本](ux03-urgent-evidence/after-journal.json)记录视口、请求拦截、无横向溢出及内容摘要。东科大基础要求与个人对照、东大依据与报告均为已有保存响应；为覆盖“明确没有 TOEIC QR”的可见性，仅把保存个人对照的 QR 核对点在浏览器夹具中改成 `action_needed`，**该一处是合成场景**，不能当作新的真实规则响应。问答未配置，只临时启用输入框验证 5→0 字数监听，没有提交问答。
 

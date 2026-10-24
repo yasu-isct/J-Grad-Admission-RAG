@@ -8,20 +8,19 @@ from typing import Sequence
 
 from ..retrieval.embedding import EmbeddingError
 from ..retrieval.evidence_pack import build_evidence_pack
-from ..retrieval.index_freshness import (
-    CurrentKbInputError,
-    IndexFreshnessReport,
-    StaleIndexError,
-    check_index_freshness,
-    load_fresh_index_context,
-)
-from ..retrieval.reference_expansion import ReferenceExpansionError, expand_references
 from ..retrieval.hybrid_search import (
     HybridInputError,
     HybridSearchError,
     HybridSearchResult,
     resolve_candidate_depth,
     search_hybrid_index,
+)
+from ..retrieval.index_freshness import (
+    CurrentKbInputError,
+    IndexFreshnessReport,
+    StaleIndexError,
+    check_index_freshness,
+    load_fresh_index_context,
 )
 from ..retrieval.local_index import IndexLoadError, load_local_index
 from ..retrieval.metadata_search import (
@@ -32,6 +31,7 @@ from ..retrieval.metadata_search import (
     ScopePreference,
     search_metadata_index,
 )
+from ..retrieval.reference_expansion import ReferenceExpansionError, expand_references
 from ..retrieval.vector_search import (
     VectorSearchError,
     VectorSearchResult,
@@ -171,7 +171,7 @@ def _metadata_success_summary(
 
 
 def _write_json(value: dict[str, object], *, stream) -> None:
-    print(json.dumps(value, ensure_ascii=True, separators=(",", ":")), file=stream)
+    stream.write((json.dumps(value, ensure_ascii=True, separators=(",", ":"))) + "\n")
 
 
 def main(argv: Sequence[str] | None = None) -> None:

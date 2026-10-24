@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from ..schemas.document_kb import ReferenceDiagnostic
+from ..utils import ensure_dir
 from .document_index import (
     IndexedChunk,
     Reference,
@@ -13,8 +16,6 @@ from .document_index import (
     load_chunks,
     load_document_index,
 )
-from ..schemas.document_kb import ReferenceDiagnostic
-from ..utils import ensure_dir
 
 
 @dataclass
@@ -237,16 +238,19 @@ def main() -> None:
         Path(args.output) if args.output else ensure_dir(input_path.parent) / "reference_links.json"
     )
     write_reference_links(links, output)
-    print(
-        json.dumps(
-            {
-                "chunks": len(index),
-                "links": len(links),
-                "output": str(output),
-            },
-            ensure_ascii=False,
-            indent=2,
+    sys.stdout.write(
+        (
+            json.dumps(
+                {
+                    "chunks": len(index),
+                    "links": len(links),
+                    "output": str(output),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
         )
+        + "\n"
     )
 
 

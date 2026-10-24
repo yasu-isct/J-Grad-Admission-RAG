@@ -3,13 +3,14 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ..utils import ensure_dir
 from .category_router import categorize_chunk
 from .chunker import TextChunk
-from ..utils import ensure_dir
 
 KANJI_NUMBERS = {
     "一": 1,
@@ -239,17 +240,20 @@ def main() -> None:
         Path(args.output) if args.output else ensure_dir(chunks_path.parent) / "document_index.json"
     )
     write_document_index(index, output)
-    print(
-        json.dumps(
-            {
-                "chunks": len(index),
-                "anchors": sum(len(item.anchors) for item in index),
-                "references": sum(len(item.references) for item in index),
-                "output": str(output),
-            },
-            ensure_ascii=False,
-            indent=2,
+    sys.stdout.write(
+        (
+            json.dumps(
+                {
+                    "chunks": len(index),
+                    "anchors": sum(len(item.anchors) for item in index),
+                    "references": sum(len(item.references) for item in index),
+                    "output": str(output),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
         )
+        + "\n"
     )
 
 
