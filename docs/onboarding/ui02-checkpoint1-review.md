@@ -20,11 +20,11 @@
 
 | 视图 | 旧 v1 | UI-02 当前实现 |
 | --- | --- | --- |
-| 日期／材料，桌面 1440 | [旧截图](ui02-checkpoint1/old-dates-materials-1440.png) | [新截图](ui02-checkpoint1/new-dates-materials-1440.png) |
-| 日期／材料，手机 390 | [旧截图](ui02-checkpoint1/old-dates-materials-390.png) | [新截图](ui02-checkpoint1/new-dates-materials-390.png) |
-| 个人情况，桌面 | [旧截图](ui02-checkpoint1/old-personal-1440.png) | [新截图](ui02-checkpoint1/new-personal-1440.png) |
-| 行动摘要，桌面 | [旧截图](ui02-checkpoint1/old-action-summary-1440.png) | [新截图](ui02-checkpoint1/new-action-summary-1440.png) |
-| 东大材料／条件，桌面 | 不在旧 v1 范围 | [三主题材料](ui02-checkpoint1/new-slice-materials-1440.png)、[局部条件结果](ui02-checkpoint1/new-slice-conditions-1440.png) |
+| 日期／材料，桌面 1440 | [旧截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-dates-materials-1440.png) | [新截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-dates-materials-1440.png) |
+| 日期／材料，手机 390 | [旧截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-dates-materials-390.png) | [新截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-dates-materials-390.png) |
+| 个人情况，桌面 | [旧截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-personal-1440.png) | [新截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-personal-1440.png) |
+| 行动摘要，桌面 | [旧截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-action-summary-1440.png) | [新截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-action-summary-1440.png) |
+| 东大材料／条件，桌面 | 不在旧 v1 范围 | [三主题材料](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-slice-materials-1440.png)、[局部条件结果](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-slice-conditions-1440.png) |
 
 ## 合成检查与待完成工作
 

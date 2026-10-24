@@ -68,8 +68,8 @@ $store = 'D:/J-Grad-Admission-RAG/outputs/reviewed-source-candidates'
 
 **真实隔离 HTTP**：开发服务 1 次、两份报告 POST 各 200；所有静态目录模块 GET 200。完整 JSON 请求/响应、GET headers/hash、报告及剪贴板内容保存在 [m19-evidence](m19-evidence/live-browser-journal.json)。服务已停止，取证端口 53550 已关闭；原用户 8000 服务仍为 PID 34116，未切页面。
 
-- [桌面调查表指南](m19-evidence/desktop-application-questionnaire-guide.png)、[手机指南](m19-evidence/mobile-application-questionnaire-guide.png)。展开正文和四步骤均来自 reader。
-- [桌面两来源关系](m19-evidence/desktop-application-questionnaire-relations.png)、[手机 E11](m19-evidence/mobile-E11-source.png)、[手机 E12](m19-evidence/mobile-E12-source.png)：两份原文全部 14 片段及关系往返、焦点归还检查通过。
+- [桌面调查表指南](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-questionnaire-guide.png)、[手机指南](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-application-questionnaire-guide.png)。展开正文和四步骤均来自 reader。
+- [桌面两来源关系](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-questionnaire-relations.png)、[手机 E11](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E11-source.png)、[手机 E12](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E12-source.png)：两份原文全部 14 片段及关系往返、焦点归还检查通过。
 - [桌面复制文本](m19-evidence/desktop-copy-available-not_yet.txt)、[手机复制文本](m19-evidence/mobile-copy-not_yet-available.txt)。两个控件交叉准备/未准备/未知，互不串值；修改会隐藏旧结果；缓存复用不增加真实 POST；换学校清空两个自报和旧报告。
 - 五主题报告完整身份一致。只开放本切片实际可用的“材料与待办”类别；取消唯一类别时禁止复制空报告，不泄漏旧文本。Node 覆盖了该约束及自报不改变官方需提交结果。
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Sequence
@@ -462,7 +463,7 @@ def main() -> None:
         json.dumps([asdict(chunk) for chunk in chunks], ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(args.output)
+    sys.stdout.write((args.output) + "\n")
 
 
 if __name__ == "__main__":

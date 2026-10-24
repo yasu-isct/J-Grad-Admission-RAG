@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from ..utils import ensure_dir
 from .chunker import TextChunk
 from .document_index import load_chunks
 from .reference_resolver import ReferenceLink, load_reference_links
-from ..utils import ensure_dir
 
 
 @dataclass
@@ -155,18 +156,21 @@ def main() -> None:
         base_selected_count=len(selected_chunks),
         final_selected_count=len(expanded_chunks),
     )
-    print(
-        json.dumps(
-            {
-                "base_selected": len(selected_chunks),
-                "expanded": len(records),
-                "final_selected": len(expanded_chunks),
-                "output": str(output),
-                "records_output": str(records_output),
-            },
-            ensure_ascii=False,
-            indent=2,
+    sys.stdout.write(
+        (
+            json.dumps(
+                {
+                    "base_selected": len(selected_chunks),
+                    "expanded": len(records),
+                    "final_selected": len(expanded_chunks),
+                    "output": str(output),
+                    "records_output": str(records_output),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
         )
+        + "\n"
     )
 
 

@@ -60,13 +60,15 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def _write_error(kind: str, message: str, provider: str) -> None:
-    print(
-        json.dumps(
-            {"error": message, "kind": kind, "provider": provider},
-            ensure_ascii=True,
-            separators=(",", ":"),
-        ),
-        file=sys.stderr,
+    sys.stderr.write(
+        (
+            json.dumps(
+                {"error": message, "kind": kind, "provider": provider},
+                ensure_ascii=True,
+                separators=(",", ":"),
+            )
+        )
+        + "\n"
     )
 
 

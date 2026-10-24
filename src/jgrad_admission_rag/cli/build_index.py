@@ -16,6 +16,8 @@ from ..schemas.index import IndexManifest
 from .provider_config import (
     CliConfigurationError,
     add_provider_arguments,
+)
+from .provider_config import (
     build_provider as _build_provider,
 )
 
@@ -57,7 +59,7 @@ def _success_summary(manifest: IndexManifest, output: Path) -> dict[str, object]
 
 
 def _write_json(value: dict[str, object], *, stream) -> None:
-    print(json.dumps(value, ensure_ascii=False, separators=(",", ":")), file=stream)
+    stream.write((json.dumps(value, ensure_ascii=False, separators=(",", ":"))) + "\n")
 
 
 def main(argv: Sequence[str] | None = None) -> None:

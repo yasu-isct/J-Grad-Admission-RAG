@@ -1,0 +1,2385 @@
+{
+  "source_commit": "d94fd4c953aee1b6bfee987eb7777246d6f19737",
+  "release": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/tag/development-evidence-20261025",
+  "files": [
+    {
+      "path": "docs/onboarding/author01-design-evidence/desktop-essay-card.png",
+      "asset": "docs--onboarding--author01-design-evidence--desktop-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-design-evidence--desktop-essay-card.png",
+      "bytes": 91056,
+      "sha256": "c356bb126682ca84a8df869abffc41257bac453704835bbe9fcb0080457dd416"
+    },
+    {
+      "path": "docs/onboarding/author01-design-evidence/mobile-essay-report-content.png",
+      "asset": "docs--onboarding--author01-design-evidence--mobile-essay-report-content.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-design-evidence--mobile-essay-report-content.png",
+      "bytes": 61110,
+      "sha256": "d59bae43997af46306649fd76ee8dc52048af631265af3d6c416077dd6461e2a"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-E09-source.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-E09-source.png",
+      "bytes": 97888,
+      "sha256": "55f9afafd0edf0bce25d6d9b33899512a3a0b45a39ba7893d2f3b63342065265"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-E10-source.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-E10-source.png",
+      "bytes": 124977,
+      "sha256": "1414e33c7011999a7d5644dd454e93000fb4ecffa1dde1575212ca6f6398649f"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-card.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-card.png",
+      "bytes": 91056,
+      "sha256": "c356bb126682ca84a8df869abffc41257bac453704835bbe9fcb0080457dd416"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-readiness.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-readiness.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-readiness.png",
+      "bytes": 76267,
+      "sha256": "e4156f26ff26cc3033426713806e41fa61ca42c51c07893f7d81fe6c63c0ccef"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-relations.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-relations.png",
+      "bytes": 87048,
+      "sha256": "0bb099ae8fce0a6591325b97f6e975eef7c448f781b50a412c36d96a2d85c270"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-report-content.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-report-content.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-report-content.png",
+      "bytes": 174873,
+      "sha256": "a22581dc77b33ae368e157b335357dc596600f9e9a9fe4d16d10fd3fb94ade31"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-report-prepared.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-report-prepared.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-report-prepared.png",
+      "bytes": 123766,
+      "sha256": "10cad5f898ad85ae69c50e520beff1a15625e3128aed119564a305b3abf6c74e"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/desktop-essay-report.png",
+      "asset": "docs--onboarding--author01-evidence--desktop-essay-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--desktop-essay-report.png",
+      "bytes": 129855,
+      "sha256": "06e384ec6123d06145ad21f55cac936dec783450f6c286dfcf53a36455ef19e8"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/isct-exam-1440-report.png",
+      "asset": "docs--onboarding--author01-evidence--isct-exam-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--isct-exam-1440-report.png",
+      "bytes": 118683,
+      "sha256": "5064f1c11a64126a25eb85ff88eaa9123704caaab4cf276db64fc0a3e0f5b1e7"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/isct-exam-390-report.png",
+      "asset": "docs--onboarding--author01-evidence--isct-exam-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--isct-exam-390-report.png",
+      "bytes": 48048,
+      "sha256": "630392fc1cbcbec805748e595877267b05a41267a78a205838cc45acfff67044"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-E09-source.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-E09-source.png",
+      "bytes": 41782,
+      "sha256": "51a553be71c7e68bc8706832666b97f43258328b21b8ee91b1cc6e83fff9dd0d"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-E10-source.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-E10-source.png",
+      "bytes": 57663,
+      "sha256": "d868d8416a6520ab5d8edd2b7cc612d13bd6fc5c498b55caa468851e5f324024"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-card-bottom.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-card-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-card-bottom.png",
+      "bytes": 47515,
+      "sha256": "942507da80f999da89da71eb317aaa85f00f78cb046c775a56a4b0c97e232caa"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-card.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-card.png",
+      "bytes": 53578,
+      "sha256": "7c6723c45a701bf421607411002a641a22edd297730b0a3e1b6453387caf8063"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-readiness.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-readiness.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-readiness.png",
+      "bytes": 48058,
+      "sha256": "b4e12a8d2fc256718edee13ffaf5a63b168fea9cb5558c08f43c72cd07c2cbcb"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-relations.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-relations.png",
+      "bytes": 57639,
+      "sha256": "a15a3889c6f77e83ec207b2ca54cb1e9bb1ce8fd6e11b805adf43dab567de4cd"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-report-content.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-report-content.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-report-content.png",
+      "bytes": 61110,
+      "sha256": "d59bae43997af46306649fd76ee8dc52048af631265af3d6c416077dd6461e2a"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/mobile-essay-report.png",
+      "asset": "docs--onboarding--author01-evidence--mobile-essay-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--mobile-essay-report.png",
+      "bytes": 45248,
+      "sha256": "a41b8f6f9ac352904594ef3e35581ed213fb8b0ca98944d7584c3a45096e1c47"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/old-three-1440-report.png",
+      "asset": "docs--onboarding--author01-evidence--old-three-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--old-three-1440-report.png",
+      "bytes": 116428,
+      "sha256": "50266b50fc5bf7616ae42a0cc2e1c13387240ea037c2206316d014c476cf8626"
+    },
+    {
+      "path": "docs/onboarding/author01-evidence/old-three-390-report.png",
+      "asset": "docs--onboarding--author01-evidence--old-three-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--author01-evidence--old-three-390-report.png",
+      "bytes": 45181,
+      "sha256": "c87bc7aeccd3dc97a764ca87efd823099f1c4d81c6905f888db1b6e8c0641051"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-1-graph-desktop-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-1-graph-desktop-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-1-graph-desktop-review-replay.png",
+      "bytes": 158312,
+      "sha256": "c577d41469216d085c0cf26beccfeb3abb4b52311afeb58ffd6b1b61d0697dee"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-1-graph-desktop.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-1-graph-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-1-graph-desktop.png",
+      "bytes": 147673,
+      "sha256": "972ca6a49f77daa32edb758ad5720b1a203f6ed3c062acb699df6a7b34b48bf3"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-1-graph-mobile-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-1-graph-mobile-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-1-graph-mobile-review-replay.png",
+      "bytes": 78933,
+      "sha256": "296650d4a1f8a1d3aa2cc2e65424958116ddf0134a57d1f96305e54ed5d56241"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-1-graph-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-1-graph-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-1-graph-mobile.png",
+      "bytes": 72441,
+      "sha256": "043b2d0966dcd33232aa0ddf42c498271b46732ad30342ad5d7e284b79ba1d0a"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-1-original-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-1-original-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-1-original-mobile.png",
+      "bytes": 81236,
+      "sha256": "c48ce1532f35e9a50c05f81fa7664348f61bf8df6bcc72d8210bba3e645a3ffe"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-2-graph-desktop-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-2-graph-desktop-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-2-graph-desktop-review-replay.png",
+      "bytes": 132023,
+      "sha256": "80c81ef39cd8c35fb1a7bf18c15a923d10049ee3744efc684d83049cb852d779"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-2-graph-desktop.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-2-graph-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-2-graph-desktop.png",
+      "bytes": 136002,
+      "sha256": "e40782a0f50430ae5bb8354f2117dabdb81d5e949840d4d681b88469745e9b43"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-2-graph-mobile-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-2-graph-mobile-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-2-graph-mobile-review-replay.png",
+      "bytes": 73009,
+      "sha256": "bdfe456e72da45473a4c7cf1a2b848cae57be35d85a8acc1ec58a485d16b1694"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-2-graph-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-2-graph-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-2-graph-mobile.png",
+      "bytes": 75129,
+      "sha256": "d45ae7ad34f58722951124670d3e4ded5248715d798045801d43431af5e2c4e9"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-2-original-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-2-original-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-2-original-mobile.png",
+      "bytes": 73057,
+      "sha256": "83f47170bf0875e93c3902fa103a049c236be35cf6336659fea287e98cfd7e2b"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-3-graph-desktop-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-3-graph-desktop-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-3-graph-desktop-review-replay.png",
+      "bytes": 183637,
+      "sha256": "386e347ed0f5faceec10fdd1cfdc2d4f64ea31c60320a27e79da7c499f6b8c87"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-3-graph-desktop.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-3-graph-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-3-graph-desktop.png",
+      "bytes": 140413,
+      "sha256": "f2c0b269c78ff1f5b8aa40b3a82502ed3fb5a7426185eff272af92d6685c6277"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-3-graph-mobile-review-replay.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-3-graph-mobile-review-replay.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-3-graph-mobile-review-replay.png",
+      "bytes": 83232,
+      "sha256": "292e45b995eea6269f75694dcc5e6220d095f1a5be8ca8f5e9ec34f5d4019460"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-3-graph-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-3-graph-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-3-graph-mobile.png",
+      "bytes": 88910,
+      "sha256": "628570311ca14d72dbb461381009ff54ccd8a75cb8137e43d3dc734aa6abe300"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-3-original-mobile.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-3-original-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-3-original-mobile.png",
+      "bytes": 89842,
+      "sha256": "079b97ef6e318f5f47d1d1ebcf9f1889889be96773533522ff0cffa40ae1b170"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-step2-desktop-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-step2-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-step2-desktop-full.png",
+      "bytes": 294863,
+      "sha256": "d8d68b07e0ddf1649d3eef37cee56028b460f574f94595d072c676a918017e7a"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-step2-mobile-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-step2-mobile-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-step2-mobile-full.png",
+      "bytes": 265956,
+      "sha256": "8587cd49375bc0411c43563a54abc964d5b3adc6935e107f0db56ff7b3a8e817"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-step4-desktop-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-step4-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-step4-desktop-full.png",
+      "bytes": 312383,
+      "sha256": "68b11f9c358c1fd340df590d00f680913caf24e938d09caec2adc8ab0f310b49"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/gsfs-step4-mobile-replay-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--gsfs-step4-mobile-replay-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--gsfs-step4-mobile-replay-full.png",
+      "bytes": 289575,
+      "sha256": "33a49fee6bc86394478cfb5fd9c10b5f5ca2003311964a9240215e78c3988d8f"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/isct-step2-desktop-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--isct-step2-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--isct-step2-desktop-full.png",
+      "bytes": 466013,
+      "sha256": "831e09ce3b98571672cbc54621a767dc12075da902a1cf24b0271052a68efe19"
+    },
+    {
+      "path": "docs/onboarding/evidui01-evidence/isct-step2-mobile-replay-full.png",
+      "asset": "docs--onboarding--evidui01-evidence--isct-step2-mobile-replay-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--evidui01-evidence--isct-step2-mobile-replay-full.png",
+      "bytes": 435667,
+      "sha256": "4d0e1bf5b07df1e8223ee47383f0ea2f9adcdcd7ef3c6f66bd314b243ad64529"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-card-desktop.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-card-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-card-desktop.png",
+      "bytes": 34792,
+      "sha256": "04d93361b880153bb9d6e638b5ff18314fe7a73949c805516176c0be3d14cdff"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-card-mobile.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-card-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-card-mobile.png",
+      "bytes": 44222,
+      "sha256": "344fed56727ee1cee94e7d000bc51c8050a55c7a5cfaace53807eb090df1f725"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-report-desktop.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-report-desktop.png",
+      "bytes": 124669,
+      "sha256": "9edf90d0d439d8633386d28ba82532930410855c5ad9443f5b5903e79520d120"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-report-mobile.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-report-mobile.png",
+      "bytes": 46636,
+      "sha256": "a350fc78bc8076f86a1029e094d21e9df092c5fb5f0bbd9f088913e02fb69139"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-step2-desktop.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-step2-desktop.png",
+      "bytes": 638541,
+      "sha256": "28af4aa1f5aa5ff3036cb5a8b2be8dd36340e9a21beb811bc88bb66a950639b7"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/exam01-step2-mobile.png",
+      "asset": "docs--onboarding--exam01-evidence--exam01-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--exam01-step2-mobile.png",
+      "bytes": 584655,
+      "sha256": "50f458342e01fe7bcd3b823e866532e33b2e5653d0e270f69c5445a4c633f137"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r1-report-recovery-desktop.png",
+      "asset": "docs--onboarding--exam01-evidence--r1-report-recovery-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r1-report-recovery-desktop.png",
+      "bytes": 124525,
+      "sha256": "71329f29dd1ba09bdc9fda07579c6c33b175243a79cca337fa0798cf875d0e3b"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r1-report-recovery-mobile.png",
+      "asset": "docs--onboarding--exam01-evidence--r1-report-recovery-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r1-report-recovery-mobile.png",
+      "bytes": 47317,
+      "sha256": "eeee1890c77d343ead59c3ecc29519b58a9e0cdc6480de4432e0a14966cc003f"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r11-close-pending-1440-esc.png",
+      "asset": "docs--onboarding--exam01-evidence--r11-close-pending-1440-esc.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r11-close-pending-1440-esc.png",
+      "bytes": 122260,
+      "sha256": "41bbe88bbd43a54e3c0672a34e596f4af41d82380faf367120fb0b593f749c63"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r11-close-pending-1440-x.png",
+      "asset": "docs--onboarding--exam01-evidence--r11-close-pending-1440-x.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r11-close-pending-1440-x.png",
+      "bytes": 122260,
+      "sha256": "41bbe88bbd43a54e3c0672a34e596f4af41d82380faf367120fb0b593f749c63"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r11-close-pending-390-esc.png",
+      "asset": "docs--onboarding--exam01-evidence--r11-close-pending-390-esc.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r11-close-pending-390-esc.png",
+      "bytes": 48819,
+      "sha256": "27cb13e131d4df1cde4072b5ba94a20eec6ee7fa910f99cf1b6ce1a0adfc5430"
+    },
+    {
+      "path": "docs/onboarding/exam01-evidence/r11-close-pending-390-x.png",
+      "asset": "docs--onboarding--exam01-evidence--r11-close-pending-390-x.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam01-evidence--r11-close-pending-390-x.png",
+      "bytes": 48819,
+      "sha256": "27cb13e131d4df1cde4072b5ba94a20eec6ee7fa910f99cf1b6ce1a0adfc5430"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/complex-exam-desktop.png",
+      "asset": "docs--onboarding--exam02a-evidence--complex-exam-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--complex-exam-desktop.png",
+      "bytes": 231646,
+      "sha256": "f1a480e5c6305a91f6613463b617e608a0f92877c7f6e759d5f0fe2ea621a079"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/complex-exam-mobile.png",
+      "asset": "docs--onboarding--exam02a-evidence--complex-exam-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--complex-exam-mobile.png",
+      "bytes": 207236,
+      "sha256": "1e1d8eeac96451f661a0f502a982da6f613da28831066245b502958befde71a5"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/complex-readiness-desktop.png",
+      "asset": "docs--onboarding--exam02a-evidence--complex-readiness-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--complex-readiness-desktop.png",
+      "bytes": 201491,
+      "sha256": "0221ea84fa414ec2f111feef10c5e4ba37f2444415f660cf5c1f54353953df10"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/complex-readiness-mobile.png",
+      "asset": "docs--onboarding--exam02a-evidence--complex-readiness-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--complex-readiness-mobile.png",
+      "bytes": 181509,
+      "sha256": "725f8d2cd440aa1eaf02a339a1ebd82be716a6f26d5d1b44ea67d1dd47356699"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/simple-exam-desktop.png",
+      "asset": "docs--onboarding--exam02a-evidence--simple-exam-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--simple-exam-desktop.png",
+      "bytes": 222002,
+      "sha256": "05f7994a45259876366f4d723004cbcf1d64168859e7c4983b46a1a410c38555"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/simple-exam-mobile.png",
+      "asset": "docs--onboarding--exam02a-evidence--simple-exam-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--simple-exam-mobile.png",
+      "bytes": 197712,
+      "sha256": "2417c2e89726ee0b44a0a288f060120f4c346c48c4809677c476b47bcef3d8ed"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/simple-readiness-desktop.png",
+      "asset": "docs--onboarding--exam02a-evidence--simple-readiness-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--simple-readiness-desktop.png",
+      "bytes": 199112,
+      "sha256": "b01d85f0309e1f4e03de880f4012dd6df42e4ecfb32c6f44e49163909192e2b8"
+    },
+    {
+      "path": "docs/onboarding/exam02a-evidence/simple-readiness-mobile.png",
+      "asset": "docs--onboarding--exam02a-evidence--simple-readiness-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02a-evidence--simple-readiness-mobile.png",
+      "bytes": 179245,
+      "sha256": "09377521abe21334b972d9ab8153399a1161f6b973ea114a7280fe11e829a61d"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/architecture-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--architecture-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--architecture-report-desktop.png",
+      "bytes": 134081,
+      "sha256": "d08292922d85cbe52ee1b6d32a7057960eeeeb93b303b2629fcfce0073127f71"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/architecture-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--architecture-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--architecture-report-mobile.png",
+      "bytes": 51653,
+      "sha256": "40c937f8c96a492e80f328db3d370f37c55068e886e6daa9c8c7329e900e1c30"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/architecture-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--architecture-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--architecture-step2-desktop.png",
+      "bytes": 95224,
+      "sha256": "014cb811ea75e8b6e99a8c4f34bbbedb91922b5d8fe41e735b84bd5df28c8005"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/architecture-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--architecture-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--architecture-step2-mobile-bottom.png",
+      "bytes": 47096,
+      "sha256": "6dbddc840ebe973c73688cce8e4b9929f49993310a809006a76564ca5d7482ba"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/architecture-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--architecture-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--architecture-step2-mobile.png",
+      "bytes": 54155,
+      "sha256": "197f5aba60cfc01b9ca3029240527816e2b851705976ab3342a6ff50e54da021"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--computer-science-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--computer-science-report-desktop.png",
+      "bytes": 124163,
+      "sha256": "9f8a1bc9de8401cec380e4476257dd0b49196244a9f6dee07cfd9288f15ce9f2"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--computer-science-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--computer-science-report-mobile.png",
+      "bytes": 48829,
+      "sha256": "90dd61bbbe1a56b693f3e668c766b78fb4951e5830f7c1f9b59bcef1a290517e"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--computer-science-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--computer-science-step2-desktop.png",
+      "bytes": 88247,
+      "sha256": "4ad9bbe9bdfcf15dbacfcff12f17a3e2b00ba383390b0cbce68afbb554dd4d33"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--computer-science-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--computer-science-step2-mobile-bottom.png",
+      "bytes": 48966,
+      "sha256": "b614bf2efe9e6339082ed0c5c39b16fc0561796f44e3b13db7b85a2c90fa7ac2"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/computer-science-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--computer-science-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--computer-science-step2-mobile.png",
+      "bytes": 52908,
+      "sha256": "be16e158adc8ff01303c3fcb132c0211c127d2fb328a9afd5d410639f549414b"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/materials-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--materials-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--materials-report-desktop.png",
+      "bytes": 119687,
+      "sha256": "4a5f211390dfc273cfc390ba8421b955620ed7981362399959d124a43cd4d9f6"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/materials-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--materials-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--materials-report-mobile.png",
+      "bytes": 49728,
+      "sha256": "f622d88fce5223342fc8cb57d98fe5c15d833c1fb8f79684dce6fc88fdfe94ee"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/materials-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--materials-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--materials-step2-desktop.png",
+      "bytes": 86961,
+      "sha256": "33a595bf61a47eef6c602665c5c0953f520471f53d4cd9f05d3fe5b48957df15"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/materials-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--materials-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--materials-step2-mobile-bottom.png",
+      "bytes": 47972,
+      "sha256": "a4ace4470a2a4666b505549cbf038aa2b0d7da45569ee22b81d95053fc8a666a"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/materials-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--materials-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--materials-step2-mobile.png",
+      "bytes": 50361,
+      "sha256": "a1169f8ecc601a1f9058ea93e1cc6728eb00a8277b642a9f84419f81583728a8"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/math-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--math-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--math-report-desktop.png",
+      "bytes": 129291,
+      "sha256": "856f48b4bcc8b9c937ed9b6035afc135fd04a70a3be472fc5e8d9027e73efba2"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/math-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--math-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--math-report-mobile.png",
+      "bytes": 51168,
+      "sha256": "c3ae95f6e6e19919cea2575bf745f657749c4c07a6f52168d241f43b0558f1b3"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/math-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--math-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--math-step2-desktop.png",
+      "bytes": 90833,
+      "sha256": "cf2252fc63370d3295bc1279b33a5343c2e4acce133f3a702edcc6d95a336ece"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/math-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--math-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--math-step2-mobile-bottom.png",
+      "bytes": 48747,
+      "sha256": "c3707af5dfb4c09e39c8f1fb8d4b58800d1a6ebecb74ae5bc013ea4464c893fc"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/math-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--math-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--math-step2-mobile.png",
+      "bytes": 55778,
+      "sha256": "0e3794018ddcf36b14f6a5614c6d14ef37256a194882be5e90b133039eb2457e"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-applied-chemistry-1440-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-applied-chemistry-1440-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-applied-chemistry-1440-card.png",
+      "bytes": 49807,
+      "sha256": "4634f03c44cbe6c71fc625a223743b1d1b7626db5ce744c5fc78b13a90ffd4a3"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-applied-chemistry-390-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-applied-chemistry-390-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-applied-chemistry-390-card.png",
+      "bytes": 47476,
+      "sha256": "00b6c77fc21dcf3ae68500a8b59c20dd91d07a807300bd670bf3e4dc95ab2740"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-earth-1440-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-earth-1440-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-earth-1440-card.png",
+      "bytes": 40793,
+      "sha256": "8ddd3aee22522a9b81f9f9cdd4403c1ce1805f96f785d119c6a31e591fed9947"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-earth-1440-source.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-earth-1440-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-earth-1440-source.png",
+      "bytes": 75239,
+      "sha256": "cf8878f3a39c55637aaf44f9eab7c8d6e368cc13bd09112c5bc3aa6e160b3152"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-earth-390-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-earth-390-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-earth-390-card.png",
+      "bytes": 40039,
+      "sha256": "aa783faea226291cc6d13d877e4526ff037d02c92301de250a66e79a2abaa6ab"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-earth-390-source.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-earth-390-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-earth-390-source.png",
+      "bytes": 43080,
+      "sha256": "02b6a11531c2893c365285c3e5594c9bac06eef789bebaa5c49c743959a72876"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-life-1440-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-life-1440-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-life-1440-card.png",
+      "bytes": 41816,
+      "sha256": "e01efdf2db5dac67c29ed8e4014b78bd5d4ee4b4ae3af668c730aa5b03bfa21d"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-life-390-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-life-390-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-life-390-card.png",
+      "bytes": 41292,
+      "sha256": "37930b411cb26b95fe435bd105492049d6c3f7241e027ec7c73853a44fb39dfe"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-system-control-1440-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-system-control-1440-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-system-control-1440-card.png",
+      "bytes": 37297,
+      "sha256": "56f940be2aefccb22d6f965265a8ed891280bff1993a61d43ad2bc357c3b6f6f"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-system-control-1440-source.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-system-control-1440-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-system-control-1440-source.png",
+      "bytes": 82359,
+      "sha256": "cdd8c8abdcb453031e5aa44501f6688517a97d727f56a572a6515bf8565631f0"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-system-control-390-card.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-system-control-390-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-system-control-390-card.png",
+      "bytes": 36171,
+      "sha256": "ea628be1553f4b8e1747db1b538ecd16d26075a8b7abec6d133d9d553b6dc9f5"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/review-system-control-390-source.png",
+      "asset": "docs--onboarding--exam02b-evidence--review-system-control-390-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--review-system-control-390-source.png",
+      "bytes": 45019,
+      "sha256": "564a032e849cbf07b268c220f18a5496abe4d6e7d77b01911ef22cda36fd9575"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/social-human-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--social-human-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--social-human-report-desktop.png",
+      "bytes": 123489,
+      "sha256": "10cfa2af783d385a1c3388149d581fb38701a8fed4862635bf0196b1aa360e15"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/social-human-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--social-human-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--social-human-report-mobile.png",
+      "bytes": 51473,
+      "sha256": "5aa3e2b0288b5fa60ef348ac28f8be12047e44a6357920db8937c63e5df371d7"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/social-human-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--social-human-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--social-human-step2-desktop.png",
+      "bytes": 89082,
+      "sha256": "ae0d4609e7b79364bfe248b0c359ed795cc667277ba07d8892ae793405f28da4"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/social-human-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--social-human-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--social-human-step2-mobile-bottom.png",
+      "bytes": 48597,
+      "sha256": "d6aebe57f2443f0637966866f8b8e7c3f79540b422f0ceb6665bd43d3e206ac5"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/social-human-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--social-human-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--social-human-step2-mobile.png",
+      "bytes": 52664,
+      "sha256": "e843c21c934f53a998978d95a76f4d5be951169724f963b744647293cdaddbb5"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/system-control-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--system-control-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--system-control-report-desktop.png",
+      "bytes": 126195,
+      "sha256": "406b4ad0b1f4dec04d323c70e4cf783844ec24f68e1b886bd63e91aef2720a9c"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/system-control-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--system-control-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--system-control-report-mobile.png",
+      "bytes": 49388,
+      "sha256": "ac37807aecf17cd4738f2d408b3a9b5ce28db16062a345a62fa7c507ff315cf7"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/system-control-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--system-control-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--system-control-step2-desktop.png",
+      "bytes": 93182,
+      "sha256": "16baa657c5c42acbc536d7c2987e1bee17cfeaadecca3e00e44fdb1ac6c513ca"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/system-control-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--system-control-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--system-control-step2-mobile-bottom.png",
+      "bytes": 47416,
+      "sha256": "efba78464260686754bc578c5c37d59a4966a437c70287b18404ca9489e09702"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/system-control-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--system-control-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--system-control-step2-mobile.png",
+      "bytes": 54627,
+      "sha256": "079fb6b962cbda169e7e5c05a888fa38617a7249e08bf6007cbc51a5c0584409"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/transdisciplinary-report-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--transdisciplinary-report-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--transdisciplinary-report-desktop.png",
+      "bytes": 127628,
+      "sha256": "155f4dc658449e9c02066a60a57e534af950ba5cc8aafda93d2e6089f00a6fb5"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/transdisciplinary-report-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--transdisciplinary-report-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--transdisciplinary-report-mobile.png",
+      "bytes": 51204,
+      "sha256": "6fa0a24367bcb58d47c65bdd5f2cdc0dd4c3da35206b3581a37b81c7c0fc3e47"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/transdisciplinary-step2-desktop.png",
+      "asset": "docs--onboarding--exam02b-evidence--transdisciplinary-step2-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--transdisciplinary-step2-desktop.png",
+      "bytes": 87608,
+      "sha256": "3065edf212ab73d744db84215d4b7e1768249138fb91b3ebfe158e1f96294b88"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/transdisciplinary-step2-mobile-bottom.png",
+      "asset": "docs--onboarding--exam02b-evidence--transdisciplinary-step2-mobile-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--transdisciplinary-step2-mobile-bottom.png",
+      "bytes": 48937,
+      "sha256": "a0ff283bcb3370f4a16e6775ed70e57b553e648a96d99391ba6dda43552b1cbf"
+    },
+    {
+      "path": "docs/onboarding/exam02b-evidence/transdisciplinary-step2-mobile.png",
+      "asset": "docs--onboarding--exam02b-evidence--transdisciplinary-step2-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--exam02b-evidence--transdisciplinary-step2-mobile.png",
+      "bytes": 50023,
+      "sha256": "4a88ae4004e53dabffed41cffc89ca607ba23a5bdb13ce711ddb4a192a2588cf"
+    },
+    {
+      "path": "docs/onboarding/m18-design-evidence/desktop-essay-card.png",
+      "asset": "docs--onboarding--m18-design-evidence--desktop-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-design-evidence--desktop-essay-card.png",
+      "bytes": 89734,
+      "sha256": "48189e254df3779e2ef0bde15c4bc75b564c085edcf4ae8ead77d70cc4832327"
+    },
+    {
+      "path": "docs/onboarding/m18-design-evidence/mobile-report.png",
+      "asset": "docs--onboarding--m18-design-evidence--mobile-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-design-evidence--mobile-report.png",
+      "bytes": 44795,
+      "sha256": "9ff6c644044867acc3551a1e7681a4a95ee67614d9de79120425b72cc9995656"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/desktop-E09-source.png",
+      "asset": "docs--onboarding--m18-evidence--desktop-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--desktop-E09-source.png",
+      "bytes": 103652,
+      "sha256": "891d7b408810823ecc7401b6950a91c27caa0a658b7e0e5260399a2951569411"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/desktop-E10-source.png",
+      "asset": "docs--onboarding--m18-evidence--desktop-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--desktop-E10-source.png",
+      "bytes": 130844,
+      "sha256": "7fbf3b9e15129e918acdf62219ad48ba9513e4ce7c3f0af78af854e32b2a71df"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/desktop-essay-card.png",
+      "asset": "docs--onboarding--m18-evidence--desktop-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--desktop-essay-card.png",
+      "bytes": 89734,
+      "sha256": "48189e254df3779e2ef0bde15c4bc75b564c085edcf4ae8ead77d70cc4832327"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/desktop-essay-relations.png",
+      "asset": "docs--onboarding--m18-evidence--desktop-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--desktop-essay-relations.png",
+      "bytes": 88348,
+      "sha256": "94cac6740e48a9a95d4065c209ad45008feef3d062c4471ca6f90c1621346c4f"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/desktop-report.png",
+      "asset": "docs--onboarding--m18-evidence--desktop-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--desktop-report.png",
+      "bytes": 113614,
+      "sha256": "f4ff269bfe48d3beb9e894511bfedf0cb371ee1928e142dd5a30580bde6ef4f1"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/isct-exam-1440-report.png",
+      "asset": "docs--onboarding--m18-evidence--isct-exam-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--isct-exam-1440-report.png",
+      "bytes": 118683,
+      "sha256": "5064f1c11a64126a25eb85ff88eaa9123704caaab4cf276db64fc0a3e0f5b1e7"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/isct-exam-390-report.png",
+      "asset": "docs--onboarding--m18-evidence--isct-exam-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--isct-exam-390-report.png",
+      "bytes": 48048,
+      "sha256": "630392fc1cbcbec805748e595877267b05a41267a78a205838cc45acfff67044"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-E09-source.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-E09-source.png",
+      "bytes": 41586,
+      "sha256": "be082034e5f6caf64ebe83e50969f22937a494d81ff73f8d77a886c4219e0c0c"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-E10-source.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-E10-source.png",
+      "bytes": 57661,
+      "sha256": "4edbb7f1f2c0c605c8c59f6dc796950c5b3e4363a90d6935259ea7de5cfb5672"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-essay-card-bottom.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-essay-card-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-essay-card-bottom.png",
+      "bytes": 47533,
+      "sha256": "90030c30cdc799cad288c6ba1af88be92551429003d5d078c94c613b40d5a488"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-essay-card.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-essay-card.png",
+      "bytes": 53578,
+      "sha256": "7c6723c45a701bf421607411002a641a22edd297730b0a3e1b6453387caf8063"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-essay-relations.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-essay-relations.png",
+      "bytes": 57639,
+      "sha256": "a15a3889c6f77e83ec207b2ca54cb1e9bb1ce8fd6e11b805adf43dab567de4cd"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/mobile-report.png",
+      "asset": "docs--onboarding--m18-evidence--mobile-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--mobile-report.png",
+      "bytes": 44795,
+      "sha256": "9ff6c644044867acc3551a1e7681a4a95ee67614d9de79120425b72cc9995656"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/old-three-1440-report.png",
+      "asset": "docs--onboarding--m18-evidence--old-three-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--old-three-1440-report.png",
+      "bytes": 116428,
+      "sha256": "50266b50fc5bf7616ae42a0cc2e1c13387240ea037c2206316d014c476cf8626"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/old-three-390-report.png",
+      "asset": "docs--onboarding--m18-evidence--old-three-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--old-three-390-report.png",
+      "bytes": 45181,
+      "sha256": "c87bc7aeccd3dc97a764ca87efd823099f1c4d81c6905f888db1b6e8c0641051"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/synthetic-1440-guide-0.png",
+      "asset": "docs--onboarding--m18-evidence--synthetic-1440-guide-0.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--synthetic-1440-guide-0.png",
+      "bytes": 110832,
+      "sha256": "c5400a10f2034de0ea8808aa6c90c073b5d1ee7992c7975c0c16bac07f892bba"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/synthetic-1440-guide-1.png",
+      "asset": "docs--onboarding--m18-evidence--synthetic-1440-guide-1.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--synthetic-1440-guide-1.png",
+      "bytes": 110832,
+      "sha256": "c5400a10f2034de0ea8808aa6c90c073b5d1ee7992c7975c0c16bac07f892bba"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/synthetic-390-guide-0.png",
+      "asset": "docs--onboarding--m18-evidence--synthetic-390-guide-0.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--synthetic-390-guide-0.png",
+      "bytes": 43689,
+      "sha256": "21dbe0009ccfbd4730f66a84c4f4234a5a9e3079bc816a601f32146df64784d0"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/synthetic-390-guide-1.png",
+      "asset": "docs--onboarding--m18-evidence--synthetic-390-guide-1.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--synthetic-390-guide-1.png",
+      "bytes": 43689,
+      "sha256": "21dbe0009ccfbd4730f66a84c4f4234a5a9e3079bc816a601f32146df64784d0"
+    },
+    {
+      "path": "docs/onboarding/m18-evidence/unknown-report.png",
+      "asset": "docs--onboarding--m18-evidence--unknown-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m18-evidence--unknown-report.png",
+      "bytes": 112251,
+      "sha256": "8afdee0a178aaf8516467c8ae546b266412ad32a146ae3bb8f0581679901f915"
+    },
+    {
+      "path": "docs/onboarding/m19-design-evidence/five-topic-replay/desktop-application-questionnaire-guide.png",
+      "asset": "docs--onboarding--m19-design-evidence--five-topic-replay--desktop-application-questionnaire-guide.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-design-evidence--five-topic-replay--desktop-application-questionnaire-guide.png",
+      "bytes": 81388,
+      "sha256": "54a2f36d2db6a31393167c03a89c2659396713bcc9335487b226d998038ee55b"
+    },
+    {
+      "path": "docs/onboarding/m19-design-evidence/five-topic-replay/mobile-report-available-not_yet.png",
+      "asset": "docs--onboarding--m19-design-evidence--five-topic-replay--mobile-report-available-not_yet.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-design-evidence--five-topic-replay--mobile-report-available-not_yet.png",
+      "bytes": 44795,
+      "sha256": "9ff6c644044867acc3551a1e7681a4a95ee67614d9de79120425b72cc9995656"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-E09-source.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-E09-source.png",
+      "bytes": 98822,
+      "sha256": "3f5dc9646d7e147c4e4febe13e1fdd0ea17517ad43a7c0c1fecedb063a1969ba"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-E10-source.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-E10-source.png",
+      "bytes": 125443,
+      "sha256": "c734e962ba6ee461ae41d3cbe314ddcead0f03bbff60dfdf36657086d9000d47"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-E11-source.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-E11-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-E11-source.png",
+      "bytes": 104315,
+      "sha256": "901b828d08784b2141ba9125edf73eb9bee4d18e4c8a6d65879ce3872c9569ea"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-E12-source.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-E12-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-E12-source.png",
+      "bytes": 126013,
+      "sha256": "f457242bd0d7fe6f6d987984a0818080b7ecb9ff6625b1220c0aea69c2415a46"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-application-essay-guide.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-application-essay-guide.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-essay-guide.png",
+      "bytes": 90680,
+      "sha256": "9604bf577137aa200ef1df0a10a7b2155682c78e8a6353727cae96b7e64678a6"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-application-essay-relations.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-application-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-essay-relations.png",
+      "bytes": 82724,
+      "sha256": "c275d2d6ff0542aeeaa3494d5a69f19df8eb4a0f394efaf7dac73504adda042f"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-application-questionnaire-guide.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-application-questionnaire-guide.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-questionnaire-guide.png",
+      "bytes": 81388,
+      "sha256": "54a2f36d2db6a31393167c03a89c2659396713bcc9335487b226d998038ee55b"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-application-questionnaire-relations.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-application-questionnaire-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-application-questionnaire-relations.png",
+      "bytes": 91329,
+      "sha256": "2e3f1ce4f1b314badc4ebc6ff75d49a44e8f0da4b298b2ebe6c834d45564bbbf"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-report-available-not_yet.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-report-available-not_yet.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-report-available-not_yet.png",
+      "bytes": 117253,
+      "sha256": "f49624365f1337801afdf61ef4a13f7315871389cee9af574b17ad0129d49959"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-report-not_yet-available.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-report-not_yet-available.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-report-not_yet-available.png",
+      "bytes": 115572,
+      "sha256": "5539faf5a125ef0b46ae9c04f4b5a6ec61cd696b7edfc375fc5c1638a398e0de"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/desktop-report-unknown-unknown.png",
+      "asset": "docs--onboarding--m19-evidence--desktop-report-unknown-unknown.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--desktop-report-unknown-unknown.png",
+      "bytes": 125861,
+      "sha256": "6ccea815826420ea72929f4e4d46eb59c8937f8659d76718e0fa7a7c130a13dc"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/isct-exam-1440-report.png",
+      "asset": "docs--onboarding--m19-evidence--isct-exam-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--isct-exam-1440-report.png",
+      "bytes": 118683,
+      "sha256": "5064f1c11a64126a25eb85ff88eaa9123704caaab4cf276db64fc0a3e0f5b1e7"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/isct-exam-390-report.png",
+      "asset": "docs--onboarding--m19-evidence--isct-exam-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--isct-exam-390-report.png",
+      "bytes": 48048,
+      "sha256": "630392fc1cbcbec805748e595877267b05a41267a78a205838cc45acfff67044"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/isct-materials-1440-report.png",
+      "asset": "docs--onboarding--m19-evidence--isct-materials-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--isct-materials-1440-report.png",
+      "bytes": 122495,
+      "sha256": "3a0e3cf4c4353f081c32bde7380d104a74063989a5d99e5d532178fa052fea47"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/isct-materials-390-report.png",
+      "asset": "docs--onboarding--m19-evidence--isct-materials-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--isct-materials-390-report.png",
+      "bytes": 50830,
+      "sha256": "508a6dd2a00223370a7a51d0c5ec2f94ca686f14fe3faa78483aa018d7c87cfe"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/desktop-E09-source.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--desktop-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--desktop-E09-source.png",
+      "bytes": 103652,
+      "sha256": "891d7b408810823ecc7401b6950a91c27caa0a658b7e0e5260399a2951569411"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/desktop-E10-source.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--desktop-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--desktop-E10-source.png",
+      "bytes": 130844,
+      "sha256": "7fbf3b9e15129e918acdf62219ad48ba9513e4ce7c3f0af78af854e32b2a71df"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/desktop-essay-card.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--desktop-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--desktop-essay-card.png",
+      "bytes": 89734,
+      "sha256": "48189e254df3779e2ef0bde15c4bc75b564c085edcf4ae8ead77d70cc4832327"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/desktop-essay-relations.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--desktop-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--desktop-essay-relations.png",
+      "bytes": 88348,
+      "sha256": "94cac6740e48a9a95d4065c209ad45008feef3d062c4471ca6f90c1621346c4f"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/desktop-report.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--desktop-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--desktop-report.png",
+      "bytes": 113614,
+      "sha256": "f4ff269bfe48d3beb9e894511bfedf0cb371ee1928e142dd5a30580bde6ef4f1"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-E09-source.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-E09-source.png",
+      "bytes": 41586,
+      "sha256": "be082034e5f6caf64ebe83e50969f22937a494d81ff73f8d77a886c4219e0c0c"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-E10-source.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-E10-source.png",
+      "bytes": 57661,
+      "sha256": "4edbb7f1f2c0c605c8c59f6dc796950c5b3e4363a90d6935259ea7de5cfb5672"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-essay-card-bottom.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-essay-card-bottom.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-essay-card-bottom.png",
+      "bytes": 47533,
+      "sha256": "90030c30cdc799cad288c6ba1af88be92551429003d5d078c94c613b40d5a488"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-essay-card.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-essay-card.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-essay-card.png",
+      "bytes": 53578,
+      "sha256": "7c6723c45a701bf421607411002a641a22edd297730b0a3e1b6453387caf8063"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-essay-relations.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-essay-relations.png",
+      "bytes": 57639,
+      "sha256": "a15a3889c6f77e83ec207b2ca54cb1e9bb1ce8fd6e11b805adf43dab567de4cd"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/mobile-report.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--mobile-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--mobile-report.png",
+      "bytes": 44795,
+      "sha256": "9ff6c644044867acc3551a1e7681a4a95ee67614d9de79120425b72cc9995656"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/legacy-v2/unknown-report.png",
+      "asset": "docs--onboarding--m19-evidence--legacy-v2--unknown-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--legacy-v2--unknown-report.png",
+      "bytes": 112251,
+      "sha256": "8afdee0a178aaf8516467c8ae546b266412ad32a146ae3bb8f0581679901f915"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-E09-source.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-E09-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E09-source.png",
+      "bytes": 41586,
+      "sha256": "be082034e5f6caf64ebe83e50969f22937a494d81ff73f8d77a886c4219e0c0c"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-E10-source.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-E10-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E10-source.png",
+      "bytes": 57661,
+      "sha256": "4edbb7f1f2c0c605c8c59f6dc796950c5b3e4363a90d6935259ea7de5cfb5672"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-E11-source.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-E11-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E11-source.png",
+      "bytes": 38712,
+      "sha256": "086926ee997fd271113e9c9f50dbda509624b142959baeca24643f7e85e8fba2"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-E12-source.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-E12-source.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-E12-source.png",
+      "bytes": 58355,
+      "sha256": "893ed7972809d1d4d922df4c475ae89c374f77e5f6477342e1cc95e727da26c2"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-application-essay-guide.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-application-essay-guide.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-application-essay-guide.png",
+      "bytes": 53588,
+      "sha256": "5188f0f1759737316cf00ced9ee868d2e58027eb208c0a0fb7dcb20bbe420a0f"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-application-essay-relations.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-application-essay-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-application-essay-relations.png",
+      "bytes": 57639,
+      "sha256": "a15a3889c6f77e83ec207b2ca54cb1e9bb1ce8fd6e11b805adf43dab567de4cd"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-application-questionnaire-guide.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-application-questionnaire-guide.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-application-questionnaire-guide.png",
+      "bytes": 55298,
+      "sha256": "9d2735ec418aa9188176a800e52beeb81187e4d59abbd9ff5f3375151c8f5528"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-application-questionnaire-relations.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-application-questionnaire-relations.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-application-questionnaire-relations.png",
+      "bytes": 59307,
+      "sha256": "0857be1c9cdae935aeedeb3af0ff5fae08e4fa6778749bc57af37f4242c89841"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-report-available-not_yet.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-report-available-not_yet.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-report-available-not_yet.png",
+      "bytes": 44795,
+      "sha256": "9ff6c644044867acc3551a1e7681a4a95ee67614d9de79120425b72cc9995656"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-report-not_yet-available.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-report-not_yet-available.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-report-not_yet-available.png",
+      "bytes": 45356,
+      "sha256": "18db7b1a96f82cd12f480f6e9c2eec4785fb24fa05c9005c53c095dfc81a6e18"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/mobile-report-unknown-unknown.png",
+      "asset": "docs--onboarding--m19-evidence--mobile-report-unknown-unknown.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--mobile-report-unknown-unknown.png",
+      "bytes": 50105,
+      "sha256": "3bbc97a8241cc9527d4ab095fe4fd6d33643a387ad0c536b823a2ce235076c95"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/old-three-1440-report.png",
+      "asset": "docs--onboarding--m19-evidence--old-three-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--old-three-1440-report.png",
+      "bytes": 116428,
+      "sha256": "50266b50fc5bf7616ae42a0cc2e1c13387240ea037c2206316d014c476cf8626"
+    },
+    {
+      "path": "docs/onboarding/m19-evidence/old-three-390-report.png",
+      "asset": "docs--onboarding--m19-evidence--old-three-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--m19-evidence--old-three-390-report.png",
+      "bytes": 45181,
+      "sha256": "c87bc7aeccd3dc97a764ca87efd823099f1c4d81c6905f888db1b6e8c0641051"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-report-dates.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-report-dates.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-report-dates.png",
+      "bytes": 597619,
+      "sha256": "1cd9dde5629ef37895bc953f58d3bacd7bfbe83fde035af131256d590924d464"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-report-materials.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-report-materials.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-report-materials.png",
+      "bytes": 614766,
+      "sha256": "79f1973db05a02ce7adfa34d670053f338222a55546dc822f293993b51a3bac5"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-step2-focus.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-step2-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step2-focus.png",
+      "bytes": 81536,
+      "sha256": "1cedc75ca7d81243da31600f2a3667b576874bca09a1528d8f10f1fefbbb531f"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-step2.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step2.png",
+      "bytes": 608550,
+      "sha256": "0d4c6a4918d20b0e5aa3f1ca958d20bb5be56d7501feb9f752f3ab8091899c0a"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-step4-focus.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-step4-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step4-focus.png",
+      "bytes": 58141,
+      "sha256": "051c7ce1a1c4960ffb796b5caf8378e7cee03f1d9e80762e13d9a40ac01bd2ea"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/desktop-step4.png",
+      "asset": "docs--onboarding--prep01-evidence--desktop-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step4.png",
+      "bytes": 550659,
+      "sha256": "9c70f8ec09e5b31c614bb080c1d5b175119105907772cff4c8d706f3cd93d2fc"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-report-dates.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-report-dates.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-report-dates.png",
+      "bytes": 528619,
+      "sha256": "2f530e3dbffbfa63dec44c8c0ad26635e235735de143b0d8b6a623a28b939381"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-report-materials.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-report-materials.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-report-materials.png",
+      "bytes": 532369,
+      "sha256": "e68fef0362ad00ba7c89b12b51ed9098a634124d40c36e1b66e14e533b6f039b"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-step2-focus.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-step2-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step2-focus.png",
+      "bytes": 51107,
+      "sha256": "12b8c6070e0fc22baec9978811800534db44c0e5407afc9c6080b2315ef88dd4"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-step2.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step2.png",
+      "bytes": 552782,
+      "sha256": "444ee9a733c07c08eba3c4382be1ea2d37dde2f7cfbc788cccbfd01157a922c9"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-step4-focus.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-step4-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step4-focus.png",
+      "bytes": 46364,
+      "sha256": "f0888c33ff87b11778a0961fe13451882b4862662f2c2f5aa0eaab58ba9f3ce6"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/mobile-step4.png",
+      "asset": "docs--onboarding--prep01-evidence--mobile-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step4.png",
+      "bytes": 517368,
+      "sha256": "53af28a84fb0d0b91df1a12fa29811b02c4fea2d0f36a640caa2fac6e4ea4150"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/r1-kind_unknown.png",
+      "asset": "docs--onboarding--prep01-evidence--r1-kind_unknown.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-kind_unknown.png",
+      "bytes": 74756,
+      "sha256": "4d8447dc6dd2b0cb519457c206a6c50499f895ddb5455bb7548cebb772cc6a1d"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/r1-math.png",
+      "asset": "docs--onboarding--prep01-evidence--r1-math.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-math.png",
+      "bytes": 76971,
+      "sha256": "894cf5608285481a74d51a30832dce09db11c6d6641c04521536878cf517a1eb"
+    },
+    {
+      "path": "docs/onboarding/prep01-evidence/r1-qr_missing.png",
+      "asset": "docs--onboarding--prep01-evidence--r1-qr_missing.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-qr_missing.png",
+      "bytes": 79211,
+      "sha256": "e7c813eb0f10cfd56d4e4e6ae8459b61fb7d4f34686e85217bdd689de907224b"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-report-dates.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-report-dates.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-report-dates.png",
+      "bytes": 613803,
+      "sha256": "9b74dd70b11089fcffd6291d724dc54e3c620c49e08a096af08b5f8dc2804e28"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-report-materials-focus.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-report-materials-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-report-materials-focus.png",
+      "bytes": 120962,
+      "sha256": "6301f303c96ec63699aa7572cab9a108a408f1b6425052e7def8489716dbb148"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-report-materials.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-report-materials.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-report-materials.png",
+      "bytes": 629528,
+      "sha256": "4b648b062699d33254d68e1b132ee8a5df04bc39347313b629933debaa1a0a79"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-step3.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-step3.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-step3.png",
+      "bytes": 323566,
+      "sha256": "b33c3749eff4c4d7dabb192d9589c95a237b9a9d845d324ea6932a36f21dcef7"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-step4-focus.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-step4-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-step4-focus.png",
+      "bytes": 74187,
+      "sha256": "e87a4befd0ba012ff5081c732f9d74ab6331e5d2183eb085b2ad03c940e33077"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/desktop-step4.png",
+      "asset": "docs--onboarding--prep02-evidence--desktop-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-step4.png",
+      "bytes": 569807,
+      "sha256": "4724809a6d90c019edc57332f6630827613603e1ee84c1e4998e936d1ff6450b"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-report-dates.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-report-dates.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-report-dates.png",
+      "bytes": 538469,
+      "sha256": "2c3370ec500cb0902346d8096129dfc7134f886d93b729b53154fe6be2bedaeb"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-report-materials-focus.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-report-materials-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-report-materials-focus.png",
+      "bytes": 53860,
+      "sha256": "08c7f025de3bedea8df17ba29ddeea16c4ade4b4e62af6cbb654d5f200878d02"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-report-materials.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-report-materials.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-report-materials.png",
+      "bytes": 543241,
+      "sha256": "73a6af16fb0f39fcc4eeaea15d65bfa0307da93bf317afa803011fabd0080980"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-step3.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-step3.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-step3.png",
+      "bytes": 228237,
+      "sha256": "c3a1266c3c3820d829cc59a05358930a6090a3aaf4ce9336914ebfea3d3eed88"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-step4-focus.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-step4-focus.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-step4-focus.png",
+      "bytes": 48709,
+      "sha256": "b2f20f68b7aaef8be17323ff87bd2281e3dae099db404b15bcd8f6032d543de1"
+    },
+    {
+      "path": "docs/onboarding/prep02-evidence/mobile-step4.png",
+      "asset": "docs--onboarding--prep02-evidence--mobile-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-step4.png",
+      "bytes": 526520,
+      "sha256": "297da2baaf95b9d652df55a60cd0ea7f6964d6735837e0d121b5a0fa2730447c"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/before-gsfs-unknown-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--before-gsfs-unknown-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--before-gsfs-unknown-mobile.png",
+      "bytes": 88132,
+      "sha256": "2ae0e9b9d2658c7571637fedbc4a4498c736423ef86888244a2d8e31c67d51e3"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/before-isct-no-profile-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--before-isct-no-profile-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--before-isct-no-profile-desktop.png",
+      "bytes": 171659,
+      "sha256": "4f27a08ad25f0b55ff85633bd0d35497d33183f70fc042459667b68d55e6534e"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-inapplicable-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-inapplicable-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-inapplicable-desktop.png",
+      "bytes": 169805,
+      "sha256": "5d86a6248dd6b302245fc937d4d21f0fe1de18260ca69da1f606714ca8726659"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-inapplicable-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-inapplicable-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-inapplicable-mobile.png",
+      "bytes": 64480,
+      "sha256": "5ab1729afd17072a44e6922da69f52b9425360bd36ddbfab38bbff8ad2c86cdf"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-required-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-required-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-required-desktop.png",
+      "bytes": 172815,
+      "sha256": "7b1a4f1c9f96858172624bc4ed5fc03ecdab0ff4571385dd4dd40f55997ca8cf"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-required-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-required-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-required-mobile.png",
+      "bytes": 61881,
+      "sha256": "84ec898d1a63af9f41ed398fd9f60e129773147c6ff9387513c6bbab6d81f775"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-step2-desktop-full.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-step2-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-step2-desktop-full.png",
+      "bytes": 309513,
+      "sha256": "6bacc5d944005c6d892a9542eb088d52239b859e9ed9cf144c70d5fcc5574509"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-step2-mobile-full.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-step2-mobile-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-step2-mobile-full.png",
+      "bytes": 278206,
+      "sha256": "46ae2a3517dfee87ba68c36f458046fe943c3044ad7a5f3bcce568d289df296c"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-step4-desktop-full.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-step4-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-step4-desktop-full.png",
+      "bytes": 362067,
+      "sha256": "c3bed22a282068d2722e0789c20ba4cea810bc828d69612e732702cd531c4a5c"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-step4-mobile-full.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-step4-mobile-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-step4-mobile-full.png",
+      "bytes": 324944,
+      "sha256": "bf0589b262c0ece2c2c325786bf44b6b0944dbe97f5eefa146475cbf3d8c2da2"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-unknown-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-unknown-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-unknown-desktop.png",
+      "bytes": 173641,
+      "sha256": "85758450fb75fdb59f6577452d04b1a5754b2ea665643016729344cb6e91d112"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/gsfs-unknown-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--gsfs-unknown-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--gsfs-unknown-mobile.png",
+      "bytes": 68229,
+      "sha256": "2f40b02eb4eade5b979782f2d2a70d11bd046c981faae1e1edfb7dd73050291c"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-dates-only-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--isct-dates-only-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-dates-only-desktop.png",
+      "bytes": 136504,
+      "sha256": "0719ba7e5ff2815289b194b7ddb04c80a3eb5def2cd368c92e63bdf4d3d24e6f"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-dates-only-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--isct-dates-only-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-dates-only-mobile.png",
+      "bytes": 52091,
+      "sha256": "d2343dcb00621b4cdfa5461445493a4678855a6a647b885318c9da8acbdb0920"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-no-profile-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--isct-no-profile-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-no-profile-desktop.png",
+      "bytes": 158897,
+      "sha256": "6b6bfcdf03c89343d150ae1976d8c51cf01126849699f6e9d18b5d5f6785c4fd"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-no-profile-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--isct-no-profile-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-no-profile-mobile.png",
+      "bytes": 68572,
+      "sha256": "7ba49c34637600bdc859f50adb8b9c6123ea4708d22c741cfc7037250465d3f3"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-other-only-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--isct-other-only-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-other-only-desktop.png",
+      "bytes": 157669,
+      "sha256": "0a6d1ebf941b243d76b9d7db88f0ad5a50479cf83fe6750986eb1dae89d9e69a"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-other-only-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--isct-other-only-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-other-only-mobile.png",
+      "bytes": 55553,
+      "sha256": "cbb06d45ada1bfccc0121dc3359577493f6ca0779f8b33037c0792af23d84f61"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-step2-desktop-full.png",
+      "asset": "docs--onboarding--report02-evidence--isct-step2-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-step2-desktop-full.png",
+      "bytes": 465503,
+      "sha256": "39aa0123857346e89342e2f20889e58187838fc84c677eb62c0037b2bc59b6a4"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-step2-mobile-full.png",
+      "asset": "docs--onboarding--report02-evidence--isct-step2-mobile-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-step2-mobile-full.png",
+      "bytes": 434585,
+      "sha256": "2b62fac82197ad742da5cad8ac5cf51a2c99539df568033117a4b39dfea2f37d"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-step4-desktop-full.png",
+      "asset": "docs--onboarding--report02-evidence--isct-step4-desktop-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-step4-desktop-full.png",
+      "bytes": 527421,
+      "sha256": "f27a4d995706cebfa00de0c5f3a2fa6e1ca1a1296397dabc92d436e87f047dc4"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-step4-mobile-full.png",
+      "asset": "docs--onboarding--report02-evidence--isct-step4-mobile-full.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-step4-mobile-full.png",
+      "bytes": 543868,
+      "sha256": "c94299c4b8caa4b67b17cec870f05adf5c35b41e8c44b35a09d88068904f9961"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-with-profile-desktop.png",
+      "asset": "docs--onboarding--report02-evidence--isct-with-profile-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-with-profile-desktop.png",
+      "bytes": 148054,
+      "sha256": "fa109f3b99a39458400d2347d406051933e630f3803f531d2bfbab08992ddc8c"
+    },
+    {
+      "path": "docs/onboarding/report02-evidence/isct-with-profile-mobile.png",
+      "asset": "docs--onboarding--report02-evidence--isct-with-profile-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--report02-evidence--isct-with-profile-mobile.png",
+      "bytes": 60582,
+      "sha256": "e313f3cc22c5f1b63e8bb35fa1280df9972954973c30e2e50f585b63ce2f0136"
+    },
+    {
+      "path": "docs/onboarding/reportfix-evidence/after-certificate-default-desktop.png",
+      "asset": "docs--onboarding--reportfix-evidence--after-certificate-default-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--reportfix-evidence--after-certificate-default-desktop.png",
+      "bytes": 115837,
+      "sha256": "a3d65a63976f14c843e3a6cade96f08a1ac24684f49e4cc12d662368d720e124"
+    },
+    {
+      "path": "docs/onboarding/reportfix-evidence/after-certificate-default-mobile.png",
+      "asset": "docs--onboarding--reportfix-evidence--after-certificate-default-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--reportfix-evidence--after-certificate-default-mobile.png",
+      "bytes": 49546,
+      "sha256": "ae2e4387223b4ef27c826da318f7a7eb077faa97cf05d6d07f8f9d5b3bd935c0"
+    },
+    {
+      "path": "docs/onboarding/reportfix-evidence/after-certificate-exam-desktop.png",
+      "asset": "docs--onboarding--reportfix-evidence--after-certificate-exam-desktop.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--reportfix-evidence--after-certificate-exam-desktop.png",
+      "bytes": 117849,
+      "sha256": "6a7a8bd64328f42812f578aa7aed1a01e741b94bfb7e9e7ef19d0e4004d64683"
+    },
+    {
+      "path": "docs/onboarding/reportfix-evidence/after-certificate-exam-mobile.png",
+      "asset": "docs--onboarding--reportfix-evidence--after-certificate-exam-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--reportfix-evidence--after-certificate-exam-mobile.png",
+      "bytes": 46764,
+      "sha256": "66b07f542cc6b0941527ae4772c443f06bcf7994886cfed969ab354489c7bbfe"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-1440-report.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-1440-report.png",
+      "bytes": 104663,
+      "sha256": "30fd16216022fe357b2755aa1692fdde79ca16842e33798ddaa551e167a25eea"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-1440-step2.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-1440-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-1440-step2.png",
+      "bytes": 202740,
+      "sha256": "6dadaeb8cfc9fb79147ff94bc0b9f20e63db9dd8b139e3d283e687f4ec60c628"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-1440-step4.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-1440-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-1440-step4.png",
+      "bytes": 193229,
+      "sha256": "85f11081b8c5fca564f75c2775f851e1b5ba3bf193900e3969e7f0f92551b806"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-1440-tail.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-1440-tail.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-1440-tail.png",
+      "bytes": 48054,
+      "sha256": "18f28c53d53bf7268948cf187f7e5b231f1c7d21d0fa0521d4eefcfeb7f22dd7"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-390-report.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-390-report.png",
+      "bytes": 49092,
+      "sha256": "6e3f39f482506a34c25e69cb0ba7fb5376f18594bab909a337095dcb982da327"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-390-step2.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-390-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-390-step2.png",
+      "bytes": 170933,
+      "sha256": "520a528f23584e93575acbfeea6c3e6ffa25e67537a52d3677ea250d663f9f50"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-390-step4.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-390-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-390-step4.png",
+      "bytes": 167005,
+      "sha256": "524ed07900fdc224cbb63467a1aa6f067b8bc8baf666e4dccd728aa8b63a2e3e"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-gsfs-390-tail.png",
+      "asset": "docs--onboarding--tools01-evidence--after-gsfs-390-tail.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-gsfs-390-tail.png",
+      "bytes": 38152,
+      "sha256": "26cd38fdd1d8c7063c06676e49fef76c0b0b799c0cff64b12c18274123c87969"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-1440-report.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-1440-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-1440-report.png",
+      "bytes": 115576,
+      "sha256": "280d6382accb4a1c87c600bffd23d870a6c2e12400095e723e4a7726e9c2265b"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-1440-step2.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-1440-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-1440-step2.png",
+      "bytes": 598709,
+      "sha256": "34703169f49f26526831fcaf3c6ce5694fb510860cabbcb89775e29f54d46da8"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-1440-step4.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-1440-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-1440-step4.png",
+      "bytes": 563748,
+      "sha256": "673885cdf15a66fc3b83c69cb7d410e96220421732f17ca5b502d095935e85a1"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-1440-tail.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-1440-tail.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-1440-tail.png",
+      "bytes": 62716,
+      "sha256": "ae1970feaffa91c5adbc6858bbfb83f24e3604f23497024757bf1713c6e59bae"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-390-report.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-390-report.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-390-report.png",
+      "bytes": 54177,
+      "sha256": "c014b5430de41f95c43bfc606c7152000190703cf530d63d9ca6fb02cc387347"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-390-step2.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-390-step2.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-390-step2.png",
+      "bytes": 545552,
+      "sha256": "ae5bf378062ed1dbfb3d3f6e0f297f22848da67ed4561e90cfc1c13fa7760f80"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-390-step4.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-390-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-390-step4.png",
+      "bytes": 524694,
+      "sha256": "86007d6ecb0288685f1a8a1a8a1f4b4a4eeab5ccd9f6b0c7ad34a22372c5eb48"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/after-isct-390-tail.png",
+      "asset": "docs--onboarding--tools01-evidence--after-isct-390-tail.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--after-isct-390-tail.png",
+      "bytes": 48405,
+      "sha256": "82b3358af627a1736b84eeda7a166ed7588a4d4a2031bc54c0b9f818d26e13b6"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/before-gsfs-1440.png",
+      "asset": "docs--onboarding--tools01-evidence--before-gsfs-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--before-gsfs-1440.png",
+      "bytes": 52093,
+      "sha256": "4cd7bdb6ed0f3c97758b73b134bd6c4da24dfddaaae381651db9eb71e492b913"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/before-gsfs-390.png",
+      "asset": "docs--onboarding--tools01-evidence--before-gsfs-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--before-gsfs-390.png",
+      "bytes": 42477,
+      "sha256": "f226a90aad81e9b75825ca06203a1a96a529b3d2f107232c131e8829e3692e60"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/before-isct-1440.png",
+      "asset": "docs--onboarding--tools01-evidence--before-isct-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--before-isct-1440.png",
+      "bytes": 52093,
+      "sha256": "4cd7bdb6ed0f3c97758b73b134bd6c4da24dfddaaae381651db9eb71e492b913"
+    },
+    {
+      "path": "docs/onboarding/tools01-evidence/before-isct-390.png",
+      "asset": "docs--onboarding--tools01-evidence--before-isct-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--tools01-evidence--before-isct-390.png",
+      "bytes": 42477,
+      "sha256": "f226a90aad81e9b75825ca06203a1a96a529b3d2f107232c131e8829e3692e60"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-action-summary-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-action-summary-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-action-summary-1440.png",
+      "bytes": 341906,
+      "sha256": "39ec3a40d49c1862553b8c7803503b30ceed49fcb9d869ccb872c66cfda95ebe"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-dates-materials-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-dates-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-dates-materials-1440.png",
+      "bytes": 339020,
+      "sha256": "fa2c07861e61281bd4a899a1e555a3248497876911de8dbe63101f1228a79c83"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-dates-materials-390.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-dates-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-dates-materials-390.png",
+      "bytes": 293132,
+      "sha256": "682183d605aff5ef4f258a8fb0c8a4ceca072f70ec237b89eab4644c2ebd1891"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-personal-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-personal-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-personal-1440.png",
+      "bytes": 347489,
+      "sha256": "b5c9a3cc18e5a890c4570eade04bcc9d3ba2a01da379c6806b0a262084a72387"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-slice-conditions-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-slice-conditions-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-slice-conditions-1440.png",
+      "bytes": 230148,
+      "sha256": "e61b4809a377b28628b8667f8ce828f6cf649854ed929020e7edbaaf70e4a827"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/new-slice-materials-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--new-slice-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--new-slice-materials-1440.png",
+      "bytes": 219384,
+      "sha256": "0d08fbe5d991986d4a5a5d93bc019f6003148bc6be30b519b8ac297ffdc100ce"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/old-action-summary-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--old-action-summary-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-action-summary-1440.png",
+      "bytes": 339856,
+      "sha256": "391115acef495b24e1acb92e1287d8ceda4932bdbd90b8848fec779bc8a4f167"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/old-dates-materials-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--old-dates-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-dates-materials-1440.png",
+      "bytes": 332306,
+      "sha256": "0ff792a6f2dae4e39961258c538b8cf2ea28d3908ac3c35ca141e2cda5764ddd"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/old-dates-materials-390.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--old-dates-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-dates-materials-390.png",
+      "bytes": 287250,
+      "sha256": "f36cb6d77f5f5f4f2a13b80782ac34fac9d36ce622d15244703502f939b4ea03"
+    },
+    {
+      "path": "docs/onboarding/ui02-checkpoint1/old-personal-1440.png",
+      "asset": "docs--onboarding--ui02-checkpoint1--old-personal-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ui02-checkpoint1--old-personal-1440.png",
+      "bytes": 349143,
+      "sha256": "19b5cffc79cc46f194e6d2232b2ad83925d386b0d17a982f036ed4dbba28f97f"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-readiness-panel-1440.png",
+      "asset": "docs--onboarding--ux01-evidence--after-readiness-panel-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-readiness-panel-1440.png",
+      "bytes": 92257,
+      "sha256": "120b4c75f619ecd8219448bfb399bcd5324dbdbf290d3ad41d48babc27a9d7a3"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-readiness-panel-390.png",
+      "asset": "docs--onboarding--ux01-evidence--after-readiness-panel-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-readiness-panel-390.png",
+      "bytes": 66484,
+      "sha256": "7ffc5cd71a3288e77f3bbf21ff7292746756722ff5b18199f43a89fa82564c9b"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-report-failure-390.png",
+      "asset": "docs--onboarding--ux01-evidence--after-report-failure-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-report-failure-390.png",
+      "bytes": 60603,
+      "sha256": "5c68e495983fec0d64bbee719e41b2bb831181db045154a35dd4c3b8104645c8"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-report-wait-390.png",
+      "asset": "docs--onboarding--ux01-evidence--after-report-wait-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-report-wait-390.png",
+      "bytes": 80866,
+      "sha256": "967c68283e2e18f808a303913faff698af999008156d0ecb6e3e56fab95ca1a7"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-step-2-panel-1440.png",
+      "asset": "docs--onboarding--ux01-evidence--after-step-2-panel-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-step-2-panel-1440.png",
+      "bytes": 109773,
+      "sha256": "ed01434f3c628ebe329fbe9a55922d7c3fb10f06dc5f4b8cb77d4e2fdbf3e066"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/after-step-2-panel-390.png",
+      "asset": "docs--onboarding--ux01-evidence--after-step-2-panel-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-step-2-panel-390.png",
+      "bytes": 71408,
+      "sha256": "e8c78a8173f9503c07eae8f782afe5f812a3e7938a3250de247edf23e750447b"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/before-readiness-panel-1440.png",
+      "asset": "docs--onboarding--ux01-evidence--before-readiness-panel-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-readiness-panel-1440.png",
+      "bytes": 82559,
+      "sha256": "aaf848c720086e500892a74b7d7f6ee8fe22ac71e53dcb75cf96f7b029e88c52"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/before-readiness-panel-390.png",
+      "asset": "docs--onboarding--ux01-evidence--before-readiness-panel-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-readiness-panel-390.png",
+      "bytes": 60656,
+      "sha256": "6d1cebb1af8398d090f3913f89adcb285def8e6f328f5a7576105ffa16c5d295"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/before-step-2-panel-1440.png",
+      "asset": "docs--onboarding--ux01-evidence--before-step-2-panel-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-step-2-panel-1440.png",
+      "bytes": 98432,
+      "sha256": "f643e310ae05593c9c266faa445fb6e3df61abdfd888f1db5ded23aa9e44e2d4"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/before-step-2-panel-390.png",
+      "asset": "docs--onboarding--ux01-evidence--before-step-2-panel-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-step-2-panel-390.png",
+      "bytes": 66105,
+      "sha256": "fa913a426f63b5a82f8646b413bbfb7a34c445c65a834c16d0ccc99ea0f0fea9"
+    },
+    {
+      "path": "docs/onboarding/ux01-evidence/real-isct-step4-mobile.png",
+      "asset": "docs--onboarding--ux01-evidence--real-isct-step4-mobile.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--real-isct-step4-mobile.png",
+      "bytes": 67850,
+      "sha256": "1309e31df67b0fe4fe56b48cffd89a78166690b317efaedacd002b5ad694f9ea"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-answer-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-answer-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-answer-1440.png",
+      "bytes": 99802,
+      "sha256": "e81520ffcf252ee9ae58193a814c956693b06c0e15997ac4ad1c78cb87140e03"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-answer-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-answer-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-answer-390.png",
+      "bytes": 99106,
+      "sha256": "66e0db6277d50b0e98590c02a723b23c782abf1acc94c4c391987069e37e3af0"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-report-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-report-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-report-1440.png",
+      "bytes": 65161,
+      "sha256": "df623e00ffe00b1dd9dfa838f80e9af63811103bf0a49a1042c4da784be68234"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-report-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-report-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-report-390.png",
+      "bytes": 37162,
+      "sha256": "b5761fc7ee7205f1d2266e995aeec378ecc5260311d009dee3c0a6dc49bace4b"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-report-materials-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-report-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-report-materials-1440.png",
+      "bytes": 75831,
+      "sha256": "27e298adcbce4ce72e56949d8b4824035c9af8e95dd973f006b19069b1fdf601"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-report-materials-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-report-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-report-materials-390.png",
+      "bytes": 49885,
+      "sha256": "c5ba4adf1c540d9fca21d85e457efbd428cdf4dd26c72cefd1216d437dfa7949"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-step2-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-step2-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-step2-1440.png",
+      "bytes": 146077,
+      "sha256": "7d26e8809a910179e116cab1ea740bcfe02a79c1f20ca1608052545bdd083ccf"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-gsfs-step2-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-gsfs-step2-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-gsfs-step2-390.png",
+      "bytes": 136026,
+      "sha256": "6b3cb7302f6194d7772271c591114246a0ffaa29edbfebd78a370882b8149a59"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-report-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-report-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-report-1440.png",
+      "bytes": 58280,
+      "sha256": "4fb886e8c0b364e0a60ca9fb453c66004769ae878205d39f7f51db7cb8ea6957"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-report-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-report-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-report-390.png",
+      "bytes": 38091,
+      "sha256": "40fc2616a6bc692ecb13a34579131b0d8cddfe0c833c0df6b91144b093612752"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-report-materials-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-report-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-report-materials-1440.png",
+      "bytes": 77655,
+      "sha256": "eb82ac1a2a30764e728fef57aa09092fca316fb7a544402a386eb4d874a74deb"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-report-materials-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-report-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-report-materials-390.png",
+      "bytes": 45856,
+      "sha256": "c951826e052359f1db315b01a193c51438c3ca0e1d455369f75dd8398113219c"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step1-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step1-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step1-1440.png",
+      "bytes": 31796,
+      "sha256": "2cdb554ed10209069a75e6aa7040a4983a2403d568dad7562a47bfe54d5f06f1"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step1-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step1-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step1-390.png",
+      "bytes": 31592,
+      "sha256": "626e79b99cf4ea9214f97f1217aa4e849e00e31198afd8954fe28fb4fcb06dcc"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step2-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step2-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step2-1440.png",
+      "bytes": 270860,
+      "sha256": "a794cda7f6c7817485b7c6e95617691c0d8937daf3638873a93e6ec00d118114"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step2-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step2-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step2-390.png",
+      "bytes": 254568,
+      "sha256": "ab5c2359cf0a61539c4bb08f2713cb7fdac2851bd322ee64610ebcbb2542af69"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step3-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step3-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step3-1440.png",
+      "bytes": 154713,
+      "sha256": "9737c0752f8f328f1de1bf3edfc91d94d57b7f4db4b50ee3c654f9310747693f"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step3-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step3-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step3-390.png",
+      "bytes": 143659,
+      "sha256": "0d96352823977ad8a43874b212b1d8b39c5bfcb7276b3e8a3f98f8a51e6c192f"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step4-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step4-1440.png",
+      "bytes": 221882,
+      "sha256": "f7445105e6cbb193beb7652d71b907544c67db0118374df0cbaf235c578d80ec"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/after-step4-390.png",
+      "asset": "docs--onboarding--ux02-evidence--after-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--after-step4-390.png",
+      "bytes": 241335,
+      "sha256": "dfd7a25ec15f6cd643fb6537ad080c78f346e6d001793ed6774d9003559f2a07"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-answer-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-answer-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-answer-1440.png",
+      "bytes": 180836,
+      "sha256": "2a859657f294b2fa401082bc92074ea53917e0b6d6a429990283e0a241969c81"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-answer-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-answer-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-answer-390.png",
+      "bytes": 174577,
+      "sha256": "8e21c2bbd5c1904ed71cd9de7251f670db4fe10d5d15e56b62487a4d38ee0960"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-report-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-report-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-report-1440.png",
+      "bytes": 87604,
+      "sha256": "12ba1fbd0e6c6dff89c116b8f67b70d9d268d3d7bc45251692b76eab12e51ecb"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-report-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-report-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-report-390.png",
+      "bytes": 51360,
+      "sha256": "261c0c2fc4c7f0f4270d951fa959083962c7a98df2f74f8293f7b8b12fe2bb0a"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-report-materials-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-report-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-report-materials-1440.png",
+      "bytes": 89808,
+      "sha256": "32dc1b3a40b156e8e95f9f18a1e02daf2c01f3e0ca9e3ec230b2c50a6ce76133"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-report-materials-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-report-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-report-materials-390.png",
+      "bytes": 67511,
+      "sha256": "c8a1a064e7a85c16fd7a7a3911747a8af25b48a98d331d759bdf0cd531fc70ac"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-step2-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-step2-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-step2-1440.png",
+      "bytes": 211988,
+      "sha256": "154fff512fee06763f609c9ace470591cd0d7efbe2c35c4056f894877b80ce04"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-gsfs-step2-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-gsfs-step2-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-gsfs-step2-390.png",
+      "bytes": 198179,
+      "sha256": "837c7c1edb32ba0a651006a688f65b42aa4daba528c5a78068b8b56ab2bfdd00"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-report-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-report-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-report-1440.png",
+      "bytes": 82473,
+      "sha256": "3fe9a8105b29c7e9beafabddc2f9b01205d3701411d0d3d13cbf45e4b33984ab"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-report-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-report-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-report-390.png",
+      "bytes": 53028,
+      "sha256": "9feec1ca7006278018aaa8d0ee22a9339fc9785731d8386edf730427efa9f06e"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-report-materials-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-report-materials-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-report-materials-1440.png",
+      "bytes": 109093,
+      "sha256": "924b1c813c71987e45f91b52198db4d2556f32bbb3977b84208b03237d2e0d60"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-report-materials-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-report-materials-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-report-materials-390.png",
+      "bytes": 66781,
+      "sha256": "17f1f47dd03268701df4acf88674bd26ec57c56ad55ebe43dc667c70ef152efc"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step1-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step1-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step1-1440.png",
+      "bytes": 38164,
+      "sha256": "5859468459f4cc69e924da533bf1164cae324d845e6d676898a5462d8ce22b79"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step1-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step1-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step1-390.png",
+      "bytes": 37628,
+      "sha256": "265651ad8a62483f98bb75a075108768a84ce21bd6e6161c0b0d89e49eda1fb2"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step2-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step2-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step2-1440.png",
+      "bytes": 320477,
+      "sha256": "d1fb2f9ccc497562e94268d0ab0d7fe25c5e580aecbe238ac5b8f7073dbc7bd3"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step2-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step2-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step2-390.png",
+      "bytes": 313718,
+      "sha256": "0827d9bed72874c935c3d1bdee8eea1dd171198f94a19d5259831a2414c79e8c"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step3-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step3-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step3-1440.png",
+      "bytes": 196408,
+      "sha256": "cd0448f468c705807992d8e9d086d167a2ab5c86371302a2314d70b7fa4a790c"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step3-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step3-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step3-390.png",
+      "bytes": 186831,
+      "sha256": "ca9c1d1128b14a26a513c3922443f395f9c315d7cfd1d88c35ed380a4426f764"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step4-1440.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step4-1440.png",
+      "bytes": 353846,
+      "sha256": "c016b7f24fd3e33ad38fbd85d91be28ce7f698c732085189e80deed40c3d1c21"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/before-step4-390.png",
+      "asset": "docs--onboarding--ux02-evidence--before-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--before-step4-390.png",
+      "bytes": 392018,
+      "sha256": "cb19837b057067b92438cde828d873a9dae96cb17534f189edfea023d53f7a81"
+    },
+    {
+      "path": "docs/onboarding/ux02-evidence/review-unconfigured-synthetic-390.png",
+      "asset": "docs--onboarding--ux02-evidence--review-unconfigured-synthetic-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux02-evidence--review-unconfigured-synthetic-390.png",
+      "bytes": 34693,
+      "sha256": "872a5fa0572cdbbafc57dec4148e7a7e512f7e55e42d074618d2254cbbaa032c"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/after-gsfs-step4-1440.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-1440.png",
+      "bytes": 216569,
+      "sha256": "bee4793f4718bddf17c98009a31015b538b56b29d1bc4eaddbd6e5c423d5f99a"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/after-gsfs-step4-390.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-gsfs-step4-390.png",
+      "bytes": 196890,
+      "sha256": "d5df5093d25c6c703e05f1a3618a95b7f83cc9f726c340d40cd7ca43d09c6dad"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/after-isct-step4-1440.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--after-isct-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-isct-step4-1440.png",
+      "bytes": 370510,
+      "sha256": "c806dc0120016d8d7d584cbf1d3f540bfdf4834fe5dcc7ef642d71cd90cb3682"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/after-isct-step4-390.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--after-isct-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--after-isct-step4-390.png",
+      "bytes": 359203,
+      "sha256": "10ba2b392c288203da17fc2f6a346c78ea1e7d57b06953db6b4f8658f9ee167e"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/before-gsfs-step4-1440.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-1440.png",
+      "bytes": 241082,
+      "sha256": "4ed042966b86eee303ff229228a739752c4154b272bf395b389f51142a0b5ee5"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/before-gsfs-step4-390.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-gsfs-step4-390.png",
+      "bytes": 215349,
+      "sha256": "5abf74394b703e3921798dd4e36bfe4f4c2dd0c27d9aa16c910e2357647eab40"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/before-isct-step4-1440.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--before-isct-step4-1440.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-isct-step4-1440.png",
+      "bytes": 550513,
+      "sha256": "b75152a33b9cc718289b2e81e017cbac0ae36e14676c402522e688c40499404d"
+    },
+    {
+      "path": "docs/onboarding/ux03-urgent-evidence/before-isct-step4-390.png",
+      "asset": "docs--onboarding--ux03-urgent-evidence--before-isct-step4-390.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux03-urgent-evidence--before-isct-step4-390.png",
+      "bytes": 519006,
+      "sha256": "18a2f7f2c7642e05c4ae6d024993ccca084722279162b7ab0fa71e9547fe82fe"
+    },
+    {
+      "path": "outputs/ux04/acceptance.json",
+      "asset": "outputs--ux04--acceptance.json",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--acceptance.json",
+      "bytes": 2059,
+      "sha256": "db28c7ecd4f100bfe80ea3b8e7ef3ad4ee1fa6d3574033ce6450c30d809c45ad"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-desktop-1440-checklist.png",
+      "asset": "outputs--ux04--browser--ux04-desktop-1440-checklist.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-desktop-1440-checklist.png",
+      "bytes": 232881,
+      "sha256": "531a08f3a8b601db832b516fdec354aea8b2d1c02d8921ccd377638f95ddbac0"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-desktop-1440-step3-filled.png",
+      "asset": "outputs--ux04--browser--ux04-desktop-1440-step3-filled.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-desktop-1440-step3-filled.png",
+      "bytes": 193230,
+      "sha256": "6f47a34a61b9bed704817c4e24b28b34db3cd73e4da8ad1e87fe551ef3075306"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-desktop-1440-step3-initial.png",
+      "asset": "outputs--ux04--browser--ux04-desktop-1440-step3-initial.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-desktop-1440-step3-initial.png",
+      "bytes": 183594,
+      "sha256": "2c8334266268db3cd7396e82712411b874a40d6ace74b8b004f4489e5e5e54c7"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-mobile-390-checklist.png",
+      "asset": "outputs--ux04--browser--ux04-mobile-390-checklist.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-mobile-390-checklist.png",
+      "bytes": 258635,
+      "sha256": "813bff68588fb2d9209ee3abfaed389c8277f974d6e43d2e8749524ca5d9d011"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-mobile-390-step3-filled.png",
+      "asset": "outputs--ux04--browser--ux04-mobile-390-step3-filled.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-mobile-390-step3-filled.png",
+      "bytes": 191067,
+      "sha256": "673cb9f8aa125a1525dcdd0e80971e98f867e4cc3a67499c837a41788f502ad4"
+    },
+    {
+      "path": "outputs/ux04/browser/ux04-mobile-390-step3-initial.png",
+      "asset": "outputs--ux04--browser--ux04-mobile-390-step3-initial.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux04--browser--ux04-mobile-390-step3-initial.png",
+      "bytes": 107710,
+      "sha256": "290cab85d449cb9f7ab881b24f6b37b3fdccf4e87a9b097ec74ee4b71f9a734e"
+    },
+    {
+      "path": "outputs/ux05/acceptance.json",
+      "asset": "outputs--ux05--acceptance.json",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--acceptance.json",
+      "bytes": 3359,
+      "sha256": "de380fa873fbfd505baa5a1e8f0a6a171f01baea319b364768811955637bead9"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-desktop-1440-empty-step4.png",
+      "asset": "outputs--ux05--browser--ux05-desktop-1440-empty-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-desktop-1440-empty-step4.png",
+      "bytes": 308380,
+      "sha256": "21423aa8ac9144822cb8c22f5fc5e61842f9e699cee96423a95b89cb7423c617"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-desktop-1440-filters.png",
+      "asset": "outputs--ux05--browser--ux05-desktop-1440-filters.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-desktop-1440-filters.png",
+      "bytes": 7287,
+      "sha256": "85a88aa5d22c0724da3b09d13df5abae2a81afb7442b5884c249fe128989d3aa"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-desktop-1440-review-step4.png",
+      "asset": "outputs--ux05--browser--ux05-desktop-1440-review-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-desktop-1440-review-step4.png",
+      "bytes": 353859,
+      "sha256": "009b166c3cf4d2302e3e205793cf9e8b4744ef671e6662730b80f42fd1d61dfd"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-mobile-390-empty-step4.png",
+      "asset": "outputs--ux05--browser--ux05-mobile-390-empty-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-mobile-390-empty-step4.png",
+      "bytes": 386384,
+      "sha256": "518f6e3620a45042d73a38c8826d4a11c1f40769509d94621f3a95db7dad04e9"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-mobile-390-filters.png",
+      "asset": "outputs--ux05--browser--ux05-mobile-390-filters.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-mobile-390-filters.png",
+      "bytes": 8329,
+      "sha256": "02bce3f3528f785a4d9eb04009de85cc2fae03f75099978a8d2fab7da89b286d"
+    },
+    {
+      "path": "outputs/ux05/browser/ux05-mobile-390-review-step4.png",
+      "asset": "outputs--ux05--browser--ux05-mobile-390-review-step4.png",
+      "url": "https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/outputs--ux05--browser--ux05-mobile-390-review-step4.png",
+      "bytes": 402392,
+      "sha256": "1e35b84a68960b4d4663f819433a5db456f936135b881fb8b54fa07b09e6e9bf"
+    }
+  ],
+  "outputs_document_references": {
+    "outputs/parser-pilot/mineru-4.0.7/config.yaml": [
+      "docs/onboarding/mineru-4.0.7-pilot-audit.json"
+    ],
+    "outputs/parser-pilot/mineru-4.0.7/execution-lock.json": [
+      "docs/onboarding/mineru-4.0.7-pilot-report.md"
+    ],
+    "outputs/ux04/acceptance.json": [],
+    "outputs/ux04/browser/ux04-desktop-1440-checklist.png": [],
+    "outputs/ux04/browser/ux04-desktop-1440-step3-filled.png": [],
+    "outputs/ux04/browser/ux04-desktop-1440-step3-initial.png": [],
+    "outputs/ux04/browser/ux04-mobile-390-checklist.png": [],
+    "outputs/ux04/browser/ux04-mobile-390-step3-filled.png": [],
+    "outputs/ux04/browser/ux04-mobile-390-step3-initial.png": [],
+    "outputs/ux05/acceptance.json": [],
+    "outputs/ux05/browser/ux05-desktop-1440-empty-step4.png": [],
+    "outputs/ux05/browser/ux05-desktop-1440-filters.png": [],
+    "outputs/ux05/browser/ux05-desktop-1440-review-step4.png": [],
+    "outputs/ux05/browser/ux05-mobile-390-empty-step4.png": [],
+    "outputs/ux05/browser/ux05-mobile-390-filters.png": [],
+    "outputs/ux05/browser/ux05-mobile-390-review-step4.png": []
+  },
+  "retained_outputs": [
+    "outputs/parser-pilot/mineru-4.0.7/config.yaml",
+    "outputs/parser-pilot/mineru-4.0.7/execution-lock.json"
+  ],
+  "link_replacements": 202,
+  "changed_link_documents": [
+    "docs/onboarding/author01-design-acceptance.md",
+    "docs/onboarding/author01-implementation-review.md",
+    "docs/onboarding/evidui01-implementation-evidence.md",
+    "docs/onboarding/exam01-implementation-evidence.md",
+    "docs/onboarding/exam02a-display-contract-candidate.md",
+    "docs/onboarding/exam02b-completion-and-gaps.md",
+    "docs/onboarding/m18-completion-and-gaps.md",
+    "docs/onboarding/m18-design-acceptance.md",
+    "docs/onboarding/m19-delivery.md",
+    "docs/onboarding/m19-design-acceptance.md",
+    "docs/onboarding/prep01-implementation-evidence.md",
+    "docs/onboarding/prep02-implementation-evidence.md",
+    "docs/onboarding/report02-evidence/README.md",
+    "docs/onboarding/tools01-implementation-evidence.md",
+    "docs/onboarding/ui02-checkpoint1-review.md",
+    "docs/onboarding/ux01-implementation-evidence.md",
+    "docs/onboarding/ux02-implementation-evidence.md",
+    "docs/onboarding/ux03-urgent-implementation.md",
+    "docs/portfolio/screenshots-ja.md"
+  ]
+}

@@ -27,10 +27,10 @@
 
 | 页面 | 桌面 1440px | 手机 390px |
 | --- | --- | --- |
-| 第三步输入 | [截图](prep02-evidence/desktop-step3.png) | [截图](prep02-evidence/mobile-step3.png) |
-| 第四步提醒 | [聚焦截图](prep02-evidence/desktop-step4-focus.png) | [聚焦截图](prep02-evidence/mobile-step4-focus.png) |
-| 仅“材料与待办”报告 | [聚焦截图](prep02-evidence/desktop-report-materials-focus.png) | [聚焦截图](prep02-evidence/mobile-report-materials-focus.png) |
-| 仅“关键时间”报告 | [截图](prep02-evidence/desktop-report-dates.png) | [截图](prep02-evidence/mobile-report-dates.png) |
+| 第三步输入 | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-step3.png) | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-step3.png) |
+| 第四步提醒 | [聚焦截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-step4-focus.png) | [聚焦截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-step4-focus.png) |
+| 仅“材料与待办”报告 | [聚焦截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-report-materials-focus.png) | [聚焦截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-report-materials-focus.png) |
+| 仅“关键时间”报告 | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--desktop-report-dates.png) | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep02-evidence--mobile-report-dates.png) |
 
 [桌面复制文本](prep02-evidence/desktop-materials-copy.txt)与[手机复制文本](prep02-evidence/mobile-materials-copy.txt)逐字一致，SHA-256 均为 `21ce0d875ab9c530ae49dc35a2a641918fe11a49f3bb56ff55bddd129117608b`。仅选关键时间时无个人毕业、寄送、英语或材料准备结论；仅选材料与待办时显示寄送提醒。浏览器还核对优先链接目标与键盘焦点、四种筛选、五项材料数量、原文窗口、输入冲突提示、切校清空状态和零水平溢出。
 

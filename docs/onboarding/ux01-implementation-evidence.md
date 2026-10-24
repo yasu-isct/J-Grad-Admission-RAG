@@ -25,14 +25,14 @@
 
 | 步骤 | 原版 | 当前版 |
 | --- | --- | --- |
-| 第二步无个人信息 | [桌面](ux01-evidence/before-step-2-panel-1440.png) · [手机](ux01-evidence/before-step-2-panel-390.png) | [桌面](ux01-evidence/after-step-2-panel-1440.png) · [手机](ux01-evidence/after-step-2-panel-390.png) |
-| 第四步个人结果 | [桌面](ux01-evidence/before-readiness-panel-1440.png) · [手机](ux01-evidence/before-readiness-panel-390.png) | [桌面](ux01-evidence/after-readiness-panel-1440.png) · [手机](ux01-evidence/after-readiness-panel-390.png) |
+| 第二步无个人信息 | [桌面](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-step-2-panel-1440.png) · [手机](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-step-2-panel-390.png) | [桌面](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-step-2-panel-1440.png) · [手机](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-step-2-panel-390.png) |
+| 第四步个人结果 | [桌面](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-readiness-panel-1440.png) · [手机](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--before-readiness-panel-390.png) | [桌面](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-readiness-panel-1440.png) · [手机](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-readiness-panel-390.png) |
 
-补充状态图：[手机等待](ux01-evidence/after-report-wait-390.png)、[手机失败与重试](ux01-evidence/after-report-failure-390.png)。截图是保存响应回放，不能当作真实接口故障记录。
+补充状态图：[手机等待](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-report-wait-390.png)、[手机失败与重试](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--after-report-failure-390.png)。截图是保存响应回放，不能当作真实接口故障记录。
 
 ## 真实服务闭环
 
-使用现有 391 runtime 和 GSFS 配置，只读验证保护资产前后 SHA-256；独立临时端口由脚本持有并停止。脚本：[ux01-real-browser.py](ux01-real-browser.py)，记录：[real-journal.json](ux01-evidence/real-journal.json)，[真实手机第四步](ux01-evidence/real-isct-step4-mobile.png)。执行代码 head `dbab65e86a869900e91d98fc9e1a69d82f4111d2`：1 次服务启动并正常停止，基础要求与个人对照 POST 合计 3 次、GSFS 报告 POST 1 次、其他 POST 0 次、付费调用 0 次。31 项保护资产前后大小和 SHA-256 全部相同。较早的普通权限预检因 391 runtime 的 `.jgrad-demo-owned.json` 无读取权限而中止，未启动服务；随后仅以提升权限完成只读预检和单次闭环，未改 ACL。
+使用现有 391 runtime 和 GSFS 配置，只读验证保护资产前后 SHA-256；独立临时端口由脚本持有并停止。脚本：[ux01-real-browser.py](ux01-real-browser.py)，记录：[real-journal.json](ux01-evidence/real-journal.json)，[真实手机第四步](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--ux01-evidence--real-isct-step4-mobile.png)。执行代码 head `dbab65e86a869900e91d98fc9e1a69d82f4111d2`：1 次服务启动并正常停止，基础要求与个人对照 POST 合计 3 次、GSFS 报告 POST 1 次、其他 POST 0 次、付费调用 0 次。31 项保护资产前后大小和 SHA-256 全部相同。较早的普通权限预检因 391 runtime 的 `.jgrad-demo-owned.json` 无读取权限而中止，未启动服务；随后仅以提升权限完成只读预检和单次闭环，未改 ACL。
 
 真实闭环从 `/v1/reference-targets` 的两个目标进入：ISCT 第二步无个人信息报告和第四步个人结果报告均打开、聚焦，复制文本分别逐字匹配 [无个人信息](report02-evidence/isct-no-profile-after-copy.txt) 与 [已有对照](report02-evidence/isct-with-profile-after-copy.txt)，本地投影不发 POST。原个人材料状态经实际个人对照响应呈现；只打开学校选择器时输入不变，切到 GSFS 后旧报告及字段清空。GSFS 关系图能打开原文并返回，报告响应与既有保存响应一致；再切回 ISCT 无串校。真实会话未模拟服务故障，等待、失败与重试结论仅来自受控回放。
 

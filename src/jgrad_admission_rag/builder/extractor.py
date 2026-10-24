@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import re
+import sys
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-import re
 
 import fitz
 import pdfplumber
@@ -227,7 +228,7 @@ def main() -> None:
     parser.add_argument("--pages", nargs="*", type=int)
     args = parser.parse_args()
     extract_pdf_to_markdown(args.pdf, args.output, args.pages)
-    print(args.output)
+    sys.stdout.write((args.output) + "\n")
 
 
 if __name__ == "__main__":

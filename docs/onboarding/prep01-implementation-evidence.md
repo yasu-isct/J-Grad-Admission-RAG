@@ -38,10 +38,10 @@
 
 | 视图 | 桌面 | 手机 |
 | --- | --- | --- |
-| 第二步英语与材料 | [整页](prep01-evidence/desktop-step2.png)／[英语视口](prep01-evidence/desktop-step2-focus.png) | [整页](prep01-evidence/mobile-step2.png)／[英语视口](prep01-evidence/mobile-step2-focus.png) |
-| 第四步准备结果 | [整页](prep01-evidence/desktop-step4.png)／[英语视口](prep01-evidence/desktop-step4-focus.png) | [整页](prep01-evidence/mobile-step4.png)／[英语视口](prep01-evidence/mobile-step4-focus.png) |
-| 仅材料与待办报告 | [截图](prep01-evidence/desktop-report-materials.png) | [截图](prep01-evidence/mobile-report-materials.png) |
-| 仅关键时间报告 | [截图](prep01-evidence/desktop-report-dates.png) | [截图](prep01-evidence/mobile-report-dates.png) |
+| 第二步英语与材料 | [整页](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step2.png)／[英语视口](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step2-focus.png) | [整页](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step2.png)／[英语视口](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step2-focus.png) |
+| 第四步准备结果 | [整页](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step4.png)／[英语视口](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-step4-focus.png) | [整页](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step4.png)／[英语视口](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-step4-focus.png) |
+| 仅材料与待办报告 | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-report-materials.png) | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-report-materials.png) |
+| 仅关键时间报告 | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--desktop-report-dates.png) | [截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--mobile-report-dates.png) |
 
 真实产品服务会话只启动一次、基础／个人对照 POST 共两次，得到上面三份响应；初次桌面截图来自该会话。之后发现 p.10 OCR 对第④⑤项的拆行，修复展示绑定。最终桌面／手机截图、复制内容和考试／学校切换检查均由保存的真实响应在静态重放页完成；重放未启动产品服务、未向产品 API 发送 POST。真实规则集成测试单独只读既有 391 审核资产，执行请求→旧 Profile→旧规则→详细结果。完整计数和 12 项资产前后哈希见[运行记录](prep01-evidence/journal.json)，资产一致。
 
@@ -58,7 +58,7 @@
 
 按设计审查，仅修第四步展示整合。详细英语结果存在时，页面以其检查项替代旧 `english` item 参与**可见**统计、优先待办和筛选；API 的 `items/counts` 原样保留，材料数量仍只按材料 item 计算。`action_needed` 进入“需要补充”，`needs_information/not_covered` 进入“待确认／需审核”，`reported_match/not_applicable` 进入“已记录”。每个英语卡有实际 DOM 目标和键盘焦点，优先项统一使用可定位链接。
 
-使用现有 391 审核资产直接执行旧规则，生成数学例外、TOEIC 二维码明确为 false、考试类型未填三种结果；再让同一四步页面在静态服务器回放这些结果，拦截基础／对照请求，产品服务启动与产品 API POST 均为 0。[回放记录](prep01-evidence/r1-browser.json)核对提交的目标与英语字段、优先链接的存在／可见／焦点、四种筛选及报告无矛盾；[数学系截图](prep01-evidence/r1-math.png)、[二维码缺项截图](prep01-evidence/r1-qr_missing.png)、[类型未填截图](prep01-evidence/r1-kind_unknown.png)可直接查看。
+使用现有 391 审核资产直接执行旧规则，生成数学例外、TOEIC 二维码明确为 false、考试类型未填三种结果；再让同一四步页面在静态服务器回放这些结果，拦截基础／对照请求，产品服务启动与产品 API POST 均为 0。[回放记录](prep01-evidence/r1-browser.json)核对提交的目标与英语字段、优先链接的存在／可见／焦点、四种筛选及报告无矛盾；[数学系截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-math.png)、[二维码缺项截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-qr_missing.png)、[类型未填截图](https://github.com/yasu-isct/J-Grad-Admission-RAG/releases/download/development-evidence-20261025/docs--onboarding--prep01-evidence--r1-kind_unknown.png)可直接查看。
 
 - 数学：仅 `english:math = not_applicable`，无外部英语待办；英语卡只出现在“已记录”。
 - 二维码明确为无：`english:toeic_verification_qr_present = action_needed`，卡片在“需要补充”可见；日期／PDF 未填保持待确认。
