@@ -1,0 +1,704 @@
+{
+  "captured_on": "2026-10-25",
+  "started_at": "2026-10-25T15:54:05.925+09:00",
+  "finished_at": "2026-10-25T15:54:23.354+09:00",
+  "public_base_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/",
+  "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+  "main_base_commit_sha": "2ce9930088dd93718b309eb05788f33569541c1b",
+  "source": "public saved-sample Demo; no free-input RAG",
+  "derived_from": {
+    "script": "outputs/public-demo/capture-editorial.py",
+    "sha256": "06e8cc3a9818cdf8b681eb42b50a589fe266264086f603ac93b5e03e76127740"
+  },
+  "browser_version": "156.0.4314.42",
+  "capture_script_sha256": "011cbac96e2c0329a114fbd0138fb8346ef863996020cffe23ae93593d8a2cce",
+  "limits_bytes": {
+    "png": 400000,
+    "webm": 3000000
+  },
+  "groups": [
+    {
+      "group": "A",
+      "status": "captured"
+    },
+    {
+      "group": "B",
+      "status": "captured"
+    },
+    {
+      "group": "C",
+      "status": "captured"
+    },
+    {
+      "group": "A-video",
+      "status": "captured"
+    }
+  ],
+  "captures": [
+    {
+      "path": "a-evidence-main.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "html",
+      "captured_at": "2026-10-25T15:54:07.758+09:00",
+      "capture_finished_at": "2026-10-25T15:54:07.842+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "viewport",
+      "bytes": 208107,
+      "sha256": "29f1bab641cfb1678f301a0e28450d6d95a3a7bb25b2ec6d8725e0236f1d11a4",
+      "image_size": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "path": "a-relations-detail.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": ".relation-graph",
+      "captured_at": "2026-10-25T15:54:07.842+09:00",
+      "capture_finished_at": "2026-10-25T15:54:07.917+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "element crop",
+      "bytes": 74998,
+      "sha256": "ec7c4db494c464e7039acb936db4fcec7ba86e8d47bcc3c025ded14daa1e0526",
+      "image_size": {
+        "width": 792,
+        "height": 328
+      }
+    },
+    {
+      "path": "a-original-detail.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "#evidence-drawer",
+      "captured_at": "2026-10-25T15:54:07.961+09:00",
+      "capture_finished_at": "2026-10-25T15:54:08.022+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "element crop",
+      "bytes": 91822,
+      "sha256": "b9fdcc25918e8d6bdc7717182ba2690ab9fcf2a45339ace8bc375fbc8cc629bd",
+      "image_size": {
+        "width": 840,
+        "height": 634
+      }
+    },
+    {
+      "path": "a-return-detail.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "#evidence-drawer",
+      "captured_at": "2026-10-25T15:54:08.040+09:00",
+      "capture_finished_at": "2026-10-25T15:54:08.090+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "element crop",
+      "bytes": 116429,
+      "sha256": "9bc67c5c5cf4bd6238e4bcc9590f76e37c8d8631485ed9bdf5a8377bfd92da22",
+      "image_size": {
+        "width": 840,
+        "height": 602
+      }
+    },
+    {
+      "path": "b-requirements.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "html",
+      "captured_at": "2026-10-25T15:54:10.018+09:00",
+      "capture_finished_at": "2026-10-25T15:54:10.095+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "viewport",
+      "bytes": 228486,
+      "sha256": "1882b465d03077d2d430c5cb7e29c7f21016545a8a4083c8e17eb05fe5f602da",
+      "image_size": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "path": "b-prepare-action.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "html",
+      "captured_at": "2026-10-25T15:54:10.152+09:00",
+      "capture_finished_at": "2026-10-25T15:54:10.208+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "viewport",
+      "bytes": 115986,
+      "sha256": "ddee46b6edfd6c3a6c1dcda1eba7e8637ae36b4dee453290d8832e0f5ea1c901",
+      "image_size": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "path": "b-preparation-result.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": "html",
+      "captured_at": "2026-10-25T15:54:10.293+09:00",
+      "capture_finished_at": "2026-10-25T15:54:10.354+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "viewport",
+      "bytes": 91044,
+      "sha256": "4e67e08e580721c9591f10da2975306b73f0c60ea10c7f04d4e15ea6f1ae79a8",
+      "image_size": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "path": "c-report-mobile-long.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "device_scale_factor": 1,
+      "selector": "#reference-report-body .reader-report-paper",
+      "captured_at": "2026-10-25T15:54:11.732+09:00",
+      "capture_finished_at": "2026-10-25T15:54:12.348+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "continuous scroll strips, native pixels; excerpt, not full report",
+      "bytes": 180409,
+      "sha256": "af88767d927169d91c2bb012a7c6260562df89386caf785e1a320387e56617ff",
+      "scroll_range": {
+        "start": 248,
+        "end": 1942
+      },
+      "horizontal_crop": {
+        "left": 24,
+        "right": 390
+      },
+      "strips": [
+        {
+          "captured_at": "2026-10-25T15:54:11.962+09:00",
+          "scroll_top": 248,
+          "pixels": 610,
+          "frame_sha256": "db280d745c5ebc309a22cb526d1d2ce64523cd6010afdafaac585ddc738c1ff2"
+        },
+        {
+          "captured_at": "2026-10-25T15:54:12.111+09:00",
+          "scroll_top": 858,
+          "pixels": 610,
+          "frame_sha256": "89649b5f8a41b0b186eb4fe13dabbe9df751ab3d2a654b79713a2f8bff818fe6"
+        },
+        {
+          "captured_at": "2026-10-25T15:54:12.270+09:00",
+          "scroll_top": 1468,
+          "pixels": 474,
+          "frame_sha256": "f718cc9e8901a04f28d5e5d41e675fedbde2d6f90f639dfde92fcca36acb839a"
+        }
+      ],
+      "image_processing": "lossless PNG compression and native-pixel strip joining only",
+      "image_size": {
+        "width": 366,
+        "height": 1841
+      }
+    },
+    {
+      "path": "c-source-mobile.png",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "device_scale_factor": 1,
+      "selector": "html",
+      "captured_at": "2026-10-25T15:54:12.444+09:00",
+      "capture_finished_at": "2026-10-25T15:54:12.477+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "viewport",
+      "bytes": 75907,
+      "sha256": "25aef0fecc6e554d67a6fd3d61eb4eb37ec7aae69dc80af4b7a29d7116611389",
+      "image_size": {
+        "width": 390,
+        "height": 900
+      }
+    },
+    {
+      "path": "a-evidence-walkthrough.webm",
+      "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "device_scale_factor": 1,
+      "selector": [
+        ".relation-node button >> nth=2",
+        ".relation-back"
+      ],
+      "captured_at": "2026-10-25T15:54:12.573+09:00",
+      "capture_finished_at": "2026-10-25T15:54:22.893+09:00",
+      "public_commit_sha": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+      "kind": "unmodified Playwright recording",
+      "bytes": 978082,
+      "sha256": "1b85eeb180b506423a556c29821c39d18561df700511d6be5e6f25e1ff245886",
+      "duration_seconds": 10.2,
+      "audio_tracks": 0,
+      "post_processing": "none",
+      "raw_recording_sha256": "1b85eeb180b506423a556c29821c39d18561df700511d6be5e6f25e1ff245886"
+    }
+  ],
+  "actions": [
+    {
+      "at": "2026-10-25T15:54:07.576+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": "#requirements-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:07.753+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": "#requirements-output .requirement-card:has-text(\"英語スコア証明\") >> nth=0 >> button >> nth=0"
+    },
+    {
+      "at": "2026-10-25T15:54:07.955+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": ".relation-node button >> nth=2"
+    },
+    {
+      "at": "2026-10-25T15:54:08.037+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": ".relation-back"
+    },
+    {
+      "at": "2026-10-25T15:54:09.833+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:09.966+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-output .requirement-card:has-text(\"入学志願票\") >> nth=0 >> details.evidence-choice-list > summary"
+    },
+    {
+      "at": "2026-10-25T15:54:10.017+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-output .requirement-card:has-text(\"入学志願票\") >> nth=0 >> button >> nth=0"
+    },
+    {
+      "at": "2026-10-25T15:54:10.112+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#drawer-close"
+    },
+    {
+      "at": "2026-10-25T15:54:10.134+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-continue"
+    },
+    {
+      "at": "2026-10-25T15:54:10.233+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#comparison-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:11.508+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:11.621+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#requirements-continue"
+    },
+    {
+      "at": "2026-10-25T15:54:11.635+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#comparison-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:11.729+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": ".reference-generate:visible >> last"
+    },
+    {
+      "at": "2026-10-25T15:54:12.367+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#reference-close"
+    },
+    {
+      "at": "2026-10-25T15:54:12.385+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#readiness-panel .requirement-card:has-text(\"入学志願票\") >> nth=0 >> .evidence-choice-list summary"
+    },
+    {
+      "at": "2026-10-25T15:54:12.425+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+      "action": "click",
+      "selector": "#readiness-panel .requirement-card:has-text(\"入学志願票\") >> nth=0 >> .evidence-choice-list button >> nth=0"
+    },
+    {
+      "at": "2026-10-25T15:54:13.468+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": "#requirements-submit"
+    },
+    {
+      "at": "2026-10-25T15:54:13.589+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": "#requirements-output .requirement-card:has-text(\"英語スコア証明\") >> nth=0 >> button >> nth=0"
+    },
+    {
+      "at": "2026-10-25T15:54:15.239+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": ".relation-node button >> nth=2"
+    },
+    {
+      "at": "2026-10-25T15:54:17.273+09:00",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+      "action": "click",
+      "selector": ".relation-back"
+    }
+  ],
+  "verified_served_files": {
+    "app/index.html": "e6a45dec8545ec42207293fc07ae968255d3e0e31ae3fa51729ffabb5dfc3e85",
+    "app/assets/app.css": "389d81f193f8354ed4d03b84a0f0e19420737cf68addf0828b9e426f1984bf8c",
+    "app/demo.css": "6aeedb84da5fa7f6bb89b290741e65a7f774bf9350eef009c754f9f8c4c90a2c",
+    "language-switch.css": "646b8e9315570d81096e010dc23263f514b9edfd7d622474817480ce8d789c25",
+    "app/assets/overview.js": "0aef2f36ae4ffdc164f21189b3464dd31a3c9f89fb0e4fe076f21a332968b2e2",
+    "app/demo-bridge.js": "631f2fad208c5d23f463e7c19141c785c5852d588690e2c5aa783dff80388866",
+    "app/portfolio-theme.css": "4d9b4ab3f8b9e9ec449027f4cff46395782fdcaaa108bc62b5a058c0f225a568",
+    "app/official-pdf-links.js": "25a317f95cc73e816a47ac946ffd61b41b86106e0465dc750060641ad5cc25dc",
+    "app/assets/app.js": "a2552dbc025e19e3855a3a7eede68aaa1041e0d8518c7a3bed4ba92d2dcc2d6f",
+    "language-switch.js": "0f0820e89bd97aae84d3164629a095fe28d608407aa820022c057bb6cc9edd9b",
+    "app/assets/unified-core.mjs": "3d51531ba5febf4a78a9441222c41f148b81cb5ffa1188fbd9139605295e65d1",
+    "data/manifest.json": "2748802530793ac6b11186cd97ee4ab86e183c9cdd64a97c70da8260c783f06c",
+    "app/assets/material-presentation-catalog.mjs": "b98d70d543d755fca1ba3ea02cb53a6e51d92e1be2a2ed1a9d03fb0f154da3e7",
+    "app/assets/reviewed-material-presentation.mjs": "cb365679edcc310605685c8f45b3d65863e9e0833248382291152fb07eca66d0",
+    "app/assets/m19-material-presentation.mjs": "bb5fb6ca39745890c0cd26fa66b94e2c6eefb909311edfeec6a2de97f5dba1b5",
+    "data/catalog.json": "bcb35798e2d8116c650e82b6b4167994fe39292247fb1157525bd521962d6a1f",
+    "data/gsfs-evidence.json": "56d0dfab63efaaf003f329d427e36ba6543ca7904b18c639e9803bc55afdf91c",
+    "data/isct-base.json": "0cd17f3d9f0bbfb1d105ece20eb12deec40bf8300cb85a6a9401fefae240f607",
+    "data/isct-materials.json": "ecbe17a132db689e67e87dab43c080697851d8d0c60f15a04ec14950754aa6d2"
+  },
+  "network_requests": [
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/portfolio-theme.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo-bridge.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/overview.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/official-pdf-links.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/manifest.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/unified-core.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/material-presentation-catalog.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/reviewed-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/m19-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/catalog.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/gsfs-evidence.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/portfolio-theme.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo-bridge.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/overview.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/official-pdf-links.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/manifest.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/unified-core.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/material-presentation-catalog.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/reviewed-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/m19-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/catalog.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/isct-base.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/isct-materials.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/portfolio-theme.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo-bridge.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/overview.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/official-pdf-links.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/manifest.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/unified-core.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/material-presentation-catalog.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/reviewed-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/m19-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/catalog.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/isct-base.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/isct-materials.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/portfolio-theme.css"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/demo-bridge.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/overview.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/official-pdf-links.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/app.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/language-switch.js"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/manifest.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/unified-core.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/material-presentation-catalog.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/reviewed-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/assets/m19-material-presentation.mjs"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/catalog.json"
+    },
+    {
+      "method": "GET",
+      "url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/data/gsfs-evidence.json"
+    }
+  ],
+  "browser_or_network_errors": [],
+  "mobile_source_path": "close report, return to preparation card, open original"
+}
