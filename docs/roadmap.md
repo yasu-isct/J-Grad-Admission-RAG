@@ -1,5 +1,22 @@
 # Project Roadmap
 
+## 保留中
+
+2026-10-24：現在は求職用ポートフォリオとして維持し、以下の6件は保留作業としてIssueをクローズしました。完了・実装済みという意味ではありません。再開をユーザーが決めた時点で、同じIssueを再オープンし、範囲と受け入れ条件を確認します。
+
+| Issue | 保留中の作業 |
+| --- | --- |
+| [#163](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/163) | 日本語資格と英語得点換算の公式根拠の確認 |
+| [#187](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/187) | 既存データを再利用する公開サービスの配布構成 |
+| [#188](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/188) | 公開サービスのアクセス制限と生成コスト管理 |
+| [#189](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/189) | HTTPS環境での公開サービス検証 |
+| [#190](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/190) | 公開サービスの利用案内と運用手順 |
+| [#233](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/233) | 参考回答の読みやすさとエラー時の案内 |
+
+各Issueには「保留中の作業。再開時に再オープン」と記録しています。[#191](https://github.com/yasu-isct/J-Grad-Admission-RAG/issues/191)はプロジェクトの維持・設計記録として開いたままにします。関連する[Draft PR #236](https://github.com/yasu-isct/J-Grad-Admission-RAG/pull/236)は今回のクローズ対象に含めません。バックエンドの公開運用や追加実装は再開しません。
+
+以下の計画・進行状況は当時の記録です。この6件の現在の状態は本節を優先してください。
+
 ## 2026-10-16：求职用静态互动演示已发布（不是 M13 后台部署）
 
 用户明确授权公开作品演示。复用 main 33a473bd 的两校四步前端与既有公开保存响应，独立 gh-pages 发布： https://yasu-isct.github.io/J-Grad-Admission-RAG/ 。日本语入口、ISCT信息工学2027AprB三个情境、GSFS CBMS五主题两个情境；仅预设回放，无自由输入审查或实时问答。电脑/手机10条完整流程在本地及公开网址通过，关系原文往返、报告复制和学校状态隔离通过。产品POST/付费/下载/解析/KB与向量构建0，不发布PDF、模型、索引或用户信息。日语展示更新：四步操作、材料说明、报告与问答译文均已日语化，官方日文引文及数据身份保留；公开网址电脑/手机五情境复验通过。双语更新：保留中文公开演示，介绍页与四步页可切换日中语言，默认日语；保留学校与样例并从第一步打开。公开20情境及切换复验通过。2026-10-21 公开展示视觉更新：仅静态 Demo 的暖白墨蓝主题、字体与截图；GitHub 展示图来自改后 Demo，原证据图保留。详见 docs/portfolio/interactive-demo-ja.md。未放行下一开发任务；M13继续暂停。
