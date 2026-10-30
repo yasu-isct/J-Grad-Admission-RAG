@@ -1,1 +1,263 @@
-{"schema_version":"1.0","sourceCommit":"33a473bdb78a6fc08f8e853c192c951bd115d9ad","catalog":"catalog.json","schools":{"isct":{"base":"isct-base.json","scenarios":[{"id":"materials","label":"願書が未準備・英語証明を要確認","description":"サンプル：TOEIC L&Rの公式PDFは取得済み、QRコードは未確認。宛名ラベルは準備済みですが、入学志願票は未準備です。","fields":{"demo-credential-basis":"university_graduation","demo-english-kind":"toeic_lr","demo-english-date":"2024-06-11","demo-english-report":"true","demo-english-online-pdf":"true","demo-toeic-certificate":"true"},"materials":{"address_label":"available","application_form":"not_yet","statement_of_purpose":"unknown","bachelor_transcript":"unknown","graduation_or_expected_graduation_certificate":"unknown"},"comparison":"isct-materials.json"},{"id":"dispatched_unknown_arrival","label":"発送後、次に何を確認する？","description":"サンプル：2027年3月に卒業予定。オンライン手続きと発送は完了していますが、到着は未確認です。","fields":{"demo-credential-basis":"university_graduation","demo-completion-state":"expected","demo-expected-completion-date":"2027-03-20","demo-dispatched-date":"2026-06-09","demo-arrival-date":"","demo-online-steps":"true"},"comparison":"dispatched_unknown_arrival.json","expectedRequest":{"target":{"school_id":"isct","document_id":"isct_2027_4_2026_9_master","degree_id":"master","intake":{"year":2027,"month":4},"college_id":"情報理工学院","department_id":"情報工学系","application_route":"b_schedule"},"applicant":{"credential_basis":"university_graduation","completion_state":"expected"},"english_preparation":{},"application_preparation":{"expected_completion_date":"2027-03-20","materials_dispatched_date":"2026-06-09","materials_arrival_date":null,"online_steps_completed":true}}},{"id":"late_graduation_arrival","label":"卒業予定日を確認する","description":"サンプル：2027年4月10日に卒業予定。書類は期限内に届いていますが、オンライン手続きは未完了です。","fields":{"demo-credential-basis":"university_graduation","demo-completion-state":"expected","demo-expected-completion-date":"2027-04-10","demo-dispatched-date":"2026-06-09","demo-arrival-date":"2026-06-10","demo-online-steps":"false"},"comparison":"late_graduation_arrival.json","expectedRequest":{"target":{"school_id":"isct","document_id":"isct_2027_4_2026_9_master","degree_id":"master","intake":{"year":2027,"month":4},"college_id":"情報理工学院","department_id":"情報工学系","application_route":"b_schedule"},"applicant":{"credential_basis":"university_graduation","completion_state":"expected"},"english_preparation":{},"application_preparation":{"expected_completion_date":"2027-04-10","materials_dispatched_date":"2026-06-09","materials_arrival_date":"2026-06-10","online_steps_completed":false}}}]},"gsfs":{"entryId":"m19-reviewed-preview","evidence":"gsfs-evidence.json","scenarios":[{"id":"working","label":"在職のまま入学する予定","description":"サンプル：現在在職中で、入学後も勤務を継続する予定。学業・職務両立計画書の条件と、複数資料にまたがる根拠を確認します。","fields":{"slice-current-employed":"yes","slice-retain-employed":"yes"},"report":"gsfs-working.json","expectedRequest":{"schema_version":"1.0","target":{"admission_cycle":2027,"degree_level":"master","examination_schedule_id":"A","institution_id":"utokyo","intake":{"month":4,"year":2027},"organization_id":"utokyo-gsfs","program_id":"utokyo-gsfs-complex","selection_route_id":"general-ordinary","target_id":"utokyo-gsfs-complex-master-2027-general-a-202704"},"applicant_profile":{"schema_version":"1.0","target_application":{"graduate_school_or_college":"utokyo-gsfs","department_or_program":"utokyo-gsfs-complex","requested_degree_level":"master","intake_year":2027,"intake_month":4,"application_route":"general-ordinary"},"citizenship_and_residence":{"citizenship_country_codes":null,"current_residence_country_code":null,"residence_status_category":null},"academic_credentials":null,"eligibility_facts":{"age_at_enrollment":null,"professional_experience_months":null,"research_experience_months":null,"individual_review_status":null,"individual_review_requested":null,"individual_review_completed":null},"language_test_results":null,"application_submission":null,"preapplication_actions":null},"employment":{"currently_employed_in_organization":true,"retain_employment_at_enrollment":true}}},{"id":"student","label":"現在は在職していない","description":"サンプル：現在は在職しておらず、入学後の在職予定は未入力。同じ書類について条件による結果の違いを確認できます。","fields":{"slice-current-employed":"no","slice-retain-employed":"unknown"},"report":"gsfs-student.json","expectedRequest":{"schema_version":"1.0","target":{"admission_cycle":2027,"degree_level":"master","examination_schedule_id":"A","institution_id":"utokyo","intake":{"month":4,"year":2027},"organization_id":"utokyo-gsfs","program_id":"utokyo-gsfs-complex","selection_route_id":"general-ordinary","target_id":"utokyo-gsfs-complex-master-2027-general-a-202704"},"applicant_profile":{"schema_version":"1.0","target_application":{"graduate_school_or_college":"utokyo-gsfs","department_or_program":"utokyo-gsfs-complex","requested_degree_level":"master","intake_year":2027,"intake_month":4,"application_route":"general-ordinary"},"citizenship_and_residence":{"citizenship_country_codes":null,"current_residence_country_code":null,"residence_status_category":null},"academic_credentials":null,"eligibility_facts":{"age_at_enrollment":null,"professional_experience_months":null,"research_experience_months":null,"individual_review_status":null,"individual_review_requested":null,"individual_review_completed":null},"language_test_results":null,"application_submission":null,"preapplication_actions":null},"employment":{"currently_employed_in_organization":false,"retain_employment_at_enrollment":null}}}]}},"qaSamples":[{"id":"01","question":"TOEICとは何ですか？","answer":"TOEIC（国際コミュニケーション英語能力テスト）は、職場や国際交流で使う英語力を測る試験です。主に、英語を母語としない人の日常業務やビジネス場面でのリスニング・リーディング能力を評価します（スピーキング・ライティングの試験もあります）。スコアは就職、進学、企業内の語学評価などに使われます。志望先のプログラムで利用できるか、必要なスコアがあるかは、その大学の公式な入試情報を確認する必要があります。","scope":"東京科学大学 · 情報工学系 · 2027年4月入学 · B日程","label":"過去のオンラインテストで保存した回答の日本語訳です。今回生成した回答ではなく、すべての質問の回答品質を示すものではありません。","sourceUrl":"https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/33a473bdb78a6fc08f8e853c192c951bd115d9ad/docs/evaluation/qa01-online20/report.md"},{"id":"08","question":"6月1日にオンライン登録を済ませました。紙の書類を郵送しなくてもよいですか？","answer":"一般に、インターネット出願（オンライン登録）と出願書類の郵送は別の手続きで、オンライン登録を済ませても紙の出願書類の郵送が必要なことが多いです。\n\n東京科学大学 情報理工学院 情報工学系 2027年4月入学の修士課程については、今回確認できた出願方法の記載では、出願完了には①出願情報の登録、②顔写真のアップロード、③検定料の支払い、④出願書類の印刷、⑤出願書類の提出という全ての手続きが必要とされています。インターネット出願サイトで登録を済ませ、検定料の支払いを完了しても、出願書類一式が出願期間内に本学へ到着しない場合は出願は受理されないと明記されています。\n\nまた、出願書類は、インターネット出願サイトのマイページからA4サイズでカラー印刷した宛名ラベルを角形2号封筒に貼り、所定の出願書類一式を番号の若い順に揃えて入れ、厳封して郵送で提出することとされています。郵送先は〒152-8550 東京都目黒区大岡山2-12-1 東京科学大学入試課、6月10日（水）必着、できるだけ6月4日（木）に到着するように心がけてください、窓口への持参は不可、速達書留郵便で送付してください、と記載されています。\n\nしたがって、オンライン登録を6月1日に完了していても、それだけで紙の出願書類の郵送が不要になるとは言えません。必ず2027年4月入学年度の公式募集要項で、郵送が必要か、締切、宛先、提出書類を確認してください。","scope":"東京科学大学 · 情報工学系 · 2027年4月入学 · B日程","label":"過去のオンラインテストで保存した回答の日本語訳です。今回生成した回答ではなく、すべての質問の回答品質を示すものではありません。","sourceUrl":"https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/33a473bdb78a6fc08f8e853c192c951bd115d9ad/docs/evaluation/qa01-online20/report.md"},{"id":"17","question":"この資料の日付を、そのまま2028年4月入学の出願日程に使えますか？","answer":"提示された資料の日付を、そのまま2028年4月入学の出願日程に使うことはできません。この資料は東京科学大学 情報理工学院 情報工学系の修士課程・2027年4月入学の情報です。募集要項は通常、入学年度ごとに公表され、日程も変わる可能性があるため、2028年4月入学に対応する最新の募集要項を確認してください。資料にある日程（A日程の口述試験7月10日、B日程の筆答試験8月18日、口頭試問8月24日、出願書類の郵送6月10日必着など）は、この2027年度の資料の日程としてのみ確認できます。2028年度の出願日程の根拠にはできません。","scope":"東京科学大学 · 情報工学系 · 2027年4月入学 · B日程","label":"過去のオンラインテストで保存した回答の日本語訳です。今回生成した回答ではなく、すべての質問の回答品質を示すものではありません。","sourceUrl":"https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/33a473bdb78a6fc08f8e853c192c951bd115d9ad/docs/evaluation/qa01-online20/report.md"}],"mode":"saved_sample_replay","externalCalls":false}
+{
+  "schema_version": "1.0",
+  "sourceCommit": "33a473bdb78a6fc08f8e853c192c951bd115d9ad",
+  "catalog": "catalog.json",
+  "schools": {
+    "isct": {
+      "base": "isct-base.json",
+      "scenarios": [
+        {
+          "id": "materials",
+          "label": "願書が未準備・英語証明を要確認",
+          "description": "サンプル：TOEIC L&Rの公式PDFは取得済み、QRコードは未確認。宛名ラベルは準備済みですが、入学志願票は未準備です。",
+          "fields": {
+            "demo-credential-basis": "university_graduation",
+            "demo-english-kind": "toeic_lr",
+            "demo-english-date": "2024-06-11",
+            "demo-english-report": "true",
+            "demo-english-online-pdf": "true",
+            "demo-toeic-certificate": "true"
+          },
+          "materials": {
+            "address_label": "available",
+            "application_form": "not_yet",
+            "statement_of_purpose": "unknown",
+            "bachelor_transcript": "unknown",
+            "graduation_or_expected_graduation_certificate": "unknown"
+          },
+          "comparison": "isct-materials.json"
+        },
+        {
+          "id": "dispatched_unknown_arrival",
+          "label": "発送後、次に何を確認する？",
+          "description": "サンプル：2027年3月に卒業予定。オンライン手続きと発送は完了していますが、到着は未確認です。",
+          "fields": {
+            "demo-credential-basis": "university_graduation",
+            "demo-completion-state": "expected",
+            "demo-expected-completion-date": "2027-03-20",
+            "demo-dispatched-date": "2026-06-09",
+            "demo-arrival-date": "",
+            "demo-online-steps": "true"
+          },
+          "comparison": "dispatched_unknown_arrival.json",
+          "expectedRequest": {
+            "target": {
+              "school_id": "isct",
+              "document_id": "isct_2027_4_2026_9_master",
+              "degree_id": "master",
+              "intake": {
+                "year": 2027,
+                "month": 4
+              },
+              "college_id": "情報理工学院",
+              "department_id": "情報工学系",
+              "application_route": "b_schedule"
+            },
+            "applicant": {
+              "credential_basis": "university_graduation",
+              "completion_state": "expected"
+            },
+            "english_preparation": {},
+            "application_preparation": {
+              "expected_completion_date": "2027-03-20",
+              "materials_dispatched_date": "2026-06-09",
+              "materials_arrival_date": null,
+              "online_steps_completed": true
+            }
+          }
+        },
+        {
+          "id": "late_graduation_arrival",
+          "label": "卒業予定日を確認する",
+          "description": "サンプル：2027年4月10日に卒業予定。書類は期限内に届いていますが、オンライン手続きは未完了です。",
+          "fields": {
+            "demo-credential-basis": "university_graduation",
+            "demo-completion-state": "expected",
+            "demo-expected-completion-date": "2027-04-10",
+            "demo-dispatched-date": "2026-06-09",
+            "demo-arrival-date": "2026-06-10",
+            "demo-online-steps": "false"
+          },
+          "comparison": "late_graduation_arrival.json",
+          "expectedRequest": {
+            "target": {
+              "school_id": "isct",
+              "document_id": "isct_2027_4_2026_9_master",
+              "degree_id": "master",
+              "intake": {
+                "year": 2027,
+                "month": 4
+              },
+              "college_id": "情報理工学院",
+              "department_id": "情報工学系",
+              "application_route": "b_schedule"
+            },
+            "applicant": {
+              "credential_basis": "university_graduation",
+              "completion_state": "expected"
+            },
+            "english_preparation": {},
+            "application_preparation": {
+              "expected_completion_date": "2027-04-10",
+              "materials_dispatched_date": "2026-06-09",
+              "materials_arrival_date": "2026-06-10",
+              "online_steps_completed": false
+            }
+          }
+        }
+      ]
+    },
+    "gsfs": {
+      "entryId": "m19-reviewed-preview",
+      "evidence": "gsfs-evidence.json",
+      "scenarios": [
+        {
+          "id": "working",
+          "label": "在職のまま入学する予定",
+          "description": "サンプル：現在在職中で、入学後も勤務を継続する予定。学業・職務両立計画書の条件と、複数資料にまたがる根拠を確認します。",
+          "fields": {
+            "slice-current-employed": "yes",
+            "slice-retain-employed": "yes"
+          },
+          "report": "gsfs-working.json",
+          "expectedRequest": {
+            "schema_version": "1.0",
+            "target": {
+              "admission_cycle": 2027,
+              "degree_level": "master",
+              "examination_schedule_id": "A",
+              "institution_id": "utokyo",
+              "intake": {
+                "month": 4,
+                "year": 2027
+              },
+              "organization_id": "utokyo-gsfs",
+              "program_id": "utokyo-gsfs-complex",
+              "selection_route_id": "general-ordinary",
+              "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+            },
+            "applicant_profile": {
+              "schema_version": "1.0",
+              "target_application": {
+                "graduate_school_or_college": "utokyo-gsfs",
+                "department_or_program": "utokyo-gsfs-complex",
+                "requested_degree_level": "master",
+                "intake_year": 2027,
+                "intake_month": 4,
+                "application_route": "general-ordinary"
+              },
+              "citizenship_and_residence": {
+                "citizenship_country_codes": null,
+                "current_residence_country_code": null,
+                "residence_status_category": null
+              },
+              "academic_credentials": null,
+              "eligibility_facts": {
+                "age_at_enrollment": null,
+                "professional_experience_months": null,
+                "research_experience_months": null,
+                "individual_review_status": null,
+                "individual_review_requested": null,
+                "individual_review_completed": null
+              },
+              "language_test_results": null,
+              "application_submission": null,
+              "preapplication_actions": null
+            },
+            "employment": {
+              "currently_employed_in_organization": true,
+              "retain_employment_at_enrollment": true
+            }
+          }
+        },
+        {
+          "id": "student",
+          "label": "現在は在職していない",
+          "description": "サンプル：現在は在職しておらず、入学後の在職予定は未入力。同じ書類について条件による結果の違いを確認できます。",
+          "fields": {
+            "slice-current-employed": "no",
+            "slice-retain-employed": "unknown"
+          },
+          "report": "gsfs-student.json",
+          "expectedRequest": {
+            "schema_version": "1.0",
+            "target": {
+              "admission_cycle": 2027,
+              "degree_level": "master",
+              "examination_schedule_id": "A",
+              "institution_id": "utokyo",
+              "intake": {
+                "month": 4,
+                "year": 2027
+              },
+              "organization_id": "utokyo-gsfs",
+              "program_id": "utokyo-gsfs-complex",
+              "selection_route_id": "general-ordinary",
+              "target_id": "utokyo-gsfs-complex-master-2027-general-a-202704"
+            },
+            "applicant_profile": {
+              "schema_version": "1.0",
+              "target_application": {
+                "graduate_school_or_college": "utokyo-gsfs",
+                "department_or_program": "utokyo-gsfs-complex",
+                "requested_degree_level": "master",
+                "intake_year": 2027,
+                "intake_month": 4,
+                "application_route": "general-ordinary"
+              },
+              "citizenship_and_residence": {
+                "citizenship_country_codes": null,
+                "current_residence_country_code": null,
+                "residence_status_category": null
+              },
+              "academic_credentials": null,
+              "eligibility_facts": {
+                "age_at_enrollment": null,
+                "professional_experience_months": null,
+                "research_experience_months": null,
+                "individual_review_status": null,
+                "individual_review_requested": null,
+                "individual_review_completed": null
+              },
+              "language_test_results": null,
+              "application_submission": null,
+              "preapplication_actions": null
+            },
+            "employment": {
+              "currently_employed_in_organization": false,
+              "retain_employment_at_enrollment": null
+            }
+          }
+        }
+      ]
+    }
+  },
+  "qaSamples": [
+    {
+      "id": "ja-02",
+      "question": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+      "answer": "この資料から確認できるのは、情報理工学院・情報工学系の試験日程（A日程の口述試験、B日程の筆答試験・口頭試問など）や出願手続に関する記載です。ただし、これらが2028年4月入学の出願にそのまま使えるかどうかは、この資料だけでは確認できません。入学年度ごとに日程や締切が変更される可能性があるため、2028年4月入学の募集要項・出願日程を必ずご確認ください。",
+      "scope": "東京科学大学 · 情報工学系 · 2027年4月入学 · B日程",
+      "label": "2026年10月30日にオンラインモデル（DeepSeek・deepseek-flash）へ日本語で質問し、保存した回答です。この画面で生成したものではなく、すべての質問の回答品質を示すものではありません。",
+      "sourceUrl": "https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/main/docs/evaluation/qa02-ja-live/report.md"
+    },
+    {
+      "id": "ja-04",
+      "question": "情報工学系のB日程で、英語の配点は何点ですか。",
+      "answer": "東京科学大学（旧東京工業大学）情報理工学院 情報工学系の修士課程（B日程）では、英語は筆答試験を行わず、本学が指定する英語外部試験のスコアに基づいて評価されます。提出された募集要項の記載では「配点：筆答専門試験：900点、英語：100点」と明記されており、B日程の英語の配点は100点です。合否は筆答専門試験成績、英語成績（英語外部試験）および口頭試問の結果を総合的に評価して判定され、筆答専門試験および英語成績の上位者が口頭試問の対象となるとされています。",
+      "scope": "東京科学大学 · 情報工学系 · 2027年4月入学 · B日程",
+      "label": "2026年10月30日にオンラインモデル（DeepSeek・deepseek-flash）へ日本語で質問し、保存した回答です。この画面で生成したものではなく、すべての質問の回答品質を示すものではありません。",
+      "sourceUrl": "https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/main/docs/evaluation/qa02-ja-live/report.md"
+    },
+    {
+      "id": "ja-01r",
+      "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "answer": "結論から言うと、情報工学系の出願では英語の外部試験スコアシートの提出が必要です。ただし、ご質問の「在職したまま入学する場合」に特有の扱い（出願区分による要否の違いや免除条件など）は、今回参照した募集要項の抜粋では確認できませんでした。\n\n【一般論として】\n大学院入試では、社会人として在職したまま入学する場合でも、選抜方式や出願区分によって英語成績の扱いが異なることがあります。ご自身の状況に当てはまるかは、最新の募集要項で確認するのが確実です。\n\n【今回の資料で確認できたこと】\n情報工学系のB日程では、英語は筆答試験を実施せず、「本学の指定する英語外部試験のスコアに基づいて評価する」とされています。配点は筆答専門試験900点、英語100点です。また、「スコアシートを必ず出願時に提出してください。出願受付締切後の提出は一切認めません。一度提出したスコアシートの差し替えも一切認めません」と明記されています。\n\n【今回の資料では確認できなかったこと】\n在職者の方の出願区分ごとの英語要件の違い、対象となる英語外部試験の種類、スコアの下限、免除の可否については、参照した抜粋には記載がありませんでした。これらの点は、最新の公式学生募集要項や大学院入試FAQでご確認いただくか、不明な場合は入試課または情報工学系入試担当へお問い合わせください。なお、この回答は合否や免除の可否を保証するものではありません。",
+      "scope": "東京科学大学 · 情報工学系 · 2027年4月入学 · B日程",
+      "label": "2026年10月30日にオンラインモデル（DeepSeek・deepseek-flash）へ日本語で質問し、保存した回答です。この画面で生成したものではなく、すべての質問の回答品質を示すものではありません。",
+      "sourceUrl": "https://github.com/yasu-isct/J-Grad-Admission-RAG/blob/main/docs/evaluation/qa02-ja-live/report.md"
+    }
+  ],
+  "mode": "saved_sample_replay",
+  "externalCalls": false
+}
