@@ -1,0 +1,474 @@
+[
+ {
+  "case": "ja-01",
+  "title": "在職者と英語",
+  "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+  "http_status": 200,
+  "seconds": 10.375,
+  "captured_at": "2026-10-30T09:57:56",
+  "body": {
+   "schema_version": "1.0",
+   "mode": {
+    "schema_version": "1.0",
+    "provider": "deepseek-responses",
+    "model": "deepseek-flash",
+    "mode": "online_model",
+    "configured": true,
+    "label": "DeepSeek 在线模型 · deepseek-flash",
+    "request_timeout_seconds": 375
+   },
+   "analysis": {
+    "schema_version": "1.0",
+    "detected_language": "mixed",
+    "normalized_question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+    "corrections": [],
+    "requested_intents": [
+     "general"
+    ],
+    "subquestions": [
+     {
+      "subquestion_id": "subquestion:01",
+      "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "retrieval_query": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     }
+    ],
+    "mentioned_exam_types": [],
+    "mentioned_scores": [],
+    "target_scope_mentions": [
+     "情報工学系"
+    ],
+    "missing_context": [],
+    "unsupported_parts": []
+   },
+   "summary": "已按模型规划在所选募集要项中检索 12 条本地记录。",
+   "subanswers": [
+    {
+     "schema_version": "1.0",
+     "subquestion": {
+      "subquestion_id": "subquestion:01",
+      "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "retrieval_query": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     },
+     "status": "answered",
+     "message": "已结合本地募集要项检索结果生成参考回答。"
+    }
+   ],
+   "result": {
+    "target": {
+     "school_name": "東京科学大学",
+     "degree_name": "修士课程",
+     "intake_name": "2027年4月入学",
+     "college_name": "情報理工学院",
+     "department_name": "情報工学系",
+     "application_route_name": "B 日程"
+    },
+    "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+    "answer": {
+     "kind": "reference_answer",
+     "answer": "在线最终整理未完成。下面依次列出本地检索状态和第一阶段模型的一般说明：\n本地募集要项检索到了以下相关片段，但尚未由最终模型整合：\n就業を続けながら東京科学大学 情報理工学院（情報工学系）の修士課程（2027年4月入学）に出願する場合に英語成績の提出が必要かは、募集要項・出願資格・提出書類の記載で確認する必要があります。在職のままでも通常の出願区分なら英語スコア提出が求められる可能性があるため、公式情報でご確認ください。\nfact_type: documents\nscope: department | targets: 情報工学系 | parent_college: 情報理工学院\nsection_path: 情報理工学院 情報工学系 > 【記載内容及び入試に関する問合わせ先】\ntitle: 【記載内容及び入試に関する問合わせ先】\ntext:\n【記載内容及び入試に関する問合わせ先】\nまず大学院入試 FAQ（https://admissions.isct.ac.jp/ja/013/graduate/faqs）を調べてください。\nそれでもわからない場合は、出願書類や出願資格についての質問は入試課に問い合わせてください。入試課の問い合わせ先はこ\nの募集要項の最後のページに記載されています。それ以外の情報工学系についての質問は情報工学系入試担当\n（cs-exam-inquiry@comp.isct.ac.jp）に問い合わせてください。\n52\n情報理工学院 情報工学系\nhttps://educ.titech.ac.jp/cs/\n情報工学コース、知能情報コース、人間医療科学技術コース、エネルギー・情報コース （ただし人間医療科学技術コース、\nエネルギー・情報コースは、このコースを担当する教員の研究室に配属された場合に限ります）\n９７名\n以下の項目を含む志望理由書を日本語（1500 字程度）または英語（500 ワード程度）で記述してください。\n１） 学部4 年次の学士論文研究（またはこれに相当する研究等）の概要\n２） 第1 志望の研究室や研究分野を選択した理由\n３） 入学後の研究計画、及び修士課程修了までに達成したいこと\n４） 修士課程修了後の将来の希望、計画\n志望指導教員を第10 志望まで入力してください。難しい場合には必ずしも全ての枠を埋める必要はありません。\n出願書類の「学部の成績証明書」は、できるだけGPA (Grade Point Average)が記載されているものを提出してください。\nインターネット出願サイトの「系･課程が指定する入力項目」欄には、 何も入力しないでください。\nfact_type: general\nscope: department | targets: 数理・計算科学系 / 情報工学系 | parent_college: 情報理工学院\nsection_path: ７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13 > 【情報理工学院】\ntitle: 【情報理工学院】\ntext:\n【情報理工学院】\n数理・計算科学系 ・・・・・・・・・・・・・・・・ 50\n情報工学系 ・・・・・・・・・・・・・・・・ 52\nfact_type: english\nscope: department | targets: 情報工学系 | parent_college: 情報理工学院\nsection_path: 情報理工学院 情報工学系 > 【英語外部試験のスコアシートの取扱い】\ntitle: 【英語外部試験のスコアシートの取扱い】\ntext:\n【英語外部試験のスコアシートの取扱い】\nスコアシートを必ず出願時に提出してください。出願受付締切後の提出は一切認めません。\n一度提出したスコアシートの差し替えも一切認めません。また、スコアシートは返却しません。",
+     "assurance": "reference_only",
+     "needs_review": true,
+     "missing_information": [],
+     "limitations": [
+      "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+     ]
+    }
+   },
+   "delivery": {
+    "source": "fallback",
+    "generation_ms": 5452,
+    "validation_ms": 4878,
+    "knowledge_base_version": "kb-7fa46e49b794",
+    "cache_scope": "process_memory",
+    "cache_cleared_on_restart": true,
+    "cache_ttl_seconds": 600
+   },
+   "missing_context": [],
+   "unsupported_parts": []
+  }
+ },
+ {
+  "case": "ja-02",
+  "title": "年度の境界",
+  "question": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+  "http_status": 200,
+  "seconds": 4.235,
+  "captured_at": "2026-10-30T09:58:00",
+  "body": {
+   "schema_version": "1.0",
+   "mode": {
+    "schema_version": "1.0",
+    "provider": "deepseek-responses",
+    "model": "deepseek-flash",
+    "mode": "online_model",
+    "configured": true,
+    "label": "DeepSeek 在线模型 · deepseek-flash",
+    "request_timeout_seconds": 375
+   },
+   "analysis": {
+    "schema_version": "1.0",
+    "detected_language": "mixed",
+    "normalized_question": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+    "corrections": [],
+    "requested_intents": [
+     "general"
+    ],
+    "subquestions": [
+     {
+      "subquestion_id": "subquestion:01",
+      "question": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+      "retrieval_query": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     }
+    ],
+    "mentioned_exam_types": [],
+    "mentioned_scores": [],
+    "target_scope_mentions": [],
+    "missing_context": [],
+    "unsupported_parts": []
+   },
+   "summary": "已按模型规划在所选募集要项中检索 14 条本地记录。",
+   "subanswers": [
+    {
+     "schema_version": "1.0",
+     "subquestion": {
+      "subquestion_id": "subquestion:01",
+      "question": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+      "retrieval_query": "この資料の日程は、2028年4月入学の出願にもそのまま使えますか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     },
+     "status": "answered",
+     "message": "已结合本地募集要项检索结果生成参考回答。"
+    }
+   ],
+   "result": {
+    "target": {
+     "school_name": "東京科学大学",
+     "degree_name": "修士课程",
+     "intake_name": "2027年4月入学",
+     "college_name": "情報理工学院",
+     "department_name": "情報工学系",
+     "application_route_name": "B 日程"
+    },
+    "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+    "answer": {
+     "kind": "reference_answer",
+     "answer": "この資料から確認できるのは、情報理工学院・情報工学系の試験日程（A日程の口述試験、B日程の筆答試験・口頭試問など）や出願手続に関する記載です。ただし、これらが2028年4月入学の出願にそのまま使えるかどうかは、この資料だけでは確認できません。入学年度ごとに日程や締切が変更される可能性があるため、2028年4月入学の募集要項・出願日程を必ずご確認ください。",
+     "assurance": "reference_only",
+     "needs_review": true,
+     "missing_information": [],
+     "limitations": [
+      "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+     ]
+    }
+   },
+   "delivery": {
+    "source": "live",
+    "generation_ms": 3051,
+    "validation_ms": 1155,
+    "knowledge_base_version": "kb-7fa46e49b794",
+    "cache_scope": "process_memory",
+    "cache_cleared_on_restart": true,
+    "cache_ttl_seconds": 600
+   },
+   "missing_context": [],
+   "unsupported_parts": []
+  }
+ },
+ {
+  "case": "ja-03",
+  "title": "締切の違い",
+  "question": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+  "http_status": 200,
+  "seconds": 6.953,
+  "captured_at": "2026-10-30T09:58:07",
+  "body": {
+   "schema_version": "1.0",
+   "mode": {
+    "schema_version": "1.0",
+    "provider": "deepseek-responses",
+    "model": "deepseek-flash",
+    "mode": "online_model",
+    "configured": true,
+    "label": "DeepSeek 在线模型 · deepseek-flash",
+    "request_timeout_seconds": 375
+   },
+   "analysis": {
+    "schema_version": "1.0",
+    "detected_language": "mixed",
+    "normalized_question": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+    "corrections": [],
+    "requested_intents": [
+     "general"
+    ],
+    "subquestions": [
+     {
+      "subquestion_id": "subquestion:01",
+      "question": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+      "retrieval_query": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     }
+    ],
+    "mentioned_exam_types": [],
+    "mentioned_scores": [],
+    "target_scope_mentions": [],
+    "missing_context": [],
+    "unsupported_parts": []
+   },
+   "summary": "已按模型规划在所选募集要项中检索 13 条本地记录。",
+   "subanswers": [
+    {
+     "schema_version": "1.0",
+     "subquestion": {
+      "subquestion_id": "subquestion:01",
+      "question": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+      "retrieval_query": "出願書類はいつまでに届ける必要がありますか。インターネット出願の登録と郵送の締切は別ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     },
+     "status": "answered",
+     "message": "已结合本地募集要项检索结果生成参考回答。"
+    }
+   ],
+   "result": {
+    "target": {
+     "school_name": "東京科学大学",
+     "degree_name": "修士课程",
+     "intake_name": "2027年4月入学",
+     "college_name": "情報理工学院",
+     "department_name": "情報工学系",
+     "application_route_name": "B 日程"
+    },
+    "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+    "answer": {
+     "kind": "reference_answer",
+     "answer": "一般論として、インターネット出願は「登録」と「書類の郵送到達」の2段階で締切が設けられることが多く、両者が同じ日とは限りません。また、郵送締切は「消印有効」ではなく「必着」とされる場合が多いため、余裕を持った発送が望ましいです。\n\n今回参照した出願手続の記載では、①出願情報の登録、②顔写真のアップロード、③検定料の支払い、④出願書類の印刷、⑤出願書類の提出のすべてが出願完了に必要とされ、インターネット出願サイトで登録・支払いを済ませても、出願書類一式が出願期間内に本学へ到着しない場合は出願が受理されないとされています。書類の提出については「6月10日（水）必着」とされ、郵便事情を考慮してできるだけ6月4日（木）に到着するよう心がけること、窓口持参は不可、速達書留郵便で送付することなどが示されています。\n\n一方、インターネット出願の「登録」自体の締切が郵送の必着日と別に設定されているかについては、今回参照した出願手続の記載だけでは明確に確認できませんでした。年度・研究科・系ごとに募集要項の記載が異なる可能性があるため、東京科学大学の2027年4月入学・情報理工学院情報工学系の募集要項本文、または情報工学系入試担当・入試課に直接確認してください。",
+     "assurance": "reference_only",
+     "needs_review": true,
+     "missing_information": [],
+     "limitations": [
+      "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+     ]
+    }
+   },
+   "delivery": {
+    "source": "live",
+    "generation_ms": 5791,
+    "validation_ms": 1138,
+    "knowledge_base_version": "kb-7fa46e49b794",
+    "cache_scope": "process_memory",
+    "cache_cleared_on_restart": true,
+    "cache_ttl_seconds": 600
+   },
+   "missing_context": [],
+   "unsupported_parts": []
+  }
+ },
+ {
+  "case": "ja-04",
+  "title": "英語の配点",
+  "question": "情報工学系のB日程で、英語の配点は何点ですか。",
+  "http_status": 200,
+  "seconds": 5.109,
+  "captured_at": "2026-10-30T09:58:12",
+  "body": {
+   "schema_version": "1.0",
+   "mode": {
+    "schema_version": "1.0",
+    "provider": "deepseek-responses",
+    "model": "deepseek-flash",
+    "mode": "online_model",
+    "configured": true,
+    "label": "DeepSeek 在线模型 · deepseek-flash",
+    "request_timeout_seconds": 375
+   },
+   "analysis": {
+    "schema_version": "1.0",
+    "detected_language": "mixed",
+    "normalized_question": "情報工学系のB日程で、英語の配点は何点ですか。",
+    "corrections": [],
+    "requested_intents": [
+     "general"
+    ],
+    "subquestions": [
+     {
+      "subquestion_id": "subquestion:01",
+      "question": "情報工学系のB日程で、英語の配点は何点ですか。",
+      "retrieval_query": "情報工学系のB日程で、英語の配点は何点ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     }
+    ],
+    "mentioned_exam_types": [],
+    "mentioned_scores": [],
+    "target_scope_mentions": [
+     "情報工学系"
+    ],
+    "missing_context": [
+     "exam_type"
+    ],
+    "unsupported_parts": []
+   },
+   "summary": "已按模型规划在所选募集要项中检索 13 条本地记录。",
+   "subanswers": [
+    {
+     "schema_version": "1.0",
+     "subquestion": {
+      "subquestion_id": "subquestion:01",
+      "question": "情報工学系のB日程で、英語の配点は何点ですか。",
+      "retrieval_query": "情報工学系のB日程で、英語の配点は何点ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     },
+     "status": "answered",
+     "message": "已结合本地募集要项检索结果生成参考回答。"
+    }
+   ],
+   "result": {
+    "target": {
+     "school_name": "東京科学大学",
+     "degree_name": "修士课程",
+     "intake_name": "2027年4月入学",
+     "college_name": "情報理工学院",
+     "department_name": "情報工学系",
+     "application_route_name": "B 日程"
+    },
+    "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+    "answer": {
+     "kind": "reference_answer",
+     "answer": "東京科学大学（旧東京工業大学）情報理工学院 情報工学系の修士課程（B日程）では、英語は筆答試験を行わず、本学が指定する英語外部試験のスコアに基づいて評価されます。提出された募集要項の記載では「配点：筆答専門試験：900点、英語：100点」と明記されており、B日程の英語の配点は100点です。合否は筆答専門試験成績、英語成績（英語外部試験）および口頭試問の結果を総合的に評価して判定され、筆答専門試験および英語成績の上位者が口頭試問の対象となるとされています。",
+     "assurance": "reference_only",
+     "needs_review": true,
+     "missing_information": [
+      "exam_type"
+     ],
+     "limitations": [
+      "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+     ]
+    }
+   },
+   "delivery": {
+    "source": "live",
+    "generation_ms": 3920,
+    "validation_ms": 1148,
+    "knowledge_base_version": "kb-7fa46e49b794",
+    "cache_scope": "process_memory",
+    "cache_cleared_on_restart": true,
+    "cache_ttl_seconds": 600
+   },
+   "missing_context": [
+    "exam_type"
+   ],
+   "unsupported_parts": []
+  }
+ },
+ {
+  "case": "ja-01r",
+  "title": "在職者と英語（再試行）",
+  "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+  "http_status": 200,
+  "seconds": 7.109,
+  "captured_at": "2026-10-30T09:58:50",
+  "body": {
+   "schema_version": "1.0",
+   "mode": {
+    "schema_version": "1.0",
+    "provider": "deepseek-responses",
+    "model": "deepseek-flash",
+    "mode": "online_model",
+    "configured": true,
+    "label": "DeepSeek 在线模型 · deepseek-flash",
+    "request_timeout_seconds": 375
+   },
+   "analysis": {
+    "schema_version": "1.0",
+    "detected_language": "mixed",
+    "normalized_question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+    "corrections": [],
+    "requested_intents": [
+     "general"
+    ],
+    "subquestions": [
+     {
+      "subquestion_id": "subquestion:01",
+      "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "retrieval_query": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     }
+    ],
+    "mentioned_exam_types": [],
+    "mentioned_scores": [],
+    "target_scope_mentions": [
+     "情報工学系"
+    ],
+    "missing_context": [],
+    "unsupported_parts": []
+   },
+   "summary": "已按模型规划在所选募集要项中检索 11 条本地记录。",
+   "subanswers": [
+    {
+     "schema_version": "1.0",
+     "subquestion": {
+      "subquestion_id": "subquestion:01",
+      "question": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "retrieval_query": "在職したまま入学する場合、情報工学系の出願で英語の成績は必要ですか。",
+      "requested_intent": "general",
+      "needs_clarification": true
+     },
+     "status": "answered",
+     "message": "已结合本地募集要项检索结果生成参考回答。"
+    }
+   ],
+   "result": {
+    "target": {
+     "school_name": "東京科学大学",
+     "degree_name": "修士课程",
+     "intake_name": "2027年4月入学",
+     "college_name": "情報理工学院",
+     "department_name": "情報工学系",
+     "application_route_name": "B 日程"
+    },
+    "local_scope_statement": "Applicant Profile に明示的に適用される core_admission の審査済み規則と、明示的に選択された conditional_program の規則だけを示します。",
+    "official_source_url": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+    "local_pdf_url": "/documents/isct_2027_4_2026_9_master/source.pdf",
+    "answer": {
+     "kind": "reference_answer",
+     "answer": "結論から言うと、情報工学系の出願では英語の外部試験スコアシートの提出が必要です。ただし、ご質問の「在職したまま入学する場合」に特有の扱い（出願区分による要否の違いや免除条件など）は、今回参照した募集要項の抜粋では確認できませんでした。\n\n【一般論として】\n大学院入試では、社会人として在職したまま入学する場合でも、選抜方式や出願区分によって英語成績の扱いが異なることがあります。ご自身の状況に当てはまるかは、最新の募集要項で確認するのが確実です。\n\n【今回の資料で確認できたこと】\n情報工学系のB日程では、英語は筆答試験を実施せず、「本学の指定する英語外部試験のスコアに基づいて評価する」とされています。配点は筆答専門試験900点、英語100点です。また、「スコアシートを必ず出願時に提出してください。出願受付締切後の提出は一切認めません。一度提出したスコアシートの差し替えも一切認めません」と明記されています。\n\n【今回の資料では確認できなかったこと】\n在職者の方の出願区分ごとの英語要件の違い、対象となる英語外部試験の種類、スコアの下限、免除の可否については、参照した抜粋には記載がありませんでした。これらの点は、最新の公式学生募集要項や大学院入試FAQでご確認いただくか、不明な場合は入試課または情報工学系入試担当へお問い合わせください。なお、この回答は合否や免除の可否を保証するものではありません。",
+     "assurance": "reference_only",
+     "needs_review": true,
+     "missing_information": [],
+     "limitations": [
+      "这是低保证参考回答；学校规则和资格判断请以基础结构化结果和官方原文为准。"
+     ]
+    }
+   },
+   "delivery": {
+    "source": "live",
+    "generation_ms": 5698,
+    "validation_ms": 1369,
+    "knowledge_base_version": "kb-7fa46e49b794",
+    "cache_scope": "process_memory",
+    "cache_cleared_on_restart": true,
+    "cache_ttl_seconds": 600
+   },
+   "missing_context": [],
+   "unsupported_parts": []
+  }
+ }
+]

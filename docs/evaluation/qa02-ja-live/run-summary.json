@@ -1,0 +1,20 @@
+{
+ "captured_on": "2026-10-30",
+ "service_commit": "67e5727 (local checkout; README.md had uncommitted edits only)",
+ "workspace": "outputs/m10-deepseek-live",
+ "embedding_provider": "bge-m3",
+ "generation_provider": "deepseek-responses",
+ "generation_model": "deepseek-flash",
+ "target": {
+  "school_name": "東京科学大学",
+  "degree_name": "修士课程",
+  "intake_name": "2027年4月入学",
+  "college_name": "情報理工学院",
+  "department_name": "情報工学系",
+  "application_route_name": "B 日程"
+ },
+ "requests": 5,
+ "live": 4,
+ "fallback": 1,
+ "call_ledger": "not recorded; only each response's delivery metadata"
+}
