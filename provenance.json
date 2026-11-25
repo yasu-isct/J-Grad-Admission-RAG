@@ -8,7 +8,8 @@
     "original app static assets copied, demo bridge separate",
     "report view and copy use original frontend, prefixed as demonstration",
     "no PDF/model/KB/vector upload; no live API calls",
-    "Public-demo presentation localized to Japanese; QA shown as translations of saved responses, not new model outputs"
+    "Public-demo presentation localized to Japanese; QA shown as translations of saved responses, not new model outputs",
+    "2026-10-30: Japanese distribution's saved QA replaced by answers generated in Japanese (QA-02), no longer translations of Chinese answers"
   ],
   "tracked_sources": [
     {
@@ -136,7 +137,8 @@
       "scope",
       "label"
     ],
-    "not_a_new_quality_evaluation": true
+    "not_a_new_quality_evaluation": true,
+    "note": "zh-CN distribution still shows these original Chinese saved answers; the ja distribution now shows qa_ja"
   },
   "localization": {
     "language": "ja",
@@ -180,5 +182,28 @@
     "remote_pdf_byte_identity_reverified": false,
     "saved_data_modified": false,
     "previous_distribution": "e2759513c29988a333de8be17ce8c0cc88fcb21e"
+  },
+  "qa_ja": {
+    "source": "public docs/evaluation/qa02-ja-live/responses.json (branch docs/qa02-ja-live → main)",
+    "captured_on": "2026-10-30",
+    "language": "ja",
+    "selected_cases": [
+      "ja-02",
+      "ja-04",
+      "ja-01r"
+    ],
+    "excluded_cases": {
+      "ja-01": "online consolidation fell back to retrieval fragments",
+      "ja-03": "too long for the panel"
+    },
+    "source_sha256": "885c41b3127ea50c4cc430fbf4492a5a9c0035385b92beb7616b92da5c8d8752",
+    "published_fields": [
+      "question",
+      "answer",
+      "scope",
+      "label"
+    ],
+    "not_a_new_quality_evaluation": true,
+    "live_generation_in_demo": false
   }
 }
