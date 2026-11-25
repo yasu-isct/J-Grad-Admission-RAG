@@ -1,0 +1,125 @@
+{
+  "checked_on": "2026-11-25",
+  "base_public_commit": "112211e28f46bcbb7882be01bce0fc4d7eb7a068",
+  "problem": "Science Tokyo replaced the official download key; the saved link returns 404.",
+  "official_landing_page": "https://admissions.isct.ac.jp/ja/013/graduate/guideline",
+  "official_link_title": "2027年4月及び2026年9月入学 大学院修士課程・専門職学位課程",
+  "official_public_pdf_page_count": 85,
+  "page_count_basis": "Read the currently linked official PDF through the web viewer; not a local KB/index update.",
+  "byte_identity_verified": false,
+  "pdf_files_added_to_repository": false,
+  "head_checks": [
+    {
+      "source_id": "isct-old",
+      "url": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=87362e797f9f0c9ac915675147239ea8.pdf&fileName=2027_4_2026_9_master",
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    {
+      "source_id": "isct-current",
+      "url": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master",
+      "status": 200,
+      "content_type": "application/pdf",
+      "content_disposition": "inline; filename=\"2027_4_2026_9_master.pdf\""
+    },
+    {
+      "source_id": "gsfs-master-2027",
+      "url": "https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf",
+      "status": 200,
+      "content_type": "application/pdf"
+    },
+    {
+      "source_id": "complex-guide-2027-revised",
+      "url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf",
+      "status": 200,
+      "content_type": "application/pdf"
+    },
+    {
+      "source_id": "complex-master-a-additional",
+      "url": "https://www.k.u-tokyo.ac.jp/assets/files/03CSE_AM_j.pdf",
+      "status": 200,
+      "content_type": "application/pdf"
+    }
+  ],
+  "browser_verification": {
+    "checked_at": "2026-11-25T03:22:49.913352+00:00",
+    "note": "Patched cases substitute only official-pdf-links.js; saved samples and UI are the public site. PDF HEAD requests are real. Popup GETs are intercepted: verifies click URL and page fragment, not native PDF viewer rendering.",
+    "cases": [
+      {
+        "mode": "published",
+        "language": "ja",
+        "school": "isct",
+        "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+        "pdf_href": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=87362e797f9f0c9ac915675147239ea8.pdf&fileName=2027_4_2026_9_master#page=10",
+        "link_text": "公式PDF · 10ページを開く ↗",
+        "errors": [],
+        "status": 404,
+        "content_type": "text/html; charset=UTF-8",
+        "popup_url": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=87362e797f9f0c9ac915675147239ea8.pdf&fileName=2027_4_2026_9_master#page=10",
+        "navigation_requested": [
+          "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=87362e797f9f0c9ac915675147239ea8.pdf&fileName=2027_4_2026_9_master"
+        ]
+      },
+      {
+        "mode": "patched",
+        "language": "ja",
+        "school": "isct",
+        "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=isct&scenario=materials",
+        "pdf_href": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master#page=10",
+        "link_text": "公式PDF · 10ページを開く ↗",
+        "errors": [],
+        "status": 200,
+        "content_type": "application/pdf",
+        "popup_url": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master#page=10",
+        "navigation_requested": [
+          "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master"
+        ]
+      },
+      {
+        "mode": "patched",
+        "language": "zh",
+        "school": "isct",
+        "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/zh/app/?school=isct&scenario=materials",
+        "pdf_href": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master#page=10",
+        "link_text": "打开官方 PDF · 第 10 页 ↗",
+        "errors": [],
+        "status": 200,
+        "content_type": "application/pdf",
+        "popup_url": "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master#page=10",
+        "navigation_requested": [
+          "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master"
+        ]
+      },
+      {
+        "mode": "patched",
+        "language": "ja",
+        "school": "gsfs",
+        "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/app/?school=gsfs&scenario=working",
+        "pdf_href": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf#page=28",
+        "link_text": "公式PDF · 28ページを開く ↗",
+        "errors": [],
+        "status": 200,
+        "content_type": "application/pdf",
+        "popup_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf#page=28",
+        "navigation_requested": [
+          "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf"
+        ]
+      },
+      {
+        "mode": "patched",
+        "language": "zh",
+        "school": "gsfs",
+        "entry_url": "https://yasu-isct.github.io/J-Grad-Admission-RAG/zh/app/?school=gsfs&scenario=working",
+        "pdf_href": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf#page=28",
+        "link_text": "打开官方 PDF · 第 28 页 ↗",
+        "errors": [],
+        "status": 200,
+        "content_type": "application/pdf",
+        "popup_url": "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf#page=28",
+        "navigation_requested": [
+          "https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf"
+        ]
+      }
+    ]
+  }
+}
