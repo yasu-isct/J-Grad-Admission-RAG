@@ -1,0 +1,195 @@
+{
+  "round": 1,
+  "query_id": "rq:0032",
+  "started_at": "2026-11-25T01:19:31.090589+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:19:31.097185+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:19:31.281442+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "4e0370a1e34101feaa6d7ac492558cc41776e4a3dec026232a44a79fe68f90e5",
+  "raw_response": {
+    "id": "91d9d132-170b-4021-bf51-3a11b0721f35",
+    "created_at": 1795569571.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "00d76e12-6c7f-4cc7-94cf-f7e356bf6d09",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"東京科学大学の情報理工学院 情報工学系（2027年4月入学・修士課程）に関する入試の一般的な問い合わせ先メールアドレスは、学内の公式入試案内で確認する必要があります。一般的な窓口として、情報理工学院の教務担当や入試担当の連絡先が案内されている場合がありますが、正確なアドレスは最新の募集要項または研究科・学院の公式サイトでご確認ください。\", \"needs_local_lookup\": true, \"search_queries\": [\"東京科学大学 情報理工学院 情報工学系 大学院入試 問い合わせ メールアドレス\", \"東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 問い合わせ先\", \"東京科学大学 大学院 入試 一般的な質問 メール 窓口\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569572.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 388,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 200,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 588
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "c5a6a43fca6c0e1a37f9539502e902b3e5e71c3ed405a0c5cfabe28f247bb81e",
+  "plan": {
+    "draft_answer": "東京科学大学の情報理工学院 情報工学系（2027年4月入学・修士課程）に関する入試の一般的な問い合わせ先メールアドレスは、学内の公式入試案内で確認する必要があります。一般的な窓口として、情報理工学院の教務担当や入試担当の連絡先が案内されている場合がありますが、正確なアドレスは最新の募集要項または研究科・学院の公式サイトでご確認ください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 大学院入試 問い合わせ メールアドレス",
+      "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 問い合わせ先",
+      "東京科学大学 大学院 入試 一般的な質問 メール 窓口"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "0b8484c685cc3138a56387e375a4fe33d17c8cb037efd5f4f9c2ec4ce36b6dc6",
+  "finished_at": "2026-11-25T01:19:32.670265+00:00",
+  "elapsed_seconds": 1.577656300039962
+}

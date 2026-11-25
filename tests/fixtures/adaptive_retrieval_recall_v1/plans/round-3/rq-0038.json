@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0038",
+  "started_at": "2026-11-25T01:22:27.430704+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:22:27.441026+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:22:27.637054+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "所有申请人共同需要提交哪些申请材料？",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"所有申请人共同需要提交哪些申请材料？\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "2d9b62879d7946d45838459a93e58d17a5f8bdc6a43d7ec756ab0286c946edea",
+  "raw_response": {
+    "id": "dd68b1d4-00e4-4d93-80ea-d2619ad9f28a",
+    "created_at": 1795569747.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "94d3cf17-a923-4033-9378-3c4a926cc8d3",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"要准确回答东京科学大学情報理工学院情報工学系修士课程（2027年4月入学）所有申请人共同需要提交的申请材料，需要查阅该研究科当年发布的官方招生要项。通常需要关注的文件包括：入学愿书、成绩证明、毕业（或预毕业）证明、研究计划书/志望理由书、推荐信、语言能力证明（如日语或英语成绩）、护照或在留资格相关材料，以及报名费缴纳证明等。但具体项目、格式、份数、是否需要翻译或公证，均须以官方募集要项为准，我不能在未核对原文前代为确认。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月 募集要項 出願書類\",\"東京科学大学 情報理工学院 修士課程 出願資格 提出書類 一覧\",\"東京科学大学 大学院 修士課程 2027 4月入学 入学願書 成績証明書\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569749.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 374,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 227,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 601
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "fc9bfdc145b9b9a1912ed7b1185a3b3e6b8163c06bfe8cf65a3f1d093426d64f",
+  "plan": {
+    "draft_answer": "要准确回答东京科学大学情報理工学院情報工学系修士课程（2027年4月入学）所有申请人共同需要提交的申请材料，需要查阅该研究科当年发布的官方招生要项。通常需要关注的文件包括：入学愿书、成绩证明、毕业（或预毕业）证明、研究计划书/志望理由书、推荐信、语言能力证明（如日语或英语成绩）、护照或在留资格相关材料，以及报名费缴纳证明等。但具体项目、格式、份数、是否需要翻译或公证，均须以官方募集要项为准，我不能在未核对原文前代为确认。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月 募集要項 出願書類",
+      "東京科学大学 情報理工学院 修士課程 出願資格 提出書類 一覧",
+      "東京科学大学 大学院 修士課程 2027 4月入学 入学願書 成績証明書"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "d6cc5b1818dce299c3b57937edfc671de8797bc4f125602f981454aaf3f343e1",
+  "finished_at": "2026-11-25T01:22:29.696868+00:00",
+  "elapsed_seconds": 2.2629613000899553
+}

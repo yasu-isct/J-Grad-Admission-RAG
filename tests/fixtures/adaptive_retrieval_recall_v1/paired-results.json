@@ -1,0 +1,590 @@
+[
+  {
+    "query_id": "rq:0001",
+    "query_language": "ja",
+    "question": "インターネット出願の登録開始日と、書類が大学に必着となる出願期間を教えてください。",
+    "single_query_recall": 0.6666666666666666,
+    "adaptive_rounds": [
+      0.6666666666666666,
+      0.3333333333333333,
+      0.6666666666666666
+    ],
+    "adaptive_mean": 0.5555555555555556,
+    "difference": -0.11111111111111105,
+    "scope_ceiling": 0.6666666666666666
+  },
+  {
+    "query_id": "rq:0002",
+    "query_language": "ja",
+    "question": "オンラインで登録と支払いを済ませれば出願は完了しますか。必要な手続きを知りたいです。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0003",
+    "query_language": "ja",
+    "question": "入学検定料30,000円のほかにサービス利用料はいくら必要ですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0004",
+    "query_language": "ja",
+    "question": "いったん払った検定料は、願書が受理された後でも返してもらえますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0005",
+    "query_language": "ja",
+    "question": "志願者全員が提出する出願書類には何がありますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.6666666666666667,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0006",
+    "query_language": "ja",
+    "question": "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0007",
+    "query_language": "ja",
+    "question": "障害などで受験時の配慮が必要なときは、いつまでに何をすればよいですか。",
+    "single_query_recall": 0.6666666666666666,
+    "adaptive_rounds": [
+      0.6666666666666666,
+      0.6666666666666666,
+      0.6666666666666666
+    ],
+    "adaptive_mean": 0.6666666666666666,
+    "difference": 0.0,
+    "scope_ceiling": 0.6666666666666666
+  },
+  {
+    "query_id": "rq:0008",
+    "query_language": "ja",
+    "question": "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。",
+    "single_query_recall": 0.8,
+    "adaptive_rounds": [
+      0.8,
+      0.8,
+      0.4
+    ],
+    "adaptive_mean": 0.6666666666666667,
+    "difference": -0.1333333333333333,
+    "scope_ceiling": 0.8
+  },
+  {
+    "query_id": "rq:0009",
+    "query_language": "ja",
+    "question": "2026年9月入学と2027年4月入学では、卒業や学位取得をいつまでに確定する必要がありますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0010",
+    "query_language": "ja",
+    "question": "この選抜で選べる2026年9月入学と2027年4月入学の組み合わせはどうなっていますか。",
+    "single_query_recall": 0.5,
+    "adaptive_rounds": [
+      0.0,
+      0.5,
+      0.5
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.16666666666666669,
+    "scope_ceiling": 0.5
+  },
+  {
+    "query_id": "rq:0011",
+    "query_language": "ja",
+    "question": "情報理工学院の募集人員と、志願できる系の数を教えてください。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0012",
+    "query_language": "ja",
+    "question": "『主な出願資格』で海外大学卒業は『下記（3）』とありますが、具体的な条件は何ですか。",
+    "single_query_recall": 0.5,
+    "adaptive_rounds": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "adaptive_mean": 0.5,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0013",
+    "query_language": "ja",
+    "question": "出願資格（9）～（11）の審査は、最初の連絡から必要書類の郵送までどう進めますか。",
+    "single_query_recall": 0.5,
+    "adaptive_rounds": [
+      0.3333333333333333,
+      0.16666666666666666,
+      0.16666666666666666
+    ],
+    "adaptive_mean": 0.2222222222222222,
+    "difference": -0.2777777777777778,
+    "scope_ceiling": 0.5
+  },
+  {
+    "query_id": "rq:0014",
+    "query_language": "ja",
+    "question": "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0015",
+    "query_language": "ja",
+    "question": "出願用の顔写真データは、撮影時期、容量、ファイル形式にどんな条件がありますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0016",
+    "query_language": "ja",
+    "question": "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。",
+    "single_query_recall": 0.5,
+    "adaptive_rounds": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.16666666666666669,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0017",
+    "query_language": "ja",
+    "question": "A日程とB日程のどちらを受けるかは志願者が自分で選べますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0018",
+    "query_language": "ja",
+    "question": "A日程はいつ実施され、試験結果はいつ通知されますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0019",
+    "query_language": "ja",
+    "question": "B日程の筆答試験日と口頭試問の実施期間を教えてください。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0020",
+    "query_language": "ja",
+    "question": "合格者発表は何月何日の何時頃で、どこで確認できますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0021",
+    "query_language": "ja",
+    "question": "9月入学と4月入学では、合格後の入学手続案内や手続日はどう違いますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0022",
+    "query_language": "ja",
+    "question": "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.6666666666666667,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0023",
+    "query_language": "ja",
+    "question": "2026年の入試成績提供は、いつからいつまで申請できますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0024",
+    "query_language": "ja",
+    "question": "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0025",
+    "query_language": "ja",
+    "question": "物理学系の英語スコアシートは出願時に送りますか、それとも筆答試験当日に持参しますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0026",
+    "query_language": "ja",
+    "question": "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0027",
+    "query_language": "ja",
+    "question": "材料系の外部英語試験スコアシートは、オンライン版をいつ提出し、後から差し替えられますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0028",
+    "query_language": "ja",
+    "question": "数理・計算科学系の志望理由は何字程度で、出願前に誰へ連絡すべきですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0029",
+    "query_language": "ja",
+    "question": "情報工学系の志望理由書は、日本語と英語でそれぞれどのくらいの長さですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0030",
+    "query_language": "ja",
+    "question": "生命理工学系のB日程口頭試問はオンラインですか。受験資格者はいつ発表されますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0031",
+    "query_language": "ja",
+    "question": "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0032",
+    "query_language": "ja",
+    "question": "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0033",
+    "query_language": "ja",
+    "question": "受験票はいつから、どこで閲覧して印刷できますか。",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 0.0
+  },
+  {
+    "query_id": "rq:0034",
+    "query_language": "ja",
+    "question": "検定料はクレジットカードとネットバンキングのどちらで支払えますか。",
+    "single_query_recall": 0.6666666666666666,
+    "adaptive_rounds": [
+      0.6666666666666666,
+      0.6666666666666666,
+      0.6666666666666666
+    ],
+    "adaptive_mean": 0.6666666666666666,
+    "difference": 0.0,
+    "scope_ceiling": 0.6666666666666666
+  },
+  {
+    "query_id": "rq:0035",
+    "query_language": "zh",
+    "question": "网上申请什么时候开放，纸质材料最晚必须在什么时候送达学校？",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.16666666666666666,
+      0.16666666666666666,
+      0.6666666666666666
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": 0.3333333333333333,
+    "scope_ceiling": 0.6666666666666666
+  },
+  {
+    "query_id": "rq:0036",
+    "query_language": "zh",
+    "question": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+    "single_query_recall": 0.5,
+    "adaptive_rounds": [
+      0.0,
+      0.5,
+      0.0
+    ],
+    "adaptive_mean": 0.16666666666666666,
+    "difference": -0.33333333333333337,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0037",
+    "query_language": "zh",
+    "question": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.75,
+      0.5,
+      0.0
+    ],
+    "adaptive_mean": 0.4166666666666667,
+    "difference": 0.4166666666666667,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0038",
+    "query_language": "zh",
+    "question": "所有申请人共同需要提交哪些申请材料？",
+    "single_query_recall": 0.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0039",
+    "query_language": "ja",
+    "question": "TOEFLの有効な種類を教えてください。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.6666666666666667,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0040",
+    "query_language": "ja",
+    "question": "英語外部試験としてTOEFL iBTは認められますか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "adaptive_mean": 0.3333333333333333,
+    "difference": -0.6666666666666667,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0041",
+    "query_language": "ja",
+    "question": "TOEFL iBT Home Editionは有効ですか。",
+    "single_query_recall": 1.0,
+    "adaptive_rounds": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "adaptive_mean": 1.0,
+    "difference": 0.0,
+    "scope_ceiling": 1.0
+  },
+  {
+    "query_id": "rq:0042",
+    "query_language": "ja",
+    "question": "出願期間と書類必着日はいつですか。",
+    "single_query_recall": 0.6666666666666666,
+    "adaptive_rounds": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.16666666666666666
+    ],
+    "adaptive_mean": 0.2777777777777778,
+    "difference": -0.38888888888888884,
+    "scope_ceiling": 0.6666666666666666
+  }
+]

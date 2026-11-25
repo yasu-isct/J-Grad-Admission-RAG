@@ -1,0 +1,480 @@
+{
+  "metric": "macro_final_evidence_set_recall",
+  "component_archived": {
+    "breakdowns": [
+      {
+        "dimension": "query_language",
+        "group": "ja",
+        "summary": {
+          "mrr": 0.8991228070175438,
+          "query_count": 38,
+          "recall": {
+            "recall_at_1": 0.39981203007518795,
+            "recall_at_10": 0.943295739348371,
+            "recall_at_3": 0.7292606516290727,
+            "recall_at_5": 0.8555764411027568
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "query_language",
+        "group": "zh",
+        "summary": {
+          "mrr": 0.19791666666666666,
+          "query_count": 4,
+          "recall": {
+            "recall_at_1": 0.0,
+            "recall_at_10": 0.3333333333333333,
+            "recall_at_3": 0.16666666666666666,
+            "recall_at_5": 0.20833333333333331
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "application_dates",
+        "summary": {
+          "mrr": 0.8333333333333334,
+          "query_count": 4,
+          "recall": {
+            "recall_at_1": 0.16666666666666666,
+            "recall_at_10": 0.8333333333333334,
+            "recall_at_3": 0.5,
+            "recall_at_5": 0.6666666666666666
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "contacts_forms",
+        "summary": {
+          "mrr": 0.75,
+          "query_count": 2,
+          "recall": {
+            "recall_at_1": 0.16666666666666666,
+            "recall_at_10": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_5": 1.0
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "department_requirements",
+        "summary": {
+          "mrr": 1.0,
+          "query_count": 4,
+          "recall": {
+            "recall_at_1": 0.75,
+            "recall_at_10": 1.0,
+            "recall_at_3": 1.0,
+            "recall_at_5": 1.0
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "documents",
+        "summary": {
+          "mrr": 0.7708333333333334,
+          "query_count": 6,
+          "recall": {
+            "recall_at_1": 0.23214285714285712,
+            "recall_at_10": 0.8214285714285715,
+            "recall_at_3": 0.4880952380952381,
+            "recall_at_5": 0.6547619047619048
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "eligibility",
+        "summary": {
+          "mrr": 0.75,
+          "query_count": 4,
+          "recall": {
+            "recall_at_1": 0.15416666666666667,
+            "recall_at_10": 0.625,
+            "recall_at_3": 0.4,
+            "recall_at_5": 0.44166666666666665
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "enrollment",
+        "summary": {
+          "mrr": 1.0,
+          "query_count": 3,
+          "recall": {
+            "recall_at_1": 0.39999999999999997,
+            "recall_at_10": 1.0,
+            "recall_at_3": 0.7000000000000001,
+            "recall_at_5": 0.9333333333333332
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "fees",
+        "summary": {
+          "mrr": 0.7777777777777778,
+          "query_count": 3,
+          "recall": {
+            "recall_at_1": 0.27777777777777773,
+            "recall_at_10": 1.0,
+            "recall_at_3": 0.8333333333333334,
+            "recall_at_5": 1.0
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "language_tests",
+        "summary": {
+          "mrr": 0.6458333333333334,
+          "query_count": 8,
+          "recall": {
+            "recall_at_1": 0.5,
+            "recall_at_10": 0.875,
+            "recall_at_3": 0.6875,
+            "recall_at_5": 0.8333333333333334
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "results",
+        "summary": {
+          "mrr": 1.0,
+          "query_count": 2,
+          "recall": {
+            "recall_at_1": 0.26666666666666666,
+            "recall_at_10": 1.0,
+            "recall_at_3": 0.6333333333333333,
+            "recall_at_5": 0.8333333333333333
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "category",
+        "group": "selection_exams",
+        "summary": {
+          "mrr": 1.0,
+          "query_count": 6,
+          "recall": {
+            "recall_at_1": 0.4361111111111111,
+            "recall_at_10": 0.9027777777777778,
+            "recall_at_3": 0.7472222222222222,
+            "recall_at_5": 0.8083333333333332
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "query_style",
+        "group": "exact_term",
+        "summary": {
+          "mrr": 0.9047619047619048,
+          "query_count": 7,
+          "recall": {
+            "recall_at_1": 0.23095238095238096,
+            "recall_at_10": 0.8452380952380952,
+            "recall_at_3": 0.569047619047619,
+            "recall_at_5": 0.7642857142857142
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "query_style",
+        "group": "identifier",
+        "summary": {
+          "mrr": 1.0,
+          "query_count": 6,
+          "recall": {
+            "recall_at_1": 0.47222222222222227,
+            "recall_at_10": 1.0,
+            "recall_at_3": 0.7777777777777778,
+            "recall_at_5": 0.8888888888888888
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "query_style",
+        "group": "paraphrase",
+        "summary": {
+          "mrr": 0.7801724137931034,
+          "query_count": 29,
+          "recall": {
+            "recall_at_1": 0.37044334975369453,
+            "recall_at_10": 0.8711001642036125,
+            "recall_at_3": 0.680295566502463,
+            "recall_at_5": 0.7814449917898194
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      },
+      {
+        "dimension": "scope_sensitive",
+        "group": "false",
+        "summary": {
+          "mrr": 0.8093434343434343,
+          "query_count": 33,
+          "recall": {
+            "recall_at_1": 0.270995670995671,
+            "recall_at_10": 0.8766233766233765,
+            "recall_at_3": 0.6251082251082252,
+            "recall_at_5": 0.7705627705627706
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      },
+      {
+        "dimension": "scope_sensitive",
+        "group": "true",
+        "summary": {
+          "mrr": 0.9166666666666666,
+          "query_count": 9,
+          "recall": {
+            "recall_at_1": 0.6944444444444444,
+            "recall_at_10": 0.9166666666666666,
+            "recall_at_3": 0.8611111111111112,
+            "recall_at_5": 0.8796296296296297
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "multiple_clause",
+        "group": "false",
+        "summary": {
+          "mrr": 0.8598484848484849,
+          "query_count": 33,
+          "recall": {
+            "recall_at_1": 0.4237373737373737,
+            "recall_at_10": 0.9545454545454546,
+            "recall_at_3": 0.7424242424242424,
+            "recall_at_5": 0.8767676767676768
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "multiple_clause",
+        "group": "true",
+        "summary": {
+          "mrr": 0.7314814814814814,
+          "query_count": 9,
+          "recall": {
+            "recall_at_1": 0.1343915343915344,
+            "recall_at_10": 0.6309523809523809,
+            "recall_at_3": 0.430952380952381,
+            "recall_at_5": 0.49021164021164026
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      },
+      {
+        "dimension": "reference_expansion",
+        "group": "false",
+        "summary": {
+          "mrr": 0.8489583333333334,
+          "query_count": 40,
+          "recall": {
+            "recall_at_1": 0.37357142857142855,
+            "recall_at_10": 0.9169642857142858,
+            "recall_at_3": 0.6969642857142857,
+            "recall_at_5": 0.8211309523809524
+          },
+          "zero_hit_query_ids": []
+        }
+      },
+      {
+        "dimension": "reference_expansion",
+        "group": "true",
+        "summary": {
+          "mrr": 0.5,
+          "query_count": 2,
+          "recall": {
+            "recall_at_1": 0.125,
+            "recall_at_10": 0.25,
+            "recall_at_3": 0.25,
+            "recall_at_5": 0.25
+          },
+          "zero_hit_query_ids": [
+            "rq:0037"
+          ]
+        }
+      }
+    ],
+    "overall": {
+      "mrr": 0.8323412698412699,
+      "query_count": 42,
+      "recall": {
+        "recall_at_1": 0.36173469387755103,
+        "recall_at_10": 0.8852040816326531,
+        "recall_at_3": 0.6756802721088435,
+        "recall_at_5": 0.7939342403628118
+      },
+      "zero_hit_query_ids": [
+        "rq:0037"
+      ]
+    }
+  },
+  "paths": {
+    "single-query": {
+      "groups": {
+        "all": {
+          "n": 42,
+          "recall": 0.523015873015873,
+          "scope_ceiling": 0.6222222222222222
+        },
+        "ja": {
+          "n": 38,
+          "recall": 0.5649122807017544,
+          "scope_ceiling": 0.5912280701754385
+        },
+        "zh": {
+          "n": 4,
+          "recall": 0.125,
+          "scope_ceiling": 0.9166666666666666
+        }
+      },
+      "no_lookup_ids": [],
+      "fallback_ids": [],
+      "search_query_language_counts": {
+        "ja": 38,
+        "zh": 4
+      }
+    },
+    "round-1": {
+      "groups": {
+        "all": {
+          "n": 42,
+          "recall": 0.48134920634920636,
+          "scope_ceiling": 0.6222222222222222
+        },
+        "ja": {
+          "n": 38,
+          "recall": 0.5078947368421053,
+          "scope_ceiling": 0.5912280701754385
+        },
+        "zh": {
+          "n": 4,
+          "recall": 0.22916666666666666,
+          "scope_ceiling": 0.9166666666666666
+        }
+      },
+      "no_lookup_ids": [],
+      "fallback_ids": [],
+      "search_query_language_counts": {
+        "ja": 42
+      }
+    },
+    "round-2": {
+      "groups": {
+        "all": {
+          "n": 42,
+          "recall": 0.4158730158730159,
+          "scope_ceiling": 0.6222222222222222
+        },
+        "ja": {
+          "n": 38,
+          "recall": 0.42894736842105263,
+          "scope_ceiling": 0.5912280701754385
+        },
+        "zh": {
+          "n": 4,
+          "recall": 0.2916666666666667,
+          "scope_ceiling": 0.9166666666666666
+        }
+      },
+      "no_lookup_ids": [],
+      "fallback_ids": [],
+      "search_query_language_counts": {
+        "ja": 42
+      }
+    },
+    "round-3": {
+      "groups": {
+        "all": {
+          "n": 42,
+          "recall": 0.4222222222222222,
+          "scope_ceiling": 0.6222222222222222
+        },
+        "ja": {
+          "n": 38,
+          "recall": 0.44912280701754387,
+          "scope_ceiling": 0.5912280701754385
+        },
+        "zh": {
+          "n": 4,
+          "recall": 0.16666666666666666,
+          "scope_ceiling": 0.9166666666666666
+        }
+      },
+      "no_lookup_ids": [],
+      "fallback_ids": [],
+      "search_query_language_counts": {
+        "ja": 42
+      }
+    }
+  },
+  "adaptive_three_rounds": {
+    "all": {
+      "mean": 0.4398148148148148,
+      "min": 0.4158730158730159,
+      "max": 0.48134920634920636
+    },
+    "ja": {
+      "mean": 0.4619883040935673,
+      "min": 0.42894736842105263,
+      "max": 0.5078947368421053
+    },
+    "zh": {
+      "mean": 0.22916666666666666,
+      "min": 0.16666666666666666,
+      "max": 0.2916666666666667
+    }
+  },
+  "planning_invocations": 126,
+  "http_attempts": 126,
+  "planning_failures": 0,
+  "final_generation_invocations": 0,
+  "planning_started_at": "2026-11-25T01:18:25.804671+00:00",
+  "planning_finished_at": "2026-11-25T01:22:37.742653+00:00",
+  "search_query_count": 377,
+  "usage": {
+    "input_tokens": 48771,
+    "output_tokens": 25635,
+    "total_tokens": 74406
+  },
+  "paired_vs_single": {
+    "better": 2,
+    "same": 29,
+    "worse": 11
+  }
+}

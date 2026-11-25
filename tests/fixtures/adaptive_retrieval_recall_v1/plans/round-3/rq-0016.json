@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0016",
+  "started_at": "2026-11-25T01:21:48.458115+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:21:48.462115+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:21:48.649073+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 数学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 数学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "d4edb14c0d2ddf66be554ba0cd286dba3af53b5363401fe000cd764a5d0e9d37",
+  "raw_response": {
+    "id": "2bf88c3b-668a-4c50-930a-7d772a765a81",
+    "created_at": 1795569708.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "a2c9e707-6522-4757-9b28-f917cd774861",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"東京科学大学・理学院数学系の2027年4月入学（修士課程）における英語外部試験スコアの提出要否や英語筆答試験の有無は、募集要項で確認が必要です。現時点では一般的な傾向として、大学院入試では英語外部試験のスコア提出を求める場合と、独自の英語筆答試験を課す場合、あるいは両方の場合があります。正確な要件は必ず最新の募集要項をご確認ください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 理学院 数学系 修士課程 2027年4月入学 募集要項 英語 外部試験\",\"東京科学大学 数学系 修士 入試 英語 スコア 提出 筆答試験\",\"東京科学大学 理学院 数学系 大学院入試 英語 要件\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569709.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 387,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 253
+      },
+      "output_tokens": 202,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 589
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "df12b2b43744e75ef0a5eade3761f099b12cbdf2cfa3657d77420fabdd6aea2a",
+  "plan": {
+    "draft_answer": "東京科学大学・理学院数学系の2027年4月入学（修士課程）における英語外部試験スコアの提出要否や英語筆答試験の有無は、募集要項で確認が必要です。現時点では一般的な傾向として、大学院入試では英語外部試験のスコア提出を求める場合と、独自の英語筆答試験を課す場合、あるいは両方の場合があります。正確な要件は必ず最新の募集要項をご確認ください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 理学院 数学系 修士課程 2027年4月入学 募集要項 英語 外部試験",
+      "東京科学大学 数学系 修士 入試 英語 スコア 提出 筆答試験",
+      "東京科学大学 理学院 数学系 大学院入試 英語 要件"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "d1f15b3a49be67f869f579342bf94b650d430aac380051026dead91a5eb8d155",
+  "finished_at": "2026-11-25T01:21:49.913356+00:00",
+  "elapsed_seconds": 1.4518558999989182
+}

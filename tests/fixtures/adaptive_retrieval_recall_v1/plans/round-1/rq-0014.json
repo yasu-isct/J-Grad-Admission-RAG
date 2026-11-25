@@ -1,0 +1,195 @@
+{
+  "round": 1,
+  "query_id": "rq:0014",
+  "started_at": "2026-11-25T01:18:53.886451+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:18:53.890451+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:18:54.114426+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "b162e3df6b0727e842e5279d9915892a33aa5085dc48b929d64eb8eba57e7bf0",
+  "raw_response": {
+    "id": "f02dd31a-ddb5-4921-8faf-86432348ce34",
+    "created_at": 1795569532.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "57adf4e0-cb76-4b7f-800f-dbe0159b2d9b",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"ご質問は、東京科学大学 情報理工学院 情報工学系 修士課程（2027年4月入学）への出願について、①指定の封筒、②郵送方法（書留等の指定や持参可否）、③提出期限（消印有効か必着か）を確認したいという内容ですね。これらは募集要項で年度ごとに定められるため、最新の出願書類（募集要項・出願案内）でご確認ください。封筒の種類・宛先の書き方、郵送方法の指定、締切日と消印有効／必着の別を、該当ページで照合してからご案内します。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類 封筒\",\"東京科学大学 修士課程 出願 郵送方法 書留 消印有効 必着\",\"東京科学大学 情報理工学院 出願 提出期限 締切 2027年4月入学\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569534.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 390,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 256
+      },
+      "output_tokens": 256,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 646
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "4a54e2d2fe9d7245c0655fb6f3fd3ad7026f8d6bd1a9abb29f6260dcce8f8ef3",
+  "plan": {
+    "draft_answer": "ご質問は、東京科学大学 情報理工学院 情報工学系 修士課程（2027年4月入学）への出願について、①指定の封筒、②郵送方法（書留等の指定や持参可否）、③提出期限（消印有効か必着か）を確認したいという内容ですね。これらは募集要項で年度ごとに定められるため、最新の出願書類（募集要項・出願案内）でご確認ください。封筒の種類・宛先の書き方、郵送方法の指定、締切日と消印有効／必着の別を、該当ページで照合してからご案内します。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類 封筒",
+      "東京科学大学 修士課程 出願 郵送方法 書留 消印有効 必着",
+      "東京科学大学 情報理工学院 出願 提出期限 締切 2027年4月入学"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "7d94e6123de529031a389ced18616e570c33b48c7676c36c0d860cd2ca6701e7",
+  "finished_at": "2026-11-25T01:18:55.972635+00:00",
+  "elapsed_seconds": 2.0855393998790532
+}

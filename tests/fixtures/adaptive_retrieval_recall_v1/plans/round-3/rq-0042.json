@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0042",
+  "started_at": "2026-11-25T01:22:35.568770+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:22:35.572769+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:22:35.770110+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "出願期間と書類必着日はいつですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"出願期間と書類必着日はいつですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "21f7cd330bd7a2ddced43a3bd1e950ec5852868bbd4ea0785f064738e83edefa",
+  "raw_response": {
+    "id": "e4840a4f-1f1d-43b5-a5e9-a36ab14ef67d",
+    "created_at": 1795569755.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "10286f17-b7b1-4adf-a7b4-93b1dac743f1",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"出願期間・書類必着日は入学年度や研究科・系によって異なるため、東京科学大学 情報理工学院 情報工学系の2027年4月入学（修士課程）の公式募集要項でご確認ください。現時点では正確な日程はお答えできません。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願期間 書類必着日\",\"東京科学大学 情報理工学院 修士課程 出願書類 提出期限 2027\",\"東京科学大学 大学院 修士課程 2027年度 入学 願書 受付期間\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569757.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 378,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 166,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 544
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "9914de1bd1897aca4f9f0e83326468193f5c4067637e7f91044afdfaa5b1d30e",
+  "plan": {
+    "draft_answer": "出願期間・書類必着日は入学年度や研究科・系によって異なるため、東京科学大学 情報理工学院 情報工学系の2027年4月入学（修士課程）の公式募集要項でご確認ください。現時点では正確な日程はお答えできません。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願期間 書類必着日",
+      "東京科学大学 情報理工学院 修士課程 出願書類 提出期限 2027",
+      "東京科学大学 大学院 修士課程 2027年度 入学 願書 受付期間"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "7e4f0737bce8676d28845b0f5440eed9814b64e3fd2ddec86d3fc56075c7daf3",
+  "finished_at": "2026-11-25T01:22:37.742653+00:00",
+  "elapsed_seconds": 2.1716760999988765
+}

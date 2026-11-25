@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0037",
+  "started_at": "2026-11-25T01:22:25.055333+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:22:25.067452+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:22:25.249536+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "fa0a60036bd0f6a0c44684204618621a39149392a8f655257f63bb5d947d51d4",
+  "raw_response": {
+    "id": "44ed563e-5534-4dad-b978-4b5754dcf75e",
+    "created_at": 1795569745.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "ca83ca5d-ada3-4841-967d-6597789a9f88",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"对于東京科学大学 情報理工学院 情報工学系 修士课程（2027年4月入学）的申请，中国大学本科毕业生或应届毕业生通常应适用“完成16年学校教育课程”或“预期完成”的学历资格（即与日本大学毕业者同等学力）。具体适用哪一项报考资格、应届生如何证明预期毕业，需以该校该年度募集要项为准。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格\",\"東京科学大学 修士課程 出願資格 中国 大学 卒業 見込み 16年\",\"東京科学大学 情報理工学院 修士 2027 入学 外国人留学生 出願資格\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569747.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 379,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 179,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 558
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "c9121b4b97dc523d6dab9c97a562692367a1483d6f44fbf9d60566cd82d2c0ea",
+  "plan": {
+    "draft_answer": "对于東京科学大学 情報理工学院 情報工学系 修士课程（2027年4月入学）的申请，中国大学本科毕业生或应届毕业生通常应适用“完成16年学校教育课程”或“预期完成”的学历资格（即与日本大学毕业者同等学力）。具体适用哪一项报考资格、应届生如何证明预期毕业，需以该校该年度募集要项为准。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+      "東京科学大学 修士課程 出願資格 中国 大学 卒業 見込み 16年",
+      "東京科学大学 情報理工学院 修士 2027 入学 外国人留学生 出願資格"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "2c6ff2095b2a9bfc86924ea4a558165d866fcb7bc12fbaa4c2082c933b9e6df0",
+  "finished_at": "2026-11-25T01:22:27.424389+00:00",
+  "elapsed_seconds": 2.36425430001691
+}
