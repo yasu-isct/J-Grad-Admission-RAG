@@ -1,0 +1,2649 @@
+{
+  "method": "All 126 plans and every query inspected by the design agent, not inferred from question language. Japanese kana and/or Japanese admission vocabulary (e.g. 出願, 募集要項, 願書, 必着, 大学院, 志望理由書) identify these queries. Latin test names do not make a query mixed. No ambiguous Han-only query remained in this run. This annotation never changes retrieval.",
+  "reviewed_at": "2026-11-25T01:23:08.927109+00:00",
+  "rows": [
+    {
+      "round": 1,
+      "query_id": "rq:0001",
+      "plan_archive_sha256": "5ff395831fd2deb8d1211e7d83b73aa43f10fc61057ddeabce052e8ee637babd",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 学生募集要項 出願期間 必着",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 インターネット出願 登録開始日 出願期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 2027年度 修士 入学試験 出願書類 必着",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0002",
+      "plan_archive_sha256": "8c0e47660221a0455e305712f49483cae9290959389c511c1d49a426599633ad",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願手続き",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 オンライン登録 検定料 支払い 書類提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 出願書類 提出方法 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0003",
+      "plan_archive_sha256": "573acd5bd197df677fd0799f81fdbc3bf4102a45f0d66c1cbb234dab398af527",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 出願要項 入学検定料 サービス利用料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 2027 募集要項 検定料 手数料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 サービス利用料 金額",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0004",
+      "plan_archive_sha256": "9ef7efe8748d81cf71bf8881b6f7a26155269d94ab266a12b6b15f4a30b24d69",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 検定料 返還",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 募集要項 検定料 返還 願書受理後",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入学検定料 返還 規定",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0005",
+      "plan_archive_sha256": "bf86d55d0a8c40162df5d36a08ee5f22e3ce49d9b50671473bb619e5e9394452",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 学生募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 志願者全員 提出書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 入学願書 成績証明書 研究計画書",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0006",
+      "plan_archive_sha256": "73717fae01cfa6ca7d871d3bd7923aeab35e4dff048980aa8c628c7240a5d201",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 出願後 住所変更 届け出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学手続 住所変更 連絡先",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 合格者 手続き 住所変更 提出書類",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0007",
+      "plan_archive_sha256": "0743de47b2747765a9d91169fb18a5839908d8a81eab7c52ffd41c72c416ba24",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 大学院 修士課程 2027年4月入学 募集要項 受験上の配慮 申請期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 入学試験 障がい 配慮 申請 提出書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 受験上の配慮 申請書 診断書 提出先 期限",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0008",
+      "plan_archive_sha256": "870e8298106fa1f9060418020ca47d0358e50c78d76215d348dc6bf426b029c4",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2026年9月入学 外国人 出願資格 在留資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 2026年9月入学 入学手続 在留資格認定証明書 COE",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 国際学生 在留資格 ビザ 入学手続 案内",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0009",
+      "plan_archive_sha256": "5161d8d4b8462b056e75ecc196452196ca80c76c4c72cd7f41a722735b0885f4",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 卒業証明書 学位取得 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2026年9月入学 出願資格 卒業見込み 学位取得見込み 証明書 提出期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学手続 卒業証明書 学位授与証明書 提出期限",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0010",
+      "plan_archive_sha256": "c020a7fd87f233919253390f4f9db61a347cd83b5e466c24e2599f59256e59ef",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 募集要項 2026年9月入学 2027年4月入学 選択",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学時期 2026年9月 2027年4月 情報理工学院",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 出願 入学時期 選択 募集要項",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0011",
+      "plan_archive_sha256": "407d2ade5902821508bf5f26c5087060acc54d9622eebcc87df26a898c1526c9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集人員",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 志願できる系 数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 令和9年度 修士課程 学生募集要項 情報理工学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0012",
+      "plan_archive_sha256": "f755fa1a2243293ea85b47d264901a6460b19068278a1db4bc60fbfb45ea7f82",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格 (3) 海外大学 卒業",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 海外大学卒業 下記(3) 条件",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 2027 出願資格 外国大学 卒業 学士",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0013",
+      "plan_archive_sha256": "04222ea6025d7259cfd537202e7213d4730d0f7ee3e22180d8d7cd70707cb130",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 出願資格 9 10 11 審査",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 事前審査 必要書類 郵送 手続き",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 大学院 出願要項 2027 個別審査 問い合わせ",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0014",
+      "plan_archive_sha256": "1d2b989b45ab36debb1d7ce3934fc6574351105c691e79ff52b04c02d4ff47d8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類 封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 郵送方法 書留 消印有効 必着",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 出願 提出期限 締切 2027年4月入学",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0015",
+      "plan_archive_sha256": "eb07d30057938483a8ce40e5ed4713ca6b9d90b443490c05f8f1dedf6e86f70a",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士 2027年4月入学 募集要項 顔写真 条件",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 出願 顔写真 撮影時期 ファイル形式 容量",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 写真 データ 形式 サイズ",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0016",
+      "plan_archive_sha256": "4454ff5d73ba1de665de0c01f86166ac7003d775fc78b86c2e2018dc3dd72116",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 数学系 修士課程 2027年4月入学 募集要項 英語",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 数学系 修士 英語 外部試験 スコア 提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 数学系 修士 英語 筆答試験",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0017",
+      "plan_archive_sha256": "845cb07b8d3dd70cfabac0d322ecec74e2e644d9332bc5ef97f909fd56c0fcfb",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 A日程 B日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 修士課程 入試 A日程 B日程 出願 選択 併願",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0018",
+      "plan_archive_sha256": "5453638c08747f462061419d02e63e4dd39d0178702f1b313e2286b11fe48fdb",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 学生募集要項 A日程 日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 A日程 試験日 合格発表 結果通知",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年度 入学 募集要項 情報理工学院 情報工学系 スケジュール",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0019",
+      "plan_archive_sha256": "5b13d5ee8799c000f979ab2506d87eaec3f21bb1e4753afcd6b093189ae03fb6",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 B日程 筆答試験 日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 B日程 口頭試問 実施期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年度 募集要項 情報理工学院 B日程",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0020",
+      "plan_archive_sha256": "396319656a3ce79b6883a81e4cf8f4daa581adbe6ebb1d35113704e88fc1ccdc",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 合格者発表",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 合格者発表 日時 掲載場所 修士",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 合格者発表 確認方法 サイト",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0021",
+      "plan_archive_sha256": "9a8d3711b2db1a9fb1946d1f87c167b47eae299beddbf742c35e03faed1b2d03",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 入学手続 案内",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 9月入学 入学手続 日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 合格者 入学手続 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0022",
+      "plan_archive_sha256": "e43e4474a30db3aed4a15e77ed8b7976307773e3ced4aeac61cd9b39c22df16b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語 スコア 換算",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 情報工学系 入学試験 外国語 TOEIC TOEFL 換算",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 英語 外部試験 TOEIC L&R TOEFL-PBT",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0023",
+      "plan_archive_sha256": "5a4b1735ed9738c1eaa7fd429f94a77913edb9ec20b1702484da0e3cc77910ce",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 学生募集要項 入試成績提供 申請期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入試成績提供 2026年 申請 開始 締切",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 入試成績提供 申請期間",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0024",
+      "plan_archive_sha256": "7b85b70da6b4ad99fac5f2e36adf29f1e825c5b8ec3533b46ae9a0c05bdad8cd",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 個人別成績 郵送請求 必要書類 返信用封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 個人別成績証明書 郵送請求 申請書 返信用封筒 手数料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学 成績証明書 郵送 請求 方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0025",
+      "plan_archive_sha256": "310a3020e4f0175ec3f210df1c5a4c67a760efa5458b9e97b15a6b139919fcc5",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 物理学系 修士課程 2027年4月入学 出願要項 英語スコアシート",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物理学系 修士 英語スコア 提出 出願時 筆答試験当日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 物理学系 入学試験 英語 スコアシート 持参",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0026",
+      "plan_archive_sha256": "54ec3ea49f843422ec7a1adcfc32665fc00180470d39b5c56ca39a7a9997cb51",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 化学系 修士課程 2027年4月入学 学生募集要項 志望理由書 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 化学系 修士課程 出願 第一志望教員 相談 事前",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0027",
+      "plan_archive_sha256": "216b72088cf056b621a53cf0c22b24defc772c105f2020f49a1daf9752f4b32f",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 物質理工学院 材料系 修士課程 2027年4月入学 募集要項 外部英語試験 スコアシート 提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 英語スコア オンライン提出 期限 差し替え",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物質理工学院 材料系 出願書類 英語資格 スコアレポート 提出方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0028",
+      "plan_archive_sha256": "c1c464cdd229c2da04f8a9e3c6361287a963527e882c7c0a665cfdbcea7bdb13",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 数理・計算科学系 修士課程 2027年4月入学 学生募集要項",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 出願 志望理由 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 数理・計算科学系 出願前 連絡先 教員",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0029",
+      "plan_archive_sha256": "b03998e86fda3319a10fe99c02c834dbb2538d6864206dd140143a9b7fa04bb1",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 志望理由書 日本語 英語 分量",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 募集要項 志望理由書 字数 日本語 英語",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 出願書類 志望理由書 記入要領",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0030",
+      "plan_archive_sha256": "93bc0eeb608cea491a8a00433e8c58c22b3a569491efc29615c4a246125d8597",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 生命理工学院 生命理工学系 修士課程 2027年4月入学 B日程 口頭試問 オンライン",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学院 修士課程 2027 B日程 受験資格者 発表日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学系 大学院入試 B日程 募集要項 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0031",
+      "plan_archive_sha256": "87d8786220eadbed69d8d50842733c260cf8bc7e9c749dbecc35b90ee77365f1",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 建築学系 修士課程 学生募集要項 2027 筆答専門試験 A 即日設計 B 建築学科目 選択",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 環境・社会理工学院 建築学系 入学試験 筆答専門試験 試験時間 終了時刻",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 建築学系 修士 即日設計 建築学科目 出願時 選択 試験時間割",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0032",
+      "plan_archive_sha256": "2effe5694cc39af8308a6c5f2b0f04f3a381a2527129fb2ca1c5365e4f621932",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 大学院入試 問い合わせ メールアドレス",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 問い合わせ先",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試 一般的な質問 メール 窓口",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0033",
+      "plan_archive_sha256": "1772884183f1167cc5ff32c43827721ef175ac5f3b7d1a47a83f5091a20a581b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 受験票",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 受験票 閲覧 印刷 ダウンロード",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入試 受験票 配布 時期 情報理工学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0034",
+      "plan_archive_sha256": "c9ebea924e3405aba36521002acee19463c95e2923998ed9394bc0fb7edc7afa",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 検定料 支払方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学検定料 クレジットカード ネットバンキング",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 募集要項 検定料",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0035",
+      "plan_archive_sha256": "b88696da0ed6bd3f8d1092a8349c322671aca3e721daab037f8eff47223362b0",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士 募集要項 出願期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 2027年度 4月入学 出願 ウェブ出願 期間 書類提出 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 出願書類 郵送 必着 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0036",
+      "plan_archive_sha256": "5e5a09af05c011a910a829d6c33d5ddf9e18982a0241e6eeb89059b7efd5463e",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 2027年4月入学 募集要項 英語成績",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 TOEFL スコア 有効期限 提出方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学願書 英語成績証明書 提出 方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0037",
+      "plan_archive_sha256": "2bbd7960baa91a2d09330bb92e6e10e281a3fee6591101422d467b7532975d6d",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 外国の大学 学士 見込み 2027",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 中国 大学卒業 学位 出願資格",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0038",
+      "plan_archive_sha256": "d6c3834723fef735a61174ad544a3f023bbaecbf910a71c4e250cb90e45fa867",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 2027 出願 必要書類 全員",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027 4月 入学 願書 成績証明書 提出書類",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0039",
+      "plan_archive_sha256": "4577e78069abba9c8b379fa4f3a7b08425087d5871e1f836546bf4d2b97dac63",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 TOEFL",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 情報理工学院 修士 出願資格 英語試験 TOEFL iBT",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 2027年度 修士課程 入学試験 英語 スコア 提出",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0040",
+      "plan_archive_sha256": "b3eaf9bd046aa52f48e7acbc350e57d9c351b0b9fc6a69f8d508f65d144a91e8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 英語外部試験 TOEFL iBT",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 英語 スコア TOEFL iBT 認められる",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 大学院入試 英語 外部試験 提出",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0041",
+      "plan_archive_sha256": "7057ea7532beb5bed5b913b36d914896bad4997e97bb5d885044d96ae0ed2c0f",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 TOEFL iBT Home Edition",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試 TOEFL iBT 自宅受験 有効",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 出願 英語 スコア TOEFL",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "query_id": "rq:0042",
+      "plan_archive_sha256": "f9e37f03bc7342d894cde87b9a8fce8cc69734e92bbc8e28e833f49472a6e4f7",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願期間 書類必着日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月 出願期間 必着",
+          "language": "ja"
+        },
+        {
+          "text": "情報理工学院 情報工学系 修士 2027 出願書類 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0001",
+      "plan_archive_sha256": "99870d1cd5aa7b3d7d5e783e8fc290842bfdd2b01f1ec2bdb43138e7e1856053",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 インターネット出願 登録開始日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 出願期間 書類必着",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年度 入学 出願日程 情報理工学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0002",
+      "plan_archive_sha256": "5627afc4014ae3cbb1bb943f355a11468f715e4e3a2d4bec45147d738f73a8a8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願手続き",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 オンライン登録 検定料 支払い 必要書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学願書 提出方法 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0003",
+      "plan_archive_sha256": "32f476313bd2071bb97e07bd4850fcd0ef46a31d8016bdb8e7abd9cbf3c7c452",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 入学検定料 30,000円 サービス利用料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 サービス利用料 入学検定料 併願 2027",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 入学検定料 30,000円 出願手数料 サービス利用料",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0004",
+      "plan_archive_sha256": "911d9b753e0a1e67c7e49a006d02563010d2c96750bd6df9aa08f58231291e90",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 検定料 返還",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 検定料 返金 願書受理後",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学願書 検定料 納付 返還 例外",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0005",
+      "plan_archive_sha256": "a8386477a68ac2cf95562583fe166ca8fd9e0793a51608f94cd235a768ea1400",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 全員提出 情報理工学院",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 入学願書 成績証明書 研究計画書",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0006",
+      "plan_archive_sha256": "6901d2378721d92b2076331bbdd41046948322e0d2399862ac0cc6001dbc59b3",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 出願後 住所変更 届出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 住所変更 連絡先 変更 届出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 入試 問い合わせ 窓口 住所変更",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0007",
+      "plan_archive_sha256": "42cfca62ae3c8376e0305bbf90ad2332e894a611a4f1d1d58aa5dd1471676f34",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 募集要項 受験上の配慮 申請 締切",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 大学院 入試 障害 配慮 申請 書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 受験上の配慮 申請書 提出期限 大学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0008",
+      "plan_archive_sha256": "8b7dd00b8fc2bb16c6423a0299a342ac3a57c543034fa63e6ef758f4abbcf250",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2026年9月入学 外国人 出願資格 在留資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 2026年9月入学 修士 入学手続 COE 在留資格認定証明書",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 留学生 入学手続 ビザ COE 申請 書類",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0009",
+      "plan_archive_sha256": "c5db21e2617af5f00773591b6537dda69f6eaf84994935b9d5638a8e4334a581",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 募集要項 出願資格 卒業 学位取得",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 出願資格 卒業見込み 学位取得見込み 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 2026年9月入学 修士課程 募集要項 卒業 学位取得 証明",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0010",
+      "plan_archive_sha256": "a3793497266b064b98748d290895ac59159935088b3c77db203944b892834abe",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 2026年9月入学 募集要項",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 入学時期 9月 4月 選択 出願",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2026年9月入学 2027年4月入学 選抜 組み合わせ",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0011",
+      "plan_archive_sha256": "96b01c0a2cb3956773700296c1dcf96cc629667b987905e51d9fd0070aed2ab7",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 募集人員",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 志願できる系 数 併願",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 募集人員 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0012",
+      "plan_archive_sha256": "c432dc5153b01f527a2c1abd44beb02779b3dc8a30df6879401066a252c18001",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 (3) 海外大学 卒業",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願資格 外国の大学 卒業 条件",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0013",
+      "plan_archive_sha256": "309a70f89e56c2f876a5888f8a57fce78945de2344bb5e7786f3e4314198c458",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士課程 募集要項 出願資格 9 10 11 事前審査",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 事前相談 必要書類 郵送 手順",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 出願資格認定 申請 期限 提出先",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0014",
+      "plan_archive_sha256": "df8c089e16493b16dbe18ffd48bcb719cf88237323c3a0586acb541c36219e5f",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 学生募集要項 出願書類 封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 郵送方法 簡易書留 締切 消印有効",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 出願書類 提出先 宛先 封筒",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0015",
+      "plan_archive_sha256": "c974c2ee9916be004a8577455d6aed6669813a5ff9b61fa02b33e49f430488f2",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 出願 顔写真 データ 撮影時期 容量 ファイル形式",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士 出願要項 写真",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 写真  JPEG 容量 指定",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0016",
+      "plan_archive_sha256": "3d0733a3b4d2c572ed553d9ab73a9f6a3d15cd944b4390efae03b78d881b5fce",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 数学系 修士課程 2027年4月入学 募集要項 英語",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 数学系 修士 入試 英語 外部試験 スコア 提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 数学系 修士 英語 筆答試験",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学試験 英語 要件 数学系",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0017",
+      "plan_archive_sha256": "8406c45b210f09b9bbb9cafd6466b12a4bd3f29c8e844a18377815fe722704eb",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 学生募集要項 2027年4月入学 A日程 B日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 入試 A日程 B日程 選択 併願",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 大学院 入試 A日程 B日程 志願者 選択",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0018",
+      "plan_archive_sha256": "a11e6d12a68c6ea02d598cfb11eb4c48628d791028ba6abad9c19ca69fcfedc8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 A日程 試験日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年度 入試要項 A日程 合格発表",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 大学院 入試 A日程 結果通知",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0019",
+      "plan_archive_sha256": "829ccbb0620a7fb3d9438e95c5006892b581c2cd8e76cd01f1a69dbeff6686a9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 B日程 筆答試験 日 口頭試問 実施期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 学生募集要項 2027 B日程 入試日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 B日程 筆答試験 口頭試問 日程",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0020",
+      "plan_archive_sha256": "97de02d2110ed92b95af0eda0bd1884e2fc2524b76454ec021fef94fc8c6d4fd",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 合格者発表 日時 確認方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 入試 合格発表 掲載場所",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 学生募集要項 合格発表 日程",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0021",
+      "plan_archive_sha256": "9f2abe8d91623af5dd60a053e9587173b593411a56242f3f53251d1ee0e58ba9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 入学手続案内",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 9月入学 入学手続 日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入学手続 4月入学 9月入学 違い 合格者",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0022",
+      "plan_archive_sha256": "96357af5992362e5a89fe3c5cf4c8bd1b3660e7e54d58fb7404274582abb011a",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語 スコア TOEIC TOEFL 換算",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 情報理工学院 情報工学系 出願資格 英語能力試験 TOEIC L&R TOEFL-PBT 換算表",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027 募集要項 情報理工学院 英語 換算式",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0023",
+      "plan_archive_sha256": "37183801c207cf7ab510ab405a3db3e0086707600a0b9fac970a077c9a4b1e42",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 2026年 入試成績提供 申請期間 いつから いつまで",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 入試成績提供 申請",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試成績提供 申請期間 2026",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0024",
+      "plan_archive_sha256": "c4132622383b0148cb85df8beda4b55c262671d69f32208b2b23a7799fb36b47",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 個人別成績 郵送請求 必要書類 返信用封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 個人別成績 請求方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 成績証明書 郵便 定額小為替 返信用封筒",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0025",
+      "plan_archive_sha256": "e730aa0917909a7d1a3a2d32f0b4b82c70c93359c6823671cd99cddc76493524",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 物理学系 修士課程 2027年4月入学 募集要項 英語スコアシート 提出方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物理学系 修士 英語スコアシート 出願時 持参 筆答試験",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 物理学系 入試 英語 スコア 提出 期限",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0026",
+      "plan_archive_sha256": "d324fde8ed517c5c10e49b8af9675565fe5f1e654bc26046b524edad66c15211",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 2027年4月入学 理学院 化学系 修士 募集要項 志望理由書 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 化学系 修士 出願 第一志望教員 事前相談",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 理学院 化学系 入学願書 志望理由書 文字数",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0027",
+      "plan_archive_sha256": "0d18b715be9c84e12df0ff6815ad357a002ec0cb136b2624c83bce4f5049696b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 物質理工学院 材料系 修士課程 2027年4月入学 出願要項 外部英語試験 スコアシート 提出期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 英語スコア オンライン提出 差し替え 締切後",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物質理工学院 材料系 募集要項 2027 英語資格試験 提出方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0028",
+      "plan_archive_sha256": "167a7c21da286c1e34d4e92bb263969dc756c947bb2a6fe1fe9a2cbdd67faa19",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 数理・計算科学系 修士課程 募集要項 2027年4月入学 志望理由 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 数理・計算科学系 出願前 連絡 指導教員 修士",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0029",
+      "plan_archive_sha256": "867fbf3217733bafd624f29118ccc646c82603840aa3957ce0ee7b6571cd9bd5",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 志望理由書 分量 日本語 英語",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 志望理由書 記入要領 語数 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 入学案内 志望理由書 英語 日本語",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0030",
+      "plan_archive_sha256": "015d0e20624a0ab577ff86d60bf8ca38e1dedc0bc1f868ee8f68a5d248bf72e9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 生命理工学院 生命理工学系 修士課程 2027年4月入学 募集要項 B日程 口頭試問 オンライン",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学院 生命理工学系 修士課程 2027 入試日程 受験資格者 発表",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学系 B日程 口頭試問 実施方法 受験資格者 発表日",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0031",
+      "plan_archive_sha256": "1ba45623c6e18e482b93320615d751b9e898d7d95d80126ddb01a4c505399d96",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 環境・社会理工学院 建築学系 修士課程 2027年4月入学 募集要項 筆答専門試験 A 即日設計 B 建築学科目 選択",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 建築学系 筆答専門試験 即日設計 建築学科目 試験時間 終了時刻",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 建築学系 修士課程 入試 筆答専門試験 時間割",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0032",
+      "plan_archive_sha256": "f84c08a8a4b82d61fe0d6c52709ccdce2fd766a50a7dde55f4a8fd5dae2a80e7",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 大学院入試 問い合わせ先 メールアドレス",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 入試 お問い合わせ",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試 質問 メール 情報理工学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0033",
+      "plan_archive_sha256": "31aa304506218e7c26afab8a13544a0e98eb5005da1a4bb108b4749c643440e9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士課程 募集要項 受験票",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 受験票 閲覧 印刷 開始時期",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 入試 受験票 ダウンロード 印刷方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0034",
+      "plan_archive_sha256": "303d2d9dbbaff4c4ab06c24043d9cb5199f839ca039780759979b111323a8f8b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 学生募集要項 2027年4月入学 検定料 支払方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 入学試験 検定料 クレジットカード ネットバンキング",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 検定料 支払 クレジットカード ネットバンキング",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0035",
+      "plan_archive_sha256": "48bf40589b89cfa4d9992d8ac7041219c896c3f723ffffd141cd612db06ebb81",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士 募集要項 出願期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 出願 ウェブ オンライン 受付期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 出願書類 郵送 締切 必着",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0036",
+      "plan_archive_sha256": "78eca877b9ab428246504bd59987c627fe343c77433b8bd8080954229d80d156",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 英語 スコア TOEFL 有効期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 入学要項 英語 成績証明書 提出方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 英語 外部試験 TOEFL 公式スコア 送付",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0037",
+      "plan_archive_sha256": "b514b285f7e155988d159be0c2d612ab2356fd640be57350df3d9103f66e2893",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 中国 大学卒業 出願資格 16年",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 入学資格 学士 見込み",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0038",
+      "plan_archive_sha256": "612560e1fbbbc500df5293af998bcf39fcb1cbe5048059e2653a9a9912c38da6",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 出願資格 提出書類 一覧",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027 4月 入学 願書 成績証明書 推薦書",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0039",
+      "plan_archive_sha256": "ccd72445965d51c9ffcf7122b66d4ef0b5920dced9d3f7d0e8a605a9e4775bc8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 TOEFL",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 修士課程 外国人留学生 出願資格 TOEFL iBT ITP",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 入学試験 英語 スコア 提出",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0040",
+      "plan_archive_sha256": "20d80ce691995c1d9a60a78321d5d57cf02cbe1da88c3e1d7c966fa0523b94af",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 英語外部試験 TOEFL iBT",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 英語能力証明 TOEFL iBT 提出書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 大学院 入試 英語外部試験 スコア 提出",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0041",
+      "plan_archive_sha256": "3688ffbbe885de4fe24af4c26cdec42dba753524cc0798583253a47511dd6066",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 TOEFL iBT Home Edition",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 出願資格 英語スコア TOEFL Home Edition 認められる",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試 英語外部試験 TOEFL iBT 自宅受験 扱い",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "query_id": "rq:0042",
+      "plan_archive_sha256": "6ae669a21c5e411daae5eb1f9c7ef707801d148c8f5cae00d59e2aff24dab01b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 出願期間 書類必着日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 募集要項 2027年4月入学 出願書類 締切",
+          "language": "ja"
+        },
+        {
+          "text": "情報理工学院 情報工学系 修士 入試 出願期間 必着",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0001",
+      "plan_archive_sha256": "64a961769f9a4e408d063cf5ee1b2459c4688ed3b99c8fab0fb03697e65a06a3",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 出願期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 インターネット出願 登録開始日 書類必着",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 出願期間 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0002",
+      "plan_archive_sha256": "5a2ce4e5c9d2999789debacfee06ba7d112fd3f70fa219427e1f78f504c950dc",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願手続き",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 オンライン登録 検定料 支払い 必要書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 提出方法 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0003",
+      "plan_archive_sha256": "368db38e90b9ab0eea50976e8321880d9bd02cff5f976f9b2e2ae72351afd8f9",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 入学検定料 サービス利用料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 検定料 30,000円 サービス利用料 手数料",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 出願手続き 支払い 手数料",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0004",
+      "plan_archive_sha256": "0bd85a9a32b2bdacb264c32ab8be6c36505649cfac2ff17831a3eed0b4ea9302",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 2027年4月入学 修士課程 出願要項 検定料 返還",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学検定料 返還 願書受理後",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027 募集要項 検定料",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0005",
+      "plan_archive_sha256": "87c9ef2de02db3a5c675a956134f919229e5326adb85328d2d325e7f042f10d7",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願書類 全員 提出 2027",
+          "language": "ja"
+        },
+        {
+          "text": "情報理工学院 情報工学系 修士 入学願書 成績証明書 研究計画書 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0006",
+      "plan_archive_sha256": "ebfafa2ccabb7acd451baa89439cbdd789cbfbf868940997b86e905d990280fe",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 情報理工学院 情報工学系 出願後の住所変更 届け出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 変更届 住所 連絡先 提出先",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 募集要項 出願書類 変更 連絡先",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0007",
+      "plan_archive_sha256": "98a8c67cf1adcafea080df64bd391be9e06f5fcf5506ca46a2ccb2fb7443cc87",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士課程 募集要項 受験上の配慮 申請 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 障害等 受験上の配慮 事前相談 必要書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入試 受験上の配慮 申請書 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0008",
+      "plan_archive_sha256": "ec8391ac6e59efa53209bf5418e24e149ae214922a8355f7c937f6258324a02d",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2026年9月入学 外国人留学生 出願資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 留学生 在留資格 留学 COE 申請 入学許可書",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 9月入学 入学手続 在留資格 認定証明書",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0009",
+      "plan_archive_sha256": "9e8c76345144acb111a099ad9786526f76d60186424c1102f753ec119603a9cd",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 入学資格 卒業 学位取得 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2026年9月入学 出願資格 学士 卒業見込み 期限",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 大学院 入学資格 学位 取得 証明 提出期限",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0010",
+      "plan_archive_sha256": "43007b4d66501e2229fcd542c0a47d8bd3e224598d798d65ec6ec48fe706b43b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 選抜要項 2026年9月入学 2027年4月入学 組み合わせ",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学時期 2026年9月 2027年4月 併願",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 募集要項 入学時期 選択",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0011",
+      "plan_archive_sha256": "7cca78ed34e4549f78e6eae619c44fabceb4c1476e434bd7c0a707de68645ff0",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 募集人員",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 志願できる系 数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 募集人員 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0012",
+      "plan_archive_sha256": "1becf76a74a0526a4db2834dbbb2eeebc2e2c56b532f710d0fa20f82b94ccf27",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格 (3) 海外大学 卒業",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 外国の大学 卒業 条件 2027",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 海外大学卒業 出願資格 事前審査",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0013",
+      "plan_archive_sha256": "4314b8cad7789b8792fa1f0085d7c5eebe0adc5da0c5de44cfea98b5661e63e0",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格 9 10 11 事前審査",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願資格 事前相談 必要書類 郵送 手続き 募集要項",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 個別審査 問い合わせ 提出書類 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0014",
+      "plan_archive_sha256": "4e487add7ba91c8e4e18bb386a477d9dd8d49a782608ef3e8a5c577f188356af",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願書類 封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 郵送方法 締切 消印有効",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 出願書類 送付 封筒 書留",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0015",
+      "plan_archive_sha256": "df043f4a407534933e775a7f0f5127ad1a28fac632bd4e726b8e3bc3a626e70f",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 募集要項 顔写真 条件",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 出願 写真 データ 形式 容量",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 顔写真 撮影時期 ファイル形式 サイズ",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0016",
+      "plan_archive_sha256": "03225c0ce59f302462b7f89a78e891f53023eb2eb5a06a975241fc3579a1c550",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 数学系 修士課程 2027年4月入学 募集要項 英語 外部試験",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 数学系 修士 入試 英語 スコア 提出 筆答試験",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 数学系 大学院入試 英語 要件",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0017",
+      "plan_archive_sha256": "c642eea7880014a2103545902398de161a959bdfbaf09f7a809f13ef8e010f88",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 A日程 B日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 A日程 B日程 出願 選択",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 情報工学系 入学試験 A日程 B日程 志願者 選択",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0018",
+      "plan_archive_sha256": "1b1fa30243ba26317758d638092fd98f9ac3a40f40280957a9d7f88124877a30",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 A日程 試験日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年度 入学試験要項 合格発表 日程",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報工学系 修士 A日程 試験日 結果通知",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0019",
+      "plan_archive_sha256": "e7c28e65c1d2c80e91e8824af70e2076288442eb6318369bc6fcc986ce7981c8",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 B日程 筆答試験 日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 B日程 口頭試問 実施期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 募集要項 B日程 日程",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0020",
+      "plan_archive_sha256": "299248f820eb71ce589814c5931bfe01dd9a72fd63e89ad2f15f7dc6bb9be995",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 合格者発表",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 合格者発表 日時 掲示 方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 合格者発表 確認方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0021",
+      "plan_archive_sha256": "f61010a4e0a9fadd553ad873ee1f1cb2f1a4b78d28c6a7802c1caaef78e411da",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 入学手続 案内",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 9月入学 入学手続 手続日 締切",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入学手続案内 合格者 4月入学 9月入学 違い",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 募集要項 入学手続 スケジュール",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0022",
+      "plan_archive_sha256": "c654c58924c5e2cdbf0c01fdf1a52fefa874be553c327a3b95a01de72fbe3c94",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語 スコア TOEIC TOEFL 換算",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 英語外部試験 TOEIC TOEFL-PBT 換算 情報工学系",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 2027 修士 入学志願票 英語スコア 提出 基準",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0023",
+      "plan_archive_sha256": "0dcc07e56cf70bcd12d2fcfe20d97a3a03980fb8cf4f1cc4bd6b9b58bde171db",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 入試成績提供 申請期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 入試成績提供 2026年 申請 開始 終了",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 成績提供 申請期間 2026",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0024",
+      "plan_archive_sha256": "fb3a364d5118e5184b49346e99924856eff3319b8e84baf58ad46ab86001230b",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 大学院 個人別成績 郵送請求 必要書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 個人別成績 請求 返信用封筒",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 2027年4月入学 募集要項 個人別成績 請求方法",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0025",
+      "plan_archive_sha256": "79708ad8875ba283b14df4b43578531a1ad7ccf3393764cd3fb0ee71ab62f112",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 物理学系 修士課程 2027年4月入学 学生募集要項 英語スコアシート 提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物理学系 修士 英語 スコアシート 出願時 持参 筆答試験",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 修士課程 出願書類 英語能力試験 スコア",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0026",
+      "plan_archive_sha256": "1e36b3ea3ee88e37fb2f2996bafaf0fb4f9096bc64b4659d86e69a48ec3f41d6",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 理学院 化学系 修士課程 2027年4月入学 募集要項 志望理由書 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 化学系 修士 出願書類 志望理由書",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 理学院 化学系 修士 第一志望教員 事前相談 出願前",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0027",
+      "plan_archive_sha256": "3cd5b9cf3d2b0a260bf8fba11ac1af4d04731d11b90df1a8ffaf82085cf97811",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 物質理工学院 材料系 修士課程 2027年4月入学 出願要項 外部英語試験 スコアシート オンライン提出",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願 英語スコア オンラインアップロード 提出期限 差し替え",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 物質理工学院 修士 2027 募集要項 出願書類 英語資格試験",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0028",
+      "plan_archive_sha256": "e4b02189f3200f13e933f1a2972863efcf00c00bdc73ee595ccd238163a4ac64",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 数理・計算科学系 修士課程 募集要項 2027年4月入学 志望理由 字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 数理・計算科学系 出願前 連絡 指導教員 修士",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 志望理由書 文字数 情報理工学院",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0029",
+      "plan_archive_sha256": "dbc6be200064b09229cf8f7f85b5ad735905da84e52ad0861e07047239f36890",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 2027年4月入学 募集要項 志望理由書 分量",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 志望理由書 日本語 英語 文字数",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 出願書類 志望理由書 英語 語数 指定",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0030",
+      "plan_archive_sha256": "f5f1a10d3780045ea7643e593ce056b91c2be390cee8ded1f4e6133f2ada493f",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 生命理工学院 修士課程 2027年4月入学 募集要項 B日程 口頭試問 オンライン",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学系 修士 B日程 受験資格者 発表日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 生命理工学院 入試 口頭試問 実施方法 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0031",
+      "plan_archive_sha256": "6a9bf39e0a18059d12294cb11130a128af8990691f1f330b8ea310988668c8f1",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 環境・社会理工学院 建築学系 2027年4月入学 修士課程 募集要項 筆答専門試験 即日設計 建築学科目",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 建築学系 修士 入学試験 筆答専門試験 試験時間 即日設計 選択",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 環境・社会理工学院 建築学系 入試日程 筆答専門試験 終了時刻",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0032",
+      "plan_archive_sha256": "a58e477970d873567f0d4b980dfb0e641cdac77f20c8cd96e1cfbabe99bbb745",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 大学院入試 問い合わせ先 メールアドレス",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月入学 募集要項 問い合わせ",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 入試 お問い合わせ",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0033",
+      "plan_archive_sha256": "9584d0661e1a320d416976991553a3dc4b00b30d93d39ea4a08f383f203adea6",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 2027年4月入学 修士課程 募集要項 受験票",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 受験票 閲覧 印刷 方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 受験票 ダウンロード 開始日 2027",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0034",
+      "plan_archive_sha256": "2f47cd1f78a3a24d8266cb2bea80aa90cd737d33bb0561d5b2513c7ac668e591",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 学生募集要項 検定料 支払方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入学検定料 クレジットカード ネットバンキング",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 検定料 支払い",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0035",
+      "plan_archive_sha256": "bf477da2be46af420ced9ebc776970b9c15c61928c995bc08cd4596ccb287e36",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願期間",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 2027年4月 インターネット出願 期間 書類提出 締切",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 出願書類 郵送 必着 締切",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0036",
+      "plan_archive_sha256": "99f66c6b664f92e605855e89edec4156e72648c8f723bb14e5868677328e209d",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士 2027年4月 募集要項 英語 スコア",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願 TOEFL 有効 スコア 提出方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 英語成績証明書 提出 方法  TOEFL",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0037",
+      "plan_archive_sha256": "112d1b219515b8b3a8b1ada12f6cd41afdcc8b2c78aaf4d52ddb03d438f0353a",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 中国 大学 卒業 見込み 16年",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士 2027 入学 外国人留学生 出願資格",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0038",
+      "plan_archive_sha256": "a82bd4d3b42170d12977ecb42b6adaadb600be82673ae64f6443d9c0ea737c4d",
+      "question_language": "zh",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月 募集要項 出願書類",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 出願資格 提出書類 一覧",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 修士課程 2027 4月入学 入学願書 成績証明書",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0039",
+      "plan_archive_sha256": "d399cff3c433ea3502bf041139ad497edc618681988e81677619cc66f66bf1e7",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 TOEFL",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 入試 TOEFL iBT ITP 要件",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 英語 スコア TOEFL",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0040",
+      "plan_archive_sha256": "398b175fed493ba40dd6569f9f46a8087dd66e787a2ccbad41573521bfac30c5",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 英語外部試験 TOEFL iBT",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 入学試験 英語 スコア 提出 TOEFL",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 入試 英語外部試験 認められる 一覧",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0041",
+      "plan_archive_sha256": "a46d10384c55ff79870b91792131fceca6c41d56a4464500f981dabbc73ee0b1",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語スコア TOEFL iBT Home Edition",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 情報理工学院 入試 英語 スコア 有効期限 提出方法",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 修士課程 出願資格 TOEFL iBT 自宅受験版 受理",
+          "language": "ja"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "query_id": "rq:0042",
+      "plan_archive_sha256": "e4569899ea65fe499ad41f83051767678679519b7407ea66eb334c8bcca8e862",
+      "question_language": "ja",
+      "language": "ja",
+      "queries": [
+        {
+          "text": "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願期間 書類必着日",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 情報理工学院 修士課程 出願書類 提出期限 2027",
+          "language": "ja"
+        },
+        {
+          "text": "東京科学大学 大学院 修士課程 2027年度 入学 願書 受付期間",
+          "language": "ja"
+        }
+      ]
+    }
+  ],
+  "hash_encoding": "SHA-256 of UTF-8 JSON, ensure_ascii=false, sorted keys, compact separators; independent of CRLF/LF file formatting."
+}

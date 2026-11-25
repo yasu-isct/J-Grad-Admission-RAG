@@ -1,0 +1,195 @@
+{
+  "round": 1,
+  "query_id": "rq:0031",
+  "started_at": "2026-11-25T01:19:28.604391+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:19:28.607401+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:19:28.788171+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 環境・社会理工学院 / 建築学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 環境・社会理工学院 / 建築学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "dc17a55f0110255eb82150a3aeed4da4d30590685fbdf4e01695573a4e314fc8",
+  "raw_response": {
+    "id": "71334af3-73db-4da4-832e-a40080f739a9",
+    "created_at": 1795569568.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "2be57266-9fe4-4f1e-915f-2f2e58d56d54",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"東京科学大学（旧東京工業大学）環境・社会理工学院 建築学系の修士課程入学試験では、筆答専門試験として「A：即日設計」と「B：建築学科目」の2種類があり、出願時にどちらを選択するかを選ぶ必要があります。選択方法や試験時間・終了時刻は年度によって変わる可能性があるため、2027年4月入学向けの学生募集要項で必ず確認してください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 建築学系 修士課程 学生募集要項 2027 筆答専門試験 A 即日設計 B 建築学科目 選択\",\"東京科学大学 環境・社会理工学院 建築学系 入学試験 筆答専門試験 試験時間 終了時刻\",\"東京科学大学 建築学系 修士 即日設計 建築学科目 出願時 選択 試験時間割\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569571.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 400,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 256
+      },
+      "output_tokens": 213,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 613
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "5fa5521844cb86a10e4c8aca50b4239dc107440fff8005b3ad17886db74624b4",
+  "plan": {
+    "draft_answer": "東京科学大学（旧東京工業大学）環境・社会理工学院 建築学系の修士課程入学試験では、筆答専門試験として「A：即日設計」と「B：建築学科目」の2種類があり、出願時にどちらを選択するかを選ぶ必要があります。選択方法や試験時間・終了時刻は年度によって変わる可能性があるため、2027年4月入学向けの学生募集要項で必ず確認してください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 建築学系 修士課程 学生募集要項 2027 筆答専門試験 A 即日設計 B 建築学科目 選択",
+      "東京科学大学 環境・社会理工学院 建築学系 入学試験 筆答専門試験 試験時間 終了時刻",
+      "東京科学大学 建築学系 修士 即日設計 建築学科目 出願時 選択 試験時間割"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "87434b4d7bec9639e4a8ace52a2cdbe62ac5461fa65219a9f49e98230394b917",
+  "finished_at": "2026-11-25T01:19:31.088590+00:00",
+  "elapsed_seconds": 2.4835844000335783
+}

@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0006",
+  "started_at": "2026-11-25T01:21:23.588641+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:21:23.592689+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:21:23.773143+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "222c3cfff82494c1718c3b8b62d833809a49f83f278cf109d0ef6ccc5a689e36",
+  "raw_response": {
+    "id": "5503d546-90ce-4789-baec-0721501d9a2f",
+    "created_at": 1795569683.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "9db8ffae-f3ad-467c-af7a-194c29f89831",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"出願後の住所変更などは、まず出願先の大学（東京科学大学 情報理工学院 情報工学系の修士課程入試担当）に連絡し、指示に従って届け出るのが基本です。一般に、氏名・住所・電話番号・メールアドレスなどの連絡先情報の変更を、出願時に用いた窓口へ速やかに届け出ることが求められます。ただし、具体的にどの情報をどの連絡先へ、どの様式・期限で届け出るかは募集要項・出願書類の注意事項で定められているため、対象年度の公式書類で確認が必要です。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 修士課程 2027年4月入学 情報理工学院 情報工学系 出願後の住所変更 届け出\",\"東京科学大学 大学院 出願 変更届 住所 連絡先 提出先\",\"東京科学大学 情報理工学院 修士 募集要項 出願書類 変更 連絡先\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569686.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 389,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 255
+      },
+      "output_tokens": 244,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 633
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "f6bfa6e640b65983903c8c587485544055b76951e26e0f19ca848a9c251f39fa",
+  "plan": {
+    "draft_answer": "出願後の住所変更などは、まず出願先の大学（東京科学大学 情報理工学院 情報工学系の修士課程入試担当）に連絡し、指示に従って届け出るのが基本です。一般に、氏名・住所・電話番号・メールアドレスなどの連絡先情報の変更を、出願時に用いた窓口へ速やかに届け出ることが求められます。ただし、具体的にどの情報をどの連絡先へ、どの様式・期限で届け出るかは募集要項・出願書類の注意事項で定められているため、対象年度の公式書類で確認が必要です。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 修士課程 2027年4月入学 情報理工学院 情報工学系 出願後の住所変更 届け出",
+      "東京科学大学 大学院 出願 変更届 住所 連絡先 提出先",
+      "東京科学大学 情報理工学院 修士 募集要項 出願書類 変更 連絡先"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "f34d60715120d15e79186b65ef9283531d6f5e285f2ebfbcf51b0bf1c8797f2f",
+  "finished_at": "2026-11-25T01:21:27.016866+00:00",
+  "elapsed_seconds": 3.4270235002040863
+}

@@ -1,0 +1,195 @@
+{
+  "round": 3,
+  "query_id": "rq:0026",
+  "started_at": "2026-11-25T01:22:07.174612+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:22:07.178924+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:22:07.400795+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 化学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 化学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "3211f4f93aa29d46379b311c89c33e4d7086a5bafbd2e19bbfacead6bb79ca49",
+  "raw_response": {
+    "id": "c9b46421-962b-4c79-930c-5dd820354b42",
+    "created_at": 1795569727.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "88fc9c10-d29b-4004-a800-5e55adb4284d",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"志望理由書の字数や、出願前に第一志望教員への相談が必須かどうかは、募集要項・出願書類一覧で確認が必要です。東京科学大学 理学院 化学系の2027年4月入学（修士課程）向け最新情報をご確認ください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 理学院 化学系 修士課程 2027年4月入学 募集要項 志望理由書 字数\",\"東京科学大学 理学院 化学系 修士 出願書類 志望理由書\",\"東京科学大学 理学院 化学系 修士 第一志望教員 事前相談 出願前\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569728.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 390,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 256
+      },
+      "output_tokens": 167,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 557
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "c4741b8467d38d91694de388532db303dd4673a88547ed9e12978917c7bb7d8f",
+  "plan": {
+    "draft_answer": "志望理由書の字数や、出願前に第一志望教員への相談が必須かどうかは、募集要項・出願書類一覧で確認が必要です。東京科学大学 理学院 化学系の2027年4月入学（修士課程）向け最新情報をご確認ください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 理学院 化学系 修士課程 2027年4月入学 募集要項 志望理由書 字数",
+      "東京科学大学 理学院 化学系 修士 出願書類 志望理由書",
+      "東京科学大学 理学院 化学系 修士 第一志望教員 事前相談 出願前"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "1e711dc0c90a391683fb2a10c391486ba6968d5008894945cf43b8e5e59c9fd1",
+  "finished_at": "2026-11-25T01:22:08.621064+00:00",
+  "elapsed_seconds": 1.443603100022301
+}

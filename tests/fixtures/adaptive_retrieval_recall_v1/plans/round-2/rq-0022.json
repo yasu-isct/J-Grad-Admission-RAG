@@ -1,0 +1,195 @@
+{
+  "round": 2,
+  "query_id": "rq:0022",
+  "started_at": "2026-11-25T01:20:33.615898+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:20:33.620363+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:20:33.806949+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "1740c1711ba539163636e493e4244e6d455a4fd7923947068349f02a30605344",
+  "raw_response": {
+    "id": "e0ee5413-2772-4bfc-a2da-66be8067007d",
+    "created_at": 1795569633.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "0313f9bb-29ac-4f51-ac60-a98d22c12a0a",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"TOEIC L&RのスコアをTOEFL-PBT（またはTOEFL ITP）へ換算する統一的な公式の換算式は一般には存在せず、各機関が独自の対応表や基準を用います。東京科学大学 情報理工学院 情報工学系（2027年4月入学・修士課程）の出願でTOEIC L&RのスコアをTOEFL-PBT相当として扱うか、またその換算式・換算表の有無については、大学の公式募集要項でご確認ください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語 スコア TOEIC TOEFL 換算\",\"東京科学大学 大学院 情報理工学院 情報工学系 出願資格 英語能力試験 TOEIC L&R TOEFL-PBT 換算表\",\"東京科学大学 修士課程 2027 募集要項 情報理工学院 英語 換算式\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569635.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 388,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 254
+      },
+      "output_tokens": 235,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 623
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "e9acd815181c7c654a75d2c3ea43a6a76b65383ff19c11bd7d2cdfb3079aa19c",
+  "plan": {
+    "draft_answer": "TOEIC L&RのスコアをTOEFL-PBT（またはTOEFL ITP）へ換算する統一的な公式の換算式は一般には存在せず、各機関が独自の対応表や基準を用います。東京科学大学 情報理工学院 情報工学系（2027年4月入学・修士課程）の出願でTOEIC L&RのスコアをTOEFL-PBT相当として扱うか、またその換算式・換算表の有無については、大学の公式募集要項でご確認ください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 修士課程 2027年4月入学 募集要項 英語 スコア TOEIC TOEFL 換算",
+      "東京科学大学 大学院 情報理工学院 情報工学系 出願資格 英語能力試験 TOEIC L&R TOEFL-PBT 換算表",
+      "東京科学大学 修士課程 2027 募集要項 情報理工学院 英語 換算式"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "20223a5819daad9559c6ec077abe991485fd549a2976acdd9fb55a5a3f8cf4d7",
+  "finished_at": "2026-11-25T01:20:36.066471+00:00",
+  "elapsed_seconds": 2.4487964999862015
+}

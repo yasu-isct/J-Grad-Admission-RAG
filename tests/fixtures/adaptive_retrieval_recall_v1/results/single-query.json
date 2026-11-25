@@ -1,0 +1,6335 @@
+[
+  {
+    "query_id": "rq:0001",
+    "query_language": "ja",
+    "question": "インターネット出願の登録開始日と、書類が大学に必着となる出願期間を教えてください。",
+    "status": "single-query",
+    "search_queries": [
+      "インターネット出願の登録開始日と、書類が大学に必着となる出願期間を教えてください。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00000",
+      "fact:00006",
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00099",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "450bfa732c3c0005d5363ccb7a41c34ffb74e2b317c2efb14e8749e7faa42e9d",
+        "text_characters": 162,
+        "section_path": [
+          "４．出願手続",
+          "（１）出願期間"
+        ]
+      },
+      {
+        "fact_id": "fact:00101",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "450bfa732c3c0005d5363ccb7a41c34ffb74e2b317c2efb14e8749e7faa42e9d",
+        "text_characters": 162,
+        "section_path": [
+          "４．出願手続",
+          "（１）出願期間"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [
+      "fact:00000",
+      "fact:00006"
+    ],
+    "recall": 0.6666666666666666,
+    "scope_eligible_gold_ids": [
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "scope_ceiling": 0.6666666666666666,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00000",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00006",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 32.514799600001425
+  },
+  {
+    "query_id": "rq:0002",
+    "query_language": "ja",
+    "question": "オンラインで登録と支払いを済ませれば出願は完了しますか。必要な手続きを知りたいです。",
+    "status": "single-query",
+    "search_queries": [
+      "オンラインで登録と支払いを済ませれば出願は完了しますか。必要な手続きを知りたいです。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6287169000133872
+  },
+  {
+    "query_id": "rq:0003",
+    "query_language": "ja",
+    "question": "入学検定料30,000円のほかにサービス利用料はいくら必要ですか。",
+    "status": "single-query",
+    "search_queries": [
+      "入学検定料30,000円のほかにサービス利用料はいくら必要ですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6121063001919538
+  },
+  {
+    "query_id": "rq:0004",
+    "query_language": "ja",
+    "question": "いったん払った検定料は、願書が受理された後でも返してもらえますか。",
+    "status": "single-query",
+    "search_queries": [
+      "いったん払った検定料は、願書が受理された後でも返してもらえますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00015",
+      "fact:00023"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00015",
+      "fact:00023"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00015",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00023",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6472000998910517
+  },
+  {
+    "query_id": "rq:0005",
+    "query_language": "ja",
+    "question": "志願者全員が提出する出願書類には何がありますか。",
+    "status": "single-query",
+    "search_queries": [
+      "志願者全員が提出する出願書類には何がありますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00105",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "73e7214f9d1017030154dfa6dbaf01910a4db1f201cc06081161dbf8e786f98d",
+        "text_characters": 229,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00107",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "1c521b64acc41ffbe7c9991c12bce8a2fc2b4a608b4cefec0b04c25c8214be9e",
+        "text_characters": 399,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00103",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "cedc58dc40f0492614bac0765b1c9d602224737addc6574f6bfe2fbcb18d76db",
+        "text_characters": 173,
+        "section_path": [
+          "４．出願手続",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6187890998553485
+  },
+  {
+    "query_id": "rq:0006",
+    "query_language": "ja",
+    "question": "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。",
+    "status": "single-query",
+    "search_queries": [
+      "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00009",
+      "fact:00017",
+      "fact:00023"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00009",
+      "fact:00017",
+      "fact:00023"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00009",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00017",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00023",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6647242000326514
+  },
+  {
+    "query_id": "rq:0007",
+    "query_language": "ja",
+    "question": "障害などで受験時の配慮が必要なときは、いつまでに何をすればよいですか。",
+    "status": "single-query",
+    "search_queries": [
+      "障害などで受験時の配慮が必要なときは、いつまでに何をすればよいですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00010",
+      "fact:00018",
+      "fact:00023"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00010",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          3
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a3efa1ec74531afd6cfe35d5ed1679bcdaa8669bbd811d402ff92aa0a796dff2",
+        "text_characters": 264,
+        "section_path": [
+          "【インターネット出願サイトによる出願情報の登録及び出願書類の提出】",
+          "（３）受験上の特別な配慮が必要な場合の対応"
+        ]
+      },
+      {
+        "fact_id": "fact:00018",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          3
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "69071157fcfa94c5122a731fcfe1a3ac6dc064c0ae396f6aa10a0f43c429d23e",
+        "text_characters": 287,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（３）受験上の特別な配慮が必要な場合の対応"
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00098",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "58facca581aa85025ecb272c1095217e1a7fbb3044e5ef61e750a52e7a0e82e9",
+        "text_characters": 1629,
+        "section_path": [
+          "３．本学大学院入学までに、原則として系が定める専門科目群の必修科目（学士特定課題研究を除く。）及び選択必修科目"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00010",
+      "fact:00018"
+    ],
+    "missed_fact_ids": [
+      "fact:00023"
+    ],
+    "recall": 0.6666666666666666,
+    "scope_eligible_gold_ids": [
+      "fact:00010",
+      "fact:00018"
+    ],
+    "scope_ceiling": 0.6666666666666666,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00023",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6210584999062121
+  },
+  {
+    "query_id": "rq:0008",
+    "query_language": "ja",
+    "question": "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。",
+    "status": "single-query",
+    "search_queries": [
+      "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00024",
+      "fact:00026",
+      "fact:00029",
+      "fact:00031",
+      "fact:00033"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00024",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "77502a8fff0d0a77ed4295eb6d469fb51b40e805f34956e1fc1eb26328553dd3",
+        "text_characters": 300,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（６）外国籍および海外在住の志願者への注意"
+        ]
+      },
+      {
+        "fact_id": "fact:00029",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "77502a8fff0d0a77ed4295eb6d469fb51b40e805f34956e1fc1eb26328553dd3",
+        "text_characters": 300,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（６）外国籍および海外在住の志願者への注意"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00031",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8edbffee175c59b19ea16360bd4912ff7bea75f67c1ba313cb34305a89f19129",
+        "text_characters": 805,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること"
+        ]
+      },
+      {
+        "fact_id": "fact:00026",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9c10f6b7ef65fb353168d57441a6ad57637b2b5228666bc1bde89a1c939a596c",
+        "text_characters": 806,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00024",
+      "fact:00026",
+      "fact:00029",
+      "fact:00031"
+    ],
+    "missed_fact_ids": [
+      "fact:00033"
+    ],
+    "recall": 0.8,
+    "scope_eligible_gold_ids": [
+      "fact:00024",
+      "fact:00026",
+      "fact:00029",
+      "fact:00031"
+    ],
+    "scope_ceiling": 0.8,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00033",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6410362001042813
+  },
+  {
+    "query_id": "rq:0009",
+    "query_language": "ja",
+    "question": "2026年9月入学と2027年4月入学では、卒業や学位取得をいつまでに確定する必要がありますか。",
+    "status": "single-query",
+    "search_queries": [
+      "2026年9月入学と2027年4月入学では、卒業や学位取得をいつまでに確定する必要がありますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00028",
+      "fact:00033"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00056",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "848def4dbeca087d74b508211bbdfc587d3d3c85e5f7e90730523af01da9b263",
+        "text_characters": 396,
+        "section_path": [
+          "２．入学時期"
+        ]
+      },
+      {
+        "fact_id": "fact:00085",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "99af9463be3dcb4d1f254ec80543c3251a06092df775af55c3d07a2b5c59f72e",
+        "text_characters": 405,
+        "section_path": [
+          "３．出願資格",
+          "［2026年9月入学希望者で、9月28日から9月30日までの間に上記（１）～（６）の出願資格を満たす者への注意］"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00028",
+      "fact:00033"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00028",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00033",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6469203000888228
+  },
+  {
+    "query_id": "rq:0010",
+    "query_language": "ja",
+    "question": "この選抜で選べる2026年9月入学と2027年4月入学の組み合わせはどうなっていますか。",
+    "status": "single-query",
+    "search_queries": [
+      "この選抜で選べる2026年9月入学と2027年4月入学の組み合わせはどうなっていますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00056",
+      "fact:00058"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00056",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "848def4dbeca087d74b508211bbdfc587d3d3c85e5f7e90730523af01da9b263",
+        "text_characters": 396,
+        "section_path": [
+          "２．入学時期"
+        ]
+      },
+      {
+        "fact_id": "fact:00085",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "99af9463be3dcb4d1f254ec80543c3251a06092df775af55c3d07a2b5c59f72e",
+        "text_characters": 405,
+        "section_path": [
+          "３．出願資格",
+          "［2026年9月入学希望者で、9月28日から9月30日までの間に上記（１）～（６）の出願資格を満たす者への注意］"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00056"
+    ],
+    "missed_fact_ids": [
+      "fact:00058"
+    ],
+    "recall": 0.5,
+    "scope_eligible_gold_ids": [
+      "fact:00056"
+    ],
+    "scope_ceiling": 0.5,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00058",
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "数理・計算科学系",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "地球惑星科学系",
+          "システム制御系",
+          "生命理工学系",
+          "融合理工学系",
+          "電気電子系",
+          "情報通信系",
+          "経営工学系",
+          "応用化学系",
+          "情報工学系",
+          "物理学系",
+          "建築学系",
+          "数学系",
+          "化学系",
+          "機械系",
+          "材料系"
+        ],
+        "parent_college": "環境・社会理工学院"
+      }
+    ],
+    "retrieval_seconds": 0.6231464000884444
+  },
+  {
+    "query_id": "rq:0011",
+    "query_language": "ja",
+    "question": "情報理工学院の募集人員と、志願できる系の数を教えてください。",
+    "status": "single-query",
+    "search_queries": [
+      "情報理工学院の募集人員と、志願できる系の数を教えてください。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00055",
+      "fact:00057"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00039",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          5
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "71f9e1481a40a473d602e6b8d09c192b4a92b972701a79da2694738f982aac7c",
+        "text_characters": 233,
+        "section_path": [
+          "７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13",
+          "【情報理工学院】"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00052",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          5
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "71f9e1481a40a473d602e6b8d09c192b4a92b972701a79da2694738f982aac7c",
+        "text_characters": 233,
+        "section_path": [
+          "７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13",
+          "【情報理工学院】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00289",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "6dab38f06ac033c2e8e1f1caf4aab428e7e20be5209902793d6ea11b4165d505",
+        "text_characters": 233,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【口頭試問受験資格者の発表】"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00055",
+      "fact:00057"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00055",
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "数理・計算科学系",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "地球惑星科学系",
+          "システム制御系",
+          "生命理工学系",
+          "融合理工学系",
+          "電気電子系",
+          "情報通信系",
+          "経営工学系",
+          "応用化学系",
+          "情報工学系",
+          "物理学系",
+          "建築学系",
+          "数学系",
+          "化学系",
+          "機械系",
+          "材料系"
+        ],
+        "parent_college": "環境・社会理工学院"
+      },
+      {
+        "fact_id": "fact:00057",
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "数理・計算科学系",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "地球惑星科学系",
+          "システム制御系",
+          "生命理工学系",
+          "融合理工学系",
+          "電気電子系",
+          "情報通信系",
+          "経営工学系",
+          "応用化学系",
+          "情報工学系",
+          "物理学系",
+          "建築学系",
+          "数学系",
+          "化学系",
+          "機械系",
+          "材料系"
+        ],
+        "parent_college": "環境・社会理工学院"
+      }
+    ],
+    "retrieval_seconds": 0.8142299000173807
+  },
+  {
+    "query_id": "rq:0012",
+    "query_language": "ja",
+    "question": "『主な出願資格』で海外大学卒業は『下記（3）』とありますが、具体的な条件は何ですか。",
+    "status": "single-query",
+    "search_queries": [
+      "『主な出願資格』で海外大学卒業は『下記（3）』とありますが、具体的な条件は何ですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00059",
+      "fact:00062",
+      "fact:00072",
+      "fact:00075"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00059",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a2ea56f00b7cb93fa11ec604d66a14cec3d49cd16c029fe723f05195b1479ba4",
+        "text_characters": 427,
+        "section_path": [
+          "３．出願資格"
+        ]
+      },
+      {
+        "fact_id": "fact:00072",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a2ea56f00b7cb93fa11ec604d66a14cec3d49cd16c029fe723f05195b1479ba4",
+        "text_characters": 427,
+        "section_path": [
+          "３．出願資格"
+        ]
+      },
+      {
+        "fact_id": "fact:00098",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "58facca581aa85025ecb272c1095217e1a7fbb3044e5ef61e750a52e7a0e82e9",
+        "text_characters": 1629,
+        "section_path": [
+          "３．本学大学院入学までに、原則として系が定める専門科目群の必修科目（学士特定課題研究を除く。）及び選択必修科目"
+        ]
+      },
+      {
+        "fact_id": "fact:00088",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "d03e91d16bc0624d09014d71950c41cfd5b4ddbfa3e4825b0c908ba17ca32846",
+        "text_characters": 325,
+        "section_path": [
+          "３．出願資格",
+          "【出願資格審査について】",
+          "（11）の一を証明する書類 ・☆については出願資格（10）の三の場合のみ提出すること。"
+        ]
+      },
+      {
+        "fact_id": "fact:00091",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "4d1de7d00497f020b226868a4c32d321c8915fd4ba13c98567e4bafbb54c2215",
+        "text_characters": 637,
+        "section_path": [
+          "３．本学大学院入学までに、原則として系が定める専門科目群の必修科目（学士特定課題研究を除く。）及び選択必修科目"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00105",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "73e7214f9d1017030154dfa6dbaf01910a4db1f201cc06081161dbf8e786f98d",
+        "text_characters": 229,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00060",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2fe4d0803f6b775440db28cc947bd20dd92cf5b44d3d319409874207609fba9a",
+        "text_characters": 194,
+        "section_path": [
+          "３．出願資格",
+          "（１）我が国において、大学を卒業した者及び2027年3月31日までに卒業見込みの者"
+        ]
+      },
+      {
+        "fact_id": "fact:00073",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2fe4d0803f6b775440db28cc947bd20dd92cf5b44d3d319409874207609fba9a",
+        "text_characters": 194,
+        "section_path": [
+          "３．出願資格",
+          "（１）我が国において、大学を卒業した者及び2027年3月31日までに卒業見込みの者"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00059",
+      "fact:00072"
+    ],
+    "missed_fact_ids": [
+      "fact:00062",
+      "fact:00075"
+    ],
+    "recall": 0.5,
+    "scope_eligible_gold_ids": [
+      "fact:00059",
+      "fact:00062",
+      "fact:00072",
+      "fact:00075"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.649811000097543
+  },
+  {
+    "query_id": "rq:0013",
+    "query_language": "ja",
+    "question": "出願資格（9）～（11）の審査は、最初の連絡から必要書類の郵送までどう進めますか。",
+    "status": "single-query",
+    "search_queries": [
+      "出願資格（9）～（11）の審査は、最初の連絡から必要書類の郵送までどう進めますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00086",
+      "fact:00087",
+      "fact:00088",
+      "fact:00093",
+      "fact:00094",
+      "fact:00095"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00086",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f4dd62732360f219d3390ccc95987e325b8371ee105d75c8a3a2de8adbf2104f",
+        "text_characters": 641,
+        "section_path": [
+          "３．出願資格",
+          "【出願資格審査について】"
+        ]
+      },
+      {
+        "fact_id": "fact:00088",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "d03e91d16bc0624d09014d71950c41cfd5b4ddbfa3e4825b0c908ba17ca32846",
+        "text_characters": 325,
+        "section_path": [
+          "３．出願資格",
+          "【出願資格審査について】",
+          "（11）の一を証明する書類 ・☆については出願資格（10）の三の場合のみ提出すること。"
+        ]
+      },
+      {
+        "fact_id": "fact:00107",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "1c521b64acc41ffbe7c9991c12bce8a2fc2b4a608b4cefec0b04c25c8214be9e",
+        "text_characters": 399,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00087",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          8
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "c7230499c5aa44ad19d190b22328a53db9c84592694489f9995fb0bf7f2dcd42",
+        "text_characters": 551,
+        "section_path": [
+          "３．出願資格",
+          "【出願資格審査について】",
+          "(９) (10) (11)"
+        ]
+      },
+      {
+        "fact_id": "fact:00105",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "73e7214f9d1017030154dfa6dbaf01910a4db1f201cc06081161dbf8e786f98d",
+        "text_characters": 229,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00059",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a2ea56f00b7cb93fa11ec604d66a14cec3d49cd16c029fe723f05195b1479ba4",
+        "text_characters": 427,
+        "section_path": [
+          "３．出願資格"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00086",
+      "fact:00087",
+      "fact:00088"
+    ],
+    "missed_fact_ids": [
+      "fact:00093",
+      "fact:00094",
+      "fact:00095"
+    ],
+    "recall": 0.5,
+    "scope_eligible_gold_ids": [
+      "fact:00086",
+      "fact:00087",
+      "fact:00088"
+    ],
+    "scope_ceiling": 0.5,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00093",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00094",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00095",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.7500413998495787
+  },
+  {
+    "query_id": "rq:0014",
+    "query_language": "ja",
+    "question": "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。",
+    "status": "single-query",
+    "search_queries": [
+      "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00107",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "1c521b64acc41ffbe7c9991c12bce8a2fc2b4a608b4cefec0b04c25c8214be9e",
+        "text_characters": 399,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00105",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "73e7214f9d1017030154dfa6dbaf01910a4db1f201cc06081161dbf8e786f98d",
+        "text_characters": 229,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "（３）出願書類"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.7307944998610765
+  },
+  {
+    "query_id": "rq:0015",
+    "query_language": "ja",
+    "question": "出願用の顔写真データは、撮影時期、容量、ファイル形式にどんな条件がありますか。",
+    "status": "single-query",
+    "search_queries": [
+      "出願用の顔写真データは、撮影時期、容量、ファイル形式にどんな条件がありますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00293",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          53
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "c17fe2bba34c1146c211c67444b194c7ef37207f5591946213b6407cfaed88ba",
+        "text_characters": 4696,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6429274000693113
+  },
+  {
+    "query_id": "rq:0016",
+    "query_language": "ja",
+    "question": "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。",
+    "status": "single-query",
+    "search_queries": [
+      "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00108",
+      "fact:00112",
+      "fact:00122",
+      "fact:00128",
+      "fact:00150",
+      "fact:00152"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00123",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          12
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "afbeee26ccb5dcaa043f4f602f6ba6c6d2cd37da0360ca7dbf120626be2040e4",
+        "text_characters": 290,
+        "section_path": [
+          "５．選抜試験",
+          "（１）英語試験（Ａ日程及びＢ日程どちらも必須）",
+          "・数学系は、英語の筆答試験を行うため、英語外部試験のスコアシート提出は不要です。"
+        ]
+      },
+      {
+        "fact_id": "fact:00113",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "106d2ec3392eda9265e2b0d5d529116a4b758eaa3e08c52d6ae89e05b58e1940",
+        "text_characters": 286,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "・数学系は、英語の筆答試験を行うため、英語外部試験のスコアシート提出は不要です。詳細"
+        ]
+      },
+      {
+        "fact_id": "fact:00149",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          19
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "055d5883a2d1dc4aaa3680aa4af7d44123237f3b3683bfbfccfb049e9b1f71a9",
+        "text_characters": 399,
+        "section_path": [
+          "理学院 数学系",
+          "10．修士課程修了後の進路希望を書いてください。",
+          "【英語試験】"
+        ]
+      },
+      {
+        "fact_id": "fact:00108",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "874aead7504b94bb58c76948fee65071264c46f234dd73a8576e8fcb1ba4f93f",
+        "text_characters": 322,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "・数学系は、英語の筆答試験を行うため、英語外部試験のスコアシート提出は不要です。詳細"
+        ]
+      },
+      {
+        "fact_id": "fact:00129",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          12
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "afbeee26ccb5dcaa043f4f602f6ba6c6d2cd37da0360ca7dbf120626be2040e4",
+        "text_characters": 290,
+        "section_path": [
+          "５．選抜試験",
+          "（１）英語試験（Ａ日程及びＢ日程どちらも必須）",
+          "・数学系は、英語の筆答試験を行うため、英語外部試験のスコアシート提出は不要です。"
+        ]
+      },
+      {
+        "fact_id": "fact:00119",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "8037c48fd7233587c6fb4e67d4dfc4d024d4b24af176a35379b66e92c21c1d21",
+        "text_characters": 1361,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00153",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          19
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "f51a1dd195c8ee7de12c3e5c1010466bba461d8d438e5f928f3cbca05eccd1fc",
+        "text_characters": 1066,
+        "section_path": [
+          "理学院 数学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00150",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          19
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "31887debc00aac92ab8a9a6c65343eee89123711e10c014768c5a929c7cbc186",
+        "text_characters": 457,
+        "section_path": [
+          "理学院 数学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00122",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          12
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c6fdfa296639c79bd6aa98a94095859fba500492195b3bb670934c016655b08",
+        "text_characters": 243,
+        "section_path": [
+          "５．選抜試験",
+          "（１）英語試験（Ａ日程及びＢ日程どちらも必須）"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00108",
+      "fact:00122",
+      "fact:00150"
+    ],
+    "missed_fact_ids": [
+      "fact:00112",
+      "fact:00128",
+      "fact:00152"
+    ],
+    "recall": 0.5,
+    "scope_eligible_gold_ids": [
+      "fact:00108",
+      "fact:00112",
+      "fact:00122",
+      "fact:00128",
+      "fact:00150",
+      "fact:00152"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.8300995000172406
+  },
+  {
+    "query_id": "rq:0017",
+    "query_language": "ja",
+    "question": "A日程とB日程のどちらを受けるかは志願者が自分で選べますか。",
+    "status": "single-query",
+    "search_queries": [
+      "A日程とB日程のどちらを受けるかは志願者が自分で選べますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00121",
+      "fact:00127"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00122",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          12
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c6fdfa296639c79bd6aa98a94095859fba500492195b3bb670934c016655b08",
+        "text_characters": 243,
+        "section_path": [
+          "５．選抜試験",
+          "（１）英語試験（Ａ日程及びＢ日程どちらも必須）"
+        ]
+      },
+      {
+        "fact_id": "fact:00128",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          12
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c6fdfa296639c79bd6aa98a94095859fba500492195b3bb670934c016655b08",
+        "text_characters": 243,
+        "section_path": [
+          "５．選抜試験",
+          "（１）英語試験（Ａ日程及びＢ日程どちらも必須）"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00121",
+      "fact:00127"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00121",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00127",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6180728001054376
+  },
+  {
+    "query_id": "rq:0018",
+    "query_language": "ja",
+    "question": "A日程はいつ実施され、試験結果はいつ通知されますか。",
+    "status": "single-query",
+    "search_queries": [
+      "A日程はいつ実施され、試験結果はいつ通知されますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00001",
+      "fact:00004",
+      "fact:00124",
+      "fact:00130",
+      "fact:00132"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00001",
+      "fact:00004",
+      "fact:00124",
+      "fact:00130",
+      "fact:00132"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00001",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00004",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00124",
+        "scope_type": "department",
+        "scope_targets": [
+          "社会・人間科学系",
+          "物理学系",
+          "数学系"
+        ],
+        "parent_college": "環境・社会理工学院"
+      },
+      {
+        "fact_id": "fact:00130",
+        "scope_type": "department",
+        "scope_targets": [
+          "社会・人間科学系",
+          "物理学系",
+          "数学系"
+        ],
+        "parent_college": "環境・社会理工学院"
+      },
+      {
+        "fact_id": "fact:00132",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6687207999639213
+  },
+  {
+    "query_id": "rq:0019",
+    "query_language": "ja",
+    "question": "B日程の筆答試験日と口頭試問の実施期間を教えてください。",
+    "status": "single-query",
+    "search_queries": [
+      "B日程の筆答試験日と口頭試問の実施期間を教えてください。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00002",
+      "fact:00004",
+      "fact:00006",
+      "fact:00125",
+      "fact:00131",
+      "fact:00132"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00002",
+      "fact:00004",
+      "fact:00006",
+      "fact:00125",
+      "fact:00131",
+      "fact:00132"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00002",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00004",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00006",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00125",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00131",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00132",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6919432000722736
+  },
+  {
+    "query_id": "rq:0020",
+    "query_language": "ja",
+    "question": "合格者発表は何月何日の何時頃で、どこで確認できますか。",
+    "status": "single-query",
+    "search_queries": [
+      "合格者発表は何月何日の何時頃で、どこで確認できますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00002",
+      "fact:00004",
+      "fact:00133",
+      "fact:00135",
+      "fact:00136"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00289",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "6dab38f06ac033c2e8e1f1caf4aab428e7e20be5209902793d6ea11b4165d505",
+        "text_characters": 233,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【口頭試問受験資格者の発表】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00002",
+      "fact:00004",
+      "fact:00133",
+      "fact:00135",
+      "fact:00136"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00002",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00004",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00133",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00135",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00136",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.70711430022493
+  },
+  {
+    "query_id": "rq:0021",
+    "query_language": "ja",
+    "question": "9月入学と4月入学では、合格後の入学手続案内や手続日はどう違いますか。",
+    "status": "single-query",
+    "search_queries": [
+      "9月入学と4月入学では、合格後の入学手続案内や手続日はどう違いますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00002",
+      "fact:00005",
+      "fact:00006",
+      "fact:00134",
+      "fact:00136"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00039",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          5
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "71f9e1481a40a473d602e6b8d09c192b4a92b972701a79da2694738f982aac7c",
+        "text_characters": 233,
+        "section_path": [
+          "７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13",
+          "【情報理工学院】"
+        ]
+      },
+      {
+        "fact_id": "fact:00052",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          5
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "71f9e1481a40a473d602e6b8d09c192b4a92b972701a79da2694738f982aac7c",
+        "text_characters": 233,
+        "section_path": [
+          "７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13",
+          "【情報理工学院】"
+        ]
+      },
+      {
+        "fact_id": "fact:00056",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "848def4dbeca087d74b508211bbdfc587d3d3c85e5f7e90730523af01da9b263",
+        "text_characters": 396,
+        "section_path": [
+          "２．入学時期"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00002",
+      "fact:00005",
+      "fact:00006",
+      "fact:00134",
+      "fact:00136"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00002",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00005",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00006",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00134",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00136",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.7980655001010746
+  },
+  {
+    "query_id": "rq:0022",
+    "query_language": "ja",
+    "question": "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。",
+    "status": "single-query",
+    "search_queries": [
+      "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00139"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00139",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          16
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8c2cf3ac4a5e96a32e889cc2272f2292c06c6ee3f955fec0d972fef23c53f322",
+        "text_characters": 2652,
+        "section_path": [
+          "附録３．本学が定める英語外部試験の換算基準"
+        ]
+      },
+      {
+        "fact_id": "fact:00117",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "60fb4ceaca3a26180e8e0bb04d08437ff1bc33adcfb67b0990cc09371870e743",
+        "text_characters": 485,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00116",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "89e56d60497971d60662b044e3744a0db2d1ad276d7d064c738a3240bf9b9b2c",
+        "text_characters": 309,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00114",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "e55c88258f825bdb4bea3ab58cbdc8840c190aa967612a9ad8bf2e800dd62b68",
+        "text_characters": 258,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00139"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00139"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6479841000400484
+  },
+  {
+    "query_id": "rq:0023",
+    "query_language": "ja",
+    "question": "2026年の入試成績提供は、いつからいつまで申請できますか。",
+    "status": "single-query",
+    "search_queries": [
+      "2026年の入試成績提供は、いつからいつまで申請できますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00140",
+      "fact:00143",
+      "fact:00146"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00056",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "848def4dbeca087d74b508211bbdfc587d3d3c85e5f7e90730523af01da9b263",
+        "text_characters": 396,
+        "section_path": [
+          "２．入学時期"
+        ]
+      },
+      {
+        "fact_id": "fact:00026",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9c10f6b7ef65fb353168d57441a6ad57637b2b5228666bc1bde89a1c939a596c",
+        "text_characters": 806,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること"
+        ]
+      },
+      {
+        "fact_id": "fact:00031",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          4
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8edbffee175c59b19ea16360bd4912ff7bea75f67c1ba313cb34305a89f19129",
+        "text_characters": 805,
+        "section_path": [
+          "4.上記1～3の各種業務での利用にあたり、一部業務を本学より委託を受けた業者（以下「受託業者」という。）において",
+          "（２）2026年9月28日まで有効であり、長期滞在が可能な在留資格を有していること"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00140",
+      "fact:00143",
+      "fact:00146"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00140",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00143",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00146",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6023549998644739
+  },
+  {
+    "query_id": "rq:0024",
+    "query_language": "ja",
+    "question": "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。",
+    "status": "single-query",
+    "search_queries": [
+      "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00140",
+      "fact:00141",
+      "fact:00142",
+      "fact:00143",
+      "fact:00144",
+      "fact:00145",
+      "fact:00146"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00140",
+      "fact:00141",
+      "fact:00142",
+      "fact:00143",
+      "fact:00144",
+      "fact:00145",
+      "fact:00146"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00140",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00141",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00142",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00143",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00144",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00145",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00146",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6326812000479549
+  },
+  {
+    "query_id": "rq:0025",
+    "query_language": "ja",
+    "question": "物理学系の英語スコアシートは出願時に送りますか、それとも筆答試験当日に持参しますか。",
+    "status": "single-query",
+    "search_queries": [
+      "物理学系の英語スコアシートは出願時に送りますか、それとも筆答試験当日に持参しますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00181"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00181",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          21
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "物理学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "7abceb1168cceddfe96d7ffebd8a2fdea8e538ab12fad0271974118a4d6d9f07",
+        "text_characters": 366,
+        "section_path": [
+          "理学院 物理学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00186",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          21
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "物理学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "de1bdd987bffc4f694285bd75e808761762315ba615f3f7919a2e61c9da99056",
+        "text_characters": 914,
+        "section_path": [
+          "理学院 物理学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00182",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          21
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "物理学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "42e4d9f7a4e43e6951763dde3e64e13b4b35beaa0ac5e3f8cd01bd562d119c4b",
+        "text_characters": 579,
+        "section_path": [
+          "理学院 物理学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00181"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00181"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6211848000530154
+  },
+  {
+    "query_id": "rq:0026",
+    "query_language": "ja",
+    "question": "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。",
+    "status": "single-query",
+    "search_queries": [
+      "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00193"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00193",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          23
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "化学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "7647f10658af80cd64a513518c2537a425212f5c594fd9cb8213ccc34ff9dfb3",
+        "text_characters": 532,
+        "section_path": [
+          "理学院 化学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00190",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          23
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "化学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "f62d734cfd7300ea3187cd2e62b4fa9992142da4a5097280b674fdd845ca8bd8",
+        "text_characters": 556,
+        "section_path": [
+          "理学院 化学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00194",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          23
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "化学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "2f74fbbbdafb4b987232ccf8989e4c73b979c4abb159c60cbff09a94a41880a1",
+        "text_characters": 1060,
+        "section_path": [
+          "理学院 化学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00385",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          80
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "地球惑星科学系",
+          "物理学系",
+          "数学系",
+          "化学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "5bda3f93d246167034df674c17559900a498e1716c2f8f89dc500eee8eb65466",
+        "text_characters": 2344,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00195",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          24
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "化学系"
+        ],
+        "parent_college": "理学院",
+        "text_sha256": "6e0761744e4023690a83886c38104e03e562f8c8b2ea54fb50db5b664fba9a48",
+        "text_characters": 4616,
+        "section_path": [
+          "理学院 化学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00193"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00193"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6148592999670655
+  },
+  {
+    "query_id": "rq:0027",
+    "query_language": "ja",
+    "question": "材料系の外部英語試験スコアシートは、オンライン版をいつ提出し、後から差し替えられますか。",
+    "status": "single-query",
+    "search_queries": [
+      "材料系の外部英語試験スコアシートは、オンライン版をいつ提出し、後から差し替えられますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00255"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00255",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          42
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "材料系"
+        ],
+        "parent_college": "物質理工学院",
+        "text_sha256": "890662b8692e3ea0de3bcbc02caea1a56413c00acf677a0316f8eb15f247185f",
+        "text_characters": 258,
+        "section_path": [
+          "物質理工学院 材料系",
+          "【外部英語試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00262",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          42
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "材料系"
+        ],
+        "parent_college": "物質理工学院",
+        "text_sha256": "bbcee403878c252eaf5a7bd8bc3538d4f95e0a2e865bc27ebdd039ff763c6d96",
+        "text_characters": 1115,
+        "section_path": [
+          "物質理工学院 材料系",
+          "試験区分\n試験日\n試験内容等"
+        ]
+      },
+      {
+        "fact_id": "fact:00256",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          42
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "材料系"
+        ],
+        "parent_college": "物質理工学院",
+        "text_sha256": "c473887952167480e63853f11799c04a656c891ff23d00f63e453b3aa693f521",
+        "text_characters": 550,
+        "section_path": [
+          "物質理工学院 材料系",
+          "試験区分 試験日 試験内容等"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00255"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00255"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.8294793001841754
+  },
+  {
+    "query_id": "rq:0028",
+    "query_language": "ja",
+    "question": "数理・計算科学系の志望理由は何字程度で、出願前に誰へ連絡すべきですか。",
+    "status": "single-query",
+    "search_queries": [
+      "数理・計算科学系の志望理由は何字程度で、出願前に誰へ連絡すべきですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00278",
+      "fact:00284"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00278",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "d811ed71f13af490a3ab342578ceb93ec7b538d653abcfbe054a5d7ce088cc66",
+        "text_characters": 386,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【志望理由のテーマ等】"
+        ]
+      },
+      {
+        "fact_id": "fact:00284",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "156d32909599f53654028a3802c0cec4ea9fafaff064fc7e5a7c20993f331eee",
+        "text_characters": 384,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【志望理由のテーマ等】"
+        ]
+      },
+      {
+        "fact_id": "fact:00283",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "cb50b9ef8a0ddb7cd1839db02fc809c83f927c4727ba000a216619990fc4a402",
+        "text_characters": 301,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00285",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "487bbe7c5dc0e128566fe679ce43c6e933169ec1f7367becfb356f3583685ad8",
+        "text_characters": 926,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00280",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "634ccffdae2983b151f4bb029a64f2bbc0ee2ca6b4401782f61d98becf77cc80",
+        "text_characters": 556,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00281",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "40fa449392ca8a0cb1eef2fc0b963700708789d1fcd2f52e1910e2942b94f372",
+        "text_characters": 259,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【口頭試問受験資格者の発表】"
+        ]
+      },
+      {
+        "fact_id": "fact:00286",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          51
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "b6182ce81bf4f2404ab6d65825be79f0dbbf85d7f627b65626ae1dfeb37e9164",
+        "text_characters": 4538,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00279",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8732f69ab0134dcff179d63ac92654c8ce9372a4aef8c2ab0fd372d70dd1868c",
+        "text_characters": 229,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00282",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          50
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "21937268bb472b1a86b31693ddfd8c7f77d983bc77411e10d3c0e1439c6f1258",
+        "text_characters": 247,
+        "section_path": [
+          "情報理工学院 数理・計算科学系",
+          "【過去の筆答試験問題の公表】"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00278",
+      "fact:00284"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00278",
+      "fact:00284"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6355383000336587
+  },
+  {
+    "query_id": "rq:0029",
+    "query_language": "ja",
+    "question": "情報工学系の志望理由書は、日本語と英語でそれぞれどのくらいの長さですか。",
+    "status": "single-query",
+    "search_queries": [
+      "情報工学系の志望理由書は、日本語と英語でそれぞれどのくらいの長さですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00291"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00293",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          53
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "c17fe2bba34c1146c211c67444b194c7ef37207f5591946213b6407cfaed88ba",
+        "text_characters": 4696,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00289",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "6dab38f06ac033c2e8e1f1caf4aab428e7e20be5209902793d6ea11b4165d505",
+        "text_characters": 233,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【口頭試問受験資格者の発表】"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00291"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00291"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6254813000559807
+  },
+  {
+    "query_id": "rq:0030",
+    "query_language": "ja",
+    "question": "生命理工学系のB日程口頭試問はオンラインですか。受験資格者はいつ発表されますか。",
+    "status": "single-query",
+    "search_queries": [
+      "生命理工学系のB日程口頭試問はオンラインですか。受験資格者はいつ発表されますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00297"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00297",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          55
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "生命理工学系"
+        ],
+        "parent_college": "生命理工学院",
+        "text_sha256": "41a82af46b484fd0cb0d74e33c19187ee69fd058c63d29d278a848657318cf79",
+        "text_characters": 264,
+        "section_path": [
+          "生命理工学院 生命理工学系",
+          "【B 日程口頭試問について】"
+        ]
+      },
+      {
+        "fact_id": "fact:00300",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          55
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "生命理工学系"
+        ],
+        "parent_college": "生命理工学院",
+        "text_sha256": "71da905ffd1fc46dd7006602ae3da4ee82d4f96b03c68a3eb3d426866ec81551",
+        "text_characters": 1024,
+        "section_path": [
+          "生命理工学院 生命理工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00296",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          55
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "生命理工学系"
+        ],
+        "parent_college": "生命理工学院",
+        "text_sha256": "3b3fd3f8173251182e729bc2eb98fe1aaa0555c57f4ee495eccdf117e6721bac",
+        "text_characters": 536,
+        "section_path": [
+          "生命理工学院 生命理工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00299",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          55
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "生命理工学系"
+        ],
+        "parent_college": "生命理工学院",
+        "text_sha256": "2d7e7633e0da2cfd130941b6ecd5003318925c71500f0559d34676fbba0847cc",
+        "text_characters": 674,
+        "section_path": [
+          "生命理工学院 生命理工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00297"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00297"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6620773999020457
+  },
+  {
+    "query_id": "rq:0031",
+    "query_language": "ja",
+    "question": "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。",
+    "status": "single-query",
+    "search_queries": [
+      "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00137",
+      "fact:00308",
+      "fact:00309",
+      "fact:00310"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00309",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          60
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "82382df7d3fb00f6d16ecdaa2d5926a721940948cb86bc36ec3dbdac9e059c9d",
+        "text_characters": 1190,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00308",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          60
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "8af3b8acbd5c667f4f5e8270e2dc5f20e5e99ef882e81ddd2e41365e301480c5",
+        "text_characters": 190,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "【筆答専門試験科目】"
+        ]
+      },
+      {
+        "fact_id": "fact:00310",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          60
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "80ff7e31c052cf8073f52dae6bcadb1726cf23504017b45028205cb47026447a",
+        "text_characters": 404,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00311",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          60
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "460e8b518ffd73039b1442e8ff7fa78c9df628f27c5aa90099c423c977cd7e74",
+        "text_characters": 1341,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "［直定規、三角定規（勾配定規を含む）、三角スケー\nル、鉛筆（シャープペンシル、芯ホルダーを含む）、\n字消し板、消しゴム、ペン、絵具・色鉛筆などの彩色\n道具、ドラフテイングテープ、ティッシュペーパー、鉛\n筆削り（芯研器を含む）］"
+        ]
+      },
+      {
+        "fact_id": "fact:00312",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          61
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "c91e583effada5b5789d2e00e5facde1c6fdbcbd8f5f3ea5e14dfe1b4fe68dbe",
+        "text_characters": 4413,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "2. 配点：",
+          "［直定規、三角定規（勾配定規を含む）、三角スケー\nル、鉛筆（シャープペンシル、芯ホルダーを含む）、\n字消し板、消しゴム、ペン、絵具・色鉛筆などの彩色\n道具、ドラフテイングテープ、ティッシュペーパー、鉛\n筆削り（芯研器を含む）］"
+        ]
+      },
+      {
+        "fact_id": "fact:00313",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          62
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "0e1e7339c54911ee8395a419c1e8c8f610a1d4de94a6cf5ef47fc02183eac410",
+        "text_characters": 6122,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "2. 配点：",
+          "［直定規、三角定規（勾配定規を含む）、三角スケー\nル、鉛筆（シャープペンシル、芯ホルダーを含む）、\n字消し板、消しゴム、ペン、絵具・色鉛筆などの彩色\n道具、ドラフテイングテープ、ティッシュペーパー、鉛\n筆削り（芯研器を含む）］"
+        ]
+      },
+      {
+        "fact_id": "fact:00137",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          14
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "9d99a46a24789b023b08d3345c33cfb66979b7ba8092b0700388d83ace5efbfe",
+        "text_characters": 4672,
+        "section_path": [
+          "７．合格後の手続きについて"
+        ]
+      },
+      {
+        "fact_id": "fact:00057",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "数理・計算科学系",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "地球惑星科学系",
+          "システム制御系",
+          "生命理工学系",
+          "融合理工学系",
+          "電気電子系",
+          "情報通信系",
+          "経営工学系",
+          "応用化学系",
+          "情報工学系",
+          "物理学系",
+          "建築学系",
+          "数学系",
+          "化学系",
+          "機械系",
+          "材料系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "aa3c91c1732b3ff589963c683010b58778f8740df59b24273986d0ac138a1b63",
+        "text_characters": 749,
+        "section_path": [
+          "１．募集人員"
+        ]
+      },
+      {
+        "fact_id": "fact:00055",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          6
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "数理・計算科学系",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "地球惑星科学系",
+          "システム制御系",
+          "生命理工学系",
+          "融合理工学系",
+          "電気電子系",
+          "情報通信系",
+          "経営工学系",
+          "応用化学系",
+          "情報工学系",
+          "物理学系",
+          "建築学系",
+          "数学系",
+          "化学系",
+          "機械系",
+          "材料系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "fd26c2c05ac01b8df17b266f2658ebf7f8719d42f73e2abd7165cc35e4875c1d",
+        "text_characters": 814,
+        "section_path": [
+          "１．募集人員"
+        ]
+      },
+      {
+        "fact_id": "fact:00307",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          60
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "8470ea603a6979c73d78a2a1f65202f733a60d003fee59e7f4fddbc2e337e6c6",
+        "text_characters": 275,
+        "section_path": [
+          "環境・社会理工学院 建築学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00041",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          5
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "技術経営専門職学位課程",
+          "土木・環境工学系",
+          "社会・人間科学系",
+          "融合理工学系",
+          "建築学系"
+        ],
+        "parent_college": "環境・社会理工学院",
+        "text_sha256": "fabecea757bed18366d7f3d5fa6ce38052e5f308136ed5cbb8fbf6726d7564a9",
+        "text_characters": 438,
+        "section_path": [
+          "７．合格後の手続きについて ・・・・・・・・・・・・・・・ 13",
+          "【環境・社会理工学院】"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00137",
+      "fact:00308",
+      "fact:00309",
+      "fact:00310"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00137",
+      "fact:00308",
+      "fact:00309",
+      "fact:00310"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.7084574999753386
+  },
+  {
+    "query_id": "rq:0032",
+    "query_language": "ja",
+    "question": "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。",
+    "status": "single-query",
+    "search_queries": [
+      "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00390"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00390"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00390",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.8509702000301331
+  },
+  {
+    "query_id": "rq:0033",
+    "query_language": "ja",
+    "question": "受験票はいつから、どこで閲覧して印刷できますか。",
+    "status": "single-query",
+    "search_queries": [
+      "受験票はいつから、どこで閲覧して印刷できますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00000",
+      "fact:00004"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00000",
+      "fact:00004"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [],
+    "scope_ceiling": 0.0,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00000",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00004",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6199839999899268
+  },
+  {
+    "query_id": "rq:0034",
+    "query_language": "ja",
+    "question": "検定料はクレジットカードとネットバンキングのどちらで支払えますか。",
+    "status": "single-query",
+    "search_queries": [
+      "検定料はクレジットカードとネットバンキングのどちらで支払えますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00100",
+      "fact:00102",
+      "fact:00138"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00293",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          53
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "c17fe2bba34c1146c211c67444b194c7ef37207f5591946213b6407cfaed88ba",
+        "text_characters": 4696,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [
+      "fact:00138"
+    ],
+    "recall": 0.6666666666666666,
+    "scope_eligible_gold_ids": [
+      "fact:00100",
+      "fact:00102"
+    ],
+    "scope_ceiling": 0.6666666666666666,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00138",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6761424001306295
+  },
+  {
+    "query_id": "rq:0035",
+    "query_language": "zh",
+    "question": "网上申请什么时候开放，纸质材料最晚必须在什么时候送达学校？",
+    "status": "single-query",
+    "search_queries": [
+      "网上申请什么时候开放，纸质材料最晚必须在什么时候送达学校？"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00000",
+      "fact:00006",
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00065",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "82e993ea5dc04fdb7c1eb843ed9dc1bf4b510822aef106cfdde46b8d37d2a076",
+        "text_characters": 492,
+        "section_path": [
+          "３．出願資格",
+          "◆（６）外国の大学その他の外国の学校（その教育研究活動等の総合的な状況について、当該外国の政府又は関係機関の認証"
+        ]
+      },
+      {
+        "fact_id": "fact:00078",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "82e993ea5dc04fdb7c1eb843ed9dc1bf4b510822aef106cfdde46b8d37d2a076",
+        "text_characters": 492,
+        "section_path": [
+          "３．出願資格",
+          "◆（６）外国の大学その他の外国の学校（その教育研究活動等の総合的な状況について、当該外国の政府又は関係機関の認証"
+        ]
+      },
+      {
+        "fact_id": "fact:00063",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "3ea08bae6b606ad2d81ff58a4c7fc67b21f9d1ff74f1c2104e4dbb48e966bfab",
+        "text_characters": 271,
+        "section_path": [
+          "３．出願資格",
+          "（４）外国の学校が行う通信教育における授業科目を我が国において履修することにより当該外国の学校教育における16年"
+        ]
+      },
+      {
+        "fact_id": "fact:00076",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "3ea08bae6b606ad2d81ff58a4c7fc67b21f9d1ff74f1c2104e4dbb48e966bfab",
+        "text_characters": 271,
+        "section_path": [
+          "３．出願資格",
+          "（４）外国の学校が行う通信教育における授業科目を我が国において履修することにより当該外国の学校教育における16年"
+        ]
+      },
+      {
+        "fact_id": "fact:00068",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "6228f4c0fb4afa59b91577842b62e7ab10d6649f5b6b38edc867b309ee052abf",
+        "text_characters": 399,
+        "section_path": [
+          "３．出願資格",
+          "★（９）大学に3年以上在学した者、外国において学校教育における15年の課程を修了した者、又は我が国において、外国の"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00000",
+      "fact:00006",
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "scope_ceiling": 0.6666666666666666,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00000",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00006",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.6169155000243336
+  },
+  {
+    "query_id": "rq:0036",
+    "query_language": "zh",
+    "question": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+    "status": "single-query",
+    "search_queries": [
+      "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00107",
+      "fact:00109"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00117",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "60fb4ceaca3a26180e8e0bb04d08437ff1bc33adcfb67b0990cc09371870e743",
+        "text_characters": 485,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00114",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "e55c88258f825bdb4bea3ab58cbdc8840c190aa967612a9ad8bf2e800dd62b68",
+        "text_characters": 258,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00139",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          16
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8c2cf3ac4a5e96a32e889cc2272f2292c06c6ee3f955fec0d972fef23c53f322",
+        "text_characters": 2652,
+        "section_path": [
+          "附録３．本学が定める英語外部試験の換算基準"
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00116",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "89e56d60497971d60662b044e3744a0db2d1ad276d7d064c738a3240bf9b9b2c",
+        "text_characters": 309,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEIC L&Rの場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00109"
+    ],
+    "missed_fact_ids": [
+      "fact:00107"
+    ],
+    "recall": 0.5,
+    "scope_eligible_gold_ids": [
+      "fact:00107",
+      "fact:00109"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6327870998065919
+  },
+  {
+    "query_id": "rq:0037",
+    "query_language": "zh",
+    "question": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+    "status": "single-query",
+    "search_queries": [
+      "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00059",
+      "fact:00062",
+      "fact:00072",
+      "fact:00075"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00069",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "d911a633041cab39e063299847f8fc4ca72fc637b6af689cf424721a558d4f92",
+        "text_characters": 598,
+        "section_path": [
+          "３．出願資格",
+          "★（10）本学大学院において、個別の出願資格審査により、大学を卒業した者と同等以上の学力があると認めた者であって、"
+        ]
+      },
+      {
+        "fact_id": "fact:00082",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "d911a633041cab39e063299847f8fc4ca72fc637b6af689cf424721a558d4f92",
+        "text_characters": 598,
+        "section_path": [
+          "３．出願資格",
+          "★（10）本学大学院において、個別の出願資格審査により、大学を卒業した者と同等以上の学力があると認めた者であって、"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00104",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "51c4b86c5b18724d3b3e205e13a3d8c24b05fddbb8a1295f78ec1856fb6fc878",
+        "text_characters": 1635,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00060",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2fe4d0803f6b775440db28cc947bd20dd92cf5b44d3d319409874207609fba9a",
+        "text_characters": 194,
+        "section_path": [
+          "３．出願資格",
+          "（１）我が国において、大学を卒業した者及び2027年3月31日までに卒業見込みの者"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00059",
+      "fact:00062",
+      "fact:00072",
+      "fact:00075"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [
+      "fact:00059",
+      "fact:00062",
+      "fact:00072",
+      "fact:00075"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.8344784001819789
+  },
+  {
+    "query_id": "rq:0038",
+    "query_language": "zh",
+    "question": "所有申请人共同需要提交哪些申请材料？",
+    "status": "single-query",
+    "search_queries": [
+      "所有申请人共同需要提交哪些申请材料？"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00387",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          82
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "数理・計算科学系",
+          "生命理工学系",
+          "応用化学系",
+          "情報工学系",
+          "材料系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "e39537a126faddb366e883001e81500cd9b5d3274d60c4663654f6bb1a4d3cc6",
+        "text_characters": 2857,
+        "section_path": [
+          "１．なぜ本課程で学びたいか（５００字程度）、 ２．これまでの活動を通じて学習した特筆すべき内容について（５００字程度）、３.本",
+          "【専門職学位課程】"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00120",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "7453b1ce5fef91476a6798b05ef7192db2cc082da4f2098005dc21188bbc5b9e",
+        "text_characters": 637,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00112",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "0c28c0daa2e5c3acb776376689a9f26b5cc88ff17b92ccb4a4f0af42cf629667",
+        "text_characters": 1009,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      }
+    ],
+    "hit_fact_ids": [],
+    "missed_fact_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "recall": 0.0,
+    "scope_eligible_gold_ids": [
+      "fact:00103",
+      "fact:00104",
+      "fact:00105",
+      "fact:00106"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.6483579999767244
+  },
+  {
+    "query_id": "rq:0039",
+    "query_language": "ja",
+    "question": "TOEFLの有効な種類を教えてください。",
+    "status": "single-query",
+    "search_queries": [
+      "TOEFLの有効な種類を教えてください。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00109"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00291",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "221098e7dd1609b90142a37072c010f046f68254f7c00d812583b2b421d00ab2",
+        "text_characters": 893,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【記載内容及び入試に関する問合わせ先】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00114",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "e55c88258f825bdb4bea3ab58cbdc8840c190aa967612a9ad8bf2e800dd62b68",
+        "text_characters": 258,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00117",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "60fb4ceaca3a26180e8e0bb04d08437ff1bc33adcfb67b0990cc09371870e743",
+        "text_characters": 485,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00116",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "89e56d60497971d60662b044e3744a0db2d1ad276d7d064c738a3240bf9b9b2c",
+        "text_characters": 309,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEIC L&Rの場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00109"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00109"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.5968149001710117
+  },
+  {
+    "query_id": "rq:0040",
+    "query_language": "ja",
+    "question": "英語外部試験としてTOEFL iBTは認められますか。",
+    "status": "single-query",
+    "search_queries": [
+      "英語外部試験としてTOEFL iBTは認められますか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00109"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00114",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "e55c88258f825bdb4bea3ab58cbdc8840c190aa967612a9ad8bf2e800dd62b68",
+        "text_characters": 258,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00139",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          16
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8c2cf3ac4a5e96a32e889cc2272f2292c06c6ee3f955fec0d972fef23c53f322",
+        "text_characters": 2652,
+        "section_path": [
+          "附録３．本学が定める英語外部試験の換算基準"
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00117",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "60fb4ceaca3a26180e8e0bb04d08437ff1bc33adcfb67b0990cc09371870e743",
+        "text_characters": 485,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00109"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00109"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.648116699885577
+  },
+  {
+    "query_id": "rq:0041",
+    "query_language": "ja",
+    "question": "TOEFL iBT Home Editionは有効ですか。",
+    "status": "single-query",
+    "search_queries": [
+      "TOEFL iBT Home Editionは有効ですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00111"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00292",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "a17e72ee2dad62acc87388a4c2b64fcc3b9daffbee975c4ea40fb53e797a7a31",
+        "text_characters": 1528,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00288",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "1c0419d758ec69d17de01ddd472679cdf7e5fb310f188cc79bb6e7cd2b1f2c4f",
+        "text_characters": 738,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分 試験日 試験内容等 備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00294",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          54
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "8c952c99633a28423906b5d8413791d4f55e8b85df151fc24d5e2cd25460690b",
+        "text_characters": 4958,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "試験区分\n試験日\n試験内容等\n備考"
+        ]
+      },
+      {
+        "fact_id": "fact:00287",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          52
+        ],
+        "scope_type": "department",
+        "scope_targets": [
+          "情報工学系"
+        ],
+        "parent_college": "情報理工学院",
+        "text_sha256": "89fdc9f3eeb4f0c1c690953155e64f5f7f5b870ed64ec297d06e3576da69af87",
+        "text_characters": 266,
+        "section_path": [
+          "情報理工学院 情報工学系",
+          "【英語外部試験のスコアシートの取扱い】"
+        ]
+      },
+      {
+        "fact_id": "fact:00117",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "60fb4ceaca3a26180e8e0bb04d08437ff1bc33adcfb67b0990cc09371870e743",
+        "text_characters": 485,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00114",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "e55c88258f825bdb4bea3ab58cbdc8840c190aa967612a9ad8bf2e800dd62b68",
+        "text_characters": 258,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00111",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "49eeb072352cd8ca4ffe748da10db0708dbe04c7b0e9f3f69b094869bddf80bc",
+        "text_characters": 521,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEFL-iBT（Home Edition含む）の場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00109",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "2cfd1cd0c4c471eff1d90dbf64976b5c31dd3cdacb804e208f7bd6139f32f5d2",
+        "text_characters": 427,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "◆英語外部試験の種類と受験時期について"
+        ]
+      },
+      {
+        "fact_id": "fact:00116",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "89e56d60497971d60662b044e3744a0db2d1ad276d7d064c738a3240bf9b9b2c",
+        "text_characters": 309,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】",
+          "※TOEIC L&Rの場合："
+        ]
+      },
+      {
+        "fact_id": "fact:00139",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          16
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "8c2cf3ac4a5e96a32e889cc2272f2292c06c6ee3f955fec0d972fef23c53f322",
+        "text_characters": 2652,
+        "section_path": [
+          "附録３．本学が定める英語外部試験の換算基準"
+        ]
+      },
+      {
+        "fact_id": "fact:00110",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "f5cbafa8d0dc7adc110320b0ac4fde2a0d811ccf92bff36b4eecd6dbc0783033",
+        "text_characters": 345,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "※TOEIC L&Rの場合："
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00111"
+    ],
+    "missed_fact_ids": [],
+    "recall": 1.0,
+    "scope_eligible_gold_ids": [
+      "fact:00111"
+    ],
+    "scope_ceiling": 1.0,
+    "scope_excluded_gold": [],
+    "retrieval_seconds": 0.5821590998675674
+  },
+  {
+    "query_id": "rq:0042",
+    "query_language": "ja",
+    "question": "出願期間と書類必着日はいつですか。",
+    "status": "single-query",
+    "search_queries": [
+      "出願期間と書類必着日はいつですか。"
+    ],
+    "plan_archive_sha256": null,
+    "gold_fact_ids": [
+      "fact:00000",
+      "fact:00006",
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "selected": [
+      {
+        "fact_id": "fact:00099",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "450bfa732c3c0005d5363ccb7a41c34ffb74e2b317c2efb14e8749e7faa42e9d",
+        "text_characters": 162,
+        "section_path": [
+          "４．出願手続",
+          "（１）出願期間"
+        ]
+      },
+      {
+        "fact_id": "fact:00101",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "450bfa732c3c0005d5363ccb7a41c34ffb74e2b317c2efb14e8749e7faa42e9d",
+        "text_characters": 162,
+        "section_path": [
+          "４．出願手続",
+          "（１）出願期間"
+        ]
+      },
+      {
+        "fact_id": "fact:00105",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "73e7214f9d1017030154dfa6dbaf01910a4db1f201cc06081161dbf8e786f98d",
+        "text_characters": 229,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00103",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "cedc58dc40f0492614bac0765b1c9d602224737addc6574f6bfe2fbcb18d76db",
+        "text_characters": 173,
+        "section_path": [
+          "４．出願手続",
+          "（３）出願書類"
+        ]
+      },
+      {
+        "fact_id": "fact:00102",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a671cfc0f2f892d09201016b7eac55113f900c3f7b814dc7a0c74cfe7ba28af1",
+        "text_characters": 5138,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00118",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          11
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "9b4e5b3bdc714facd5f18fbba66ea9129922fe1a7911168e386a795085f54b03",
+        "text_characters": 856,
+        "section_path": [
+          "４．出願手続",
+          "【外国籍の志願者のみ提出する書類】※必ず冒頭の『志願者のみなさまへ (６)外国籍の志願者への注意』も確認すること"
+        ]
+      },
+      {
+        "fact_id": "fact:00059",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a2ea56f00b7cb93fa11ec604d66a14cec3d49cd16c029fe723f05195b1479ba4",
+        "text_characters": 427,
+        "section_path": [
+          "３．出願資格"
+        ]
+      },
+      {
+        "fact_id": "fact:00100",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          9
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "63326e1b764a40bf10e8fa383f1f50afbcaec37ff9e6e03e595fdcbfac32d483",
+        "text_characters": 2056,
+        "section_path": [
+          "４．出願手続",
+          "（２）出願方法"
+        ]
+      },
+      {
+        "fact_id": "fact:00106",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          10
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "597935603058d7c9459110b9ed8b822a6e7bdec546a8bf75492f5ae67aef2956",
+        "text_characters": 3239,
+        "section_path": [
+          "４．出願手続",
+          "【志願者全員が提出する書類】※出願資格(９)～(11)で出願する者は③、④、⑤は提出する必要はありません。"
+        ]
+      },
+      {
+        "fact_id": "fact:00072",
+        "document_id": "isct_2027_4_2026_9_master",
+        "source_pages": [
+          7
+        ],
+        "scope_type": "global",
+        "scope_targets": [],
+        "parent_college": null,
+        "text_sha256": "a2ea56f00b7cb93fa11ec604d66a14cec3d49cd16c029fe723f05195b1479ba4",
+        "text_characters": 427,
+        "section_path": [
+          "３．出願資格"
+        ]
+      }
+    ],
+    "hit_fact_ids": [
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "missed_fact_ids": [
+      "fact:00000",
+      "fact:00006"
+    ],
+    "recall": 0.6666666666666666,
+    "scope_eligible_gold_ids": [
+      "fact:00099",
+      "fact:00100",
+      "fact:00101",
+      "fact:00102"
+    ],
+    "scope_ceiling": 0.6666666666666666,
+    "scope_excluded_gold": [
+      {
+        "fact_id": "fact:00000",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      },
+      {
+        "fact_id": "fact:00006",
+        "scope_type": "unknown",
+        "scope_targets": [],
+        "parent_college": null
+      }
+    ],
+    "retrieval_seconds": 0.8568076998926699
+  }
+]

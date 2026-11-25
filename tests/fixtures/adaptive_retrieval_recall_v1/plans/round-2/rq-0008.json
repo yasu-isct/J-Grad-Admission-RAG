@@ -1,0 +1,195 @@
+{
+  "round": 2,
+  "query_id": "rq:0008",
+  "started_at": "2026-11-25T01:20:05.193529+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:20:05.199541+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:20:05.401573+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。",
+    "target_label": "東京科学大学 / 修士课程 / 2026年9月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2026年9月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "0f1a3cabc9d64734a3c744fc599f7d9a03dd92bd0839de0662b2ed2beeccf44f",
+  "raw_response": {
+    "id": "105ffda4-3a14-4ae5-a23f-c3f3c73e3830",
+    "created_at": 1795569605.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "b49aded1-e9d4-44c8-9d3f-e5deba40139e",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"外国籍で東京科学大学の2026年9月入学（情報理工学院・情報工学系の修士課程）を希望する場合、在留資格（「留学」）の取得と、入学許可後に大学を通じて行うCOE（在留資格認定証明書）申請が一般的な流れになります。ただし、受入の可否、必要書類、申請時期、入学手続との順序などは募集要項・入学手続案内で確認が必要です。COE申請では、入学許可書や学費・生活費の負担を証明する書類、パスポート情報、写真などの記載内容に不一致がないこと、申請は原則として受入機関（大学）経由で行われること、発行までに時間がかかるため入学手続・ビザ発給・渡航時期に余裕を持つことが注意点です。詳細な条件は公式の入学手続資料でご確認ください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 修士課程 2026年9月入学 外国人 出願資格 在留資格\",\"東京科学大学 2026年9月入学 修士 入学手続 COE 在留資格認定証明書\",\"東京科学大学 留学生 入学手続 ビザ COE 申請 書類\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569607.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 392,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 256
+      },
+      "output_tokens": 296,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 688
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "e166844d3eea082a0b5bee6c41e4ba9bd050790c7ad43f9bc21305740b3ff0a8",
+  "plan": {
+    "draft_answer": "外国籍で東京科学大学の2026年9月入学（情報理工学院・情報工学系の修士課程）を希望する場合、在留資格（「留学」）の取得と、入学許可後に大学を通じて行うCOE（在留資格認定証明書）申請が一般的な流れになります。ただし、受入の可否、必要書類、申請時期、入学手続との順序などは募集要項・入学手続案内で確認が必要です。COE申請では、入学許可書や学費・生活費の負担を証明する書類、パスポート情報、写真などの記載内容に不一致がないこと、申請は原則として受入機関（大学）経由で行われること、発行までに時間がかかるため入学手続・ビザ発給・渡航時期に余裕を持つことが注意点です。詳細な条件は公式の入学手続資料でご確認ください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 修士課程 2026年9月入学 外国人 出願資格 在留資格",
+      "東京科学大学 2026年9月入学 修士 入学手続 COE 在留資格認定証明書",
+      "東京科学大学 留学生 入学手続 ビザ COE 申請 書類"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "c5fdb8eede7f100806d00be72d240ad5121c47b665f1f45c5b91f05fc951aec7",
+  "finished_at": "2026-11-25T01:20:07.791991+00:00",
+  "elapsed_seconds": 2.595347600057721
+}

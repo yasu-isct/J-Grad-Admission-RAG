@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-11-25T01:23:57.161545+00:00",
+  "unchanged": true,
+  "hashes": {
+    "runtime/.jgrad-demo-owned.json": "44ec3799b97e3a972771fbf18dee9c21d0433428a1d14423fac32ca28eb474ff",
+    "runtime/config/document_identity.json": "6fc2434751e57fc2c541268eacaf5febe0a4a0275f18960ed2b31a80d7b10f79",
+    "runtime/config/page_scope_manifest.json": "85db320d441f9b268108cb6d3b44297599fdff38465842874e22f62fc631c417",
+    "runtime/config/query_intent_catalog.json": "adcde558b81f67817f38dea8dc4349d2bef36dba8f3883980aaa1125557660da",
+    "runtime/config/reviewed_date_presentation.json": "ed1bd60c6ad4fe32ccb1f97a4121b3ecee218e62721bdbd951a3a300c2e4bf91",
+    "runtime/config/reviewed_report_plan.json": "c8aacfa69d6cebb7774cf8cb000047c68e5f8ec58fe07e40889968e3f2c90680",
+    "runtime/corpus.json": "f7c491e94d53aa379dd934fc6a5e328ef6fd11c64f7d16622eb738ccbd6dff51",
+    "runtime/documents/isct_2027_4_2026_9_master/document_kb.json": "7fa46e49b7949aec289746dd5ec3c839969a822874f76c26f9ad2b64bc00f5ce",
+    "runtime/indexes/isct_2027_4_2026_9_master/embeddings.npy": "56508cad1dbf13c5e3258353676608cf4b6a174ac9c879983be9bdc8cd415df7",
+    "runtime/indexes/isct_2027_4_2026_9_master/manifest.json": "30225479016303ebc8bce2d6080a5c0f75224b5c5c920351aa4e1d247be8dae1",
+    "runtime/indexes/isct_2027_4_2026_9_master/payloads.jsonl": "09a00401c89a580906cea56438eac91caab1e62111e7024468e69ad23d1c9397",
+    "runtime/policy.json": "3528705a953e8bd3c425093accfa4faedd94465c144ec1b784d37a2150e38aa3",
+    "tests/fixtures/grounded_rag_retrieval_queries_v1.json": "34dd85cdf7fd3f5d079617986addd9b6fdee34e85e5d9fd838fd9a1790e1c986",
+    "tests/fixtures/grounded_rag_retrieval_report_v1.json": "86cf77dd51e14047ddd5961d89ed24ef49a153503a844c8f01a168b1a53e7ece",
+    "config/grounded_rag_release_gate_v1.json": "5da9e2e2f9447a9b98ff41a3d5c714708dc0c2d3b3e6fabb3a1872c7467bafa8",
+    "official_pdf": "57fdb935ffd2f6aa759f2c77f58b45826977225239fc1576d932b891ea50c735"
+  }
+}

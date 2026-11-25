@@ -1,0 +1,195 @@
+{
+  "round": 1,
+  "query_id": "rq:0036",
+  "started_at": "2026-11-25T01:19:37.149992+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:19:37.153994+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:19:37.339071+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "5a143c5a1872448d86577f6facbd66ec67bb6ae1c8f77c5780c9087fde728224",
+  "raw_response": {
+    "id": "36c3746e-5abd-4275-8b0a-60bc3b34945d",
+    "created_at": 1795569577.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "e84d888b-18da-4867-9125-5ce27259adc5",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"关于东京科学大学信息理工学院信息工学系2027年4月入学修士课程，TOEFL成绩的有效期限（通常指考试日期距申请截止日的年限要求）和英语成绩单的提交方式（官方送分或上传扫描件等）需要以该校当年发布的官方招生要项为准，我无法在此直接确认。建议查阅信息理工学院公布的入学者选拔要项及英语成绩提交说明，核实可接受的TOEFL考试类型（iBT等）、成绩有效期和送分方式后再准备材料。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士 2027年4月入学 募集要項 英語成績\",\"東京科学大学 情報理工学院 TOEFL スコア 有効期限 提出方法\",\"東京科学大学 大学院 入学願書 英語成績証明書 提出 方法\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569579.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 379,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 195,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 574
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "7ddbbac6f74884e0dcb893d80ffc4cd7294f15614c1fa7fbf9b991ce7d45f0e6",
+  "plan": {
+    "draft_answer": "关于东京科学大学信息理工学院信息工学系2027年4月入学修士课程，TOEFL成绩的有效期限（通常指考试日期距申请截止日的年限要求）和英语成绩单的提交方式（官方送分或上传扫描件等）需要以该校当年发布的官方招生要项为准，我无法在此直接确认。建议查阅信息理工学院公布的入学者选拔要项及英语成绩提交说明，核实可接受的TOEFL考试类型（iBT等）、成绩有效期和送分方式后再准备材料。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士 2027年4月入学 募集要項 英語成績",
+      "東京科学大学 情報理工学院 TOEFL スコア 有効期限 提出方法",
+      "東京科学大学 大学院 入学願書 英語成績証明書 提出 方法"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "e10ff0abcffd2fad616fa859e27aac2752620034c1f1bbaf94f8a8247b56b404",
+  "finished_at": "2026-11-25T01:19:39.157753+00:00",
+  "elapsed_seconds": 2.0060841999948025
+}

@@ -1,0 +1,195 @@
+{
+  "round": 1,
+  "query_id": "rq:0024",
+  "started_at": "2026-11-25T01:19:12.505435+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:19:12.510887+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:19:12.698916+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "25d98e9e26e7fcc9e6c750c752eb4ea272599cd100196d6546efeb6e1d192db4",
+  "raw_response": {
+    "id": "f9b1aaec-7a52-44c2-9c47-1741206847e3",
+    "created_at": 1795569552.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "54401091-4548-46d4-b027-f9c7798d5847",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"東京科学大学の個人別成績証明書を郵送で請求する場合、一般的には「個人別成績証明書交付申請書」などの所定の申請書、本人確認書類（運転免許証・パスポート等のコピー）、申請者本人の氏名・住所・連絡先を記載した用紙、手数料（郵便為替や収入印紙等、大学指定の方法）、そして返信用封筒（切手を貼付し、申請者の宛先を明記したもの）が必要です。ただし、必要書類の名称・様式、手数料の金額・支払方法、返信用封筒のサイズや切手額、宛先は入学年度や課程によって異なる場合があるため、必ず東京科学大学の情報理工学院（情報工学系）の2027年4月入学修士課程に関する最新の募集要項または公式案内で確認してください。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 個人別成績 郵送請求 必要書類 返信用封筒\",\"東京科学大学 個人別成績証明書 郵送請求 申請書 返信用封筒 手数料\",\"東京科学大学 大学院 入学 成績証明書 郵送 請求 方法\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569556.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 390,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 256
+      },
+      "output_tokens": 309,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 699
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "920692fad34995ea12f626b64c842b0b5e4207c1056be5b237924e0707a443f8",
+  "plan": {
+    "draft_answer": "東京科学大学の個人別成績証明書を郵送で請求する場合、一般的には「個人別成績証明書交付申請書」などの所定の申請書、本人確認書類（運転免許証・パスポート等のコピー）、申請者本人の氏名・住所・連絡先を記載した用紙、手数料（郵便為替や収入印紙等、大学指定の方法）、そして返信用封筒（切手を貼付し、申請者の宛先を明記したもの）が必要です。ただし、必要書類の名称・様式、手数料の金額・支払方法、返信用封筒のサイズや切手額、宛先は入学年度や課程によって異なる場合があるため、必ず東京科学大学の情報理工学院（情報工学系）の2027年4月入学修士課程に関する最新の募集要項または公式案内で確認してください。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 個人別成績 郵送請求 必要書類 返信用封筒",
+      "東京科学大学 個人別成績証明書 郵送請求 申請書 返信用封筒 手数料",
+      "東京科学大学 大学院 入学 成績証明書 郵送 請求 方法"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "979c7a4bd4a8930d08f9ff26b0f0434b24ad666e4a76413b9f14de0fc953aa21",
+  "finished_at": "2026-11-25T01:19:16.825178+00:00",
+  "elapsed_seconds": 4.318543399916962
+}

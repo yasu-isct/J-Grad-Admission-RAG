@@ -1,0 +1,195 @@
+{
+  "round": 2,
+  "query_id": "rq:0037",
+  "started_at": "2026-11-25T01:21:00.991165+00:00",
+  "status": "ok",
+  "http_attempts": [
+    {
+      "started_at": "2026-11-25T01:21:00.994162+00:00",
+      "status_code": 200,
+      "received_at": "2026-11-25T01:21:01.173416+00:00"
+    }
+  ],
+  "planning_prompt_version": "adaptive-qa-planning-v2",
+  "schema_version": "1.0",
+  "model": "deepseek-flash",
+  "request": {
+    "schema_version": "1.0",
+    "question": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系"
+  },
+  "settings_sha256": "6eab56dbc8beed152a00f5a79f5f3514f90bb4d5be5e74eab3a60b45e56294d9",
+  "wire_request": {
+    "model": "deepseek-flash",
+    "input": [
+      {
+        "role": "system",
+        "content": "Plan a reference-only answer to the user's question.\nReturn a concise user-readable preliminary answer in the user's language, never hidden reasoning.\nSet needs_local_lookup=true whenever the question asks about the selected university, programme,\nyear, eligibility, deadlines, required materials, fees, score conversion, accepted tests, or any\nother official admission-specific conclusion. In that case provide a small set of focused search\nqueries for the selected local admission document. General definitions and general comparisons may\nuse needs_local_lookup=false and an empty search_queries array. Decide from the user's requested\nmeaning, not merely from the presence of a selected target label. A pure definition such as\n\"What is [an exam or acronym]?\" MUST use needs_local_lookup=false; it does not ask what the selected\ninstitution accepts or requires. Do not claim that an institution\naccepts, rejects, requires, waives, or guarantees anything without local confirmation. Do not\nmention JSON, internal implementation, paths, IDs, hashes, pages, or hidden reasoning. Return only\nthe required schema."
+      },
+      {
+        "role": "user",
+        "content": "{\"question\":\"中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？\",\"schema_version\":\"1.0\",\"target_label\":\"東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系\"}"
+      }
+    ],
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "adaptive_qa_plan",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "max_output_tokens": 8000,
+    "store": false,
+    "reasoning": {
+      "effort": "none"
+    }
+  },
+  "wire_request_sha256": "fa0a60036bd0f6a0c44684204618621a39149392a8f655257f63bb5d947d51d4",
+  "raw_response": {
+    "id": "d471414a-21a7-49af-b331-27004603e113",
+    "created_at": 1795569661.0,
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "metadata": {},
+    "model": "deepseek-flash",
+    "object": "response",
+    "output": [
+      {
+        "id": "4f48dbfd-3f61-4ea3-a7d4-431aba393795",
+        "content": [
+          {
+            "annotations": [],
+            "text": "{\"draft_answer\":\"您问的是中国本科毕业生或应届毕业生应适用哪一类学历资格。一般来说，根据日本大学硕士（修士）课程的入学资格，完成16年学校教育课程（即本科毕业）或预计在入学前毕业者，通常可适用“完成16年学校教育课程”的资格；部分学校也设有以“预计毕业”为前提的个别入学资格审查。最终应以东京科学大学情報理工学院情報工学系修士课程2027年4月入学的募集要项所列资格为准。\",\"needs_local_lookup\":true,\"search_queries\":[\"東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格\",\"東京科学大学 修士課程 中国 大学卒業 出願資格 16年\",\"東京科学大学 情報理工学院 入学資格 学士 見込み\"]}",
+            "type": "output_text",
+            "logprobs": []
+          }
+        ],
+        "role": "assistant",
+        "status": "completed",
+        "type": "message",
+        "phase": "final_answer"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "temperature": 1.0,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1.0,
+    "background": false,
+    "completed_at": 1795569662.0,
+    "conversation": null,
+    "max_output_tokens": 8000,
+    "max_tool_calls": null,
+    "moderation": null,
+    "previous_response_id": null,
+    "prompt": null,
+    "prompt_cache_diagnostics": null,
+    "prompt_cache_key": null,
+    "prompt_cache_options": null,
+    "prompt_cache_retention": null,
+    "reasoning": {
+      "context": null,
+      "effort": "none",
+      "generate_summary": null,
+      "mode": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "status": "completed",
+    "text": {
+      "format": {
+        "name": "adaptive_qa_plan",
+        "schema_": {
+          "type": "object",
+          "properties": {
+            "draft_answer": {
+              "type": "string"
+            },
+            "needs_local_lookup": {
+              "type": "boolean"
+            },
+            "search_queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "draft_answer",
+            "needs_local_lookup",
+            "search_queries"
+          ],
+          "additionalProperties": false
+        },
+        "type": "json_schema",
+        "description": null,
+        "strict": true
+      },
+      "verbosity": null
+    },
+    "top_logprobs": 0,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 379,
+      "input_tokens_details": {
+        "cache_write_tokens": null,
+        "cached_tokens": 128
+      },
+      "output_tokens": 186,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 565
+    },
+    "user": null,
+    "content_filters": null,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "store": false
+  },
+  "raw_response_sha256": "2dc509b9350d8b64e0c19c8a1e8d9d141c2bdcdacafa7375b77ecd7e93cdc1e4",
+  "plan": {
+    "draft_answer": "您问的是中国本科毕业生或应届毕业生应适用哪一类学历资格。一般来说，根据日本大学硕士（修士）课程的入学资格，完成16年学校教育课程（即本科毕业）或预计在入学前毕业者，通常可适用“完成16年学校教育课程”的资格；部分学校也设有以“预计毕业”为前提的个别入学资格审查。最终应以东京科学大学情報理工学院情報工学系修士课程2027年4月入学的募集要项所列资格为准。",
+    "needs_local_lookup": true,
+    "search_queries": [
+      "東京科学大学 情報理工学院 情報工学系 修士課程 2027年4月入学 募集要項 出願資格",
+      "東京科学大学 修士課程 中国 大学卒業 出願資格 16年",
+      "東京科学大学 情報理工学院 入学資格 学士 見込み"
+    ],
+    "provider": {
+      "provider": "deepseek-responses",
+      "model": "deepseek-flash",
+      "revision": null,
+      "prompt_version": "grounded-answer-v5"
+    }
+  },
+  "plan_sha256": "e8f2085b7ba017244d068dde4103a0fd9e1b58a61ee791d4e43132217a0506e2",
+  "finished_at": "2026-11-25T01:21:02.616521+00:00",
+  "elapsed_seconds": 1.6244495999999344
+}
