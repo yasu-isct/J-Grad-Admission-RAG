@@ -2,7 +2,7 @@
 (() => {
   "use strict";
   const isctPage = "https://admissions.isct.ac.jp/ja/013/graduate/guideline";
-  const isctPdf = "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=87362e797f9f0c9ac915675147239ea8.pdf&fileName=2027_4_2026_9_master";
+  const isctPdf = "https://admissions.isct.ac.jp/plugins/cms/component_download_file.php?type=1&pageId=3176&contentsId=&contentsDataId=&prevId=&key=99f5b4a4b4a4d5dae647cb75044dce9a.pdf&fileName=2027_4_2026_9_master";
   const gsfsSources = {
     "gsfs-master-2027": ["https://www.k.u-tokyo.ac.jp/assets/files/2027guidelines_for_applicants_to_mc.pdf", 22],
     "complex-guide-2027-revised": ["https://www.k.u-tokyo.ac.jp/complex/html/examinee/2027guidebook_rev.pdf", 45],
