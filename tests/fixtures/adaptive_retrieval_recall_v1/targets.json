@@ -1,0 +1,800 @@
+[
+  {
+    "query_id": "rq:0001",
+    "question": "インターネット出願の登録開始日と、書類が大学に必着となる出願期間を教えてください。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0002",
+    "question": "オンラインで登録と支払いを済ませれば出願は完了しますか。必要な手続きを知りたいです。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0003",
+    "question": "入学検定料30,000円のほかにサービス利用料はいくら必要ですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0004",
+    "question": "いったん払った検定料は、願書が受理された後でも返してもらえますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0005",
+    "question": "志願者全員が提出する出願書類には何がありますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0006",
+    "question": "出願後に引っ越した場合、どの情報をどの連絡先へ届け出ればよいですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0007",
+    "question": "障害などで受験時の配慮が必要なときは、いつまでに何をすればよいですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0008",
+    "question": "外国籍で9月入学を希望する場合の在留条件と、COE申請で注意することを教えてください。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2026,
+        "month": 9
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2026年9月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0009",
+    "question": "2026年9月入学と2027年4月入学では、卒業や学位取得をいつまでに確定する必要がありますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0010",
+    "question": "この選抜で選べる2026年9月入学と2027年4月入学の組み合わせはどうなっていますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0011",
+    "question": "情報理工学院の募集人員と、志願できる系の数を教えてください。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0012",
+    "question": "『主な出願資格』で海外大学卒業は『下記（3）』とありますが、具体的な条件は何ですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0013",
+    "question": "出願資格（9）～（11）の審査は、最初の連絡から必要書類の郵送までどう進めますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0014",
+    "question": "出願書類はどの封筒を使い、どの郵送方法で、いつまでに送ればよいですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0015",
+    "question": "出願用の顔写真データは、撮影時期、容量、ファイル形式にどんな条件がありますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0016",
+    "question": "数学系では英語外部試験のスコア提出が必要ですか。それとも英語筆答試験がありますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "理学院",
+      "department_id": "数学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 数学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0017",
+    "question": "A日程とB日程のどちらを受けるかは志願者が自分で選べますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0018",
+    "question": "A日程はいつ実施され、試験結果はいつ通知されますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0019",
+    "question": "B日程の筆答試験日と口頭試問の実施期間を教えてください。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0020",
+    "question": "合格者発表は何月何日の何時頃で、どこで確認できますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0021",
+    "question": "9月入学と4月入学では、合格後の入学手続案内や手続日はどう違いますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0022",
+    "question": "TOEIC L&RをTOEFL-PBTへ換算するときの換算式は何ですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0023",
+    "question": "2026年の入試成績提供は、いつからいつまで申請できますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0024",
+    "question": "個人別成績を郵送で請求するには、どの書類と返信用封筒を用意すればよいですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0025",
+    "question": "物理学系の英語スコアシートは出願時に送りますか、それとも筆答試験当日に持参しますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "理学院",
+      "department_id": "物理学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 物理学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0026",
+    "question": "化学系の志望理由書は何字程度で、出願前に第一志望教員へ相談が必要ですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "理学院",
+      "department_id": "化学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 理学院 / 化学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0027",
+    "question": "材料系の外部英語試験スコアシートは、オンライン版をいつ提出し、後から差し替えられますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "物質理工学院",
+      "department_id": "材料系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 物質理工学院 / 材料系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0028",
+    "question": "数理・計算科学系の志望理由は何字程度で、出願前に誰へ連絡すべきですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "数理・計算科学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 数理・計算科学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0029",
+    "question": "情報工学系の志望理由書は、日本語と英語でそれぞれどのくらいの長さですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0030",
+    "question": "生命理工学系のB日程口頭試問はオンラインですか。受験資格者はいつ発表されますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "生命理工学院",
+      "department_id": "生命理工学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 生命理工学院 / 生命理工学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0031",
+    "question": "建築学系の筆答専門試験でA：即日設計とB：建築学科目はどう選び、試験時間は何時までですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "環境・社会理工学院",
+      "department_id": "建築学系",
+      "application_route": null
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 環境・社会理工学院 / 建築学系",
+    "reason": "explicit department"
+  },
+  {
+    "query_id": "rq:0032",
+    "question": "大学院入試の一般的な質問は、どのメールアドレスへ問い合わせればよいですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0033",
+    "question": "受験票はいつから、どこで閲覧して印刷できますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0034",
+    "question": "検定料はクレジットカードとネットバンキングのどちらで支払えますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0035",
+    "question": "网上申请什么时候开放，纸质材料最晚必须在什么时候送达学校？",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0036",
+    "question": "哪些 TOEFL 成绩有效，英语成绩单应当怎样提交？",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0037",
+    "question": "中国大学本科毕业生或应届毕业生应当适用哪一项学历资格？",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0038",
+    "question": "所有申请人共同需要提交哪些申请材料？",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0039",
+    "question": "TOEFLの有効な種類を教えてください。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0040",
+    "question": "英語外部試験としてTOEFL iBTは認められますか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0041",
+    "question": "TOEFL iBT Home Editionは有効ですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  },
+  {
+    "query_id": "rq:0042",
+    "question": "出願期間と書類必着日はいつですか。",
+    "target": {
+      "schema_version": "1.0",
+      "school_id": "isct",
+      "document_id": "isct_2027_4_2026_9_master",
+      "degree_id": "master",
+      "intake": {
+        "year": 2027,
+        "month": 4
+      },
+      "college_id": "情報理工学院",
+      "department_id": "情報工学系",
+      "application_route": "b_schedule"
+    },
+    "target_label": "東京科学大学 / 修士课程 / 2027年4月入学 / 情報理工学院 / 情報工学系",
+    "reason": "fixed demo default"
+  }
+]
